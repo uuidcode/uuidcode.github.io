@@ -33,7 +33,7 @@ function Investment() {
             this.createBuildingList();
         }
 
-        if (block.player == null) {
+        if (block.player === null) {
             $('#cancelButton,#buyButton').show();
             $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
         } else if (block.player == player) {

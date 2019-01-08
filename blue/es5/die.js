@@ -47,6 +47,7 @@ function Die() {
             callback = function () {};
         }
 
+        board.playDieSound();
         this.box.start_throw(this.notationGetter, this.beforeRoll, callback);
     };
 

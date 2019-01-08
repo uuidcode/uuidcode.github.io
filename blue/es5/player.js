@@ -109,7 +109,6 @@ function Player(index) {
 
     this.rollDie = function() {
         var self = this;
-
         board.die.roll(function (notation, count) {
             self.go(count);
         });
@@ -182,6 +181,7 @@ function Player(index) {
                 this.readyNextTurn();
             } else if (block.name === config.fundingPlace) {
                 block.resetFunding();
+                this.readyNextTurn();
             } else if (block.name === config.fundingName) {
                 this.pay(config.fundAmount);
                 board.getFundingPlace().addFunding();
@@ -201,6 +201,12 @@ function Player(index) {
     this.go = function(count) {
         if (!this.escapeFromIsland(count)) {
             return;
+        }
+
+        if (!this.fast) {
+            if (count > 0 && count <= 6) {
+                board.playJumpSound(count);
+            }
         }
 
         this.curentCount = count;

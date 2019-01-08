@@ -7,6 +7,19 @@ function Board() {
     this.die = null;
     this.goldenKeyIndex = 0;
 
+    this.playSound = function (name) {
+        var mp3 = $('.' + name + '-sound').get(0);
+        mp3.play();
+    };
+
+    this.playDieSound = function (name) {
+        this.playSound('die');
+    };
+
+    this.playJumpSound = function (count) {
+        this.playSound('jump' + count);
+    };
+
     this.initPlayer = function () {
         for (var i = 0; i < config.playerList.length; i++) {
             var player = new Player(this.playerList.length);
