@@ -1,0 +1,23 @@
+.active-droppable {
+    width: 100%;
+    background-color: #F5F5F5;
+    border: 1px solid #9BB5DE;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.hover-droppable {
+    width: 100%;
+    background-color: #A0C5E8;
+    border: 1px solid #9BB5DE;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+
+.dropdown {
+    background-color: #ffffff;
+}
+
+.selected {
+    background-color: #BBEABC;
+}

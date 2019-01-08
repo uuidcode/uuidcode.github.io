@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<project name="enterprise" default="release" basedir="." >
+	<target name="release">			
+		<delete includeemptydirs="true" quiet="true">
+    		<fileset dir="jQuery.rolling" includes="**/*"/>
+		</delete>
+		
+		<mkdir dir="jQuery.rolling"/>
+		
+		<ftp
+			action="get" 
+			server="w-173.cafe24.com"
+    	   	userid="songsungkyun"
+			password="chopsuey"
+			remotedir="interpark"
+			depends="yes"
+			>
+		  <fileset dir=".">
+      		<include name="jquery.rolling.js"/>
+      		<include name="JQueryRolling.html"/>
+      		<include name="largeImageRolling.html"/>
+      		<include name="htmlContentRolling.html"/>
+		  </fileset>
+		</ftp>	
+		
+		<move todir="jQuery.rolling">
+			<fileset dir=".">
+				<include name="jquery.rolling.js"/>
+	      		<include name="JQueryRolling.html"/>
+	      		<include name="largeImageRolling.html"/>
+	      		<include name="htmlContentRolling.html"/>
+			</fileset>
+		</move>
+		
+		<zip destfile="jQuery.rolling.zip" basedir="jQuery.rolling"/>
+		
+		<ftp
+			action="send" 
+			server="w-173.cafe24.com"
+    	   	userid="songsungkyun"
+			password="chopsuey"
+			remotedir="interpark"
+			depends="yes"
+			>
+		  <fileset dir=".">
+      		<include name="jQuery.rolling.zip"/>
+		  </fileset>
+		</ftp>	
+	</target>
+</project>

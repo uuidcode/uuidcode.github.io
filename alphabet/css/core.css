@@ -1,0 +1,32 @@
+div.alphabet {
+    position: absolute;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    z-index: 50;
+}
+
+body {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    overflow: hidden;
+}
+
+#mouse {
+    position: absolute;
+    box-shadow: 0 0 0 99999px rgba(0, 0, 0, .6);
+    border-radius: 50%;
+    z-index: 100;
+}
+
+#mouseShadow {
+    position: absolute;
+    box-shadow: inset -5px -5px 5px 5px rgba(0, 0, 0, .8);
+    border-radius: 50%;
+    z-index: 100;
+}

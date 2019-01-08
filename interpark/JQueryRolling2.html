@@ -1,0 +1,456 @@
+<html><head><title>uuidcode</title>
+<meta charset="utf-8" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<link href="../bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+<link href="../css/shCore.css" rel="stylesheet" />
+<link href="../css/shThemeDefault.css" rel="stylesheet" />
+<script src="../bootstrap/js/jquery.js"></script>
+<script src="../bootstrap/js/bootstrap-dropdown.js"></script>
+<script src="../jqueryrolling/jquery.rolling.js"></script>
+<script src="../interpark/jquery/lib/jquery/jquery.easydrag.js"></script>
+<script src="../virtualform/json2.js"></script>
+<script src="../virtualform/jquery.virtualform-0.1.js"></script>
+<script src="../js/shCore.js"></script>
+<script src="../js/shBrushJava.js"></script>
+<script src="../js/shBrushSql.js"></script>
+<script src="../js/shBrushPhp.js"></script>
+<script src="../js/shBrushXml.js"></script>
+<style type="text/css">
+    .navbar-fixed-top {
+        margin-bottom: 20px;
+    }
+</style>
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src="../js/youtube.js?v=1"></script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-49038982-1', 'uuidcode.github.io');
+    ga('send', 'pageview');
+
+</script>
+<script type="text/javascript">
+    jQuery(function () {
+        SyntaxHighlighter.all()
+    });
+</script></head>
+<body>
+<h1>JQuery Rolling</h1>
+<a href="jquery.rolling.js">download jquery.rolling.js</a> mail:songsungkyun@naver.com<br />
+<hr />
+<center>
+<p>
+<script>
+	function rollingLeft() {
+		var rollingDiv = $("#rollingHead");	
+		if (rollingDiv.getRollingDirection() == "right") {
+			rollingDiv.reverseRolling();
+		}
+	}
+	
+	function rollingRight() {
+		var rollingDiv = $("#rollingHead");	
+		if (rollingDiv.getRollingDirection() == "left") {
+			rollingDiv.reverseRolling();
+		}
+	}
+	
+	function showYoutubeById(id) {
+		var showYouTubeDiv = $("#showYouTubeDiv");		
+		showYouTubeDiv.html("<object width=\"300\" height=\"200\"><param name=\"movie\" value=\"http://www.youtube.com/v/" + id + "=en\"></param><param name=\"wmode\" value=\"transparent\"></param><embed src=\"http://www.youtube.com/v/" + id + "\" type='application/x-shockwave-flash' wmode='transparent' width='300' height='200'></embed></object>");		
+	}
+</script>
+</p><table><tbody><tr>
+<td></td>
+<td><div id="rollingHead"></div></td>
+<td></td>
+</tr></tbody></table>
+<p>
+<a href="javascript:rollingLeft()"><img src="left.jpg" alt="left rolling" border="0" /></a>
+<a href="javascript:rollingRight()"><img src="right.jpg" alt="right rolling" border="0" /></a>
+</p><div id="rollingHeadComment"><b><font color="white">...</font></b></div>
+<p>
+</p><div id="showYouTubeDiv"></div>
+</center>
+<hr />
+<xmp>
+$(function() {
+	var rollingDiv = $("#rollingHead");	
+	rollingDiv.rolling("right", 140, 110, 5);
+	
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'oG5RQPRCHH4\')'><img src='http://i.ytimg.com/vi/oG5RQPRCHH4/default.jpg' width='130' height='100' alt='Capoeira Demo 2' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'4CDAZVR7kgY\')'><img src='http://i.ytimg.com/vi/4CDAZVR7kgY/default.jpg' width='130' height='100' alt='Capoeira clip: Cueca' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'tbW6ErTogio\')'><img src='http://i.ytimg.com/vi/tbW6ErTogio/default.jpg' width='130' height='100' alt='Capoeira Demonstration' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'GOa5FSwK96w\')'><img src='http://i.ytimg.com/vi/GOa5FSwK96w/default.jpg' width='130' height='100' alt='abada capoeira trailer' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'UJKR4cOt2Dc\')'><img src='http://i.ytimg.com/vi/UJKR4cOt2Dc/default.jpg' width='130' height='100' alt='Capoeira Mestre' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'Qtkt_cbFj6U\')'><img src='http://i.ytimg.com/vi/Qtkt_cbFj6U/default.jpg' width='130' height='100' alt='Capoeirage III mix by Capoeira4Real.com' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'EX82tPUy1LE\')'><img src='http://i.ytimg.com/vi/EX82tPUy1LE/default.jpg' width='130' height='100' alt='Miudinho Capoeira on the Beach' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'4VNkBwgvVGo\')'><img src='http://i.ytimg.com/vi/4VNkBwgvVGo/default.jpg' width='130' height='100' alt='Capoeira - Instinto Coletivo (O Rappa)' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'hhPmrpxGLqc\')'><img src='http://i.ytimg.com/vi/hhPmrpxGLqc/default.jpg' width='130' height='100' alt='Mestre Jose Antonio vs Mestre Poncianinho' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\'14GxmMgG1Tc\')'><img src='http://i.ytimg.com/vi/14GxmMgG1Tc/default.jpg' width='130' height='100' alt='cordao de ouro 3amigos : ponchianinho casquinha papa leguas' border='0'/></a>");
+   
+	rollingDiv.bind("mouseover", function() {
+		 $("#rollingHead").stopRolling();		 
+	});
+	rollingDiv.bind("mouseout", function() {
+		 $("#rollingHead").resumeRolling();
+	});
+	
+	var opacity = 0.6;
+	
+	$('img', rollingDiv.getRollingItems()).css("opacity", opacity);
+	
+	$('img', rollingDiv.getRollingItems()).hover(
+		function() {
+			$(this).animate({ 
+				width: "140",
+				height: "110",
+				opacity: 1
+			}, 300);
+			$("#rollingHeadComment").html("<b><font color='blue'>" + $(this).attr('alt') + "</font></b>");
+		},
+		function() {
+			$(this).animate({ 
+				width: "130",
+				height: "100",
+				opacity: opacity
+			}, 300);
+			$("#rollingHeadComment").html("<b><font color='white'>...</font></b>");
+		}
+	);
+	rollingDiv.startRolling(30, 0, 50);	
+});	
+</xmp>
+<hr />
+<table>
+<tbody><tr>
+<td>
+<table>
+	<tbody><tr>
+		<td width="200" align="center" valign="center">
+			<div id="rolling0">ready</div>
+			<p>
+			</p><div id="viewingComment0"></div>
+			<div id="rollingComment0">top=0px, left=0px</div>	
+			<div id="rollingStatus0"></div>	
+		</td>
+		<td>
+			<table border="1">
+				<tbody><tr>
+					<td width="150">Rolling Animation Time</td>
+					<td width="100"><input type="text" name="rollingTime0" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Viewing Time</td>
+					<td><input type="text" name="viewingTime0" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Rolling Animation Frame</td>
+					rollingAnimationFrame0
+					<td><input type="text" name="rollingAnimationFrame0" size="3" /></td>					
+				</tr>
+				<tr>
+					<td>Rolling Direction</td>
+					<td>up</td>
+				</tr>
+				<tr>
+					<td>Rolling Item Count</td>
+					<td><div id="rollingItemCount0" style="display:inline"></div></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<input type="button" value="apply" onclick="javascript: apply(0, 'rolling0')" />
+					<input type="button" name="controler0" value="stop" onclick="javascript: rollingStop(0, 'rolling0')" />
+					<input type="button" value="reverse" onclick="javascript: reverse('rolling0')" />
+					</td>
+				</tr>				
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+</td>
+<td>
+<table>
+	<tbody><tr>
+		<td width="200" align="center" valign="center">
+			<div id="rolling2">ready</div>
+			<p>
+			</p><div id="viewingComment2"></div>
+			<div id="rollingComment2">top=0px, left=0px</div>
+			<div id="rollingStatus2"></div>
+		</td>
+		<td>
+			<table border="1">
+				<tbody><tr>
+					<td width="150">Rolling Animation Time</td>
+					<td width="100"><input type="text" name="rollingTime2" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Viewing Time</td>
+					<td><input type="text" name="viewingTime2" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Rolling Animation Frame</td>
+					<td><input type="text" name="rollingAnimationFrame2" size="3" /></td>					
+				</tr>
+				<tr>
+					<td>Rolling Direction</td>
+					<td>down</td>
+				</tr>
+				<tr>
+					<td>Rolling Item Count</td>
+					<td><div id="rollingItemCount2" style="display:inline"><div></div></div></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+					<input type="button" value="apply" onclick="javascript: apply(2, 'rolling2')" />
+					<input type="button" name="controler2" value="stop" onclick="javascript: rollingStop(2, 'rolling2')" />
+					<input type="button" value="reverse" onclick="javascript: reverse('rolling2')" />
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+</td>
+</tr>
+<tr>
+<td>
+<table>
+	<tbody><tr>
+		<td width="200" align="center" valign="center">
+			<div id="rolling1">ready</div>
+			<p>
+			</p><div id="viewingComment1"></div>
+			<div id="rollingComment1">top=0px, left=0px</div>
+			<div id="rollingStatus1"></div>
+		</td>
+		<td>
+			<table border="1">
+				<tbody><tr>
+					<td width="150">Rolling Animation Time</td>
+					<td width="100"><input type="text" name="rollingTime1" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Viewing Time</td>
+					<td><input type="text" name="viewingTime1" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Rolling Animation Frame</td>
+					<td><input type="text" name="rollingAnimationFrame1" size="3" /></td>					
+				</tr>
+				<tr>
+					<td>Rolling Direction</td>
+					<td>right</td>
+				</tr>
+				<tr>
+					<td>Rolling Item Count</td>
+					<td><div id="rollingItemCount1" style="display:inline"><div></div></div></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+					<input type="button" value="apply" onclick="javascript: apply(1, 'rolling1')" />
+					<input type="button" name="controler1" value="stop" onclick="javascript: rollingStop(1, 'rolling1')" />
+					<input type="button" value="reverse" onclick="javascript: reverse('rolling1')" />
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+</td>
+<td>
+<table>
+	<tbody><tr>
+		<td width="200" align="center" valign="center">
+			<div id="rolling3">ready</div>
+			<p>
+			</p><div id="viewingComment3"></div>
+			<div id="rollingComment3">top=0px, left=0px</div>
+			<div id="rollingStatus3"></div>
+		</td>
+		<td>
+			<table border="1">
+				<tbody><tr>
+					<td width="150">Rolling Animation Time</td>
+					<td width="100"><input type="text" name="rollingTime3" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Viewing Time</td>
+					<td><input type="text" name="viewingTime3" size="4" /> ms</td>					
+				</tr>
+				<tr>
+					<td>Rolling Animation Frame</td>
+					<td><input type="text" name="rollingAnimationFrame3" size="3" /></td>					
+				</tr>
+				<tr>
+					<td>Rolling Direction</td>
+					<td>left</td>
+				</tr>
+				<tr>
+					<td>Rolling Item Count</td>
+					<td><div id="rollingItemCount3" style="display:inline"><div></div></div></td>
+				</tr>
+				<tr>
+					<td colspan="3">
+					<input type="button" value="apply" onclick="javascript: apply(3, 'rolling3')" />
+					<input type="button" name="controler3" value="stop" onclick="javascript: rollingStop(3, 'rolling3')" />
+					<input type="button" value="reverse" onclick="javascript: reverse('rolling3')" />
+					</td>
+				</tr>
+			</tbody></table>
+		</td>
+	</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<hr />
+<h2>Other Examples</h2>
+<a href="largeImageRolling.html">Rolling Large Images</a><br />
+<a href="htmlContentRolling.html">Rolling Other HTML Content</a><br />
+<a href="rollingWithMouseEvent.html">Rolling Mouse Event(mouseover, mouseout)</a><br />
+<a href="rollingSeveralItems.html">Rolling Several Items And Reverse Rolling</a><br />
+<a href="rollingDecoration.html">Rolling with some effect</a><br />
+<a href="makeRolling.html">Generating Rolling</a>
+<hr />
+<h2>Simple Example Code</h2>
+<xmp>
+<html>
+<head>
+<title>JQuery Rolling</title>
+<script type="text/javascript" src="jquery-1.2.3.pack.js"></script>
+<script type="text/javascript" src="jquery.rolling.js"></script>
+<script>
+$(function() {
+	var rollingDiv = $("#rolling");
+	
+	rollingDiv.rolling("up", 130, 100, 1); // the direction, the width of item, the height of item, the count of viewing item(optional)
+	
+	rollingDiv.addRollingItem("<a href='http://www.youtube.com/watch?v=8-cHCvRvgY8' target='_new'><img src='http://i.ytimg.com/vi/8-cHCvRvgY8/default.jpg' width='130' height='100' alt='first item' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='http://www.youtube.com/watch?v=izaGSB3ZeyM' target='_new'><img src='http://i.ytimg.com/vi/izaGSB3ZeyM/default.jpg' width='130' height='100' alt='second item' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='http://www.youtube.com/watch?v=7pfnqsEEEpo' target='_new'><img src='http://i.ytimg.com/vi/7pfnqsEEEpo/default.jpg' width='130' height='100' alt='third item' border='0'/></a>");
+	
+	rollingDiv.startRolling(100, 3000, 5); // rolling time, viewing time, animation frame
+});
+</script>
+</head>
+<body>
+<div id="rolling"></div>				
+</body>
+</html>
+</xmp>
+<hr />
+<h2>Methods</h2>
+<pre>
+rolling(rollingDirection, width, height, [viewingItemCount])
+ - init method
+ - rollingDirection String ("up", "down", "right", "left"), String
+ - the width of a rolling item, Number
+ - the height of a rolling item, Number
+ - the count of the viewing item, Number, optional
+ - return jQuery 
+
+addRollingItem(html)
+ - add rolling item
+ - html String
+ - return jQuery
+ 
+ startRolling(rollingTime, viewingTime, rollingAnimationFrame)
+ - start rolling
+ - rollingTime Number
+ - viewingTime Number
+ - rollingAnimationFrame Number
+ - return jQuery
+ 
+ stopRolling()
+ - stop rolling
+ - return jQuery
+ 
+ resumeRolling()
+ - resume rolling
+ - return jQuery
+ 
+ reverseRolling()
+	from left-to-right -> from right-to-left
+	from right-to-left -> left-to-right
+	from bottom-to-top -> top-to-bottom
+	from top-to-bottom -> bottom-to-top
+ - return jQuery 
+ 
+ getRollingTime()
+ - return Number
+ 
+ getViewingTime()
+ - return Number
+ 
+ getRollingAnimationFrame()
+ - return Number
+ 
+ getRollingDirection()
+ - return String ("up", "down", "right", "left")
+ 
+ setRollingTime(rollingTime)
+ - rollingTime Number
+ - return jQuery
+ 
+ setViewingTime(viewingTime)
+ - viewingTime Number
+ - return jQuery
+ 
+ setRollingAnimationFrame(rollingAnimationFrame)
+ - rollingAnimationFrame Number
+ - return jQuery
+ 
+ getRollingItems()
+ - return jQuery
+ 
+ bindViewingEvent(f)
+ - f function
+ - return jQuery
+ 
+ unbindViewingEvent() 
+ - return jQuery
+ 
+ bindRollingEvent(f)
+ - f function
+ - return jQuery
+ 
+ unbindRollingEvent() 
+ - return jQuery
+ 
+ bindStartEvent(f)
+ - f function
+ - return jQuery
+
+ unbindStartEvent()
+ - return jQuery
+  
+ bindStopEvent(f)
+ - f function
+ - return jQuery 
+
+ unbindStopEvent() 
+ - return jQuery  
+
+ bindReverseEvent(f)
+ - f function
+ - return jQuery 
+
+ unbindReverseEvent() 
+ - return jQuery 
+</pre>
+
+</body></html>

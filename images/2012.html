@@ -1,0 +1,885 @@
+<!DOCTYPE html><html lang="en"><head><title>uuidcode</title>
+<meta charset="utf-8" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<link href="../bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+<link href="../css/shCore.css" rel="stylesheet" />
+<link href="../css/shThemeDefault.css" rel="stylesheet" />
+<script src="../bootstrap/js/jquery.js"></script>
+<script src="../bootstrap/js/bootstrap-dropdown.js"></script>
+<script src="../jqueryrolling/jquery.rolling.js"></script>
+<script src="../interpark/jquery/lib/jquery/jquery.easydrag.js"></script>
+<script src="../virtualform/json2.js"></script>
+<script src="../virtualform/jquery.virtualform-0.1.js"></script>
+<script src="../js/shCore.js"></script>
+<script src="../js/shBrushJava.js"></script>
+<script src="../js/shBrushSql.js"></script>
+<script src="../js/shBrushPhp.js"></script>
+<script src="../js/shBrushXml.js"></script>
+<style type="text/css">
+    .navbar-fixed-top {
+        margin-bottom: 20px;
+    }
+</style>
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src="../js/youtube.js?v=1"></script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-49038982-1', 'uuidcode.github.io');
+    ga('send', 'pageview');
+
+</script>
+<script type="text/javascript">
+    jQuery(function () {
+        SyntaxHighlighter.all()
+    });
+</script></head> 
+<body class="none">
+<div class="navbar navbar-fixed-top"><div class="navbar-inner">
+    <div class="container">
+        <div class="nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Diary <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/images/2019.html">2019</a></li>
+                    <li><a href="/images/2018.html">2018</a></li>
+                    <li><a href="/images/2017.html">2017</a></li>
+                    <li><a href="/images/2016.html">2016</a></li>
+                    <li><a href="/images/2015.html">2015</a></li>
+                    <li><a href="/images/2014.html">2014</a></li>
+                    <li><a href="/images/2013.html">2013</a></li>
+                    <li><a href="/images/2012.html">2012</a></li>
+                    <li><a href="/images/2011.html">2011</a></li>
+                    <li><a href="/images/2010.html">2010</a></li>
+                    <li><a href="/images/2009.html">2009</a></li>
+                    <li><a href="/images/2008.html">2008</a></li>
+                    <li><a href="/images/2007.html">2007</a></li>
+                    <li><a href="/images/2006.html">2006</a></li>
+                    <li><a href="/images/2005.html">2005</a></li>
+                    <li><a href="/images/2004.html">2004</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming III<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/redux/index.html">Redux class base action middleware</a></li>
+                    <li><a href="/generateAssertJ/index.html">Generate AssertJ Plugin</a></li>
+                    <li><a href="/antlr4/index.html">antlr4 + querydsl</a></li>
+                    <li><a href="/lambda/index.html">lambda</a></li>
+                    <li><a href="/querydsl/index.html">querydsl</a></li>
+                    <li><a href="/deployable/deployable.html">deployable</a></li>
+                    <li><a href="/people/people.html">people</a></li>
+                    <li><a href="/at/at.html">@</a></li>
+                    <li><a href="/worksheet2/index.html" target="_blank">Worksheet</a></li>
+                    <li><a href="/codegen/codegen.html">CodeGen</a></li>
+                    <li><a href="/virtualform/test.html">VirtualForm</a></li>
+                    <li><a href="https://market.android.com/details?id=songsungkyun.MemoryTester&feature=search_result" target="_blank">MemoryTester</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming II<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/interpark/VSF.html">VSF</a></li>
+                    <li><a href="/interpark/BatchMonitor.html">BatchMonitor</a></li>
+                    <li><a href="/interpark/XPathTest.html">XPathTest</a></li>
+                    <li><a href="/interpark/CodecTest.html">CodecTest</a></li>
+                    <li><a href="/interpark/cronViewer.html">Cron Viewer</a></li>
+                    <li><a href="/interpark/noname.html">No name</a></li>
+                    <li><a href="/interpark/MiltiTools.html">MiltiTools</a></li>
+                    <li><a href="/programming/programming.html">Programming</a></li>
+                    <li><a href="/jqueryrolling/index.html">JQuery rolling</a></li>
+                    <li><a href="/interpark/SocketDebugger.html">Socket Debugger</a></li>
+                    <li><a href="/interpark/PacketCapture.html">Packet Capture</a></li>
+                    <li><a href="/interpark/JavaServiceManager.html">Java Service Manager</a></li>
+                    <li><a href="/interpark/MetaObject.html">MetaObject</a></li>
+                    <li><a href="/interpark/osop.html">OSOP</a></li>
+                    <li><a href="http://sourceforge.net/projects/berimbautab/" target="_blank">Berimbau Tab</a></li>
+                    <li><a href="/interpark/caruru.html">Caruru</a></li>
+                    <li><a href="/interpark/notaden.html">Notaden</a></li>
+                    <li><a href="/interpark/dmt.html">DMT</a></li>
+                    <li><a href="/interpark/mole.html">Mole</a></li>
+                    <li><a href="/interpark/poaching.html">Poaching</a></li>
+                    <li><a href="/interpark/hostEditor.html">HostEditor</a></li>
+                    <li><a href="/interpark/fileSynchronizer.html">FileSynchronizer</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming I<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/interpark/AStar.html">A*</a></li>
+                    <li><a href="/interpark/bead.html">Bead</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Repository <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../music/music.html">music</a></li>
+                </ul>
+            </li>
+        </div>
+        <div class="nav pull-right">
+            <li><a href="#">uuidcode@gmail.com</a></li>
+        </div>
+    </div>
+</div></div> 
+<div class="container" style="padding: 60px 0">
+<pre>
+
+<h1>20121214</h1>
+
+<h1>0! = 1</h1>
+
+<h1>20121122</h1>
+
+Hibernate Proxy Class Name
+hibernate.sample.Model_$$_javassist_3
+
+<h1>20121121</h1>
+
+CTRL + D
+ALT + Up/Down
+CTRL + ALT + Up/Down
+ALT + Left/Right
+CTRL + 1
+CTRL + T
+CTRL + O
+CTRL + SHIFT + L
+
+<h1>20121120</h1>
+
+221211200942251718
+
+<h1>20121119</h1>
+
+still i don't understood what you said.
+
+http://www.coderanch.com/t/481213/ORM/databases/mappedBy-item
+
+<h1>20121104</h1>
+
+<h2>jsoup</h2>
+
+Document doc = Jsoup.connect("http://en.wikipedia.org/").get();
+Elements newsHeadlines = doc.select("#mp-itn b a");
+
+<h1>20121006</h1>
+
+<h2>Cafri</h2>
+
+<img src="../i/cafri.jpg" />
+
+http://blog.naver.com/PostView.nhn?blogId=jedidiah69&logNo=130138695223&redirect=Dlog&widgetTypeCall=true
+
+<h2>Combine</h2>
+
+<img src="../i/CombineSoldiers.jpg" />
+
+http://superpatattack.blogspot.kr/2012/05/metro-police-civil-protective.html
+
+<h1>20120926</h1>
+
+<h2>Aperture Science</h2>
+
+<img src="../i/Aperture_Science_wallpaper_by_MadJawa.png" />
+
+http://madjawa.deviantart.com/art/Aperture-Science-wallpaper-134078865
+
+<h2>BlackMesa</h2>
+
+<img src="../i/blackmesa.png" />
+
+http://craftedmovie.com/index.php?threads/blackmesa-is-finally-released.10806/
+
+<h1>20120925</h1>
+
+<h2>Undercover</h2>
+
+<img src="../i/20120925_01.png" />
+
+http://code.google.com/p/undercover/
+http://www.bitbucket.org/EP/undercover/
+
+<h1>20120918</h1>
+
+<img src="../i/20120917.gif" />
+
+<h1>20120912</h1>
+
+<img style="-webkit-user-select: none" src="data:image/gif;base64,R0lGODlhXwBfAPcAAP/37/f37/fv7/fv5u/v7/fm3u/m5ubm5u/m1vfezvfexe/ezt7e3vfWxffWvffWte/WvebWxdbW1vfOte/Ote/OvebOt9bOxc7OzvfFpe/Fre/FpebFtd7Ftd7FrdbFtfe9nMXFxe+9nO+9lMXFvea9nN69rda9rfe1jNa9pc69tcW9te+1jL29vea1jM61pfete++te+athN6vjL21rbW1teate7W1rdatjM6tnPelc++la72tpealc72tnN6lc62trdalhNale86lhM6ljPecY/ecWu+cY+aca72llL2ljLWlnN6ca6Wlpdace86ce86cc/eUSu+UWu+UUsWce++USr2chL2cjN6UY96UWtaUa86Uc86Ua++MSpycnM6UY++MOu+MQuaMSuaMQt6MUt6MWt6MStaMWtaMUveEMe+EOpSUlO+EMeaEQt6ESvd7Ke97KYyMjOZ7KeZzKeZzIYSEhHt7e3Nzc2tra2NjY1paWlJSUkpKSkJCQjo6OjExMf///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkHAIAAIf8LTkVUU0NBUEUyLjADAQAAACwAAAAAXwBfAAAI/gABCRxIEEAGHVHeKFzIsKHDhxAjSpz4JoqODAAIatw4sIAOiiBDihzZUEcBjihRkFzJsmVDFCgJCkjosqbNkFEExBRQ5abPnxCr6OTYE6jRo1U4sjjK1CgLjQiaSv2JgOCOqVhr7hhoIKvXlgYElvhKdmQJgUjKqqWIBBCBMGvjQgxDgIDcuw4JHMDLV+GBvX3x/g0sGDDhuIMPIzbM1M0ZLlysKJlMefKVLVy+uGGzNrFRMlZqtAiBAYOE06hTlw7RokaSM5y/evZJxkcICQfq6o45UC+DEDS4xMY6uyYbJSEYECBY4w+fO14Y8B7IAAMNMlmLt2xDA7dGAnj+/oj/42c6wd9QiDNuSWaF8iZ56hxw22L8+PnmBR7A8GSqdpJtuEdAE+PtcYcf9onXh3T5CUQABuk19Z9IbKwwXwgJZiieH00s16BbGJQh4XokEcGgHhqm6IVeGDRIAAnDATUhSGJI4GAdKfLBR4YI/lFDgwwMwdSMFOWAHwES5JHgHUC00EIT4WWIh4fmYaDGUURK1IaN1K1hXx23McCABCHYoSGD5h3gBJYkhiQEfvqZKd4eGCjn4G99ZNjEhx+w2dIJGh2Aonh1oEkdjgl68SEDbRiVZUSGNrGHfU3AOdABBI7HRxyGTncAE462SZEYcGZqXxyW6hdHgS149+EP/qGyJAaVpo7XR6qACDqeHa5+mEKsK806EAYarrGRF/Z5gat5JgBLkrACMTBogryqmiAey07XgbMjQZsrsuRluMekGsbxIXXY/fToQ94SwAAQNdSAaIoJ6uGhnPbZwREBIXBx5U3rOuStWweMGUIcPdIrXg3LYahhCBzt11q8NSyRLkkBNzRwb9XlmaAfeuwoHqfLNafhjyjp9VfBIYixUsYMbdybBBl64WQNeOwRh3cEeFkslZ4G8bKoE8lMXcJ/6BGmBKW5mmSKebTY4K8YEy2R0fq1YIceeUZ3gAR25FGpu6sq/Id8AuFcKEceDC0r0Bt9HQJpyoGnaRwim+0c/t7j4cG228HCvZHKuRFgst6I+7hR21W/fe4BeSduNh9wMz4SzAthjVLZZu+BR86Im0uQ5SJhrpDmgyOtIZNzzw3EHWb7ATTpIZn+BuqBqm6fH2uE+ZfBa+g+nh+W0g6S7bgTdEDwKa6BQW4Esegzj2sUD/izgseEZBORz/k8SvtNq2kTEsx+fbfZx/R1Dd2v0alGDEwvHh819CqQ8RQhn776GKj+vfbE2t3/Rnc+kSRvIwzIEJd4Q7MEvQ8Q+JuI/s4VLdU9EH4fe2AEJTJBCmKge3uaTq2cIzWNbDAiHfxQCMhlHz1ky0FKStAeIKYRGxRQJPvjSBOE9wcg8AYI/inikEZ6cMOQROBDBOAheVqAkhYoUXa9gUvjWOKCDx1AiSOz1AE4F0Q4LYAltntDF6yIL4XpoQ51EB+97AAnF4DRahOhgIsw4DHJma0PGKASGN7okiksClx2VFh0BiKCloRRIRpwkQSm1Qc81PGOd6ijHsonkAGkwZBwnEgaBtCgA7QAD3qIw2hqADuz4aEGrImDHvDQAjhdBZM26cJQ0sQ0CYiJaTVQ43j0UAPT3NI0cBpBTQ65kCPMcjq70Y8EuHiqXiUTEBuwCTEXIhQKXmqE46lUTAopzUyGJA0NsKZbDpcghnFEAEfwyTQbUoSTUJABUbIPHt4XABRcUp3e6yRJER7wODI5yUm3sVQCYHBPdeWTJUaAAQpQMAEFOPShD20ABDjggRNY9AQe4MAIWIACIxSUW3iBg0hHKlKvrFMxRUSpelSqlpOytHYHfWk3xyDTrIwhN1ioKVawsBwc6HQqOBDIBX4qlQvoJwtEPUoWjqSCpBpFBVRigBac6hMtdAoDjaKqS9pQwkutIKtaBZCFIvbVsI4kQC88QL/MChIuhOCF+sEAD87AVoicgQcDnM5vaECFM4BVq204AxVokBwK6sWfFEusYhfL2MY69rGQTexocJND8xBuZZjNrGY3y9nOevaz0DNPQAAAIfkECQcAgAAsAAAAAF8AXwAACP4AAQkcSBBABh1R3ihcyLChw4cQI0qc+CaKjgwACGrcOLCADoogQ4oc2VBHAY4oUZBcybJlQxQoCQpI6LKmzZBRBMQUUOWmz58Qq+jk2BOo0aNVOLI4ytQoC40Imkr9iYDgjqlYa+4YaCCr15YGBJb4SnZkCYFIyqqliAQQgTBr40IMQ4CA3LsOCRzAy1fhgb198f4NLBgw4biDDyM2zNTNGS5crCiZTHnylS1cvrhhszaxUTJWarQIgQGDhNOoU5cO0aJGkjOcv3r2ScZHCAl/6xKISVAvgxA0uMTGOrsmGyUhGOwWCCRPnDheGPAmyAADDTJZi7dsQ0PCcoEE/P78Gf8nz3SNv6EQZ9ySzArpGkOQH7/nwHmCBzA8maqdZJv3gNSQRxPM5THfePDdBx4G6jXVn0hsABiCeH/wwceB5PERgkAYfMcbARiU4SB7JBEhHQN7YKjieHdc2Id95xFAwnBAPQiSGBIIZMeKPJK3hoIMDMGUjRTlYB8Bdaiohxc11OCFHiryAeN5GKhxFJEStZGjQBIYOJ8dpJ2GQQg7YuiFggc4cSWJIQkx5QEhXEhfcssR8FuK8/nRgoKAfLBmSyf0JkEfPiY4EANrzJdHDVOex0AbRmEZkaGAMDBfE40KdEAT89HJ5wFMRMomRWI0KsEd83nhIXhekNcHbv58CvSDqCyJ8R0GFJKnR6aAHADleHxQel8KtK5k60CtYvijRonOd8eq55lQLEnHCsQAoRjisSEgIeChYhyxAtLBtCNVW2mSPfJoh0ZAeNHClhsxgN1Pkj5kLpzi9fFrusB2OBC6GdahEQEhcGHlTfU6ZG6lITTRQgteyIlhH9j6AUSCBEg83574YdBakzUsMS9JCTe0cK8MpOwxhnrE0Vode6zh3UAYrFgDR3r9dcBvYqxUMkMnd6zxH02YhkETTcAKXrMYAgHtRgcE4fOoEwVN3b5/+IEBAweg+oceIegVx9DzOT3s1LU+PdABLdRxxx0xc50seXnkumIfQNznAf7axqq9tgSlbQ0nvzw+K1ANeW+0N8lUS2T1wDofIIHdhB+YBx4UmqfR4iP9vNDjKBHgZeWEY7A539T6jbO3PfqBRx1r2DF64R5yLpLnCoGOcw2UO1sDaas1geeKfhhqe0i4v6E7Rww00fsfddyW284ShDC7sgQdD1Lyy29EgAScHnjH1qvaGSePenynPUXcq47SpgfqKSx4iPJYx5TrT9R+uG7FcSAeM3sfrjDkhzgEEBD5k8j+woWkA3mBV+gZHotqoDSBJDAiC4xV1w6Eqemg6EDSOx3j0hauEGBtPHFwHwOGVsGBXBAiGbyP1zCUBwgSRD4Hmt8LHxLD6QChR/6miwkBykSePczPBqgjifsIEr4VpS8mOMwTxzTSgySOJAJ8ulaP7gDBCanID9sayFusKBIXZJGIK9oDgQYiATSqKIyAWABLkveGLnyqBpXTgx7IpqJlCcQFc2zcRCjAJwmckHQ8miIgwBBIl0zhU14QDx/uMDZEYqgOCRJBS+ioEA0oyE4eC4EoayBBROoBAzAaQBo2KciJpGEAn9yZzqpXh+cp6g656kMLEnQVVtqkC0Nh4J1WNEkgjNJLTUjQCGrCyYUcIZix+l4pydMC06QMcKRRjkA2YJNmLkQo/KsUtg60B1TiJzcC0WQ3WxmSNDSAfwd4nh3mJ5ABHMEn3v5sSBFO8qkmkI1RHAkAClaJT3aSpAgP+GR1WgCENcThDhfbSAJgQFB6GZQlRoABClAwAQV49KMKaAAELNABE5zgBSg1gQUgAIKNGqGi5JILHGYqhznYVA5wkM1FFVOjnfK0oD9VSz6DejufEtUlfxnDUbMyhgMQAAtLxQoWdoODqE4FBwK5gFWlcgFNZWGrR8kCjAigArAaRQXfYYAWzOoTLVAKA5Biq0vaEET8rCCucvXPCiB4gLvmdST/sWGvCvZXkHAhBILVFAZ4cIbCQuQMPDDnfX5DAyqcAa9ybcMZqECD5DBQcqwBmWhHS9rSmva0qE2taEeDmyV+KHKwjQytbGdL29raVrauDQgAIfkECQcAgAAsAAAAAF8AXwAACP4AAQkcSBBABh1R3ihcyLChw4cQI0qc+CaKjgwACGrcOLCADoogQ4oc2VBHAY4oUZBcybJlQxQoCQpI6LKmzZBRBMQUUOWmz58Qq+jk2BOo0aNVOLI4ytQoC40Imkr9iYDgjqlYa+4YaCCr15YGBJb4SnZkCYFIyqqliAQQgTBr40IMQ4CA3LsOCRzAy1fhgb198f4NLBgw4biDDyM2zNTNGS5crCiZTHnylS1cvrhhszaxUTJWarQIgQGDhNOoU5cO0aJGkjOcv3r2ScZHCAkM/h4gEJOgXgYhaHCJjXV2TTZKQjDgDahOHj158mDorZEBBhpkshpv2YaGBOZu//6IF3+H+kbgUIozbklmBQONGMaL13PAvMYDGJ5M3U6yjXu39QHCgB3yiecFePa5hUF6TfEnEhv/NfGHH3V44UeB4+0BxB1/7JEgARiU0eB6JBHxHgF8YKhigXF8SAJxQDkIkhgSCBTHijiON519DAzBlIwU5VAfARdiqIcXNdTghR4q4pEgIBiocRSQErVRIyAH7IFhHqSdhkEIBBZoB4K9HeDElCSGJESAB4TA5Hh+tJCbQAQAp+V4eHz35AdotnQCQXbiqSega2QYQoAJMtCGUVRG9N5ABEhw5x92IDrQAS2Mx8egCR7ABKNpUiSGpQLiMd4dpLpVQ4aPPgnID/6gsiQGmS2kKF4fV/pWh3xjugpICrGuNCtBQBR5KpkSGCueh66aECxJww70ZoF3tBrCpPK1al8Hz44UrVs3quiHHnZgKx8eqXoRAkoMZPdTow99G6m5OcpXA6l3+nFHE5YSEAIXUt4Er0PfCgiEpsoWyIceF+bBKSCZYlgHQfi1lmQNS7hL0sANFRxpHHms0UITeWCoLxBe7MFHE9oSwKGK6/qm2wHAibESxwwVjCUDqYXw8qkhFCueHwcKhMGqK2rL0QFB3BzqRDrTyVudhfIqNK94JFxgH0pzBOzGT0sU9X1Ij1eH1vUu2/VGHjgtK5kcMYDyGmtYmPaKfbRgXv7bYL9tnl6oxXf3in7EHBPfI+G80NgoAW7q4OIaniriIimuEOMxtWmruHrccQe94i1cpBcaUR6S5W9gHpPcWvthx2ghxL5hvX4gaDpIqKuOEqYmN2GabjyHYDeOhgNyO0W5w/13uPI1IQGpemFQ9YprgHf8RMn7iuW04kmXqkD4gd49otdLlL2vDPRRIBBrD8TA9CqS77awysckwRr0PrwRfjnqLVD5ETmffXa1olzZD0eoGggAISJA6oQgR+0DFIb4YAcgPE+B84NW/faXoyaYJ2LjyRsG5oTBvtEvUSVbEX16Q4DHZQgDqbJBBkmywfsQcEVA6M0DC1SHtfVghv4jiUCnyhY5lIRAay1I1VuAKBIXfChZ9YoDqdbQuhbAbQEsQd0buvAkBhDQD3tQn4r0EIc4ZA1He+iaC7IYtolQ4IktiGMLhgc5am0EDGx0yRSe9BsGWKcJaIOcpUTQEi0qRAPaw5IEmiDGOg4NUQNIQyHbOJE0DCCR4XPk0ICAqKtM0iZdGAr6Gsm5FMLJecwZQU0MuZAjiLKLOIqDF0bTgrMNzXkB2oBNWLkQofgKhAXiEm78iIEm7GEPuBQIIXdJyZCkoQGuYsDP5OOF5VxKAqWx5gCO4BNeNqQIJ7HPASRQyzwUaVNw+wsgBsACSXazmSQpwgPEaR3WeKEOMORESQJi4M53wZMlRoABClAwAQUY9KANgEAFLNCBE6TgBB2oQAMU0AAQDNQI/eyWXOAABzl4lKNl8aZimDhS7fyzpO9EaUhPqtJVHmAMLc3KGHaDhZhiBQu8wYFNp4IDgVxgp1K5APiyANSjZCFABFBBUY2iAvAwQAtL9YkWlIaBRUXVJW3YEcVWYNWr9mcF3zsAV706Ev98D3z/IitIuHAo6uCHB2dQK0TOwIN88ig4VDhDV6/ahjNQgQbK8RXgWHOxwhr2sIhNrGIXy9jCjuZ5NfzbzCZL2cpa9rKYzWxlIyuQgAAAIfkECQcAgAAsAAAAAF8AXwAACP4AAQkcSBBABh1R3ihcyLChw4cQI0qc+CaKjgwACGrcOLCADoogQ4oc2VBHAY4oUZBcybJlQxQoCQpI6LKmzZBRBMQUUOWmz58Qq+jk2BOo0aNVOLI4ytQoC40Imkr9iYDgjqlYa+4YaCCr15YGBJb4SnZkCYFIyqqliAQQgTBr40IMQ4CA3LsOCRzAy1fhgb198f4NLBgw4biDDyM2zNTNGS5crCiZTHnylS1cvrhhszaxUTJWarQIgQGDhNOoU5cO0aJGkjOcv3r2ScZHCAkM/taNSVAvgxA0uMTGOrsmGyUhGBAAVCPOnTx1eHNkgIEGmazFW7ahIWE5IAx/wv6HDyF9eggoxBm3JLOCAcEa4sOv8V6e4AEMT6ZmJ9lmxYHeQMT3hx92dBdHH17U5xYG6DW1n0hs+KdRCHsIKB4f4gGhIAEYlOGgeiQR4R4gdUAHhB8WpuiHBBuSMBxQD4IkBouASJDijfHhoSAgDAzBVIwU5fAfiSn2UQcQTdTRh4V20FceBmocBaREbdB4AIYC8lGDaRJgUAOW4enR3Y4HOCEliCEJMaSNFgIhwQF1HSBBDSiG58WIO35wZksnDHTAHQKKOaRAcuIhXhyDKshAG0ZNGRGeBEgARIXh2YGnn16IZ0ei9R3ARKNoUiRGovcBGt4dnAJyQKbh+RHHjv4D/QAqS2I4qSqrf/SR6p8C7gErICnMulKtGh3QQnxrbCRBnfGlypsJwpJELEEMUCpeggNVa2EezsbUQbQjTTuQoRbqsUYLdTCLbLcoMXDdT44+JK5beuBobwi2CrRGH3ZgoBEBIXAR5U3xOjQvAXTaK54fa3iBRx5N5BugeHs0YR8GrdWg8RLvklRwQ/PWGId4fah7IRAhmPqHxfaBuXANvf31129irPQxQyHfl8cfeAABRB0u/3HHpAJGDAhrddyoY0wHBGFzqBOFrGqXXGKAa5gmhxd0injkS1CwHkMtkdRu6aYXBupmrfC6vHnwNK1eb8RAHHvkYccaaq89Xv7cArkdNtz1EUDdaknrbaEfNfANiN8j3bwQ2SjJTJ21hi/sb0yMi+S4QpBLx8DVvd6Bx9bh7cF35iFt/kbnvB1Abnx+DB3C7CEAsbOFdbQw2qWLvz2s4jGBJ6AfXtyW2wEMSBBCHHmHB/NAqIOkOusoEbCGhU1gAGdv1BV+ox0ERU/R9MArC8SS8eWhfeQYUB7ooOJPRP6Oa5D+BxC8a8TA9TfyAb/v0iqfQEJgrzExTXg3wlP8JDK/+iAwRTTiDZtuRJ6+ATBcAuSRvfInN3u1AHoXFAn1smW/lZXnWEWyFAj/9jtF1etGemCXW14Xnj7EAWUGBIQNQiiSDPIKR/7YQgkBBWSH22xvID3gYUgioKBV2csPGuJICLJWA+X8Cy4sXIkLdsSAGnhhDWugoXhQZR/mbSuHA1kAS1T3hi7sSHCnwUAI7LeHOsThhSnygrNcsEaxTYQCv9LLnJqnsBhyBAx9dMkUfiWQSDWBkPYK4kBE0BI2KkQDjFTVECsHOycNIA2V9ONE0jAARlqPk8NL1FVCaZMuDOWNYiySivQ4kBHUxJILOcIrO3U7C+EBjK3xntbc5J0N2ASXCxHKG72QtT60gEvK8x4ejCgQSh5TlCFJQwO4GAKgIetNjbzPGu6wBgxYcQBH8AkyG1KEk5RHcHL0Qh4IBE77JC83gPMYAAtAqU5skqQIDwhc8kpTz40sZwEx4Ce8/MkSI8AABSiYgAImStEGNAACFuBABywAgQZUFAQoYIEUFAquu8DhpItRTEpVqpZ1srRxDH0pwWIq01seYAw1zcoY4ISFnGIFC8vBgU+nggOBXGCoUrkAobKA1KNkYUgEUEFTjaIC+jBAC1P1iRZ4hwFGZdUlbbicfVbg1a/yR0IbOQBZzTqS/rDrAAFjK0i4EAIZqgoDPDiDXCFyBh6srz6/oQEVzlDWr7bhDFSgQXICKSfWaOyxkI2sZCdL2cpa9rIaG82bMlg9mXn2s6ANrWhHS9rSelaAAQEAIfkECQcAgAAsAAAAAF8AXwAACP4AAQkcSBBABh1R3ihcyLChw4cQI0qc+CaKjgwACGrcOLCADoogQ4oc2VBHAY4oUZBcybJlQxQoCQpI6LKmzZBRBMQUUOWmz58Qq+jk2BOo0aNVOLI4ytQoC40Imkr9iYDgjqlYa+4YaCCr15YGBJb4SnZkCYFIyqqliAQQgTBr40IMQ4CA3LsOCRzAy1fhgb198f4NLBgw4biDDyM2zNTNGS5crCiZTHnylS1cvrhhszaxUTJWarQIgQGDhNOoU5cO0aJGkjOcv3r2ScZHCAkHCMTkqJdBCBpcYmOdXZONkhAMcgNqsQbDbpQMMNAgk5V4yzY0cAOqkeePdz+6n/5z9A1lOOOWZFYwGLjHu3sv4Q/UwXNAPKADGJ5MtU6yzYr6Ah2gh3vf6RFHC+39scd64hGAQXlN8ScSG/8RdIAdBGZIoB/ONYhBGRGeRxIRDA7khR8apviHHva5RYJwQEkIkhgSCBSCaECoqGId4YnHwBBMyUhRDvW1oGIfdqyxRh19ZKiHBD2Kh4EaRwkpURs1AoKhhnmMVhoGLXTnXh0l2neAE1WKGJIQ9R2QIIF93JabXhKEMKB3fADYIiAfpNnSCQJJkGIcUBJEAANeEBjCngIx0IZRVkbEoAQoZtiEngPh52QNex7ABKRqUiQGgAe0YAcfBAIR5UCCarjqbv4/gMqSGD1GZ+SYmApEQBMa+pHrbinIuhKtFmJw5x9+LKoRA2+6l8evMZkgLEnEEsRAHRu2YG2z7tkBLUodTDtStayi6mQccdxR6Xft+dHCqzExQN1PkT5ErkB36JiiF6I1UQcQMSk3EAEhcEHlTfU6dC8Bx+qLrBes4eFeExxJ7IcXxbZWw8ZLzEtSwg0tXMO6+vYBhMQbdjhQHATuobJbf/3lmxgrgczQvYAw0ESlfKyRrrkOKyjaaDWkWMe3BwRRc6gT4UyABC3ooUcNq+UY9NXerRFTsB8zLRHObjFwWnIHRCemH3rUQTLW3cILiAdLz+p2XRaGUMeBEbOt4f67KMHdtdydis2A2EXr7d4eWXLk90g2LwR2iwckanjWZWq0uEiNK/S4fRisze4dd3Drnh7fvh33sG4/R0C+Gfpxx2ghxN6EmBli3Pfp1KaOEmu8tu6FaWSLHQLLGeZ5+9+o70m8ik1oZ2h02GZ4BxDKEnR5SJm/sflGBOibBwZIYyD6xNbjPq7uFuoLROXLrqFvj9eDlP32y+pbaMAY6Ktn/BTNj/5ADLCfeFqlohLxbyL+a1EAdcS+jSywgAM5oEQSaJ8Hpohiz7kVBAUiwYhQUDwHWJ6GSLcbAqBsg4CwgflG8j9d1ckLcaDde3YTAn15ayA9WKFIIrCnQ0kATP5NyhDAOBICz9VhDRC731t0GBIXMCpAEhChe+6QOIHEwXN5II0EGNCjBbAke2/owhMDJD4VGSgOevAcsmqQnI244ItemwgFxpgz903uD4SCFxjg6JIp0FFAd/xDDaAlgpaAUSEaGGP+AnmHXw0gDYaM40TSMIAnbumOvtrIVSJpky4MxT4EkKLhOEWQEdTkkAs5widVhwHWZSgOXlDSGoC2oSpuwCaoXIhQIIeBJtDyDlr8IRDWlodBDqSQuJRkSNLQAMjVyQ4o0gMGuFiXA0TRWUCYpm4EcASf5LIhRThJg2zVAvBpxJpruEMT5ASIAbAAkt5UJkmK8AAzxYwjZdnbYm4WEAN40kueLDECDFCAggko4KAIbUADIAABhSL0oAt1gQxkMAUYxQigirloRjuD0Y0irKMePSVIQ8pJknrlL2MwKVbGkBssqHQqWNANDl4qFRwI5AI0bcoFApSFnBolCwAigAp8ChQV1EoLRL2JFiqHgUcl9TovC9AKnPrUkfgHWgeYalVFctWAFWyrFOFCCEpHRh6cAawPOQMPzFnB31DhDFRNahvOQAUaIOeJdGLNxvbK17769a+ADaxgB7ux0eCmhTHRS8wWy9jGOvaxkI2sZGPWwoAAACH5BAkHAIAALAAAAABfAF8AAAj+AAEJHEgQQAYdUd4oXMiwocOHECNKnPgmio4MAAhq3DiwgA6KIEOKHNlQRwGOKFGQXMmyZUMUKAkKSOiyps2QUQTEFFDlps+fEKvo5NgTqNGjVTiyOMrUKAuNCJpK/YmA4I6pWGvuGGggq9eWBgSW+Ep2ZAmBSMqqpYgEEIEwa+NCDEOAgNy7DgkcwMtX4YG9ffH+DSwYMOG4gw8jNszUzRkuXKwomUx58pUtXL64YbM2sVEyVmq0CIEBg4TTqFOXDtGiRpIznL969knGRwgJBwjE5KiXQQgaXGJjnV2TjZIQDHTvXg6IAQYaZLISb9mGBm5AB5rwwXOA4IEaDJj+C/QNZTjjlmRWhD9Qx8+f93aUH9jzPk535gcwPJk6nWSbFfd58d6Af9hRRxz0DcgHBuIRgEF5TfUnEhsADlQDgRhmiId4bmFQRoTnkUREeANJ0EeGKP7hhXLMEUCCcEBJCJIYEhBEQA3upUggHxKwyBwDQzAlI0U53DceHwT6gccaa9hx4oB+hOAjcxiocdSQErVRIyAhxIEggXvUQFppLeBBIHccCnSAE1eGGJIQ96HYRw245XaABCHoQaAdXjDI4QdttnSCmijG0aONDFyYoZ8/tmEUlhGR2AKKNRg5EAEmZlgDhwcw8aibFIlxHxCUTjkeii2k+cOnLImhXAj+ORJYh6mAkJrhluKlwOpKrqqJARBrPPlHlBsxkCCBfZAongm7ktSrmnjekWSqJR77x5JehGDpch00O9KzAhHgG5JgHmjtsDVgwMC2yzEQ3U+QPgRuuJnqSGATdWJQBx6bthgCF1beFK9D87q1hr0YxoFBE9ZSu1x+rdUg8RLvkjRwQwUToCfCCqKox5Tz/bGHpXr9dYBvYqx0MUMZAyHsH3zYcQce5EKZYhMsGgulwxsdEITKoE5UcHMtSIsuaSEI+J6SG6fohx5fJhyTrhYHLdHQ4i5cB51/OYfgHaLVwbGOeqDkAdCt0oodA2yzeGdpp006dorsAnJ21WmnGW7+XXodPHeGfeBK0N0jrbzQ0Gkq/TeGTdRNuEiGK4S4eBjEiiEfe+zxMoZ4HLrR4yFF/sbkHDGARx566FEzgXc0MRprXjQtq7IagQ6S6KRvZKaOfmQrAdts4yk2hn4IPjjavKrds+wZNoFBbojqm6EXZiPvrPIaHWAvHs+jlB/zeThu/bfYExSCvZXuxoDiA+4RB892jy9S7gTZimLx2Dto+Y5G2k4R7uULVxx0tAfaoURnKVrDQPw3EQByCAObg5IBS7c/AgFhgfILCf0Gkh8v3GF17+nXbs6nIykJhIEScSCnJICBFoAvf8NLEa5skMGQBNBGdxoghqgXExKmqID+A+lBDUESAb2pCVbNQwkSdRS+cMEFbyxxgRHHE8MzMQoQEtAhhvqQuT3ooQX3WQBLRPeGLkyxOUZDER9Sdy4ouS4EtzGSC8ZotYlQYIqKWhyBFLYu6A0EDHR0yRSMyAAQLq4O3duICFpCRoVoQG8M0COGwMiRAaSBkXWcSBoGkKYDMG9xa6jbVTBpky4MBT8YSKOC8LCHChIoD6YaQU0auZAjnPJhGPBCrPggJtbUQIsYGplGNmATWi5EKCusAZL40ILfnQxPbfxDKAmyyGJmMiRpaACnnEOa5FxqfTuqQwu8CQgBHMEnxmxIEU4iHpNtBFNr0AMegNBN3QgABZfgROc1SVKEB5yRg84xjTcXEIN8wmufLDECDFCAggko4KEQjahEGwABC3BgBjKQgRQM6i3FkCWdHoViSD+K0JEKrKQmnSVKU4rJMbAUK2PIDRZeOhUs6AYHNJUKDgRygZw25QJqyoJPjZKF+xBABUMFigpypoWk3kQLBsSAo5xKnSuqaQVTpepI/lO3A2BVqyLhakwO8C+wUoQL2sIlD85g1oecgQeJ/NFvqHCGrDq1DWegAg2QY0S94CliEgusYAdL2MIa9rCITexocHPDmJTMZJCNrGQnS9nKWvayf7lhQAAAIfkECQcAgAAsAAAAAF8AXwAACP4AAQkcSBBABh1R3ihcyLChw4cQI0qc+CaKjgwACGrcOLCADoogQ4oc2VBHAY4oUZBcybJlQxQoCQpI6LKmzZBRBMQUUOWmz58Qq+jk2BOo0aNVOLI4ytQoC40Imkr9iYDgjqlYa+4YaCCr15YGBJb4SnZkCYFIyqqliAQQgTBr40IMQ4CA3LsOCRzAy1fhgb198f4NLBgw4biDDyM2zNTNGS5crCiZTHnylS1cvrhhszaxUTJWarQIgQGDhNOoU5cO0aJGkjOcv3r2ScZHCAkHCMTkqJdBCBpcYmOdXZONkhAMDuxeLpABBhpkshJv2YYGbkAt8OBRPhDDnjwtmP43DwFlOOOWZFYwICDhzp/3enQDYsDn/R894ZkfwPBk6nSSbaygHAb22beHHnrUV+AfEohHAAblNfWfSGwIKFAIC2ZYoB8MiOcWBmVIeB5JRHTYnB4aaniHiQ6SIBxQE4IkRoMDMWBHihmu6GFzQzAVI0U5cHehHwX2Yccaa9Sxx4I17CgQBmoc9aNEbdAo0AHu2ZdHDaStVkeBfHjRAgYeHuCElCOGJIRyB+CBYoF73JZbbxhkuSCZ4n2AZksnCNSChmtIIF+Nf2bYpHgMtGHUlBGZWIOGGAg5EHtLLghEmUwsmiZFYihHABCQDkoQA31kWIeou/2gKUti6Paphv5eoHqhhnHIilIKq67U6pAZ8sHiQAe8+R4edzTx63Im5ErSroDs15qwf+xhJSASQAseBuvt2IGyIzHbrHNAEFkgHnHEgceCftSAW12AYODFsRsxEN1PjD7k7ZUS3IgjmJG2sAYe4vox7UYEhMBFlDfV69C9zZ27b4FNrEHrcs7WYHENS8xLksINMUztwwvmAa19fEh6YQgE6fXXAb6JsRLHDHlM4IJ8iAzwgv+m6IWVB+Tx3h0xHRDEy5tO5PEBa5T6nh9NhOB0HAYCEYK+KfJRR7gFAn0r0azKyl4IdfThxxrYsozBGnt4cZsEX4KcI0oecK2rrQQ4R9p1VzJwWv5yXridotYaxb1x0RJ5POlfqK58QN9+pyir4CPBvJDhMWEg8h1xSNy4hnuYDAjkIkmuEOUoObwvH3fUYQceSmvoRwiegx6S6G+QHu/Dfawx2mot2CHuhsZyJDtItNuuUROn11D2ys418ft7fEQqvNzL2sqb6RmmizdB+2leIMrTD951mc8veIegKO1XqX1ewE19t9ZvhCGONXg+KtQFnhp+5IRHZHyNI7OPwOLXLOQVKVYbGR5FikdA7p1tfQaCl0YI8Kjs1UFSCpwIA3d0AAmEwIAFkmDKQJWiOBAkgxLZ4I7qFoLy5ScmBKBahvIwKBRGRIUrlAAE/3AHAkqgfP4FWsOgbPC+kTSQIwdoW4EOxRs7aagFg+pBEUUSASddiXEbeqFG8JeiPljpLVMMiQusSK0d2scO02pBAM3HogWwhHZv6IIVCWDGBR1ID0DUUBOE5II39k8iFHCS9zYHJiAAYQ12AMKvwOBHl0xhhUokJPSUh5psCUQELYGjQjTgIQrm0W17aMG62DWQAaQhk3+USBoG4CEGOE+Sf9iZ9a6CSpt0YSjLYc8r7YMHL7BuX2uwHyBGUBNNLuQIuNxNB1/phzqQxmk1wF7+7LcBmxhzIUIRTwdr4AXlJYdlEiBhhrazEUxaM5UgSUMDHMSy5HBPhxoCgqgEcASfXLMhRfw4CRmvaJ8+5CEOLWBRAFBwSnuicyRFeMA+dXk1p0kgWwmAQUHpddCVGAEGKEDBBBTA0Y56lKMNgAAHTJCCFJxgBjKQgRQmyq3AwEEOMIWDTM2jmMXUtDMVvWnCcqrTYvK0p6gcA1CzMobcYGGoWMGCbnCA1KngQCAXaKpULnClLEj1KFngDgFUcFWjqGBQDNBCV32ihWNhQFFjdUkb8MS9FaA1rQCy0EYO4Fa4jiRAwmyWwewKEi7AjmIY4MEZ+AqRM/BAeoj6DRXO8Na0tuEMVKABcubYQdZc7LKYzaxmN8vZznr2sqNZ1z4Pp7jSmva0qE2taldr2iMCIiAAIfkECQcAgAAsAAAAAF8AXwAACP4AAQkcSBBABh1R3ihcyLChw4cQI0qc+CaKjgwACGrcOLCADoogQ4oc2VBHAY4oUZBcybJlQxQoCQpI6LKmzZBRBMQUUOWmz58Qq+jk2BOo0aNVOLI4ytQoC40Imkr9iYDgjqlYa+4YaCCr15YGBJb4SnZkCYFIyqqliAQQgTBr40IMQ4CA3LsOCRzAy1fhgb198f4NLBgw4biDDyM2zNTNGS5crCiZTHnylS1cvrhhszaxUTJWarQIgQGDhNOoU5cO0aJGkjOcv3r2ScZHCAkHCMTkqJdBCBpcYmOdXZONkhAMdG9k4IXB7oEMMNAgk5V4yzY0cAMKUaeGxj1//v7o8f4ckG8owxm3JLMi+YE64f+EEEggTvzwecoDOoDhyVTrJLWxwgGAYMDHfX7oceB94fGh3HMEYIBeUwCKxMaAAunB4Ib33UGgfhGWQaF6JBHhnFv2ccihFx+CSIJwQFUIkhgSDESABH2ouGEfNeonEANDMCUjRTm0CIgE4N2XRxxrxJEHgx76KBAGahw1pERt9DiQFwh6QdpqXvixIwb6HeCElSSGJISRDGgYXxMYMJDbAdFxuWEcPn6AZksnDFRHkvHhgYGR+xm4YR0P7sZAG0ZdGdGJLXC4xokaMWDHhlGWdwATjaZJkRgf1sBhE4QKdAAeG+pRKko/dMqSGP7KMcBhHKsekGN8fYyX6G4puLoSrD9y6IeWBK1xXxwtxCmlCb6SBKx5bjK4B6UCGYvrbavG1EGzIz17gASsNSFmfH7U0UILXgAa3qS7lscAdT85+tCz+32LAXw6MmgHgRiscYeC4e2RLQEhcFHlTfI6RO9A/D2Z732DqvtmTPy1VsPFS8BLUsINLTwQjg/fB4SsHObRLkF6/UVnCGKsxDFDHgsUKYN97LGHw/HZcZqKfmSL0gFBuOzpRDFvt6EXo7WALx9NSMCABDre0QRBTeSRB7UE9brx0BIVfUANdtwqKANkY+BFHdgesMa4PCML6B4neyD0qyebh0EIXsQxKP59EpgmZ5shq3gHR3JvTTfFZMu5pZh6rAEE24EfvVHhI728UNExEQB55A/PRxDlIlmuEOYo2flwzXss+DCen8/9a928SbzhHmuMxhoQd2zOYBOJgh6S6G+QvpGo+d5BWuJP433rnVj7DhLwwqN8R754IJeoXhKIy6AfTRPqPEXQw64RAfgKi9zPElx6Xx97a/T9ROH7GCHODOIhAez8bR5Cu+9LFL+P/AEC/cJDqucgiUFAIJzrnCW+jXwrBBLj3XMshUD+LbBbDXTgAe/jhQaeimYJdN8FRRI9jjAAVffBg89Mtbz76IFMA+lfRP4npf1Yi1zE4gjxOMQHgthghP4iyaADUagk2DFAdRxqUQ+AGJII1NAt0+PQHU7GANml8ENvYSJIXPDEKKpoDyEcSBOQyCEgfGgBLAHeG7pQQwIELkF60IPuZnc/gbggjVybCAWkdAArcm5WlAIDHl0yBT6GYI6cWxIeDqSHOgJCBC1Ro0I0ICUGNOGPCLJDCDa5Se0AYgBpiGQeJ5KGAchPAikKmB38GB8wxklluRnIVURpky4MRVMYQFUfkLVJL9yhhR1q30ZGUBNJLuQIt3zOA2/zN3DdUF9YG8gGbGLMhQhFfn95EAGiM8d9cQSS1BxlSNLQgCdWKlr3WcOuBHAEn1SzIUU4iTn3oz0/7EEPd++oA7UCgIJQulOcJCnCA+YZHdZs8pUCSQAM/BkvgLLECDBAAQomoICKWvSiFW2ABTrgARN4wAMzkAELpMBQbvUFDihNKUrTo5jFtLQzDn3pP2ValnfS9HcHGMNNszKG3GBhp1jBgm5wANSp4EAgFyiqVC5gqiwo9ShZwKIKnmoUFTyIAVqgqk+0gDUMMEqrLmkDDAlygBV8FawBwpADzYrWkQjIZwcoWFtBwoUQrLBQPDjDXCFyBh4Ic4K/ocIZzgrWNpyBCjQ4XxsfaLGLOfaxkI2sZCdL2cpadjS4EWLmYMnZznr2s6ANrWg9K8SAAAA7" />
+
+http://qastrategies.blogspot.kr/2012/05/install-cucumber-framework-to-test.html
+
+<h1>Thunder-egg</h1>
+
+<img src="../i/thunder-egg-outside.jpg" />
+
+<img src="../i/thunder-egg-inside.jpg" />
+
+http://fortheloveofclouds.wordpress.com/2012/07/20/weekly-photo-challenge-inside/
+http://infoiguassu.tistory.com/323
+
+<h1>Agate</h1>
+
+<img src="../i/headmos1.jpg" />
+
+http://www.curriehj.freeserve.co.uk/agates.htm
+
+<h1>20120907</h1>
+
+<h2>장그래</h2>
+
+<img src="../i/12. 9. 6. - 1.jpg" />
+
+http://cartoon.media.daum.net/webtoon/view/miseng
+
+<h2>Portal2</h2>
+
+<img src="../i/Portal2cover.jpg" />
+
+http://en.wikipedia.org/wiki/Portal_2
+
+<h1>20120905</h1>
+
+<h2>It's almost here.</h2>
+
+<img src="../i/iphone-5-its-almost-here.jpeg" />
+
+http://www.tapscape.com/wp-content/uploads/2012/09/iphone-5-its-almost-here.jpeg
+
+<h1>20120829</h1>
+
+<h2>未生</h2>
+
+<img src="../i/20120829.png" />
+
+http://cartoon.media.daum.net/webtoon/view/miseng
+
+<h1>20120823</h1>
+
+<h2>Top five regrets of the dying</h2>
+
+I wish I'd had the courage ot live a life true to myself, not the life others expected of me.
+I wish I hadn't worked so hard.
+I wish I'd had the courage to express my feelings
+I wish I had stayed in touch with my friends.
+I wish that I had let myself be happier.
+
+Here are the top five things that people with post-traumatic growth say:
+My priorities have changed.I'm not afraid to do what makes me happy.
+I feel closer to my friends and family.
+I understand myself better.
+I know who I really am now.
+I have a new sense of meaning and purpose in my life.
+I'm better able to focus on my goals and dreams.
+
+<img src="../i/220px-Jane_McGonigal_Meet_the_Media_Guru_1.jpg" />
+
+http://www.guardian.co.uk/lifeandstyle/2012/feb/01/top-five-regrets-of-the-dying
+http://www.ted.com/talks/lang/ko/jane_mcgonigal_the_game_that_can_give_you_10_extra_years_of_life.html
+
+<h1>20120822</h1>
+
+<div style="position:fixed;left:10px;top:100px;width:100px;height:100px;border:0px solid black">
+<img src="../i/20120215.png" />
+</div>
+<h2>Caret</h2>
+
+<style>
+.mytest20120822:before {
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    display: inline-block;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #ccc;
+    border-left: 20px solid transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    content: '';
+}
+
+.mytest20120822:after {
+    position: absolute;
+    top: -19px;
+    left: 21px;
+    display: inline-block;
+    border-right: 19px solid transparent;
+    border-bottom: 19px solid white;
+    border-left: 19px solid transparent;
+    content: '';
+}
+</style>
+
+<div style="position:relative;width:500px;height:100px">
+<div class="mytest20120822" style="position:absolute;left:0px;top:0px;width:300px;height:100px;background-color:white;border:1px solid #ccc;padding:10px">
+    It's not text, not image is border style.
+</div>
+</div>
+
+<div style="position:relative;width:400px;height:100px;border:1px solid #ccc">
+<div style="
+position: absolute;
+left: 340px;
+top: 40px;
+width: 0;
+height: 0;
+vertical-align: top;
+border-top: 20px solid black;
+border-right: 20px solid transparent;
+border-left: 20px solid transparent;
+content: " ";"=""></div>
+</div>
+
+<h2>RegExp</h2>
+
+<xmp>
+  var regExp = /\{img(.*?)\}/g;
+  var text = "ab{img}defg{img30}d";
+  var text2 = "img";
+
+  var match;
+  while((match = regExp.exec(text)) != null) {
+  console.log(match);
+  }
+  console.log(regExp.exec(text2));
+  console.log(regExp.test(text));
+  console.log(regExp.test(text2));
+  console.log(text.split(regExp));
+  console.log(text.match(regExp));
+  ?</xmp>
+
+<h2>Prototype</h2>
+<xmp>
+  function base() {
+  this.a = "a";
+  }
+
+  var a = new base();
+
+  function test() {
+  log("arguments.callee");
+  log("arguments.callee.caller");
+  }
+
+  function test2() {
+  test();
+  }
+
+  function log(f) {
+  console.log(f + " = " + eval(f));
+  }
+
+  log("a");
+  log("a.constructor");
+  log("a.__proto__");
+  log("a.a");
+
+  base.prototype.b = "b";
+
+  log("base.prototype.b");
+  log("a.b");
+  log("a.hasOwnProperty(\"a\")");
+  log("typeof a");
+  test2();
+
+  (function(text) {
+  console.log(text);
+  })("Hello, World");
+
+  log("a instanceof Object");
+  log("a instanceof base");
+  log("a.constructor == Object");
+  log("a.constructor == base");
+</xmp>
+
+<h2>jQuery</h2>
+
+<img src="../i/jquery6.jpeg" />
+
+http://blog.naver.com/jjoommnn/130141474121
+
+<h1>20120820</h1>
+
+http://www.ted.com/talks/lang/ko/margaret_heffernan_dare_to_disagree.html
+
+<h1>20120817</h1>
+
+<img src="../i/20120816.jpg" />
+
+먹는 이야기
+http://book.interpark.com/product/BookDisplay.do?_method=detail&sc.shopNo=0000400000&sc.prdNo=208559241&bookblockname=b_sch&booklinkname=bprd_title
+
+<h1>20120814</h1>
+
+http://www.arcadiastreet.com/cgvistas/earth/index.htm
+
+<img src="../i/20120814_01.jpg" />
+
+<img src="../i/20120814_02.jpg" />
+
+<img src="../i/20120814_03.jpg" />
+
+
+<h1>20120813</h1>
+
+<h2>arcadian landscape</h2>
+
+<img src="../i/20120813_01.png" />
+
+800px-Pastoral_Landscape-1861-Asher_Brow n_Durand
+http://www.flickr.com/photos/30307799@N03/2838636358/
+
+<img src="../i/c0148807_4e40c20650203.jpg" />
+
+http://garden.egloos.com/10000129/post/223425
+
+<h2>Atomosphere</h2>
+
+Troposhphere
+Stratosphere
+Mesosphere
+Thermosphere
+Exposphere
+
+
+<img src="../i/20120813.png" />
+
+http://desktop.freewallpaper4.me/download/2009/the-atmosphere
+
+
+<h1>20120812</h1>
+
+<h2>Duck Typing</h2>
+
+When I see a bird that walks like a duck and swims like a duck and quacks like a duck, I call that bird a duck.
+
+<img src="../i/6a00d8341d3df553ef0120a830136e970b-800wi.jpg" />
+
+http://geekandpoke.typepad.com/geekandpoke/2010/01/best-of-both-worlds.html
+
+<h2>eXoo</h2>
+
+http://songsungkyu.cloud-ide.com/cloud/ide.jsp
+
+<img src="../i/exo.jpg" />
+
+<img src="../i/1344699482-0.jpg" />
+
+http://uploads.neatorama.com/images/posts/61/51/51061/1344699482-0.jpg
+
+<h1>20120811</h1>
+<h2>colud9 ide</h2>
+
+<img src="../i/20120811.png" />
+
+<h1>20120810</h1>
+<h2>maven plugin</h2>
+<h3>.project</h3>
+org.maven.ide.eclipse.maven2Builder
+->
+org.eclipse.m2e.core.maven2Builder
+
+org.maven.ide.eclipse.maven2Nature
+->
+org.eclipse.m2e.core.maven2Nature
+
+<h3>.classpath</h3>
+org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER
+->
+org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER
+
+<h1>20120809</h1>
+
+<img src="../i/pics-0095.jpg" />
+
+http://ru.fishki.net/picsw/082012/08/pics/pics-0095.jpg
+
+<h1>20120806</h1>
+
+<h2>Anne of Green Gables, Birch</h2>
+
+<img src="../i/20120806.jpg" />
+
+http://cfile8.uf.tistory.com/image/201A363A4ECB708C1A6975
+
+<h1>20120802</h1>
+
+Map<string, string=""> namespaceUris = new HashMap<string, string="">();
+namespaceUris.put("beans", "http://www.springframework.org/schema/beans");
+XPath xPath = DocumentHelper.createXPath("/beans:beans/beans:bean");
+xPath.setNamespaceURIs(namespaceUris);
+
+SAXReader reader = new SAXReader();
+Document document = reader.read(ResourceManager.class.getClassLoader().getResourceAsStream("persistenceContext.xml"));
+System.out.println(document.asXML());
+System.out.println(xPath.selectNodes(document).size());
+
+<xmp>
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <style type="text/css">
+      .a	{
+          display: inline-block;
+          width: 14px;
+          height: 14px;
+          background-image: url("img/glyphicons-halflings.png");
+          background-position: -24px 0px;
+          background-repeat: no-repeat;
+      }
+  </style>
+  <div class="a"></div>
+</xmp>
+
+<h1>20120723</h1>
+
+경상남도 창원시 의창구 북면 달천계곡: 20분
+중리감천계곡: 25분
+경상남도 창원시 마산합포구 진전면 금암리 거락 : 40분
+
+<h1>20120713</h1>
+
+<img src="../i/20120713_02.jpg" />
+
+<img src="../i/20120713.jpg" />
+
+http://cartoon.media.daum.net/webtoon/viewer/17172
+
+<h1>20120629</h1>
+
+<img src="../i/20120629_04.jpg" />
+
+<img src="../i/20120629_03.jpg" />
+
+http://cartoon.media.daum.net/webtoon/viewer/16995
+
+http://www.scribd.com/doc/58004056/183/B-2-Harris-Corner-Detector
+http://www-users.cs.york.ac.uk/nep/research/papers/avss11-pearce.pdf
+
+idyllic, bucolically, arcadianly
+
+<h1>20120628</h1>
+
+<h2>Life is but a dream.</h2>
+
+<h1>20120626</h1>
+
+<img src="../i/gorod-0004.jpg" />
+
+http://en.fishki.net/comment.php?id=116881
+
+<img src="../i/encog128.png" />
+
+http://www.heatonresearch.com/encog
+
+<h1>20120620</h1>
+
+<h2>초월, 超越, Transcendence</h2>
+
+<h1>20120618</h1>
+
+<script>
+  writeYouTubeEx('hQQkwc9e194', '비와 당신의 이야기- 부활 4 보컬 live 110514');
+</script>
+
+<h1>20120607</h1>
+
+<img src="../i/20120607.png" />
+
+http://cartoon.media.daum.net/webtoon/viewer/16742
+
+<h1>20120604</h1>
+
+http://ettrends.etri.re.kr/PDFData/27-1_061-073.pdf
+http://digitalcorpora.org/corp/nps/files/govdocs1/101/101822.pdf
+http://robotics.ee.uwa.edu.au/theses/2012-VehicleTracking-Teoh-PhD.pdf
+
+PCA(Principal Component Analysis) - Eigenfaces
+FLD(Fisher's Linear Discriminant) - Fisherfaces
+http://vision.skku.ac.kr/publications/Domestic%20journal/2001-1.pdf
+http://disp.ee.ntu.edu.tw/~pujols/Eigenfaces%20and%20Fisherfaces.pdf
+
+<h1>20120601</h1>
+
+<h2>opencv</h2>
+
+<img src="../i/opencv.png" />
+
+<h1>20120531</h1>
+
+<script>
+  writeYouTubeEx('lNrrwxyez10', 'Come With Me (kashmir instrumental )');
+</script>
+
+<h1>20120529</h1>
+
+<img src="../i/800px-Hematopoiesis_simple.svg.png" />
+
+http://en.wikipedia.org/wiki/File:Hematopoiesis_simple.svg
+
+<h1>20120526</h1>
+
+blast crisis
+글리벡Gleevec - imatinib
+중합효소 연쇄반응(Polymerase Chain Reaction, PCR)
+BMT - Blood and Marrow Transplantation
+타이로신 카이네이즈(tyrosine kinase)
+Interferon
+granule - 과립
+leukocyte - 백혈구
+erythrocyte - 적혈구
+-cyte - 세포
+
+
+<img src="../i/PY.jpg" />
+http://blog.daum.net/gaia-misell/2
+http://cafe.daum.net/cmlzero
+
+<img src="../i/20120526.jpg" />
+http://en.wikipedia.org/wiki/White_blood_cell
+
+iptables -A INPUT -s 8.8.8.8 -j DROP
+
+
+
+<h1>20120413</h1>
+
+<img src="../i/20120413.png" />
+
+http://cartoon.media.daum.net/webtoon/viewer/16115
+
+<h1>20120403</h1>
+
+An expert is a man who has made all the mistakes which can be made, in a narrow field
+- Niels Bohr
+
+http://jamestic.egloos.com/2918621
+
+<h1>20120403</h1>
+
+<img src="../i/20120402.jpg" />
+
+<h1>20120327</h1>
+
+HashSet is HashMap.
+
+<h1>20120315</h1>
+
+select concat('kill ', group_concat(id))
+from information_schema.PROCESSLIST
+where time >1000 and command='Sleep';
+
+select concat('kill ', id, ';')
+from information_schema.PROCESSLIST
+where time >1000 and command='Sleep';
+
+<h1>20120314</h1>
+
+DR-BT50
+
+<img src="../i/Multicast.png" />
+
+http://unix.co.kr/HOWTO/Multicast/Multicast-HOWTO-2.html
+http://www.cisco.com/en/US/tech/tk828/technologies_white_paper09186a00802d4643.shtml
+
+<img src="../i/20120314_01.png" />
+
+<h1>20120313</h1>
+
+<iframe width="640" height="380" src="http://media.yb.nl/showreel/2011/embed.html?c=config_2011" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"></iframe>
+
+<script>
+  writeYouTubeEx('eWl09Cyznyo', 'Greatest Battle Music Of All Times: Invincible');
+</script>
+
+<h1>20120220</h1>
+
+net.sf.ehcache.Cache
++ compoundStore
++ segments
++ segment
++ table
++ net.sf.ehcache.store.compound.HashEntry
++ element
++ key
++ value
++ elementData
+
+<h1>20120217</h1>
+
+The two computer systems are incompatible with each other.
+Investigators said the girl's female accomplice, another a Park Vista student, also confessed.
+
+<h1>20120215</h1>
+
+<img src="../i/20120215.png" />
+
+<h1>20120210</h1>
+
+<h2>Merge Type</h2>
+
+<img src="../i/merge.png" />
+
+<h1>20120202</h1>
+
+제가 이클립스에서 배운 가장 중요한 가치는, 기술이나 방법론, 프로젝트 관리 같은 것이 아니라, 바로 이 기여 정신이었습니다.
+
+http://eclipse.or.kr/wiki/%EC%9C%84%ED%81%B4%EB%A6%BD%EC%8A%A4:%EC%86%8C%EA%B0%9C
+
+<h1>20120126</h1>
+
+<h2>Linux : Counting files per directory with Bash command</h2>
+
+for x in `find . -type d -maxdepth 2`; do y=`find $x -type f | wc -l`; if [ $y != 0 ]; then echo $x - $y; fi done
+for x in `ls -al | sed -e '1,3d' | awk '{print $9}'`; do y=`find $x -type f | wc -l`; echo $x - $y; done
+http://ketan404.blogspot.com/2006/07/linux-counting-files-per-directory.html
+
+<h1>20120125</h1>
+
+<h2>Another Earth</h2>
+
+<img src="../i/20120125.png" width="700" height="400" />
+
+<h1>20120109</h1>
+
+<h2>VI</h2>
+
+h: move cursor left one character
+l: mvoe cursor right one character
+j: move cursor down one line
+k: move cursor up one line
+u: undo
+R: redo
+$: move to last column on the current line
+^: move to first column on the current line
+i: insert befor cursor
+I: insert at beginning of current line
+a: append after cursor
+A: append at end of line
+o: append at below current line
+O: append at above current line
+dd: delete current line
+3dd: delete three line
+G: move to last line
+1G: move to first line
+:set nu
+:set nonu
+:1,$s/test/production/c
+3y: copy
+p: paste
+<h1>20120107</h1>
+
+<script>
+  writeYouTubeEx('yiG0wtRQN7k', 'Jade Valerie - Just Another Day');
+</script>
+
+Always knew there would come a day
+there would come a day we'd say
+bye bye bye
+Now summer's gone and life moves on
+and we're too old to
+cry cry cry
+So hum a tune for me and you, don't make it blue asking
+why why why
+Let me see you smile, for awhile, for one more mile just try
+To sing for me
+Won't you play for me
+Just sing for me
+Won't you play for me
+
+Just another day
+Just another day
+Another name I'll say
+Not over, but it's over anyway
+
+Some may say, some may say
+it was a big mistake for me to
+go go go
+Bu I am water, life is rock,
+gotta find a way to
+flow flow flow
+The road I chose, the road I chose,
+only God will know where it
+goes goes goes
+
+Oooohhh sing for me
+
+Just another day
+Just another day
+Another name I'll say
+Not over, but it's over anyway
+
+May your dreams be big, and your problems small
+and when the bad days come I hope you
+fight fight fight
+I hope you dance, I hope you love, I hope you live in the
+light light light
+I won't forget, how could I forget the way you look it makes me
+shine shine shine
+
+Oooohhh sing for me
+
+Just another day
+Just another day
+Another name I'll say
+Not over, but it's over anyway
+
+More lyrics: http://www.lyricsmania.com/just_another_day_lyrics_jade_valerie.html
+All about Jade Valerie: http://www.musictory.com/music/Jade+Valerie
+
+<hr />
+
+Ruby
+The double less than sign is a Ruby String overload for concatination.
+@instance_variables
+$global_variables
+methods_asking_a_question?
+%Q[ ]	Interpolated String (default)
+Interpolation
+- #{expression}
+- The expression can be just about any Ruby code.
+
+<h1>20120106</h1>
+
+mongo
+show dbs
+use [db]
+db.[db].find().limit(3)
+db.[db].find({[column]:{$exists:false}}).limit(3)
+
+<h1>20120105</h1>
+
+<img src="../i/the-shower-faucet.jpg" />
+
+http://www.thelastmongoose.com/2011/05/shower-faucet.html
+
+<img src="../i/20120105.png" />
+
+http://angel927.tistory.com/120
+
+<h1>20120103</h1>
+
+iptables -A INPUT -s 192.168.10.10 -j DROP
+iptables -A INPUT -d 192.168.10.12 -j DROP
+iptables -L
+iptables -D INPUT 1
+
+http://theeye.pe.kr/25
+
+grant all privileges on [database].* to [id]@[ip] identified by '[password]' with grant option;
+flush privileges;
+
+jmap -dump:file=heapdump.hprof [pid]
+</string,></string,></pre>
+</div>
+
+</body></html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html><html lang="en"><head><title>uuidcode</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="../css/shCore.css" rel="stylesheet" />
+    <link href="../css/shThemeDefault.css" rel="stylesheet" />
+    <script src="../bootstrap/js/jquery.js"></script>
+    <script src="../bootstrap/js/bootstrap-dropdown.js"></script>
+    <script src="../jqueryrolling/jquery.rolling.js"></script>
+    <script src="../interpark/jquery/lib/jquery/jquery.easydrag.js"></script>
+    <script src="../virtualform/json2.js"></script>
+    <script src="../virtualform/jquery.virtualform-0.1.js"></script>
+    <script src="../js/shCore.js"></script>
+    <script src="../js/shBrushJava.js"></script>
+    <script src="../js/shBrushSql.js"></script>
+    <script src="../js/shBrushPhp.js"></script>
+    <script src="../js/shBrushXml.js"></script>
+    <style type="text/css">
+        .navbar-fixed-top {
+            margin-bottom: 20px;
+        }
+    </style>
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="../js/youtube.js?v=1"></script>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-49038982-1', 'uuidcode.github.io');
+        ga('send', 'pageview');
+
+    </script>
+    <script type="text/javascript">
+        jQuery(function () {
+            SyntaxHighlighter.all()
+        });
+    </script></head>
+<body class="none">
+<div class="navbar navbar-fixed-top"><div class="navbar-inner">
+    <div class="container">
+        <div class="nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Diary <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/images/2016.html">2016</a></li>
+                    <li><a href="/images/2015.html">2015</a></li>
+                    <li><a href="/images/2014.html">2014</a></li>
+                    <li><a href="/images/2013.html">2013</a></li>
+                    <li><a href="/images/2012.html">2012</a></li>
+                    <li><a href="/images/2011.html">2011</a></li>
+                    <li><a href="/images/2010.html">2010</a></li>
+                    <li><a href="/images/2009.html">2009</a></li>
+                    <li><a href="/images/2008.html">2008</a></li>
+                    <li><a href="/images/2007.html">2007</a></li>
+                    <li><a href="/images/2006.html">2006</a></li>
+                    <li><a href="/images/2005.html">2005</a></li>
+                    <li><a href="/images/2004.html">2004</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming III<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/generateAssertJ/index.html">Generate AssertJ Plugin</a></li>
+                    <li><a href="/antlr4/index.html">antlr4 + querydsl</a></li>
+                    <li><a href="/lambda/index.html">lambda</a></li>
+                    <li><a href="/querydsl/index.html">querydsl</a></li>
+                    <li><a href="/deployable/deployable.html">deployable</a></li>
+                    <li><a href="/people/people.html">people</a></li>
+                    <li><a href="/at/at.html">@</a></li>
+                    <li><a href="/worksheet2/index.html" target="_blank">Worksheet</a></li>
+                    <li><a href="/codegen/codegen.html">CodeGen</a></li>
+                    <li><a href="/virtualform/test.html">VirtualForm</a></li>
+                    <li><a href="https://market.android.com/details?id=songsungkyun.MemoryTester&feature=search_result" target="_blank">MemoryTester</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming II<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/interpark/VSF.html">VSF</a></li>
+                    <li><a href="/interpark/BatchMonitor.html">BatchMonitor</a></li>
+                    <li><a href="/interpark/XPathTest.html">XPathTest</a></li>
+                    <li><a href="/interpark/CodecTest.html">CodecTest</a></li>
+                    <li><a href="/interpark/cronViewer.html">Cron Viewer</a></li>
+                    <li><a href="/interpark/noname.html">No name</a></li>
+                    <li><a href="/interpark/MiltiTools.html">MiltiTools</a></li>
+                    <li><a href="/programming/programming.html">Programming</a></li>
+                    <li><a href="/jqueryrolling/index.html">JQuery rolling</a></li>
+                    <li><a href="/interpark/SocketDebugger.html">Socket Debugger</a></li>
+                    <li><a href="/interpark/PacketCapture.html">Packet Capture</a></li>
+                    <li><a href="/interpark/JavaServiceManager.html">Java Service Manager</a></li>
+                    <li><a href="/interpark/MetaObject.html">MetaObject</a></li>
+                    <li><a href="/interpark/osop.html">OSOP</a></li>
+                    <li><a href="http://sourceforge.net/projects/berimbautab/" target="_blank">Berimbau Tab</a></li>
+                    <li><a href="/interpark/caruru.html">Caruru</a></li>
+                    <li><a href="/interpark/notaden.html">Notaden</a></li>
+                    <li><a href="/interpark/dmt.html">DMT</a></li>
+                    <li><a href="/interpark/mole.html">Mole</a></li>
+                    <li><a href="/interpark/poaching.html">Poaching</a></li>
+                    <li><a href="/interpark/hostEditor.html">HostEditor</a></li>
+                    <li><a href="/interpark/fileSynchronizer.html">FileSynchronizer</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming I<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/interpark/AStar.html">A*</a></li>
+                    <li><a href="/interpark/bead.html">Bead</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Repository <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../music/music.html">music</a></li>
+                </ul>
+            </li>
+        </div>
+        <div class="nav pull-right">
+            <li><a href="#">songsungkyun@gmail.com</a></li>
+        </div>
+    </div>
+</div></div>
+<div class="container" style="padding: 60px 0">
+    <h1>Querydsl</h1>
+<pre>
+<a href="http://www.querydsl.com/static/querydsl/4.0.7/reference/html_single/#sql_integration">Querydsl Document</a>
+</pre>
+    <h2>list object, join</h2>
+    <pre>해당 관리자의 로그를 10개 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;AdminLog&gt; list(Long adminId) {
+    return
+    this.queryFactory
+    .select(this.qAdminLog)
+    .from(this.qAdminLog)
+    .join(this.qAdmin)
+    .where(this.qAdmin.adminId.eq(adminId))
+    .where(this.qAdminLog.userId.eq(this.qAdmin.userId))
+    .limit(10)
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        admin_log.id,
+        admin_log.ip,
+        admin_log.reg_datetime,
+        admin_log.role,
+        admin_log.uri,
+        admin_log.user_id
+    from
+        admin_log admin_log
+    join
+        admin admin
+    where
+        admin.admin_id = 47
+        and admin_log.user_id = admin.user_id limit 10</pre>
+    <h2>insert</h2>
+    <pre>관리자를 추가한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    @Transactional
+    public Admin add(Admin admin) {
+        long adminId =
+            this.queryFactory
+                .insert(this.qAdmin)
+                .populate(admin)
+                .executeWithKey(this.qAdmin.adminId);
+
+        return admin.setAdminId(adminId);
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    insert
+    into
+        admin
+        (user_id, daum_id, name, role, status, reg_datetime, mod_datetime)
+    values
+        ('test', 'test', 'test', 'test', 'SERVICE', '2016-01-13 15:12:55', '2016-01-13 15:12:55')</pre>
+    <h2>update</h2>
+    <pre>관리자의 이름을 변경한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    @Transactional
+    public long update(Admin admin) {
+        return
+            this.queryFactory
+                .update(this.qAdmin)
+                .set(this.qAdmin.name, admin.getName())
+                .where(this.qAdmin.adminId.eq(admin.getAdminId()))
+                .execute();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    update
+        admin
+    set
+        name = '32bef302a4ce465d92b1a7330a20b700'
+    where
+        admin.admin_id = 47</pre>
+    <h2>delete</h2>
+    <pre>관리자를 삭제한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    @Transactional
+    public long remove(Long adminId) {
+        return
+            this.queryFactory
+                .delete(this.qAdmin)
+                .where(this.qAdmin.adminId.eq(adminId))
+                .execute();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    delete
+    from
+        admin
+    where
+        admin.admin_id = 178</pre>
+    <h2>list object, like, in</h2>
+    <pre>이름에 김이 들어가고 상태가 서비스이거나 대기인 작가를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Author&gt; listByName() {
+    return
+    this.queryFactory
+    <div class="select">
+        <this class="qAuthor"></this>
+    </div>
+    .from(this.qAuthor)
+    .where(this.qAuthor.name.contains("김"))
+    .where(this.qAuthor.status.in(Arrays.asList(Application.Status.SERVICE.name(), Application.Status.WAITING.name())))
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        author.author_id,
+        author.name,
+        author.cp_name,
+        author.image_url
+        .....
+    from
+        author author
+    where
+        author.name like '%김%'
+        and author.status in (
+            'SERVICE', 'WAITING'
+        )</pre>
+    <h2>list object, exists</h2>
+    <pre>작가의 상태가 서비스이고 서비스중인 프로젝트를 가지고 있는 작가&lt;Author&gt;를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Author&gt; listForExistsServiceProject() {
+    QProjectAuthorMap qProjectAuthorMap = QProjectAuthorMap.qProjectAuthorMap;
+    QProject qProject = QProject.qProject;
+
+    return
+    this.queryFactory
+    .select(qAuthor)
+    .from(qAuthor)
+    .where(qAuthor.status.eq(Application.Status.SERVICE.name()))
+    .where(
+    SQLExpressions.select(Expressions.constant(1))
+    .from(qProjectAuthorMap, qProject)
+    .where(qProjectAuthorMap.projectId.eq(qProject.projectId))
+    .where(qProjectAuthorMap.authorId.eq(qAuthor.authorId))
+    .where(qProject.supportStatus.eq(Application.Status.SERVICE.name()))
+    .exists()
+    )
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        author.author_id,
+        author.name,
+        author.cp_name,
+        author.image_url,
+       .....
+    from
+        author author
+    where
+        author.status = 'SERVICE'
+        and exists (
+            select
+                1
+            from
+                project_author_map project_author_map,
+                project project
+            where
+                project_author_map.project_id = project.project_id
+                and project_author_map.author_id = author.author_id
+                and project.support_status = 'SERVICE'
+        )</pre>
+    <h2>tuple, multiple left join, order by</h2>
+    <pre>회차의 발행일시 역순으로 해서 회차와 조회수, 좋아요수를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Tuple&gt; tupleForContentCount() {
+    QContentCount qViewContentCount = new QContentCount("viewContentCount");
+    QContentCount qLikeContentCount = new QContentCount("likeContentCount");
+
+    return
+    this.queryFactory
+    .select(this.qProjectEpisode,
+    qViewContentCount.contentCount,
+    qLikeContentCount.contentCount
+    )
+    .from(this.qProjectEpisode)
+    .leftJoin(qViewContentCount)
+    .on(qViewContentCount.objectType.eq(Application.ObjectType.EPISODE.name()))
+    .on(qViewContentCount.objectId.eq(this.qProjectEpisode.episodeId))
+    .on(qViewContentCount.countType.eq(Application.CountType.VIEW.name()))
+    .leftJoin(qLikeContentCount)
+    .on(qLikeContentCount.objectType.eq(Application.ObjectType.EPISODE.name()))
+    .on(qLikeContentCount.objectId.eq(this.qProjectEpisode.episodeId))
+    .on(qLikeContentCount.countType.eq(Application.CountType.LIKE.name()))
+    .where(this.qProjectEpisode.status.eq(Application.Status.SERVICE.name()))
+    .orderBy(this.qProjectEpisode.publishDatetime.asc())
+    .limit(10)
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        project_episode.episode_id,
+        project_episode.project_id,
+        project_episode.name,
+        project_episode.title,
+        project_episode.seq_name,
+        project_episode.image_url,
+        ....
+    from
+        project_episode project_episode
+    left join
+        content_count viewContentCount
+            on viewContentCount.object_type = 'EPISODE'
+            and viewContentCount.object_id = project_episode.episode_id
+            and viewContentCount.count_type = 'VIEW'
+    left join
+        content_count likeContentCount
+            on likeContentCount.object_type = 'EPISODE'
+            and likeContentCount.object_id = project_episode.episode_id
+            and likeContentCount.count_type = 'LIKE'
+    where
+        project_episode.status = 'SERVICE'
+    order by
+        project_episode.publish_datetime asc limit 10</pre>
+    <h2>tuple, left join, order by</h2>
+    <pre>후원정보와 리워드 정보를 10개 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Tuple&gt; list() {
+    return
+    this.queryFactory
+    .select(this.qProjectOrder, this.qProjectSupportAmount)
+    .from(this.qProjectOrder)
+    .leftJoin(qProjectSupportAmount)
+    .on(this.qProjectSupportAmount.amountId.eq(this.qProjectOrder.amountId))
+    .where(this.qProjectOrder.payStatus.eq(Application.PayStatus.OK.name()))
+    .orderBy(this.qProjectOrder.orderId.desc())
+    .limit(10)
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        project_order.address,
+        project_order.address_detail,
+        project_order.amount_id,
+        project_order.cancel,
+        ....
+    from
+        project_order project_order
+    left join
+        project_support_amount project_support_amount
+            on project_support_amount.amount_id = project_order.amount_id
+    where
+        project_order.pay_status = 'OK'
+    order by
+        project_order.order_id desc limit 10</pre>
+    <h2>date, expression</h2>
+    <pre>현재일시를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public Date getCurrentDatetime() {
+        return
+            this.queryFactory
+                .select(Expressions.currentTimestamp())
+                .fetchOne();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        current_timestamp
+    from
+        dual</pre>
+    <h2>tuple, function, group by</h2>
+    <pre>시간별로 작성된 서비스중인 프로젝트 개수를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Tuple&gt; tupleGroupByHour() {
+    StringTemplate groupByHour =
+    Expressions.stringTemplate("date_format({0}, {1})", this.qProject.regDatetime, "%Y-%m-%d %H");
+
+    return
+    this.queryFactory
+    .select(groupByHour, qProject.count())
+    .from(this.qProject)
+    .where(this.qProject.supportStatus.eq(SupportStatus.SERVICE.name()))
+    .groupBy(groupByHour)
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        date_format(project.reg_datetime,
+        '%Y-%m-%d %H'),
+        count(project.project_id)
+    from
+        project project
+    where
+        project.support_status = 'SERVICE'
+    group by
+        date_format(project.reg_datetime,
+        '%Y-%m-%d %H')</pre>
+    <h2>tuple, sub query, alias</h2>
+    <pre>프로젝트 정보와 프로젝트에 매핑된 회차수를 추출후 회차수 역순으로 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Tuple&gt; tupleForList() {
+    QProject qProjectAlias = new QProject("x");
+
+    return
+    this.queryFactory
+    .select(qProjectAlias, Expressions.datePath(Long.class, "count"))
+    .from(
+    SQLExpressions
+    .select(this.qProject,
+    SQLExpressions
+    .select(this.qProjectEpisode.count())
+    .from(this.qProjectEpisode)
+    .where(this.qProjectEpisode.projectId.eq(this.qProject.projectId))
+    .where(this.qProjectEpisode.status.eq(Status.SERVICE.name()))
+    .as("count")
+    )
+    .from(this.qProject)
+    .where(this.qProject.supportStatus.eq(SupportStatus.SERVICE.name()))
+    .limit(10)
+    .as("x")
+    )
+    .orderBy(Expressions.datePath(Long.class, "count").desc())
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        x.project_id,
+        x.name,
+        x.title,
+        x.seq_name,
+        x.project_type,
+        x.image_url,
+       ....
+    from
+        (select
+            project.project_id,
+            project.name,
+            project.title,
+            project.seq_name,
+            project.project_type,
+            project.image_url,
+            .....
+            (select
+                count(project_episode.episode_id)
+            from
+                project_episode project_episode
+            where
+                project_episode.project_id = project.project_id
+                and project_episode.status = 'SERVICE') as count
+        from
+            project project
+        where
+            project.support_status = 'SERVICE' limit 10
+        ) as x
+    order by
+        count desc</pre>
+    <h2>tuple, case, group by</h2>
+    <pre>후원금액 조건별로 그룹핑해서 개수를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public List&lt;Tuple&gt; tupleGroupByAmount() {
+    Expression<String> amount = new CaseBuilder()
+    .when(qProjectSupportAmount.amount.gt(10000))
+    .then("만원이상")
+    .otherwise("만원미만");
+
+    return
+    this.queryFactory
+    .select(amount, qProjectSupportAmount.count())
+    .from(this.qProjectSupportAmount)
+    .where(qProjectSupportAmount.status.eq(Application.Status.SERVICE.name()))
+    .groupBy(amount)
+    .fetch();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        case
+            when project_support_amount.amount > 10000 then '만원이상'
+            else '만원미만'
+        end,
+        count(project_support_amount.amount_id)
+    from
+        project_support_amount project_support_amount
+    where
+        project_support_amount.status = 'SERVICE'
+    group by
+        case
+            when project_support_amount.amount > 10000 then '만원이상'
+            else '만원미만'
+        end</pre>
+    <h2>count</h2>
+    <pre>세션 개수를 조회한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    public long getCount() {
+        return
+            this.queryFactory
+                .select(this.qSession.count())
+                .from(this.qSession)
+                .fetchOne();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    select
+        count(session.session_id)
+    from
+        session session</pre>
+    <h2>bulk insert</h2>
+    <pre>조회된 세션정보 10개를 새롭게 추가한다</pre>
+    <h3>java</h3>
+<pre class="brush: java">
+    @Transactional
+    public long addBulk() {
+        return this.queryFactory
+            .insert(this.qSession)
+            .columns(this.qSession.token, this.qSession.ip, this.qSession.userId)
+            .select(
+                SQLExpressions
+                    .select(this.qSession.token, this.qSession.ip, this.qSession.userId)
+                    .from(this.qSession)
+                    .limit(10)
+            )
+            .execute();
+    }
+</pre>
+    <h3>sql</h3>
+<pre class="brush: sql">
+    insert
+    into
+        session
+        (token, ip, user_id) select
+            session.token,
+            session.ip,
+            session.user_id
+        from
+            session session limit 10</pre>
+
+</div>
+
+
+</body></html>

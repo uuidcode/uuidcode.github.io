@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <!-- Bootstrap -->
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script type="text/javascript" src="../jquery/js/jquery.js"></script>
+    <script type="text/javascript" src="../underscore/js/underscore.js"></script>
+    <script type="text/javascript" src="../underscore/js/underscore.string.js"></script>
+    <script type="text/javascript" src="../backbone/js/backbone.js"></script>
+    <script type="text/javascript" src="../bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('pre.javascript').each(function () {
+                eval($(this).text());
+            });
+
+            $('div.result').each(function () {
+                var resultHtml = _.escape($(this).html().trim());
+                $('<pre></pre>').html(resultHtml).appendTo($(this));
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h3>View1</h3>
+    <div class="row">
+        <div class="col-md-4">
+<pre class="javascript">
+    AppView = Backbone.View.extend({
+        el: $('#view1'),
+        initialize: function () {
+            this.render();
+        },
+        render: function () {
+            this.$el.html('Hello, World');
+        }
+    });
+
+    var appView = new AppView();
+</pre>
+        </div>
+        <div class="col-md-4">
+<pre class="html">
+    &lt;div id="view1"&gt;&lt;/div&gt;
+</pre>
+        </div>
+        <div class="col-md-4 result">
+            <div id="view1"></div>
+        </div>
+    </div>
+
+    <h3>View2</h3>
+    <div class="row">
+        <div class="col-md-4">
+<pre class="javascript">
+    AppView2 = Backbone.View.extend({
+        tagName: 'span',
+        class: 'myClass',
+        id: 'myId',
+        initialize: function () {
+            this.render();
+        },
+        render: function () {
+            this.$el.html('Hello, World')
+                .appendTo($('#view2'));
+        }
+    });
+
+    var appView2 = new AppView2();
+</pre>
+        </div>
+        <div class="col-md-4">
+<pre class="html">
+    &lt;div id="view2"&gt;&lt;/div&gt;
+</pre>
+        </div>
+        <div class="col-md-4 result">
+            <div id="view2"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

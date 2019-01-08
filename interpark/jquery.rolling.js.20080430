@@ -1,0 +1,337 @@
+/*
+ * JQuery Rolling 
+ * songsungkyun@naver.com
+ * 2008/03/16
+ */
+(function($) {
+	$.fn.rolling = function(rollingDirection, width, height, viewingItemCount) {
+		if (viewingItemCount == undefined) {
+			viewingItemCount = 1;
+		}
+		
+		if (rollingDirection == "left" || rollingDirection == "right") {
+			this.css("width", width * viewingItemCount);
+			this.css("height", height);
+		} else if (rollingDirection == "up" || rollingDirection == "down") {
+			this.css("width", width);
+			this.css("height", height * viewingItemCount);
+		}
+		
+		this.css("position", "relative");
+		this.css("overflow", "hidden");
+		
+		var rollingId = new Date().getTime();
+		this.attr("rollingId", rollingId);
+		this.empty();	
+		
+		var rollingContentDiv = $("<div/>").appendTo(this);
+		rollingContentDiv.attr("id", rollingId);
+		rollingContentDiv.css("position", "absolute");
+		rollingContentDiv.css("left", "0");
+		rollingContentDiv.css("top", "0");
+		rollingContentDiv.attr("start", "false");
+		rollingContentDiv.attr("rollingItemCount", "0");
+		rollingContentDiv.attr("index", "0");
+		rollingContentDiv.attr("height", height);
+		rollingContentDiv.attr("width", width);
+		rollingContentDiv.attr("viewingItemCount", viewingItemCount);
+		rollingContentDiv.attr("rollingTime", "100");
+		rollingContentDiv.attr("viewingTime", "3000");
+		rollingContentDiv.attr("rollingAnimationFrame", "5");
+		rollingContentDiv.attr("rollingDirection", rollingDirection);
+		rollingContentDiv.attr("rollingLeft", 0.0);
+		rollingContentDiv.attr("rollingTop", 0.0);
+		rollingContentDiv.attr("requestReverse", "false");
+		return this;
+	};
+	
+	$.fn.getIntAttr = function(name) {
+		return parseInt(this.attr(name));
+	}
+	
+	$.fn.addRollingItem = function(html) {
+		var rollingContentDiv = $("#" + this.attr("rollingId"));
+		var rollingItemCount = rollingContentDiv.getIntAttr("rollingItemCount");
+		rollingItemCount++;
+		rollingContentDiv.attr("rollingItemCount", rollingItemCount);		
+		
+		var width = rollingContentDiv.getIntAttr("width");
+		var height = rollingContentDiv.getIntAttr("height");
+		var rollingDirection = rollingContentDiv.attr("rollingDirection");
+		var rollingItem = null;
+		var viewingItemCount = rollingContentDiv.getIntAttr("viewingItemCount");
+		
+		if (rollingDirection == "up") {
+			rollingItem = $("<div class='item'/>").appendTo(rollingContentDiv);			
+		} else if (rollingDirection == "right") {
+			rollingItem = $("<div class='item'/>").prependTo(rollingContentDiv);
+			rollingItem.css("display", "inline");
+			rollingContentDiv.css("width", rollingItemCount * width);			
+			rollingContentDiv.css("left", -1 * (rollingItemCount - viewingItemCount) * width);
+			rollingContentDiv.attr("rollingLeft", -1 * (rollingItemCount - viewingItemCount) * width);
+		} else if (rollingDirection == "down") {
+			rollingItem = $("<div class='item'/>").prependTo(rollingContentDiv);
+			rollingContentDiv.css("top", -1 * (rollingItemCount - viewingItemCount) * height);
+			rollingContentDiv.attr("rollingTop", -1 * (rollingItemCount - viewingItemCount) * height);
+		} else if (rollingDirection == "left") {
+			rollingItem = $("<div class='item'/>").appendTo(rollingContentDiv);
+			rollingItem.css("display", "inline");
+			rollingContentDiv.css("width", rollingItemCount * width);			
+		}
+		rollingItem.css("overflow", "hidden");
+		rollingItem.css("width", width);
+		rollingItem.css("height", height);
+		rollingItem.html(html);
+		return this;
+	};
+	
+	$.fn.rollingAnimation = function(rollingId) {
+		var rollingContentDiv = $("#" + rollingId);
+		if (rollingContentDiv.size() == 0) {
+			return;
+		}
+		
+		var delayTime = parseInt(rollingContentDiv.attr("rollingTime"));
+		if (rollingContentDiv.attr("start") != "true") {
+			setTimeout("$.fn.rollingAnimation('" + rollingId + "')", delayTime);
+			return;
+		}
+		
+		var rollingDirection = rollingContentDiv.attr("rollingDirection");
+		var width = rollingContentDiv.getIntAttr("width");
+		var height = rollingContentDiv.getIntAttr("height");
+		var rollingAnimationFrame = rollingContentDiv.getIntAttr("rollingAnimationFrame");
+		var index = rollingContentDiv.getIntAttr("index");
+		var rollingItemCount = rollingContentDiv.getIntAttr("rollingItemCount");
+		var positionValue = 0;
+		var viewingItemCount = rollingContentDiv.getIntAttr("viewingItemCount");
+		var rollingDiretion = rollingContentDiv.attr("rollingDirection");
+		var isReverse = false;
+		
+		if (rollingContentDiv.attr("requestReverse") == "true") {
+			isReverse = true;
+			rollingContentDiv.attr("requestReverse", "false");
+			index = rollingAnimationFrame - index
+			rollingContentDiv.attr("index", index);
+			var reverseDirection = "";
+			
+			if (rollingDiretion == "left") {
+				reverseDirection = "right";
+			} else if (rollingDiretion == "right") {
+				reverseDirection = "left";
+			} else if (rollingDiretion == "down") {
+				reverseDirection = "up";
+			} else if (rollingDiretion == "up") {
+				reverseDirection = "down";
+			}
+			
+			rollingContentDiv.attr("rollingDirection", reverseDirection);
+			rollingDirection = rollingContentDiv.attr("rollingDirection");
+			rollingContentDiv.trigger("reverse");
+		} else {						
+			if (rollingDirection == "up") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingTop")) - height/rollingAnimationFrame;
+				rollingContentDiv.attr("rollingTop", positionValue);		
+				rollingContentDiv.css("top", positionValue);					
+			} else if (rollingDirection == "right") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingLeft")) +  width/rollingAnimationFrame;	
+				rollingContentDiv.attr("rollingLeft", positionValue);	
+				rollingContentDiv.css("left", positionValue);										
+			} else if (rollingDirection == "down") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingTop")) + height/rollingAnimationFrame;			
+				rollingContentDiv.attr("rollingTop", positionValue);						
+				rollingContentDiv.css("top", positionValue);	
+			} else if (rollingDirection == "left") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingLeft")) - width/rollingAnimationFrame;	
+				rollingContentDiv.attr("rollingLeft", positionValue);								
+				rollingContentDiv.css("left", positionValue);
+			}
+		
+			index++;
+			rollingContentDiv.attr("index", index);		
+		}
+		
+		var currentRollingItemIndex = 0;	
+		
+		if (index%rollingAnimationFrame == 0) {
+			var currentRollingItem = null;
+			if (rollingDirection == "up" || rollingDirection == "left") {
+				currentRollingItemIndex = 0;				
+			} else if (rollingDirection == "right" || rollingDirection == "down") {
+				currentRollingItemIndex = rollingItemCount - 1;
+			}
+			
+			currentRollingItem = $("div[class='item']:eq(" + currentRollingItemIndex + ")", rollingContentDiv);
+			var html = currentRollingItem.html();
+			currentRollingItem.remove();
+			
+			var rollingItem = null;
+			var positionName = null
+			var positionValue = 0;
+			var viewingItemCount = rollingContentDiv.getIntAttr("viewingItemCount");
+		
+			if (rollingContentDiv.attr("rollingDirection") == "up") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingTop"));
+				rollingContentDiv.attr("rollingTop", positionValue + height);
+				rollingContentDiv.css("top", positionValue + height);	
+				rollingItem = $("<div class='item'/>").appendTo(rollingContentDiv);				
+			} else if (rollingContentDiv.attr("rollingDirection") == "right") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingLeft"));
+				rollingItem = $("<div class='item'/>").prependTo(rollingContentDiv);				
+				rollingItem.css("display", "inline");
+				rollingContentDiv.attr("rollingLeft", positionValue - width);
+				rollingContentDiv.css("left", positionValue - width);	
+			} else if (rollingContentDiv.attr("rollingDirection") == "down") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingTop"));
+				rollingItem = $("<div class='item'/>").prependTo(rollingContentDiv);
+				rollingContentDiv.attr("rollingTop", positionValue - height);
+				rollingContentDiv.css("top", positionValue - height);	
+			} else if (rollingContentDiv.attr("rollingDirection") == "left") {
+				positionValue = parseFloat(rollingContentDiv.attr("rollingLeft"));
+				rollingItem = $("<div class='item'/>").appendTo(rollingContentDiv);
+				rollingItem.css("display", "inline");
+				rollingContentDiv.attr("rollingLeft", positionValue + width);
+				rollingContentDiv.css("left", positionValue + width);	
+			}
+			
+			rollingItem.css("overflow", "hidden");
+			rollingItem.css("width", width);
+			rollingItem.css("height", height);
+			rollingItem.html(html);
+		
+			if (!isReverse) {
+				delayTime = rollingContentDiv.attr("viewingTime");
+			} else {
+				delayTime = 0;
+			}
+			
+			var previousRollingItem = $("div[class='item']:eq(" + currentRollingItemIndex + ")", rollingContentDiv);
+			rollingContentDiv.trigger("viewing", [previousRollingItem]);
+			rollingContentDiv.attr("index", 0);			
+		}
+		
+		var currentRollingItem = $("div[class='item']:eq(0)", rollingContentDiv);
+		rollingContentDiv.trigger("rolling", [currentRollingItem]);
+		
+		setTimeout("$.fn.rollingAnimation('" + rollingId + "')", delayTime);
+	};
+	
+	$.fn.startRolling = function(rollingTime, viewingTime, rollingAnimationFrame) {
+		var rollingContentDiv = $("#" + this.attr("rollingId"));
+		var currentRollingItemIndex = 0;
+		var rollingDirection = rollingContentDiv.attr("rollingDirection");
+		
+		if (rollingDirection== "up" || rollingDirection == "left") {
+			currentRollingItemIndex = 0;
+		} else if (rollingDirection == "right" ||	rollingDirection == "down") {
+			currentRollingItemIndex = rollingContentDiv.getIntAttr("rollingItemCount") - 1;
+		}
+		var currentRollingItem = $("div[class='item']:eq(" + currentRollingItemIndex + ")", rollingContentDiv);
+		rollingContentDiv.trigger("viewing", [currentRollingItem]);
+		rollingContentDiv.attr("rollingTime", rollingTime);
+		rollingContentDiv.attr("viewingTime", viewingTime);
+		rollingContentDiv.attr("rollingAnimationFrame", rollingAnimationFrame);
+		rollingContentDiv.attr("start", "true");
+		rollingContentDiv.trigger("start");
+		setTimeout("$.fn.rollingAnimation('" + this.attr("rollingId") + "')", viewingTime);
+		return this;
+	};
+	
+	$.fn.stopRolling = function() {
+		var rollingContentDiv = $("#" + this.attr("rollingId"));
+		rollingContentDiv.trigger("stop");
+		rollingContentDiv.attr("start", "false");
+		return this;
+	};
+	
+	$.fn.resumeRolling = function() {
+		var rollingContentDiv = $("#" + this.attr("rollingId"));
+		if (rollingContentDiv.attr("start") != "true") {
+			rollingContentDiv.attr("start", "true");
+			rollingContentDiv.trigger("start");			
+		}
+		return this;
+	};
+	
+	$.fn.getRollingTime = function() {
+		return $("#" + this.attr("rollingId")).attr("rollingTime");
+	};
+	
+	$.fn.getViewingTime = function() {
+		return $("#" + this.attr("rollingId")).attr("viewingTime");
+	};
+	
+	$.fn.getRollingAnimationFrame = function() {
+		return $("#" + this.attr("rollingId")).attr("rollingAnimationFrame");
+	};
+	
+	$.fn.getRollingDirection = function() {
+		return $("#" + this.attr("rollingId")).attr("rollingDirection");
+	};
+	
+	$.fn.setRollingTime = function(rollingTime) {
+		$("#" + this.attr("rollingId")).attr("rollingTime", rollingTime);
+		return this;
+	};
+	
+	$.fn.setViewingTime = function(viewingTime) {
+		$("#" + this.attr("rollingId")).attr("viewingTime", viewingTime);
+		return this;
+	};
+	
+	$.fn.setRollingAnimationFrame = function(rollingAnimationFrame) {
+		$("#" + this.attr("rollingId")).attr("rollingAnimationFrame", rollingAnimationFrame);
+		return this;
+	};
+	
+	$.fn.getRollingItems = function() {
+		return $("div", $("#" + this.attr("rollingId")));
+	};
+	
+	$.fn.bindViewingEvent = function(rollingEvent) {
+		return $("#" + this.attr("rollingId")).bind("viewing", rollingEvent);
+	};
+	
+	$.fn.unbindViewingEvent = function() {
+		return $("#" + this.attr("rollingId")).unbind("viewing");
+	};
+	
+	$.fn.bindRollingEvent = function(rollingEvent) {
+		return $("#" + this.attr("rollingId")).bind("rolling", rollingEvent);
+	};
+	
+	$.fn.unbindRollingEvent = function() {
+		return $("#" + this.attr("rollingId")).unbind("rolling");
+	};
+	
+	$.fn.bindStartEvent = function(rollingEvent) {
+		return $("#" + this.attr("rollingId")).bind("start", rollingEvent);
+	};
+	
+	$.fn.unbindStartEvent = function() {
+		return $("#" + this.attr("rollingId")).unbind("start");
+	};
+	
+	$.fn.bindStopEvent = function(rollingEvent) {
+		return $("#" + this.attr("rollingId")).bind("stop", rollingEvent);
+	};	
+	
+	$.fn.unbindStopEvent = function() {
+		return $("#" + this.attr("rollingId")).unbind("stop");
+	};
+	
+	$.fn.bindReverseEvent = function(rollingEvent) {
+		return $("#" + this.attr("rollingId")).bind("reverse", rollingEvent);
+	};
+	
+	$.fn.unbindReverseEvent = function(rollingEvent) {
+		return $("#" + this.attr("rollingId")).unbind("reverse");
+	};
+	
+	$.fn.reverseRolling = function() {
+		var rollingContentDiv = $("#" + this.attr("rollingId"));
+		rollingContentDiv.attr("requestReverse", "true");
+		return this;
+	};
+	
+})(jQuery);

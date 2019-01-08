@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://songsungkyun.cafe24.com/interpark/miltiTools/update">
+      MiltiTools Update Site
+   </description>
+   <feature url="features/com.interpark.miltiTools_1.0.0.jar" id="com.interpark.miltiTools" version="1.0.0" os="win32" ws="win32" nl="ko" arch="x86">
+      <category name="MiltiTools"/>
+   </feature>
+   <category-def name="MiltiTools" label="MiltiTools"/>
+</site>

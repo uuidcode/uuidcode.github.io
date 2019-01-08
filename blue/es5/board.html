@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="../lib/bootstrap.css">
+    <link rel="stylesheet" href="../lib/odometer-theme-default.css">
+    <link rel="stylesheet" href="../lib/dice.css">
+    <link rel="stylesheet" href="blue.css">
+    <title>Hello, world!</title>
+</head>
+<body>
+<div class="board">
+    <div id="die"></div>
+</div>
+<script type="text/template" id="nationTemplate">
+    <tr>
+        <td class="flag"><img width="35" height="20" style="border:1px solid black"></td>
+        <td class="name"></td>
+    </tr>
+</script>
+<script type="text/template" id="playerInfoTemplate">
+<div class="modal show" tabindex="-1" role="dialog">
+    <div class="modal-dialog shadow" role="document">
+        <div class="modal-content">
+            <div class="modal-body" style="overflow-y: auto">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <img class='player' width="40" height="40">
+                            <span class="badge badge-primary ticket" style="display: none"></span>
+                            <span class="badge badge-primary escape-ticket" style="display: none"></span>
+                        </div>
+                        <div class="col-md-6 m-auto text-center">
+                            <span class="amount"></span>원
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <tbody class="nationContainer">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+<script type="text/template" id="goldenKeyTemplate">
+    <div class="modal show golden-key-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog shadow" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary run-golden-key-button">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="toastTemplate">
+    <div class="modal toast-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog shadow" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <img class="player-image" width="80" height="80">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 toast-message text-center"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="investmentInfoTemplate">
+    <div class="modal investment-modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="modal-title"></span>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6 m-auto text-center">
+                                <img width="100px" height="50px">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-10 m-auto">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">구입비용</th>
+                                        <th scope="col">통행료</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="display-amount"></td>
+                                        <td class="display-fees"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancelButton" class="btn btn-secondary">안산다</button>
+                    <button type="button" id="buyButton" class="btn btn-primary">산다</button>
+                    <button type="button" id="notPayButton" class="btn btn-secondary">구입하지 않는다</button>
+                    <button type="button" id="payButton" class="btn btn-primary">구입한다</button>
+                    <button type="button" id="resetButton" class="btn btn-success">원래데로</button>
+                    <button type="button" id="payFeeButton" class="btn btn-primary"></button>
+                    <button type="button" id="useTicketButton" class="btn btn-primary">우대권사용</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="investmentBuildingTemplate">
+    <div class="row">
+        <div class="col-md-10 m-auto">
+            <strong>건축비</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-10 m-auto">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">비용</th>
+                    <th scope="col">수익</th>
+                    <th scope="col" class="investment-count" style="display:none">개수</th>
+                    <th scope="col" class="investment-add" style="display:none"></th>
+                </tr>
+                </thead>
+                <tbody class="investment-item-container">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</script>
+<script type="text/template" id="investmentBuildingItemTemplate">
+    <tr>
+        <td class="name"></td>
+        <td class="price"></td>
+        <td class="fees"></td>
+        <td class="investment-count" style="display:none">0</td>
+        <td class="investment-add" style="display:none">
+            <button type="button" class="btn btn-primary investment-add-button">추가</button>
+        </td>
+    </tr>
+</script>
+<script type="text/template" id="blockPopoverTemplate">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12 m-auto">
+            <img width="40" height="40">
+            </div>
+        </div>
+    </div>
+</script>
+<script src="../lib/jquery-3.3.1.min.js"></script>
+<script src="../lib/jquery.color-2.1.2.min.js"></script>
+<script src="../lib/popper.min.js"></script>
+<script src="../lib/bootstrap.js"></script>
+<script src="../lib/three.js"></script>
+<script src="../lib/teal.js"></script>
+<script src="../lib/cannon.js"></script>
+<script src="../lib/dice.js"></script>
+<script src="../lib/odometer.js"></script>
+<script src="util.js"></script>
+<script src="config.js"></script>
+<script src="flag.js"></script>
+<script src="name.js"></script>
+<script src="amount.js"></script>
+<script src="key.js"></script>
+<script src="special.js"></script>
+<script src="player.js"></script>
+<script src="owner.js"></script>
+<script src="playerInfo.js"></script>
+<script src="block.js"></script>
+<script src="investment.js"></script>
+<script src="die.js"></script>
+<script src="toast.js"></script>
+<script src="goldenKey.js"></script>
+<script src="board.js"></script>
+</body>
+</html>

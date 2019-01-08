@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<result>
+	<column>주문번호</column>
+	<column>상품명</column>
+	<column>주문자</column>
+	<column>주문일</column>
+	<rows>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>		
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>
+		<row>
+		  <ordclmNo>20070101000000000120</ordclmNo>
+			<prdNm>JQuery In Action</prdNm>
+			<ordNm>한동안</ordNm>			
+			<ordDts>2008/01/11 11:43:25</ordDts>			
+		</row>		
+	</rows>	
+</result>

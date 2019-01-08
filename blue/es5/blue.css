@@ -1,0 +1,79 @@
+.board {
+    margin: 30px 0px 0px 30px;
+    position: relative;
+}
+
+.block {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border: 1px solid black;
+}
+
+@keyframes live {
+    0%   {transform: translate3d(0, 0,0 ) scale3d(1, 1, 1);}
+    50%  {transform: translate3d(0, 5px, 0) scale3d(0.9, 1.1, 1);}
+    100% {transform: translate3d(0, 10px, 0) scale3d(1.1, 0.9, 1);}
+}
+
+.live {
+    animation: live 0.5s linear alternate infinite;
+}
+
+@keyframes right {
+    0%   {transform: translate3d(0, 0,0 ) scale3d(1, 1, 1);}
+    50%  {transform: translate3d(60px, -30px, 0) scale3d(1, 1, 1);}
+    100% {transform: translate3d(120px, 0, 0) scale3d(1, 1, 1);}
+}
+
+.right {
+    animation: right 0.5s ease forwards;
+}
+
+.fast-right {
+    animation: right 0.001s ease forwards;
+}
+
+@keyframes down {
+    0%   {transform: translate3d(0, 0,0 ) scale3d(1, 1, 1);}
+    50%  {transform: translate3d(30px, 30px, 0) scale3d(1, 1, 1);}
+    100% {transform: translate3d(0px, 75px, 0) scale3d(1, 1, 1);}
+}
+
+.down {
+    animation: down 0.5s ease forwards;
+}
+
+.fast-down {
+    animation: down 0.001s ease forwards;
+}
+
+@keyframes left {
+    0%   {transform: translate3d(0, 0,0 ) scale3d(1, 1, 1);}
+    50%  {transform: translate3d(-60px, -30px, 0) scale3d(1, 1, 1);}
+    100% {transform: translate3d(-120px, 0, 0) scale3d(1, 1, 1);}
+}
+
+.left {
+    animation: left 0.5s ease forwards;
+}
+
+.fast-left {
+    animation: left 0.001s ease forwards;
+}
+
+@keyframes up {
+    0%   {transform: translate3d(0, 0,0 ) scale3d(1, 1, 1);}
+    50%  {transform: translate3d(-30px, -30px, 0) scale3d(1, 1, 1);}
+    100% {transform: translate3d(0px, -75px, 0) scale3d(1, 1, 1);}
+}
+
+.up {
+    animation: up 0.5s ease forwards;
+}
+
+.fast-up {
+    animation: up 0.001s ease forwards;
+}
+
+.nationContainer td {
+    padding : 2px;
+}

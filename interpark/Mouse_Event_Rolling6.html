@@ -1,0 +1,120 @@
+<html><head><title>uuidcode</title>
+<meta charset="utf-8" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<link href="../bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+<link href="../css/shCore.css" rel="stylesheet" />
+<link href="../css/shThemeDefault.css" rel="stylesheet" />
+<script src="../bootstrap/js/jquery.js"></script>
+<script src="../bootstrap/js/bootstrap-dropdown.js"></script>
+<script src="../jqueryrolling/jquery.rolling.js"></script>
+<script src="../interpark/jquery/lib/jquery/jquery.easydrag.js"></script>
+<script src="../virtualform/json2.js"></script>
+<script src="../virtualform/jquery.virtualform-0.1.js"></script>
+<script src="../js/shCore.js"></script>
+<script src="../js/shBrushJava.js"></script>
+<script src="../js/shBrushSql.js"></script>
+<script src="../js/shBrushPhp.js"></script>
+<script src="../js/shBrushXml.js"></script>
+<style type="text/css">
+    .navbar-fixed-top {
+        margin-bottom: 20px;
+    }
+</style>
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src="../js/youtube.js?v=1"></script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-49038982-1', 'uuidcode.github.io');
+    ga('send', 'pageview');
+
+</script>
+<script type="text/javascript">
+    jQuery(function () {
+        SyntaxHighlighter.all()
+    });
+</script></head><body>
+<h2>Mouse Event Rolling</h2>
+mouse drag start, rolling start and mouse click, rolling stop.
+<p>
+</p><div id="rollingDiv"></div>
+<div id="commentDiv"></div>
+
+<h2>Script</h2>
+<xmp id="code">
+var rollingDiv = $("#rollingDiv");	
+	rollingDiv.rolling("right", 130, 100, 5);
+	
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"oG5RQPRCHH4\")'><img src='http://i.ytimg.com/vi/oG5RQPRCHH4/default.jpg' width='130' height='100' alt='Capoeira Demo 2' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"4CDAZVR7kgY\")'><img src='http://i.ytimg.com/vi/4CDAZVR7kgY/default.jpg' width='130' height='100' alt='Capoeira clip: Cueca' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"tbW6ErTogio\")'><img src='http://i.ytimg.com/vi/tbW6ErTogio/default.jpg' width='130' height='100' alt='Capoeira Demonstration' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"GOa5FSwK96w\")'><img src='http://i.ytimg.com/vi/GOa5FSwK96w/default.jpg' width='130' height='100' alt='abada capoeira trailer' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"UJKR4cOt2Dc\")'><img src='http://i.ytimg.com/vi/UJKR4cOt2Dc/default.jpg' width='130' height='100' alt='Capoeira Mestre' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"Qtkt_cbFj6U\")'><img src='http://i.ytimg.com/vi/Qtkt_cbFj6U/default.jpg' width='130' height='100' alt='Capoeirage III mix by Capoeira4Real.com' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"EX82tPUy1LE\")'><img src='http://i.ytimg.com/vi/EX82tPUy1LE/default.jpg' width='130' height='100' alt='Miudinho Capoeira on the Beach' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"4VNkBwgvVGo\")'><img src='http://i.ytimg.com/vi/4VNkBwgvVGo/default.jpg' width='130' height='100' alt='Capoeira - Instinto Coletivo (O Rappa)' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"hhPmrpxGLqc\")'><img src='http://i.ytimg.com/vi/hhPmrpxGLqc/default.jpg' width='130' height='100' alt='Mestre Jose Antonio vs Mestre Poncianinho' border='0'/></a></td></tr></table>");
+	rollingDiv.addRollingItem("<div><table width='130' height='100' cellspacing='0' cellpadding='0'><tr><td align='center' valign='center'><a href='javascript: showYoutubeById(\"14GxmMgG1Tc\")'><img src='http://i.ytimg.com/vi/14GxmMgG1Tc/default.jpg' width='130' height='100' alt='cordao de ouro 3amigos : ponchianinho casquinha papa leguas' border='0'/></a></td></tr></table>");
+   
+   
+   rollingDiv.mousedown(function(e) {
+   	startMouseEvnetX = e.pageX
+   	lastMouseEventTime = (new Date()).getTime();
+   	startMouseEventTime = lastMouseEventTime;      	
+   });
+   
+   rollingDiv.mouseup(function(e) {
+   startMouseEvnetX = -1;
+   	rollingDiv.stopRolling();
+   });
+   
+  //  rollingDiv.mouseout(function(e) {
+  //  startMouseEvnetX = -1;
+  // 	rollingDiv.stopRolling();
+  // });
+   
+   rollingDiv.mousemove(function(e) {
+   if (startMouseEvnetX == -1) {
+   		return;
+   	}
+   	
+   	//if ((new Date()).getTime() - lastMouseEventTime < 10) {
+   	//	return;
+   	//}
+   	
+   	
+   	if (Math.abs(e.pageX - startMouseEvnetX) > 5) {
+			$(this).setRollingAnimationFrame(20);
+			
+			
+			if (e.pageX - startMouseEvnetX < 0) {				
+				if ($(this).getRollingDirection() == "right") {
+	   			$(this).reverseRolling();
+	   		}
+			} else {
+				if ($(this).getRollingDirection() == "left") {
+	   			$(this).reverseRolling();
+	   		}
+			}
+			rollingDiv.resumeRolling();
+		} else {
+			rollingDiv.stopRolling();
+		}
+	});
+	
+   rollingDiv.startRolling(30, 0, 100);	
+   rollingDiv.stopRolling();
+</xmp>
+</body></html>
