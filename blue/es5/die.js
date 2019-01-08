@@ -50,9 +50,15 @@ function Die() {
         this.box.start_throw(this.notationGetter, this.beforeRoll, callback);
     };
 
-    this.debug = function (count) {
+    this.go = function (count) {
         this.roll(function () {
            board.getCurrentPlayer().go(count);
+        });
+    };
+
+    this.goFast = function (count) {
+        this.roll(function () {
+            board.getCurrentPlayer().goFast(count);
         });
     };
 

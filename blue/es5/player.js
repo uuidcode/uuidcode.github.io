@@ -181,10 +181,11 @@ function Player(index) {
                 this.inIsland = true;
                 this.readyNextTurn();
             } else if (block.name === config.fundingPlace) {
-                this.block.resetFunding();
+                block.resetFunding();
             } else if (block.name === config.fundingName) {
                 this.pay(config.fundAmount);
                 board.getFundingPlace().addFunding();
+                this.readyNextTurn();
             } else if (block.name === config.start) {
                 this.getPayAndReadyToNextTurn();
             } else {
@@ -214,7 +215,7 @@ function Player(index) {
         this.currentDirection = this.getDirection();
         this.$ui.addClass(this.getDirectionClass());
 
-        if (this.position === 0) {
+        if (this.position === 0 && count > 1) {
             if (this.payable) {
                 this.getPay();
             }

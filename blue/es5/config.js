@@ -1,4 +1,5 @@
 START = '출발';
+FUNDING_PLACE = '사회복지기금접수처';
 
 var config = {
     blockSize: 40,
@@ -6,7 +7,7 @@ var config = {
     fundAmount: 150000,
     start: START,
     fundingName: '사회복지기금',
-    fundingPlace: '사회복지기금접수처',
+    fundingPlace: FUNDING_PLACE,
     island: '무인도',
     goldenKey: 'goldenKey',
     block : {
@@ -384,9 +385,9 @@ var config = {
             ]
         },
         {
-            type: 'special',
-            name: '사회복지기금접수처',
-            amount: 0
+            code: 'we',
+            name: FUNDING_PLACE,
+            displayAmount: '0원'
         },
         {
             code: 'ar',
@@ -682,6 +683,21 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: '사회복지기금배당',
+            description: '사회복지기금접수처로 가세요.',
+            run: function () {
+                board.getCurrentPlayer().goFastToBlock(config.fundingPlace);
+            }
+        },
+        {
+            name: '고속도로',
+            description: '출발지까지 곧바로 가세요.',
+            run: function () {
+                board.getCurrentPlayer().goFastToBlock('출발');
+                return false;
+            }
+        },
+        {
             name: '우대권',
             description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다. ',
             run: function () {
@@ -720,14 +736,6 @@ var config = {
             }
         },
         {
-            name: '고속도로',
-            description: '출발지까지 곧바로 가세요.',
-            run: function () {
-                board.getCurrentPlayer().goFastToBlock('출발');
-                return false;
-            }
-        },
-        {
             name: '반액대매출',
             description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
             run: function () {
@@ -743,7 +751,7 @@ var config = {
 
                     for (var j = 0; j < block.buildingList.length; j++) {
                         var building = block.buildingList[j];
-                        sum += building.fees * building.count;
+                        sum += building.price * building.count;
                     }
 
                     if (maxAmount < sum) {
@@ -770,13 +778,6 @@ var config = {
             description: '병원에서 건강진단을 받았습니다.<br>은행에 5만원을 납부합니다.',
             run: function () {
                 board.getCurrentPlayer().pay(50000);
-            }
-        },
-        {
-            name: '사회복지기금배당',
-            description: '사회복지기금접수처로 가세요.',
-            run: function () {
-                board.getCurrentPlayer().goFastToBlock(config.fundingPlace);
             }
         },
         {

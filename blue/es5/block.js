@@ -8,6 +8,7 @@ function Block(index, data) {
     this.$ui = null;
     this.player = null;
     this.buildingList = [];
+    this.fundingCount = 0;
 
     if (data) {
         this.type = data.type || 'nation';
@@ -129,23 +130,34 @@ function Block(index, data) {
         return '../image/'+ this.code + '.png';
     };
 
-    this.addFunding = function (amount) {
-        this.amount += 150000;
+    this.addFunding = function () {
+        this.fundingCount++;
+        this.amount = this.getFundingAmount();
         this.updateFundingAmount();
     };
 
     this.resetFunding = function () {
-        if (this.amount > 0) {
+        if (this.fundingCount > 0) {
             board.getCurrentPlayer().income(this.amount);
-            new Toast().show(config.fundingName + '을 받았습니다.');
+            new Toast().show(this.getDisplayFundingAmount());
         }
 
-        this.amount = 0;
+        this.fundingCount = 0;
+        this.amount = this.getFundingAmount();
         this.updateFundingAmount();
     };
 
+    this.getFundingAmount = function () {
+        return 150000 * this.fundingCount;
+    };
+
+    this.getDisplayFundingAmount = function () {
+        return this.fundingCount * 15 + '만원';
+    };
+
+
     this.updateFundingAmount = function () {
-        this.$ui.find('.block-amount').text(this.amount);
+        this.$ui.find('.block-amount').text(this.getDisplayFundingAmount());
     };
 
     this.init();
