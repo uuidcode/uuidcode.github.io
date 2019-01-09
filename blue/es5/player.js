@@ -32,6 +32,10 @@ function Player(index) {
         });
     };
 
+    this.payWithTitle = function (amount, title) {
+        this.pay(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에 납부하였습니다.');
+    };
+
     this.pay = function (amount, message) {
         console.log('>>> pay amount', amount);
 
@@ -43,6 +47,10 @@ function Player(index) {
         } else {
             board.readyNextTurn();
         }
+    };
+
+    this.incomeWithTitle = function (amount, title) {
+        this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
     };
 
     this.income = function (amount, message) {

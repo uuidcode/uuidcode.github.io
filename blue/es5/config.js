@@ -1,5 +1,6 @@
 START = '출발';
 FUNDING_PLACE = '사회복지기금접수처';
+SPACE_TRAVEL = '우주여행';
 
 var config = {
     blockSize: 40,
@@ -8,6 +9,7 @@ var config = {
     start: START,
     fundingName: '사회복지기금',
     fundingPlace: FUNDING_PLACE,
+    spaceTravel: SPACE_TRAVEL,
     island: '무인도',
     goldenKey: 'goldenKey',
     block : {
@@ -544,7 +546,7 @@ var config = {
         },
         {
             type: 'special',
-            name: '우주여행'
+            name: SPACE_TRAVEL
         },
         {
             code: 'jp',
@@ -683,6 +685,13 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: '우주여행 초대',
+            description: '우주항공국에서 우주여행초청장이 왔습니다.<br>무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다.<br>출발지를 경유하면 월급을 받으세요.',
+            run: function () {
+                board.getCurrentPlayer().goFastToBlock(SPACE_TRAVEL);
+            }
+        },
+        {
             name: '사회복지기금배당',
             description: '사회복지기금접수처로 가세요.',
             run: function () {
@@ -770,14 +779,14 @@ var config = {
             name: '해외유학',
             description: '학교 등록금 10만원을 은행에 납부합니다.',
             run: function () {
-                board.getCurrentPlayer().pay(100000);
+                board.getCurrentPlayer().payWithTitle(100000, '등록금');
             }
         },
         {
             name: '건강진단',
             description: '병원에서 건강진단을 받았습니다.<br>은행에 5만원을 납부합니다.',
             run: function () {
-                board.getCurrentPlayer().pay(50000);
+                board.getCurrentPlayer().payWithTitle(50000, '건강진단금');
             }
         },
         {
@@ -795,19 +804,14 @@ var config = {
             name: '정기종합 소득세',
             description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
             run: function () {
-                var sum = 0;
-
-                board.getBlockList()
-                    .forEach(function (block) {
-                        var amount = [150000, 100000, 30000];
-
-                        for (var i = 0; i < block.buildingList.length; i++) {
-                            sum += block.buildingList[i].count * amount[i];
-                        }
-                    });
-
-                var message = '종합소득세로 ' + sum.toLocaleString() + '원을 납부하였습니다.';
-                board.getCurrentPlayer().pay(sum, message);
+                config.caculateFee([150000, 100000, 30000], '종합소득세');
+            }
+        },
+        {
+            name: '방범비',
+            description: '방범비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 5만원<br>빌딩: 3만원<br>별장: 1만원',
+            run: function () {
+                config.caculateFee([50000, 30000, 10000], '방범비');
             }
         },
         {
@@ -821,17 +825,44 @@ var config = {
             name: '노벨평화상 수상',
             description: '수상금 30만원을 은행에서 받습니다.',
             run: function () {
-                board.getCurrentPlayer().income(30000, '수상금 30만원을 은행에서 받았습니다.');
+                board.getCurrentPlayer().incomeWithTitle(300000, '수상금');
+            }
+        },
+        {
+            name: '장학금 혜택',
+            description: '장학금 30만원을 은행에서 받습니다.',
+            run: function () {
+                board.getCurrentPlayer().incomeWithTitle(100000, '장학금');
+            }
+        },
+        {
+            name: '복권당첨',
+            description: '당첨금 20만원을 은행에서 받습니다.',
+            run: function () {
+                board.getCurrentPlayer().incomeWithTitle(200000, '당첨금');
             }
         },
         {
             name: '과속운전 벌금',
             description: '벌금 5만원을 은행에 납부합니다.',
             run: function () {
-                board.getCurrentPlayer().pay(50000, '벌금 5만원을 은행에 납부하였습니다.');
+                board.getCurrentPlayer().payWithTitle(50000, '벌금');
             }
         }
-    ]
+    ],
+    calculateFee: function (amount, title) {
+        var sum = 0;
+
+        board.getBlockList()
+            .forEach(function (block) {
+                for (var i = 0; i < block.buildingList.length; i++) {
+                    sum += block.buildingList[i].count * amount[i];
+                }
+            });
+
+        var message = title + '로 ' + util.toDisplayAmount(sum) + '을 납부하였습니다.';
+        board.getCurrentPlayer().pay(sum, message);
+    }
 };
 
 for (var i = 0; i < config.blockList.length; i++) {

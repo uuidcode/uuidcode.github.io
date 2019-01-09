@@ -37,6 +37,18 @@ var util = {
         return sum;
     },
 
+    toDisplayAmount: function (amount) {
+        var tenThousand = Math.floor(amount / 10000);
+        var remainder = amount - tenThousand * 10000;
+        var thousand = remainder / 1000;
+
+        if (thousand > 0) {
+            return tenThousand + '만 ' + thousand + '천원';
+        }
+
+        return tenThousand + '만원';
+    },
+    
     setOnClick: function (selector, callback) {
         $('body').off('click', selector)
             .on('click', selector, function () {
