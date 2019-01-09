@@ -71,7 +71,7 @@ function Block(index, data) {
         this.$ui = $('<div></div>');
         this.$ui.on('click', function () {
             if (board.currentPlayerIsOnSpaceTravel()) {
-                if (this.name === config.spaceTravel) {
+                if (self.name === config.spaceTravel) {
                     return;
                 }
 

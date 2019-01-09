@@ -64,7 +64,7 @@ var util = {
             position: 'absolute',
             left: position.left + 20,
             top: position.top,
-            maxWidth: 700
+            minWidth: 600
         });
 
         return $modal
