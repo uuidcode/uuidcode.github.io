@@ -30,7 +30,11 @@ function Die() {
         var self = this;
 
         this.$ui.on('click', function () {
-            board.turn();
+            if (board.currentPlayerIsOnSpaceTravel()) {
+
+            } else {
+                board.turn();
+            }
         });
     };
 

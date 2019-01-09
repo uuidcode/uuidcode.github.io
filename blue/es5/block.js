@@ -3,6 +3,7 @@ function Block(index, data) {
     this.type = null;
     this.name = null;
     this.displayAmount = null;
+    this.displayTravelFees = null;
     this.amount = null;
     this.code = null;
     this.$ui = null;
@@ -18,6 +19,7 @@ function Block(index, data) {
         this.displayFees = data.displayFees || '';
         this.fees = data.fees || 0;
         this.code = data.code || '';
+        this.displayTravelFees = data.displayTravelFees;
 
         if (data.buildingList) {
             this.buildingList = data.buildingList;
@@ -67,6 +69,17 @@ function Block(index, data) {
         var position = this.processPosition();
 
         this.$ui = $('<div></div>');
+        this.$ui.on('click', function () {
+            if (board.currentPlayerIsOnSpaceTravel()) {
+                if (this.name === config.spaceTravel) {
+                    return;
+                }
+
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.goFastToBlock(self.name);
+            }
+        });
+
         this.$ui.addClass('block');
         this.$ui.css({
             position: 'absolute',

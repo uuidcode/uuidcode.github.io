@@ -101,9 +101,19 @@ function Board() {
         return this.turnIndex % this.playerList.length
     };
 
+    this.currentPlayerIsOnSpaceTravel = function () {
+        var currentPlayer = this.getCurrentPlayer();
+        return this.blockList[currentPlayer.position].name === config.spaceTravel;
+    };
+
     this.readyNextTurn = function () {
         board.activePlayer();
-        new Toast().show('주사위를 던지세요.');
+
+        if (this.currentPlayerIsOnSpaceTravel()) {
+            new Toast().show('가고 싶은 곳을 클릭하세요.');
+        } else {
+            new Toast().show('주사위를 던지세요.');
+        }
     };
 
     this.getFundingPlace = function () {

@@ -1,6 +1,7 @@
 START = '출발';
 FUNDING_PLACE = '사회복지기금접수처';
 SPACE_TRAVEL = '우주여행';
+COLUMBIA = '컬럼비아호';
 
 var config = {
     blockSize: 40,
@@ -10,6 +11,7 @@ var config = {
     fundingName: '사회복지기금',
     fundingPlace: FUNDING_PLACE,
     spaceTravel: SPACE_TRAVEL,
+    columbia: COLUMBIA,
     island: '무인도',
     goldenKey: 'goldenKey',
     block : {
@@ -546,7 +548,8 @@ var config = {
         },
         {
             type: 'special',
-            name: SPACE_TRAVEL
+            name: SPACE_TRAVEL,
+            displayTravelFees: '20만원'
         },
         {
             code: 'jp',
@@ -573,7 +576,7 @@ var config = {
         },
         {
             code: 'co',
-            name: '컬럼비아호',
+            name: COLUMBIA,
             displayAmount: '45만원',
             displayFees: '40만원'
         },
@@ -685,17 +688,19 @@ var config = {
     ],
     goldenKeyList: [
         {
-            name: '이사',
-            description: '뒤로 3칸 가세요.',
-            run: function () {
-                board.getCurrentPlayer().goFastToBlock(SPACE_TRAVEL);
-            }
-        },
-        {
             name: '우주여행 초대',
             description: '우주항공국에서 우주여행초청장이 왔습니다.<br>무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다.<br>출발지를 경유하면 월급을 받으세요.',
             run: function () {
-                board.getCurrentPlayer().goFastToBlock(SPACE_TRAVEL);
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.freeSpaceTravel = true;
+                currentPlayer.goFastToBlock(SPACE_TRAVEL);
+            }
+        },
+        {
+            name: '이사',
+            description: '뒤로 3칸 가세요.',
+            run: function () {
+                board.getCurrentPlayer().back(3);
             }
         },
         {

@@ -17,6 +17,7 @@ function Player(index) {
     this.nextTargetBlock = null;
     this.buyable = true;
     this.backward = false;
+    this.freeSpaceTravel = false;
 
     this.initEvent = function() {
         var self = this;
@@ -28,7 +29,11 @@ function Player(index) {
             self.$ui.css(position);
 
             setTimeout(function () {
-                self.go(self.curentCount - 1);
+                if (self.backward) {
+                    self.back(self.curentCount - 1);
+                } else {
+                    self.go(self.curentCount - 1);
+                }
             }, 100);
         });
     };
@@ -95,17 +100,34 @@ function Player(index) {
         var left = 0;
         var top = 0;
 
-        if (this.currentPosition >= 0 && this.currentPosition < 10) {
-            left = (this.currentPosition + 1) * config.block.width;
-            top = this.playerConfig.top;
-        } else if (this.currentPosition >= 10 && this.currentPosition < 20) {
-            left = config.block.width * 10;
-            top = (this.currentPosition - 10 + 1) * config.block.height + this.playerConfig.top;
-        } else if (this.currentPosition >= 20 && this.currentPosition < 30) {
-            left = (30 - this.currentPosition - 1) * config.block.width;
-            top = config.block.height * 10 +  + this.playerConfig.top;
-        } else if (this.currentPosition >= 30 && this.currentPosition < 40) {
-            top = (40 - this.currentPosition - 1) * config.block.height + this.playerConfig.top;
+        if (this.backward) {
+            if (this.currentPosition > 0 && this.currentPosition <= 10) {
+                left = (this.currentPosition - 1) * config.block.width;
+                top = this.playerConfig.top;
+            } else if (this.currentPosition > 10 && this.currentPosition <= 20) {
+                left = config.block.width * 10;
+                top = (this.currentPosition - 10 - 1) * config.block.height + this.playerConfig.top;
+            } else if (this.currentPosition > 20 && this.currentPosition <= 30) {
+                left = (30 - this.currentPosition + 1) * config.block.width;
+                top = config.block.height * 10 + this.playerConfig.top;
+            } else if (this.currentPosition > 30) {
+                top = (40 - this.currentPosition + 1) * config.block.height + this.playerConfig.top;
+            } else if (this.currentPosition == 0) {
+                top = config.block.height + this.playerConfig.top;
+            }
+        } else {
+            if (this.currentPosition >= 0 && this.currentPosition < 10) {
+                left = (this.currentPosition + 1) * config.block.width;
+                top = this.playerConfig.top;
+            } else if (this.currentPosition >= 10 && this.currentPosition < 20) {
+                left = config.block.width * 10;
+                top = (this.currentPosition - 10 + 1) * config.block.height + this.playerConfig.top;
+            } else if (this.currentPosition >= 20 && this.currentPosition < 30) {
+                left = (30 - this.currentPosition - 1) * config.block.width;
+                top = config.block.height * 10 + this.playerConfig.top;
+            } else if (this.currentPosition >= 30 && this.currentPosition < 40) {
+                top = (40 - this.currentPosition - 1) * config.block.height + this.playerConfig.top;
+            }
         }
 
         left += this.playerConfig.left;
@@ -179,9 +201,12 @@ function Player(index) {
         if (this.curentCount === 0) {
             this.payable = true;
             this.fast = false;
+            this.backward = false;
 
             var block = board.blockList[this.position];
             block.welcome();
+
+            console.log('>>> block', block);
 
             if (block.type === config.goldenKey) {
                 this.runGoldenKey();
@@ -197,6 +222,22 @@ function Player(index) {
                 this.readyNextTurn();
             } else if (block.name === config.start) {
                 this.getPayAndReadyToNextTurn();
+            } else if (block.name === config.spaceTravel) {
+                if (this.freeSpaceTravel === false) {
+                    /** @type Block **/
+                    var columbia = board.getTargetBlock(config.columbia);
+
+                    var displayTravelFees = block.displayTravelFees;
+                    console.log('>>> displayTravelFees', displayTravelFees);
+
+                    if (columbia.player != null && columbia.player != this) {
+                        var amount = util.toAmount(displayTravelFees);
+                        this.pay(amount, '우주여행 비용' + displayTravelFees + '을 지불하였습니다.');
+                        return true;
+                    }
+                }
+
+                this.readyNextTurn();
             } else {
                 this.buy(block);
             }
@@ -205,6 +246,32 @@ function Player(index) {
         }
 
         return false;
+    };
+
+    this.back = function(count) {
+        this.backward = true;
+
+        if (!this.fast) {
+            if (count > 0 && count <= 6) {
+                board.playJumpSound(count);
+            }
+        }
+
+        this.curentCount = count;
+
+        if (this.arrived()) {
+            return;
+        }
+
+        this.currentPosition = this.position;
+        this.position--;
+
+        if (this.position == -1) {
+            this.position = 39;
+        }
+
+        this.currentDirection = this.getDirection();
+        this.$ui.addClass(this.getDirectionClass());
     };
 
     this.go = function(count) {
@@ -268,14 +335,26 @@ function Player(index) {
     };
 
     this.getDirection = function() {
+        if (this.backward) {
+            if (this.currentPosition > 0 && this.currentPosition <= 10) {
+                return 'left';
+            } else if (this.currentPosition > 10 && this.currentPosition <= 20) {
+                return 'up';
+            } else if (this.currentPosition > 20 && this.currentPosition <= 30) {
+                return 'right';
+            } else if (this.currentPosition > 30 || this.currentPosition == 0) {
+                return 'down';
+            }
+        }
+
         if (this.currentPosition >= 0 && this.currentPosition < 10) {
-            return "right";
+            return 'right';
         } else if (this.currentPosition >= 10 && this.currentPosition < 20) {
-            return "down";
+            return 'down';
         } else if (this.currentPosition >= 20 && this.currentPosition < 30) {
-            return "left";
+            return 'left';
         } else if (this.currentPosition >= 30 && this.currentPosition < 40) {
-            return "up";
+            return 'up';
         }
     };
 
