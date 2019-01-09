@@ -16,6 +16,7 @@ function Player(index) {
     this.escapeTicketCount = 0;
     this.nextTargetBlock = null;
     this.buyable = true;
+    this.backward = false;
 
     this.initEvent = function() {
         var self = this;
