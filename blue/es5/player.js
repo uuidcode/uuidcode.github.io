@@ -485,9 +485,23 @@ function Player(index) {
 
     this.getBlockList = function () {
         var self = this;
+
         return board.blockList.filter(function (block) {
             return block.player === self;
         });
+    };
+
+    this.payForBuilding = function (amount, title) {
+        var sum = 0;
+
+        board.getBlockList()
+            .forEach(function (block) {
+                for (var i = 0; i < block.buildingList.length; i++) {
+                    sum += block.buildingList[i].count * amount[i];
+                }
+            });
+
+        this.payWithTitle(sum, title);
     };
 
     this.init();

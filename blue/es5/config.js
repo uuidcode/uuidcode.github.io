@@ -7,6 +7,9 @@ CONCORDE = '콩코드여객기';
 SEOUL = '서울';
 BUSAN = '부산';
 JEJU = '제주';
+WORLD_TOUR = '세계일주 초대권';
+TICKET = '우대권';
+SELL_HALF_PRICE = '반액대매출'
 
 var config = {
     blockSize: 40,
@@ -697,12 +700,12 @@ var config = {
             description: CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.<br>' + CONCORDE + ' 소유주에게 탑승료를 지불합니다.<br>출발지를 경유하면 월급을 받으세요.',
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI)
+                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
             }
         },
         {
-            name: '우주여행 초대',
-            description: '우주항공국에서 우주여행초청장이 왔습니다.<br>무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다.<br>출발지를 경유하면 월급을 받으세요.',
+            name: '우주여행 초청장',
+            description: '우주항공국에서 우주여행 초청장이 왔습니다.<br>무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다.<br>출발지를 경유하면 월급을 받으세요.',
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
                 currentPlayer.freeSpaceTravel = true;
@@ -717,6 +720,13 @@ var config = {
             }
         },
         {
+            name: '이사',
+            description: '뒤로 2칸 가세요.',
+            run: function () {
+                board.getCurrentPlayer().back(2);
+            }
+        },
+        {
             name: '사회복지기금배당',
             description: '사회복지기금접수처로 가세요.',
             run: function () {
@@ -727,13 +737,12 @@ var config = {
             name: '고속도로',
             description: '출발지까지 곧바로 가세요.',
             run: function () {
-                board.getCurrentPlayer().goFastToBlock('출발');
-                return false;
+                board.getCurrentPlayer().goFastToBlock(START);
             }
         },
         {
-            name: '우대권',
-            description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다. ',
+            name: TICKET,
+            description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
             run: function () {
                 board.getCurrentPlayer().addTicket();
             }
@@ -758,7 +767,6 @@ var config = {
             description: SEOUL + '로 관광여행을 갑니다.',
             run: function () {
                 board.getCurrentPlayer().goFastToBlock(SEOUL);
-                return false;
             }
         },
         {
@@ -766,11 +774,17 @@ var config = {
             description: JEJU + '로 관광여행을 갑니다.',
             run: function () {
                 board.getCurrentPlayer().goFastToBlock(JEJU);
-                return false;
             }
         },
         {
-            name: '반액대매출',
+            name: '관광여행',
+            description: BUSAN + '로 관광여행을 갑니다.',
+            run: function () {
+                board.getCurrentPlayer().goFastToBlock(BUSAN);
+            }
+        },
+        {
+            name: SELL_HALF_PRICE,
             description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
@@ -812,10 +826,11 @@ var config = {
             description: '병원에서 건강진단을 받았습니다.<br>은행에 5만원을 납부합니다.',
             run: function () {
                 board.getCurrentPlayer().payWithTitle(50000, '건강진단금');
+                return falsde;
             }
         },
         {
-            name: '세계일주 초대',
+            name: WORLD_TOUR,
             description: '현재 위치에서 한바퀴 됩니다.<br>월급도 받고 사회복지기금접수처의 기금도 받습니다.',
             run: function () {
                 board.getCurrentPlayer().goFast(40);
@@ -829,14 +844,21 @@ var config = {
             name: '정기종합 소득세',
             description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
             run: function () {
-                config.caculateFee([150000, 100000, 30000], '종합소득세');
+                board.getCurrentPlayer.payForBuilding([150000, 100000, 30000], '종합소득세');
             }
         },
         {
             name: '방범비',
             description: '방범비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 5만원<br>빌딩: 3만원<br>별장: 1만원',
             run: function () {
-                config.caculateFee([50000, 30000, 10000], '방범비');
+                board.getCurrentPlayer.payForBuilding([50000, 30000, 10000], '방범비');
+            }
+        },
+        {
+            name: '건물수리',
+            description: '건물수리비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 10만원<br>빌딩: 6만원<br>별장: 3만원',
+            run: function () {
+                board.getCurrentPlayer.payForBuilding([100000, 60000, 30000], '건물수리비');
             }
         },
         {
@@ -872,14 +894,21 @@ var config = {
             description: '벌금 5만원을 은행에 납부합니다.',
             run: function () {
                 board.getCurrentPlayer().payWithTitle(50000, '벌금');
+                return false;
             }
-        }
-        ,
+        },
         {
             name: '연금해택',
             description: '은행에서 노후연금 5만원을 받으세요.',
             run: function () {
                 board.getCurrentPlayer().incomeWithTitle(50000, '노후연금');
+            }
+        },
+        {
+            name: '자동차대회 우승',
+            description: '자동차대회에서 우승하였습니다.<br>상금 10만원을 받으세요.',
+            run: function () {
+                board.getCurrentPlayer().incomeWithTitle(100000, '우승상금');
             }
         }
     ],
@@ -927,3 +956,43 @@ for (var i = 0; i < config.blockList.length; i++) {
         }
     }
 }
+
+function shuffle(a) {
+    var j, x, i;
+
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+
+    return a;
+}
+
+function iterationCopy(src) {
+    var target = {};
+
+    for (var prop in src) {
+        if (src.hasOwnProperty(prop)) {
+            target[prop] = src[prop];
+        }
+    }
+
+    return target;
+}
+
+var goldenKeyLength = config.goldenKeyList.length;
+
+for (var i = 0; i < goldenKeyLength; i++) {
+    var goldenKey = config.goldenKeyList[i];
+
+    if (goldenKey.name == WORLD_TOUR ||
+        goldenKey.name == TICKET ||
+        goldenKey.name == SELL_HALF_PRICE) {
+        var newGoldenKey = iterationCopy(goldenKey);
+        config.goldenKeyList.push(newGoldenKey);
+    }
+}
+
+shuffle(config.goldenKey);

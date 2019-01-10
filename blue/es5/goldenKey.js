@@ -18,12 +18,9 @@ function GoldenKey() {
     this.initEvent = function () {
         var self = this;
         this.$ui.find('.run-golden-key-button').on('click', function () {
-            if (self.goldenKey.run()) {
-                board.readyNextTurn();
-            }
-
-            board.goldenKeyIndex++;
             self.hideModal();
+            self.goldenKey.run();
+            board.goldenKeyIndex++;
         });
     };
 
