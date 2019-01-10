@@ -4,6 +4,9 @@ SPACE_TRAVEL = '우주여행';
 COLUMBIA = '컬럼비아호';
 TAIPEI = '타이베이';
 CONCORDE = '콩코드여객기';
+SEOUL = '서울';
+BUSAN = '부산';
+JEJU = '제주';
 
 var config = {
     blockSize: 40,
@@ -159,7 +162,7 @@ var config = {
         },
         {
             code: 'kr',
-            name: '제주',
+            name: 'JEJU',
             displayAmount: '20만원',
             displayFees: '30만원',
             buildingList: []
@@ -469,7 +472,7 @@ var config = {
         },
         {
             code: 'kr',
-            name: '부산',
+            name: BUSAN,
             displayAmount: '50만원',
             displayFee: '60만원'
         },
@@ -683,7 +686,7 @@ var config = {
         },
         {
             code: 'kr',
-            name: '서울',
+            name: SEOUL,
             displayAmount: '100만원',
             displayFees: '200만원'
         }
@@ -752,17 +755,17 @@ var config = {
         },
         {
             name: '관광여행',
-            description: '서울로 관광여행을 갑니다.',
+            description: SEOUL + '로 관광여행을 갑니다.',
             run: function () {
-                board.getCurrentPlayer().goFastToBlock('서울');
+                board.getCurrentPlayer().goFastToBlock(SEOUL);
                 return false;
             }
         },
         {
             name: '관광여행',
-            description: '서울로 관광여행을 갑니다.',
+            description: JEJU + '로 관광여행을 갑니다.',
             run: function () {
-                board.getCurrentPlayer().goFastToBlock('서울');
+                board.getCurrentPlayer().goFastToBlock(JEJU);
                 return false;
             }
         },
@@ -869,6 +872,14 @@ var config = {
             description: '벌금 5만원을 은행에 납부합니다.',
             run: function () {
                 board.getCurrentPlayer().payWithTitle(50000, '벌금');
+            }
+        }
+        ,
+        {
+            name: '연금해택',
+            description: '은행에서 노후연금 5만원을 받으세요.',
+            run: function () {
+                board.getCurrentPlayer().incomeWithTitle(50000, '노후연금');
             }
         }
     ],
