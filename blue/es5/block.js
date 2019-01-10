@@ -54,6 +54,18 @@ function Block(index, data) {
         return totalFees;
     };
 
+    this.getTotalAmount = function () {
+        var totalAmount = 0;
+
+        this.buildingList.forEach(function (building) {
+            totalAmount += building.price * building.count;
+        });
+
+        totalAmount += this.amount;
+
+        return totalAmount;
+    };
+
     this.updateOwner = function () {
         var imageUrl = config.defaultOwnerImageUrl;
 

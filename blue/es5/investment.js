@@ -3,8 +3,6 @@ function Investment() {
     this.buildingList = null;
 
     this.show = function (block) {
-        console.log('>>> investment show');
-
         var player = board.getCurrentPlayer();
         this.buildingList = block.buildingList;
 
@@ -35,12 +33,17 @@ function Investment() {
 
         if (block.player === null) {
             $('#cancelButton,#buyButton').show();
+
+            if (block.amount > player.amount) {
+                $('#buyButton').hide();
+            }
+
             $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
         } else if (block.player == player) {
             this.$ui.find('.investment-count').show();
             this.$ui.find('.investment-add').show();
             $('#notPayButton,#payButton,#resetButton').show();
-            $('#cancelButton,#buyButton,#useTicketButton').hide();
+            $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
         } else {
             var totalFee = block.getTotalFees();
             $('#notPayButton,#payButton,#resetButton').hide();
@@ -54,7 +57,17 @@ function Investment() {
             }
         }
 
-        this.showModal();
+        var timeOut = 0;
+
+        if ($('.toast-modal').length > 0) {
+            timeOut = 2000;
+        }
+
+        var self = this;
+
+        setTimeout(function () {
+            self.showModal();
+        }, timeOut);
     };
 
     this.getModal = function () {

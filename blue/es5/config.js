@@ -1,4 +1,5 @@
 START = '출발';
+FUNDING = '사회복지기금';
 FUNDING_PLACE = '사회복지기금접수처';
 SPACE_TRAVEL = '우주여행';
 COLUMBIA = '컬럼비아호';
@@ -16,7 +17,7 @@ var config = {
     selectedColor: 'rgba(0, 123, 255, 0.5)',
     fundAmount: 150000,
     start: START,
-    fundingName: '사회복지기금',
+    fundingName: FUNDING,
     fundingPlace: FUNDING_PLACE,
     spaceTravel: SPACE_TRAVEL,
     columbia: COLUMBIA,
@@ -34,7 +35,8 @@ var config = {
             width: 50,
             height: 50,
             image: 'apeach.png',
-            amount: 3000000
+            amount: 3000000,
+            name: '어피치'
 
         },
         {
@@ -43,7 +45,8 @@ var config = {
             width: 50,
             height: 50,
             image: 'lion.png',
-            amount: 3000000
+            amount: 3000000,
+            name: '라이언'
         }
     ],
     flag: {
@@ -685,7 +688,7 @@ var config = {
         },
         {
             type: 'special',
-            name: '사회복지기금'
+            name: FUNDING
         },
         {
             code: 'kr',

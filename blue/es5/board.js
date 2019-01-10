@@ -135,5 +135,4 @@ var board = new Board();
 board.initBlock();
 board.initPlayer();
 board.initDie();
-board.die.roll();
 board.readyNextTurn();

@@ -3,6 +3,7 @@ function Player(index) {
     this.playerConfig = config.playerList[this.index];
     this.image = this.playerConfig.image;
     this.amount = this.playerConfig.amount;
+    this.name = this.playerConfig.name;
     this.position = 0;
     this.$ui = null;
     this.curentCount = 0;
@@ -43,9 +44,18 @@ function Player(index) {
     };
 
     this.pay = function (amount, message) {
-        console.log('>>> pay amount', amount);
+        if (this.amount > amount) {
+            this.amount -= amount;
+        } else {
+            this.amount = 0;
+            amount -= this.amount;
 
-        this.amount -= amount;
+            if (!this.sell(amount)) {
+                alert(this.name + ' 파산하였습니다.');
+                return;
+            }
+        }
+
         board.updatePlayInfo(this);
 
         if (message) {
@@ -54,6 +64,59 @@ function Player(index) {
             board.readyNextTurn();
         }
     };
+
+    this.sell = function (amount) {
+        var blockList = this.getBlockList();
+
+        blockList.sort(function (a, b) {
+           var totalAmountOfA = a.getTotalAmount();
+           var totalAmountOfB = b.getTotalAmount();
+
+           if (totalAmountOfA < totalAmountOfB) {
+               return -1;
+           }
+
+           if (totalAmountOfA > totalAmountOfB) {
+               return 1;
+           }
+
+           return 0;
+        });
+
+        for (var i = 0; i < blockList.length; i++) {
+            var block = blockList[i];
+            var buildingList = block.buildingList;
+
+            for (var j = 0; j < buildingList.length; j++) {
+                var building = buildingList[buildingList.length - j - 1];
+
+                if (building.count > 0) {
+                    var price = util.toAmount(building.displayPrice);
+                    this.income(price);
+                    building.count--;
+
+                    if (amount > price) {
+                        amount -= price
+                    } else {
+                        return true;
+                    }
+                }
+            }
+
+            if (amount > block.amount) {
+                this.income(block.amount);
+                block.player = null;
+                amount -= block.amount
+            } else {
+                this.income(block.amount - amount);
+                block.player = null;
+                return true;
+            }
+        }
+
+        return false;
+    };
+
 
     this.incomeWithTitle = function (amount, title) {
         this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
@@ -416,9 +479,16 @@ function Player(index) {
             self.readyNextTurn(investment);
         });
 
+        var self = this;
+
         $('#resetButton').on('click', function () {
-            this.initNewBuilding();
-            $('#payButton').text('구입한다');
+            for (var i = 0; i < block.newBuildingCountList.length; i++) {
+                var $investmentCount = $('.investment-count').eq(i + 1);
+                var count = block.newBuildingCountList[i];
+                $investmentCount.text(parseInt($investmentCount.text()) - count);
+            }
+
+            self.initNewBuilding(block);
         });
 
         $('#payFeeButton').on('click', function () {
@@ -428,7 +498,7 @@ function Player(index) {
             self.pay(totalFees);
             block.player.income(totalFees);
 
-            var message = '통행료 ' + totalFees.toLocaleString() + '원을 지불하였습니다.';
+            var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
             new Toast().showAndReadyToNextTurn(message);
         });
 
@@ -442,7 +512,7 @@ function Player(index) {
         this.addBuilding(investment, block);
     };
 
-    this.initNewBuilding = function () {
+    this.initNewBuilding = function (block) {
         block.newBuildingCountList = [0, 0, 0];
         block.investmentAmount = 0;
         this.getPayButton().hide();
@@ -453,33 +523,47 @@ function Player(index) {
     };
 
     this.addBuilding = function (investment, block) {
-        this.initNewBuilding();
+        this.initNewBuilding(block);
         var $payButton = this.getPayButton();
+        var self = this;
 
         $payButton.on('click', function () {
-            for (var i = 0; i < this.buildingList.length; i++) {
-                var building = this.buildingList[i];
+            for (var i = 0; i < block.buildingList.length; i++) {
+                var building = block.buildingList[i];
                 building.count += block.newBuildingCountList[i];
             }
 
-            this.amount -= block.investmentAmount;
-            this.readyNextTurn(investment);
+            self.amount -= block.investmentAmount;
+            board.updatePlayInfo(self);
+            self.readyNextTurn(investment);
         });
 
         var addButton = investment.$ui.find('.investment-add-button');
 
         addButton.on('click', function () {
-            this.getPayButton().show();
-            block.buildingIndex = addButton.index($(this));
-            block.investmentAmount += block.buildingList[block.buildingIndex].price;
-            block.newBuildingCountList[block.buildingIndex]++;
+            var buildingIndex = addButton.index($(this));
+            console.log('>>> buildingIndex', buildingIndex);
+
+            var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
+            console.log('>>> price', price);
+
+            if (block.investmentAmount + price > self.amount) {
+                alert('더 이상 구입할 수 없습니다.');
+                return;
+            }
+
+            console.log('>>> block.newBuildingCountList', block.newBuildingCountList);
+
+            block.buildingIndex = buildingIndex;
+            block.investmentAmount += price;
+            block.newBuildingCountList[block.buildingIndex] += 1;
 
             var $parent = $(this).closest('tr');
             var $count = $parent.find('.investment-count');
             var currentCount = $count.text() || '0';
             $count.text(parseInt(currentCount, 10) + 1);
 
-            $payButton.text(block.investmentAmount.toLocaleString() + '원으로 구입합니다');
+            $payButton.text(block.investmentAmount.toLocaleString() + '원으로 구입합니다').show();
         });
     };
 
