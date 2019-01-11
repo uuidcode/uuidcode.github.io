@@ -8,7 +8,7 @@ function Toast() {
     };
 
     this.showPickPlace = function () {
-        this.show('우주여행을 합니다.<br>가고 싶은 곳을 클릭하세요.<hr>' + board.getSpaceTravelHtml());
+        this.show('우주여행을 합니다.<br>가고 싶은 곳을 클릭하세요.<hr>' + board.getBlockHtml(config.spaceTravel));
     };
 
     this.show = function (message, callback) {

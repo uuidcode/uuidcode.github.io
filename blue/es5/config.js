@@ -709,6 +709,22 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: '항공여행',
+            description: function () {
+                var itemList = [];
+                itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
+                itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
+                itemList.push('출발지를 경유하면 월급을 받으세요');
+                itemList.push('<hr>');
+                itemList.push(board.getBlockHtml(CONCORDE));
+                return util.getDescriptionHtml(itemList);
+            },
+            run: function () {
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
+            }
+        },
+        {
             name: '우주여행 초청장',
             description: function () {
                 var itemList = [];
@@ -716,21 +732,13 @@ var config = {
                 itemList.push('무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다');
                 itemList.push('출발지를 경유하면 월급을 받으세요');
                 itemList.push('<hr>');
-                itemList.push(board.getSpaceTravelHtml());
+                itemList.push(board.getBlockHtml(SPACE_TRAVEL));
                 return util.getDescriptionHtml(itemList);
             },
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
                 currentPlayer.freeSpaceTravel = true;
                 currentPlayer.goFastToBlock(SPACE_TRAVEL);
-            }
-        },
-        {
-            name: '항공여행',
-            description: CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.<br>' + CONCORDE + ' 소유주에게 탑승료를 지불합니다.<br>출발지를 경유하면 월급을 받으세요.',
-            run: function () {
-                var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
             }
         },
         {
@@ -1029,4 +1037,4 @@ function resetGoldenKey() {
     shuffle(config.goldenKeyList);
 }
 
-resetGoldenKey();
+// resetGoldenKey();

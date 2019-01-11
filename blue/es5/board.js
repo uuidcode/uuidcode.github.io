@@ -98,8 +98,8 @@ function Board() {
         return this.blockList[currentPlayer.position].name === config.spaceTravel;
     };
 
-    this.getSpaceTravelHtml = function () {
-        var targetBlock = board.getTargetBlock(config.spaceTravel);
+    this.getBlockHtml = function (target) {
+        var targetBlock = board.getTargetBlock(target);
         var $image = $('<img>').css({
             width: '100%'
         });
