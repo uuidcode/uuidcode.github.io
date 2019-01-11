@@ -10,7 +10,7 @@ BUSAN = '부산';
 JEJU = '제주';
 WORLD_TOUR = '세계일주 초대권';
 TICKET = '우대권';
-SELL_HALF_PRICE = '반액대매출'
+SELL_HALF_PRICE = '반액대매출';
 
 var config = {
     blockSize: 40,
@@ -98,6 +98,7 @@ var config = {
     blockList: [
         {
             type: 'special',
+            code: 'start',
             name: START
         },
         {
@@ -253,6 +254,7 @@ var config = {
         },
         {
             type: 'special',
+            code: 'is',
             name: '무인도'
         },
         {
@@ -564,6 +566,7 @@ var config = {
             ]
         },
         {
+            code: 'st',
             type: 'special',
             name: SPACE_TRAVEL,
             displayTravelFees: '20만원'

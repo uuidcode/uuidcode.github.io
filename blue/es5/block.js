@@ -118,7 +118,7 @@ function Block(index, data) {
             var key = new Key();
             this.$ui.append(key.$ui);
         } else if (this.type == 'special') {
-            var special = new Special(this.name);
+            var special = new Special(this.name, this.code);
             this.$ui.append(special.$ui);
         }
     };

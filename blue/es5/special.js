@@ -1,5 +1,6 @@
-function Special(name) {
+function Special(name, code) {
     this.name = name;
+    this.code = code;
     this.$ui = null;
 
     this.init = function () {
@@ -16,6 +17,14 @@ function Special(name) {
         });
 
         this.$ui.html(this.name);
+
+        if (this.code) {
+            this.$ui.css({
+                backgroundImage: 'url(../image/' + this.code + '.png)',
+                backgroundSize: config.block.width + 'px ' + config.block.height + 'px',
+                color: 'white'
+            })
+        }
     };
 
     this.init();
