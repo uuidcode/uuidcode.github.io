@@ -715,9 +715,7 @@ var config = {
                 itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
                 itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
                 itemList.push('출발지를 경유하면 월급을 받으세요');
-                itemList.push('<hr>');
-                itemList.push(board.getBlockHtml(CONCORDE));
-                return util.getDescriptionHtml(itemList);
+                return util.getDescriptionWithImageHtml(itemList, CONCORDE);
             },
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
@@ -731,9 +729,7 @@ var config = {
                 itemList.push('우주항공국에서 우주여행 초청장이 왔습니다');
                 itemList.push('무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다');
                 itemList.push('출발지를 경유하면 월급을 받으세요');
-                itemList.push('<hr>');
-                itemList.push(board.getBlockHtml(SPACE_TRAVEL));
-                return util.getDescriptionHtml(itemList);
+                return util.getDescriptionWithImageHtml(itemList, SPACE_TRAVEL);
             },
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
@@ -1037,4 +1033,4 @@ function resetGoldenKey() {
     shuffle(config.goldenKeyList);
 }
 
-// resetGoldenKey();
+resetGoldenKey();

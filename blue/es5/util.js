@@ -68,6 +68,12 @@ var util = {
         return array.join('<br>');
     },
 
+    getDescriptionWithImageHtml: function (array, name) {
+        array.push('<hr>');
+        array.push(board.getBlockHtml(CONCORDE));
+        return util.getDescriptionHtml(array);
+    },
+
     getModal: function (selector) {
         var $modal = $(selector).modal();
         var position = board.die.$ui.offset();
