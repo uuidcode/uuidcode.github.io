@@ -9,8 +9,7 @@ function Building(block) {
             left: config.building.left,
             top: config.building.top,
             width: config.building.width,
-            height: config.building.height,
-            lineHeight: config.building.height + 'px'
+            height: config.building.height
         });
     };
 
