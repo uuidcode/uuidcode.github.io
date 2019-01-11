@@ -77,3 +77,7 @@
 .nationContainer td {
     padding : 0px 2px 0px 2px;
 }
+
+.player-modal-body {
+    padding: 5px;
+}

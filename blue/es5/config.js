@@ -53,31 +53,31 @@ var config = {
         left: 0,
         top: 0,
         width: 60,
-        height: 40
+        height: 30
     },
     amount: {
         left: 60,
         top: 0,
-        width: 60,
-        height: 40
+        width: 70,
+        height: 30
     },
     owner: {
-        left: 120,
+        left: 130,
         top: 0,
-        width: 40,
-        height: 40
+        width: 30,
+        height: 30
     },
     name: {
         left: 0,
-        top: 40,
+        top: 30,
         width: 160,
-        height: 40
+        height: 20
     },
     building: {
         left: 0,
-        top: 40,
+        top: 50,
         width: 160,
-        height: 20
+        height: 30
     },
     key: {
         top: 5,
@@ -972,17 +972,24 @@ for (var i = 0; i < config.blockList.length; i++) {
     }
 }
 
-function shuffle(a) {
-    var j, x, i;
+function shuffle(array) {
+    var counter = array.length;
 
-    for (i = a.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        x = a[i];
-        a[i] = a[j];
-        a[j] = x;
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        var index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        var temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
     }
 
-    return a;
+    return array;
 }
 
 function iterationCopy(src) {
@@ -1010,4 +1017,8 @@ for (var i = 0; i < goldenKeyLength; i++) {
     }
 }
 
-shuffle(config.goldenKey);
+function resetGoldenKey() {
+    shuffle(config.goldenKeyList);
+}
+
+resetGoldenKey();

@@ -29,24 +29,27 @@
 <script type="text/template" id="buildingTemplate">
     <div>
         <span class="badge badge-primary building-badge"></span>
-        <span class="badge badge-primary building-badge"></span>
-        <span class="badge badge-primary building-badge"></span>
+        <span class="badge badge-warning building-badge"></span>
+        <span class="badge badge-danger building-badge"></span>
     </div>
 </script>
 <script type="text/template" id="playerInfoTemplate">
 <div class="modal show" tabindex="-1" role="dialog">
     <div class="modal-dialog shadow" role="document">
         <div class="modal-content">
-            <div class="modal-body" style="overflow-y: auto">
+            <div class="modal-body player-modal-body" style="overflow-y: auto">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-6 text-center">
+                        <div class="col-md-4 text-center">
                             <img class='player' width="40" height="40">
                             <span class="badge badge-primary ticket" style="display: none"></span>
                             <span class="badge badge-primary escape-ticket" style="display: none"></span>
                         </div>
                         <div class="col-md-6 m-auto text-center">
-                            <span class="amount"></span>원
+                            <span class="amount"></span>
+                        </div>
+                        <div class="col-md-2 m-auto text-center">
+                            <span class="badge badge-primary place-count"></span>
                         </div>
                     </div>
                     <div class="row">
@@ -108,7 +111,8 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-6 m-auto text-center">
-                                <img width="100px" height="50px">
+                                <img class="place" width="100px" height="50px">
+                                <img class="owner" width="30px" height="30pxpx">
                             </div>
                         </div>
                         <div class="row">
@@ -132,10 +136,11 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="cancelButton" class="btn btn-secondary">안산다</button>
-                    <button type="button" id="buyButton" class="btn btn-primary">산다</button>
-                    <button type="button" id="notPayButton" class="btn btn-secondary">구입하지 않는다</button>
+                    <button type="button" class="btn btn-dark player-amount" disabled></button>
+                    <button type="button" id="buyButton" class="btn btn-primary"></button>
                     <button type="button" id="payButton" class="btn btn-primary">구입한다</button>
+                    <button type="button" id="cancelButton" class="btn btn-warning">안산다</button>
+                    <button type="button" id="notPayButton" class="btn btn-warning">안산다</button>
                     <button type="button" id="resetButton" class="btn btn-success">원래데로</button>
                     <button type="button" id="payFeeButton" class="btn btn-primary"></button>
                     <button type="button" id="useTicketButton" class="btn btn-success">우대권사용</button>
@@ -207,6 +212,7 @@
 <script src="special.js"></script>
 <script src="player.js"></script>
 <script src="owner.js"></script>
+<script src="building.js"></script>
 <script src="playerInfo.js"></script>
 <script src="block.js"></script>
 <script src="investment.js"></script>

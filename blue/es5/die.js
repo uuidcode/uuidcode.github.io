@@ -31,7 +31,7 @@ function Die() {
 
         this.$ui.on('click', function () {
             if (board.currentPlayerIsOnSpaceTravel()) {
-
+                new Toast().showPickPlace();
             } else {
                 board.turn();
             }

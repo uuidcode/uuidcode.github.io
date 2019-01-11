@@ -9,15 +9,18 @@ function Building(block) {
             left: config.building.left,
             top: config.building.top,
             width: config.building.width,
-            height: config.building.height
+            height: config.building.height,
+            textAlign: 'center'
         });
+
+        this.update(this.block);
     };
 
     /** @type Block **/
     this.update = function (block) {
         for (var i = 0; i < block.buildingList.length; i++) {
             var building = block.buildingList[i];
-            this.$ui.find('.building-batch').eq(i).text(this.getName(i) + ': ' + building.count);
+            this.$ui.find('.building-badge').eq(i).text(building.count);
         }
     };
 

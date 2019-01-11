@@ -7,6 +7,10 @@ function Toast() {
         })
     };
 
+    this.showPickPlace = function () {
+        this.show('가고 싶은 곳을 클릭하세요.');
+    }
+
     this.show = function (message, callback) {
         var self = this;
 

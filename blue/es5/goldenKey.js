@@ -21,6 +21,11 @@ function GoldenKey() {
             self.hideModal();
             self.goldenKey.run();
             board.goldenKeyIndex++;
+
+            if (board.goldenKeyIndex >= config.goldenKey.length) {
+                board.goldenKeyIndex = 0;
+                resetGoldenKey();
+            }
         });
     };
 

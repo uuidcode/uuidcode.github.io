@@ -37,16 +37,24 @@ var util = {
         return sum;
     },
 
+    getPayMessage: function (amount) {
+        return util.toDisplayAmount(amount) + '을 주고 삽니다.'
+    },
+
     toDisplayAmount: function (amount) {
         var tenThousand = Math.floor(amount / 10000);
         var remainder = amount - tenThousand * 10000;
         var thousand = remainder / 1000;
 
-        if (thousand > 0) {
+        if (tenThousand > 0 && thousand > 0) {
             return tenThousand + '만 ' + thousand + '천원';
+        } else if (tenThousand == 0 && thousand > 0) {
+            return thousand + '천원';
+        } else if (tenThousand > 0 && thousand == 0) {
+            return tenThousand + '만원';
         }
 
-        return tenThousand + '만원';
+        return '';
     },
     
     setOnClick: function (selector, callback) {

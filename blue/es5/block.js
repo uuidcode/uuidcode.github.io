@@ -71,6 +71,14 @@ function Block(index, data) {
         this.updateOwner();
     };
 
+    this.getOwnerImageUrl = function () {
+        if (this.player == null) {
+            return config.defaultOwnerImageUrl;
+        }
+
+        return this.player.getImageUrl();
+    };
+
     this.updateOwner = function () {
         var imageUrl = config.defaultOwnerImageUrl;
 
@@ -119,6 +127,9 @@ function Block(index, data) {
 
             var owner = new Owner(null);
             this.$ui.append(owner.$ui);
+
+            var building = new Building(this);
+            this.$ui.append(building.$ui);
         } else if (this.type == config.goldenKey) {
             var key = new Key();
             this.$ui.append(key.$ui);

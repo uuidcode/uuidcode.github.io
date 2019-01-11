@@ -18,10 +18,10 @@ function PlayerInfo(player) {
     };
 
     this.init = function (player) {
-        console.log('>>> player', player);
-
         var template = $('#playerInfoTemplate').html();
         this.$ui = $(template);
+        var blockList = player.getBlockList();
+        this.$ui.find('.place-count').text(blockList.length);
 
         if (player.ticketCount > 0) {
             this.$ui.find('.ticket')

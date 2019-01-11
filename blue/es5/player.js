@@ -43,7 +43,7 @@ function Player(index) {
         this.pay(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에 납부하였습니다.');
     };
 
-    this.pay = function (amount, message) {
+    this.payOnly = function (amount, message) {
         if (this.amount > amount) {
             this.amount -= amount;
         } else {
@@ -52,11 +52,18 @@ function Player(index) {
 
             if (!this.sell(amount)) {
                 alert(this.name + ' 파산하였습니다.');
-                return;
+                return true;
             }
         }
 
         board.updatePlayInfo(this);
+        return false;
+    };
+
+    this.pay = function (amount, message) {
+        if (this.payOnly(amount)) {
+            return;
+        }
 
         if (message) {
             new Toast().showAndReadyToNextTurn(message);
@@ -123,8 +130,6 @@ function Player(index) {
     };
 
     this.income = function (amount, message) {
-        console.log('>>> income amount', amount);
-
         this.amount += amount;
         board.updatePlayInfo(this);
 
@@ -245,7 +250,7 @@ function Player(index) {
                 return true;
             } else {
                 if (count === 6) {
-                    this.inIsland = false;
+                    this.initIsland();
                     return true;
                 } else {
                     this.inIslandCount++;
@@ -266,8 +271,6 @@ function Player(index) {
 
             var block = board.blockList[this.position];
             block.welcome();
-
-            console.log('>>> block', block);
 
             if (block.type === config.goldenKey) {
                 this.runGoldenKey();
@@ -383,7 +386,7 @@ function Player(index) {
 
     this.addEscapeTicket = function () {
         this.escapeTicketCount++;
-        this.updatePlayInfo(this);
+        board.updatePlayInfo(this);
         new Toast().showAndReadyToNextTurn('무인도 탈출권이 발급되었습니다.');
     };
 
@@ -491,11 +494,9 @@ function Player(index) {
             var totalFees = block.getTotalFees();
             investment.hideModal();
 
-            self.pay(totalFees);
-            block.player.income(totalFees);
-
+            self.payOnly(totalFees);
             var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
-            new Toast().showAndReadyToNextTurn(message);
+            block.player.income(totalFees, message);
         });
 
         $('#useTicketButton').on('click', function () {
@@ -559,7 +560,7 @@ function Player(index) {
             var currentCount = $count.text() || '0';
             $count.text(parseInt(currentCount, 10) + 1);
 
-            $payButton.text(block.investmentAmount.toLocaleString() + '원으로 구입합니다').show();
+            $payButton.text(util.getPayMessage(block.investmentAmount)).show();
         });
     };
 

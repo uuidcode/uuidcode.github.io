@@ -35,15 +35,7 @@ function Board() {
 
     this.updatePlayerAmount = function (player, playerInfo) {
         var $amount = playerInfo.$ui.find('.amount');
-
-        var odometer = new Odometer({
-            el: $amount[0],
-            value: 0,
-            format: '(,ddd)',
-            duration: 1000
-        });
-
-        odometer.update(player.amount);
+        $amount.text(util.toDisplayAmount(player.amount));
     };
 
     this.updatePlayInfo = function(currentPlayer) {
@@ -110,7 +102,7 @@ function Board() {
         board.activePlayer();
 
         if (this.currentPlayerIsOnSpaceTravel()) {
-            new Toast().show('가고 싶은 곳을 클릭하세요.');
+            new Toast().showPickPlace();
         } else {
             new Toast().show('주사위를 던지세요.');
         }

@@ -20,16 +20,20 @@ function Investment() {
             margin: 10
         });
 
-        var $image = this.$ui.find('img');
-        $image.css({
+        var $place = this.$ui.find('.place');
+        $place.css({
             border: '1px solid black'
         });
 
-        $image.attr('src', block.getImageUrl());
+        $place.attr('src', block.getImageUrl());
+        this.$ui.find('.owner').attr('src', block.getOwnerImageUrl());
 
         if (this.buildingList.length > 0) {
             this.createBuildingList();
         }
+
+        this.$ui.find('.player-amount').text('잔액 : ' + util.toDisplayAmount(player.amount));
+        var self = this;
 
         if (block.player === null) {
             $('#cancelButton,#buyButton').show();
@@ -38,6 +42,7 @@ function Investment() {
                 $('#buyButton').hide();
             }
 
+            $('#buyButton').text(util.getPayMessage(block.amount));
             $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
         } else if (block.player == player) {
             this.showInvestmentCount();
@@ -45,7 +50,8 @@ function Investment() {
             $('#notPayButton,#payButton,#resetButton').show();
             $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
 
-            if (block.buildingList.length == 0) {
+            if (!block.buildingList) {
+                self.hideModal();
                 return;
             }
         } else {
@@ -53,7 +59,7 @@ function Investment() {
             var totalFee = block.getTotalFees();
             $('#notPayButton,#payButton,#resetButton').hide();
             $('#cancelButton,#buyButton').hide();
-            $('#payFeeButton').html(totalFee.toLocaleString() + '원을 지불합니다.').show();
+            $('#payFeeButton').html(util.toDisplayAmount(totalFee) + '을 지불합니다.').show();
 
             if (player.ticketCount > 0) {
                 $('#useTicketButton').show();
@@ -67,8 +73,6 @@ function Investment() {
         if ($('.toast-modal').length > 0) {
             timeOut = 2000;
         }
-
-        var self = this;
 
         setTimeout(function () {
             self.showModal();
