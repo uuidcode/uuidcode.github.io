@@ -876,13 +876,13 @@ var config = {
                 board.getCurrentPlayer.payForBuilding([100000, 60000, 30000], '건물수리비');
             }
         },
-        {
-            name: '무인도 탈출권',
-            description: '무인도에서 탈출할 수 있습니다.<br>20만원에 팔 수 있습니다.',
-            run: function () {
-                board.getCurrentPlayer().addEscapeTicket();
-            }
-        },
+        // {
+        //     name: '무인도 탈출권',
+        //     description: '무인도에서 탈출할 수 있습니다.<br>20만원에 팔 수 있습니다.',
+        //     run: function () {
+        //         board.getCurrentPlayer().addEscapeTicket();
+        //     }
+        // },
         {
             name: '노벨평화상 수상',
             description: '수상금 30만원을 은행에서 받습니다.',
