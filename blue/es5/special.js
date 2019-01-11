@@ -14,9 +14,15 @@ function Special(name, code) {
             lineHeight: config.block.height + 'px',
             textAlign: 'center',
             fontWeight: 'bold'
+
         });
 
-        this.$ui.html(this.name);
+        var $name = $('<span>' + this.name + '</span>');
+        $name.css({
+            backgroundColor: config.selectedColor
+        });
+
+        this.$ui.append($name);
 
         if (this.code) {
             this.$ui.css({

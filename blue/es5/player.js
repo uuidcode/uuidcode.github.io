@@ -105,11 +105,11 @@ function Player(index) {
 
             if (amount > block.amount) {
                 this.income(block.amount);
-                block.player = null;
+                block.reset();
                 amount -= block.amount
             } else {
                 this.income(block.amount - amount);
-                block.player = null;
+                block.reset();
                 return true;
             }
         }
@@ -504,7 +504,7 @@ function Player(index) {
 
         $('#useTicketButton').on('click', function () {
             investment.hideModal();
-            this.ticketCount--;
+            self.ticketCount--;
             var message = '우대권을 사용하였습니다.';
             new Toast().showAndReadyToNextTurn(message);
         });

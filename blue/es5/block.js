@@ -66,6 +66,11 @@ function Block(index, data) {
         return totalAmount;
     };
 
+    this.reset = function () {
+        this.player = null;
+        this.updateOwner();
+    };
+
     this.updateOwner = function () {
         var imageUrl = config.defaultOwnerImageUrl;
 

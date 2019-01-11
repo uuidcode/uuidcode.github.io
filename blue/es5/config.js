@@ -175,7 +175,7 @@ var config = {
         },
         {
             code: 'kr',
-            name: 'JEJU',
+            name: JEJU,
             displayAmount: '20만원',
             displayFees: '30만원',
             buildingList: []
@@ -697,6 +697,7 @@ var config = {
         },
         {
             type: 'special',
+            code: 'we',
             name: FUNDING
         },
         {

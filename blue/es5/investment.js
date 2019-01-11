@@ -40,11 +40,16 @@ function Investment() {
 
             $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
         } else if (block.player == player) {
-            this.$ui.find('.investment-count').show();
+            this.showInvestmentCount();
             this.$ui.find('.investment-add').show();
             $('#notPayButton,#payButton,#resetButton').show();
             $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
+
+            if (block.buildingList.length == 0) {
+                return;
+            }
         } else {
+            this.showInvestmentCount();
             var totalFee = block.getTotalFees();
             $('#notPayButton,#payButton,#resetButton').hide();
             $('#cancelButton,#buyButton').hide();
@@ -68,6 +73,10 @@ function Investment() {
         setTimeout(function () {
             self.showModal();
         }, timeOut);
+    };
+
+    this.showInvestmentCount = function () {
+        this.$ui.find('.investment-count').show();
     };
 
     this.getModal = function () {
