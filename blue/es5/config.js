@@ -488,7 +488,7 @@ var config = {
             code: 'kr',
             name: BUSAN,
             displayAmount: '50만원',
-            displayFee: '60만원'
+            displayFees: '60만원'
         },
         {
             code: 'us',
@@ -800,6 +800,7 @@ var config = {
             name: SELL_HALF_PRICE,
             description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
             run: function () {
+                /** @type Player **/
                 var currentPlayer = board.getCurrentPlayer();
                 var blockList = currentPlayer.getBlockList();
                 var maxAmountBlock = null;
@@ -822,8 +823,9 @@ var config = {
                 }
 
                 if (maxAmountBlock != null) {
-                    maxAmountBlock.player = null;
+                    maxAmountBlock.reset();
                     board.getCurrentPlayer().income(maxAmount / 2);
+                    currentPlayer.readyNextTurn();
                 }
             }
         },
@@ -839,7 +841,7 @@ var config = {
             description: '병원에서 건강진단을 받았습니다.<br>은행에 5만원을 납부합니다.',
             run: function () {
                 board.getCurrentPlayer().payWithTitle(50000, '건강진단금');
-                return falsde;
+                return false;
             }
         },
         {

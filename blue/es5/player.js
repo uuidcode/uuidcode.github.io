@@ -239,19 +239,17 @@ function Player(index) {
     };
 
     this.escapeFromIsland = function (count) {
-        var self = this;
-
         if (this.inIsland) {
             if (this.inIslandCount === 3) {
                 this.initIsland();
                 return true;
             } else {
                 if (count === 6) {
-                    this.inIsland();
+                    this.inIsland = false;
                     return true;
                 } else {
                     this.inIslandCount++;
-                    new Toast().showAndReadyToNextTurn('무인도를 탈출하지 못했습니다.[' + this.inIsland + ']');
+                    new Toast().showAndReadyToNextTurn('무인도를 탈출하지 못했습니다.[' + this.inIslandCount + ']');
                     return false;
                 }
             }
@@ -422,8 +420,6 @@ function Player(index) {
     };
 
     this.readyNextTurn = function (modal) {
-        console.log('>>> readyNextTurn');
-
         if (modal) {
             modal.hideModal();
         }
