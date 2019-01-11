@@ -73,6 +73,12 @@ var config = {
         width: 160,
         height: 40
     },
+    building: {
+        left: 0,
+        top: 40,
+        width: 160,
+        height: 20
+    },
     key: {
         top: 5,
         width: 60,
