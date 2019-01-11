@@ -64,6 +64,10 @@ var util = {
             });
     },
 
+    getDescriptionHtml: function (array) {
+        return array.join('<br>');
+    },
+
     getModal: function (selector) {
         var $modal = $(selector).modal();
         var position = board.die.$ui.offset();
@@ -72,7 +76,8 @@ var util = {
             position: 'absolute',
             left: position.left + 20,
             top: position.top,
-            minWidth: 600
+            minWidth: 600,
+            maxHeight: 800
         });
 
         return $modal

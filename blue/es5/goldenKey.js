@@ -8,6 +8,14 @@ function GoldenKey() {
 
         this.$ui = $(template);
         this.$ui.find('.modal-title').html(goldenKey.name);
+        var description = null;
+
+        if ($.isFunction(this.goldenKey.description)) {
+            description = this.goldenKey.description();
+        } else {
+            description = this.goldenKey.description;
+        }
+
         this.$ui.find('.modal-body').html(goldenKey.description);
         board.append(this.$ui);
 
