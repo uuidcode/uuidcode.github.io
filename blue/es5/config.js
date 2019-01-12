@@ -871,21 +871,21 @@ var config = {
             name: '정기종합 소득세',
             description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
             run: function () {
-                board.getCurrentPlayer.payForBuilding([150000, 100000, 30000], '종합소득세');
+                board.getCurrentPlayer().payForBuilding([150000, 100000, 30000], '종합소득세');
             }
         },
         {
             name: '방범비',
             description: '방범비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 5만원<br>빌딩: 3만원<br>별장: 1만원',
             run: function () {
-                board.getCurrentPlayer.payForBuilding([50000, 30000, 10000], '방범비');
+                board.getCurrentPlayer().payForBuilding([50000, 30000, 10000], '방범비');
             }
         },
         {
             name: '건물수리',
             description: '건물수리비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 10만원<br>빌딩: 6만원<br>별장: 3만원',
             run: function () {
-                board.getCurrentPlayer.payForBuilding([100000, 60000, 30000], '건물수리비');
+                board.getCurrentPlayer().payForBuilding([100000, 60000, 30000], '건물수리비');
             }
         },
         // {

@@ -10,6 +10,7 @@ function Block(index, data) {
     this.player = null;
     this.buildingList = [];
     this.fundingCount = 0;
+    this.building = null;
 
     if (data) {
         this.type = data.type || 'nation';
@@ -27,8 +28,6 @@ function Block(index, data) {
     }
 
     this.welcome = function () {
-        console.log('welcome');
-
         var self = this;
 
         this.$ui.animate({
@@ -128,8 +127,8 @@ function Block(index, data) {
             var owner = new Owner(null);
             this.$ui.append(owner.$ui);
 
-            var building = new Building(this);
-            this.$ui.append(building.$ui);
+            this.building = new Building(this);
+            this.$ui.append(this.building.$ui);
         } else if (this.type == config.goldenKey) {
             var key = new Key();
             this.$ui.append(key.$ui);

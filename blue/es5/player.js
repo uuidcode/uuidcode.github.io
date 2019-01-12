@@ -209,7 +209,7 @@ function Player(index) {
     this.rollDie = function() {
         var self = this;
         board.die.roll(function (notation, count) {
-            self.go(count);
+            self.go(count[0]);
         });
     };
 
@@ -244,6 +244,10 @@ function Player(index) {
     };
 
     this.escapeFromIsland = function (count) {
+        console.log('>>> count', count);
+        console.log('>>> this.inIsland', this.inIsland);
+        console.log('>>> this.inIslandCount', this.inIslandCount);
+
         if (this.inIsland) {
             if (this.inIslandCount === 3) {
                 this.initIsland();
@@ -533,23 +537,19 @@ function Player(index) {
             self.amount -= block.investmentAmount;
             board.updatePlayInfo(self);
             self.readyNextTurn(investment);
+            block.building.update();
         });
 
         var addButton = investment.$ui.find('.investment-add-button');
 
         addButton.on('click', function () {
             var buildingIndex = addButton.index($(this));
-            console.log('>>> buildingIndex', buildingIndex);
-
             var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
-            console.log('>>> price', price);
 
             if (block.investmentAmount + price > self.amount) {
                 alert('더 이상 구입할 수 없습니다.');
                 return;
             }
-
-            console.log('>>> block.newBuildingCountList', block.newBuildingCountList);
 
             block.buildingIndex = buildingIndex;
             block.investmentAmount += price;
@@ -575,7 +575,7 @@ function Player(index) {
     this.payForBuilding = function (amount, title) {
         var sum = 0;
 
-        board.getBlockList()
+        this.getBlockList()
             .forEach(function (block) {
                 for (var i = 0; i < block.buildingList.length; i++) {
                     sum += block.buildingList[i].count * amount[i];

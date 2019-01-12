@@ -13,13 +13,13 @@ function Building(block) {
             textAlign: 'center'
         });
 
-        this.update(this.block);
+        this.update();
     };
 
     /** @type Block **/
-    this.update = function (block) {
-        for (var i = 0; i < block.buildingList.length; i++) {
-            var building = block.buildingList[i];
+    this.update = function () {
+        for (var i = 0; i < this.block.buildingList.length; i++) {
+            var building = this.block.buildingList[i];
             this.$ui.find('.building-badge').eq(i).text(building.count);
         }
     };
