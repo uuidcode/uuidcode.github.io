@@ -47,11 +47,12 @@ function Player(index) {
         if (this.amount > amount) {
             this.amount -= amount;
         } else {
-            this.amount = 0;
             amount -= this.amount;
+            this.amount = 0;
 
             if (!this.sell(amount)) {
                 alert(this.name + ' 파산하였습니다.');
+                location.reload();
                 return true;
             }
         }
@@ -97,8 +98,8 @@ function Player(index) {
 
             for (var j = 0; j < buildingList.length; j++) {
                 var building = buildingList[buildingList.length - j - 1];
-
                 var buildingCount = building.count;
+
                 for (var k = 0; k < buildingCount; k++) {
                     var price = util.toAmount(building.displayPrice);
                     building.count--;
@@ -283,8 +284,9 @@ function Player(index) {
                 block.resetFunding();
                 this.readyNextTurn();
             } else if (block.name === config.fundingName) {
-                this.pay(config.fundAmount);
-                board.getFundingPlace().addFunding();
+                var amount = util.toDisplayAmount(config.fundAmount);
+                var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
+                this.pay(config.fundAmount, message);
                 this.readyNextTurn();
             } else if (block.name === config.start) {
                 this.getPayAndReadyToNextTurn();
@@ -507,6 +509,7 @@ function Player(index) {
             investment.hideModal();
             self.ticketCount--;
             var message = '우대권을 사용하였습니다.';
+            board.updatePlayInfo(self);
             new Toast().showAndReadyToNextTurn(message);
         });
 
@@ -582,7 +585,11 @@ function Player(index) {
                 }
             });
 
-        this.payWithTitle(sum, title);
+        if (sum > 0) {
+            this.payWithTitle(sum, title);
+        } else {
+            new Toast().showAndReadyToNextTurn(title + '에 해당되는 건물이 없습니다.')
+        }
     };
 
     this.init();
