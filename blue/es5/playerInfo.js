@@ -12,6 +12,10 @@ function PlayerInfo(player) {
                 var $nation = $(nationHtml);
                 $nation.find('.flag').find('img').attr('src', block.getImageUrl());
                 $nation.find('.name').html(block.name);
+                var totalAmount = block.getTotalAmount();
+                console.log('>>> totalAmount', totalAmount);
+                var buildingAmount = util.toDisplayAmount(totalAmount);
+                $nation.find('.building-amount').html(buildingAmount);
                 $nationContainer.append($nation);
             }
         }

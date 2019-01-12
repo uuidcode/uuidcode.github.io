@@ -91,31 +91,32 @@ function Player(index) {
         });
 
         for (var i = 0; i < blockList.length; i++) {
+            /** @type Block **/
             var block = blockList[i];
             var buildingList = block.buildingList;
 
             for (var j = 0; j < buildingList.length; j++) {
                 var building = buildingList[buildingList.length - j - 1];
 
-                if (building.count > 0) {
+                var buildingCount = building.count;
+                for (var k = 0; k < buildingCount; k++) {
                     var price = util.toAmount(building.displayPrice);
-                    this.income(price);
                     building.count--;
 
                     if (amount > price) {
                         amount -= price
                     } else {
+                        this.amount = price - amount;
                         return true;
                     }
                 }
             }
 
             if (amount > block.amount) {
-                this.income(block.amount);
                 block.reset();
                 amount -= block.amount
             } else {
-                this.income(block.amount - amount);
+                this.amount = block.amount - amount;
                 block.reset();
                 return true;
             }
@@ -238,23 +239,20 @@ function Player(index) {
         this.go(count);
     };
 
-    this.initIsland = function () {
+    this.escapeFromIsland = function () {
         this.inIsland = false;
         this.inIslandCount = 0;
+        new Toast().show('무인도를 탈출합니다.');
     };
 
-    this.escapeFromIsland = function (count) {
-        console.log('>>> count', count);
-        console.log('>>> this.inIsland', this.inIsland);
-        console.log('>>> this.inIslandCount', this.inIslandCount);
-
+    this.tryEscapeFromIsland = function (count) {
         if (this.inIsland) {
             if (this.inIslandCount === 3) {
-                this.initIsland();
+                this.escapeFromIsland();
                 return true;
             } else {
                 if (count === 6) {
-                    this.initIsland();
+                    this.escapeFromIsland();
                     return true;
                 } else {
                     this.inIslandCount++;
@@ -343,7 +341,7 @@ function Player(index) {
     };
 
     this.go = function(count) {
-        if (!this.escapeFromIsland(count)) {
+        if (!this.tryEscapeFromIsland(count)) {
             return;
         }
 
@@ -466,14 +464,16 @@ function Player(index) {
 
         var self = this;
         var investment = new Investment();
-        investment.show(block);
+        if (!investment.show(block)) {
+            this.readyNextTurn();
+            return;
+        }
 
         $('#buyButton').on('click', function () {
             block.player = self;
             self.amount -= block.amount;
 
-            block.updateOwner();
-
+            block.update();
             board.updatePlayInfo(self);
             self.readyNextTurn(investment);
         });

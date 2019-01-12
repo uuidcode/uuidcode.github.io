@@ -4,6 +4,13 @@ function Investment() {
 
     this.show = function (block) {
         var player = board.getCurrentPlayer();
+
+        if (block.player == player) {
+            if (block.buildingList.length == 0) {
+                return false;
+            }
+        }
+
         this.buildingList = block.buildingList;
 
         this.$ui = $($('#investmentInfoTemplate').html());
@@ -49,11 +56,6 @@ function Investment() {
             this.$ui.find('.investment-add').show();
             $('#notPayButton,#payButton,#resetButton').show();
             $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
-
-            if (!block.buildingList) {
-                self.hideModal();
-                return;
-            }
         } else {
             this.showInvestmentCount();
             var totalFee = block.getTotalFees();
@@ -77,6 +79,8 @@ function Investment() {
         setTimeout(function () {
             self.showModal();
         }, timeOut);
+
+        return true;
     };
 
     this.showInvestmentCount = function () {

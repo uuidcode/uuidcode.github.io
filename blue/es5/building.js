@@ -22,6 +22,17 @@ function Building(block) {
             var building = this.block.buildingList[i];
             this.$ui.find('.building-badge').eq(i).text(building.count);
         }
+
+        var $totalFees = this.$ui.find('.total-fees');
+        $totalFees.text('');
+
+        if (this.block.player != null) {
+            var totalFees = this.block.getTotalFees();
+
+            if (totalFees > 0) {
+                $totalFees.text(util.toDisplayAmount(totalFees));
+            }
+        }
     };
 
     this.getName = function (index) {

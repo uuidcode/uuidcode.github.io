@@ -815,6 +815,7 @@ var config = {
                 /** @type Player **/
                 var currentPlayer = board.getCurrentPlayer();
                 var blockList = currentPlayer.getBlockList();
+                /** @type Block **/
                 var maxAmountBlock = null;
                 var maxAmount = 0;
 
@@ -836,7 +837,9 @@ var config = {
 
                 if (maxAmountBlock != null) {
                     maxAmountBlock.reset();
-                    board.getCurrentPlayer().income(maxAmount / 2);
+                    var amount = maxAmount / 2;
+                    var message = maxAmountBlock.name + '을/를' + util.toDisplayAmount(amount) + '에 팔았습니다.';
+                    board.getCurrentPlayer().income(amount, maxAmount);
                     currentPlayer.readyNextTurn();
                 }
             }

@@ -57,7 +57,7 @@ function Block(index, data) {
         var totalAmount = 0;
 
         this.buildingList.forEach(function (building) {
-            totalAmount += building.price * building.count;
+            totalAmount += util.toAmount(building.displayPrice) * building.count;
         });
 
         totalAmount += this.amount;
@@ -67,7 +67,7 @@ function Block(index, data) {
 
     this.reset = function () {
         this.player = null;
-        this.updateOwner();
+        this.update();
     };
 
     this.getOwnerImageUrl = function () {
@@ -76,6 +76,11 @@ function Block(index, data) {
         }
 
         return this.player.getImageUrl();
+    };
+
+    this.update = function () {
+        this.updateOwner();
+        this.building.update();
     };
 
     this.updateOwner = function () {
