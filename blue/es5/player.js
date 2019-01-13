@@ -65,7 +65,7 @@ function Player(index) {
                 $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
                 $winModal.showModal().removeModalWhenClose();
                 confetti.start();
-
+                board.playWinSound();
                 $winModal.find('.win-button').on('click', function () {
                     location.reload();
                 });
