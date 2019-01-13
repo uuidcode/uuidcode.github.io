@@ -12,8 +12,8 @@ function PlayerInfo(player) {
                 var $nation = $(nationHtml);
                 $nation.find('.flag').find('img').attr('src', block.getImageUrl());
                 $nation.find('.name').html(block.name);
+
                 var totalAmount = block.getTotalAmount();
-                console.log('>>> totalAmount', totalAmount);
                 var buildingAmount = util.toDisplayAmount(totalAmount);
                 $nation.find('.building-amount').html(buildingAmount);
                 $nationContainer.append($nation);
@@ -64,7 +64,8 @@ function PlayerInfo(player) {
            top: top
         });
 
-        this.$ui.find('.player').attr('src', player.getImageUrl());
+        this.$ui.find('.player-image').attr('src', player.getImageUrl());
+        this.$ui.find('.player-name').text(player.name);
 
         this.createNation(player);
     };

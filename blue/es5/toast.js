@@ -15,6 +15,7 @@ function Toast() {
         var self = this;
 
         this.$ui = $($('#toastTemplate').html());
+        this.$ui.find('.modal-title').text(board.getCurrentPlayer().name);
         board.append(this.$ui);
 
         this.setMessage(message);

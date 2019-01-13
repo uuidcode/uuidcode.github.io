@@ -1,15 +1,23 @@
-window.odometerOptions = {
-    duration: 1000
-};
+if (!String.prototype.trim) {
+    String.prototype.trim = function () {
+        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+    };
+}
 
 (function($) {
     $.fn.showModal = function () {
-        $(this).modal('show');
+        return $(this).modal('show');
     };
 
     $.fn.hideModal = function () {
-        $(this).modal('hide');
+        return $(this).modal('hide');
     };
+
+    $.fn.removeModalWhenClose = function () {
+        $(this).on('hide.bs.modal', function () {
+            $(this).remove();
+        });
+    }
 })(jQuery);
 
 var util = {
@@ -42,6 +50,10 @@ var util = {
     },
 
     toDisplayAmount: function (amount) {
+        if (amount == 0) {
+            return '0원';
+        }
+
         var tenThousand = Math.floor(amount / 10000);
         var remainder = amount - tenThousand * 10000;
         var thousand = remainder / 1000;
@@ -90,5 +102,9 @@ var util = {
             .on('hide.bs.modal', function () {
                 $(this).remove();
             });
+    },
+
+    getImageUrl: function (image) {
+        return '../image/' + image;
     }
 };

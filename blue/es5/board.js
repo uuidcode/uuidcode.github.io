@@ -130,11 +130,90 @@ function Board() {
 
     this.append = function ($ui) {
         this.$ui.append($ui);
-    }
+    };
+
+    this.ready = function () {
+        var html = $('#startTemplate').html();
+        var playerHtml = $('#startPlayerTemplate').html();
+
+        var $modal = $(html);
+        var $container = $modal.find('.container-fluid');
+        var reset = function () {
+            $modal.find('.row').each(function (index) {
+                $(this).find('.player-index').text(index + 1);
+            });
+        };
+
+        config.playerList.forEach(function (player, index) {
+            var $player = $(playerHtml);
+            var $playerImage = $player.find('.player-image');
+            $playerImage.attr('src', util.getImageUrl(player.image));
+            $playerImage.attr('data-image', player.image);
+            $container.append($player);
+        });
+
+        reset();
+
+        $modal.on('click', '.up-button', function () {
+            var index = $modal.find('.up-button').index($(this));
+
+            if (index == 0) {
+                return;
+            }
+
+            var $row = $(this).closest('.row');
+            $row.insertBefore($row.parent('').find('.row').eq(index - 1));
+            reset();
+        });
+
+        $modal.on('click', '.down-button', function () {
+            var index = $modal.find('.down-button').index($(this));
+
+            if (index == config.playerList.length - 1) {
+                return;
+            }
+
+            var $row = $(this).closest('.row');
+            $row.insertAfter($row.parent('').find('.row').eq(index - 1));
+            reset();
+
+        });
+
+        $modal.on('click', '.start-button', function () {
+            var $row = $modal.find('.row');
+
+            for (var i = 0; i < $row.length; i++) {
+                var $currentPlayer = $row.eq(i);
+                var $playerName = $currentPlayer.find('.player-name');
+
+                if ($playerName.val().trim() === '') {
+                    alert('이름을 입력하세요.');
+                    $playerName.focus();
+                    return;
+                }
+
+                config.playerList[i].image = $currentPlayer.find('.player-image').attr('data-image');
+                config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
+            }
+
+            board.start();
+            $modal.hideModal();
+        });
+
+        $modal.showModal().removeModalWhenClose();
+
+        setTimeout(function () {
+            $modal.find('.player-name').eq(0).focus();
+        }, 1000);
+    };
+
+    this.start = function () {
+        board.initPlayer();
+        board.initDie();
+        board.readyNextTurn();
+    };
 }
 
 var board = new Board();
 board.initBlock();
-board.initPlayer();
-board.initDie();
-board.readyNextTurn();
+board.ready();

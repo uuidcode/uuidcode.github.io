@@ -709,6 +709,45 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: '정기종합 소득세',
+            description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
+            run: function () {
+                board.getCurrentPlayer().payForBuilding([150000, 100000, 30000], '종합소득세');
+            }
+        },
+        {
+            name: SELL_HALF_PRICE,
+            description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
+            run: function () {
+                /** @type Player **/
+                var currentPlayer = board.getCurrentPlayer();
+                var blockList = currentPlayer.getBlockList();
+                /** @type Block **/
+                var maxAmountBlock = null;
+                var maxAmount = 0;
+
+                for (var i = 0; i < blockList.length; i++) {
+                    var block = blockList[i];
+                    var sum = block.getTotalAmount();
+
+                    if (maxAmount < sum) {
+                        maxAmountBlock = block;
+                        maxAmount = sum;
+                    }
+                }
+
+                if (maxAmountBlock != null) {
+                    maxAmountBlock.reset();
+                    var amount = maxAmount / 2;
+                    var message = maxAmountBlock.name + '을/를' + util.toDisplayAmount(amount) + '에 팔았습니다.';
+                    board.getCurrentPlayer().income(amount, message);
+                    return;
+                }
+
+                new Toast().showAndReadyToNextTurn('소유하고 있는 부동산이 없습니다.');
+            }
+        },
+        {
             name: '항공여행',
             description: function () {
                 var itemList = [];
@@ -809,44 +848,6 @@ var config = {
             }
         },
         {
-            name: SELL_HALF_PRICE,
-            description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
-            run: function () {
-                /** @type Player **/
-                var currentPlayer = board.getCurrentPlayer();
-                var blockList = currentPlayer.getBlockList();
-                /** @type Block **/
-                var maxAmountBlock = null;
-                var maxAmount = 0;
-
-                for (var i = 0; i < blockList.length; i++) {
-                    var block = blockList[i];
-                    var sum = 0;
-                    sum += block.amount;
-
-                    for (var j = 0; j < block.buildingList.length; j++) {
-                        var building = block.buildingList[j];
-                        sum += building.price * building.count;
-                    }
-
-                    if (maxAmount < sum) {
-                        maxAmountBlock = block;
-                        maxAmount = sum;
-                    }
-                }
-
-                if (maxAmountBlock != null) {
-                    maxAmountBlock.reset();
-                    var amount = maxAmount / 2;
-                    var message = maxAmountBlock.name + '을/를' + util.toDisplayAmount(amount) + '에 팔았습니다.';
-                    board.getCurrentPlayer().income(amount, message);
-                    return;
-                }
-
-                new Toast().showAndReadyToNextTurn('소유하고 있는 부동산이 없습니다.');
-            }
-        },
-        {
             name: '해외유학',
             description: '학교 등록금 10만원을 은행에 납부합니다.',
             run: function () {
@@ -870,13 +871,6 @@ var config = {
                 /** @type Block **/
                 var fundingPlace = board.getFundingPlace();
                 fundingPlace.resetFunding();
-            }
-        },
-        {
-            name: '정기종합 소득세',
-            description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
-            run: function () {
-                board.getCurrentPlayer().payForBuilding([150000, 100000, 30000], '종합소득세');
             }
         },
         {

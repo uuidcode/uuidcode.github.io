@@ -42,8 +42,9 @@
             <div class="modal-body player-modal-body" style="overflow-y: auto">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img class='player' width="40" height="40">
+                        <div class="col-md-4 text-center" style="padding: 0px">
+                            <img class='player-image' width="40" height="40">
+                            <span class="player-name"></span>
                             <span class="badge badge-primary ticket" style="display: none"></span>
                             <span class="badge badge-primary escape-ticket" style="display: none"></span>
                         </div>
@@ -68,7 +69,7 @@
 </div>
 </script>
 <script type="text/template" id="goldenKeyTemplate">
-    <div class="modal show golden-key-modal" tabindex="-1" role="dialog">
+    <div class="modal show golden-key-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog shadow" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -83,9 +84,12 @@
     </div>
 </script>
 <script type="text/template" id="toastTemplate">
-    <div class="modal toast-modal" tabindex="-1" role="dialog">
+    <div class="modal toast-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog shadow" role="document">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                </div>
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
@@ -152,6 +156,64 @@
         </div>
     </div>
 </script>
+<script type="text/template" id="startTemplate">
+    <div class="modal start-modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-fluid">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary start-button">시작</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="winTemplate">
+    <div class="modal start-modal" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">축하합니다.</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3 m-auto text-center">
+                                <img src="" class="player-image" width="50px" height="50px">
+                            </div>
+                            <div class="col-md-9 m-auto text-center">
+                                <span class="player-name"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary win-button">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="startPlayerTemplate">
+<div class="row">
+    <div class="col-md-1 m-auto text-center">
+        <span class="player-index"></span>
+    </div>
+    <div class="col-md-2 m-auto text-center">
+        <img src="" class="player-image" width="50px" height="50px">
+    </div>
+    <div class="col-md-4 m-auto text-center">
+        <input type="text" class="form-control player-name" placeholder="이름">
+    </div>
+    <div class="col-md-5 m-auto text-center">
+        <button type="button" class="btn btn-primary up-button">위로</button>
+        <button type="button" class="btn btn-primary down-button">아래로</button>
+    </div>
+</div>
+</script>
 <script type="text/template" id="investmentBuildingTemplate">
     <div class="row">
         <div class="col-md-10 m-auto">
@@ -174,7 +236,6 @@
                 </tbody>
             </table>
         </div>
-    </div>
     </div>
 </script>
 <script type="text/template" id="investmentBuildingItemTemplate">
@@ -205,7 +266,7 @@
 <script src="../lib/teal.js"></script>
 <script src="../lib/cannon.js"></script>
 <script src="../lib/dice.js"></script>
-<script src="../lib/odometer.js"></script>
+<script src="../lib/jquery.confetti.js"></script>
 <script src="util.js"></script>
 <script src="config.js"></script>
 <script src="flag.js"></script>

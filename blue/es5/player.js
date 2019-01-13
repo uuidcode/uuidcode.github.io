@@ -19,6 +19,7 @@ function Player(index) {
     this.buyable = true;
     this.backward = false;
     this.freeSpaceTravel = false;
+    this.end = false;
 
     this.initEvent = function() {
         var self = this;
@@ -51,8 +52,24 @@ function Player(index) {
             this.amount = 0;
 
             if (!this.sell(amount)) {
-                alert(this.name + ' 파산하였습니다.');
-                location.reload();
+                this.end = true;
+
+                /** @type Player **/
+                var winPlayer = board.playerList.find(function (currentPlayer) {
+                    return !currentPlayer.end;
+                });
+
+                var html = $('#winTemplate').html();
+                var $winModal = $(html);
+                $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
+                $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
+                $winModal.showModal().removeModalWhenClose();
+                confetti.start();
+
+                $winModal.find('.win-button').on('click', function () {
+                    location.reload();
+                });
+
                 return true;
             }
         }
@@ -125,7 +142,6 @@ function Player(index) {
 
         return false;
     };
-
 
     this.incomeWithTitle = function (amount, title) {
         this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
@@ -444,7 +460,7 @@ function Player(index) {
     };
 
     this.getImageUrl = function () {
-        return '../image/' + this.image;
+        return util.getImageUrl(this.image);
     };
 
     this.runGoldenKey = function () {
@@ -500,7 +516,10 @@ function Player(index) {
             var totalFees = block.getTotalFees();
             investment.hideModal();
 
-            self.payOnly(totalFees);
+            if (self.payOnly(totalFees)) {
+                return;
+            }
+
             var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
             block.player.income(totalFees, message);
         });
