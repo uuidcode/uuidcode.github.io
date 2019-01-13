@@ -840,8 +840,9 @@ var config = {
                     var amount = maxAmount / 2;
                     var message = maxAmountBlock.name + '을/를' + util.toDisplayAmount(amount) + '에 팔았습니다.';
                     board.getCurrentPlayer().income(amount, message);
-                    currentPlayer.readyNextTurn();
                 }
+
+                currentPlayer.readyNextTurn();
             }
         },
         {
