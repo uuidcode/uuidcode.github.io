@@ -20,6 +20,7 @@ function Player(index) {
     this.backward = false;
     this.freeSpaceTravel = false;
     this.end = false;
+    this.robot = false;
 
     this.initEvent = function() {
         var self = this;
@@ -38,6 +39,14 @@ function Player(index) {
                 }
             }, 100);
         });
+
+        setInterval(function () {
+            if (self.robot) {
+                if (board.getCurrentPlayer() === this) {
+                    this.rollDie();
+                }
+            }
+        }, 2000);
     };
 
     this.payWithTitle = function (amount, title) {
