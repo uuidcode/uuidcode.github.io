@@ -200,7 +200,7 @@ function Board() {
                 config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
             }
 
-            board.start();
+            board.start($modal.find('.minute-timer').val());
             $modal.hideModal();
         });
 
@@ -211,10 +211,29 @@ function Board() {
         }, 1000);
     };
 
-    this.start = function () {
+    this.initTimer = function (minuteTimer) {
+        new Timer(minuteTimer);
+    };
+
+    this.start = function (minuteTimer) {
         board.initPlayer();
         board.initDie();
+        board.initTimer(minuteTimer);
         board.readyNextTurn();
+    };
+
+    this.win = function (winPlayer) {
+        var html = $('#winTemplate').html();
+        var $winModal = $(html);
+        $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
+        $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
+        $winModal.showModal().removeModalWhenClose();
+        confetti.start();
+        board.playWinSound();
+
+        $winModal.find('.win-button').on('click', function () {
+            location.reload();
+        });
     };
 }
 

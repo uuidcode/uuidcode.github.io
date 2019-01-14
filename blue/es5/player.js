@@ -59,16 +59,7 @@ function Player(index) {
                     return !currentPlayer.end;
                 });
 
-                var html = $('#winTemplate').html();
-                var $winModal = $(html);
-                $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
-                $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
-                $winModal.showModal().removeModalWhenClose();
-                confetti.start();
-                board.playWinSound();
-                $winModal.find('.win-button').on('click', function () {
-                    location.reload();
-                });
+                board.win(winPlayer);
 
                 return true;
             }
