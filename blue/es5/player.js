@@ -64,7 +64,11 @@ function Player(index) {
                             var building = block.buildingList[random];
 
                             if (currentPlayer.amount >= building.price) {
-                                $('#payButton').click();
+                                $('.investment-add').eq(random).click();
+                                setTimeout(function () {
+                                    $('#payButton').click();
+                                }, 100);
+
                             } else {
                                 $('#notPayButton').click();
                             }

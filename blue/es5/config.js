@@ -37,7 +37,7 @@ var config = {
             image: 'apeach.png',
             amount: 3000000,
             name: '어피치',
-            robot: false
+            robot: true
 
         },
         {
