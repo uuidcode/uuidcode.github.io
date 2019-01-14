@@ -20,7 +20,8 @@ function Player(index) {
     this.backward = false;
     this.freeSpaceTravel = false;
     this.end = false;
-    this.robot = false;
+    this.robot = this.playerConfig.robot;
+    this.moving = false;
 
     this.initEvent = function() {
         var self = this;
@@ -41,9 +42,30 @@ function Player(index) {
         });
 
         setInterval(function () {
-            if (self.robot) {
-                if (board.getCurrentPlayer() === this) {
-                    this.rollDie();
+            console.log('>>> setInterval');
+
+            if (self.robot && self.moving == false) {
+                if (board.getCurrentPlayer() === self) {
+                    if ($('.investment-modal').length > 0) {
+                        var block = board.blockList[self.position];
+
+                        if (block.type === 'nation') {
+                            if (block.player === null) {
+                                $('#buyButton').click();
+                                return;
+                            } else if (block.player === self) {
+                                return;
+                            } else {
+                                $('#payButton').click();
+                                return;
+                            }
+                        }
+                    } else if($('.golden-key-modal').length > 0) {
+                        $('.run-golden-key-button').click();
+                        return;
+                    }
+
+                    self.rollDie();
                 }
             }
         }, 2000);
@@ -381,6 +403,7 @@ function Player(index) {
         this.curentCount = count;
 
         if (this.arrived()) {
+            this.moving = false;
             return;
         }
 
@@ -389,6 +412,7 @@ function Player(index) {
         this.position = this.position % config.blockSize;
         this.currentDirection = this.getDirection();
         this.$ui.addClass(this.getDirectionClass());
+        this.moving = true;
 
         if (this.position === 0 && count > 1) {
             if (this.payable) {
