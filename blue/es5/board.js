@@ -12,8 +12,12 @@ function Board() {
         mp3.play();
     };
 
-    this.playDieSound = function (name) {
+    this.playDieSound = function () {
         this.playSound('die');
+    };
+
+    this.playWinSound = function () {
+        this.playSound('win');
     };
 
     this.playJumpSound = function (count) {
