@@ -42,23 +42,46 @@ function Player(index) {
         });
 
         setInterval(function () {
-            console.log('>>> setInterval');
-
             if (self.robot && self.moving == false) {
-                if (board.getCurrentPlayer() === self) {
+                /** @type Player **/
+                var currentPlayer = board.getCurrentPlayer();
+
+                if (currentPlayer === self) {
                     if ($('.investment-modal').length > 0) {
                         var block = board.blockList[self.position];
 
-                        if (block.type === 'nation') {
-                            if (block.player === null) {
+                        if (block.player === null) {
+                            if (currentPlayer.amount >= block.amount) {
                                 $('#buyButton').click();
-                                return;
-                            } else if (block.player === self) {
-                                return;
                             } else {
-                                $('#payButton').click();
-                                return;
+                                $('#cancelButton').click();
                             }
+
+                            return;
+                        } else if (block.player === self) {
+                            var random = block.buildingList.length;
+                            random = Math.floor(Math.random() * random);
+                            var building = block.buildingList[random];
+
+                            if (currentPlayer.amount >= building.price) {
+                                $('#payButton').click();
+                            } else {
+                                $('#notPayButton').click();
+                            }
+
+                            return;
+                        } else {
+                            var totalFees = block.getTotalFees();
+
+                            if (currentPlayer.ticketCount > 0) {
+                                if (totalFees >= currentPlayer.amount || totalFees > 1000000) {
+                                    $('#useTicketButton').click();
+                                    return;
+                                }
+                            }
+
+                            $('#payFeeButton').click();
+                            return;
                         }
                     } else if($('.golden-key-modal').length > 0) {
                         $('.run-golden-key-button').click();
