@@ -162,12 +162,32 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
+                    <div class="container-fluid player-list">
+                    </div>
+                    <hr>
                     <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4 m-auto">
+                                장소 랜덤 생성
+                            </div>
+                            <div class="col-md-8 form-inline">
+                                <input type="checkbox" class="random-place">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4 m-auto">
+                                제한시간
+                            </div>
+                            <div class="col-md-8 form-inline">
+                                <input type="text" class="form-control minute-timer" value="60" style="width:50px">
+                                &nbsp;분
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    제한시간&nbsp;
-                    <input type="text" class="form-control minute-timer" value="60" style="width:50px">분
                     <button type="button" class="btn btn-primary start-button">시작</button>
                 </div>
             </div>
@@ -201,7 +221,7 @@
     </div>
 </script>
 <script type="text/template" id="startPlayerTemplate">
-<div class="row">
+<div class="row player-row">
     <div class="col-md-1 m-auto text-center">
         <span class="player-index"></span>
     </div>
