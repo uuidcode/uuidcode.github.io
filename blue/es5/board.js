@@ -55,6 +55,9 @@ function Board() {
     this.initBlock = function () {
         this.blockList = [];
         this.$ui.empty();
+        var $dic = $('<div></div>');
+        $dic.attr('id', 'die');
+        this.$ui.append($dic);
 
         for (var i = 0; i < 40; i++) {
             var block = new Block(i, config.blockList[i]);
@@ -203,30 +206,30 @@ function Board() {
                 config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
             }
 
-            board.start($modal.find('.minute-timer').val());
-
             var randomPlace = $modal.find('.random-place').is(':checked');
 
-            // if (randomPlace) {
-            //     shuffle(config.blockList);
-            //
-            //     var startIndex = 0;
-            //
-            //     for (var i = 0; i < config.blockList.length; i++) {
-            //         if (config.blockList[i].name === config.start) {
-            //             startIndex = i;
-            //             break;
-            //         }
-            //     }
-            //
-            //     if (startIndex !== 0) {
-            //         var startBlock = config.blockList[startIndex];
-            //         var tempBlock = config.blockList[0];
-            //         config.blockList[0] = startBlock;
-            //         config.blockList[startIndex] = tempBlock;
-            //     }
-            // }
+            if (randomPlace) {
+                shuffle(config.blockList);
 
+                var startIndex = 0;
+
+                for (var i = 0; i < config.blockList.length; i++) {
+                    if (config.blockList[i].name === config.start) {
+                        startIndex = i;
+                        break;
+                    }
+                }
+
+                if (startIndex !== 0) {
+                    var startBlock = config.blockList[startIndex];
+                    var tempBlock = config.blockList[0];
+                    config.blockList[0] = startBlock;
+                    config.blockList[startIndex] = tempBlock;
+                }
+
+            }
+
+            board.start($modal.find('.minute-timer').val());
             $modal.hideModal();
         });
 
@@ -242,6 +245,7 @@ function Board() {
     };
 
     this.start = function (minuteTimer) {
+        board.initBlock();
         board.initPlayer();
         board.initDie();
         board.initTimer(minuteTimer);
@@ -264,5 +268,4 @@ function Board() {
 }
 
 var board = new Board();
-board.initBlock();
 board.ready();
