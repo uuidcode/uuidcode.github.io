@@ -53,6 +53,12 @@ function Board() {
     };
 
     this.initBlock = function () {
+        this.blockList = [];
+        this.$ui.empty();
+        var $dic = $('<div></div>');
+        $dic.attr('id', 'die');
+        this.$ui.append($dic);
+
         for (var i = 0; i < 40; i++) {
             var block = new Block(i, config.blockList[i]);
             this.blockList.push(block);
@@ -141,7 +147,7 @@ function Board() {
         var playerHtml = $('#startPlayerTemplate').html();
 
         var $modal = $(html);
-        var $container = $modal.find('.container-fluid');
+        var $playerList = $modal.find('.player-list');
         var reset = function () {
             $modal.find('.row').each(function (index) {
                 $(this).find('.player-index').text(index + 1);
@@ -153,7 +159,7 @@ function Board() {
             var $playerImage = $player.find('.player-image');
             $playerImage.attr('src', util.getImageUrl(player.image));
             $playerImage.attr('data-image', player.image);
-            $container.append($player);
+            $playerList.append($player);
         });
 
         reset();
@@ -161,7 +167,7 @@ function Board() {
         $modal.on('click', '.up-button', function () {
             var index = $modal.find('.up-button').index($(this));
 
-            if (index == 0) {
+            if (index === 0) {
                 return;
             }
 
@@ -173,7 +179,7 @@ function Board() {
         $modal.on('click', '.down-button', function () {
             var index = $modal.find('.down-button').index($(this));
 
-            if (index == config.playerList.length - 1) {
+            if (index === config.playerList.length - 1) {
                 return;
             }
 
@@ -184,7 +190,7 @@ function Board() {
         });
 
         $modal.on('click', '.start-button', function () {
-            var $row = $modal.find('.row');
+            var $row = $modal.find('.player-row');
 
             for (var i = 0; i < $row.length; i++) {
                 var $currentPlayer = $row.eq(i);
@@ -200,7 +206,30 @@ function Board() {
                 config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
             }
 
-            board.start();
+            var randomPlace = $modal.find('.random-place').is(':checked');
+
+            if (randomPlace) {
+                shuffle(config.blockList);
+
+                var startIndex = 0;
+
+                for (var i = 0; i < config.blockList.length; i++) {
+                    if (config.blockList[i].name === config.start) {
+                        startIndex = i;
+                        break;
+                    }
+                }
+
+                if (startIndex !== 0) {
+                    var startBlock = config.blockList[startIndex];
+                    var tempBlock = config.blockList[0];
+                    config.blockList[0] = startBlock;
+                    config.blockList[startIndex] = tempBlock;
+                }
+
+            }
+
+            board.start($modal.find('.minute-timer').val());
             $modal.hideModal();
         });
 
@@ -211,13 +240,32 @@ function Board() {
         }, 1000);
     };
 
-    this.start = function () {
+    this.initTimer = function (minuteTimer) {
+        new Timer(minuteTimer);
+    };
+
+    this.start = function (minuteTimer) {
+        board.initBlock();
         board.initPlayer();
         board.initDie();
+        board.initTimer(minuteTimer);
         board.readyNextTurn();
+    };
+
+    this.win = function (winPlayer) {
+        var html = $('#winTemplate').html();
+        var $winModal = $(html);
+        $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
+        $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
+        $winModal.showModal().removeModalWhenClose();
+        confetti.start();
+        board.playWinSound();
+
+        $winModal.find('.win-button').on('click', function () {
+            location.reload();
+        });
     };
 }
 
 var board = new Board();
-board.initBlock();
 board.ready();

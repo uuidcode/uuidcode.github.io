@@ -183,13 +183,16 @@ function Block(index, data) {
 
     this.resetFunding = function () {
         if (this.fundingCount > 0) {
+            var message = config.fundingName + ' ' + util.toDisplayAmount(this.amount) + '을 받았습니다.';
             board.getCurrentPlayer().income(this.amount);
-            new Toast().show(this.getDisplayFundingAmount());
+            this.fundingCount = 0;
+            this.amount = this.getFundingAmount();
+            this.updateFundingAmount();
+            new Toast().showAndReadyToNextTurn(message);
+            return true;
         }
 
-        this.fundingCount = 0;
-        this.amount = this.getFundingAmount();
-        this.updateFundingAmount();
+        return false;
     };
 
     this.getFundingAmount = function () {
@@ -202,7 +205,7 @@ function Block(index, data) {
 
 
     this.updateFundingAmount = function () {
-        this.$ui.find('.block-amount').text(this.getDisplayFundingAmount());
+        this.$ui.find('.block-amount').text(util.toDisplayAmount(this.amount));
     };
 
     this.init();

@@ -81,3 +81,28 @@
 .player-modal-body {
     padding: 5px;
 }
+
+.jst-hours {
+    float: left;
+}
+.jst-minutes {
+    float: left;
+}
+.jst-seconds {
+    float: left;
+}
+.jst-clearDiv {
+    clear: both;
+}
+.jst-timeout {
+    color: red;
+}
+
+input[type=checkbox]
+{
+    -ms-transform: scale(2); /* IE */
+    -moz-transform: scale(2); /* FF */
+    -webkit-transform: scale(2); /* Safari and Chrome */
+    -o-transform: scale(2); /* Opera */
+    margin: 10px;
+}

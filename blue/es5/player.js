@@ -117,16 +117,7 @@ function Player(index) {
                     return !currentPlayer.end;
                 });
 
-                var html = $('#winTemplate').html();
-                var $winModal = $(html);
-                $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
-                $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
-                $winModal.showModal().removeModalWhenClose();
-                confetti.start();
-                board.playWinSound();
-                $winModal.find('.win-button').on('click', function () {
-                    location.reload();
-                });
+                board.win(winPlayer);
 
                 return true;
             }
@@ -346,6 +337,7 @@ function Player(index) {
             this.fast = false;
             this.backward = false;
 
+            /** @type Block **/
             var block = board.blockList[this.position];
             block.welcome();
 
@@ -355,13 +347,14 @@ function Player(index) {
                 this.inIsland = true;
                 this.readyNextTurn();
             } else if (block.name === config.fundingPlace) {
-                block.resetFunding();
-                this.readyNextTurn();
+                if (!block.resetFunding()) {
+                    this.readyNextTurn();
+                }
             } else if (block.name === config.fundingName) {
                 var amount = util.toDisplayAmount(config.fundAmount);
+                board.getTargetBlock(config.fundingPlace).addFunding();
                 var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
                 this.pay(config.fundAmount, message);
-                this.readyNextTurn();
             } else if (block.name === config.start) {
                 this.getPayAndReadyToNextTurn();
             } else if (block.name === config.spaceTravel) {

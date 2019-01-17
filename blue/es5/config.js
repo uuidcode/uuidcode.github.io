@@ -94,7 +94,12 @@ var config = {
     },
     die: {
         width: 700,
-        height: 700,
+        height: 650,
+        margin: 10
+    },
+    timer: {
+        width: 200,
+        height: 50,
         margin: 10
     },
     blockList: [
