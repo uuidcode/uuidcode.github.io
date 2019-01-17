@@ -311,9 +311,7 @@ function Player(index) {
                 if (this.freeSpaceTravel === false) {
                     /** @type Block **/
                     var columbia = board.getTargetBlock(config.columbia);
-
                     var displayTravelFees = block.displayTravelFees;
-                    console.log('>>> displayTravelFees', displayTravelFees);
 
                     if (columbia.player != null && columbia.player != this) {
                         var amount = util.toAmount(displayTravelFees);
