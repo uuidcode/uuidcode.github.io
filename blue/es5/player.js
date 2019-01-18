@@ -271,6 +271,7 @@ function Player(index) {
                     this.escapeFromIsland();
                     return true;
                 } else {
+                    this.moving = true;
                     this.inIslandCount++;
                     new Toast().showAndReadyToNextTurn('무인도를 탈출하지 못했습니다.[' + this.inIslandCount + ']');
                     return false;
@@ -359,6 +360,8 @@ function Player(index) {
     };
 
     this.go = function(count) {
+        this.moving = false;
+
         if (!this.tryEscapeFromIsland(count)) {
             return;
         }
