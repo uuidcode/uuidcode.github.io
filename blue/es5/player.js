@@ -598,7 +598,7 @@ function Player(index) {
         this.getBlockList()
             .forEach(function (block) {
                 for (var i = 0; i < block.buildingList.length; i++) {
-                    sum += block.buildingList[i].count * amount[i];
+                    sum += block.buildingList[i].count * util.toAmount(amount[i]);
                 }
             });
 

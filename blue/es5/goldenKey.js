@@ -16,7 +16,7 @@ function GoldenKey() {
             description = this.goldenKey.description;
         }
 
-        this.$ui.find('.modal-body').html(goldenKey.description);
+        this.$ui.find('.modal-body').html(description);
         board.append(this.$ui);
 
         this.initEvent();

@@ -36,15 +36,7 @@ function Building(block) {
     };
 
     this.getName = function (index) {
-        if (index == 0) {
-            return '호텔';
-        } else if (index == 1) {
-            return '빌딩';
-        } else if (index == 2) {
-            return '별장';
-        }
-
-        return null;
+        util.getBuildName(index);
     };
 
     this.init();

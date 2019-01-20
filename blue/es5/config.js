@@ -715,6 +715,9 @@ var config = {
         }
     ],
     goldenKeyList: [
+        util.createBuildingCostGoldenKey('방범비', ['5만원', '3만원', '1만원']),
+        util.createBuildingCostGoldenKey('정기종합 소득세', ['15만원', '10만원', '3만원']),
+        util.createBuildingCostGoldenKey('건물수리', ['10만원', '6만원', '3만원']),
         {
             name: '유람선 여행',
             description: function () {
@@ -741,13 +744,6 @@ var config = {
             run: function () {
                 var currentPlayer = board.getCurrentPlayer();
                 currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
-            }
-        },
-        {
-            name: '정기종합 소득세',
-            description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
-            run: function () {
-                board.getCurrentPlayer().payForBuilding([150000, 100000, 30000], '종합소득세');
             }
         },
         {
@@ -884,20 +880,6 @@ var config = {
                 /** @type Block **/
                 var fundingPlace = board.getFundingPlace();
                 fundingPlace.resetFunding();
-            }
-        },
-        {
-            name: '방범비',
-            description: '방범비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 5만원<br>빌딩: 3만원<br>별장: 1만원',
-            run: function () {
-                board.getCurrentPlayer().payForBuilding([50000, 30000, 10000], '방범비');
-            }
-        },
-        {
-            name: '건물수리',
-            description: '건물수리비를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 10만원<br>빌딩: 6만원<br>별장: 3만원',
-            run: function () {
-                board.getCurrentPlayer().payForBuilding([100000, 60000, 30000], '건물수리비');
             }
         },
         // {
@@ -1045,4 +1027,4 @@ function resetGoldenKey() {
     shuffle(config.goldenKeyList);
 }
 
-resetGoldenKey();
+// resetGoldenKey();
