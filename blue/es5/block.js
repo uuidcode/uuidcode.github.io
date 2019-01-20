@@ -105,7 +105,7 @@ function Block(index, data) {
                 }
 
                 var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlock(self.name);
+                currentPlayer.goFastToIndex(self);
             }
         });
 

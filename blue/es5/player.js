@@ -116,14 +116,15 @@ function Player(index) {
                         amount -= price
                     } else {
                         this.amount = price - amount;
+                        block.update();
                         return true;
                     }
                 }
             }
 
             if (amount > block.amount) {
-                block.reset();
                 amount -= block.amount
+                block.reset();
             } else {
                 this.amount = block.amount - amount;
                 block.reset();
@@ -229,8 +230,12 @@ function Player(index) {
     };
 
     this.goFastToBlock = function (name, payable) {
-        this.payable = payable || true;
         var targetBlock = board.getTargetBlock(name);
+        this.goFastToIndex(targetBlock, payable);
+    };
+
+    this.goFastToIndex = function (targetBlock, payable) {
+        this.payable = payable || true;
         var currentPlayer = board.getCurrentPlayer();
         var count = targetBlock.index - currentPlayer.position;
 
