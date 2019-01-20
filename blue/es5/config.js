@@ -4,6 +4,8 @@ FUNDING_PLACE = '사회복지기금접수처';
 SPACE_TRAVEL = '우주여행';
 COLUMBIA = '컬럼비아호';
 TAIPEI = '타이베이';
+BEIJING = '베이지';
+QUEEN_ELIZABETH = '퀸 엘리자베스호';
 CONCORDE = '콩코드여객기';
 SEOUL = '서울';
 BUSAN = '부산';
@@ -134,7 +136,7 @@ var config = {
         },
         {
             code: 'cn',
-            name: '베이징',
+            name: BEIJING,
             displayAmount: '8만원',
             displayFees: '4천원',
             buildingList: [
@@ -543,7 +545,7 @@ var config = {
         },
         {
             code: 'qu',
-            name: '퀸 엘리자베스호',
+            name: QUEEN_ELIZABETH,
             displayAmount: '30만원',
             displayFees: '25만원'
         },
@@ -714,6 +716,34 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: '유람선 여행',
+            description: function () {
+                var itemList = [];
+                itemList.push(QUEEN_ELIZABETH + '를 타고 ' + BEIJING + '로 가세요.');
+                itemList.push(QUEEN_ELIZABETH + ' 소유주에게 탑승료를 지불합니다.');
+                itemList.push('출발지를 경유하면 월급을 받으세요');
+                return util.getDescriptionAndFromToHtml(itemList, QUEEN_ELIZABETH, BEIJING);
+            },
+            run: function () {
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.goFastToBlockAsWayPoint(QUEEN_ELIZABETH, BEIJING);
+            }
+        },
+        {
+            name: '항공여행',
+            description: function () {
+                var itemList = [];
+                itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
+                itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
+                itemList.push('출발지를 경유하면 월급을 받으세요');
+                return util.getDescriptionAndFromToHtml(itemList, CONCORDE, TAIPEI);
+            },
+            run: function () {
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
+            }
+        },
+        {
             name: '정기종합 소득세',
             description: '종합소득세를 각 건물별로 아래와 같이 지불하세요.<br>호텔: 15만원<br>빌딩: 10만원<br>별장: 3만원',
             run: function () {
@@ -750,20 +780,6 @@ var config = {
                 }
 
                 new Toast().showAndReadyToNextTurn('소유하고 있는 부동산이 없습니다.');
-            }
-        },
-        {
-            name: '항공여행',
-            description: function () {
-                var itemList = [];
-                itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
-                itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
-                itemList.push('출발지를 경유하면 월급을 받으세요');
-                return util.getDescriptionWithImageHtml(itemList, CONCORDE);
-            },
-            run: function () {
-                var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
             }
         },
         {
@@ -814,14 +830,6 @@ var config = {
             description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
             run: function () {
                 board.getCurrentPlayer().addTicket();
-            }
-        },
-        {
-            name: '유람선 여행',
-            description: '퀸 엘리자베스호를 타고 베이징으로 가세요.<br>퀸 엘리자베스호 소유주에게 탑승료를 지불합니다.',
-            run: function () {
-                var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlockAsWayPoint('퀸 엘리자베스호', '베이징');
             }
         },
         {

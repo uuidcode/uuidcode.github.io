@@ -82,8 +82,18 @@ var util = {
 
     getDescriptionWithImageHtml: function (array, name) {
         array.push('<hr>');
-        array.push(board.getBlockHtml(CONCORDE));
+        array.push(board.getBlockHtml(name));
         return util.getDescriptionHtml(array);
+    },
+
+    getDescriptionAndFromToHtml: function (array, from, to) {
+        var descriptionHtml = this.getDescriptionHtml(array);
+        var fromBlock = board.getTargetBlock(from);
+        var toBlock = board.getTargetBlock(to);
+        var html = $('#fromToTemplate').html();
+        html = html.replace('fromImage', fromBlock.getImageUrl());
+        html = html.replace('toImage', toBlock.getImageUrl());
+        return descriptionHtml + '<hr>' + html;
     },
 
     getModal: function (selector) {
