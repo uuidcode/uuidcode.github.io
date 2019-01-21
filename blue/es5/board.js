@@ -93,10 +93,24 @@ function Board() {
         }
 
         var playIndex = this.getPlayerIndex();
+
         this.playerInfoList[playIndex].$ui.find(selector).css({
             borderWidth: 5,
             borderColor: config.selectedColor
         });
+
+        /** @type Player **/
+        var currentPlayer = this.getCurrentPlayer();
+        var self = this;
+
+        this.playerInfoList[playIndex].$ui.transfer({
+            to: self.blockList[currentPlayer.position].$ui
+        })
+
+        currentPlayer.$ui.removeClass('live').addClass('turn');
+        setTimeout(function () {
+            currentPlayer.$ui.removeClass('turn').addClass('live');
+        }, 1000);
     };
 
     this.getPlayerIndex = function () {
@@ -119,12 +133,10 @@ function Board() {
     };
 
     this.readyNextTurn = function () {
-        board.activePlayer();
-
         if (this.currentPlayerIsOnSpaceTravel()) {
-            new Toast().showPickPlace();
+            new Toast().showPickPlace(board.activePlayer.bind(this));
         } else {
-            new Toast().show('주사위를 던지세요.');
+            new Toast().show('주사위를 던지세요.', board.activePlayer.bind(this));
         }
     };
 

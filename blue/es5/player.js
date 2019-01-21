@@ -25,6 +25,10 @@ function Player(index) {
         var self = this;
 
         this.$ui.on('animationend', function () {
+            if (self.curentCount === 0) {
+                return;
+            }
+
             var position = self.getPosition();
 
             self.$ui.removeClass(self.getDirectionClass());
