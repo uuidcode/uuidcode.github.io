@@ -75,7 +75,7 @@
 }
 
 .nationContainer td {
-    padding : 0px 2px 0px 2px;
+    padding : 0 2px 0 2px;
 }
 
 .player-modal-body {
@@ -105,4 +105,9 @@ input[type=checkbox]
     -webkit-transform: scale(2); /* Safari and Chrome */
     -o-transform: scale(2); /* Opera */
     margin: 10px;
+}
+
+.ui-effects-transfer {
+    border: 3px solid rgba(0, 123, 255, 0.5);
+    background-color: rgba(0, 123, 255, 0.5);
 }

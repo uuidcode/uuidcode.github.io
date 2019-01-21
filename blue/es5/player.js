@@ -278,6 +278,23 @@ function Player(index) {
         return true;
     };
 
+    this.payForFund = function () {
+        var self = this;
+        var amount = util.toDisplayAmount(config.fundAmount);
+        var fundingPlaceBlock = board.getTargetBlock(config.fundingPlace);
+        var playInfo = board.playerInfoList[board.getPlayerIndex()];
+
+        fundingPlaceBlock.addFunding();
+
+        playInfo.$ui.transfer({
+            to: fundingPlaceBlock.$ui,
+            duration: 2000
+        }, function () {
+            var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
+            self.pay(config.fundAmount, message);
+        });
+    };
+
     this.arrived = function () {
         if (this.curentCount === 0) {
             this.payable = true;
@@ -298,10 +315,7 @@ function Player(index) {
                     this.readyNextTurn();
                 }
             } else if (block.name === config.fundingName) {
-                var amount = util.toDisplayAmount(config.fundAmount);
-                board.getTargetBlock(config.fundingPlace).addFunding();
-                var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
-                this.pay(config.fundAmount, message);
+                this.payForFund();
             } else if (block.name === config.start) {
                 this.getPayAndReadyToNextTurn();
             } else if (block.name === config.spaceTravel) {
@@ -348,7 +362,7 @@ function Player(index) {
         this.currentPosition = this.position;
         this.position--;
 
-        if (this.position == -1) {
+        if (this.position === -1) {
             this.position = 39;
         }
 

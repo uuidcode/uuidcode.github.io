@@ -206,7 +206,6 @@ function Block(index, data) {
         return this.fundingCount * 15 + '만원';
     };
 
-
     this.updateFundingAmount = function () {
         this.$ui.find('.block-amount').text(util.toDisplayAmount(this.amount));
     };
