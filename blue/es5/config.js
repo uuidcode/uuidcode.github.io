@@ -4,7 +4,7 @@ FUNDING_PLACE = '사회복지기금접수처';
 SPACE_TRAVEL = '우주여행';
 COLUMBIA = '컬럼비아호';
 TAIPEI = '타이베이';
-BEIJING = '베이지';
+BEIJING = '베이징';
 QUEEN_ELIZABETH = '퀸 엘리자베스호';
 CONCORDE = '콩코드여객기';
 SEOUL = '서울';
@@ -715,37 +715,6 @@ var config = {
         }
     ],
     goldenKeyList: [
-        util.createBuildingCostGoldenKey('방범비', ['5만원', '3만원', '1만원']),
-        util.createBuildingCostGoldenKey('정기종합 소득세', ['15만원', '10만원', '3만원']),
-        util.createBuildingCostGoldenKey('건물수리', ['10만원', '6만원', '3만원']),
-        {
-            name: '유람선 여행',
-            description: function () {
-                var itemList = [];
-                itemList.push(QUEEN_ELIZABETH + '를 타고 ' + BEIJING + '로 가세요.');
-                itemList.push(QUEEN_ELIZABETH + ' 소유주에게 탑승료를 지불합니다.');
-                itemList.push('출발지를 경유하면 월급을 받으세요');
-                return util.getDescriptionAndFromToHtml(itemList, QUEEN_ELIZABETH, BEIJING);
-            },
-            run: function () {
-                var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlockAsWayPoint(QUEEN_ELIZABETH, BEIJING);
-            }
-        },
-        {
-            name: '항공여행',
-            description: function () {
-                var itemList = [];
-                itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
-                itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
-                itemList.push('출발지를 경유하면 월급을 받으세요');
-                return util.getDescriptionAndFromToHtml(itemList, CONCORDE, TAIPEI);
-            },
-            run: function () {
-                var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
-            }
-        },
         {
             name: SELL_HALF_PRICE,
             description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
@@ -776,6 +745,37 @@ var config = {
                 }
 
                 new Toast().showAndReadyToNextTurn('소유하고 있는 부동산이 없습니다.');
+            }
+        },
+        util.createBuildingCostGoldenKey('방범비', ['5만원', '3만원', '1만원']),
+        util.createBuildingCostGoldenKey('정기종합 소득세', ['15만원', '10만원', '3만원']),
+        util.createBuildingCostGoldenKey('건물수리', ['10만원', '6만원', '3만원']),
+        {
+            name: '유람선 여행',
+            description: function () {
+                var itemList = [];
+                itemList.push(QUEEN_ELIZABETH + '를 타고 ' + BEIJING + '로 가세요.');
+                itemList.push(QUEEN_ELIZABETH + ' 소유주에게 탑승료를 지불합니다.');
+                itemList.push('출발지를 경유하면 월급을 받으세요');
+                return util.getDescriptionAndFromToHtml(itemList, QUEEN_ELIZABETH, BEIJING);
+            },
+            run: function () {
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.goFastToBlockAsWayPoint(QUEEN_ELIZABETH, BEIJING);
+            }
+        },
+        {
+            name: '항공여행',
+            description: function () {
+                var itemList = [];
+                itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
+                itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
+                itemList.push('출발지를 경유하면 월급을 받으세요');
+                return util.getDescriptionAndFromToHtml(itemList, CONCORDE, TAIPEI);
+            },
+            run: function () {
+                var currentPlayer = board.getCurrentPlayer();
+                currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
             }
         },
         {
@@ -880,6 +880,7 @@ var config = {
                 /** @type Block **/
                 var fundingPlace = board.getFundingPlace();
                 fundingPlace.resetFunding();
+                board.getCurrentPlayer().readyNextTurn();
             }
         },
         // {
@@ -1027,4 +1028,4 @@ function resetGoldenKey() {
     shuffle(config.goldenKeyList);
 }
 
-// resetGoldenKey();
+resetGoldenKey();

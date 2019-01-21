@@ -67,6 +67,9 @@ function Block(index, data) {
 
     this.reset = function () {
         this.player = null;
+        this.buildingList.forEach(function (building) {
+            building.count = 0;
+        });
         this.update();
     };
 
