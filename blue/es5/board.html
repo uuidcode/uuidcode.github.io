@@ -19,13 +19,6 @@
 <audio class="jump6-sound"><source src="../mp3/jump6.mp3"></audio>
 <audio class="win-sound"><source src="../mp3/win.mp3"></audio>
 <div class="board"></div>
-<script type="text/template" id="nationTemplate">
-    <tr>
-        <td class="flag"><img width="35" height="20" style="border:1px solid black"></td>
-        <td class="name"></td>
-        <td class="building-amount"></td>
-    </tr>
-</script>
 <script type="text/template" id="buildingTemplate">
     <div>
         <span class="badge badge-primary building-badge"></span>
@@ -33,39 +26,6 @@
         <span class="badge badge-danger building-badge"></span>
         <span class="badge badge-light total-fees"></span>
     </div>
-</script>
-<script type="text/template" id="playerInfoTemplate">
-<div class="modal show" tabindex="-1" role="dialog">
-    <div class="modal-dialog shadow" role="document">
-        <div class="modal-content">
-            <div class="modal-body player-modal-body" style="overflow-y: auto">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-4 text-center" style="padding: 0px">
-                            <img class="player-image" width="40" height="40">
-                            <span class="player-name"></span>
-                            <span class="badge badge-primary ticket" style="display: none"></span>
-                            <span class="badge badge-primary escape-ticket" style="display: none"></span>
-                        </div>
-                        <div class="col-md-6 m-auto text-center">
-                            <span class="amount"></span>
-                        </div>
-                        <div class="col-md-2 m-auto text-center">
-                            <span class="badge badge-primary place-count"></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table">
-                                <tbody class="nationContainer">
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 </script>
 <script type="text/template" id="goldenKeyTemplate">
     <div class="modal show golden-key-modal" data-keyboard="false" data-backdrop="static">

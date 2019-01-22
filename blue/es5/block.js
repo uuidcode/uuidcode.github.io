@@ -178,6 +178,10 @@ function Block(index, data) {
         return '../image/'+ this.code + '.png';
     };
 
+    this.getDisplayAmount = function () {
+        return util.toDisplayAmount(this.amount);
+    };
+
     this.addFunding = function () {
         this.fundingCount++;
         this.amount = this.getFundingAmount();

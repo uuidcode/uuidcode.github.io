@@ -1,30 +1,16 @@
 function PlayerInfo(player) {
     this.$ui = null;
 
-    this.createNation = function(player) {
-        var nationHtml = $('#nationTemplate').html();
-        var $nationContainer = this.$ui.find('.nationContainer');
-
-        for (var i = 0; i < board.blockList.length; i++) {
-            var block = board.blockList[i];
-
-            if (block.player == player) {
-                var $nation = $(nationHtml);
-                $nation.find('.flag').find('img').attr('src', block.getImageUrl());
-                $nation.find('.name').html(block.name);
-
-                var totalAmount = block.getTotalAmount();
-                var buildingAmount = util.toDisplayAmount(totalAmount);
-                $nation.find('.building-amount').html(buildingAmount);
-                $nationContainer.append($nation);
-            }
-        }
-    };
-
     this.init = function (player) {
-        var template = $('#playerInfoTemplate').html();
-        this.$ui = $(template);
         var blockList = player.getBlockList();
+
+        var data = {
+            blockList: blockList
+        };
+
+        var html = Handlebars.compile(this.template()).template(data);
+        this.$ui = $(html);
+
         this.$ui.find('.place-count').text(blockList.length);
 
         if (player.ticketCount > 0) {
@@ -68,6 +54,50 @@ function PlayerInfo(player) {
         this.$ui.find('.player-name').text(player.name);
 
         this.createNation(player);
+    };
+
+    this.template = function () {
+        return `
+        <div class="modal show" tabindex="-1" role="dialog">
+            <div class="modal-dialog shadow" role="document">
+                <div class="modal-content">
+                    <div class="modal-body player-modal-body" style="overflow-y: auto">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-4 text-center" style="padding: 0px">
+                                    <img class="player-image" width="40" height="40">
+                                    <span class="player-name"></span>
+                                    <span class="badge badge-primary ticket" style="display: none"></span>
+                                    <span class="badge badge-primary escape-ticket" style="display: none"></span>
+                                </div>
+                                <div class="col-md-6 m-auto text-center">
+                                    <span class="amount"></span>
+                                </div>
+                                <div class="col-md-2 m-auto text-center">
+                                    <span class="badge badge-primary place-count"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <tbody class="nationContainer">
+                                        {{#list blockList}}
+                                        <tr>
+                                            <td class="flag"><img src={{getImageUrl}}width="35" height="20" style="border:1px solid black"></td>
+                                            <td class="name">{{name}}</td>
+                                            <td class="building-amount">{{getDisplayAmount}}</td>
+                                        </tr>
+                                        {{/list}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
     };
 
     this.init(player);

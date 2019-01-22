@@ -193,3 +193,7 @@ var util = {
         return target;
     }
 };
+
+Handlebars.registerHelper('amount', function (number) {
+    return util.toDisplayAmount(number);
+});
