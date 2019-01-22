@@ -5,7 +5,8 @@ function PlayerInfo(player) {
         var blockList = player.getBlockList();
 
         var data = {
-            blockList: blockList
+            blockList: blockList,
+            player: player
         };
 
         var html = Handlebars.compile(this.template()).template(data);
@@ -49,11 +50,6 @@ function PlayerInfo(player) {
            left: left,
            top: top
         });
-
-        this.$ui.find('.player-image').attr('src', player.getImageUrl());
-        this.$ui.find('.player-name').text(player.name);
-
-        this.createNation(player);
     };
 
     this.template = function () {
@@ -65,16 +61,16 @@ function PlayerInfo(player) {
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-md-4 text-center" style="padding: 0px">
-                                    <img class="player-image" width="40" height="40">
-                                    <span class="player-name"></span>
+                                    <img src="{{player.getImageUrl}}" class="player-image" width="40" height="40">
+                                    <span class="player-name">player.name</span>
                                     <span class="badge badge-primary ticket" style="display: none"></span>
                                     <span class="badge badge-primary escape-ticket" style="display: none"></span>
                                 </div>
                                 <div class="col-md-6 m-auto text-center">
-                                    <span class="amount"></span>
+                                    <span class="amount">{{player.name}}</span>
                                 </div>
                                 <div class="col-md-2 m-auto text-center">
-                                    <span class="badge badge-primary place-count"></span>
+                                    <span class="badge badge-primary place-count">{{player.getDisplayAmount}}</span>
                                 </div>
                             </div>
                             <div class="row">
