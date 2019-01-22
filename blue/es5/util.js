@@ -210,7 +210,8 @@ Handlebars.JavaScriptCompiler.prototype.nameLookup = function(parent, name, type
         return parent + "[" + name + "]";
     } else if (Handlebars.JavaScriptCompiler.isValidJavaScriptVariableName(name)) {
         // ( typeof parent.name === "function" ? parent.name() : parent.name)
-        return "(typeof " + parent + "." + name + " === 'function' ? " + parent + "." + name + "() : " + parent + "." + name + ")";
+        var field = `${parent}.${name}`;
+        return `(typeof ${field} === 'function' ?  ${field}() : ${field})`;
     } else {
         return parent + "['" + name + "']";
     }
