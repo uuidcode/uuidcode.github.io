@@ -291,7 +291,7 @@ Block.list = [
             {
                 name: '호텔',
                 displayPrice: '50만원',
-                displayFees: '95만원',
+                displayFees: '95만원'
             },
             {
                 name: '빌딩',
