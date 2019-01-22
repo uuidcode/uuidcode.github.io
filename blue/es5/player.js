@@ -480,7 +480,7 @@ function Player(index) {
     };
 
     this.runGoldenKey = function () {
-        var goldenKey = config.goldenKeyList[board.goldenKeyIndex];
+        var goldenKey = GoldenKey.list[board.goldenKeyIndex];
         new GoldenKey().show(goldenKey);
     };
 
