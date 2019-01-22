@@ -60,7 +60,7 @@ function Board() {
         this.$ui.append($dic);
 
         for (var i = 0; i < 40; i++) {
-            var block = new Block(i, config.blockList[i]);
+            var block = new Block(i, Building.list[i]);
             this.blockList.push(block);
             this.$ui.append(block.$ui);
         }
@@ -221,23 +221,7 @@ function Board() {
             var randomPlace = $modal.find('.random-place').is(':checked');
 
             if (randomPlace) {
-                shuffle(config.blockList);
-
-                var startIndex = 0;
-
-                for (var i = 0; i < config.blockList.length; i++) {
-                    if (config.blockList[i].name === config.start) {
-                        startIndex = i;
-                        break;
-                    }
-                }
-
-                if (startIndex !== 0) {
-                    var startBlock = config.blockList[startIndex];
-                    var tempBlock = config.blockList[0];
-                    config.blockList[0] = startBlock;
-                    config.blockList[startIndex] = tempBlock;
-                }
+                Building.random();
 
             }
 
