@@ -52,7 +52,7 @@ function GoldenKey() {
 
 GoldenKey.list = [
     {
-        name: SELL_HALF_PRICE,
+        name: config.sellHalfPrice,
         description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
         run: function () {
             /** @type Player **/
@@ -121,12 +121,12 @@ GoldenKey.list = [
             itemList.push('우주항공국에서 우주여행 초청장이 왔습니다');
             itemList.push('무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다');
             itemList.push('출발지를 경유하면 월급을 받으세요');
-            return util.getDescriptionWithImageHtml(itemList, SPACE_TRAVEL);
+            return util.getDescriptionWithImageHtml(itemList, config.spaceTravel);
         },
         run: function () {
             var currentPlayer = board.getCurrentPlayer();
             currentPlayer.freeSpaceTravel = true;
-            currentPlayer.goFastToBlock(SPACE_TRAVEL);
+            currentPlayer.goFastToBlock(config.spaceTravel);
         }
     },
     {
@@ -158,7 +158,7 @@ GoldenKey.list = [
         }
     },
     {
-        name: TICKET,
+        name: config.ticket,
         description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
         run: function () {
             board.getCurrentPlayer().addTicket();
@@ -173,23 +173,23 @@ GoldenKey.list = [
     },
     {
         name: '관광여행',
-        description: SEOUL + '로 관광여행을 갑니다.',
+        description: config.seoul + '로 관광여행을 갑니다.',
         run: function () {
-            board.getCurrentPlayer().goFastToBlock(SEOUL);
+            board.getCurrentPlayer().goFastToBlock(config.seoul);
         }
     },
     {
         name: '관광여행',
-        description: JEJU + '로 관광여행을 갑니다.',
+        description: config.jeju + '로 관광여행을 갑니다.',
         run: function () {
-            board.getCurrentPlayer().goFastToBlock(JEJU);
+            board.getCurrentPlayer().goFastToBlock(config.jeju);
         }
     },
     {
         name: '관광여행',
-        description: BUSAN + '로 관광여행을 갑니다.',
+        description: config.busan + '로 관광여행을 갑니다.',
         run: function () {
-            board.getCurrentPlayer().goFastToBlock(BUSAN);
+            board.getCurrentPlayer().goFastToBlock(config.busan);
         }
     },
     {
@@ -208,7 +208,7 @@ GoldenKey.list = [
         }
     },
     {
-        name: WORLD_TOUR,
+        name: config.worldTour,
         description: '현재 위치에서 한바퀴 됩니다.<br>월급도 받고 사회복지기금접수처의 기금도 받습니다.',
         run: function () {
             board.getCurrentPlayer().goFast(40);
@@ -278,7 +278,7 @@ for (var i = 0; i < goldenKeyLength; i++) {
 }
 
 GoldenKey.resetGoldenKey = function() {
-    util.shuffle(GoldenKey.goldenKeyList);
+    util.shuffle(GoldenKey.list);
 };
 
 GoldenKey.resetGoldenKey();

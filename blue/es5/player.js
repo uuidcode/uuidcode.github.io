@@ -479,6 +479,10 @@ function Player(index) {
         return util.getImageUrl(this.image);
     };
 
+    this.getDisplayAmount = function () {
+        return util.toDisplayAmount(this.amount);
+    };
+
     this.runGoldenKey = function () {
         var goldenKey = GoldenKey.list[board.goldenKeyIndex];
         new GoldenKey().show(goldenKey);

@@ -197,3 +197,21 @@ var util = {
 Handlebars.registerHelper('amount', function (number) {
     return util.toDisplayAmount(number);
 });
+
+Handlebars.JavaScriptCompiler.prototype.nameLookup = function(parent, name, type) {
+    if (parent === "helpers") {
+        if (Handlebars.JavaScriptCompiler.isValidJavaScriptVariableName(name))
+            return parent + "." + name;
+        else
+            return parent + "['" + name + "']";
+    }
+
+    if (/^[0-9]+$/.test(name)) {
+        return parent + "[" + name + "]";
+    } else if (Handlebars.JavaScriptCompiler.isValidJavaScriptVariableName(name)) {
+        // ( typeof parent.name === "function" ? parent.name() : parent.name)
+        return "(typeof " + parent + "." + name + " === 'function' ? " + parent + "." + name + "() : " + parent + "." + name + ")";
+    } else {
+        return parent + "['" + name + "']";
+    }
+};

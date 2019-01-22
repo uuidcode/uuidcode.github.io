@@ -1,6 +1,7 @@
 function PlayerInfo(player) {
     this.$ui = null;
 
+    /** @type Player **/
     this.init = function (player) {
         var blockList = player.getBlockList();
 
@@ -9,7 +10,8 @@ function PlayerInfo(player) {
             player: player
         };
 
-        var html = Handlebars.compile(this.template()).template(data);
+        var template = Handlebars.compile(this.template());
+        var html = template(data);
         this.$ui = $(html);
 
         this.$ui.find('.place-count').text(blockList.length);
@@ -62,7 +64,7 @@ function PlayerInfo(player) {
                             <div class="row">
                                 <div class="col-md-4 text-center" style="padding: 0px">
                                     <img src="{{player.getImageUrl}}" class="player-image" width="40" height="40">
-                                    <span class="player-name">player.name</span>
+                                    <span class="player-name">{{player.name}}</span>
                                     <span class="badge badge-primary ticket" style="display: none"></span>
                                     <span class="badge badge-primary escape-ticket" style="display: none"></span>
                                 </div>
@@ -77,13 +79,13 @@ function PlayerInfo(player) {
                                 <div class="col-md-12">
                                     <table class="table">
                                         <tbody class="nationContainer">
-                                        {{#list blockList}}
+                                        {{#each blockList}}
                                         <tr>
-                                            <td class="flag"><img src={{getImageUrl}}width="35" height="20" style="border:1px solid black"></td>
+                                            <td class="flag"><img src="{{getImageUrl}}" width="35" height="20" style="border:1px solid black"></td>
                                             <td class="name">{{name}}</td>
                                             <td class="building-amount">{{getDisplayAmount}}</td>
                                         </tr>
-                                        {{/list}}
+                                        {{/each}}
                                         </tbody>
                                     </table>
                                 </div>
