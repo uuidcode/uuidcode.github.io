@@ -62,7 +62,7 @@ function PlayerInfo(player) {
                     <div class="modal-body player-modal-body" style="overflow-y: auto">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-md-4 text-center" style="padding: 0px">
+                                <div class="col-md-4 text-center" style="padding: 0">
                                     <img src="{{player.getImageUrl}}" class="player-image" width="40" height="40">
                                     <span class="player-name">{{player.name}}</span>
                                     <span class="badge badge-primary ticket" style="display: none"></span>
