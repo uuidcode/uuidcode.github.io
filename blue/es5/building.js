@@ -72,7 +72,7 @@ Block.list = [
         ]
     },
     {
-        type: 'goldenKey'
+        type: config.goldenKey
     },
     {
         code: 'cn',
@@ -151,7 +151,7 @@ Block.list = [
         ]
     },
     {
-        type: 'goldenKey'
+        type: config.goldenKey
     },
     {
         code: 'eg',
@@ -228,7 +228,7 @@ Block.list = [
         ]
     },
     {
-        type: 'goldenKey'
+        type: config.goldenKey
     },
     {
         code: 'dk',
@@ -306,7 +306,7 @@ Block.list = [
         ]
     },
     {
-        type: 'goldenKey'
+        type: config.goldenKey
     },
     {
         code: 'de',
@@ -383,7 +383,7 @@ Block.list = [
         ]
     },
     {
-        type: 'goldenKey'
+        type: config.goldenKey
     },
     {
         code: 'br',
@@ -594,7 +594,7 @@ Block.list = [
         ]
     },
     {
-        type: 'goldenKey'
+        type: config.goldenKey
     },
     {
         code: 'gb',
@@ -674,3 +674,37 @@ Building.random = function () {
         Building.list[startIndex] = tempBlock;
     }
 };
+
+Building.init = function () {
+    for (var i = 0; i < Building.list.length; i++) {
+        var block = Building.list[i];
+
+        if (block.displayAmount) {
+            block.amount = util.toAmount(block.displayAmount);
+        }
+
+        if (block.displayFees) {
+            block.fees = util.toAmount(block.displayFees);
+        }
+
+        var buildingList = block.buildingList;
+
+        if (buildingList) {
+            for (var j = 0; j < buildingList.length; j++) {
+                var building = buildingList[j];
+
+                if (building.displayAmount) {
+                    building.amount = util.toAmount(building.displayAmount);
+                }
+
+                if (building.displayFees) {
+                    building.fees = util.toAmount(building.displayFees);
+                }
+
+                building.count = 0;
+            }
+        }
+    }    
+};
+
+Building.init();

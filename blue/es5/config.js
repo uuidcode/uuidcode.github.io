@@ -1,38 +1,22 @@
-START = '출발';
-FUNDING = '사회복지기금';
-FUNDING_PLACE = '사회복지기금접수처';
-SPACE_TRAVEL = '우주여행';
-COLUMBIA = '컬럼비아호';
-TAIPEI = '타이베이';
-BEIJING = '베이징';
-QUEEN_ELIZABETH = '퀸 엘리자베스호';
-CONCORDE = '콩코드여객기';
-SEOUL = '서울';
-BUSAN = '부산';
-JEJU = '제주';
-WORLD_TOUR = '세계일주 초대권';
-TICKET = '우대권';
-SELL_HALF_PRICE = '반액대매출';
-
 var config = {
     blockSize: 40,
     selectedColor: 'rgba(0, 123, 255, 0.5)',
     fundAmount: 150000,
-    start: START,
-    fundingName: FUNDING,
-    seoul: SEOUL,
-    busan: BUSAN,
-    jeju: JEJU,
-    beijing: BEIJING,
-    taipei: TAIPEI,
-    fundingPlace: FUNDING_PLACE,
-    spaceTravel: SPACE_TRAVEL,
-    queenElizabeth: QUEEN_ELIZABETH,
-    worldTour: WORLD_TOUR,
-    sellHalfPrice: SELL_HALF_PRICE,
-    ticket: TICKET,
-    columbia: COLUMBIA,
-    concorde: CONCORDE,
+    start: '출발',
+    fundingName: '사회복지기금',
+    seoul: '서울',
+    busan: '부산',
+    jeju: '제주',
+    beijing: '베이징',
+    taipei: '타이베이',
+    fundingPlace: '사회복지기금접수처',
+    spaceTravel: '우주여행',
+    queenElizabeth: '퀸 엘리자베스호',
+    worldTour: '세계일주 초대권',
+    sellHalfPrice: '반액대매출',
+    ticket: '우대권',
+    columbia: '컬럼비아호',
+    concorde: '콩코드여객기',
     island: '무인도',
     goldenKey: 'goldenKey',
     block : {
@@ -111,48 +95,5 @@ var config = {
         width: 200,
         height: 50,
         margin: 10
-    },
-    calculateFee: function (amount, title) {
-        var sum = 0;
-
-        board.getBlockList()
-            .forEach(function (block) {
-                for (var i = 0; i < block.buildingList.length; i++) {
-                    sum += block.buildingList[i].count * amount[i];
-                }
-            });
-
-        var message = title + '로 ' + util.toDisplayAmount(sum) + '을 납부하였습니다.';
-        board.getCurrentPlayer().pay(sum, message);
     }
 };
-
-for (var i = 0; i < Building.list.length; i++) {
-    var block = Building.list[i];
-
-    if (block.displayAmount) {
-        block.amount = util.toAmount(block.displayAmount);
-    }
-
-    if (block.displayFees) {
-        block.fees = util.toAmount(block.displayFees);
-    }
-
-    var buildingList = block.buildingList;
-
-    if (buildingList) {
-        for (var j = 0; j < buildingList.length; j++) {
-            var building = buildingList[j];
-
-            if (building.displayAmount) {
-                building.amount = util.toAmount(building.displayAmount);
-            }
-
-            if (building.displayFees) {
-                building.fees = util.toAmount(building.displayFees);
-            }
-
-            building.count = 0;
-        }
-    }
-}
