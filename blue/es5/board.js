@@ -60,7 +60,7 @@ function Board() {
         this.$ui.append($dic);
 
         for (var i = 0; i < 40; i++) {
-            var block = new Block(i, Building.list[i]);
+            var block = new Block(i, Block.list[i]);
             this.blockList.push(block);
             this.$ui.append(block.$ui);
         }
