@@ -1,45 +1,23 @@
 function Investment() {
     this.$ui = null;
-    this.buildingList = null;
 
+    /** @type Block **/
     this.show = function (block) {
+        /** @type Player **/
         var player = board.getCurrentPlayer();
 
         if (block.player == player) {
-            if (block.buildingList.length == 0) {
+            if (block.hasNotBuilding()) {
                 return false;
             }
         }
 
-        this.buildingList = block.buildingList;
-
-        this.$ui = $($('#investmentInfoTemplate').html());
+        var template = Handlebars.compile(this.template());
+        this.$ui = $(template({
+            block: block
+        }));
         board.append(this.$ui);
 
-        this.$ui.find('.display-amount').html(block.displayAmount);
-        this.$ui.find('.display-fees').html(block.displayFees);
-
-        this.getModal().find('.modal-title').css({
-            fontWeight: 'bold'
-        }).html(block.name);
-
-        this.$ui.find('table').css({
-            margin: 10
-        });
-
-        var $place = this.$ui.find('.place');
-        $place.css({
-            border: '1px solid black'
-        });
-
-        $place.attr('src', block.getImageUrl());
-        this.$ui.find('.owner').attr('src', block.getOwnerImageUrl());
-
-        if (this.buildingList.length > 0) {
-            this.createBuildingList();
-        }
-
-        this.$ui.find('.player-amount').text('잔액 : ' + util.toDisplayAmount(player.amount));
         var self = this;
 
         if (block.player === null) {
@@ -99,18 +77,90 @@ function Investment() {
         this.getModal().hideModal();
     };
 
-    this.createBuildingList = function () {
-        var html = $('#investmentBuildingTemplate').html();
-        this.$ui.find('.container-fluid').append(html);
-
-        for (var i = 0; i < this.buildingList.length; i++) {
-            var building = this.buildingList[i];
-            var $item = $($('#investmentBuildingItemTemplate').html());
-            $item.find('.name').html(building.name);
-            $item.find('.investment-count').html(building.count);
-            $item.find('.price').html(building.displayPrice);
-            $item.find('.fees').html(building.displayFees);
-            this.$ui.find('.investment-item-container').append($item);
-        }
-    };
+    this.template = function () {
+        return `
+        <div class="modal investment-modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-title" style="font-weight: bold">{{block.name}}</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6 m-auto text-center">
+                                    <img src="{{block.getImageUrl}}" class="place" width="100px" height="50px" style="border:1px solid black">
+                                    <img src="{{block.getOwnerImageUrl}}" class="owner" width="30px" height="30pxpx">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 m-auto">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">구입비용</th>
+                                            <th scope="col">통행료</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="display-amount">{{block.displayAmount}}</td>
+                                            <td class="display-fees">{{block.displayFees}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {{#if block.hasBuilding}}
+                            <div class="row">
+                                <div class="col-md-10 m-auto">
+                                    <strong>건축비</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 m-auto">
+                                    <table class="table" style="maring: 10px">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">비용</th>
+                                            <th scope="col">수익</th>
+                                            <th scope="col" class="investment-count" style="display:none">개수</th>
+                                            <th scope="col" class="investment-add" style="display:none"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="investment-item-container">
+                                            {{#each build.buildingList}}
+                                            <tr>
+                                                <td class="name">{{name}}</td>
+                                                <td class="price">{{displacePrice}}</td>
+                                                <td class="fees">{{displaceFees}}</td>
+                                                <td class="investment-count" style="display:none">{{count}}</td>
+                                                <td class="investment-add" style="display:none">
+                                                    <button type="button" class="btn btn-primary investment-add-button">추가</button>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark player-amount" disabled>{{player.getDisplayAmount}}</button>
+                        <button type="button" id="buyButton" class="btn btn-primary"></button>
+                        <button type="button" id="payButton" class="btn btn-primary">구입한다</button>
+                        <button type="button" id="cancelButton" class="btn btn-warning">안산다</button>
+                        <button type="button" id="notPayButton" class="btn btn-warning">안산다</button>
+                        <button type="button" id="resetButton" class="btn btn-success">원래데로</button>
+                        <button type="button" id="payFeeButton" class="btn btn-primary"></button>
+                        <button type="button" id="useTicketButton" class="btn btn-success">우대권사용</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
+    }
 }

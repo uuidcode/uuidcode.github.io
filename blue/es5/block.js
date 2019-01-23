@@ -214,6 +214,14 @@ function Block(index, data) {
         this.$ui.find('.block-amount').text(util.toDisplayAmount(this.amount));
     };
 
+    this.hasBuilding = function () {
+        return this.buildingList.length > 0
+    };
+
+    this.hasNotBuilding = function () {
+        return !this.hasBuilding();
+    };
+
     this.init();
 }
 

@@ -10,7 +10,7 @@ function Key() {
             width: config.key.width,
             height: config.key.height,
             backgroundImage: 'url(../image/key.png)',
-            backgroundSize: config.key.width + 'px ' + config.key.height + 'px'
+            backgroundSize: `${config.key.width}px ${config.key.height}px`
         });
     };
 
