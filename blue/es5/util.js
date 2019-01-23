@@ -81,8 +81,11 @@ var util = {
     },
 
     getDescriptionWithImageHtml: function (array, name) {
-        array.push('<hr>');
-        array.push(board.getBlockHtml(name));
+        if (board) {
+            array.push('<hr>');
+            array.push(board.getBlockHtml(name));
+        }
+
         return util.getDescriptionHtml(array);
     },
 
@@ -116,8 +119,26 @@ var util = {
     },
 
     getModal: function (selector) {
-        var $modal = $(selector).modal();
-        var position = board.die.$element.offset();
+        var $modal = null;
+
+        if ($.type(selector) === "string") {
+            $modal = $(selector);
+        } else {
+            $modal = selector;
+        }
+
+        $modal.modal();
+
+        var position = null;
+
+        try {
+            position = board.die.$element.offset();
+        } catch (e) {
+            position = {
+                left: 0,
+                top: 0
+            };
+        }
 
         $modal.find('.modal-dialog').css({
             position: 'absolute',

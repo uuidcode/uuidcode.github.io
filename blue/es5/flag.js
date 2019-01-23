@@ -11,8 +11,8 @@ function Flag(code) {
             width: config.flag.width,
             height: config.flag.height,
             border: '1px solid black',
-            backgroundImage: 'url(../image/' + code + '.png)',
-            backgroundSize: config.flag.width + 'px ' + config.flag.height + 'px'
+            backgroundImage: `url(../image/${code}.png)`,
+            backgroundSize: `${config.flag.width}px ${config.flag.height}px`
         });
     };
 

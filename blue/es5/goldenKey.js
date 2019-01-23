@@ -18,8 +18,6 @@ function GoldenKey() {
             description: description
         }));
 
-        board.append(this.$element);
-
         this.initEvent();
         this.showModal();
     };
@@ -39,7 +37,7 @@ function GoldenKey() {
     };
 
     this.getModal = function () {
-        return util.getModal('.golden-key-modal');
+        return util.getModal(this.$element);
     };
 
     this.showModal = function () {
@@ -58,7 +56,7 @@ function GoldenKey() {
                         <div class="modal-header">
                             <h5 class="modal-title">{{goldenKey.name}}</h5>
                         </div>
-                        <div class="modal-body">{{{description}}</div>
+                        <div class="modal-body">{{{description}}}</div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary run-golden-key-button">확인</button>
                         </div>
