@@ -64,7 +64,7 @@ function Toast() {
                             </div>
                             <div class="row">
                                 <hr>
-                                <div class="col-md-12 toast-message text-center">{{message}}</div>
+                                <div class="col-md-12 toast-message text-center">{{{message}}}</div>
                             </div>
                         </div>
                     </div>
