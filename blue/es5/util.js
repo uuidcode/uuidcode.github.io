@@ -86,25 +86,6 @@ var util = {
         return util.getDescriptionHtml(array);
     },
 
-    createBuildingCostGoldenKey: function (name, priceList) {
-        return {
-            name: name,
-            priceList : priceList,
-            description: function () {
-            var html = $('#buildingPriceTemplate').html();
-
-            for (var i = 0; i < this.priceList.length; i++) {
-                html = html.replace(util.getBuildCode(i), this.priceList[i]);
-            }
-
-            return name + '를 각 건물별로 아래와 같이 지불하세요.' + html;
-        },
-            run: function () {
-                board.getCurrentPlayer().payForBuilding(this.priceList, name);
-            }
-        }
-    },
-
     getDescriptionAndFromToHtml: function (array, from, to) {
         var descriptionHtml = this.getDescriptionHtml(array);
         var fromBlock = board.getTargetBlock(from);
@@ -149,17 +130,6 @@ var util = {
         return null;
     },
 
-    getBuildCode: function (index) {
-        if (index == 0) {
-            return 'hotel';
-        } else if (index == 1) {
-            return 'building';
-        } else if (index == 2) {
-            return 'villa';
-        }
-
-        return null;
-    },
 
     shuffle: function(array) {
         var counter = array.length;

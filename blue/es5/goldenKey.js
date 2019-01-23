@@ -50,6 +50,47 @@ function GoldenKey() {
     };
 }
 
+GoldenKey.createBuildingCost = function (name, priceList) {
+    var html = `
+            <div class="container-fluid">
+                <div class="row" style="margin-top: 20px">
+                    <div class="col-md-6 m-auto">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <td>호텔</td>
+                                <td>{{list.0}}</td>
+                            </tr>
+                            <tr>
+                                <td>빌딩</td>
+                                <td>{{list.1}}</td>
+                            </tr>
+                            <tr>
+                                <td>별장</td>
+                                <td>{{list.2}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        `;
+
+    return {
+        name: name,
+        description: function () {
+            var template = Handlebars.compile(html);
+            var result = template({
+                list: priceList
+            });
+            return `${name}를 각 건물별로 아래와 같이 지불하세요.${result}`;
+        },
+        run: function () {
+            board.getCurrentPlayer().payForBuilding(this.priceList, name);
+        }
+    }
+};
+
 GoldenKey.list = [
     {
         name: config.sellHalfPrice,
@@ -83,9 +124,9 @@ GoldenKey.list = [
             new Toast().showAndReadyToNextTurn('소유하고 있는 부동산이 없습니다.');
         }
     },
-    util.createBuildingCostGoldenKey('방범비', ['5만원', '3만원', '1만원']),
-    util.createBuildingCostGoldenKey('정기종합 소득세', ['15만원', '10만원', '3만원']),
-    util.createBuildingCostGoldenKey('건물수리', ['10만원', '6만원', '3만원']),
+    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
+    GoldenKey.createBuildingCost('정기종합 소득세', ['15만원', '10만원', '3만원']),
+    GoldenKey.createBuildingCost('건물수리', ['10만원', '6만원', '3만원']),
     {
         name: '유람선 여행',
         description: function () {
