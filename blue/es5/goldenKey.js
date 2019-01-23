@@ -4,10 +4,7 @@ function GoldenKey() {
 
     this.show = function (goldenKey) {
         this.goldenKey = goldenKey;
-        var template = $('#goldenKeyTemplate').html();
-
-        this.$ui = $(template);
-        this.$ui.find('.modal-title').html(goldenKey.name);
+        var template = Handlebars.compile(this.template());
         var description = null;
 
         if ($.isFunction(this.goldenKey.description)) {
@@ -16,7 +13,11 @@ function GoldenKey() {
             description = this.goldenKey.description;
         }
 
-        this.$ui.find('.modal-body').html(description);
+        this.$ui = $(template({
+            goldenKey: goldenKey,
+            description: description
+        }));
+
         board.append(this.$ui);
 
         this.initEvent();
@@ -47,6 +48,24 @@ function GoldenKey() {
 
     this.hideModal = function () {
         this.getModal().hideModal();
+    };
+
+    this.template = function () {
+        return `
+            <div class="modal show golden-key-modal" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog shadow" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">{{goldenKey.name}}</h5>
+                        </div>
+                        <div class="modal-body">{{{description}}</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary run-golden-key-button">확인</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     };
 }
 
@@ -131,28 +150,28 @@ GoldenKey.list = [
         name: '유람선 여행',
         description: function () {
             var itemList = [];
-            itemList.push(QUEEN_ELIZABETH + '를 타고 ' + BEIJING + '로 가세요.');
-            itemList.push(QUEEN_ELIZABETH + ' 소유주에게 탑승료를 지불합니다.');
+            itemList.push(config.queenElizabeth + '를 타고 ' + config.beijing + '로 가세요.');
+            itemList.push(config.queenElizabeth + ' 소유주에게 탑승료를 지불합니다.');
             itemList.push('출발지를 경유하면 월급을 받으세요');
-            return util.getDescriptionAndFromToHtml(itemList, QUEEN_ELIZABETH, BEIJING);
+            return util.getDescriptionAndFromToHtml(itemList, config.queenElizabeth, config.beijing);
         },
         run: function () {
             var currentPlayer = board.getCurrentPlayer();
-            currentPlayer.goFastToBlockAsWayPoint(QUEEN_ELIZABETH, BEIJING);
+            currentPlayer.goFastToBlockAsWayPoint(config.queenElizabeth, config.beijing);
         }
     },
     {
         name: '항공여행',
         description: function () {
             var itemList = [];
-            itemList.push(CONCORDE + '를 타고 ' + TAIPEI + '로 가세요.');
-            itemList.push(CONCORDE + ' 소유주에게 탑승료를 지불합니다.');
+            itemList.push(config.concorde + '를 타고 ' + config.taipei + '로 가세요.');
+            itemList.push(config.concorde + ' 소유주에게 탑승료를 지불합니다.');
             itemList.push('출발지를 경유하면 월급을 받으세요');
-            return util.getDescriptionAndFromToHtml(itemList, CONCORDE, TAIPEI);
+            return util.getDescriptionAndFromToHtml(itemList, config.concorde, config.taipei);
         },
         run: function () {
             var currentPlayer = board.getCurrentPlayer();
-            currentPlayer.goFastToBlockAsWayPoint(CONCORDE, TAIPEI);
+            currentPlayer.goFastToBlockAsWayPoint(config.concorde, config.taipei);
         }
     },
     {
@@ -310,9 +329,9 @@ var goldenKeyLength = GoldenKey.list.length;
 for (var i = 0; i < goldenKeyLength; i++) {
     var goldenKey = GoldenKey.list[i];
 
-    if (goldenKey.name == config.worldTour ||
-        goldenKey.name == config.ticket ||
-        goldenKey.name == config.sellHalfPrice) {
+    if (goldenKey.name === config.worldTour ||
+        goldenKey.name === config.ticket ||
+        goldenKey.name === config.sellHalfPrice) {
         var newGoldenKey = util.copy(goldenKey);
         GoldenKey.list.push(newGoldenKey);
     }
