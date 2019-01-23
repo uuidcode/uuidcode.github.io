@@ -90,10 +90,29 @@ var util = {
         var descriptionHtml = this.getDescriptionHtml(array);
         var fromBlock = board.getTargetBlock(from);
         var toBlock = board.getTargetBlock(to);
-        var html = $('#fromToTemplate').html();
-        html = html.replace('fromImage', fromBlock.getImageUrl());
-        html = html.replace('toImage', toBlock.getImageUrl());
-        return descriptionHtml + '<hr>' + html;
+
+        var template = Handlebars.compile(util.getFromToTemplate());
+        var result = template(({
+            fromBlock: fromBlock,
+            toBlock: toBlock,
+        }));
+
+        return `${descriptionHtml}<hr>${result}`;
+    },
+
+    getFromToTemplate : function () {
+        return `
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 m-auto text-center">
+                        <img src="{{fromBlock.getImageUrl}}" width="100%">
+                    </div>
+                    <div class="col-md-6 m-auto text-center">
+                        <img src="{{toBlock.getImageUrl}}" width="100%">
+                    </div>
+                </div>
+            </div>
+        `;
     },
 
     getModal: function (selector) {

@@ -19,107 +19,6 @@
 <audio class="jump6-sound"><source src="../mp3/jump6.mp3"></audio>
 <audio class="win-sound"><source src="../mp3/win.mp3"></audio>
 <div class="board"></div>
-<script type="text/template" id="startTemplate">
-    <div class="modal start-modal" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container-fluid player-list">
-                    </div>
-                    <hr>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-4 m-auto">
-                                장소 랜덤 생성
-                            </div>
-                            <div class="col-md-8 form-inline">
-                                <input type="checkbox" class="random-place">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-4 m-auto">
-                                제한시간
-                            </div>
-                            <div class="col-md-8 form-inline">
-                                <input type="text" class="form-control minute-timer" value="60" style="width:50px">
-                                &nbsp;분
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary start-button">시작</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-<script type="text/template" id="winTemplate">
-    <div class="modal start-modal" data-keyboard="false" data-backdrop="static">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">축하합니다.</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-md-3 m-auto text-center">
-                                <img src="" class="player-image" width="50px" height="50px">
-                            </div>
-                            <div class="col-md-9 m-auto text-center">
-                                <span class="player-name"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary win-button">확인</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-<script type="text/template" id="fromToTemplate">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-6 m-auto text-center">
-                <img src="fromImage" width="100%">
-            </div>
-            <div class="col-md-6 m-auto text-center">
-                <img src="toImage" width="100%">
-            </div>
-        </div>
-    </div>
-</script>
-<script type="text/template" id="startPlayerTemplate">
-<div class="row player-row">
-    <div class="col-md-1 m-auto text-center">
-        <span class="player-index"></span>
-    </div>
-    <div class="col-md-2 m-auto text-center">
-        <img src="" class="player-image" width="50px" height="50px">
-    </div>
-    <div class="col-md-4 m-auto text-center">
-        <input type="text" class="form-control player-name" placeholder="이름">
-    </div>
-    <div class="col-md-5 m-auto text-center">
-        <button type="button" class="btn btn-info up-button">위로</button>
-        <button type="button" class="btn btn-info down-button">아래로</button>
-    </div>
-</div>
-</script>
-<script type="text/template" id="blockPopoverTemplate">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12 m-auto">
-            <img width="40" height="40">
-            </div>
-        </div>
-    </div>
-</script>
 <script src="../lib/jquery-3.3.1.min.js"></script>
 <script src="../lib/jquery.color-2.1.2.min.js"></script>
 <script src="../lib/popper.min.js"></script>
@@ -151,5 +50,7 @@
 <script src="goldenKey.js"></script>
 <script src="timer.js"></script>
 <script src="board.js"></script>
+<script src="ready.js"></script>
+<script src="win.js"></script>
 </body>
 </html>

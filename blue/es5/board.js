@@ -155,85 +155,7 @@ function Board() {
     };
 
     this.ready = function () {
-        var html = $('#startTemplate').html();
-        var playerHtml = $('#startPlayerTemplate').html();
-
-        var $modal = $(html);
-        var $playerList = $modal.find('.player-list');
-        var reset = function () {
-            $modal.find('.row').each(function (index) {
-                $(this).find('.player-index').text(index + 1);
-            });
-        };
-
-        config.playerList.forEach(function (player, index) {
-            var $player = $(playerHtml);
-            var $playerImage = $player.find('.player-image');
-            $playerImage.attr('src', util.getImageUrl(player.image));
-            $playerImage.attr('data-image', player.image);
-            $playerList.append($player);
-        });
-
-        reset();
-
-        $modal.on('click', '.up-button', function () {
-            var index = $modal.find('.up-button').index($(this));
-
-            if (index === 0) {
-                return;
-            }
-
-            var $row = $(this).closest('.row');
-            $row.insertBefore($row.parent('').find('.row').eq(index - 1));
-            reset();
-        });
-
-        $modal.on('click', '.down-button', function () {
-            var index = $modal.find('.down-button').index($(this));
-
-            if (index === config.playerList.length - 1) {
-                return;
-            }
-
-            var $row = $(this).closest('.row');
-            $row.insertAfter($row.parent('').find('.row').eq(index - 1));
-            reset();
-
-        });
-
-        $modal.on('click', '.start-button', function () {
-            var $row = $modal.find('.player-row');
-
-            for (var i = 0; i < $row.length; i++) {
-                var $currentPlayer = $row.eq(i);
-                var $playerName = $currentPlayer.find('.player-name');
-
-                if ($playerName.val().trim() === '') {
-                    alert('이름을 입력하세요.');
-                    $playerName.focus();
-                    return;
-                }
-
-                config.playerList[i].image = $currentPlayer.find('.player-image').attr('data-image');
-                config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
-            }
-
-            var randomPlace = $modal.find('.random-place').is(':checked');
-
-            if (randomPlace) {
-                Building.random();
-
-            }
-
-            board.start($modal.find('.minute-timer').val());
-            $modal.hideModal();
-        });
-
-        $modal.showModal().removeModalWhenClose();
-
-        setTimeout(function () {
-            $modal.find('.player-name').eq(0).focus();
-        }, 1000);
+        new Ready();
     };
 
     this.initTimer = function (minuteTimer) {
@@ -248,18 +170,8 @@ function Board() {
         board.readyNextTurn();
     };
 
-    this.win = function (winPlayer) {
-        var html = $('#winTemplate').html();
-        var $winModal = $(html);
-        $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
-        $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
-        $winModal.showModal().removeModalWhenClose();
-        confetti.start();
-        board.playWinSound();
-
-        $winModal.find('.win-button').on('click', function () {
-            location.reload();
-        });
+    this.win = function (player) {
+        new Win(player);
     };
 }
 
