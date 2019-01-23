@@ -3,7 +3,7 @@ function Amount(amount) {
     this.$element = null;
 
     this.init = function () {
-        this.$element = $('<div></div>');
+        this.$element = $(`<div>${this.amount}</div>`);
         this.$element.addClass('block-amount');
         this.$element.css({
             position: 'absolute',
@@ -15,8 +15,6 @@ function Amount(amount) {
             textAlign: 'center',
             fontWeight: 'bold'
         });
-        
-        this.$element.html(this.amount);
     };
 
     this.init();
