@@ -61,14 +61,13 @@ function Ready() {
                 config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
             }
 
-            var randomPlace = this.$element.find('.random-place').is(':checked');
+            var randomPlace = that.$element.find('.random-place').is(':checked');
 
             if (randomPlace) {
-                Building.random();
-
+                Block.random();
             }
 
-            board.start(this.$element.find('.minute-timer').val());
+            board.start(that.$element.find('.minute-timer').val());
             that.$element.hideModal();
         });  
     };
@@ -86,13 +85,13 @@ function Ready() {
                     <div class="modal-content">
                         <div class="modal-body">
                             <div class="container-fluid player-list">
-                                {{#each playList}}
+                                {{#each playerList}}
                                 <div class="row player-row">
                                     <div class="col-md-1 m-auto text-center">
                                         <span class="player-index"></span>
                                     </div>
                                     <div class="col-md-2 m-auto text-center">
-                                        <img src="{{getImageUrl}}" data-image="{{image}}" class="player-image" width="50px" height="50px">
+                                        <img src="../image/{{image}}" data-image="{{image}}" class="player-image" width="50px" height="50px">
                                     </div>
                                     <div class="col-md-4 m-auto text-center">
                                         <input type="text" class="form-control player-name" placeholder="이름">

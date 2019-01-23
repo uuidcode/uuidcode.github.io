@@ -105,7 +105,7 @@ function Board() {
 
         this.playerInfoList[playIndex].$element.transfer({
             to: that.blockList[currentPlayer.position].$element
-        })
+        });
 
         currentPlayer.$element.removeClass('live').addClass('turn');
         setTimeout(function () {

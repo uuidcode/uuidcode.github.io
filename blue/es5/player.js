@@ -502,12 +502,13 @@ function Player(index) {
 
         var that = this;
         var investment = new Investment();
+
         if (!investment.show(block)) {
             this.readyNextTurn();
             return;
         }
 
-        $('#buyButton').on('click', function () {
+        $('body').on('click', '#buyButton', function () {
             block.player = that;
             that.amount -= block.amount;
 
@@ -516,13 +517,13 @@ function Player(index) {
             that.readyNextTurn(investment);
         });
 
-        $('#cancelButton, #notPayButton').on('click', function () {
+        $('body').on('click', '#cancelButton, #notPayButton').on('click', function () {
             that.readyNextTurn(investment);
         });
 
         var that = this;
 
-        $('#resetButton').on('click', function () {
+        $('body').on('click', '#resetButton').on('click', function () {
             for (var i = 0; i < block.newBuildingCountList.length; i++) {
                 var $investmentCount = $('.investment-count').eq(i + 1);
                 var count = block.newBuildingCountList[i];
@@ -532,7 +533,7 @@ function Player(index) {
             that.initNewBuilding(block);
         });
 
-        $('#payFeeButton').on('click', function () {
+        $('body').on('click', '#payFeeButton').on('click', function () {
             var totalFees = block.getTotalFees();
             investment.hideModal();
 
@@ -544,7 +545,7 @@ function Player(index) {
             block.player.income(totalFees, message);
         });
 
-        $('#useTicketButton').on('click', function () {
+        $('body').on('click', '#useTicketButton').on('click', function () {
             investment.hideModal();
             that.ticketCount--;
             var message = '우대권을 사용하였습니다.';
