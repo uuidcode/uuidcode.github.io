@@ -17,7 +17,7 @@ function Special(name, code) {
 
         });
 
-        var $name = $('<span>' + this.name + '</span>');
+        var $name = $(`<span>${this.name}</span>`);
         $name.css({
             backgroundColor: config.selectedColor
         });
@@ -26,8 +26,8 @@ function Special(name, code) {
 
         if (this.code) {
             this.$ui.css({
-                backgroundImage: 'url(../image/' + this.code + '.png)',
-                backgroundSize: config.block.width + 'px ' + config.block.height + 'px',
+                backgroundImage: `url(../image/${this.code}.png)`,
+                backgroundSize: `${config.block.width}px ${config.block.height}px`,
                 color: 'white'
             })
         }

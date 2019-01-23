@@ -15,13 +15,15 @@ function Toast() {
 
     this.show = function (message, callback) {
         var self = this;
+        var template = Handlebars.compile(this.template());
 
-        this.$ui = $($('#toastTemplate').html());
-        this.$ui.find('.modal-title').text(board.getCurrentPlayer().name);
+        this.$ui = template({
+            player: board.getCurrentPlayer(),
+            message: message
+        });
+
         board.append(this.$ui);
 
-        this.setMessage(message);
-        this.processPlayer();
         this.showModal();
 
         setTimeout(function () {
@@ -31,15 +33,6 @@ function Toast() {
                 callback();
             }
         }, 1000);
-    };
-
-    this.setMessage = function (message) {
-        this.$ui.find('.toast-message').html(message);
-    };
-
-    this.processPlayer = function () {
-        var currentPlayer = board.getCurrentPlayer();
-        currentPlayer.setPlayerImage(this.$ui);
     };
 
     this.getModal = function () {
@@ -53,4 +46,31 @@ function Toast() {
     this.hideModal = function () {
         this.getModal().hideModal();
     };
+
+    this.template = function () {
+        return `
+        <div class="modal toast-modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog shadow" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{player.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <img src="{{player.getImageUrl}}" class="player-image" width="80" height="80">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <hr>
+                                <div class="col-md-12 toast-message text-center">{{message}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
 }
