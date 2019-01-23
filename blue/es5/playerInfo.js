@@ -1,5 +1,5 @@
 function PlayerInfo(player) {
-    this.$ui = null;
+    this.$element = null;
 
     /** @type Player **/
     this.init = function (player) {
@@ -12,27 +12,27 @@ function PlayerInfo(player) {
 
         var template = Handlebars.compile(this.template());
         var html = template(data);
-        this.$ui = $(html);
+        this.$element = $(html);
 
-        this.$ui.find('.place-count').text(blockList.length);
+        this.$element.find('.place-count').text(blockList.length);
 
         if (player.ticketCount > 0) {
-            this.$ui.find('.ticket')
+            this.$element.find('.ticket')
                 .text('우대권: ' + player.ticketCount)
                 .show();
         }
 
         if (player.escapeTicketCount > 0) {
-            this.$ui.find('.ticket')
+            this.$element.find('.ticket')
                 .text('무인도 탈출권: ' + player.escapeTicketCount)
                 .show();
         }
 
-        this.$ui.find('.modal-dialog').css({
+        this.$element.find('.modal-dialog').css({
             margin: 0
         });
 
-        this.$ui.find('.modal-body').css({
+        this.$element.find('.modal-body').css({
             maxHeight: config.playerInfo.height
         });
 
@@ -44,7 +44,7 @@ function PlayerInfo(player) {
 
         var top = config.block.height + config.playerInfo.top;
 
-        this.$ui.css({
+        this.$element.css({
            position: 'absolute',
            display: 'block',
            width: config.playerInfo.width,

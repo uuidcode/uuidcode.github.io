@@ -117,7 +117,7 @@ var util = {
 
     getModal: function (selector) {
         var $modal = $(selector).modal();
-        var position = board.die.$ui.offset();
+        var position = board.die.$element.offset();
 
         $modal.find('.modal-dialog').css({
             position: 'absolute',

@@ -1,9 +1,9 @@
 function Die() {
-    this.$ui = null;
+    this.$element = null;
     this.box = null;
 
     this.init = function () {
-        this.$ui = $('#die');
+        this.$element = $('#die');
 
         var css = {
             position: 'absolute',
@@ -15,8 +15,8 @@ function Die() {
             margin: config.die.margin
         };
 
-        this.$ui.addClass('shadow');
-        this.$ui.css(css);
+        this.$element.addClass('shadow');
+        this.$element.css(css);
 
         var dieCanvas = $t.id('die');
         $t.dice.use_true_random = false;
@@ -27,9 +27,9 @@ function Die() {
         });
 
         this.box.rolling = false;
-        var self = this;
+        var that = this;
 
-        this.$ui.on('click', function () {
+        this.$element.on('click', function () {
             if (board.currentPlayerIsOnSpaceTravel()) {
                 new Toast().showPickPlace();
             } else {

@@ -1,9 +1,9 @@
 function Key() {
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
-        this.$ui = $('<div></div>');
-        this.$ui.css({
+        this.$element = $('<div></div>');
+        this.$element.css({
             position: 'absolute',
             left: (config.block.width - config.key.width) / 2,
             top: config.key.top,

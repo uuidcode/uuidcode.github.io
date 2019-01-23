@@ -1,5 +1,5 @@
 function Toast() {
-    this.$ui = null;
+    this.$element = null;
 
     this.showAndReadyToNextTurn = function (message) {
         this.show(message, function () {
@@ -14,20 +14,20 @@ function Toast() {
     };
 
     this.show = function (message, callback) {
-        var self = this;
+        var that = this;
         var template = Handlebars.compile(this.template());
 
-        this.$ui = template({
+        this.$element = template({
             player: board.getCurrentPlayer(),
             message: message
         });
 
-        board.append(this.$ui);
+        board.append(this.$element);
 
         this.showModal();
 
         setTimeout(function () {
-            self.hideModal();
+            that.hideModal();
 
             if (callback) {
                 callback();

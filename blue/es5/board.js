@@ -1,5 +1,5 @@
 function Board() {
-    this.$ui = $('.board');
+    this.$element = $('.board');
     this.playerList = [];
     this.playerInfoList = [];
     this.blockList = [];
@@ -28,47 +28,47 @@ function Board() {
         for (var i = 0; i < config.playerList.length; i++) {
             var player = new Player(this.playerList.length);
             this.playerList.push(player);
-            this.$ui.append(player.$ui);
+            this.$element.append(player.$element);
 
             var playerInfo = new PlayerInfo(player);
             this.playerInfoList.push(playerInfo);
-            this.$ui.append(playerInfo.$ui);
+            this.$element.append(playerInfo.$element);
             this.updatePlayerAmount(player, playerInfo);
         }
     };
 
     this.updatePlayerAmount = function (player, playerInfo) {
-        var $amount = playerInfo.$ui.find('.amount');
+        var $amount = playerInfo.$element.find('.amount');
         $amount.text(util.toDisplayAmount(player.amount));
     };
 
     this.updatePlayInfo = function(currentPlayer) {
-        this.playerInfoList[currentPlayer.index].$ui.remove();
+        this.playerInfoList[currentPlayer.index].$element.remove();
 
         var playerInfo = new PlayerInfo(currentPlayer);
         this.playerInfoList[currentPlayer.index] = playerInfo;
 
-        this.$ui.append(playerInfo.$ui);
+        this.$element.append(playerInfo.$element);
         this.updatePlayerAmount(currentPlayer, playerInfo);
     };
 
     this.initBlock = function () {
         this.blockList = [];
-        this.$ui.empty();
+        this.$element.empty();
         var $dic = $('<div></div>');
         $dic.attr('id', 'die');
-        this.$ui.append($dic);
+        this.$element.append($dic);
 
         for (var i = 0; i < 40; i++) {
             var block = new Block(i, Block.list[i]);
             this.blockList.push(block);
-            this.$ui.append(block.$ui);
+            this.$element.append(block.$element);
         }
     };
 
     this.initDie = function () {
         this.die = new Die();
-        this.$ui.append(this.die.$ui);
+        this.$element.append(this.die.$element);
     };
 
     this.turn = function () {
@@ -86,7 +86,7 @@ function Board() {
         var selector = '.modal-content';
 
         for (var i = 0; i < this.playerInfoList.length; i++) {
-            this.playerInfoList[i].$ui.find(selector).css({
+            this.playerInfoList[i].$element.find(selector).css({
                 borderWidth: 1,
                 borderColor: '#0003'
             });
@@ -94,22 +94,22 @@ function Board() {
 
         var playIndex = this.getPlayerIndex();
 
-        this.playerInfoList[playIndex].$ui.find(selector).css({
+        this.playerInfoList[playIndex].$element.find(selector).css({
             borderWidth: 5,
             borderColor: config.selectedColor
         });
 
         /** @type Player **/
         var currentPlayer = this.getCurrentPlayer();
-        var self = this;
+        var that = this;
 
-        this.playerInfoList[playIndex].$ui.transfer({
-            to: self.blockList[currentPlayer.position].$ui
+        this.playerInfoList[playIndex].$element.transfer({
+            to: that.blockList[currentPlayer.position].$element
         })
 
-        currentPlayer.$ui.removeClass('live').addClass('turn');
+        currentPlayer.$element.removeClass('live').addClass('turn');
         setTimeout(function () {
-            currentPlayer.$ui.removeClass('turn').addClass('live');
+            currentPlayer.$element.removeClass('turn').addClass('live');
         }, 1000);
     };
 
@@ -150,8 +150,8 @@ function Board() {
         });
     };
 
-    this.append = function ($ui) {
-        this.$ui.append($ui);
+    this.append = function ($element) {
+        this.$element.append($element);
     };
 
     this.ready = function () {

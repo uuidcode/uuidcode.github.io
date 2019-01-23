@@ -1,26 +1,26 @@
 function Ready() {
-    this.$ui = null;
+    this.$element = null;
     
     this.init = function () {
         var template = Handlebars.compile(this.template());
-        this.$ui = $(template({
+        this.$element = $(template({
             playerList: config.playerList
         }));
 
         this.reset();
         this.initEvent();
-        this.$ui.showModal().removeModalWhenClose();
+        this.$element.showModal().removeModalWhenClose();
 
-        var self = this;
+        var that = this;
         setTimeout(function () {
-            self.$ui.find('.player-name').eq(0).focus();
+            that.$element.find('.player-name').eq(0).focus();
         }, 1000);
     };
     
     this.initEvent = function () {
-        var self = this;
-        this.$ui.on('click', '.up-button', function () {
-            var index = self.$ui.find('.up-button').index($(this));
+        var that = this;
+        this.$element.on('click', '.up-button', function () {
+            var index = that.$element.find('.up-button').index($(this));
 
             if (index === 0) {
                 return;
@@ -31,8 +31,8 @@ function Ready() {
             reset();
         });
 
-        this.$ui.on('click', '.down-button', function () {
-            var index = self.$ui.find('.down-button').index($(this));
+        this.$element.on('click', '.down-button', function () {
+            var index = that.$element.find('.down-button').index($(this));
 
             if (index === config.playerList.length - 1) {
                 return;
@@ -44,8 +44,8 @@ function Ready() {
 
         });
 
-        this.$ui.on('click', '.start-button', function () {
-            var $row = self.$ui.find('.player-row');
+        this.$element.on('click', '.start-button', function () {
+            var $row = that.$element.find('.player-row');
 
             for (var i = 0; i < $row.length; i++) {
                 var $currentPlayer = $row.eq(i);
@@ -61,20 +61,20 @@ function Ready() {
                 config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
             }
 
-            var randomPlace = this.$ui.find('.random-place').is(':checked');
+            var randomPlace = this.$element.find('.random-place').is(':checked');
 
             if (randomPlace) {
                 Building.random();
 
             }
 
-            board.start(this.$ui.find('.minute-timer').val());
-            self.$ui.hideModal();
+            board.start(this.$element.find('.minute-timer').val());
+            that.$element.hideModal();
         });  
     };
     
     this.reset = function () {
-        this.$ui.find('.row').each(function (index) {
+        this.$element.find('.row').each(function (index) {
             $(this).find('.player-index').text(index + 1);
         });
     };

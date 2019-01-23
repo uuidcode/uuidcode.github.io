@@ -1,11 +1,11 @@
 function Building(block) {
     this.block = block;
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
         var template = Handlebars.compile(this.template());
-        this.$ui = $(template());
-        this.$ui.css({
+        this.$element = $(template());
+        this.$element.css({
             position: 'absolute',
             left: config.building.left,
             top: config.building.top,
@@ -21,10 +21,10 @@ function Building(block) {
     this.update = function () {
         for (var i = 0; i < this.block.buildingList.length; i++) {
             var building = this.block.buildingList[i];
-            this.$ui.find('.building-badge').eq(i).text(building.count);
+            this.$element.find('.building-badge').eq(i).text(building.count);
         }
 
-        var $totalFees = this.$ui.find('.total-fees');
+        var $totalFees = this.$element.find('.total-fees');
         $totalFees.text('');
 
         if (this.block.player != null) {

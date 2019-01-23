@@ -5,7 +5,7 @@ function Player(index) {
     this.amount = this.playerConfig.amount;
     this.name = this.playerConfig.name;
     this.position = 0;
-    this.$ui = null;
+    this.$element = null;
     this.curentCount = 0;
     this.currentDirection = null;
     this.currentPosition = 0;
@@ -22,23 +22,23 @@ function Player(index) {
     this.end = false;
 
     this.initEvent = function() {
-        var self = this;
+        var that = this;
 
-        this.$ui.on('animationend', function () {
-            if (self.curentCount === 0) {
+        this.$element.on('animationend', function () {
+            if (that.curentCount === 0) {
                 return;
             }
 
-            var position = self.getPosition();
+            var position = that.getPosition();
 
-            self.$ui.removeClass(self.getDirectionClass());
-            self.$ui.css(position);
+            that.$element.removeClass(that.getDirectionClass());
+            that.$element.css(position);
 
             setTimeout(function () {
-                if (self.backward) {
-                    self.back(self.curentCount - 1);
+                if (that.backward) {
+                    that.back(that.curentCount - 1);
                 } else {
-                    self.go(self.curentCount - 1);
+                    that.go(that.curentCount - 1);
                 }
             }, 100);
         });
@@ -155,13 +155,13 @@ function Player(index) {
     };
 
     this.init = function() {
-        var self = this;
-        this.$ui = $('<img>');
-        this.$ui.attr('src', this.getImageUrl());
-        this.$ui.addClass('live');
-        this.$ui.attr('data-index', this.index);
+        var that = this;
+        this.$element = $('<img>');
+        this.$element.attr('src', this.getImageUrl());
+        this.$element.addClass('live');
+        this.$element.attr('data-index', this.index);
 
-        this.$ui.css({
+        this.$element.css({
             position: 'absolute',
             left: this.playerConfig.left,
             top: this.playerConfig.top,
@@ -174,8 +174,8 @@ function Player(index) {
         this.initEvent();
     };
 
-    this.setPlayerImage = function ($ui) {
-        $ui.find('.player-image').attr('src', this.getImageUrl());
+    this.setPlayerImage = function ($element) {
+        $element.find('.player-image').attr('src', this.getImageUrl());
     };
 
     this.getPosition = function () {
@@ -221,9 +221,9 @@ function Player(index) {
     };
 
     this.rollDie = function() {
-        var self = this;
+        var that = this;
         board.die.roll(function (notation, count) {
-            self.go(count[0]);
+            that.go(count[0]);
         });
     };
 
@@ -283,19 +283,19 @@ function Player(index) {
     };
 
     this.payForFund = function () {
-        var self = this;
+        var that = this;
         var amount = util.toDisplayAmount(config.fundAmount);
         var fundingPlaceBlock = board.getTargetBlock(config.fundingPlace);
         var playInfo = board.playerInfoList[board.getPlayerIndex()];
 
         fundingPlaceBlock.addFunding();
 
-        playInfo.$ui.transfer({
-            to: fundingPlaceBlock.$ui,
+        playInfo.$element.transfer({
+            to: fundingPlaceBlock.$element,
             duration: 2000
         }, function () {
             var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
-            self.pay(config.fundAmount, message);
+            that.pay(config.fundAmount, message);
         });
     };
 
@@ -371,7 +371,7 @@ function Player(index) {
         }
 
         this.currentDirection = this.getDirection();
-        this.$ui.addClass(this.getDirectionClass());
+        this.$element.addClass(this.getDirectionClass());
     };
 
     this.go = function(count) {
@@ -395,7 +395,7 @@ function Player(index) {
         this.position++;
         this.position = this.position % config.blockSize;
         this.currentDirection = this.getDirection();
-        this.$ui.addClass(this.getDirectionClass());
+        this.$element.addClass(this.getDirectionClass());
 
         if (this.position === 0 && count > 1) {
             if (this.payable) {
@@ -500,7 +500,7 @@ function Player(index) {
             }
         }
 
-        var self = this;
+        var that = this;
         var investment = new Investment();
         if (!investment.show(block)) {
             this.readyNextTurn();
@@ -508,19 +508,19 @@ function Player(index) {
         }
 
         $('#buyButton').on('click', function () {
-            block.player = self;
-            self.amount -= block.amount;
+            block.player = that;
+            that.amount -= block.amount;
 
             block.update();
-            board.updatePlayInfo(self);
-            self.readyNextTurn(investment);
+            board.updatePlayInfo(that);
+            that.readyNextTurn(investment);
         });
 
         $('#cancelButton, #notPayButton').on('click', function () {
-            self.readyNextTurn(investment);
+            that.readyNextTurn(investment);
         });
 
-        var self = this;
+        var that = this;
 
         $('#resetButton').on('click', function () {
             for (var i = 0; i < block.newBuildingCountList.length; i++) {
@@ -529,14 +529,14 @@ function Player(index) {
                 $investmentCount.text(parseInt($investmentCount.text()) - count);
             }
 
-            self.initNewBuilding(block);
+            that.initNewBuilding(block);
         });
 
         $('#payFeeButton').on('click', function () {
             var totalFees = block.getTotalFees();
             investment.hideModal();
 
-            if (self.payOnly(totalFees)) {
+            if (that.payOnly(totalFees)) {
                 return;
             }
 
@@ -546,9 +546,9 @@ function Player(index) {
 
         $('#useTicketButton').on('click', function () {
             investment.hideModal();
-            self.ticketCount--;
+            that.ticketCount--;
             var message = '우대권을 사용하였습니다.';
-            board.updatePlayInfo(self);
+            board.updatePlayInfo(that);
             new Toast().showAndReadyToNextTurn(message);
         });
 
@@ -568,7 +568,7 @@ function Player(index) {
     this.addBuilding = function (investment, block) {
         this.initNewBuilding(block);
         var $payButton = this.getPayButton();
-        var self = this;
+        var that = this;
 
         $payButton.on('click', function () {
             for (var i = 0; i < block.buildingList.length; i++) {
@@ -576,19 +576,19 @@ function Player(index) {
                 building.count += block.newBuildingCountList[i];
             }
 
-            self.amount -= block.investmentAmount;
-            board.updatePlayInfo(self);
-            self.readyNextTurn(investment);
+            that.amount -= block.investmentAmount;
+            board.updatePlayInfo(that);
+            that.readyNextTurn(investment);
             block.building.update();
         });
 
-        var addButton = investment.$ui.find('.investment-add-button');
+        var addButton = investment.$element.find('.investment-add-button');
 
         addButton.on('click', function () {
             var buildingIndex = addButton.index($(this));
             var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
 
-            if (block.investmentAmount + price > self.amount) {
+            if (block.investmentAmount + price > that.amount) {
                 alert('더 이상 구입할 수 없습니다.');
                 return;
             }
@@ -607,10 +607,10 @@ function Player(index) {
     };
 
     this.getBlockList = function () {
-        var self = this;
+        var that = this;
 
         return board.blockList.filter(function (block) {
-            return block.player === self;
+            return block.player === that;
         });
     };
 

@@ -1,5 +1,5 @@
 function Investment() {
-    this.$ui = null;
+    this.$element = null;
 
     /** @type Block **/
     this.show = function (block) {
@@ -13,12 +13,12 @@ function Investment() {
         }
 
         var template = Handlebars.compile(this.template());
-        this.$ui = $(template({
+        this.$element = $(template({
             block: block
         }));
-        board.append(this.$ui);
+        board.append(this.$element);
 
-        var self = this;
+        var that = this;
 
         if (block.player === null) {
             $('#cancelButton,#buyButton').show();
@@ -31,7 +31,7 @@ function Investment() {
             $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
         } else if (block.player == player) {
             this.showInvestmentCount();
-            this.$ui.find('.investment-add').show();
+            this.$element.find('.investment-add').show();
             $('#notPayButton,#payButton,#resetButton').show();
             $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
         } else {
@@ -55,14 +55,14 @@ function Investment() {
         }
 
         setTimeout(function () {
-            self.showModal();
+            that.showModal();
         }, timeOut);
 
         return true;
     };
 
     this.showInvestmentCount = function () {
-        this.$ui.find('.investment-count').show();
+        this.$element.find('.investment-count').show();
     };
 
     this.getModal = function () {

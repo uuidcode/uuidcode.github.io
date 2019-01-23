@@ -6,7 +6,7 @@ function Block(index, data) {
     this.displayTravelFees = null;
     this.amount = null;
     this.code = null;
-    this.$ui = null;
+    this.$element = null;
     this.player = null;
     this.buildingList = [];
     this.fundingCount = 0;
@@ -28,12 +28,12 @@ function Block(index, data) {
     }
 
     this.welcome = function () {
-        var self = this;
+        var that = this;
 
-        this.$ui.animate({
+        this.$element.animate({
             backgroundColor: config.selectedColor
         }, function () {
-            self.$ui.animate({
+            that.$element.animate({
                 backgroundColor: '#ffffff'
             });
         });
@@ -93,27 +93,27 @@ function Block(index, data) {
             imageUrl = this.player.getImageUrl();
         }
 
-        this.$ui.find('.owner').attr('src', imageUrl);
+        this.$element.find('.owner').attr('src', imageUrl);
     };
 
     this.init = function () {
-        var self = this;
+        var that = this;
         var position = this.processPosition();
 
-        this.$ui = $('<div></div>');
-        this.$ui.on('click', function () {
+        this.$element = $('<div></div>');
+        this.$element.on('click', function () {
             if (board.currentPlayerIsOnSpaceTravel()) {
-                if (self.name === config.spaceTravel) {
+                if (that.name === config.spaceTravel) {
                     return;
                 }
 
                 var currentPlayer = board.getCurrentPlayer();
-                currentPlayer.goFastToIndex(self);
+                currentPlayer.goFastToIndex(that);
             }
         });
 
-        this.$ui.addClass('block');
-        this.$ui.css({
+        this.$element.addClass('block');
+        this.$element.css({
             position: 'absolute',
             left: position.left,
             top: position.top,
@@ -124,25 +124,25 @@ function Block(index, data) {
 
         if (this.type == 'nation') {
             var flag = new Flag(this.code);
-            this.$ui.append(flag.$ui);
+            this.$element.append(flag.$element);
 
             var name = new Name(this.name);
-            this.$ui.append(name.$ui);
+            this.$element.append(name.$element);
 
             var amount = new Amount(this.displayAmount);
-            this.$ui.append(amount.$ui);
+            this.$element.append(amount.$element);
 
             var owner = new Owner(null);
-            this.$ui.append(owner.$ui);
+            this.$element.append(owner.$element);
 
             this.building = new Building(this);
-            this.$ui.append(this.building.$ui);
+            this.$element.append(this.building.$element);
         } else if (this.type == config.goldenKey) {
             var key = new Key();
-            this.$ui.append(key.$ui);
+            this.$element.append(key.$element);
         } else if (this.type == 'special') {
             var special = new Special(this.name, this.code);
-            this.$ui.append(special.$ui);
+            this.$element.append(special.$element);
         }
     };
 
@@ -211,7 +211,7 @@ function Block(index, data) {
     };
 
     this.updateFundingAmount = function () {
-        this.$ui.find('.block-amount').text(util.toDisplayAmount(this.amount));
+        this.$element.find('.block-amount').text(util.toDisplayAmount(this.amount));
     };
 
     this.hasBuilding = function () {

@@ -1,5 +1,5 @@
 function GoldenKey() {
-    this.$ui = null;
+    this.$element = null;
     this.goldenKey = null;
 
     this.show = function (goldenKey) {
@@ -13,22 +13,22 @@ function GoldenKey() {
             description = this.goldenKey.description;
         }
 
-        this.$ui = $(template({
+        this.$element = $(template({
             goldenKey: goldenKey,
             description: description
         }));
 
-        board.append(this.$ui);
+        board.append(this.$element);
 
         this.initEvent();
         this.showModal();
     };
 
     this.initEvent = function () {
-        var self = this;
-        this.$ui.find('.run-golden-key-button').on('click', function () {
-            self.hideModal();
-            self.goldenKey.run();
+        var that = this;
+        this.$element.find('.run-golden-key-button').on('click', function () {
+            that.hideModal();
+            that.goldenKey.run();
             board.goldenKeyIndex++;
 
             if (board.goldenKeyIndex >= config.goldenKey.length) {
