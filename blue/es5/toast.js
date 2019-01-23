@@ -8,8 +8,8 @@ function Toast() {
     };
 
     this.showPickPlace = function (callback) {
-        var message = '우주여행을 합니다.<br>가고 싶은 곳을 클릭하세요.<hr>' +
-            board.getBlockHtml(config.spaceTravel);
+        var blockHtml = board.getBlockHtml(config.spaceTravel);
+        var message = `우주여행을 합니다.<br>가고 싶은 곳을 클릭하세요.<hr>${blockHtml}`;
         this.show(message, callback);
     };
 
