@@ -517,13 +517,13 @@ function Player(index) {
             that.readyNextTurn(investment);
         });
 
-        $('body').on('click', '#cancelButton, #notPayButton').on('click', function () {
+        $('body').on('click', '#cancelButton, #notPayButton', function () {
             that.readyNextTurn(investment);
         });
 
         var that = this;
 
-        $('body').on('click', '#resetButton').on('click', function () {
+        $('body').on('click', '#resetButton', function () {
             for (var i = 0; i < block.newBuildingCountList.length; i++) {
                 var $investmentCount = $('.investment-count').eq(i + 1);
                 var count = block.newBuildingCountList[i];
@@ -533,7 +533,7 @@ function Player(index) {
             that.initNewBuilding(block);
         });
 
-        $('body').on('click', '#payFeeButton').on('click', function () {
+        $('body').on('click', '#payFeeButton', function () {
             var totalFees = block.getTotalFees();
             investment.hideModal();
 
@@ -545,7 +545,7 @@ function Player(index) {
             block.player.income(totalFees, message);
         });
 
-        $('body').on('click', '#useTicketButton').on('click', function () {
+        $('body').on('click', '#useTicketButton', function () {
             investment.hideModal();
             that.ticketCount--;
             var message = '우대권을 사용하였습니다.';
