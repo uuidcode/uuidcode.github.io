@@ -29,10 +29,10 @@ function Investment() {
             that.showModal();
 
             if (block.player === null) {
-                that.$element.find('#cancelButton,#buyButton').show();
+                $('#cancelButton,#buyButton').show();
 
                 if (block.amount > player.amount) {
-                    that.$element.find$('#buyButton').hide();
+                    $('#buyButton').hide();
                 }
 
                 $('#buyButton').text(util.getPayMessage(block.amount));
@@ -55,8 +55,51 @@ function Investment() {
                     $('#useTicketButton').hide();
                 }
             }
-        }, timeOut);
 
+            $('#buyButton').on('click', function () {
+                block.player = player;
+                player.amount -= block.amount;
+
+                block.update();
+                board.updatePlayInfo(player);
+                player.readyNextTurn(that);
+            });
+
+            $('#cancelButton, #notPayButton').on('click', function () {
+                player.readyNextTurn(that);
+            });
+
+            $('#resetButton').on('click', function () {
+                for (var i = 0; i < block.newBuildingCountList.length; i++) {
+                    var $investmentCount = $('.investment-count').eq(i + 1);
+                    var count = block.newBuildingCountList[i];
+                    $investmentCount.text(parseInt($investmentCount.text()) - count);
+                }
+
+                player.initNewBuilding(block);
+            });
+
+            $('#payFeeButton').on('click', function () {
+                var totalFees = block.getTotalFees();
+                that.hideModal();
+
+                if (player.payOnly(totalFees)) {
+                    return;
+                }
+
+                var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
+                block.player.income(totalFees, message);
+            });
+
+            $('#useTicketButton').on('click', function () {
+                that.hideModal();
+                player.ticketCount--;
+                var message = '우대권을 사용하였습니다.';
+                board.updatePlayInfo(player);
+                new Toast().showAndReadyToNextTurn(message);
+            });
+
+        }, timeOut);
 
         return true;
     };

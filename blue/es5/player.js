@@ -508,51 +508,6 @@ function Player(index) {
             return;
         }
 
-        $('body').on('click', '#buyButton', function () {
-            block.player = that;
-            that.amount -= block.amount;
-
-            block.update();
-            board.updatePlayInfo(that);
-            that.readyNextTurn(investment);
-        });
-
-        $('body').on('click', '#cancelButton, #notPayButton', function () {
-            that.readyNextTurn(investment);
-        });
-
-        var that = this;
-
-        $('body').on('click', '#resetButton', function () {
-            for (var i = 0; i < block.newBuildingCountList.length; i++) {
-                var $investmentCount = $('.investment-count').eq(i + 1);
-                var count = block.newBuildingCountList[i];
-                $investmentCount.text(parseInt($investmentCount.text()) - count);
-            }
-
-            that.initNewBuilding(block);
-        });
-
-        $('body').on('click', '#payFeeButton', function () {
-            var totalFees = block.getTotalFees();
-            investment.hideModal();
-
-            if (that.payOnly(totalFees)) {
-                return;
-            }
-
-            var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
-            block.player.income(totalFees, message);
-        });
-
-        $('body').on('click', '#useTicketButton', function () {
-            investment.hideModal();
-            that.ticketCount--;
-            var message = '우대권을 사용하였습니다.';
-            board.updatePlayInfo(that);
-            new Toast().showAndReadyToNextTurn(message);
-        });
-
         this.addBuilding(investment, block);
     };
 
