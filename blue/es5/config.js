@@ -716,6 +716,13 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: '무인도',
+            description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
+            run: function () {
+                board.getCurrentPlayer().goFastToBlock('무인도', false);
+            }
+        },
+        {
             name: SELL_HALF_PRICE,
             description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
             run: function () {
@@ -826,13 +833,6 @@ var config = {
             description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
             run: function () {
                 board.getCurrentPlayer().addTicket();
-            }
-        },
-        {
-            name: '무인도',
-            description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
-            run: function () {
-                board.getCurrentPlayer().goFastToBlock('무인도', false);
             }
         },
         {

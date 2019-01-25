@@ -171,6 +171,7 @@ function Board() {
             var $playerImage = $player.find('.player-image');
             $playerImage.attr('src', util.getImageUrl(player.image));
             $playerImage.attr('data-image', player.image);
+            $playerImage.addClass('live');
             $playerList.append($player);
         });
 
