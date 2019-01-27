@@ -239,7 +239,12 @@ function Player(index) {
     };
 
     this.goFastToIndex = function (targetBlock, payable) {
-        this.payable = payable || true;
+        if (payable === undefined) {
+            this.payable = true;
+        } else {
+            this.payable = payable;
+        }
+
         var currentPlayer = board.getCurrentPlayer();
         var count = targetBlock.index - currentPlayer.position;
 

@@ -91,7 +91,8 @@ function Ready() {
                                         <span class="player-index"></span>
                                     </div>
                                     <div class="col-md-2 m-auto text-center">
-                                        <img src="../image/{{image}}" data-image="{{image}}" class="player-image" width="50px" height="50px">
+                                        <img src="../image/{{image}}" data-image="{{image}}" 
+                                            class="player-image live" width="50px" height="50px">
                                     </div>
                                     <div class="col-md-4 m-auto text-center">
                                         <input type="text" class="form-control player-name" placeholder="이름">
