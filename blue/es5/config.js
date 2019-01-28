@@ -716,6 +716,24 @@ var config = {
     ],
     goldenKeyList: [
         {
+            name: WORLD_TOUR,
+            description: '현재 위치에서 한바퀴 됩니다.<br>월급도 받고 사회복지기금접수처의 기금도 받습니다.',
+            run: function () {
+                board.getCurrentPlayer().goFast(40);
+
+                /** @type Block **/
+                var fundingPlace = board.getFundingPlace();
+                fundingPlace.resetFunding();
+            }
+        },
+        {
+            name: TICKET,
+            description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
+            run: function () {
+                board.getCurrentPlayer().addTicket();
+            }
+        },
+        {
             name: '무인도',
             description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
             run: function () {
@@ -829,13 +847,6 @@ var config = {
             }
         },
         {
-            name: TICKET,
-            description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
-            run: function () {
-                board.getCurrentPlayer().addTicket();
-            }
-        },
-        {
             name: '관광여행',
             description: SEOUL + '로 관광여행을 갑니다.',
             run: function () {
@@ -871,18 +882,6 @@ var config = {
                 return false;
             }
         },
-        {
-            name: WORLD_TOUR,
-            description: '현재 위치에서 한바퀴 됩니다.<br>월급도 받고 사회복지기금접수처의 기금도 받습니다.',
-            run: function () {
-                board.getCurrentPlayer().goFast(40);
-
-                /** @type Block **/
-                var fundingPlace = board.getFundingPlace();
-                fundingPlace.resetFunding();
-                board.getCurrentPlayer().readyNextTurn();
-            }
-        },
         // {
         //     name: '무인도 탈출권',
         //     description: '무인도에서 탈출할 수 있습니다.<br>20만원에 팔 수 있습니다.',
@@ -899,7 +898,7 @@ var config = {
         },
         {
             name: '장학금 혜택',
-            description: '장학금 30만원을 은행에서 받습니다.',
+            description: '장학금 10만원을 은행에서 받습니다.',
             run: function () {
                 board.getCurrentPlayer().incomeWithTitle(100000, '장학금');
             }
@@ -1028,4 +1027,4 @@ function resetGoldenKey() {
     shuffle(config.goldenKeyList);
 }
 
-resetGoldenKey();
+// resetGoldenKey();
