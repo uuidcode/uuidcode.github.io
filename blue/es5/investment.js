@@ -99,6 +99,41 @@ function Investment() {
                 new Toast().showAndReadyToNextTurn(message);
             });
 
+            var $payButton = $('#payButton');
+            $payButton.on('click', function () {
+                for (var i = 0; i < block.buildingList.length; i++) {
+                    var building = block.buildingList[i];
+                    building.count += block.newBuildingCountList[i];
+                }
+
+                block.player.amount -= block.investmentAmount;
+                board.updatePlayInfo(block.player);
+                block.player.readyNextTurn(that);
+                block.building.update();
+            });
+
+            var addButton = that.$element.find('.investment-add-button');
+
+            addButton.on('click', function () {
+                var buildingIndex = addButton.index($(this));
+                var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
+
+                if (block.investmentAmount + price > self.amount) {
+                    alert('더 이상 구입할 수 없습니다.');
+                    return;
+                }
+
+                block.buildingIndex = buildingIndex;
+                block.investmentAmount += price;
+                block.newBuildingCountList[block.buildingIndex] += 1;
+
+                var $parent = $(this).closest('tr');
+                var $count = $parent.find('.investment-count');
+                var currentCount = $count.text() || '0';
+                $count.text(parseInt(currentCount, 10) + 1);
+
+                $payButton.text(util.getPayMessage(block.investmentAmount)).show();
+            });
         }, timeOut);
 
         return true;

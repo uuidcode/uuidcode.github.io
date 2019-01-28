@@ -512,8 +512,6 @@ function Player(index) {
             this.readyNextTurn();
             return;
         }
-
-        this.addBuilding(investment, block);
     };
 
     this.initNewBuilding = function (block) {
@@ -524,47 +522,6 @@ function Player(index) {
 
     this.getPayButton = function () {
         return $('#payButton');
-    };
-
-    this.addBuilding = function (investment, block) {
-        this.initNewBuilding(block);
-        var $payButton = this.getPayButton();
-        var that = this;
-
-        $payButton.on('click', function () {
-            for (var i = 0; i < block.buildingList.length; i++) {
-                var building = block.buildingList[i];
-                building.count += block.newBuildingCountList[i];
-            }
-
-            that.amount -= block.investmentAmount;
-            board.updatePlayInfo(that);
-            that.readyNextTurn(investment);
-            block.building.update();
-        });
-
-        var addButton = investment.$element.find('.investment-add-button');
-
-        addButton.on('click', function () {
-            var buildingIndex = addButton.index($(this));
-            var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
-
-            if (block.investmentAmount + price > that.amount) {
-                alert('더 이상 구입할 수 없습니다.');
-                return;
-            }
-
-            block.buildingIndex = buildingIndex;
-            block.investmentAmount += price;
-            block.newBuildingCountList[block.buildingIndex] += 1;
-
-            var $parent = $(this).closest('tr');
-            var $count = $parent.find('.investment-count');
-            var currentCount = $count.text() || '0';
-            $count.text(parseInt(currentCount, 10) + 1);
-
-            $payButton.text(util.getPayMessage(block.investmentAmount)).show();
-        });
     };
 
     this.getBlockList = function () {
