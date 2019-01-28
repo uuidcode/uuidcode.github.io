@@ -274,7 +274,6 @@ GoldenKey.list = [
             /** @type Block **/
             var fundingPlace = board.getFundingPlace();
             fundingPlace.resetFunding();
-            board.getCurrentPlayer().readyNextTurn();
         }
     },
     {
@@ -286,7 +285,7 @@ GoldenKey.list = [
     },
     {
         name: '장학금 혜택',
-        description: '장학금 30만원을 은행에서 받습니다.',
+        description: '장학금 10만원을 은행에서 받습니다.',
         run: function () {
             board.getCurrentPlayer().incomeWithTitle(100000, '장학금');
         }
