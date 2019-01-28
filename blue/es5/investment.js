@@ -3,6 +3,8 @@ function Investment() {
 
     /** @type Block **/
     this.show = function (block) {
+        this.initNewBuilding(block);
+
         /** @type Player **/
         var player = board.getCurrentPlayer();
 
@@ -22,7 +24,7 @@ function Investment() {
         var timeOut = 0;
 
         if ($('.toast-modal').length > 0) {
-            timeOut = 2000;
+            timeOut = 1000;
         }
 
         setTimeout(function () {
@@ -137,6 +139,16 @@ function Investment() {
         }, timeOut);
 
         return true;
+    };
+
+    this.initNewBuilding = function (block) {
+        block.newBuildingCountList = [0, 0, 0];
+        block.investmentAmount = 0;
+        this.getPayButton().hide();
+    };
+
+    this.getPayButton = function () {
+        return $('#payButton');
     };
 
     this.showInvestmentCount = function () {
