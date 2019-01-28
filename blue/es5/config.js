@@ -1015,9 +1015,9 @@ var goldenKeyLength = config.goldenKeyList.length;
 for (var i = 0; i < goldenKeyLength; i++) {
     var goldenKey = config.goldenKeyList[i];
 
-    if (goldenKey.name == WORLD_TOUR ||
-        goldenKey.name == TICKET ||
-        goldenKey.name == SELL_HALF_PRICE) {
+    if (goldenKey.name === WORLD_TOUR ||
+        goldenKey.name === TICKET ||
+        goldenKey.name === SELL_HALF_PRICE) {
         var newGoldenKey = iterationCopy(goldenKey);
         config.goldenKeyList.push(newGoldenKey);
     }
