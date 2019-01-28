@@ -1027,4 +1027,4 @@ function resetGoldenKey() {
     shuffle(config.goldenKeyList);
 }
 
-// resetGoldenKey();
+resetGoldenKey();

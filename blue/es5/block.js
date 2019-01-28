@@ -46,7 +46,7 @@ function Block(index, data) {
             totalFees += building.fees * building.count;
         });
 
-        if (totalFees == 0) {
+        if (totalFees === 0) {
             totalFees = this.fees;
         }
 

@@ -296,8 +296,7 @@ function Player(index) {
         fundingPlaceBlock.addFunding();
 
         playInfo.$ui.transfer({
-            to: fundingPlaceBlock.$ui,
-            duration: 2000
+            to: fundingPlaceBlock.$ui
         }, function () {
             var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
             self.pay(config.fundAmount, message);
