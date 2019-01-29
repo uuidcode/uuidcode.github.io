@@ -18,13 +18,13 @@ function Investment() {
             }
         }
 
-        var template = Handlebars.compile(this.template());
+        this.createElement();
+        this.initEvent();
 
-        this.$element = $(template({
-            block: block,
-            player: player
-        }));
+        return true;
+    };
 
+    this.initEvent = function () {
         setTimeout(function () {
             that.showModal();
             that.initButton();
@@ -35,8 +35,15 @@ function Investment() {
             that.initUserTicketButton();
             that.initInvestmentAddButton();
         }, this.getTimeout());
+    };
 
-        return true;
+    this.createElement = function () {
+        var template = Handlebars.compile(this.template());
+
+        this.$element = $(template({
+            block: that.block,
+            player: that.player
+        }));
     };
 
     this.getTimeout = function () {
@@ -63,7 +70,7 @@ function Investment() {
             this.getResetButton().show();
         } else {
             this.showInvestmentCount();
-            var totalFee = block.getTotalFees();
+            var totalFee = that.block.getTotalFees();
             this.getPayButton()
                 .html(util.toDisplayAmount(totalFee) + '을 지불합니다.')
                 .show();
@@ -116,7 +123,7 @@ function Investment() {
             }
 
             that.block.player.amount -= that.block.investmentAmount;
-            board.updatePlayInfo(block.player);
+            board.updatePlayInfo(that.block.player);
             that.player.readyNextTurn(that);
             that.block.building.update();
         });
@@ -165,7 +172,7 @@ function Investment() {
     };
 
     this.getInvestmentAddButton = function () {
-        return $('#investment-add-button');
+        return $('.investment-add-button');
     };
 
     this.getUseTicketButton = function () {
