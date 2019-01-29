@@ -1,150 +1,195 @@
 function Investment() {
     this.$element = null;
+    this.player = null;
+    this.block = null;
+    var that = this;
 
     /** @type Block **/
     this.show = function (block) {
+        this.block = block;
         this.initNewBuilding(block);
 
         /** @type Player **/
-        var player = board.getCurrentPlayer();
+        this.player = board.getCurrentPlayer();
 
-        if (block.player == player) {
+        if (this.block.player === this.player) {
             if (block.hasNotBuilding()) {
                 return false;
             }
         }
 
         var template = Handlebars.compile(this.template());
+
         this.$element = $(template({
             block: block,
             player: player
         }));
 
-        var that = this;
-        var timeOut = 0;
-
-        if ($('.toast-modal').length > 0) {
-            timeOut = 1000;
-        }
-
         setTimeout(function () {
             that.showModal();
-
-            if (block.player === null) {
-                $('#cancelButton,#buyButton').show();
-
-                if (block.amount > player.amount) {
-                    $('#buyButton').hide();
-                }
-
-                $('#buyButton').text(util.getPayMessage(block.amount));
-                $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
-            } else if (block.player == player) {
-                that.showInvestmentCount();
-                that.$element.find('.investment-add').show();
-                $('#notPayButton,#payButton,#resetButton').show();
-                $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
-            } else {
-                that.showInvestmentCount();
-                var totalFee = block.getTotalFees();
-                $('#notPayButton,#payButton,#resetButton').hide();
-                $('#cancelButton,#buyButton').hide();
-                $('#payFeeButton').html(util.toDisplayAmount(totalFee) + '을 지불합니다.').show();
-
-                if (player.ticketCount > 0) {
-                    $('#useTicketButton').show();
-                } else {
-                    $('#useTicketButton').hide();
-                }
-            }
-
-            $('#buyButton').on('click', function () {
-                block.player = player;
-                player.amount -= block.amount;
-
-                block.update();
-                board.updatePlayInfo(player);
-                player.readyNextTurn(that);
-            });
-
-            $('#cancelButton, #notPayButton').on('click', function () {
-                player.readyNextTurn(that);
-            });
-
-            $('#resetButton').on('click', function () {
-                for (var i = 0; i < block.newBuildingCountList.length; i++) {
-                    var $investmentCount = $('.investment-count').eq(i + 1);
-                    var count = block.newBuildingCountList[i];
-                    $investmentCount.text(parseInt($investmentCount.text()) - count);
-                }
-
-                player.initNewBuilding(block);
-            });
-
-            $('#payFeeButton').on('click', function () {
-                var totalFees = block.getTotalFees();
-                that.hideModal();
-
-                if (player.payOnly(totalFees)) {
-                    return;
-                }
-
-                var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
-                block.player.income(totalFees, message);
-            });
-
-            $('#useTicketButton').on('click', function () {
-                that.hideModal();
-                player.ticketCount--;
-                var message = '우대권을 사용하였습니다.';
-                board.updatePlayInfo(player);
-                new Toast().showAndReadyToNextTurn(message);
-            });
-
-            var $payButton = $('#payButton');
-            $payButton.on('click', function () {
-                for (var i = 0; i < block.buildingList.length; i++) {
-                    var building = block.buildingList[i];
-                    building.count += block.newBuildingCountList[i];
-                }
-
-                block.player.amount -= block.investmentAmount;
-                board.updatePlayInfo(block.player);
-                block.player.readyNextTurn(that);
-                block.building.update();
-            });
-
-            var addButton = that.$element.find('.investment-add-button');
-
-            addButton.on('click', function () {
-                var buildingIndex = addButton.index($(this));
-                var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
-
-                if (block.investmentAmount + price > self.amount) {
-                    alert('더 이상 구입할 수 없습니다.');
-                    return;
-                }
-
-                block.buildingIndex = buildingIndex;
-                block.investmentAmount += price;
-                block.newBuildingCountList[block.buildingIndex] += 1;
-
-                var $parent = $(this).closest('tr');
-                var $count = $parent.find('.investment-count');
-                var currentCount = $count.text() || '0';
-                $count.text(parseInt(currentCount, 10) + 1);
-
-                $payButton.text(util.getPayMessage(block.investmentAmount)).show();
-            });
-        }, timeOut);
+            that.initButton();
+            that.initBuyButton();
+            that.initCancelButton();
+            that.initNotPayButton();
+            that.initPayButton();
+            that.initUserTicketButton();
+            that.initInvestmentAddButton();
+        }, this.getTimeout());
 
         return true;
+    };
+
+    this.getTimeout = function () {
+        if ($('.toast-modal').length > 0) {
+            return 1000;
+        }
+
+        return 0;
+    };
+
+    this.initButton = function () {
+        if (this.block.player === null) {
+            this.getCancelButton().show();
+
+            if (this.player.amount >= this.block.amount) {
+                this.getBuyButton().text(util.getPayMessage(this.block.amount));
+                this.getBuyButton().show();
+            }
+        } else if (this.block.player == this.player) {
+            this.showInvestmentCount();
+            this.$element.find('.investment-add').show();
+            this.getNotPayButton().show();
+            this.getPayButton().show();
+            this.getResetButton().show();
+        } else {
+            this.showInvestmentCount();
+            var totalFee = block.getTotalFees();
+            this.getPayButton()
+                .html(util.toDisplayAmount(totalFee) + '을 지불합니다.')
+                .show();
+
+            if (this.player.ticketCount > 0) {
+                this.getUseTicketButton().show();
+            }
+        }
+    };
+
+    this.initBuyButton = function () {
+        this.getBuyButton().on('click', function () {
+            that.block.player = that.player;
+            that.player.amount -= that.block.amount;
+            that.block.update();
+            board.updatePlayInfo(that.player);
+            that.player.readyNextTurn(that);
+        });
+    };
+
+    this.initCancelButton = function () {
+        that.getCancelButton().on('click', function () {
+            that.player.readyNextTurn(that);
+        });
+    };
+
+    this.initNotPayButton = function () {
+        that.getNotPayButton().on('click', function () {
+            that.player.readyNextTurn(that);
+        });
+    };
+
+    this.initResetButton = function () {
+        this.getResetButton().on('click', function () {
+            for (var i = 0; i < that.block.newBuildingCountList.length; i++) {
+                var $investmentCount = $('.investment-count').eq(i + 1);
+                var count = that.block.newBuildingCountList[i];
+                $investmentCount.text(parseInt($investmentCount.text()) - count);
+            }
+
+            that.player.initNewBuilding(that.block);
+        });
+    };
+
+    this.initPayButton = function () {
+        this.getPayButton().on('click', function () {
+            for (var i = 0; i < that.block.buildingList.length; i++) {
+                var building = that.block.buildingList[i];
+                building.count += that.block.newBuildingCountList[i];
+            }
+
+            that.block.player.amount -= that.block.investmentAmount;
+            board.updatePlayInfo(block.player);
+            that.player.readyNextTurn(that);
+            that.block.building.update();
+        });
+    };
+
+    this.initUserTicketButton = function () {
+        this.getUseTicketButton().on('click', function () {
+            that.hideModal();
+            player.ticketCount--;
+            var message = '우대권을 사용하였습니다.';
+            board.updatePlayInfo(player);
+            new Toast().showAndReadyToNextTurn(message);
+        });
+    };
+
+    this.initInvestmentAddButton = function () {
+        this.getInvestmentAddButton().on('click', function () {
+            var buildingIndex = that.getInvestmentAddButton().index($(this));
+            var displayPrice = block.buildingList[buildingIndex].displayPrice;
+            var price = util.toAmount(displayPrice);
+
+            if (block.investmentAmount + price > player.amount) {
+                alert('더 이상 구입할 수 없습니다.');
+                return;
+            }
+
+            that.block.buildingIndex = buildingIndex;
+            that.block.investmentAmount += price;
+            that.block.newBuildingCountList[block.buildingIndex] += 1;
+
+            var $parent = $(this).closest('tr');
+            var $count = $parent.find('.investment-count');
+            var currentCount = $count.text() || '0';
+            $count.text(parseInt(currentCount, 10) + 1);
+
+            that.getPayButton()
+                .text(util.getPayMessage(block.investmentAmount))
+                .show();
+        });
     };
 
     this.initNewBuilding = function (block) {
         block.newBuildingCountList = [0, 0, 0];
         block.investmentAmount = 0;
         this.getPayButton().hide();
+    };
+
+    this.getInvestmentAddButton = function () {
+        return $('#investment-add-button');
+    };
+
+    this.getUseTicketButton = function () {
+        return $('#useTicketButton');
+    };
+
+    this.getPayFeeButton = function () {
+        return $('#payFeeButton');
+    };
+
+    this.getResetButton = function () {
+        return $('#resetButton');
+    };
+
+    this.getNotPayButton = function () {
+        return $('#notPayButton');
+    };
+
+    this.getCancelButton = function () {
+        return $('#cancelButton');
+    };
+
+    this.getBuyButton = function () {
+        return $('#buyButton');
     };
 
     this.getPayButton = function () {
@@ -240,13 +285,13 @@ function Investment() {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark player-amount" disabled>{{player.getDisplayAmount}}</button>
-                        <button type="button" id="buyButton" class="btn btn-primary"></button>
-                        <button type="button" id="payButton" class="btn btn-primary">구입한다</button>
-                        <button type="button" id="cancelButton" class="btn btn-warning">안산다</button>
-                        <button type="button" id="notPayButton" class="btn btn-warning">안산다</button>
-                        <button type="button" id="resetButton" class="btn btn-success">원래데로</button>
-                        <button type="button" id="payFeeButton" class="btn btn-primary"></button>
-                        <button type="button" id="useTicketButton" class="btn btn-success">우대권사용</button>
+                        <button type="button" id="buyButton" class="btn btn-primary" style="display: none"></button>
+                        <button type="button" id="payButton" class="btn btn-primary" style="display: none">구입한다</button>
+                        <button type="button" id="cancelButton" class="btn btn-warning" style="display: none">안산다</button>
+                        <button type="button" id="notPayButton" class="btn btn-warning" style="display: none">안산다</button>
+                        <button type="button" id="resetButton" class="btn btn-success" style="display: none">원래데로</button>
+                        <button type="button" id="payFeeButton" class="btn btn-primary" style="display: none"></button>
+                        <button type="button" id="useTicketButton" class="btn btn-success" style="display: none">우대권사용</button>
                     </div>
                 </div>
             </div>

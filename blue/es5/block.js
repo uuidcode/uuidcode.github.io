@@ -11,6 +11,8 @@ function Block(index, data) {
     this.buildingList = [];
     this.fundingCount = 0;
     this.building = null;
+    this.newBuildingCountList = [0, 0, 0];
+    this.investmentAmount = 0;
 
     if (data) {
         this.type = data.type || 'nation';
