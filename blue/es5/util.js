@@ -24,7 +24,6 @@ if (!String.prototype.trim) {
             callback.bind(context)($(this));
         });
     };
-
 })(jQuery);
 
 var util = {
