@@ -19,22 +19,24 @@ function Investment() {
         }
 
         this.createElement();
-        this.initEvent();
+        this.initEventWithTimeout();
 
         return true;
     };
 
+    this.initEventWithTimeout = function () {
+        setTimeout(this.initEvent.bind(this), this.getTimeout());
+    };
+
     this.initEvent = function () {
-        setTimeout(function () {
-            that.showModal();
-            that.initButton();
-            that.initBuyButton();
-            that.initCancelButton();
-            that.initNotPayButton();
-            that.initPayButton();
-            that.initUserTicketButton();
-            that.initInvestmentAddButton();
-        }, this.getTimeout());
+        this.showModal();
+        this.initButton();
+        this.onClickBuyButton();
+        this.onClickCancelButton();
+        this.onClickNotPayButton();
+        this.onClickPayButton();
+        this.onClickUserTicketButton();
+        this.onClickInvestmentAddButton();
     };
 
     this.createElement = function () {
@@ -62,7 +64,7 @@ function Investment() {
                 this.getBuyButton().text(util.getPayMessage(this.block.amount));
                 this.getBuyButton().show();
             }
-        } else if (this.block.player == this.player) {
+        } else if (this.block.player === this.player) {
             this.showInvestmentCount();
             this.$element.find('.investment-add').show();
             this.getNotPayButton().show();
@@ -81,30 +83,30 @@ function Investment() {
         }
     };
 
-    this.initBuyButton = function () {
-        this.getBuyButton().on('click', function () {
-            that.block.player = that.player;
-            that.player.amount -= that.block.amount;
-            that.block.update();
-            board.updatePlayInfo(that.player);
-            that.player.readyNextTurn(that);
-        });
+    this.onClickBuyButton = function () {
+        this.getBuyButton().setOnClick(function () {
+            this.block.player = this.player;
+            this.player.amount -= this.block.amount;
+            this.block.update();
+            board.updatePlayInfo(this.player);
+            this.player.readyNextTurn(this);
+        }, this);
     };
 
-    this.initCancelButton = function () {
-        that.getCancelButton().on('click', function () {
-            that.player.readyNextTurn(that);
-        });
+    this.onClickCancelButton = function () {
+        this.getCancelButton().setOnClick(function () {
+            this.player.readyNextTurn(this);
+        }, this);
     };
 
-    this.initNotPayButton = function () {
-        that.getNotPayButton().on('click', function () {
-            that.player.readyNextTurn(that);
-        });
+    this.onClickNotPayButton = function () {
+        this.getNotPayButton().setOnClick(function () {
+            this.player.readyNextTurn(this);
+        }, this);
     };
 
     this.initResetButton = function () {
-        this.getResetButton().on('click', function () {
+        this.getResetButton().setOnClick(function () {
             for (var i = 0; i < that.block.newBuildingCountList.length; i++) {
                 var $investmentCount = $('.investment-count').eq(i + 1);
                 var count = that.block.newBuildingCountList[i];
@@ -112,57 +114,57 @@ function Investment() {
             }
 
             that.player.initNewBuilding(that.block);
-        });
+        }, this);
     };
 
-    this.initPayButton = function () {
-        this.getPayButton().on('click', function () {
-            for (var i = 0; i < that.block.buildingList.length; i++) {
-                var building = that.block.buildingList[i];
-                building.count += that.block.newBuildingCountList[i];
+    this.onClickPayButton = function () {
+        this.getPayButton().setOnClick(function () {
+            for (var i = 0; i < this.block.buildingList.length; i++) {
+                var building = this.block.buildingList[i];
+                building.count += this.block.newBuildingCountList[i];
             }
 
-            that.block.player.amount -= that.block.investmentAmount;
-            board.updatePlayInfo(that.block.player);
-            that.player.readyNextTurn(that);
-            that.block.building.update();
-        });
+            this.block.player.amount -= this.block.investmentAmount;
+            board.updatePlayInfo(this.block.player);
+            this.player.readyNextTurn(this);
+            this.block.building.update();
+        }, this);
     };
 
-    this.initUserTicketButton = function () {
-        this.getUseTicketButton().on('click', function () {
-            that.hideModal();
+    this.onClickUserTicketButton = function () {
+        this.getUseTicketButton().setOnClick(function () {
+            this.hideModal();
             player.ticketCount--;
             var message = '우대권을 사용하였습니다.';
-            board.updatePlayInfo(player);
+            board.updatePlayInfo(this.player);
             new Toast().showAndReadyToNextTurn(message);
-        });
+        }, this);
     };
 
-    this.initInvestmentAddButton = function () {
-        this.getInvestmentAddButton().on('click', function () {
-            var buildingIndex = that.getInvestmentAddButton().index($(this));
-            var displayPrice = block.buildingList[buildingIndex].displayPrice;
+    this.onClickInvestmentAddButton = function () {
+        this.getInvestmentAddButton().setOnClick(function($target) {
+            var buildingIndex = this.getInvestmentAddButton().index($target);
+            var displayPrice = this.block.buildingList[buildingIndex].displayPrice;
             var price = util.toAmount(displayPrice);
 
-            if (block.investmentAmount + price > player.amount) {
+            if (this.block.investmentAmount + price > this.player.amount) {
                 alert('더 이상 구입할 수 없습니다.');
                 return;
             }
 
-            that.block.buildingIndex = buildingIndex;
-            that.block.investmentAmount += price;
-            that.block.newBuildingCountList[block.buildingIndex] += 1;
+            this.block.buildingIndex = buildingIndex;
+            this.block.investmentAmount += price;
+            this.block.newBuildingCountList[this.block.buildingIndex] += 1;
 
-            var $parent = $(this).closest('tr');
+            var $parent = $target.closest('tr');
             var $count = $parent.find('.investment-count');
             var currentCount = $count.text() || '0';
             $count.text(parseInt(currentCount, 10) + 1);
 
-            that.getPayButton()
-                .text(util.getPayMessage(block.investmentAmount))
+            this.getPayButton()
+                .text(util.getPayMessage(this.block.investmentAmount))
                 .show();
-        });
+        }, this);
     };
 
     this.initNewBuilding = function (block) {

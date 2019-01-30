@@ -17,7 +17,14 @@ if (!String.prototype.trim) {
         $(this).on('hide.bs.modal', function () {
             $(this).remove();
         });
-    }
+    };
+
+    $.fn.setOnClick = function (callback, context) {
+        return $(this).on('click', function () {
+            callback.bind(context)($(this));
+        });
+    };
+
 })(jQuery);
 
 var util = {
