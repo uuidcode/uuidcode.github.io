@@ -212,7 +212,7 @@ GoldenKey.list = [
         name: '고속도로',
         description: '출발지까지 곧바로 가세요.',
         run: function () {
-            board.getCurrentPlayer().goFastToBlock(START);
+            board.getCurrentPlayer().goFastToBlock(config.start);
         }
     },
     {
