@@ -335,7 +335,7 @@ for (var i = 0; i < goldenKeyLength; i++) {
 }
 
 GoldenKey.resetGoldenKey = function() {
-    // util.shuffle(GoldenKey.list);
+    util.shuffle(GoldenKey.list);
 };
 
 GoldenKey.resetGoldenKey();
