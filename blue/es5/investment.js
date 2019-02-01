@@ -35,6 +35,7 @@ function Investment() {
         this.onClickCancelButton();
         this.onClickNotPayButton();
         this.onClickPayButton();
+        this.onClickPayFeeButton();
         this.onClickUserTicketButton();
         this.onClickInvestmentAddButton();
     };
@@ -61,8 +62,9 @@ function Investment() {
             this.getCancelButton().show();
 
             if (this.player.amount >= this.block.amount) {
-                this.getBuyButton().text(util.getPayMessage(this.block.amount));
-                this.getBuyButton().show();
+                this.getBuyButton()
+                    .text(util.getPayMessage(this.block.amount))
+                    .show();
             }
         } else if (this.block.player === this.player) {
             this.showInvestmentCount();
@@ -72,7 +74,7 @@ function Investment() {
         } else {
             this.showInvestmentCount();
             var totalFee = that.block.getTotalFees();
-            this.getPayButton()
+            this.getPayFeeButton()
                 .html(util.toDisplayAmount(totalFee) + '을 지불합니다.')
                 .show();
 
@@ -80,6 +82,21 @@ function Investment() {
                 this.getUseTicketButton().show();
             }
         }
+    };
+
+    this.onClickPayFeeButton = function () {
+        this.getPayFeeButton().setOnClick(function () {
+            var totalFees = this.block.getTotalFees();
+
+            this.hideModal();
+
+            if (this.player.payOnly(totalFees)) {
+                return;
+            }
+
+            var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
+            this.block.player.income(totalFees, message);
+        }, this);
     };
 
     this.onClickBuyButton = function () {
@@ -181,27 +198,27 @@ function Investment() {
     };
 
     this.getPayFeeButton = function () {
-        return $('#payFeeButton');
+        return $('.pay-fee-button');
     };
 
     this.getResetButton = function () {
-        return $('#resetButton');
+        return $('.reset-button');
     };
 
     this.getNotPayButton = function () {
-        return $('#notPayButton');
+        return $('.not-pay-button');
     };
 
     this.getCancelButton = function () {
-        return $('#cancelButton');
+        return $('.cancel-button');
     };
 
     this.getBuyButton = function () {
-        return $('#buyButton');
+        return $('.buy-button');
     };
 
     this.getPayButton = function () {
-        return $('#payButton');
+        return $('.pay-button');
     };
 
     this.showInvestmentCount = function () {
@@ -293,13 +310,13 @@ function Investment() {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-dark player-amount" disabled>{{player.getDisplayAmount}}</button>
-                        <button type="button" id="buyButton" class="btn btn-primary" style="display: none"></button>
-                        <button type="button" id="payButton" class="btn btn-primary" style="display: none">구입한다</button>
-                        <button type="button" id="cancelButton" class="btn btn-warning" style="display: none">안산다</button>
-                        <button type="button" id="notPayButton" class="btn btn-warning" style="display: none">안산다</button>
-                        <button type="button" id="resetButton" class="btn btn-success" style="display: none">원래데로</button>
-                        <button type="button" id="payFeeButton" class="btn btn-primary" style="display: none"></button>
-                        <button type="button" id="useTicketButton" class="btn btn-success" style="display: none">우대권사용</button>
+                        <button type="button" class="btn btn-primary buy-button" style="display: none"></button>
+                        <button type="button" class="btn btn-primary pay-button" style="display: none">구입한다</button>
+                        <button type="button" class="btn btn-warning cancel-button" style="display: none">안산다</button>
+                        <button type="button" class="btn btn-warning not-pay-button" style="display: none">안산다</button>
+                        <button type="button" class="btn btn-success reset-button" style="display: none">원래데로</button>
+                        <button type="button" class="btn btn-primary pay-fee-button" style="display: none"></button>
+                        <button type="button" class="btn btn-success use-ticket-button" style="display: none">우대권사용</button>
                     </div>
                 </div>
             </div>
