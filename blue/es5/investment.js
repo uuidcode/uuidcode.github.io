@@ -68,7 +68,6 @@ function Investment() {
             this.showInvestmentCount();
             this.$element.find('.investment-add').show();
             this.getNotPayButton().show();
-            this.getPayButton().show();
             this.getResetButton().show();
         } else {
             this.showInvestmentCount();
