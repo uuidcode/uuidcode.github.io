@@ -76,15 +76,15 @@ GoldenKey.createBuildingCost = function (name, priceList) {
                             <tbody>
                             <tr>
                                 <td>호텔</td>
-                                <td>{{list.0}}</td>
+                                <td>{{list.[0]}}</td>
                             </tr>
                             <tr>
                                 <td>빌딩</td>
-                                <td>{{list.1}}</td>
+                                <td>{{list.[1]}}</td>
                             </tr>
                             <tr>
                                 <td>별장</td>
-                                <td>{{list.2}}</td>
+                                <td>{{list.[2]}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -109,6 +109,9 @@ GoldenKey.createBuildingCost = function (name, priceList) {
 };
 
 GoldenKey.list = [
+    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
+    GoldenKey.createBuildingCost('정기종합 소득세', ['15만원', '10만원', '3만원']),
+    GoldenKey.createBuildingCost('건물수리', ['10만원', '6만원', '3만원']),
     {
         name: config.sellHalfPrice,
         description: '당신의 부동산중에서 가장 비싼 곳을 반액으로 은행에 파세요.',
@@ -141,9 +144,6 @@ GoldenKey.list = [
             new Toast().showAndReadyToNextTurn('소유하고 있는 부동산이 없습니다.');
         }
     },
-    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
-    GoldenKey.createBuildingCost('정기종합 소득세', ['15만원', '10만원', '3만원']),
-    GoldenKey.createBuildingCost('건물수리', ['10만원', '6만원', '3만원']),
     {
         name: '유람선 여행',
         description: function () {
@@ -335,7 +335,7 @@ for (var i = 0; i < goldenKeyLength; i++) {
 }
 
 GoldenKey.resetGoldenKey = function() {
-    util.shuffle(GoldenKey.list);
+    // util.shuffle(GoldenKey.list);
 };
 
 GoldenKey.resetGoldenKey();
