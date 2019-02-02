@@ -103,12 +103,19 @@ GoldenKey.createBuildingCost = function (name, priceList) {
             return `${name}를 각 건물별로 아래와 같이 지불하세요.${result}`;
         },
         run: function () {
-            board.getCurrentPlayer().payForBuilding(this.priceList, name);
+            board.getCurrentPlayer().payForBuilding(priceList, name);
         }
     }
 };
 
 GoldenKey.list = [
+    {
+        name: '무인도',
+        description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
+        run: function () {
+            board.getCurrentPlayer().goFastToBlock('무인도', false);
+        }
+    },
     GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
     GoldenKey.createBuildingCost('정기종합 소득세', ['15만원', '10만원', '3만원']),
     GoldenKey.createBuildingCost('건물수리', ['10만원', '6만원', '3만원']),
@@ -220,13 +227,6 @@ GoldenKey.list = [
         description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
         run: function () {
             board.getCurrentPlayer().addTicket();
-        }
-    },
-    {
-        name: '무인도',
-        description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
-        run: function () {
-            board.getCurrentPlayer().goFastToBlock('무인도', false);
         }
     },
     {
