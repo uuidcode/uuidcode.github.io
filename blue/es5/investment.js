@@ -36,6 +36,7 @@ function Investment() {
         this.onClickNotPayButton();
         this.onClickPayButton();
         this.onClickPayFeeButton();
+        this.onClickResetButton();
         this.onClickUserTicketButton();
         this.onClickInvestmentAddButton();
     };
@@ -121,15 +122,17 @@ function Investment() {
         }, this);
     };
 
-    this.initResetButton = function () {
+    this.onClickResetButton = function () {
         this.getResetButton().setOnClick(function () {
+            this.getPayButton().hide();
+
             for (var i = 0; i < that.block.newBuildingCountList.length; i++) {
                 var $investmentCount = $('.investment-count').eq(i + 1);
                 var count = that.block.newBuildingCountList[i];
                 $investmentCount.text(parseInt($investmentCount.text()) - count);
             }
 
-            that.player.initNewBuilding(that.block);
+            this.player.initNewBuilding(this.block);
         }, this);
     };
 

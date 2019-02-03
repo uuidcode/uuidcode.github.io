@@ -83,7 +83,7 @@ function PlayerInfo(player) {
                                         <tr>
                                             <td class="flag"><img src="{{getImageUrl}}" width="35" height="20" style="border:1px solid black"></td>
                                             <td class="name">{{name}}</td>
-                                            <td class="building-amount">{{getDisplayAmount}}</td>
+                                            <td class="building-amount">{{getDisplayTotalAmount}}</td>
                                         </tr>
                                         {{/each}}
                                         </tbody>

@@ -67,6 +67,10 @@ function Block(index, data) {
         return totalAmount;
     };
 
+    this.getDisplayTotalAmount = function () {
+        return util.toDisplayAmount(this.getTotalAmount());
+    };
+
     this.reset = function () {
         this.player = null;
         this.buildingList.forEach(function (building) {

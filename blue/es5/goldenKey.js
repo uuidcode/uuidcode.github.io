@@ -109,6 +109,7 @@ GoldenKey.createBuildingCost = function (name, priceList) {
 };
 
 GoldenKey.list = [
+    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
     {
         name: '무인도',
         description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
@@ -116,7 +117,6 @@ GoldenKey.list = [
             board.getCurrentPlayer().goFastToBlock('무인도', false);
         }
     },
-    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
     GoldenKey.createBuildingCost('정기종합 소득세', ['15만원', '10만원', '3만원']),
     GoldenKey.createBuildingCost('건물수리', ['10만원', '6만원', '3만원']),
     {
@@ -335,7 +335,7 @@ for (var i = 0; i < goldenKeyLength; i++) {
 }
 
 GoldenKey.resetGoldenKey = function() {
-    util.shuffle(GoldenKey.list);
+    // util.shuffle(GoldenKey.list);
 };
 
 GoldenKey.resetGoldenKey();
