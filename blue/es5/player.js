@@ -140,7 +140,11 @@ function Player(index) {
     };
 
     this.incomeWithTitle = function (amount, title) {
-        this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
+        if (typeof amount === 'number') {
+            this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
+        } else {
+            this.income(util.toAmount(amount), `${title} ${amount}을 은행에서 받았습니다.`);
+        }
     };
 
     this.income = function (amount, message) {

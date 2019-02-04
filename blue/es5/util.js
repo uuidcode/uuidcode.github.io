@@ -30,7 +30,7 @@ var util = {
     toAmount: function (name) {
         var match = name.match('([0-9]+)만원');
 
-        if (match && match.length == 2) {
+        if (match && match.length === 2) {
             return parseInt(match[1]) * 10000;
         }
 
@@ -38,13 +38,13 @@ var util = {
 
         var sum = 0;
 
-        if (match && match.length == 2) {
+        if (match && match.length === 2) {
             sum = parseInt(match[1]) * 10000;
         }
 
         match = name.match('([0-9]+)천원');
 
-        if (match && match.length == 2) {
+        if (match && match.length === 2) {
             sum += parseInt(match[1]) * 1000;
         }
 
@@ -56,7 +56,7 @@ var util = {
     },
 
     toDisplayAmount: function (amount) {
-        if (amount == 0) {
+        if (amount === 0) {
             return '0원';
         }
 

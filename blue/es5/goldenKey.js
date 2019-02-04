@@ -108,7 +108,22 @@ GoldenKey.createBuildingCost = function (name, priceList) {
     }
 };
 
+GoldenKey.income = function (name, amount, amountName) {
+
+};
+
 GoldenKey.list = [
+    {
+        name: '복권당첨',
+        amount: '20만원',
+        amountName: '당첨금',
+        description: function () {
+            return `${this.amountName} ${this.amount}을 은행에서 받습니다.`
+        },
+        run: function () {
+            board.getCurrentPlayer().incomeWithTitle(this.amount, this.amountName);
+        }
+    },
     {
         name: '무인도 탈출권',
         description: '무인도 탈출권을 획득하였습니다.',
@@ -298,13 +313,6 @@ GoldenKey.list = [
         }
     },
     {
-        name: '복권당첨',
-        description: '당첨금 20만원을 은행에서 받습니다.',
-        run: function () {
-            board.getCurrentPlayer().incomeWithTitle(200000, '당첨금');
-        }
-    },
-    {
         name: '과속운전 벌금',
         description: '벌금 5만원을 은행에 납부합니다.',
         run: function () {
@@ -342,7 +350,7 @@ for (var i = 0; i < goldenKeyLength; i++) {
 }
 
 GoldenKey.resetGoldenKey = function() {
-    util.shuffle(GoldenKey.list);
+    // util.shuffle(GoldenKey.list);
 };
 
 GoldenKey.resetGoldenKey();
