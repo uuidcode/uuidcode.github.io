@@ -4,7 +4,7 @@ function Toast() {
     this.showAndReadyToNextTurn = function (message) {
         this.show(message, function () {
             board.getCurrentPlayer().readyNextTurn();
-        })
+        });
     };
 
     this.showPickPlace = function (callback) {

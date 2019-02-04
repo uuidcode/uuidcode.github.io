@@ -109,7 +109,20 @@ GoldenKey.createBuildingCost = function (name, priceList) {
 };
 
 GoldenKey.list = [
-    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
+    {
+        name: '무인도 탈출권',
+        description: '무인도 탈출권을 획득하였습니다.',
+        run: function () {
+            board.getCurrentPlayer().addEscapeTicket();
+        }
+    },
+    {
+        name: config.ticket,
+        description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
+        run: function () {
+            board.getCurrentPlayer().addTicket();
+        }
+    },
     {
         name: '무인도',
         description: '폭풍우를 만났습니다.<br>무인도로 가세요.<br>출발점을 지나더라도 월급을 받을 수 없습니다.',
@@ -117,6 +130,7 @@ GoldenKey.list = [
             board.getCurrentPlayer().goFastToBlock('무인도', false);
         }
     },
+    GoldenKey.createBuildingCost('방범비', ['5만원', '3만원', '1만원']),
     GoldenKey.createBuildingCost('정기종합 소득세', ['15만원', '10만원', '3만원']),
     GoldenKey.createBuildingCost('건물수리', ['10만원', '6만원', '3만원']),
     {
@@ -220,13 +234,6 @@ GoldenKey.list = [
         description: '출발지까지 곧바로 가세요.',
         run: function () {
             board.getCurrentPlayer().goFastToBlock(config.start);
-        }
-    },
-    {
-        name: config.ticket,
-        description: '상대방이 소유한 장소에 비용없이 머무룰 수 있습니다.',
-        run: function () {
-            board.getCurrentPlayer().addTicket();
         }
     },
     {

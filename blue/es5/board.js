@@ -136,8 +136,23 @@ function Board() {
         if (this.currentPlayerIsOnSpaceTravel()) {
             new Toast().showPickPlace(board.activePlayer.bind(this));
         } else {
-            new Toast().show('주사위를 던지세요.', board.activePlayer.bind(this));
+            /** @type Player **/
+            var currentPlayer = board.getCurrentPlayer();
+
+            if (currentPlayer.inIsland) {
+                if (currentPlayer.escapeTicketCount > 0) {
+                    board.activePlayer();
+                    new EscapeIsland().show();
+                    return;
+                }
+            }
+
+            this.showDieToast();
         }
+    };
+
+    this.showDieToast = function () {
+        new Toast().show('주사위를 던지세요.', board.activePlayer.bind(this));
     };
 
     this.getFundingPlace = function () {

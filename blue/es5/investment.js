@@ -153,7 +153,7 @@ function Investment() {
     this.onClickUserTicketButton = function () {
         this.getUseTicketButton().setOnClick(function () {
             this.hideModal();
-            player.ticketCount--;
+            this.player.ticketCount--;
             var message = '우대권을 사용하였습니다.';
             board.updatePlayInfo(this.player);
             new Toast().showAndReadyToNextTurn(message);
@@ -197,7 +197,7 @@ function Investment() {
     };
 
     this.getUseTicketButton = function () {
-        return $('#useTicketButton');
+        return $('.use-ticket-button');
     };
 
     this.getPayFeeButton = function () {

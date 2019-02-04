@@ -121,7 +121,7 @@ function Ready() {
                                         제한시간
                                     </div>
                                     <div class="col-md-8 form-inline">
-                                        <input type="text" class="form-control minute-timer" value="60" style="width:50px">
+                                        <input type="text" class="form-control minute-timer" value="20" style="width:50px">
                                         &nbsp;분
                                     </div>
                                 </div>

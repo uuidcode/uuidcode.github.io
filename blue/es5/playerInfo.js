@@ -23,7 +23,7 @@ function PlayerInfo(player) {
         }
 
         if (player.escapeTicketCount > 0) {
-            this.$element.find('.ticket')
+            this.$element.find('.escape-ticket')
                 .text('무인도 탈출권: ' + player.escapeTicketCount)
                 .show();
         }

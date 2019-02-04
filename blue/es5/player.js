@@ -261,10 +261,18 @@ function Player(index) {
         this.go(count);
     };
 
-    this.escapeFromIsland = function () {
+    this.escapeFromIsland = function (message) {
+        if (message === undefined) {
+            message = '무인도를 탈출합니다.';
+        }
+
+        if (this.escapeTicketCount > 0) {
+            this.escapeTicketCount--;
+        }
+
         this.inIsland = false;
         this.inIslandCount = 0;
-        new Toast().show('무인도를 탈출합니다.');
+        new Toast().show(message);
     };
 
     this.tryEscapeFromIsland = function (count) {
@@ -296,8 +304,7 @@ function Player(index) {
         fundingPlaceBlock.addFunding();
 
         playInfo.$element.transfer({
-            to: fundingPlaceBlock.$element,
-            duration: 2000
+            to: fundingPlaceBlock.$element
         }, function () {
             var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
             that.pay(config.fundAmount, message);
