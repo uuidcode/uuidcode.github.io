@@ -1,10 +1,11 @@
 function Building(block) {
     this.block = block;
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
-        this.$ui = $($('#buildingTemplate').html());
-        this.$ui.css({
+        var template = Handlebars.compile(this.template());
+        this.$element = $(template());
+        this.$element.css({
             position: 'absolute',
             left: config.building.left,
             top: config.building.top,
@@ -20,10 +21,10 @@ function Building(block) {
     this.update = function () {
         for (var i = 0; i < this.block.buildingList.length; i++) {
             var building = this.block.buildingList[i];
-            this.$ui.find('.building-badge').eq(i).text(building.count);
+            this.$element.find('.building-badge').eq(i).text(building.count);
         }
 
-        var $totalFees = this.$ui.find('.total-fees');
+        var $totalFees = this.$element.find('.total-fees');
         $totalFees.text('');
 
         if (this.block.player != null) {
@@ -37,6 +38,17 @@ function Building(block) {
 
     this.getName = function (index) {
         util.getBuildName(index);
+    };
+
+    this.template = function () {
+        return `
+        <div>
+            <span class="badge badge-primary building-badge"></span>
+            <span class="badge badge-warning building-badge"></span>
+            <span class="badge badge-danger building-badge"></span>
+            <span class="badge badge-light total-fees"></span>
+        </div>
+        `
     };
 
     this.init();

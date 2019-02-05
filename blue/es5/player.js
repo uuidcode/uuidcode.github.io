@@ -5,7 +5,7 @@ function Player(index) {
     this.amount = this.playerConfig.amount;
     this.name = this.playerConfig.name;
     this.position = 0;
-    this.$ui = null;
+    this.$element = null;
     this.curentCount = 0;
     this.currentDirection = null;
     this.currentPosition = 0;
@@ -22,23 +22,23 @@ function Player(index) {
     this.end = false;
 
     this.initEvent = function() {
-        var self = this;
+        var that = this;
 
-        this.$ui.on('animationend', function () {
-            if (self.curentCount === 0) {
+        this.$element.on('animationend', function () {
+            if (that.curentCount === 0) {
                 return;
             }
 
-            var position = self.getPosition();
+            var position = that.getPosition();
 
-            self.$ui.removeClass(self.getDirectionClass());
-            self.$ui.css(position);
+            that.$element.removeClass(that.getDirectionClass());
+            that.$element.css(position);
 
             setTimeout(function () {
-                if (self.backward) {
-                    self.back(self.curentCount - 1);
+                if (that.backward) {
+                    that.back(that.curentCount - 1);
                 } else {
-                    self.go(self.curentCount - 1);
+                    that.go(that.curentCount - 1);
                 }
             }, 100);
         });
@@ -140,7 +140,11 @@ function Player(index) {
     };
 
     this.incomeWithTitle = function (amount, title) {
-        this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
+        if (typeof amount === 'number') {
+            this.income(amount, title + ' ' + util.toDisplayAmount(amount) + '을 은행에서 받았습니다.');
+        } else {
+            this.income(util.toAmount(amount), `${title} ${amount}을 은행에서 받았습니다.`);
+        }
     };
 
     this.income = function (amount, message) {
@@ -155,13 +159,13 @@ function Player(index) {
     };
 
     this.init = function() {
-        var self = this;
-        this.$ui = $('<img>');
-        this.$ui.attr('src', this.getImageUrl());
-        this.$ui.addClass('live');
-        this.$ui.attr('data-index', this.index);
+        var that = this;
+        this.$element = $('<img>');
+        this.$element.attr('src', this.getImageUrl());
+        this.$element.addClass('live');
+        this.$element.attr('data-index', this.index);
 
-        this.$ui.css({
+        this.$element.css({
             position: 'absolute',
             left: this.playerConfig.left,
             top: this.playerConfig.top,
@@ -174,8 +178,8 @@ function Player(index) {
         this.initEvent();
     };
 
-    this.setPlayerImage = function ($ui) {
-        $ui.find('.player-image').attr('src', this.getImageUrl());
+    this.setPlayerImage = function ($element) {
+        $element.find('.player-image').attr('src', this.getImageUrl());
     };
 
     this.getPosition = function () {
@@ -221,9 +225,9 @@ function Player(index) {
     };
 
     this.rollDie = function() {
-        var self = this;
+        var that = this;
         board.die.roll(function (notation, count) {
-            self.go(count[0]);
+            that.go(count[0]);
         });
     };
 
@@ -261,10 +265,18 @@ function Player(index) {
         this.go(count);
     };
 
-    this.escapeFromIsland = function () {
+    this.escapeFromIsland = function (message) {
+        if (message === undefined) {
+            message = '무인도를 탈출합니다.';
+        }
+
+        if (this.escapeTicketCount > 0) {
+            this.escapeTicketCount--;
+        }
+
         this.inIsland = false;
         this.inIslandCount = 0;
-        new Toast().show('무인도를 탈출합니다.');
+        new Toast().show(message);
     };
 
     this.tryEscapeFromIsland = function (count) {
@@ -288,18 +300,18 @@ function Player(index) {
     };
 
     this.payForFund = function () {
-        var self = this;
+        var that = this;
         var amount = util.toDisplayAmount(config.fundAmount);
         var fundingPlaceBlock = board.getTargetBlock(config.fundingPlace);
         var playInfo = board.playerInfoList[board.getPlayerIndex()];
 
         fundingPlaceBlock.addFunding();
 
-        playInfo.$ui.transfer({
-            to: fundingPlaceBlock.$ui
+        playInfo.$element.transfer({
+            to: fundingPlaceBlock.$element
         }, function () {
             var message = config.fundingPlace + '에 ' + amount + '를 납부하였습니다.';
-            self.pay(config.fundAmount, message);
+            that.pay(config.fundAmount, message);
         });
     };
 
@@ -375,7 +387,7 @@ function Player(index) {
         }
 
         this.currentDirection = this.getDirection();
-        this.$ui.addClass(this.getDirectionClass());
+        this.$element.addClass(this.getDirectionClass());
     };
 
     this.go = function(count) {
@@ -399,7 +411,7 @@ function Player(index) {
         this.position++;
         this.position = this.position % config.blockSize;
         this.currentDirection = this.getDirection();
-        this.$ui.addClass(this.getDirectionClass());
+        this.$element.addClass(this.getDirectionClass());
 
         if (this.position === 0 && count > 1) {
             if (this.payable) {
@@ -483,8 +495,12 @@ function Player(index) {
         return util.getImageUrl(this.image);
     };
 
+    this.getDisplayAmount = function () {
+        return util.toDisplayAmount(this.amount);
+    };
+
     this.runGoldenKey = function () {
-        var goldenKey = config.goldenKeyList[board.goldenKeyIndex];
+        var goldenKey = GoldenKey.list[board.goldenKeyIndex];
         new GoldenKey().show(goldenKey);
     };
 
@@ -500,59 +516,13 @@ function Player(index) {
             }
         }
 
-        var self = this;
+        var that = this;
         var investment = new Investment();
+
         if (!investment.show(block)) {
             this.readyNextTurn();
             return;
         }
-
-        $('#buyButton').on('click', function () {
-            block.player = self;
-            self.amount -= block.amount;
-
-            block.update();
-            board.updatePlayInfo(self);
-            self.readyNextTurn(investment);
-        });
-
-        $('#cancelButton, #notPayButton').on('click', function () {
-            self.readyNextTurn(investment);
-        });
-
-        var self = this;
-
-        $('#resetButton').on('click', function () {
-            for (var i = 0; i < block.newBuildingCountList.length; i++) {
-                var $investmentCount = $('.investment-count').eq(i + 1);
-                var count = block.newBuildingCountList[i];
-                $investmentCount.text(parseInt($investmentCount.text()) - count);
-            }
-
-            self.initNewBuilding(block);
-        });
-
-        $('#payFeeButton').on('click', function () {
-            var totalFees = block.getTotalFees();
-            investment.hideModal();
-
-            if (self.payOnly(totalFees)) {
-                return;
-            }
-
-            var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
-            block.player.income(totalFees, message);
-        });
-
-        $('#useTicketButton').on('click', function () {
-            investment.hideModal();
-            self.ticketCount--;
-            var message = '우대권을 사용하였습니다.';
-            board.updatePlayInfo(self);
-            new Toast().showAndReadyToNextTurn(message);
-        });
-
-        this.addBuilding(investment, block);
     };
 
     this.initNewBuilding = function (block) {
@@ -565,52 +535,11 @@ function Player(index) {
         return $('#payButton');
     };
 
-    this.addBuilding = function (investment, block) {
-        this.initNewBuilding(block);
-        var $payButton = this.getPayButton();
-        var self = this;
-
-        $payButton.on('click', function () {
-            for (var i = 0; i < block.buildingList.length; i++) {
-                var building = block.buildingList[i];
-                building.count += block.newBuildingCountList[i];
-            }
-
-            self.amount -= block.investmentAmount;
-            board.updatePlayInfo(self);
-            self.readyNextTurn(investment);
-            block.building.update();
-        });
-
-        var addButton = investment.$ui.find('.investment-add-button');
-
-        addButton.on('click', function () {
-            var buildingIndex = addButton.index($(this));
-            var price = util.toAmount(block.buildingList[buildingIndex].displayPrice);
-
-            if (block.investmentAmount + price > self.amount) {
-                alert('더 이상 구입할 수 없습니다.');
-                return;
-            }
-
-            block.buildingIndex = buildingIndex;
-            block.investmentAmount += price;
-            block.newBuildingCountList[block.buildingIndex] += 1;
-
-            var $parent = $(this).closest('tr');
-            var $count = $parent.find('.investment-count');
-            var currentCount = $count.text() || '0';
-            $count.text(parseInt(currentCount, 10) + 1);
-
-            $payButton.text(util.getPayMessage(block.investmentAmount)).show();
-        });
-    };
-
     this.getBlockList = function () {
-        var self = this;
+        var that = this;
 
         return board.blockList.filter(function (block) {
-            return block.player === self;
+            return block.player === that;
         });
     };
 

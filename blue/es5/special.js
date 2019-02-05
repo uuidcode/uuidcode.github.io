@@ -1,11 +1,11 @@
 function Special(name, code) {
     this.name = name;
     this.code = code;
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
-        this.$ui = $('<div></div>');
-        this.$ui.css({
+        this.$element = $('<div></div>');
+        this.$element.css({
             position: 'absolute',
             left: 0,
             top: 0,
@@ -17,17 +17,17 @@ function Special(name, code) {
 
         });
 
-        var $name = $('<span>' + this.name + '</span>');
+        var $name = $(`<span>${this.name}</span>`);
         $name.css({
             backgroundColor: config.selectedColor
         });
 
-        this.$ui.append($name);
+        this.$element.append($name);
 
         if (this.code) {
-            this.$ui.css({
-                backgroundImage: 'url(../image/' + this.code + '.png)',
-                backgroundSize: config.block.width + 'px ' + config.block.height + 'px',
+            this.$element.css({
+                backgroundImage: `url(../image/${this.code}.png)`,
+                backgroundSize: `${config.block.width}px ${config.block.height}px`,
                 color: 'white'
             })
         }

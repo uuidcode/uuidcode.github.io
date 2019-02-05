@@ -1,11 +1,11 @@
 function Name(name) {
     this.name = name;
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
-        this.$ui = $('<div></div>');
-        this.$ui.addClass('block-name');
-        this.$ui.css({
+        this.$element = $('<div></div>');
+        this.$element.addClass('block-name');
+        this.$element.css({
             position: 'absolute',
             left: config.name.left,
             top: config.name.top,
@@ -16,7 +16,7 @@ function Name(name) {
             fontWeight: 'bold'
         });
 
-        this.$ui.html(this.name);
+        this.$element.html(this.name);
     };
 
     this.init();

@@ -17,14 +17,20 @@ if (!String.prototype.trim) {
         $(this).on('hide.bs.modal', function () {
             $(this).remove();
         });
-    }
+    };
+
+    $.fn.setOnClick = function (callback, context) {
+        return $(this).on('click', function () {
+            callback.bind(context)($(this));
+        });
+    };
 })(jQuery);
 
 var util = {
     toAmount: function (name) {
         var match = name.match('([0-9]+)만원');
 
-        if (match && match.length == 2) {
+        if (match && match.length === 2) {
             return parseInt(match[1]) * 10000;
         }
 
@@ -32,13 +38,13 @@ var util = {
 
         var sum = 0;
 
-        if (match && match.length == 2) {
+        if (match && match.length === 2) {
             sum = parseInt(match[1]) * 10000;
         }
 
         match = name.match('([0-9]+)천원');
 
-        if (match && match.length == 2) {
+        if (match && match.length === 2) {
             sum += parseInt(match[1]) * 1000;
         }
 
@@ -50,7 +56,7 @@ var util = {
     },
 
     toDisplayAmount: function (amount) {
-        if (amount == 0) {
+        if (amount === 0) {
             return '0원';
         }
 
@@ -81,43 +87,64 @@ var util = {
     },
 
     getDescriptionWithImageHtml: function (array, name) {
-        array.push('<hr>');
-        array.push(board.getBlockHtml(name));
-        return util.getDescriptionHtml(array);
-    },
-
-    createBuildingCostGoldenKey: function (name, priceList) {
-        return {
-            name: name,
-            priceList : priceList,
-            description: function () {
-            var html = $('#buildingPriceTemplate').html();
-
-            for (var i = 0; i < this.priceList.length; i++) {
-                html = html.replace(util.getBuildCode(i), this.priceList[i]);
-            }
-
-            return name + '를 각 건물별로 아래와 같이 지불하세요.' + html;
-        },
-            run: function () {
-                board.getCurrentPlayer().payForBuilding(this.priceList, name);
-            }
+        if (board) {
+            array.push('<hr>');
+            array.push(board.getBlockHtml(name));
         }
+
+        return util.getDescriptionHtml(array);
     },
 
     getDescriptionAndFromToHtml: function (array, from, to) {
         var descriptionHtml = this.getDescriptionHtml(array);
         var fromBlock = board.getTargetBlock(from);
         var toBlock = board.getTargetBlock(to);
-        var html = $('#fromToTemplate').html();
-        html = html.replace('fromImage', fromBlock.getImageUrl());
-        html = html.replace('toImage', toBlock.getImageUrl());
-        return descriptionHtml + '<hr>' + html;
+
+        var template = Handlebars.compile(util.getFromToTemplate());
+        var result = template(({
+            fromBlock: fromBlock,
+            toBlock: toBlock,
+        }));
+
+        return `${descriptionHtml}<hr>${result}`;
+    },
+
+    getFromToTemplate : function () {
+        return `
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6 m-auto text-center">
+                        <img src="{{fromBlock.getImageUrl}}" width="100%">
+                    </div>
+                    <div class="col-md-6 m-auto text-center">
+                        <img src="{{toBlock.getImageUrl}}" width="100%">
+                    </div>
+                </div>
+            </div>
+        `;
     },
 
     getModal: function (selector) {
-        var $modal = $(selector).modal();
-        var position = board.die.$ui.offset();
+        var $modal = null;
+
+        if ($.type(selector) === "string") {
+            $modal = $(selector);
+        } else {
+            $modal = selector;
+        }
+
+        $modal.modal();
+
+        var position = null;
+
+        try {
+            position = board.die.$element.offset();
+        } catch (e) {
+            position = {
+                left: 0,
+                top: 0
+            };
+        }
 
         $modal.find('.modal-dialog').css({
             position: 'absolute',
@@ -149,15 +176,59 @@ var util = {
         return null;
     },
 
-    getBuildCode: function (index) {
-        if (index == 0) {
-            return 'hotel';
-        } else if (index == 1) {
-            return 'building';
-        } else if (index == 2) {
-            return 'villa';
+
+    shuffle: function(array) {
+        var counter = array.length;
+
+        // While there are elements in the array
+        while (counter > 0) {
+            // Pick a random index
+            var index = Math.floor(Math.random() * counter);
+
+            // Decrease counter by 1
+            counter--;
+
+            // And swap the last element with it
+            var temp = array[counter];
+            array[counter] = array[index];
+            array[index] = temp;
         }
 
-        return null;
+        return array;
+    },
+
+    copy: function(src) {
+        var target = {};
+
+        for (var prop in src) {
+            if (src.hasOwnProperty(prop)) {
+                target[prop] = src[prop];
+            }
+        }
+
+        return target;
+    }
+};
+
+Handlebars.registerHelper('amount', function (number) {
+    return util.toDisplayAmount(number);
+});
+
+Handlebars.JavaScriptCompiler.prototype.nameLookup = function(parent, name, type) {
+    if (parent === "helpers") {
+        if (Handlebars.JavaScriptCompiler.isValidJavaScriptVariableName(name))
+            return parent + "." + name;
+        else
+            return parent + "['" + name + "']";
+    }
+
+    if (/^[0-9]+$/.test(name)) {
+        return parent + "[" + name + "]";
+    } else if (Handlebars.JavaScriptCompiler.isValidJavaScriptVariableName(name)) {
+        // ( typeof parent.name === "function" ? parent.name() : parent.name)
+        var field = `${parent}.${name}`;
+        return `(typeof ${field} === 'function' ?  ${field}() : ${field})`;
+    } else {
+        return parent + "['" + name + "']";
     }
 };

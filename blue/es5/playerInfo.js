@@ -1,49 +1,38 @@
 function PlayerInfo(player) {
-    this.$ui = null;
+    this.$element = null;
 
-    this.createNation = function(player) {
-        var nationHtml = $('#nationTemplate').html();
-        var $nationContainer = this.$ui.find('.nationContainer');
-
-        for (var i = 0; i < board.blockList.length; i++) {
-            var block = board.blockList[i];
-
-            if (block.player == player) {
-                var $nation = $(nationHtml);
-                $nation.find('.flag').find('img').attr('src', block.getImageUrl());
-                $nation.find('.name').html(block.name);
-
-                var totalAmount = block.getTotalAmount();
-                var buildingAmount = util.toDisplayAmount(totalAmount);
-                $nation.find('.building-amount').html(buildingAmount);
-                $nationContainer.append($nation);
-            }
-        }
-    };
-
+    /** @type Player **/
     this.init = function (player) {
-        var template = $('#playerInfoTemplate').html();
-        this.$ui = $(template);
         var blockList = player.getBlockList();
-        this.$ui.find('.place-count').text(blockList.length);
+
+        var data = {
+            blockList: blockList,
+            player: player
+        };
+
+        var template = Handlebars.compile(this.template());
+        var html = template(data);
+        this.$element = $(html);
+
+        this.$element.find('.place-count').text(blockList.length);
 
         if (player.ticketCount > 0) {
-            this.$ui.find('.ticket')
+            this.$element.find('.ticket')
                 .text('우대권: ' + player.ticketCount)
                 .show();
         }
 
         if (player.escapeTicketCount > 0) {
-            this.$ui.find('.ticket')
+            this.$element.find('.escape-ticket')
                 .text('무인도 탈출권: ' + player.escapeTicketCount)
                 .show();
         }
 
-        this.$ui.find('.modal-dialog').css({
+        this.$element.find('.modal-dialog').css({
             margin: 0
         });
 
-        this.$ui.find('.modal-body').css({
+        this.$element.find('.modal-body').css({
             maxHeight: config.playerInfo.height
         });
 
@@ -55,7 +44,7 @@ function PlayerInfo(player) {
 
         var top = config.block.height + config.playerInfo.top;
 
-        this.$ui.css({
+        this.$element.css({
            position: 'absolute',
            display: 'block',
            width: config.playerInfo.width,
@@ -63,11 +52,50 @@ function PlayerInfo(player) {
            left: left,
            top: top
         });
+    };
 
-        this.$ui.find('.player-image').attr('src', player.getImageUrl());
-        this.$ui.find('.player-name').text(player.name);
-
-        this.createNation(player);
+    this.template = function () {
+        return `
+        <div class="modal show" tabindex="-1" role="dialog">
+            <div class="modal-dialog shadow" role="document">
+                <div class="modal-content">
+                    <div class="modal-body player-modal-body" style="overflow-y: auto">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-4 text-center" style="padding: 0">
+                                    <img src="{{player.getImageUrl}}" class="player-image" width="40" height="40">
+                                    <span class="player-name">{{player.name}}</span>
+                                    <span class="badge badge-primary ticket" style="display: none"></span>
+                                    <span class="badge badge-primary escape-ticket" style="display: none"></span>
+                                </div>
+                                <div class="col-md-6 m-auto text-center">
+                                    <span class="amount">{{player.name}}</span>
+                                </div>
+                                <div class="col-md-2 m-auto text-center">
+                                    <span class="badge badge-primary place-count">{{player.getDisplayAmount}}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <tbody class="nationContainer">
+                                        {{#each blockList}}
+                                        <tr>
+                                            <td class="flag"><img src="{{getImageUrl}}" width="35" height="20" style="border:1px solid black"></td>
+                                            <td class="name">{{name}}</td>
+                                            <td class="building-amount">{{getDisplayTotalAmount}}</td>
+                                        </tr>
+                                        {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
     };
 
     this.init(player);

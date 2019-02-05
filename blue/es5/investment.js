@@ -1,94 +1,235 @@
 function Investment() {
-    this.$ui = null;
-    this.buildingList = null;
+    this.$element = null;
+    this.player = null;
+    this.block = null;
+    var that = this;
 
+    /** @type Block **/
     this.show = function (block) {
-        var player = board.getCurrentPlayer();
+        this.block = block;
+        this.initNewBuilding(block);
 
-        if (block.player == player) {
-            if (block.buildingList.length == 0) {
+        /** @type Player **/
+        this.player = board.getCurrentPlayer();
+
+        if (this.block.player === this.player) {
+            if (block.hasNotBuilding()) {
                 return false;
             }
         }
 
-        this.buildingList = block.buildingList;
-
-        this.$ui = $($('#investmentInfoTemplate').html());
-        board.append(this.$ui);
-
-        this.$ui.find('.display-amount').html(block.displayAmount);
-        this.$ui.find('.display-fees').html(block.displayFees);
-
-        this.getModal().find('.modal-title').css({
-            fontWeight: 'bold'
-        }).html(block.name);
-
-        this.$ui.find('table').css({
-            margin: 10
-        });
-
-        var $place = this.$ui.find('.place');
-        $place.css({
-            border: '1px solid black'
-        });
-
-        $place.attr('src', block.getImageUrl());
-        this.$ui.find('.owner').attr('src', block.getOwnerImageUrl());
-
-        if (this.buildingList.length > 0) {
-            this.createBuildingList();
-        }
-
-        this.$ui.find('.player-amount').text('잔액 : ' + util.toDisplayAmount(player.amount));
-        var self = this;
-
-        if (block.player === null) {
-            $('#cancelButton,#buyButton').show();
-
-            if (block.amount > player.amount) {
-                $('#buyButton').hide();
-            }
-
-            $('#buyButton').text(util.getPayMessage(block.amount));
-            $('#notPayButton,#payButton,#resetButton,#payFeeButton,#useTicketButton').hide();
-        } else if (block.player == player) {
-            this.showInvestmentCount();
-            this.$ui.find('.investment-add').show();
-            $('#notPayButton,#payButton,#resetButton').show();
-            $('#cancelButton,#buyButton,#useTicketButton,#payFeeButton').hide();
-        } else {
-            this.showInvestmentCount();
-            var totalFee = block.getTotalFees();
-            $('#notPayButton,#payButton,#resetButton').hide();
-            $('#cancelButton,#buyButton').hide();
-            $('#payFeeButton').html(util.toDisplayAmount(totalFee) + '을 지불합니다.').show();
-
-            if (player.ticketCount > 0) {
-                $('#useTicketButton').show();
-            } else {
-                $('#useTicketButton').hide();
-            }
-        }
-
-        var timeOut = 0;
-
-        if ($('.toast-modal').length > 0) {
-            timeOut = 2000;
-        }
-
-        setTimeout(function () {
-            self.showModal();
-        }, timeOut);
+        this.createElement();
+        this.initEventWithTimeout();
 
         return true;
     };
 
+    this.initEventWithTimeout = function () {
+        setTimeout(this.initEvent.bind(this), this.getTimeout());
+    };
+
+    this.initEvent = function () {
+        this.showModal();
+        this.initButton();
+        this.onClickBuyButton();
+        this.onClickCancelButton();
+        this.onClickNotPayButton();
+        this.onClickPayButton();
+        this.onClickPayFeeButton();
+        this.onClickResetButton();
+        this.onClickUserTicketButton();
+        this.onClickInvestmentAddButton();
+    };
+
+    this.createElement = function () {
+        var template = Handlebars.compile(this.template());
+
+        this.$element = $(template({
+            block: that.block,
+            player: that.player
+        }));
+    };
+
+    this.getTimeout = function () {
+        if ($('.toast-modal').length > 0) {
+            return 1000;
+        }
+
+        return 0;
+    };
+
+    this.initButton = function () {
+        if (this.block.player === null) {
+            this.getCancelButton().show();
+
+            if (this.player.amount >= this.block.amount) {
+                this.getBuyButton()
+                    .text(util.getPayMessage(this.block.amount))
+                    .show();
+            }
+        } else if (this.block.player === this.player) {
+            this.showInvestmentCount();
+            this.$element.find('.investment-add').show();
+            this.getNotPayButton().show();
+            this.getResetButton().show();
+        } else {
+            this.showInvestmentCount();
+            var totalFee = that.block.getTotalFees();
+            this.getPayFeeButton()
+                .html(util.toDisplayAmount(totalFee) + '을 지불합니다.')
+                .show();
+
+            if (this.player.ticketCount > 0) {
+                this.getUseTicketButton().show();
+            }
+        }
+    };
+
+    this.onClickPayFeeButton = function () {
+        this.getPayFeeButton().setOnClick(function () {
+            var totalFees = this.block.getTotalFees();
+
+            this.hideModal();
+
+            if (this.player.payOnly(totalFees)) {
+                return;
+            }
+
+            var message = util.toDisplayAmount(totalFees) + '을 지불하였습니다.';
+            this.block.player.income(totalFees, message);
+        }, this);
+    };
+
+    this.onClickBuyButton = function () {
+        this.getBuyButton().setOnClick(function () {
+            this.block.player = this.player;
+            this.player.amount -= this.block.amount;
+            this.block.update();
+            board.updatePlayInfo(this.player);
+            this.player.readyNextTurn(this);
+        }, this);
+    };
+
+    this.onClickCancelButton = function () {
+        this.getCancelButton().setOnClick(function () {
+            this.player.readyNextTurn(this);
+        }, this);
+    };
+
+    this.onClickNotPayButton = function () {
+        this.getNotPayButton().setOnClick(function () {
+            this.player.readyNextTurn(this);
+        }, this);
+    };
+
+    this.onClickResetButton = function () {
+        this.getResetButton().setOnClick(function () {
+            this.getPayButton().hide();
+
+            for (var i = 0; i < that.block.newBuildingCountList.length; i++) {
+                var $investmentCount = $('.investment-count').eq(i + 1);
+                var count = that.block.newBuildingCountList[i];
+                $investmentCount.text(parseInt($investmentCount.text()) - count);
+            }
+
+            this.player.initNewBuilding(this.block);
+        }, this);
+    };
+
+    this.onClickPayButton = function () {
+        this.getPayButton().setOnClick(function () {
+            for (var i = 0; i < this.block.buildingList.length; i++) {
+                var building = this.block.buildingList[i];
+                building.count += this.block.newBuildingCountList[i];
+            }
+
+            this.block.player.amount -= this.block.investmentAmount;
+            board.updatePlayInfo(this.block.player);
+            this.player.readyNextTurn(this);
+            this.block.building.update();
+        }, this);
+    };
+
+    this.onClickUserTicketButton = function () {
+        this.getUseTicketButton().setOnClick(function () {
+            this.hideModal();
+            this.player.ticketCount--;
+            var message = '우대권을 사용하였습니다.';
+            board.updatePlayInfo(this.player);
+            new Toast().showAndReadyToNextTurn(message);
+        }, this);
+    };
+
+    this.onClickInvestmentAddButton = function () {
+        this.getInvestmentAddButton().setOnClick(function($target) {
+            var buildingIndex = this.getInvestmentAddButton().index($target);
+            var displayPrice = this.block.buildingList[buildingIndex].displayPrice;
+            var price = util.toAmount(displayPrice);
+
+            if (this.block.investmentAmount + price > this.player.amount) {
+                alert('더 이상 구입할 수 없습니다.');
+                return;
+            }
+
+            this.block.buildingIndex = buildingIndex;
+            this.block.investmentAmount += price;
+            this.block.newBuildingCountList[this.block.buildingIndex] += 1;
+
+            var $parent = $target.closest('tr');
+            var $count = $parent.find('.investment-count');
+            var currentCount = $count.text() || '0';
+            $count.text(parseInt(currentCount, 10) + 1);
+
+            this.getPayButton()
+                .text(util.getPayMessage(this.block.investmentAmount))
+                .show();
+        }, this);
+    };
+
+    this.initNewBuilding = function (block) {
+        block.newBuildingCountList = [0, 0, 0];
+        block.investmentAmount = 0;
+        this.getPayButton().hide();
+    };
+
+    this.getInvestmentAddButton = function () {
+        return $('.investment-add-button');
+    };
+
+    this.getUseTicketButton = function () {
+        return $('.use-ticket-button');
+    };
+
+    this.getPayFeeButton = function () {
+        return $('.pay-fee-button');
+    };
+
+    this.getResetButton = function () {
+        return $('.reset-button');
+    };
+
+    this.getNotPayButton = function () {
+        return $('.not-pay-button');
+    };
+
+    this.getCancelButton = function () {
+        return $('.cancel-button');
+    };
+
+    this.getBuyButton = function () {
+        return $('.buy-button');
+    };
+
+    this.getPayButton = function () {
+        return $('.pay-button');
+    };
+
     this.showInvestmentCount = function () {
-        this.$ui.find('.investment-count').show();
+        this.$element.find('.investment-count').show();
     };
 
     this.getModal = function () {
-        return util.getModal('.investment-modal');
+        return util.getModal(this.$element);
     };
 
     this.showModal = function () {
@@ -99,18 +240,90 @@ function Investment() {
         this.getModal().hideModal();
     };
 
-    this.createBuildingList = function () {
-        var html = $('#investmentBuildingTemplate').html();
-        this.$ui.find('.container-fluid').append(html);
-
-        for (var i = 0; i < this.buildingList.length; i++) {
-            var building = this.buildingList[i];
-            var $item = $($('#investmentBuildingItemTemplate').html());
-            $item.find('.name').html(building.name);
-            $item.find('.investment-count').html(building.count);
-            $item.find('.price').html(building.displayPrice);
-            $item.find('.fees').html(building.displayFees);
-            this.$ui.find('.investment-item-container').append($item);
-        }
-    };
+    this.template = function () {
+        return `
+        <div class="modal investment-modal" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-title" style="font-weight: bold">{{block.name}}</span>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6 m-auto text-center">
+                                    <img src="{{block.getImageUrl}}" class="place" width="100px" height="50px" style="border:1px solid black">
+                                    <img src="{{block.getOwnerImageUrl}}" class="owner" width="30px" height="30pxpx">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 m-auto">
+                                    <table class="table" style="margin: 10px">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">구입비용</th>
+                                            <th scope="col">통행료</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="display-amount">{{block.displayAmount}}</td>
+                                            <td class="display-fees">{{block.displayFees}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {{#if block.hasBuilding}}
+                            <div class="row">
+                                <div class="col-md-10 m-auto">
+                                    <strong>건축비</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 m-auto">
+                                    <table class="table" style="margin: 10px">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">비용</th>
+                                            <th scope="col">수익</th>
+                                            <th scope="col" class="investment-count" style="display:none">개수</th>
+                                            <th scope="col" class="investment-add" style="display:none"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="investment-item-container">
+                                            {{#each block.buildingList}}
+                                            <tr>
+                                                <td class="name">{{name}}</td>
+                                                <td class="price">{{displayPrice}}</td>
+                                                <td class="fees">{{displayFees}}</td>
+                                                <td class="investment-count" style="display:none">{{count}}</td>
+                                                <td class="investment-add" style="display:none">
+                                                    <button type="button" class="btn btn-primary investment-add-button">추가</button>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-dark player-amount" disabled>{{player.getDisplayAmount}}</button>
+                        <button type="button" class="btn btn-primary buy-button" style="display: none"></button>
+                        <button type="button" class="btn btn-primary pay-button" style="display: none">구입한다</button>
+                        <button type="button" class="btn btn-warning cancel-button" style="display: none">안산다</button>
+                        <button type="button" class="btn btn-warning not-pay-button" style="display: none">안산다</button>
+                        <button type="button" class="btn btn-success reset-button" style="display: none">원래데로</button>
+                        <button type="button" class="btn btn-primary pay-fee-button" style="display: none"></button>
+                        <button type="button" class="btn btn-success use-ticket-button" style="display: none">우대권사용</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
+    }
 }

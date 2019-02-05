@@ -1,11 +1,11 @@
 function Amount(amount) {
     this.amount = amount;
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
-        this.$ui = $('<div></div>');
-        this.$ui.addClass('block-amount');
-        this.$ui.css({
+        this.$element = $(`<div>${this.amount}</div>`);
+        this.$element.addClass('block-amount');
+        this.$element.css({
             position: 'absolute',
             left: config.amount.left,
             top: config.amount.top,
@@ -15,8 +15,6 @@ function Amount(amount) {
             textAlign: 'center',
             fontWeight: 'bold'
         });
-        
-        this.$ui.html(this.amount);
     };
 
     this.init();

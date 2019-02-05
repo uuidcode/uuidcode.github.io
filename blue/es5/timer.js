@@ -1,10 +1,10 @@
 function Timer(minuteTimer) {
-    this.$ui = null;
+    this.$element = null;
 
     this.init = function () {
-        this.$ui = $('<div></div>');
-        this.$ui.addClass('timer');
-        this.$ui.attr('data-minutes-left', minuteTimer);
+        this.$element = $('<div></div>');
+        this.$element.addClass('timer');
+        this.$element.attr('data-minutes-left', minuteTimer);
 
         var css = {
             position: 'absolute',
@@ -15,8 +15,8 @@ function Timer(minuteTimer) {
             margin: config.timer.margin
         };
 
-        this.$ui.css(css);
-        board.$ui.append(this.$ui);
+        this.$element.css(css);
+        board.$element.append(this.$element);
 
         $('.timer').startTimer({
             onComplete: function(){

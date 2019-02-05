@@ -1,18 +1,18 @@
 function Owner(player) {
-    this.$ui = null;
+    this.$element = null;
     this.player = player;
 
     this.init = function () {
-        this.$ui = $('<div></div>');
+        this.$element = $('<div></div>');
 
         var $image = $('<img>');
         $image.addClass('owner');
         $image.attr('width', config.owner.width);
         $image.attr('height', config.owner.height);
         $image.attr('src', config.defaultOwnerImageUrl);
-        this.$ui.append($image);
+        this.$element.append($image);
 
-        this.$ui.css({
+        this.$element.css({
             position: 'absolute',
             left: config.owner.left,
             top: config.owner.top,

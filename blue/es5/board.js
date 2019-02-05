@@ -1,5 +1,5 @@
 function Board() {
-    this.$ui = $('.board');
+    this.$element = $('.board');
     this.playerList = [];
     this.playerInfoList = [];
     this.blockList = [];
@@ -28,47 +28,47 @@ function Board() {
         for (var i = 0; i < config.playerList.length; i++) {
             var player = new Player(this.playerList.length);
             this.playerList.push(player);
-            this.$ui.append(player.$ui);
+            this.$element.append(player.$element);
 
             var playerInfo = new PlayerInfo(player);
             this.playerInfoList.push(playerInfo);
-            this.$ui.append(playerInfo.$ui);
+            this.$element.append(playerInfo.$element);
             this.updatePlayerAmount(player, playerInfo);
         }
     };
 
     this.updatePlayerAmount = function (player, playerInfo) {
-        var $amount = playerInfo.$ui.find('.amount');
+        var $amount = playerInfo.$element.find('.amount');
         $amount.text(util.toDisplayAmount(player.amount));
     };
 
     this.updatePlayInfo = function(currentPlayer) {
-        this.playerInfoList[currentPlayer.index].$ui.remove();
+        this.playerInfoList[currentPlayer.index].$element.remove();
 
         var playerInfo = new PlayerInfo(currentPlayer);
         this.playerInfoList[currentPlayer.index] = playerInfo;
 
-        this.$ui.append(playerInfo.$ui);
+        this.$element.append(playerInfo.$element);
         this.updatePlayerAmount(currentPlayer, playerInfo);
     };
 
     this.initBlock = function () {
         this.blockList = [];
-        this.$ui.empty();
+        this.$element.empty();
         var $dic = $('<div></div>');
         $dic.attr('id', 'die');
-        this.$ui.append($dic);
+        this.$element.append($dic);
 
         for (var i = 0; i < 40; i++) {
-            var block = new Block(i, config.blockList[i]);
+            var block = new Block(i, Block.list[i]);
             this.blockList.push(block);
-            this.$ui.append(block.$ui);
+            this.$element.append(block.$element);
         }
     };
 
     this.initDie = function () {
         this.die = new Die();
-        this.$ui.append(this.die.$ui);
+        this.$element.append(this.die.$element);
     };
 
     this.turn = function () {
@@ -86,7 +86,7 @@ function Board() {
         var selector = '.modal-content';
 
         for (var i = 0; i < this.playerInfoList.length; i++) {
-            this.playerInfoList[i].$ui.find(selector).css({
+            this.playerInfoList[i].$element.find(selector).css({
                 borderWidth: 1,
                 borderColor: '#0003'
             });
@@ -94,22 +94,22 @@ function Board() {
 
         var playIndex = this.getPlayerIndex();
 
-        this.playerInfoList[playIndex].$ui.find(selector).css({
+        this.playerInfoList[playIndex].$element.find(selector).css({
             borderWidth: 5,
             borderColor: config.selectedColor
         });
 
         /** @type Player **/
         var currentPlayer = this.getCurrentPlayer();
-        var self = this;
+        var that = this;
 
-        this.playerInfoList[playIndex].$ui.transfer({
-            to: self.blockList[currentPlayer.position].$ui
-        })
+        this.playerInfoList[playIndex].$element.transfer({
+            to: that.blockList[currentPlayer.position].$element
+        });
 
-        currentPlayer.$ui.removeClass('live').addClass('turn');
+        currentPlayer.$element.removeClass('live').addClass('turn');
         setTimeout(function () {
-            currentPlayer.$ui.removeClass('turn').addClass('live');
+            currentPlayer.$element.removeClass('turn').addClass('live');
         }, 1000);
     };
 
@@ -136,8 +136,23 @@ function Board() {
         if (this.currentPlayerIsOnSpaceTravel()) {
             new Toast().showPickPlace(board.activePlayer.bind(this));
         } else {
-            new Toast().show('주사위를 던지세요.', board.activePlayer.bind(this));
+            /** @type Player **/
+            var currentPlayer = board.getCurrentPlayer();
+
+            if (currentPlayer.inIsland) {
+                if (currentPlayer.escapeTicketCount > 0) {
+                    board.activePlayer();
+                    new EscapeIsland().show();
+                    return;
+                }
+            }
+
+            this.showDieToast();
         }
+    };
+
+    this.showDieToast = function () {
+        new Toast().show('주사위를 던지세요.', board.activePlayer.bind(this));
     };
 
     this.getFundingPlace = function () {
@@ -150,107 +165,12 @@ function Board() {
         });
     };
 
-    this.append = function ($ui) {
-        this.$ui.append($ui);
+    this.append = function ($element) {
+        this.$element.append($element);
     };
 
     this.ready = function () {
-        var html = $('#startTemplate').html();
-        var playerHtml = $('#startPlayerTemplate').html();
-
-        var $modal = $(html);
-        var $playerList = $modal.find('.player-list');
-        var reset = function () {
-            $modal.find('.row').each(function (index) {
-                $(this).find('.player-index').text(index + 1);
-            });
-        };
-
-        config.playerList.forEach(function (player, index) {
-            var $player = $(playerHtml);
-            var $playerImage = $player.find('.player-image');
-            $playerImage.attr('src', util.getImageUrl(player.image));
-            $playerImage.attr('data-image', player.image);
-            $playerImage.addClass('live');
-            $playerList.append($player);
-        });
-
-        reset();
-
-        $modal.on('click', '.up-button', function () {
-            var index = $modal.find('.up-button').index($(this));
-
-            if (index === 0) {
-                return;
-            }
-
-            var $row = $(this).closest('.row');
-            $row.insertBefore($row.parent('').find('.row').eq(index - 1));
-            reset();
-        });
-
-        $modal.on('click', '.down-button', function () {
-            var index = $modal.find('.down-button').index($(this));
-
-            if (index === config.playerList.length - 1) {
-                return;
-            }
-
-            var $row = $(this).closest('.row');
-            $row.insertAfter($row.parent('').find('.row').eq(index - 1));
-            reset();
-
-        });
-
-        $modal.on('click', '.start-button', function () {
-            var $row = $modal.find('.player-row');
-
-            for (var i = 0; i < $row.length; i++) {
-                var $currentPlayer = $row.eq(i);
-                var $playerName = $currentPlayer.find('.player-name');
-
-                if ($playerName.val().trim() === '') {
-                    alert('이름을 입력하세요.');
-                    $playerName.focus();
-                    return;
-                }
-
-                config.playerList[i].image = $currentPlayer.find('.player-image').attr('data-image');
-                config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
-            }
-
-            var randomPlace = $modal.find('.random-place').is(':checked');
-
-            if (randomPlace) {
-                shuffle(config.blockList);
-
-                var startIndex = 0;
-
-                for (var i = 0; i < config.blockList.length; i++) {
-                    if (config.blockList[i].name === config.start) {
-                        startIndex = i;
-                        break;
-                    }
-                }
-
-                if (startIndex !== 0) {
-                    var startBlock = config.blockList[startIndex];
-                    var tempBlock = config.blockList[0];
-                    config.blockList[0] = startBlock;
-                    config.blockList[startIndex] = tempBlock;
-                }
-
-            }
-
-            board.start($modal.find('.minute-timer').val());
-            $modal.hideModal();
-        });
-
-        $modal.showModal().removeModalWhenClose();
-
-        setTimeout(function () {
-            $modal.find('.player-name').eq(0).focus();
-        }, 1000);
+        new Ready();
     };
 
     this.initTimer = function (minuteTimer) {
@@ -265,18 +185,8 @@ function Board() {
         board.readyNextTurn();
     };
 
-    this.win = function (winPlayer) {
-        var html = $('#winTemplate').html();
-        var $winModal = $(html);
-        $winModal.find('.player-image').attr('src', winPlayer.getImageUrl());
-        $winModal.find('.player-name').text(winPlayer.name + '이/가 이겼습니다.');
-        $winModal.showModal().removeModalWhenClose();
-        confetti.start();
-        board.playWinSound();
-
-        $winModal.find('.win-button').on('click', function () {
-            location.reload();
-        });
+    this.win = function (player) {
+        new Win(player);
     };
 }
 
