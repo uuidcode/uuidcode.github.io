@@ -2,3 +2,5 @@
 *.iml
 target
 atlassian-ide-plugin.xml
+node_modules
+.cache
