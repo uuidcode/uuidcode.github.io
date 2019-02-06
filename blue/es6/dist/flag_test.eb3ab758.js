@@ -4289,10 +4289,10 @@ module.exports = "/eg.207c49bd.png";
 module.exports = "/empty.397f4c8d.png";
 },{}],"../image/es.png":[function(require,module,exports) {
 module.exports = "/es.6687fe9b.png";
-},{}],"../image/fr.png":[function(require,module,exports) {
-module.exports = "/fr.39fde207.png";
 },{}],"../image/gb.png":[function(require,module,exports) {
 module.exports = "/gb.683f565b.png";
+},{}],"../image/fr.png":[function(require,module,exports) {
+module.exports = "/fr.39fde207.png";
 },{}],"../image/gr.png":[function(require,module,exports) {
 module.exports = "/gr.881da656.png";
 },{}],"../image/is.png":[function(require,module,exports) {
@@ -4347,8 +4347,8 @@ module.exports = {
   "eg": require("./eg.png"),
   "empty": require("./empty.png"),
   "es": require("./es.png"),
-  "fr": require("./fr.png"),
   "gb": require("./gb.png"),
+  "fr": require("./fr.png"),
   "gr": require("./gr.png"),
   "is": require("./is.png"),
   "it": require("./it.png"),
@@ -4369,7 +4369,7 @@ module.exports = {
   "us": require("./us.png"),
   "we": require("./we.png")
 };
-},{"./apeach.png":"../image/apeach.png","./ar.png":"../image/ar.png","./au.png":"../image/au.png","./br.png":"../image/br.png","./ca.png":"../image/ca.png","./cc.png":"../image/cc.png","./ch.png":"../image/ch.png","./cn.png":"../image/cn.png","./co.png":"../image/co.png","./de.png":"../image/de.png","./dk.png":"../image/dk.png","./eg.png":"../image/eg.png","./empty.png":"../image/empty.png","./es.png":"../image/es.png","./fr.png":"../image/fr.png","./gb.png":"../image/gb.png","./gr.png":"../image/gr.png","./is.png":"../image/is.png","./it.png":"../image/it.png","./key.png":"../image/key.png","./jp.png":"../image/jp.png","./kr.png":"../image/kr.png","./lion.png":"../image/lion.png","./muzi.png":"../image/muzi.png","./ph.png":"../image/ph.png","./pt.png":"../image/pt.png","./qu.png":"../image/qu.png","./se.png":"../image/se.png","./sg.png":"../image/sg.png","./st.png":"../image/st.png","./start.png":"../image/start.png","./tr.png":"../image/tr.png","./tw.png":"../image/tw.png","./us.png":"../image/us.png","./we.png":"../image/we.png"}],"src/flag.js":[function(require,module,exports) {
+},{"./apeach.png":"../image/apeach.png","./ar.png":"../image/ar.png","./au.png":"../image/au.png","./br.png":"../image/br.png","./ca.png":"../image/ca.png","./cc.png":"../image/cc.png","./ch.png":"../image/ch.png","./cn.png":"../image/cn.png","./co.png":"../image/co.png","./de.png":"../image/de.png","./dk.png":"../image/dk.png","./eg.png":"../image/eg.png","./empty.png":"../image/empty.png","./es.png":"../image/es.png","./gb.png":"../image/gb.png","./fr.png":"../image/fr.png","./gr.png":"../image/gr.png","./is.png":"../image/is.png","./it.png":"../image/it.png","./key.png":"../image/key.png","./jp.png":"../image/jp.png","./kr.png":"../image/kr.png","./lion.png":"../image/lion.png","./muzi.png":"../image/muzi.png","./ph.png":"../image/ph.png","./pt.png":"../image/pt.png","./qu.png":"../image/qu.png","./se.png":"../image/se.png","./sg.png":"../image/sg.png","./st.png":"../image/st.png","./start.png":"../image/start.png","./tr.png":"../image/tr.png","./tw.png":"../image/tw.png","./us.png":"../image/us.png","./we.png":"../image/we.png"}],"src/flag.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4477,7 +4477,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "10379" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "14820" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
