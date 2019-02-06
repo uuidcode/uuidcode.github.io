@@ -1,3 +1,6 @@
+import {$, config} from './config'
+import codes from '../../image/*.png'
+
 export class Flag {
     constructor() {
         this.code = null;
@@ -15,6 +18,7 @@ export class Flag {
 
     render() {
         this.$element = $('<div></div>');
+        const imageUrl = codes[this.code];
         this.$element.css({
             position: 'absolute',
             left: config.flag.left,
@@ -22,7 +26,7 @@ export class Flag {
             width: config.flag.width,
             height: config.flag.height,
             border: '1px solid black',
-            backgroundImage: `url(../image/${code}.png)`,
+            backgroundImage: `url(${imageUrl})`,
             backgroundSize: `${config.flag.width}px ${config.flag.height}px`
         });
 
