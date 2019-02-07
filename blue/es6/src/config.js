@@ -73,7 +73,7 @@ export const config = {
         width: 160,
         height: 20
     },
-    building: {
+    estate: {
         left: 0,
         top: 50,
         width: 160,
