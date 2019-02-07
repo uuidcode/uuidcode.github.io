@@ -12,7 +12,7 @@ export class Place {
         this.type = null;
         this.name = null;
         this.price = null;
-        this.estate = null;
+        this.fee = null;
         this.$element = null;
     }
 
@@ -110,8 +110,8 @@ export class Place {
             const owner = Owner.of();
             this.$element.append(owner.render());
 
-            this.estate = Estate.of();
-            this.$element.append(this.estate.render());
+            const estate = Estate.of();
+            this.$element.append(estate.render());
         } else if (this.type == config.goldenKey) {
             var key = new Key();
             this.$element.append(key.$element);
