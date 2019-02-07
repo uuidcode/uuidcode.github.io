@@ -23,7 +23,7 @@ export const config = {
     concorde: '콩코드여객기',
     island: '무인도',
     goldenKey: 'goldenKey',
-    block : {
+    place : {
         width: 160,
         height: 80
     },

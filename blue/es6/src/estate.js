@@ -7,7 +7,7 @@ export class Estate {
     }
 
     setPlace(place) {
-        this.place = palace;
+        this.place = place;
         return this;
     }
 
@@ -44,6 +44,10 @@ export class Estate {
         }
     }
 
+    static of() {
+        return new Estate();
+    }
+
     template() {
          return `
         <div>
@@ -52,6 +56,6 @@ export class Estate {
             <span class="badge badge-danger building-badge"></span>
             <span class="badge badge-light total-fees"></span>
         </div>
-        '
+        ';
     }
 }
