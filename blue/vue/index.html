@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vue Sample</title>
+</head>
+<body>
+<div id="app1">{{ message }}</div>
+<div id="app2">
+    <my-component></my-component>
+</div>
+<div id="app3">
+    <child-component v-bind:passed-data="message"></child-component>
+</div>
+
+<script src="https://unpkg.com/vue@2.3.3"></script>
+<script>
+    new Vue({
+        el: '#app1',
+        data: {
+            message: 'Hello Vue.js!'
+        }
+    });
+
+    Vue.component('my-component', {
+        template: '<div>A custom component!</div>'
+    });
+
+    new Vue({
+        el: '#app2'
+    });
+
+    Vue.component('child-component', {
+        props: ['passedData'],
+        template: '<p>{{ passedData }}</p>'
+    });
+
+    new Vue({
+        el: '#app3',
+        data: {
+            message: 'Hello Vue! from Parent Component',
+        }
+    });
+</script>
+</body>
+</html>
