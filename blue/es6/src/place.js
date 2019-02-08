@@ -13,7 +13,48 @@ export class Place {
         this.name = null;
         this.price = null;
         this.fee = null;
+        this.hotelPrice = null;
+        this.hotelFee = null;
+        this.buildingPrice = null;
+        this.buildingFee = null;
+        this.villaPrice = null;
+        this.villaFee = null;
         this.$element = null;
+    }
+
+    setVillaFee(villaFee) {
+        this.villaFee = villaFee;
+        return this;
+    }
+
+    setVillaPrice(villaPrice) {
+        this.villaPrice = villaPrice;
+        return this;
+    }
+
+    setBuildingFee(buildingFee) {
+        this.buildingFee = buildingFee;
+        return this;
+    }
+
+    setBuildingPrice(buildingPrice) {
+        this.buildingPrice = buildingPrice;
+        return this;
+    }
+
+    setHotelFee(hotelFee) {
+        this.hotelFee = hotelFee;
+        return this;
+    }
+
+    setHotelPrice(hotelPrice) {
+        this.hotelPrice = hotelPrice;
+        return this;
+    }
+
+    setFee(fee) {
+        this.fee = fee;
+        return this;
     }
 
     setPrice(price) {
@@ -120,4 +161,21 @@ export class Place {
             this.$element.append(special.$element);
         }
     };
+
+    template() {
+        return `
+        <div>
+            <div class="flag"></div>
+            <div class="price"></div>
+            <div class="owner"></div>
+            <div class="name"></div>
+            <div class="estate">
+                <span class="badge badge-primary hotel"></span>
+                <span class="badge badge-warning building"></span>
+                <span class="badge badge-danger villa"></span>
+                <span class="badge badge-light fee"></span>
+            </div>
+        </div>
+        `
+    }
 }
