@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vue Sample</title>
+</head>
+<body>
+<div id="sender-app">
+    <input v-model="text">
+
+    <button @click="sender">sender</button>
+    <template v-if="receiveText">
+    <div >#sender-app: I sent a message a {{receiveText}}</div>
+    </template>
+</div>
+<div id="receiver-app">
+    <template v-if="text">
+        <div>#receiver-app: {{text}}</div>
+    </template>
+</div>
+<script src="https://unpkg.com/vue@2.3.3"></script>
+<script>
+    var EventBus = new Vue();
+
+    var SenderApp = new Vue({
+        el: '#sender-app',
+        data() {
+            return {
+                text: '',
+                receiveText: ''
+            }
+        },
+        created() {
+            EventBus.$on('message', this.onReceive);
+        },
+        methods: {
+            sender() {
+                EventBus.$emit('message', this.text);
+                this.text = '';
+            },
+            onReceive(text) {
+                this.receiveText = text;
+            }
+        }
+    });
+
+    var ReceiverApp = new Vue({
+        el: '#receiver-app',
+        data() {
+            return {
+                text: ''
+            }
+        },
+        created() {
+            EventBus.$on('message', this.onReceive);
+        },
+        methods: {
+            onReceive(text) {
+                this.text = text;
+            }
+        }
+    });
+</script>
+</body>
+</html>
