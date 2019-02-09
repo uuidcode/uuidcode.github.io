@@ -39,7 +39,7 @@
 		var processor = cache.createProcessor();
 		processor.input = xmlFile;
 		processor.transform();
-		data.innerHTML = processor.output;
+		config.innerHTML = processor.output;
 	}
 	// separate transformation function for NSCP 7.1+ and Mozilla 1.4.1+ 
 	function transform(){
