@@ -1,15 +1,15 @@
 Vue.component('place', {
     props: ['index'],
     template: `
-        <div v-bind:style="placeStyle">
+        <div v-bind:style="placeStyle" class="place">
             <div class="flag" v-bind:style="flagStyle"></div>
             <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
             <div class="owner"></div>
             <div class="name" v-bind:style="nameStyle">{{place.name}}</div>
-            <div class="estate">
-                <span class="badge badge-primary hotel"></span>
-                <span class="badge badge-warning building"></span>
-                <span class="badge badge-danger villa"></span>
+            <div class="estate" v-bind:style="estateStyle">
+                <span class="badge badge-primary hotel">{{place.hotelCount}}</span>
+                <span class="badge badge-warning building">{{place.buildingCount}}</span>
+                <span class="badge badge-danger villa">{{place.villaCount}}</span>
                 <span class="badge badge-light fee"></span>
             </div>
         </div>
@@ -54,6 +54,14 @@ Vue.component('place', {
                 lineHeight: config.name.height + 'px',
                 textAlign: 'center',
                 fontWeight: 'bold'
+            },
+            estateStyle: {
+                position: 'absolute',
+                left: config.estate.left + 'px',
+                top: config.estate.top + 'px',
+                width: config.estate.width + 'px',
+                height: config.estate.height + 'px',
+                textAlign: 'center'
             }
         }
     },

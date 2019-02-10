@@ -30,7 +30,7 @@ var config = {
         width: 160,
         height: 20
     },
-    building: {
+    estate: {
         left: 0,
         top: 50,
         width: 160,
@@ -41,47 +41,31 @@ var config = {
             code: 'tw',
             name: taipei,
             price: '5만원',
-            displayFees: '2천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '25만원',
-                    displayFees: '25만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '15만원',
-                    displayFees: '9만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '5만원',
-                    displayFees: '3만원'
-                }
-            ]
+            fee: '2천원',
+            hotelPrice: '25만원',
+            hotelFee: '25만원',
+            hotelCount: 0,
+            buildingPrice: '15만원',
+            buildingFee: '9만원',
+            buildingCount: 0,
+            villaPrice: '5만원',
+            villaFee: '3만원',
+            villaCount: 0
         },
         {
             code: 'cn',
             name: beijing,
             price: '8만원',
-            displayFees: '4천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '25만원',
-                    displayFees: '45만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '15만원',
-                    displayFees: '18만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '5만원',
-                    displayFees: '6만원'
-                }
-            ]
+            fee: '4천원',
+            hotelPrice: '25만원',
+            hotelFee: '45만원',
+            hotelCount: 0,
+            buildingPrice: '15만원',
+            buildingFee: '18만원',
+            buildingCount: 0,
+            villaPrice: '5만원',
+            villaFee: '6만원',
+            villaCount: 0
         }
     ]
 };
