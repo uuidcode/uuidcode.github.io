@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/vue@2.3.3"></script>
 </head>
 <body>
-<div id="app">
+<div id="app" class="board">
     <place v-for="(place, index) in placeList"
            v-bind:index="index"
            :key="place.index">></place>
