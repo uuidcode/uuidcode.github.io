@@ -331,9 +331,7 @@ function Player(index) {
                 this.inIsland = true;
                 this.readyNextTurn();
             } else if (block.name === config.fundingPlace) {
-                if (!block.resetFunding()) {
-                    this.readyNextTurn();
-                }
+                block.resetFunding(true);
             } else if (block.name === config.fundingName) {
                 this.payForFund();
             } else if (block.name === config.start) {

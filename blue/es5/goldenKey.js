@@ -114,6 +114,32 @@ GoldenKey.income = function (name, amount, amountName) {
 
 GoldenKey.list = [
     {
+        name: config.worldTour,
+        description: '현재 위치에서 한바퀴 됩니다.<br>월급도 받고 사회복지기금접수처의 기금도 받습니다.',
+        run: function () {
+            board.getCurrentPlayer().goFast(40);
+
+            /** @type Block **/
+            var fundingPlace = board.getFundingPlace();
+            fundingPlace.resetFunding(false);
+        }
+    },
+    {
+        name: '우주여행 초청장',
+        description: function () {
+            var itemList = [];
+            itemList.push('우주항공국에서 우주여행 초청장이 왔습니다');
+            itemList.push('무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다');
+            itemList.push('출발지를 경유하면 월급을 받으세요');
+            return util.getDescriptionWithImageHtml(itemList, config.spaceTravel);
+        },
+        run: function () {
+            var currentPlayer = board.getCurrentPlayer();
+            currentPlayer.freeSpaceTravel = true;
+            currentPlayer.goFastToBlock(config.spaceTravel);
+        }
+    },
+    {
         name: '복권당첨',
         amount: '20만원',
         amountName: '당첨금',
@@ -209,21 +235,6 @@ GoldenKey.list = [
         }
     },
     {
-        name: '우주여행 초청장',
-        description: function () {
-            var itemList = [];
-            itemList.push('우주항공국에서 우주여행 초청장이 왔습니다');
-            itemList.push('무료이므로 콜롬비호아호 소유주에게 탑승료를 지불하지 않아도 됩니다');
-            itemList.push('출발지를 경유하면 월급을 받으세요');
-            return util.getDescriptionWithImageHtml(itemList, config.spaceTravel);
-        },
-        run: function () {
-            var currentPlayer = board.getCurrentPlayer();
-            currentPlayer.freeSpaceTravel = true;
-            currentPlayer.goFastToBlock(config.spaceTravel);
-        }
-    },
-    {
         name: '이사',
         description: '뒤로 3칸 가세요.',
         run: function () {
@@ -285,17 +296,6 @@ GoldenKey.list = [
         run: function () {
             board.getCurrentPlayer().payWithTitle(50000, '건강진단금');
             return false;
-        }
-    },
-    {
-        name: config.worldTour,
-        description: '현재 위치에서 한바퀴 됩니다.<br>월급도 받고 사회복지기금접수처의 기금도 받습니다.',
-        run: function () {
-            board.getCurrentPlayer().goFast(40);
-
-            /** @type Block **/
-            var fundingPlace = board.getFundingPlace();
-            fundingPlace.resetFunding();
         }
     },
     {

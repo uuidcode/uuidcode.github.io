@@ -194,18 +194,29 @@ function Block(index, data) {
         this.updateFundingAmount();
     };
 
-    this.resetFunding = function () {
+    this.resetFunding = function (nextTurn) {
+        /** @type Player **/
+        var currentPlayer = board.getCurrentPlayer();
+
         if (this.fundingCount > 0) {
             var message = config.fundingName + ' ' + util.toDisplayAmount(this.amount) + '을 받았습니다.';
-            board.getCurrentPlayer().income(this.amount);
+            currentPlayer.income(this.amount);
             this.fundingCount = 0;
             this.amount = this.getFundingAmount();
             this.updateFundingAmount();
-            new Toast().showAndReadyToNextTurn(message);
-            return true;
+
+            if (nextTurn) {
+                new Toast().showAndReadyToNextTurn(message);
+            } else {
+                new Toast().show(message);
+            }
+
+            return;
         }
 
-        return false;
+        if (nextTurn) {
+            currentPlayer.readyNextTurn();
+        }
     };
 
     this.getFundingAmount = function () {
