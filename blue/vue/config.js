@@ -36,8 +36,14 @@ var config = {
         width: 160,
         height: 30
     },
+    goldenKey: {
+        top: 5,
+        width: 60,
+        height: 60
+    },
     placeList: [
         {
+            type: 'normal',
             code: 'tw',
             name: taipei,
             price: '5만원',
@@ -53,6 +59,10 @@ var config = {
             villaCount: 0
         },
         {
+            type: 'goldenKey'
+        },
+        {
+            type: 'normal',
             code: 'cn',
             name: beijing,
             price: '8만원',

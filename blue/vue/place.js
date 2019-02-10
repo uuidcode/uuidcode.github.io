@@ -2,16 +2,21 @@ Vue.component('place', {
     props: ['index'],
     template: `
         <div v-bind:style="placeStyle" class="place">
-            <div class="flag" v-bind:style="flagStyle"></div>
-            <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
-            <div class="owner"></div>
-            <div class="name" v-bind:style="nameStyle">{{place.name}}</div>
-            <div class="estate" v-bind:style="estateStyle">
-                <span class="badge badge-primary hotel">{{place.hotelCount}}</span>
-                <span class="badge badge-warning building">{{place.buildingCount}}</span>
-                <span class="badge badge-danger villa">{{place.villaCount}}</span>
-                <span class="badge badge-light fee"></span>
-            </div>
+            <template v-if="place.type === 'normal'">
+                <div class="flag" v-bind:style="flagStyle"></div>
+                <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
+                <div class="owner"></div>
+                <div class="name" v-bind:style="nameStyle">{{place.name}}</div>
+                <div class="estate" v-bind:style="estateStyle">
+                    <span class="badge badge-primary hotel">{{place.hotelCount}}</span>
+                    <span class="badge badge-warning building">{{place.buildingCount}}</span>
+                    <span class="badge badge-danger villa">{{place.villaCount}}</span>
+                    <span class="badge badge-light fee"></span>
+                </div>
+            </template>
+            <template v-else-if="place.type === 'goldenKey'">
+                <div v-bind:style="goldenKeyStyle"></div>
+            <template>
         </div>
     `,
     data: function () {
@@ -62,6 +67,15 @@ Vue.component('place', {
                 width: config.estate.width + 'px',
                 height: config.estate.height + 'px',
                 textAlign: 'center'
+            },
+            goldenKeyStyle: {
+                position: 'absolute',
+                left: ((config.place.width - config.goldenKey.width) / 2) + 'px',
+                top: config.goldenKey.top + 'px',
+                width: config.goldenKey.width + 'px',
+                height: config.goldenKey.height + 'px',
+                backgroundImage: 'url(../image/key.png)',
+                backgroundSize: `${config.goldenKey.width}px ${config.goldenKey.height}px`
             }
         }
     },
@@ -73,7 +87,6 @@ Vue.component('place', {
         onReceive(command) {
             if (command === 'init-place') {
                 this.place = config.placeList[this.index];
-
             }
         },
         getCode() {
