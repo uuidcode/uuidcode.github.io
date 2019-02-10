@@ -1,5 +1,20 @@
-var taipei =  '타이베이';
+var start = '출발';
+var fundingName =  '사회복지기금';
+var seoul =  '서울';
+var busan =  '부산';
+var jeju =  '제주';
 var beijing =  '베이징';
+var taipei =  '타이베이';
+var fundingPlace =  '사회복지기금접수처';
+var spaceTravel =  '우주여행';
+var queenElizabeth =  '퀸 엘리자베스호';
+var worldTour =  '세계일주 초대권';
+var sellHalfPrice =  '반액대매출';
+var ticket =  '우대권';
+var columbia =  '컬럼비아호';
+var concorde =  '콩코드여객기';
+var island =  '무인도';
+var goldenKey =  'goldenKey';
 
 var config = {
     place : {
@@ -42,6 +57,11 @@ var config = {
         height: 60
     },
     placeList: [
+        {
+            type: 'special',
+            code: 'start',
+            name: start
+        },
         {
             type: 'normal',
             code: 'tw',
@@ -96,11 +116,12 @@ var config = {
         {
             type: 'special',
             code: 'kr',
-            name: config.jeju,
+            name: jeju,
             price: '20만원',
             fee: '30만원'
         },
         {
+            type: 'normal',
             code: 'sg',
             name: '싱가포르',
             price: '10만원',
@@ -119,6 +140,7 @@ var config = {
             type: 'goldenKey'
         },
         {
+            type: 'normal',
             code: 'eg',
             name: '카이로',
             price: '10만원',
@@ -134,6 +156,7 @@ var config = {
             villaCount: 0
         },
         {
+            type: 'normal',
             code: 'tr',
             name: '이스탄불',
             price: '12만원',
@@ -154,6 +177,7 @@ var config = {
             name: '무인도'
         },
         {
+            type: 'normal',
             code: 'gr',
             name: '아테네',
             price: '14만원',
@@ -172,6 +196,7 @@ var config = {
             type: 'goldenKey'
         },
         {
+            type: 'normal',
             code: 'dk',
             name: '코펜하겐',
             price: '16만원',
@@ -187,6 +212,7 @@ var config = {
             villaCount: 0
         },
         {
+            type: 'normal',
             code: 'se',
             name: '스톡홀름',
             price: '16만원',
@@ -203,11 +229,12 @@ var config = {
         },
         {
             code: 'cc',
-            name: config.concorde,
+            name: concorde,
             price: '20만원',
             fee: '30만원'
         },
         {
+            type: 'normal',
             code: 'ch',
             name: '베른',
             price: '18만원',
@@ -223,9 +250,10 @@ var config = {
             villaCount: 0
         },
         {
-            type: config.goldenKey
+            type: goldenKey
         },
         {
+            type: 'normal',
             code: 'de',
             name: '베를린',
             price: '18만원',
@@ -249,6 +277,7 @@ var config = {
             ]
         },
         {
+            type: 'normal',
             code: 'ca',
             name: '오타와',
             price: '20만원',
@@ -273,10 +302,11 @@ var config = {
         },
         {
             code: 'we',
-            name: config.fundingPlace,
+            name: fundingPlace,
             price: '0원'
         },
         {
+            type: 'normal',
             code: 'ar',
             name: '부에노스아이레스',
             price: '22만원',
@@ -300,9 +330,10 @@ var config = {
             ]
         },
         {
-            type: config.goldenKey
+            type: goldenKey
         },
         {
+            type: 'normal',
             code: 'br',
             name: '상파울루',
             price: '24만원',
@@ -326,6 +357,7 @@ var config = {
             ]
         },
         {
+            type: 'normal',
             code: 'au',
             name: '시드니',
             price: '24만원',
@@ -350,11 +382,12 @@ var config = {
         },
         {
             code: 'kr',
-            name: config.busan,
+            name: busan,
             price: '50만원',
             fee: '60만원'
         },
         {
+            type: 'normal',
             code: 'us',
             name: '하와이',
             price: '26만원',
@@ -378,6 +411,7 @@ var config = {
             ]
         },
         {
+            type: 'normal',
             code: 'pt',
             name: '리스본',
             price: '26만원',
@@ -402,11 +436,12 @@ var config = {
         },
         {
             code: 'qu',
-            name: config.queenElizabeth,
+            name: queenElizabeth,
             price: '30만원',
             fee: '25만원'
         },
         {
+            type: 'normal',
             code: 'es',
             name: '마드리드',
             price: '28만원',
@@ -432,10 +467,11 @@ var config = {
         {
             code: 'st',
             type: 'special',
-            name: config.spaceTravel,
+            name: spaceTravel,
             displayTravelFees: '20만원'
         },
         {
+            type: 'normal',
             code: 'jp',
             name: '도쿄',
             price: '30만원',
@@ -460,11 +496,12 @@ var config = {
         },
         {
             code: 'co',
-            name: config.columbia,
+            name: columbia,
             price: '45만원',
             fee: '40만원'
         },
         {
+            type: 'normal',
             code: 'fr',
             name: '파리',
             price: '32만원',
@@ -488,6 +525,7 @@ var config = {
             ]
         },
         {
+            type: 'normal',
             code: 'it',
             name: '로마',
             price: '32만원',
@@ -511,9 +549,10 @@ var config = {
             ]
         },
         {
-            type: config.goldenKey
+            type: goldenKey
         },
         {
+            type: 'normal',
             code: 'gb',
             name: '런던',
             price: '35만원',
@@ -537,6 +576,7 @@ var config = {
             ]
         },
         {
+            type: 'normal',
             code: 'us',
             name: '뉴욕',
             price: '35만원',
@@ -562,11 +602,11 @@ var config = {
         {
             type: 'special',
             code: 'we',
-            name: config.fundingName
+            name: fundingName
         },
         {
             code: 'kr',
-            name: config.seoul,
+            name: seoul,
             price: '100만원',
             fee: '200만원'
         }

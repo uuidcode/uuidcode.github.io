@@ -2,7 +2,7 @@ Vue.component('place', {
     props: ['index'],
     template: `
         <div v-bind:style="placeStyle" class="place">
-            <template v-if="place.type === 'normal'">
+            <template v-if="isNormalOrSpecial">
                 <div class="flag" v-bind:style="flagStyle"></div>
                 <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
                 <div class="owner"></div>
@@ -14,9 +14,7 @@ Vue.component('place', {
                     <span class="badge badge-light fee"></span>
                 </div>
             </template>
-            <template v-else-if="place.type === 'goldenKey'">
-                <div v-bind:style="goldenKeyStyle"></div>
-            <template>
+            <golden-key v-else-if="isGoldenKey"></golden-key>
         </div>
     `,
     data: function () {
@@ -66,7 +64,8 @@ Vue.component('place', {
                 top: config.estate.top + 'px',
                 width: config.estate.width + 'px',
                 height: config.estate.height + 'px',
-                textAlign: 'center'
+                textAlign: 'center',
+                display: this.getEstateDisplay()
             },
             goldenKeyStyle: {
                 position: 'absolute',
@@ -83,11 +82,30 @@ Vue.component('place', {
         EventBus.$on('message', this.onReceive);
         EventBus.$emit('message', 'init-place');
     },
+    computed: {
+        isNormalOrSpecial() {
+            return this.place.type === 'normal' || this.place.type === 'special';
+        },
+        isGoldenKey() {
+            return this.place.type === 'goldenKey';
+        }
+    },
     methods: {
         onReceive(command) {
             if (command === 'init-place') {
                 this.place = config.placeList[this.index];
             }
+        },
+        getEstateDisplay() {
+            if (this.place == null) {
+                return 'block';
+            }
+
+            if (this.place.type === 'normal') {
+                return 'block';
+            }
+
+            return 'none';
         },
         getCode() {
             return config.placeList[this.index].code;
@@ -98,9 +116,9 @@ Vue.component('place', {
             if (this.index >= 0 && this.index <= 10) {
                 return this.index * config.place.width;
             } else if (this.index > 10 && this.index <= 20) {
-                return 10 * config.block.width;
+                return 10 * config.place.width;
             } else if (this.index > 20 && this.index <= 30) {
-                return (30 - this.index) * config.block.width;
+                return (30 - this.index) * config.place.width;
             }
 
             return left;
@@ -109,11 +127,11 @@ Vue.component('place', {
             var top = 0;
 
             if (this.index > 10 && this.index <= 20) {
-                return (this.index - 10) * config.block.height;
+                return (this.index - 10) * config.place.height;
             } else if (this.index > 20 && this.index <= 30) {
-                return 10 * config.block.height;
+                return 10 * config.place.height;
             } else if (this.index > 30) {
-                return (40 - this.index) * config.block.height;
+                return (40 - this.index) * config.place.height;
             }
 
             return top;
