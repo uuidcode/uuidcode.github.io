@@ -118,7 +118,7 @@ var config = {
             villaCount: 0,
         },
         {
-            type: 'special',
+            type: 'landmark',
             code: 'kr',
             name: jeju,
             price: '20만원',
@@ -232,6 +232,7 @@ var config = {
             villaCount: 0
         },
         {
+            type: 'landmark',
             code: 'cc',
             name: concorde,
             price: '20만원',
@@ -262,23 +263,15 @@ var config = {
             name: '베를린',
             price: '18만원',
             fee: '1만 4천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '50만원',
-                    fee: '95만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '30만원',
-                    fee: '55만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '10만원',
-                    fee: '20만원'
-                }
-            ]
+            hotelPrice: '50만원',
+            hotelFee: '95만원',
+            hotelCount: 0,
+            buildingPrice: '30만원',
+            buildingFee: '55만원',
+            buildingCount: 0,
+            villaPrice: '10만원',
+            villaFee: '20만원',
+            villaCount: 0
         },
         {
             type: 'normal',
@@ -286,25 +279,18 @@ var config = {
             name: '오타와',
             price: '20만원',
             fee: '1만 6천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '50만원',
-                    fee: '100만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '30만원',
-                    fee: '60만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '10만원',
-                    fee: '22만원'
-                }
-            ]
+            hotelPrice: '50만원',
+            hotelFee: '100만원',
+            hotelCount: 0,
+            buildingPrice: '30만원',
+            buildingFee: '60만원',
+            buildingCount: 0,
+            villaPrice: '10만원',
+            villaFee: '22만원',
+            villaCount: 0
         },
         {
+            type: 'landmark',
             code: 'we',
             name: fundingPlace,
             price: '0원'
@@ -315,23 +301,15 @@ var config = {
             name: '부에노스아이레스',
             price: '22만원',
             fee: '1만 8천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '50만원',
-                    fee: '105만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '45만원',
-                    fee: '70만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '15만원',
-                    fee: '25만원'
-                }
-            ]
+            hotelPrice: '50만원',
+            hotelFee: '105만원',
+            hotelCount: 0,
+            buildingPrice: '45만원',
+            buildingFee: '70만원',
+            buildingCount: 0,
+            villaPrice: '15만원',
+            villaFee: '25만원',
+            villaCount: 0
         },
         {
             type: goldenKey
@@ -341,50 +319,35 @@ var config = {
             code: 'br',
             name: '상파울루',
             price: '24만원',
-            fee: '2만원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '75만원',
-                    fee: '110만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '45만원',
-                    fee: '75만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '15만원',
-                    fee: '30만원'
-                }
-            ]
+            fee: '2만',
+            hotelPrice: '75만원',
+            hotelFee: '110만원',
+            hotelCount: 0,
+            buildingPrice: '45만원',
+            buildingFee: '75만원',
+            buildingCount: 0,
+            villaPrice: '15만원',
+            villaFee: '30만원',
+            villaCount: 0
         },
         {
             type: 'normal',
             code: 'au',
             name: '시드니',
             price: '24만원',
-            fee: '2만원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '75만원',
-                    fee: '110만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '45만원',
-                    fee: '75만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '15만원',
-                    fee: '30만원'
-                }
-            ]
+            fee: '2만',
+            hotelPrice: '75만원',
+            hotelFee: '110만원',
+            hotelCount: 0,
+            buildingPrice: '45만원',
+            buildingFee: '75만원',
+            buildingCount: 0,
+            villaPrice: '15만원',
+            villaFee: '30만원',
+            villaCount: 0
         },
         {
+            type: 'landmark',
             code: 'kr',
             name: busan,
             price: '50만원',
@@ -396,23 +359,15 @@ var config = {
             name: '하와이',
             price: '26만원',
             fee: '2만 2천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '75만원',
-                    fee: '115만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '45만원',
-                    fee: '80만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '15만원',
-                    fee: '33만원'
-                }
-            ]
+            hotelPrice: '75만원',
+            hotelFee: '115만원',
+            hotelCount: 0,
+            buildingPrice: '45만원',
+            buildingFee: '80만원',
+            buildingCount: 0,
+            villaPrice: '15만원',
+            villaFee: '33만원',
+            villaCount: 0
         },
         {
             type: 'normal',
@@ -420,25 +375,18 @@ var config = {
             name: '리스본',
             price: '26만원',
             fee: '2만 2천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '75만원',
-                    fee: '115만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '45만원',
-                    fee: '80만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '15만원',
-                    fee: '33만원'
-                }
-            ]
+            hotelPrice: '75만원',
+            hotelFee: '115만원',
+            hotelCount: 0,
+            buildingPrice: '45만원',
+            buildingFee: '80만원',
+            buildingCount: 0,
+            villaPrice: '15만원',
+            villaFee: '33만원',
+            villaCount: 0
         },
         {
+            type: 'landmark',
             code: 'qu',
             name: queenElizabeth,
             price: '30만원',
@@ -450,29 +398,21 @@ var config = {
             name: '마드리드',
             price: '28만원',
             fee: '2만 4천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '75만원',
-                    fee: '120만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '45만원',
-                    fee: '85만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '15만원',
-                    fee: '36만원'
-                }
-            ]
+            hotelPrice: '75만원',
+            hotelFee: '120만원',
+            hotelCount: 0,
+            buildingPrice: '45만원',
+            buildingFee: '85만원',
+            buildingCount: 0,
+            villaPrice: '15만원',
+            villaFee: '36만원',
+            villaCount: 0
         },
         {
-            code: 'st',
             type: 'special',
+            code: 'st',
             name: spaceTravel,
-            displayTravelFees: '20만원'
+            fee: '20만원'
         },
         {
             type: 'normal',
@@ -480,25 +420,18 @@ var config = {
             name: '도쿄',
             price: '30만원',
             fee: '2만 4천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '100만원',
-                    fee: '127만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '60만원',
-                    fee: '90만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '20만원',
-                    fee: '39만원'
-                }
-            ]
+            hotelPrice: '100만원',
+            hotelFee: '127만원',
+            hotelCount: 0,
+            buildingPrice: '60만원',
+            buildingFee: '90만원',
+            buildingCount: 0,
+            villaPrice: '20만원',
+            villaFee: '39만원',
+            villaCount: 0
         },
         {
+            type: 'special',
             code: 'co',
             name: columbia,
             price: '45만원',
@@ -510,23 +443,15 @@ var config = {
             name: '파리',
             price: '32만원',
             fee: '2만 8천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '100만원',
-                    fee: '140만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '60만원',
-                    fee: '100만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '20만원',
-                    fee: '45만원'
-                }
-            ]
+            hotelPrice: '100만원',
+            hotelFee: '140만원',
+            hotelCount: 0,
+            buildingPrice: '60만원',
+            buildingFee: '100만원',
+            buildingCount: 0,
+            villaPrice: '20만원',
+            villaFee: '45만원',
+            villaCount: 0
         },
         {
             type: 'normal',
@@ -534,23 +459,15 @@ var config = {
             name: '로마',
             price: '32만원',
             fee: '2만 8천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '100만원',
-                    fee: '140만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '60만원',
-                    fee: '100만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '20만원',
-                    fee: '45만원'
-                }
-            ]
+            hotelPrice: '100만원',
+            hotelFee: '140만원',
+            hotelCount: 0,
+            buildingPrice: '60만원',
+            buildingFee: '100만원',
+            buildingCount: 0,
+            villaPrice: '20만원',
+            villaFee: '45만원',
+            villaCount: 0
         },
         {
             type: goldenKey
@@ -561,47 +478,30 @@ var config = {
             name: '런던',
             price: '35만원',
             fee: '3만 5천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '100만원',
-                    fee: '150만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '60만원',
-                    fee: '110만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '20만원',
-                    fee: '50만원'
-                }
-            ]
+            hotelPrice: '100만원',
+            hotelFee: '150만원',
+            hotelCount: 0,
+            buildingPrice: '60만원',
+            buildingFee: '110만원',
+            buildingCount: 0,
+            villaPrice: '20만원',
+            villaFee: '50만원',
+            villaCount: 0
         },
         {
             type: 'normal',
             code: 'us',
             name: '뉴욕',
-            price: '35만원',
             fee: '3만 5천원',
-            buildingList: [
-                {
-                    name: '호텔',
-                    displayPrice: '100만원',
-                    fee: '150만원'
-                },
-                {
-                    name: '빌딩',
-                    displayPrice: '60만원',
-                    fee: '110만원'
-                },
-                {
-                    name: '별장',
-                    displayPrice: '20만원',
-                    fee: '50만원'
-                }
-            ]
+            hotelPrice: '100만원',
+            hotelFee: '150만원',
+            hotelCount: 0,
+            buildingPrice: '60만원',
+            buildingFee: '110만원',
+            buildingCount: 0,
+            villaPrice: '20만원',
+            villaFee: '50만원',
+            villaCount: 0
         },
         {
             type: 'special',
@@ -609,6 +509,7 @@ var config = {
             name: fundingName
         },
         {
+            type: 'landmark',
             code: 'kr',
             name: seoul,
             price: '100만원',

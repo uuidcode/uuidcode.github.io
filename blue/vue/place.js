@@ -2,20 +2,20 @@ Vue.component('place', {
     props: ['index'],
     template: `
         <div v-bind:style="placeStyle" class="place">
-            <template v-if="isNormal">
+            <template v-if="isNormalOrLandmark()">
                 <div class="flag" v-bind:style="flagStyle"></div>
                 <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
                 <div class="owner"></div>
                 <div class="name" v-bind:style="nameStyle">{{place.name}}</div>
-                <div class="estate" v-bind:style="estateStyle">
+                <div class="estate" v-bind:style="getEstateStyle()">
                     <span class="badge badge-primary hotel">{{place.hotelCount}}</span>
                     <span class="badge badge-warning building">{{place.buildingCount}}</span>
                     <span class="badge badge-danger villa">{{place.villaCount}}</span>
                     <span class="badge badge-light fee"></span>
                 </div>
             </template>
-            <golden-key v-else-if="isGoldenKey"></golden-key>
-            <specail v-else-if="isSpecial" v-bind:index="index"></specail>
+            <golden-key v-else-if="isGoldenKey()" v-bind:index="index"></golden-key>
+            <special v-else-if="isSpecial()" v-bind:index="index"></special>
         </div>
     `,
     data: function () {
@@ -59,18 +59,12 @@ Vue.component('place', {
                 textAlign: 'center',
                 fontWeight: 'bold'
             },
-            estateStyle: {
-                position: 'absolute',
-                left: config.estate.left + 'px',
-                top: config.estate.top + 'px',
-                width: config.estate.width + 'px',
-                height: config.estate.height + 'px',
-                textAlign: 'center',
-                display: this.getEstateDisplay()
-            }
         }
     },
-    computed: {
+    methods: {
+        isLandmark() {
+            return this.place.type === 'landmark';
+        },
         isNormal() {
             return this.place.type === 'normal';
         },
@@ -79,11 +73,12 @@ Vue.component('place', {
         },
         isSpecial() {
             return this.place.type === 'special';
-        }
-    },
-    methods: {
+        },
+        isNormalOrLandmark() {
+            return this.isNormal() || this.isLandmark();
+        },
         getEstateDisplay() {
-            if (this.place.type === 'normal') {
+            if (this.isNormal()) {
                 return 'block';
             }
 
@@ -117,6 +112,17 @@ Vue.component('place', {
             }
 
             return top;
+        },
+        getEstateStyle() {
+            return {
+                position: 'absolute',
+                left: config.estate.left + 'px',
+                top: config.estate.top + 'px',
+                width: config.estate.width + 'px',
+                height: config.estate.height + 'px',
+                textAlign: 'center',
+                display: this.getEstateDisplay()
+            }
         }
     }
 });

@@ -1,28 +1,37 @@
-Vue.component('golden-key', {
+Vue.component('special', {
     props: ['index'],
     template: `
-        <div v-bind:style="specialStyle">
-            <span v-bind:style="nameStyle">{{name}}</span>
+        <div v-bind:style="getSpecialStyle()">
+            <span v-bind:style="nameStyle">{{place.name}}</span>
         </div>
     `,
     data: function () {
         return {
             place: config.placeList[this.index],
-            specialStyle: {
+            nameStyle: {
+                backgroundColor: config.selectedColor
+            }
+        }
+    },
+    methods: {
+        getBackgroundImage() {
+            console.log('>>> this.index', this.index);
+            console.log('>>> this.place.code', this.place.code);
+            return `url(../image/${this.place.code}.png)`;
+        },
+        getSpecialStyle() {
+            return {
                 position: 'absolute',
                 left: 0,
                 top: 0,
                 width: config.place.width + 'px',
                 height: config.place.height + 'px',
-                lineHeight: config.block.height + 'px',
+                lineHeight: config.place.height + 'px',
                 textAlign: 'center',
                 fontWeight: 'bold',
-                backgroundImage: `url(../image/${this.place.code}.png)`,
-                backgroundSize: `${config.block.width}px ${config.block.height}px`,
+                backgroundImage: this.getBackgroundImage(),
+                backgroundSize: `${config.place.width}px ${config.place.height}px`,
                 color: 'white'
-            },
-            nameStyle: {
-                backgroundColor: config.selectedColor
             }
         }
     }
