@@ -2,7 +2,7 @@ Vue.component('place', {
     props: ['index'],
     template: `
         <div v-bind:style="placeStyle" class="place">
-            <template v-if="isNormalOrSpecial">
+            <template v-if="isNormal">
                 <div class="flag" v-bind:style="flagStyle"></div>
                 <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
                 <div class="owner"></div>
@@ -67,15 +67,6 @@ Vue.component('place', {
                 height: config.estate.height + 'px',
                 textAlign: 'center',
                 display: this.getEstateDisplay()
-            },
-            goldenKeyStyle: {
-                position: 'absolute',
-                left: ((config.place.width - config.goldenKey.width) / 2) + 'px',
-                top: config.goldenKey.top + 'px',
-                width: config.goldenKey.width + 'px',
-                height: config.goldenKey.height + 'px',
-                backgroundImage: 'url(../image/key.png)',
-                backgroundSize: `${config.goldenKey.width}px ${config.goldenKey.height}px`
             }
         }
     },
@@ -84,8 +75,8 @@ Vue.component('place', {
         EventBus.$emit('message', 'init-place');
     },
     computed: {
-        isNormalOrSpecial() {
-            return this.place.type === 'normal' || this.place.type === 'special';
+        isNormal() {
+            return this.place.type === 'normal';
         },
         isGoldenKey() {
             return this.place.type === 'goldenKey';
