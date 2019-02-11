@@ -20,7 +20,7 @@ Vue.component('place', {
     `,
     data: function () {
         return {
-            place: {},
+            place: config.placeList[this.index],
             placeStyle: {
                 position: 'absolute',
                 left: this.getLeft() + 'px',
@@ -70,10 +70,6 @@ Vue.component('place', {
             }
         }
     },
-    created() {
-        EventBus.$on('message', this.onReceive);
-        EventBus.$emit('message', 'init-place');
-    },
     computed: {
         isNormal() {
             return this.place.type === 'normal';
@@ -86,16 +82,7 @@ Vue.component('place', {
         }
     },
     methods: {
-        onReceive(command) {
-            if (command === 'init-place') {
-                this.place = config.placeList[this.index];
-            }
-        },
         getEstateDisplay() {
-            if (this.place == null) {
-                return 'block';
-            }
-
             if (this.place.type === 'normal') {
                 return 'block';
             }
