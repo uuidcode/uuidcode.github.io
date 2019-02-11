@@ -1,3 +1,5 @@
+var selectedColor = 'rgba(0, 123, 255, 0.5)';
+var fundAmount = 150000;
 var start = '출발';
 var fundingName =  '사회복지기금';
 var seoul =  '서울';
@@ -17,6 +19,8 @@ var island =  '무인도';
 var goldenKey =  'goldenKey';
 
 var config = {
+    selectedColor: selectedColor,
+    fundAmount: fundAmount,
     place : {
         width: 160,
         height: 80

@@ -15,6 +15,7 @@ Vue.component('place', {
                 </div>
             </template>
             <golden-key v-else-if="isGoldenKey"></golden-key>
+            <specail v-else-if="isSpecial" v-bind:index="index"></specail>
         </div>
     `,
     data: function () {
@@ -88,6 +89,9 @@ Vue.component('place', {
         },
         isGoldenKey() {
             return this.place.type === 'goldenKey';
+        },
+        isSpecial() {
+            return this.place.type === 'special';
         }
     },
     methods: {

@@ -12,7 +12,6 @@ var board = new Vue({
     methods: {
         onReceive(command) {
             if (command === 'init-board') {
-                console.log('>>> data.placeList.length', config.placeList.length);
                 this.placeList = config.placeList;
             }
         }
