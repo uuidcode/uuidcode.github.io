@@ -15,8 +15,6 @@ Vue.component('special', {
     },
     methods: {
         getBackgroundImage() {
-            console.log('>>> this.index', this.index);
-            console.log('>>> this.place.code', this.place.code);
             return `url(../image/${this.place.code}.png)`;
         },
         getSpecialStyle() {

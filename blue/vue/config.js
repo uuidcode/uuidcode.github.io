@@ -60,6 +60,11 @@ var config = {
         width: 60,
         height: 60
     },
+    die: {
+        width: 700,
+        height: 650,
+        margin: 10
+    },
     placeList: [
         {
             type: 'special',
