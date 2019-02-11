@@ -7,7 +7,7 @@ Vue.component('golden-key', {
     `,
     data: function () {
         return {
-            place: {},
+            place: config.placeList[this.index],
             specialStyle: {
                 position: 'absolute',
                 left: 0,
@@ -17,23 +17,12 @@ Vue.component('golden-key', {
                 lineHeight: config.block.height + 'px',
                 textAlign: 'center',
                 fontWeight: 'bold',
-                backgroundImage: `url(../image/${this.code}.png)`,
+                backgroundImage: `url(../image/${this.place.code}.png)`,
                 backgroundSize: `${config.block.width}px ${config.block.height}px`,
                 color: 'white'
             },
             nameStyle: {
                 backgroundColor: config.selectedColor
-            }
-        }
-    },
-    created() {
-        EventBus.$on('message', this.onReceive);
-        EventBus.$emit('message', 'init-special');
-    },
-    methods: {
-        onReceive(command) {
-            if (command === 'init-special') {
-                this.place = config.placeList[this.index];
             }
         }
     }
