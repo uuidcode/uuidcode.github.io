@@ -11,10 +11,10 @@
 <body>
 <div id="app" class="board">
     <die></die>
-    <place v-for="(place, index) in placeList"
+    <place-container v-for="(place, index) in placeList"
            v-bind:index="index"
            :key="place.index">
-    </place>
+    </place-container>
 </div>
 <script src="../lib/jquery-3.3.1.min.js"></script>
 <script src="../lib/vue.2.3.3.js"></script>
@@ -27,6 +27,7 @@
 <script src="goldenKey.js"></script>
 <script src="special.js"></script>
 <script src="place.js"></script>
+<script src="place-container.js"></script>
 <script src="die.js"></script>
 <script src="board.js"></script>
 </body>

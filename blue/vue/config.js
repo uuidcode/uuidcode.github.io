@@ -72,7 +72,7 @@ var config = {
             name: start
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'tw',
             name: taipei,
             price: '5만원',
@@ -91,7 +91,7 @@ var config = {
             type: 'goldenKey'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'cn',
             name: beijing,
             price: '8만원',
@@ -107,7 +107,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'ph',
             name: '마닐라',
             price: '8만원',
@@ -130,7 +130,7 @@ var config = {
             fee: '30만원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'sg',
             name: '싱가포르',
             price: '10만원',
@@ -149,7 +149,7 @@ var config = {
             type: 'goldenKey'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'eg',
             name: '카이로',
             price: '10만원',
@@ -165,7 +165,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'tr',
             name: '이스탄불',
             price: '12만원',
@@ -186,7 +186,7 @@ var config = {
             name: '무인도'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'gr',
             name: '아테네',
             price: '14만원',
@@ -205,7 +205,7 @@ var config = {
             type: 'goldenKey'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'dk',
             name: '코펜하겐',
             price: '16만원',
@@ -221,7 +221,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'se',
             name: '스톡홀름',
             price: '16만원',
@@ -244,7 +244,7 @@ var config = {
             fee: '30만원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'ch',
             name: '베른',
             price: '18만원',
@@ -263,7 +263,7 @@ var config = {
             type: goldenKey
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'de',
             name: '베를린',
             price: '18만원',
@@ -279,7 +279,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'ca',
             name: '오타와',
             price: '20만원',
@@ -301,7 +301,7 @@ var config = {
             price: '0원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'ar',
             name: '부에노스아이레스',
             price: '22만원',
@@ -320,7 +320,7 @@ var config = {
             type: goldenKey
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'br',
             name: '상파울루',
             price: '24만원',
@@ -336,7 +336,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'au',
             name: '시드니',
             price: '24만원',
@@ -359,7 +359,7 @@ var config = {
             fee: '60만원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'us',
             name: '하와이',
             price: '26만원',
@@ -375,7 +375,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'pt',
             name: '리스본',
             price: '26만원',
@@ -398,7 +398,7 @@ var config = {
             fee: '25만원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'es',
             name: '마드리드',
             price: '28만원',
@@ -420,7 +420,7 @@ var config = {
             fee: '20만원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'jp',
             name: '도쿄',
             price: '30만원',
@@ -443,7 +443,7 @@ var config = {
             fee: '40만원'
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'fr',
             name: '파리',
             price: '32만원',
@@ -459,7 +459,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'it',
             name: '로마',
             price: '32만원',
@@ -478,7 +478,7 @@ var config = {
             type: goldenKey
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'gb',
             name: '런던',
             price: '35만원',
@@ -494,7 +494,7 @@ var config = {
             villaCount: 0
         },
         {
-            type: 'normal',
+            type: 'place',
             code: 'us',
             name: '뉴욕',
             fee: '3만 5천원',
@@ -528,8 +528,8 @@ var coreMixin = {
         isLandmark() {
             return this.place.type === 'landmark';
         },
-        isNormal() {
-            return this.place.type === 'normal';
+        isPlace() {
+            return this.place.type === 'place';
         },
         isGoldenKey() {
             return this.place.type === 'goldenKey';
@@ -537,8 +537,8 @@ var coreMixin = {
         isSpecial() {
             return this.place.type === 'special';
         },
-        isNormalOrLandmark() {
-            return this.isNormal() || this.isLandmark();
+        isPlaceOrLandmark() {
+            return this.isPlace() || this.isLandmark();
         },
         getCode() {
             return this.place.code;
@@ -568,17 +568,6 @@ var coreMixin = {
             }
 
             return top;
-        },
-        getEstateStyle() {
-            return {
-                position: 'absolute',
-                left: config.estate.left + 'px',
-                top: config.estate.top + 'px',
-                width: config.estate.width + 'px',
-                height: config.estate.height + 'px',
-                textAlign: 'center',
-                display: this.getEstateDisplay()
-            }
         }
     }
 };
