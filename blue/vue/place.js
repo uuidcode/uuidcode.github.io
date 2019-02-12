@@ -39,7 +39,7 @@ Vue.component('place', {
                 width: '60px',
                 height: '30px',
                 border: '1px solid black',
-                backgroundImage: 'url(../image/' + this.getCode() + '.png)',
+                backgroundImage: this.getBackgroundFlagImage(),
                 backgroundSize: '60px 30px'
             }
         },

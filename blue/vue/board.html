@@ -15,6 +15,10 @@
            v-bind:index="index"
            :key="place.index">
     </place-container>
+    <player-info v-for="(player, index) in playerList"
+                     v-bind:index="index"
+                     :key="player.index">
+    </player-info>
 </div>
 <script src="../lib/jquery-3.3.1.min.js"></script>
 <script src="../lib/vue.2.3.3.js"></script>
@@ -24,10 +28,12 @@
 <script src="../lib/cannon.js"></script>
 <script src="../lib/dice.js"></script>
 <script src="config.js"></script>
+<script src="core-mix-in.js"></script>
 <script src="goldenKey.js"></script>
 <script src="special.js"></script>
 <script src="place.js"></script>
 <script src="place-container.js"></script>
+<script src="player-info.js"></script>
 <script src="die.js"></script>
 <script src="board.js"></script>
 </body>
