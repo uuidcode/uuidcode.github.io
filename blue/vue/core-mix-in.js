@@ -1,7 +1,8 @@
 var coreMixin = {
     methods: {
         getPlaceList() {
-            return this.player.placeList.map(index => config.placeList[index]);
+            return this.player.placeList
+                .map(index => config.placeList[index]);
         },
         getBackgroundFlagImage() {
             var url = this.getFlagImage();
