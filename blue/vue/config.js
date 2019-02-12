@@ -522,3 +522,63 @@ var config = {
         }
     ]
 };
+
+var coreMixin = {
+    methods: {
+        isLandmark() {
+            return this.place.type === 'landmark';
+        },
+        isNormal() {
+            return this.place.type === 'normal';
+        },
+        isGoldenKey() {
+            return this.place.type === 'goldenKey';
+        },
+        isSpecial() {
+            return this.place.type === 'special';
+        },
+        isNormalOrLandmark() {
+            return this.isNormal() || this.isLandmark();
+        },
+        getCode() {
+            return this.place.code;
+        },
+        getPlaceLeft() {
+            var left = 0;
+
+            if (this.index >= 0 && this.index <= 10) {
+                return this.index * config.place.width;
+            } else if (this.index > 10 && this.index <= 20) {
+                return 10 * config.place.width;
+            } else if (this.index > 20 && this.index <= 30) {
+                return (30 - this.index) * config.place.width;
+            }
+
+            return left;
+        },
+        getPlaceTop() {
+            var top = 0;
+
+            if (this.index > 10 && this.index <= 20) {
+                return (this.index - 10) * config.place.height;
+            } else if (this.index > 20 && this.index <= 30) {
+                return 10 * config.place.height;
+            } else if (this.index > 30) {
+                return (40 - this.index) * config.place.height;
+            }
+
+            return top;
+        },
+        getEstateStyle() {
+            return {
+                position: 'absolute',
+                left: config.estate.left + 'px',
+                top: config.estate.top + 'px',
+                width: config.estate.width + 'px',
+                height: config.estate.height + 'px',
+                textAlign: 'center',
+                display: this.getEstateDisplay()
+            }
+        }
+    }
+};

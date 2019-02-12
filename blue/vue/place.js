@@ -1,127 +1,27 @@
 Vue.component('place', {
     props: ['index'],
+    mixins: [coreMixin],
     template: `
-        <div v-bind:style="placeStyle" class="place">
-            <template v-if="isNormalOrLandmark()">
-                <div class="flag" v-bind:style="flagStyle"></div>
-                <div class="price" v-bind:style="priceStyle">{{place.price}}</div>
-                <div class="owner"></div>
-                <div class="name" v-bind:style="nameStyle">{{place.name}}</div>
-                <div class="estate" v-bind:style="getEstateStyle()">
-                    <span class="badge badge-primary hotel">{{place.hotelCount}}</span>
-                    <span class="badge badge-warning building">{{place.buildingCount}}</span>
-                    <span class="badge badge-danger villa">{{place.villaCount}}</span>
-                    <span class="badge badge-light fee"></span>
-                </div>
-            </template>
+        <div v-bind:style="getPlaceStyle()" class="place">
+            <normal v-else-if="isNormalOrLandmark()" v-bind:index="index"></normal>
             <golden-key v-else-if="isGoldenKey()" v-bind:index="index"></golden-key>
             <special v-else-if="isSpecial()" v-bind:index="index"></special>
         </div>
     `,
     data: function () {
         return {
-            place: config.placeList[this.index],
-            placeStyle: {
+            place: config.placeList[this.index]
+        }
+    },
+    methods: {
+        getPlaceStyle() {
+            return {
                 position: 'absolute',
                 left: this.getLeft() + 'px',
                 top: this.getTop() + 'px',
                 width: config.place.width + 'px',
                 height: config.place.height + 'px',
                 zIndex: 100
-            },
-            flagStyle: {
-                position: 'absolute',
-                left: config.flag.left + 'px',
-                top: config.flag.top + 'px',
-                width: '60px',
-                height: '30px',
-                border: '1px solid black',
-                backgroundImage: 'url(../image/' + this.getCode() + '.png)',
-                backgroundSize: '60px 30px'
-            },
-            priceStyle: {
-                position: 'absolute',
-                left: config.price.left + 'px',
-                top: config.price.top + 'px',
-                width: config.price.width + 'px',
-                height: config.price.height + 'px',
-                lineHeight: config.price.height + 'px',
-                textAlign: 'center',
-                fontWeight: 'bold'
-            },
-            nameStyle: {
-                position: 'absolute',
-                left: config.name.left + 'px',
-                top: config.name.top + 'px',
-                width: config.name.width + 'px',
-                height: config.name.height + 'px',
-                lineHeight: config.name.height + 'px',
-                textAlign: 'center',
-                fontWeight: 'bold'
-            },
-        }
-    },
-    methods: {
-        isLandmark() {
-            return this.place.type === 'landmark';
-        },
-        isNormal() {
-            return this.place.type === 'normal';
-        },
-        isGoldenKey() {
-            return this.place.type === 'goldenKey';
-        },
-        isSpecial() {
-            return this.place.type === 'special';
-        },
-        isNormalOrLandmark() {
-            return this.isNormal() || this.isLandmark();
-        },
-        getEstateDisplay() {
-            if (this.isNormal()) {
-                return 'block';
-            }
-
-            return 'none';
-        },
-        getCode() {
-            return config.placeList[this.index].code;
-        },
-        getLeft() {
-            var left = 0;
-
-            if (this.index >= 0 && this.index <= 10) {
-                return this.index * config.place.width;
-            } else if (this.index > 10 && this.index <= 20) {
-                return 10 * config.place.width;
-            } else if (this.index > 20 && this.index <= 30) {
-                return (30 - this.index) * config.place.width;
-            }
-
-            return left;
-        },
-        getTop() {
-            var top = 0;
-
-            if (this.index > 10 && this.index <= 20) {
-                return (this.index - 10) * config.place.height;
-            } else if (this.index > 20 && this.index <= 30) {
-                return 10 * config.place.height;
-            } else if (this.index > 30) {
-                return (40 - this.index) * config.place.height;
-            }
-
-            return top;
-        },
-        getEstateStyle() {
-            return {
-                position: 'absolute',
-                left: config.estate.left + 'px',
-                top: config.estate.top + 'px',
-                width: config.estate.width + 'px',
-                height: config.estate.height + 'px',
-                textAlign: 'center',
-                display: this.getEstateDisplay()
             }
         }
     }
