@@ -101,6 +101,49 @@ var coreMixin = {
             } else if (this.player.position >= 30 && this.player.position < 40) {
                 return 'up';
             }
+        },
+        getPlayerPosition() {
+            this.getPosition = function () {
+                var left = 0;
+                var top = 0;
+
+                if (this.backward) {
+                    if (this.player.position > 0 && this.player.position <= 10) {
+                        left = (this.player.position - 1) * config.place.width;
+                        top = this.player.top;
+                    } else if (this.player.position > 10 && this.player.position <= 20) {
+                        left = config.place.width * 10;
+                        top = (this.player.position - 10 - 1) * config.place.height + this.player.top;
+                    } else if (this.player.position > 20 && this.player.position<= 30) {
+                        left = (30 - this.player.position+ 1) * config.place.width;
+                        top = config.place.height * 10 + this.player.top;
+                    } else if (this.player.position > 30) {
+                        top = (40 - this.player.position+ 1) * config.place.height + this.player.top;
+                    } else if (this.player.position === 0) {
+                        top = config.place.height + this.player.top;
+                    }
+                } else {
+                    if (this.player.position>= 0 && this.player.position< 10) {
+                        left = (this.player.position + 1) * config.place.width;
+                        top = this.player.top;
+                    } else if (this.player.position >= 10 && this.player.position < 20) {
+                        left = config.place.width * 10;
+                        top = (this.player.position - 10 + 1) * config.place.height + this.player.top;
+                    } else if (this.player.position >= 20 && this.player.position< 30) {
+                        left = (30 - this.player.position - 1) * config.place.width;
+                        top = config.place.height * 10 + this.player.top;
+                    } else if (this.player.position >= 30 && this.player.position< 40) {
+                        top = (40 - this.player.position- 1) * config.place.height + this.player.top;
+                    }
+                }
+
+                left += this.player.left;
+
+                return {
+                    left: left,
+                    top: top
+                };
+            };
         }
     }
 };

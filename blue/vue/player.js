@@ -13,10 +13,11 @@ Vue.component('player', {
     },
     methods: {
         getPlayerStyle() {
+            var position = this.getPlayerPosition();
             return {
                 position: 'absolute',
-                left: player.left,
-                top: player.top,
+                left: position.left,
+                top: position.top,
                 width: player.width,
                 height: player.height,
                 borderRadius: '50%',
