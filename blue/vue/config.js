@@ -546,3 +546,12 @@ var config = {
         }
     ]
 };
+
+EventBus.$on('message', function (message) {
+    if (message.type == 'go') {
+        var playerIndex = config.turn % config.playerList.length;
+        var player = config.playerList[playerIndex];
+        player.direction = message.type;
+        player.count = message.count;
+    }
+});
