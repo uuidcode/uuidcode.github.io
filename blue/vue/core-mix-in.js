@@ -78,6 +78,29 @@ var coreMixin = {
             }
 
             return 'none';
+        },
+        getDirection() {
+            if (this.player.move.direction == 'back') {
+                if (this.player.position > 0 && this.player.position <= 10) {
+                    return 'left';
+                } else if (this.player.position > 10 && this.player.position <= 20) {
+                    return 'up';
+                } else if (this.player.position > 20 && this.player.position <= 30) {
+                    return 'right';
+                } else if (this.player.position > 30 || this.player.position == 0) {
+                    return 'down';
+                }
+            }
+
+            if (this.player.position >= 0 && this.player.position < 10) {
+                return 'right';
+            } else if (this.player.position >= 10 && this.player.position < 20) {
+                return 'down';
+            } else if (this.player.position >= 20 && this.player.position < 30) {
+                return 'left';
+            } else if (this.player.position >= 30 && this.player.position < 40) {
+                return 'up';
+            }
         }
     }
 };

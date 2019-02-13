@@ -80,6 +80,7 @@ var config = {
             top: 10,
             width: 50,
             height: 50,
+            position: 0,
             move: {
                 direction: null,
                 count: 0
@@ -92,6 +93,7 @@ var config = {
             top: 10,
             width: 50,
             height: 50,
+            position: 0,
             move: {
                 direction: null,
                 count: 0
@@ -560,10 +562,10 @@ EventBus.$on('message', function (message) {
     var playerIndex = config.turn % config.playerList.length;
     var player = config.playerList[playerIndex];
 
-    if (message.type == 'go') {
+    if (message.type === 'go') {
         player.move.direction = message.type;
         player.move.count = message.count;
-    } else if (message.type == 'arrive') {
+    } else if (message.type === 'arrive') {
         if (player.move.count > 0) {
             EventBus.$emit('message', {
                 type: message.type,
