@@ -71,6 +71,7 @@ var config = {
         width: 300,
         height: 700
     },
+    turn: 0,
     playerList: [
         {
             name: '아빠',
@@ -78,7 +79,11 @@ var config = {
             left: 15,
             top: 10,
             width: 50,
-            height: 50
+            height: 50,
+            move: {
+                direction: null,
+                count: 0
+            },
         },
         {
             name: '다은',
@@ -87,6 +92,10 @@ var config = {
             top: 10,
             width: 50,
             height: 50,
+            move: {
+                direction: null,
+                count: 0
+            },
         }
     ],
     placeList: [
@@ -548,10 +557,18 @@ var config = {
 };
 
 EventBus.$on('message', function (message) {
+    var playerIndex = config.turn % config.playerList.length;
+    var player = config.playerList[playerIndex];
+
     if (message.type == 'go') {
-        var playerIndex = config.turn % config.playerList.length;
-        var player = config.playerList[playerIndex];
-        player.direction = message.type;
-        player.count = message.count;
+        player.move.direction = message.type;
+        player.move.count = message.count;
+    } else if (message.type == 'arrive') {
+        if (player.move.count > 0) {
+            EventBus.$emit('message', {
+                type: message.type,
+                count: player.move.count - 1
+            });
+        }
     }
 });
