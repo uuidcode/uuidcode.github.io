@@ -75,7 +75,18 @@ var config = {
         {
             name: '아빠',
             image: '../image/lion.png',
-            placeList: [1]
+            left: 15,
+            top: 10,
+            width: 50,
+            height: 50
+        },
+        {
+            name: '다은',
+            image: '../image/apeach.png',
+            left: 90,
+            top: 10,
+            width: 50,
+            height: 50,
         }
     ],
     placeList: [
