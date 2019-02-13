@@ -49,7 +49,6 @@ new Vue({
                             count: player.move.count - 1
                         });
                     }, 100);
-
                 }
             }
         });
