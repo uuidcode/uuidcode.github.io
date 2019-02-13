@@ -565,6 +565,7 @@ EventBus.$on('message', function (message) {
     if (message.type === 'go') {
         player.move.direction = message.type;
         player.move.count = message.count;
+        player.position = (player.position + 1) % 40;
     } else if (message.type === 'arrive') {
         if (player.move.count > 0) {
             EventBus.$emit('message', {
