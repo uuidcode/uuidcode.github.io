@@ -26,7 +26,8 @@ Vue.component('player-info', {
                                     <table class="table">
                                         <tbody class="nationContainer">
                                         <tr v-for="(place, index) in getPlaceList()">
-                                            <td class="flag"><img :src="getImageUrl(place.code)" width="35" height="20" style="border:1px solid black"></td>
+                                            <td class="flag"><img :src="getImageUrl(place.code)" 
+                                            width="35" height="20" style="border:1px solid black"></td>
                                             <td class="name">{{place.name}}</td>
                                             <td class="building-amount">{{place.price}}</td>
                                         </tr>
