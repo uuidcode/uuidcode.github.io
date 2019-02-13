@@ -79,71 +79,78 @@ var coreMixin = {
 
             return 'none';
         },
-        getDirection() {
-            if (this.player.move.direction == 'back') {
-                if (this.player.position > 0 && this.player.position <= 10) {
+        exists(object) {
+            return object !== undefined && object !== null;
+        },
+        existsOwner() {
+            return this.exists(this.place.owner);
+        },
+        getDirection(currentPlayer) {
+            if (currentPlayer.move.direction == 'back') {
+                if (currentPlayer.position > 0 && currentPlayer.position <= 10) {
                     return 'left';
-                } else if (this.player.position > 10 && this.player.position <= 20) {
+                } else if (currentPlayer.position > 10 && currentPlayer.position <= 20) {
                     return 'up';
-                } else if (this.player.position > 20 && this.player.position <= 30) {
+                } else if (currentPlayer.position > 20 && currentPlayer.position <= 30) {
                     return 'right';
-                } else if (this.player.position > 30 || this.player.position == 0) {
+                } else if (currentPlayer.position > 30 || currentPlayer.position == 0) {
                     return 'down';
                 }
             }
 
-            if (this.player.position >= 0 && this.player.position < 10) {
+            if (currentPlayer.position >= 0 && currentPlayer.position < 10) {
                 return 'right';
-            } else if (this.player.position >= 10 && this.player.position < 20) {
+            } else if (currentPlayer.position >= 10 && currentPlayer.position < 20) {
                 return 'down';
-            } else if (this.player.position >= 20 && this.player.position < 30) {
+            } else if (currentPlayer.position >= 20 && currentPlayer.position < 30) {
                 return 'left';
-            } else if (this.player.position >= 30 && this.player.position < 40) {
+            } else if (currentPlayer.position >= 30 && currentPlayer.position < 40) {
                 return 'up';
             }
         },
-        getPlayerPosition() {
-            this.getPosition = function () {
-                var left = 0;
-                var top = 0;
+        getPlayerPosition(currentPlayer) {
+            var left = 0;
+            var top = 0;
 
-                if (this.backward) {
-                    if (this.player.position > 0 && this.player.position <= 10) {
-                        left = (this.player.position - 1) * config.place.width;
-                        top = this.player.top;
-                    } else if (this.player.position > 10 && this.player.position <= 20) {
-                        left = config.place.width * 10;
-                        top = (this.player.position - 10 - 1) * config.place.height + this.player.top;
-                    } else if (this.player.position > 20 && this.player.position<= 30) {
-                        left = (30 - this.player.position+ 1) * config.place.width;
-                        top = config.place.height * 10 + this.player.top;
-                    } else if (this.player.position > 30) {
-                        top = (40 - this.player.position+ 1) * config.place.height + this.player.top;
-                    } else if (this.player.position === 0) {
-                        top = config.place.height + this.player.top;
-                    }
-                } else {
-                    if (this.player.position>= 0 && this.player.position< 10) {
-                        left = (this.player.position + 1) * config.place.width;
-                        top = this.player.top;
-                    } else if (this.player.position >= 10 && this.player.position < 20) {
-                        left = config.place.width * 10;
-                        top = (this.player.position - 10 + 1) * config.place.height + this.player.top;
-                    } else if (this.player.position >= 20 && this.player.position< 30) {
-                        left = (30 - this.player.position - 1) * config.place.width;
-                        top = config.place.height * 10 + this.player.top;
-                    } else if (this.player.position >= 30 && this.player.position< 40) {
-                        top = (40 - this.player.position- 1) * config.place.height + this.player.top;
-                    }
+            if (this.backward) {
+                if (currentPlayer.position > 0 && currentPlayer.position <= 10) {
+                    left = (currentPlayer.position - 1) * config.place.width;
+                    top = currentPlayer.top;
+                } else if (currentPlayer.position > 10 && currentPlayer.position <= 20) {
+                    left = config.place.width * 10;
+                    top = (currentPlayer.position - 10 - 1) * config.place.height + currentPlayer.top;
+                } else if (currentPlayer.position > 20 && currentPlayer.position<= 30) {
+                    left = (30 - currentPlayer.position+ 1) * config.place.width;
+                    top = config.place.height * 10 + currentPlayer.top;
+                } else if (currentPlayer.position > 30) {
+                    top = (40 - currentPlayer.position+ 1) * config.place.height + currentPlayer.top;
+                } else if (currentPlayer.position === 0) {
+                    top = config.place.height + currentPlayer.top;
                 }
+            } else {
+                if (currentPlayer.position >= 0 && currentPlayer.position < 10) {
+                    left = currentPlayer.position * config.place.width;
+                    top = currentPlayer.top;
+                } else if (currentPlayer.position >= 10 && currentPlayer.position < 20) {
+                    left = config.place.width * 10;
+                    top = (currentPlayer.position - 10 + 1) * config.place.height + currentPlayer.top;
+                } else if (currentPlayer.position >= 20 && currentPlayer.position< 30) {
+                    left = (30 - currentPlayer.position - 1) * config.place.width;
+                    top = config.place.height * 10 + currentPlayer.top;
+                } else if (currentPlayer.position >= 30 && currentPlayer.position< 40) {
+                    top = (40 - currentPlayer.position- 1) * config.place.height + currentPlayer.top;
+                }
+            }
 
-                left += this.player.left;
+            left += currentPlayer.left;
 
-                return {
-                    left: left,
-                    top: top
-                };
-            };
+            return {
+                left: left,
+                top: top
+            }
+        },
+        sendMessage(message) {
+            EventBus.$emit('message', message);
         }
     }
 };

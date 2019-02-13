@@ -2,9 +2,11 @@ Vue.component('player', {
     props: ['index'],
     mixins: [coreMixin],
     template: `
-        <img id="player-{{index}}" :style="getPlayerStyle()" 
-        :class="getPlayerClass()"
-        class="live">
+        <img @animationend="arrive" 
+            :id="getPlayerId()" 
+            :src="player.image" 
+            :style="getPlayerStyle()" 
+            :class="getPlayerClass()">
     `,
     data: function () {
         return {
@@ -12,34 +14,31 @@ Vue.component('player', {
         }
     },
     methods: {
+        getPlayerId() {
+            return `player-${this.index}`
+        },
         getPlayerStyle() {
-            var position = this.getPlayerPosition();
             return {
                 position: 'absolute',
-                left: position.left,
-                top: position.top,
-                width: player.width,
-                height: player.height,
+                left: this.player.left + 'px',
+                top: this.player.top + 'px',
+                width: this.player.width + 'px',
+                height: this.player.height + 'px',
                 borderRadius: '50%',
                 zIndex: 100
             }
         },
         getPlayerClass() {
-            var direction = this.getDirection();
-            return {
-                top: 'top' === direction,
-                right: 'right' === direction,
-                bottom: 'bottom' === direction,
-                left: 'left' === direction,
-                live: true
-            }
+            return this.player.playerClass;
+        },
+        arrive() {
+            var self = this;
+            setTimeout(function () {
+                self.sendMessage({
+                    type: 'arrive'
+                });
+            }, 100);
+
         }
-    },
-    mounted() {
-        $(`#player-${this.index}`).on('animationend', function () {
-            EventBus.$emit('message', {
-                type: 'arrive'
-            })
-        });
     }
 });

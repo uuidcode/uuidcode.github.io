@@ -1,4 +1,5 @@
 Vue.component('die', {
+    mixins: [coreMixin],
     template: `
         <div v-bind:style="getDieStyle()" 
             id="die" 
@@ -23,15 +24,20 @@ Vue.component('die', {
     },
     methods: {
         roll() {
+            var self = this;
+
             this.dieBox.start_throw(function () {
-                return $t.dice.parse_notation("1d6")
-            },
-            function (vectors, notation, callback) {
-                callback();
-            },
-            function (notation, count) {
-                console.log(count[0]);
-            });
+                    return $t.dice.parse_notation("1d6")
+                },
+                function (vectors, notation, callback) {
+                    callback();
+                },
+                function (notation, count) {
+                    self.sendMessage({
+                        type: 'go',
+                        count: count[0]
+                    })
+                });
         },
         getDieStyle() {
             return {

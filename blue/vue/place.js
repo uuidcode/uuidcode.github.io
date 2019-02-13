@@ -5,10 +5,10 @@ Vue.component('place', {
         <div v-bind:style="getDefaultStyle()">
             <div class="flag" v-bind:style="getFlagStyle()"></div>
             <div class="price" v-bind:style="getPriceStyle()">{{place.price}}</div>
-            <div class="owner" v-bind:style="getOwnerStyle()">
-                <img :src="{{place.owner.image}}" 
-                    :width="{{config.owner.width}}" 
-                    :height="{{config.owner.height}}">
+            <div class="owner" v-if="existsOwner()" v-bind:style="getOwnerStyle()">
+                <img :src="place.owner.image" 
+                    :width="config.owner.width" 
+                    :height="config.owner.height">
             </div>
             <div class="name" v-bind:style="getNameStyle()">{{place.name}}</div>
             <div class="estate" v-bind:style="getEstateStyle()">

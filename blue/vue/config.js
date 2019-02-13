@@ -1,3 +1,5 @@
+var EventBus = new Vue();
+
 var selectedColor = 'rgba(0, 123, 255, 0.5)';
 var fundAmount = 150000;
 var start = '출발';
@@ -85,6 +87,14 @@ var config = {
                 direction: null,
                 count: 0
             },
+            playerClass: {
+                top: false,
+                right: false,
+                bottom: false,
+                left: false,
+                live: true
+            },
+            placeList: []
         },
         {
             name: '다은',
@@ -96,8 +106,16 @@ var config = {
             position: 0,
             move: {
                 direction: null,
-                count: 0
+                count: 0,
             },
+            playerClass: {
+                top: false,
+                right: false,
+                bottom: false,
+                left: false,
+                live: true
+            },
+            placeList: []
         }
     ],
     placeList: [
@@ -558,20 +576,3 @@ var config = {
     ]
 };
 
-EventBus.$on('message', function (message) {
-    var playerIndex = config.turn % config.playerList.length;
-    var player = config.playerList[playerIndex];
-
-    if (message.type === 'go') {
-        player.move.direction = message.type;
-        player.move.count = message.count;
-        player.position = (player.position + 1) % 40;
-    } else if (message.type === 'arrive') {
-        if (player.move.count > 0) {
-            EventBus.$emit('message', {
-                type: message.type,
-                count: player.move.count - 1
-            });
-        }
-    }
-});
