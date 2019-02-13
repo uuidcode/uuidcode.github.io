@@ -61,6 +61,23 @@ var coreMixin = {
             }
 
             return top;
+        },
+        getDisplayStyle(object) {
+            var display = true;
+
+            if (typeof object === "boolean"){
+                display = object;
+            } else {
+                if (object !== undefined && object !== null) {
+                    display = true;
+                }
+            }
+
+            if (display === true) {
+                return 'block';
+            }
+
+            return 'none';
         }
     }
 };
