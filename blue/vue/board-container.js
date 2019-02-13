@@ -15,29 +15,41 @@ new Vue({
                 var direction = self.getDirection(player);
                 player.move.direction = message.type;
                 player.move.count = message.count;
-                player.playerClass.top = 'top' === direction;
-                player.playerClass.right = 'right' === direction;
-                player.playerClass.bottom = 'bottom' === direction;
-                player.playerClass.left = 'left' === direction;
-                player.playerClass.live = false;
+
+                var playerClass = {
+                    top: 'top' === direction,
+                    right: 'right' === direction,
+                    bottom: 'bottom' === direction,
+                    left: 'left' === direction,
+                    live: false
+                };
+
+                player.playerClass = playerClass;
             } else if (message.type === 'arrive') {
-                if (player.move.count > 0) {
-                    player.position = (player.position + 1) % 40;
-                    var position = self.getPlayerPosition(player);
-                    player.left = position.left + 'px';
-                    player.top = position.top + 'px';
-                    var playerClass = {
-                        top: false,
-                        right: false,
-                        bottom: false,
-                        left: false,
-                        live: true
-                    };
-                    player.playerClass = playerClass;
-                    self.sendMessage({
-                        type: 'go',
-                        count: player.move.count - 1
-                    });
+                var position = self.getPlayerPosition(player);
+                player.position = (player.position + 1) % 40;
+                player.left = position.left;
+                player.top = position.top;
+
+                console.log('>>> position', position);
+
+                var playerClass = {
+                    top: false,
+                    right: false,
+                    bottom: false,
+                    left: false,
+                    live: true
+                };
+                player.playerClass = playerClass;
+
+                if (player.move.count > 1) {
+                    setTimeout(function () {
+                        self.sendMessage({
+                            type: 'go',
+                            count: player.move.count - 1
+                        });
+                    }, 100);
+
                 }
             }
         });

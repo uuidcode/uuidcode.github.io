@@ -120,7 +120,7 @@ var coreMixin = {
                     left = config.place.width * 10;
                     top = (currentPlayer.position - 10 - 1) * config.place.height + currentPlayer.top;
                 } else if (currentPlayer.position > 20 && currentPlayer.position<= 30) {
-                    left = (30 - currentPlayer.position+ 1) * config.place.width;
+                    left = (30 - currentPlayer.position + 1) * config.place.width;
                     top = config.place.height * 10 + currentPlayer.top;
                 } else if (currentPlayer.position > 30) {
                     top = (40 - currentPlayer.position+ 1) * config.place.height + currentPlayer.top;
@@ -129,7 +129,7 @@ var coreMixin = {
                 }
             } else {
                 if (currentPlayer.position >= 0 && currentPlayer.position < 10) {
-                    left = currentPlayer.position * config.place.width;
+                    left = (currentPlayer.position + 1) * config.place.width;
                     top = currentPlayer.top;
                 } else if (currentPlayer.position >= 10 && currentPlayer.position < 20) {
                     left = config.place.width * 10;
@@ -141,8 +141,6 @@ var coreMixin = {
                     top = (40 - currentPlayer.position- 1) * config.place.height + currentPlayer.top;
                 }
             }
-
-            left += currentPlayer.left;
 
             return {
                 left: left,
