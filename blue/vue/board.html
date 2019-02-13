@@ -10,15 +10,7 @@
 </head>
 <body>
 <div id="app" class="board">
-    <die></die>
-    <place-container v-for="(place, index) in placeList"
-           v-bind:index="index"
-           :key="place.index">
-    </place-container>
-    <player-info v-for="(player, index) in playerList"
-                     v-bind:index="index"
-                     :key="player.index">
-    </player-info>
+    <board></board>
 </div>
 <script src="../lib/jquery-3.3.1.min.js"></script>
 <script src="../lib/vue.2.3.3.js"></script>
@@ -35,6 +27,7 @@
 <script src="place-container.js"></script>
 <script src="player-info.js"></script>
 <script src="die.js"></script>
+<script src="board-container.js"></script>
 <script src="board.js"></script>
 </body>
 </html>
