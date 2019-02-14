@@ -27,7 +27,6 @@ new Vue({
                 player.playerClass = playerClass;
             } else if (message.type === 'arrive') {
                 var position = self.getPlayerPosition(player);
-                player.position = (player.position + 1) % 40;
                 player.left = position.left;
                 player.top = position.top;
 
@@ -40,8 +39,10 @@ new Vue({
                     left: false,
                     live: true
                 };
-                player.playerClass = playerClass;
 
+                player.playerClass = playerClass;
+                player.position = (player.position + 1) % 40;
+                
                 if (player.move.count > 1) {
                     setTimeout(function () {
                         self.sendMessage({
