@@ -143,7 +143,7 @@ var coreMixin = {
             }
 
             return {
-                left: left,
+                left: left + currentPlayer.leftMargin,
                 top: top
             }
         },

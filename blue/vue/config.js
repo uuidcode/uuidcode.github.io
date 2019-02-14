@@ -78,6 +78,7 @@ var config = {
         {
             name: '아빠',
             image: '../image/lion.png',
+            leftMargin: 15,
             left: 15,
             top: 10,
             width: 50,
@@ -99,6 +100,7 @@ var config = {
         {
             name: '다은',
             image: '../image/apeach.png',
+            leftMargin: 90,
             left: 90,
             top: 10,
             width: 50,
