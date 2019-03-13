@@ -1,4 +1,3 @@
-import java.lang.ref.PhantomReference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -45,8 +44,6 @@ public class Project {
         SoftReference<Project> softReference = new SoftReference<>(project);
 
         WeakReference<Project> weakReference = new WeakReference<>(project);
-
-        PhantomReference<Project> phantomReference = new PhantomReference<>(project);
 
         Project currentProject = softReference.get();
 
