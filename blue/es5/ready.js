@@ -95,7 +95,7 @@ function Ready() {
                                             class="player-image live" width="50px" height="50px">
                                     </div>
                                     <div class="col-md-4 m-auto text-center">
-                                        <input type="text" class="form-control player-name" placeholder="이름">
+                                        <input type="text" class="form-control player-name" placeholder="이름" value="{{name}}">
                                     </div>
                                     <div class="col-md-5 m-auto text-center">
                                         <button type="button" class="btn btn-info up-button">위로</button>
@@ -111,7 +111,7 @@ function Ready() {
                                         장소 랜덤 생성
                                     </div>
                                     <div class="col-md-8 form-inline">
-                                        <input type="checkbox" class="random-place">
+                                        <input type="checkbox" class="random-place" checked>
                                     </div>
                                 </div>
                             </div>

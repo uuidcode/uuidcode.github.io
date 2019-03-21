@@ -32,7 +32,7 @@ var config = {
             height: 50,
             image: 'apeach.png',
             amount: 3000000,
-            name: '어피치'
+            name: '다은'
 
         },
         {
@@ -42,7 +42,7 @@ var config = {
             height: 50,
             image: 'lion.png',
             amount: 3000000,
-            name: '라이언'
+            name: '아빠'
         }
     ],
     flag: {
