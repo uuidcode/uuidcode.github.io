@@ -44,16 +44,6 @@ var config = {
             amount: 3000000,
             name: '아빠'
         }
-        ,
-        {
-            left: 90,
-            top: 10,
-            width: 50,
-            height: 50,
-            image: 'muzi.png',
-            amount: 3000000,
-            name: '로봇'
-        }
     ],
     flag: {
         left: 0,

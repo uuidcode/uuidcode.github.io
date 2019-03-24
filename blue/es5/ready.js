@@ -43,6 +43,25 @@ function Ready() {
             that.reset();
         });
 
+        this.$element.on('click', '.add-player-button', function () {
+            $(this).hide();
+            var newPlayer = {
+                left: 90,
+                top: 10,
+                width: 50,
+                height: 50,
+                image: 'muzi.png',
+                amount: 3000000,
+                name: '로봇'
+            };
+
+            config.playerList.push(newPlayer);
+            var template = Handlebars.compile(that.playerTemplate());
+            var $newPlayer = $(template(newPlayer));
+            $('.player-list').append($newPlayer);
+            that.reset();
+        });
+
         this.$element.on('click', '.start-button', function () {
             var $row = that.$element.find('.player-row');
 
@@ -76,8 +95,33 @@ function Ready() {
             $(this).find('.player-index').text(index + 1);
         });
     };
-    
+
+    this.playerTemplate = function () {
+        return  `
+        <div class="row player-row">
+            <div class="col-md-1 m-auto text-center">
+                <span class="player-index"></span>
+            </div>
+            <div class="col-md-2 m-auto text-center">
+                <img src="../image/{{image}}" data-image="{{image}}"
+                     clas="player-image live" width="50px" height="50px">
+            </div>
+            <div class="col-md-4 m-auto text-center">
+                <input type="text" class="form-control player-name" 
+                    placeholder="이름"
+                    value="{{name}}">
+            </div>
+            <div clas="col-md-5 m-auto text-center">
+                <button type="button" class="btn btn-info up-button">위로</button>
+                <button type="button" class="btn btn-info down-button">아래로</button>
+            </div>
+        </div>
+        `
+    },
+
     this.template = function () {
+        var playerTemplate = this.playerTemplate();
+
         return `
             <div class="modal start-modal" data-keyboard="false" data-backdrop="static">
                 <div class="modal-dialog" role="document">
@@ -85,22 +129,7 @@ function Ready() {
                         <div class="modal-body">
                             <div class="container-fluid player-list">
                                 {{#each playerList}}
-                                <div class="row player-row">
-                                    <div class="col-md-1 m-auto text-center">
-                                        <span class="player-index"></span>
-                                    </div>
-                                    <div class="col-md-2 m-auto text-center">
-                                        <img src="../image/{{image}}" data-image="{{image}}" 
-                                            class="player-image live" width="50px" height="50px">
-                                    </div>
-                                    <div class="col-md-4 m-auto text-center">
-                                        <input type="text" class="form-control player-name" placeholder="이름" value="{{name}}">
-                                    </div>
-                                    <div class="col-md-5 m-auto text-center">
-                                        <button type="button" class="btn btn-info up-button">위로</button>
-                                        <button type="button" class="btn btn-info down-button">아래로</button>
-                                    </div>
-                                </div>
+                                ${playerTemplate}
                                 {{/each}}
                             </div>
                             <hr>
@@ -127,6 +156,7 @@ function Ready() {
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-success add-player-button">사용자추가</button>
                             <button type="button" class="btn btn-primary start-button">시작</button>
                         </div>
                     </div>
