@@ -28,7 +28,7 @@ function Ready() {
 
             var $row = $(this).closest('.row');
             $row.insertBefore($row.parent('').find('.row').eq(index - 1));
-            reset();
+            that.reset();
         });
 
         this.$element.on('click', '.down-button', function () {
@@ -39,9 +39,8 @@ function Ready() {
             }
 
             var $row = $(this).closest('.row');
-            $row.insertAfter($row.parent('').find('.row').eq(index - 1));
-            reset();
-
+            $row.insertAfter($row.parent('').find('.row').eq(index + 1));
+            that.reset();
         });
 
         this.$element.on('click', '.start-button', function () {

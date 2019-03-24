@@ -27,7 +27,7 @@ function Special(name, code) {
         if (this.code) {
             this.$element.css({
                 backgroundImage: `url(../image/${this.code}.png)`,
-                backgroundSize: `${config.block.width}px ${config.block.height}px`,
+                backgroundSize: `${config.block.width - 1}px ${config.block.height - 1}px`,
                 color: 'white'
             })
         }
