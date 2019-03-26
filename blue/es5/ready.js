@@ -43,8 +43,19 @@ function Ready() {
             that.reset();
         });
 
+        this.$element.on('click', '.remove-player-button', function () {
+            var $row = $(this).closest('.row');
+            $row.remove();
+            var currentIndex = parseInt($row.find('.player-index').text(), 10) - 1;
+
+            config.playerList = config.playerList.filter(function (currentValue, index, arr) {
+                return currentIndex !== index;
+            });
+
+            that.reset();
+        });
+
         this.$element.on('click', '.add-player-button', function () {
-            $(this).hide();
             var newPlayer = {
                 left: 90,
                 top: 10,
@@ -59,6 +70,7 @@ function Ready() {
             var template = Handlebars.compile(that.playerTemplate());
             var $newPlayer = $(template(newPlayer));
             $('.player-list').append($newPlayer);
+
             that.reset();
         });
 
@@ -94,6 +106,14 @@ function Ready() {
         this.$element.find('.row').each(function (index) {
             $(this).find('.player-index').text(index + 1);
         });
+
+        if (config.playerList.length > 2) {
+            $('.remove-player-button').show();
+            $('.add-player-button').hide();
+        } else {
+            $('.remove-player-button').hide();
+            $('.add-player-button').show();
+        }
     };
 
     this.playerTemplate = function () {
@@ -111,9 +131,10 @@ function Ready() {
                     placeholder="이름"
                     value="{{name}}">
             </div>
-            <div clas="col-md-5 m-auto text-center">
+            <div class="col-md-5 m-auto text-center">
                 <button type="button" class="btn btn-info up-button">위로</button>
                 <button type="button" class="btn btn-info down-button">아래로</button>
+                <button type="button" class="btn btn-info remove-player-button" style="display: none">삭제</button>
             </div>
         </div>
         `
@@ -124,7 +145,7 @@ function Ready() {
 
         return `
             <div class="modal start-modal" data-keyboard="false" data-backdrop="static">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document" style="max-width:600px">
                     <div class="modal-content">
                         <div class="modal-body">
                             <div class="container-fluid player-list">
