@@ -16,7 +16,14 @@ function Ready() {
             that.$element.find('.player-name').eq(0).focus();
         }, 1000);
     };
-    
+
+    this.getPlayerLeftPosition = function (index) {
+        var playerCount = config.playerList.length;
+        var playerWidth = config.block.width / playerCount;
+        var offset = playerWidth - 50;
+        return playerWidth * index + offset / 2;
+    };
+
     this.initEvent = function () {
         var that = this;
         this.$element.on('click', '.up-button', function () {
@@ -74,8 +81,11 @@ function Ready() {
             that.reset();
         });
 
+
         this.$element.on('click', '.start-button', function () {
             var $row = that.$element.find('.player-row');
+            var width = 50;
+            var height = 50;
 
             for (var i = 0; i < $row.length; i++) {
                 var $currentPlayer = $row.eq(i);
@@ -89,6 +99,10 @@ function Ready() {
 
                 config.playerList[i].image = $currentPlayer.find('.player-image').attr('data-image');
                 config.playerList[i].name = $currentPlayer.find('.player-name').val().trim();
+                config.playerList[i].width = width;
+                config.playerList[i].height = height;
+                config.playerList[i].top = 10;
+                config.playerList[i].left = that.getPlayerLeftPosition(i);
             }
 
             var randomPlace = that.$element.find('.random-place').is(':checked');
@@ -124,7 +138,7 @@ function Ready() {
             </div>
             <div class="col-md-2 m-auto text-center">
                 <img src="../image/{{image}}" data-image="{{image}}"
-                     clas="player-image live" width="50px" height="50px">
+                     class="player-image live" width="50px" height="50px">
             </div>
             <div class="col-md-4 m-auto text-center">
                 <input type="text" class="form-control player-name" 
