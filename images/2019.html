@@ -138,6 +138,13 @@
 <pre>
 <h2>20190816</h2>
 
+jQuery('.accordion__item tr')
+    .map((i, target) => jQuery(target).find('td:eq(2)').text())
+    .get()
+    .filter(i => i != '')
+    .sort((a, b) => a.localeCompare(b))
+    .join('\n');
+
 <img src="../i/20190816_02.png">
 
 <img src="../i/20190816_01.png">
