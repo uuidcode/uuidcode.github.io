@@ -140,6 +140,21 @@
 
 <img src="../i/20190817.png">
 
+<h2>20190816</h2>
+
+jQuery('.accordion__item tr')
+    .map((i, target) => jQuery(target).find('td:eq(2)').text())
+    .get()
+    .filter(i => i != '')
+    .sort((a, b) => a.localeCompare(b))
+    .join('\n');
+
+<img src="../i/20190816_02.png">
+
+<img src="../i/20190816_01.png">
+
+<img src="../i/20190816.png">
+
 <h2>20190814</h2>
 
 <h4>튜링의 불완전성 증명</h4>
