@@ -136,6 +136,27 @@
 </div></div>
 <div class="container" style="padding: 60px 0">
 <pre>
+<h2>20190906</h2>
+
+public final class StreamSupport
+public interface Spliterator
+public final class Spliterators
+static class IteratorSpliterator
+abstract class ReferencePipeline extends AbstractPipeline implements Stream
+static class Head extends ReferencePipeline
+public interface Stream extends BaseStream
+abstract static class StatelessOp extends ReferencePipeline
+interface Sink extends Consumer
+static abstract class ChainedReference implements Sink
+final class ForEachOps
+interface TerminalOp
+static final class OfRef extends ForEachOp
+static abstract class ForEachOp implements TerminalOp, TerminalSink
+interface TerminalSink extends Sink, Supplier
+abstract class AbstractPipeline extends PipelineHelper implements BaseStream
+public interface BaseStream extends AutoCloseable
+abstract class PipelineHelper
+
 <h2>20190905</h2>
 
 <img src="../i/20190905_02.png">
