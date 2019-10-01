@@ -139,8 +139,21 @@
 <h2>20191001</h2>
 
 <h4>jcmd</h4>
+- name: version
+  shell: >
+    jcmd
+    `jps | grep Bootstrap | cut -d ' ' -f1`
+    VM.system_properties |
+    grep -e 'java.vendor=' -e 'java.runtime.version=' |
+    cut -d '=' -f2 |
+    head -c -1 |
+    tr '\n' '-'
+  register: java_version
 
-jcmd 8939 VM.system_properties | grep 'java.vendor=\|java.runtime.version='
+- name: print java version
+  debug:
+    msg: "{{ java_version.stdout }}"
+
 
 <h2>20190930</h2>
 
