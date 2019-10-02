@@ -136,6 +136,23 @@
 </div></div>
 <div class="container" style="padding: 60px 0">
 <pre>
+<h2>20191002</h2>
+
+cat /etc/logrotate.d/tomcat
+/tomcat/logs/catalina.out {
+  copytruncate
+  daily
+  rotate 30
+  compress
+  missingok
+  notifempty
+  dateext
+}
+
+-rw-rw-r-- 1 x x     183760 2019-10-02 17:09 catalina.out
+-rw-rw-r-- 1 x x 2972037374 2019-10-02 17:08 catalina.out-20191002
+-rw-rw-r-- 1 x x  105906176 2019-10-02 17:09 catalina.out-20191002.gz
+
 <h2>20191001</h2>
 
 <h4>jcmd</h4>
