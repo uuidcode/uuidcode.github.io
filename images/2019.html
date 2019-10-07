@@ -136,6 +136,20 @@
 </div></div>
 <div class="container" style="padding: 60px 0">
 <pre>
+<h2>20191007</h2>
+<h4>java process version</h4>
+- name: version
+  shell: >
+    jps |
+    grep -v 'Jps' |
+    cut -d ' ' -f1 |
+    xargs -i jcmd {} VM.version
+  register: java_version
+
+- name: print java version
+  debug:
+    msg: "{{ java_version.stdout_lines }}"
+
 <h2>20191006</h2>
 
 <img src="../i/20191006.png">
