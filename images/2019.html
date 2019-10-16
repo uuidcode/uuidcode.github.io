@@ -136,6 +136,33 @@
 </div></div>
 <div class="container" style="padding: 60px 0">
 <pre>
+<h2>20191016</h2>
+
+java.lang.NullPointerException
+	at sun.awt.FcFontManager.getDefaultPlatformFont(FcFontManager.java:76)
+	at sun.font.SunFontManager$2.run(SunFontManager.java:433)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at sun.font.SunFontManager.<init>(SunFontManager.java:376)
+	at sun.awt.FcFontManager.<init>(FcFontManager.java:35)
+	at sun.awt.X11FontManager.<init>(X11FontManager.java:57)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at java.lang.Class.newInstance(Class.java:442)
+	at sun.font.FontManagerFactory$1.run(FontManagerFactory.java:83)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at sun.font.FontManagerFactory.getInstance(FontManagerFactory.java:74)
+	at java.awt.Font.getFont2D(Font.java:491)
+	at java.awt.Font.canDisplayUpTo(Font.java:2060)
+	at java.awt.font.TextLayout.singleFont(TextLayout.java:470)
+	at java.awt.font.TextLayout.<init>(TextLayout.java:531)
+	at org.apache.poi.ss.util.SheetUtil.getDefaultCharWidth(SheetUtil.java:254)
+	at org.apache.poi.ss.util.SheetUtil.getColumnWidth(SheetUtil.java:229)
+	at org.apache.poi.ss.util.SheetUtil.getColumnWidth(SheetUtil.java:214)
+	at org.apache.poi.hssf.usermodel.HSSFSheet.autoSizeColumn(HSSFSheet.java:2090)
+	at org.apache.poi.hssf.usermodel.HSSFSheet.autoSizeColumn(HSSFSheet.java:2072)
+
 <h2>20191015</h2>
 
 <img src="../i/20191015.png">
