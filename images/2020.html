@@ -136,45 +136,7 @@
 </div></div>
 <div class="container" style="padding: 60px 0">
 <pre>
-<h2>CoreAction</h2>
-export default class CoreAction {
-    constructor(payload = {}, props = {}) {
-        this.type = 'action_' + this.constructor.name
-        this.payload = payload
-        this.props = props
-    }
-}
-
-<h2>AddDeveloperAction</h2>
-import CoreAction from './CoreAction'
-import { List } from 'immutable'
-import { init } from '../utils'
-
-export default class AddDeveloperAction extends CoreAction {
-    run(state) {
-        return init({
-            ...state,
-            developerList: List(state.developerList)
-                .push({
-                    id: this.payload.id
-                }).toJS()
-        })
-    }
-}
-
-<h2>classMiddleware</h2>
-export const classMiddleware = store => next => action => {
-     if (action instanceof CoreAction) {
-        return next({
-            type: action.type,
-            payload: action.run(store.getState().yourReducer, store.dispatch)
-        })
-    }
-
-    return next(action)
-}
 </pre>
 </div>
-
 
 </body></html>
