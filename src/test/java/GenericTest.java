@@ -24,7 +24,21 @@ public class GenericTest {
 //            .orElse(3);
     }
 
-    public static <K, V> Optional<V> getAsOptional(Map<K, V> map, K k) {
+    @Test
+    public void getAsOptional2() {
+        {
+            Map<String, String> map = new HashMap<>();
+            this.getAsOptional2(map, "test");
+        }
+
+        {
+            Map<String, Object> map = new HashMap<>();
+            this.getAsOptional2(map, "test");
+        }
+
+    }
+
+    public <K, V> Optional<V> getAsOptional(Map<K, V> map, K k) {
         if (map == null) {
             return Optional.empty();
         }
@@ -34,7 +48,7 @@ public class GenericTest {
         return Optional.of(value);
     }
 
-    public static Optional<?> getAsOptional(Map<?, ?> map, String k) {
+    public Optional<?> getAsOptional2(Map<String, ?> map, String k) {
         if (map == null) {
             return Optional.empty();
         }
