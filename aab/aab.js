@@ -105,12 +105,12 @@ var app = new Vue({
                 title: '아지트',
                 styleObject: {
                     position: 'absolute',
-                    left: '1000px',
-                    top: '1000px',
-                    width: '200px',
-                    height: '200px',
+                    left: '1600px',
+                    top: '700px',
+                    width: '120px',
+                    height: '120px',
                     textAlign: 'center',
-                    lineHeight: '200px',
+                    lineHeight: '120px',
                     border: '2px solid red'
                 }
             },
@@ -119,12 +119,13 @@ var app = new Vue({
                 subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
                 styleObject: {
                     position: 'absolute',
-                    left: '1100px',
-                    top: '900px',
-                    width: '100px',
-                    height: '100px',
+                    left: '1600px',
+                    top: '650px',
+                    width: '120px',
+                    height: '50px',
                     textAlign: 'center',
-                    border: '1px solid black'
+                    border: '1px solid black',
+                    fontSize: '12px'
                 },
 
             },
