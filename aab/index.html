@@ -2,11 +2,13 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="lib/jquery-3.3.1.min.js"></script>
     <script src="cell.js"></script>
     <script src="lib/three.js"></script>
     <script src="lib/teal.js"></script>
     <script src="lib/cannon.js"></script>
     <script src="lib/dice.js"></script>
+    <script src="lib/die.js"></script>
 </head>
 <body>
 <div id="app">
@@ -17,11 +19,115 @@
             <strong>속임수</strong>
         </div>
     </div>
+    <div v-for="burglar in burglarList" v-bind:style="burglar.styleObject"></div>
+    <div v-for="police in policeList" v-bind:style="police.styleObject"></div>
+    <div v-for="building in buildingList" v-bind:style="building.styleObject"></div>
+    <div v-for="jewelry in jewelryList" v-bind:style="jewelry.styleObject"></div>
+    </div>
 </div>
 <script>
     var app = new Vue({
         el: '#app',
         data: {
+            jewelryList: [
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '0px',
+                        top: '0px',
+                        width: '200px',
+                        height: '160px',
+                        backgroundImage: 'url(image/j1.png)'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '200px',
+                        top: '0px',
+                        width: '200px',
+                        height: '160px',
+                        backgroundImage: 'url(image/j2.png)'
+                    }
+                }
+            ]
+            ,
+            buildingList:[
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '600px',
+                        top: '200px',
+                        width: '100px',
+                        height: '100px',
+                        backgroundImage: 'url(image/1.png)'
+                    }
+                }
+            ],
+            policeList:[
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '300px',
+                        top: '380px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(image/d.png)'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '380px',
+                        top: '380px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(image/e.png)'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '460px',
+                        top: '380px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(image/f.png)'
+                    }
+                }
+            ],
+            burglarList:[
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '300px',
+                        top: '300px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(image/a.png)'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '380px',
+                        top: '300px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(image/b.png)'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '460px',
+                        top: '300px',
+                        width: '80px',
+                        height: '80px',
+                        backgroundImage: 'url(image/c.png)'
+                    }
+                }
+            ],
             cellList: [
                 {
                     title: '아지트',
@@ -255,10 +361,55 @@
                         textAlign: 'center',
                         border: '1px solid black'
                     }
+                },
+                {
+                    title: '주민신고!!',
+                    subTitle: '경찰은 도둑의 1칸 앞으로 간다.',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '700px',
+                        top: '400px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        backgroundColor: 'skyblue',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '600px',
+                        top: '400px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    },
+                    trick: true
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '600px',
+                        top: '300px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
                 }
             ]
         }
-    })
+    });
+
+    var $app = $('#app');
+    var $dic = $('<div></div>');
+    $dic.attr('id', 'die');
+    $app.append($dic);
+
+    var die = new Die();
+    $app.append(die.$element);
 </script>
 </body>
 </html>
