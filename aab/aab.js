@@ -102,26 +102,28 @@ var app = new Vue({
         ],
         cellList: [
             {
+                index: 0,
                 title: '아지트',
                 styleObject: {
                     position: 'absolute',
                     left: '1600px',
                     top: '700px',
-                    width: '120px',
-                    height: '120px',
+                    width: '150px',
+                    height: '150px',
                     textAlign: 'center',
-                    lineHeight: '120px',
+                    lineHeight: '150px',
                     border: '2px solid red'
                 }
             },
             {
+                index: 1,
                 title: '경찰위협',
                 subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
                 styleObject: {
                     position: 'absolute',
                     left: '1600px',
                     top: '650px',
-                    width: '120px',
+                    width: '150px',
                     height: '50px',
                     textAlign: 'center',
                     border: '1px solid black',
@@ -130,63 +132,64 @@ var app = new Vue({
 
             },
             {
-                title: '',
+                index: 2,
                 styleObject: {
                     position: 'absolute',
-                    left: '1100px',
-                    top: '800px',
-                    width: '100px',
-                    height: '100px',
+                    left: '1600px',
+                    top: '600px',
+                    width: '150px',
+                    height: '50px',
                     textAlign: 'center',
                     border: '1px solid black'
                 },
                 trick: true
             },
             {
-                title: '',
+                index: 3,
                 styleObject: {
                     position: 'absolute',
-                    left: '1100px',
-                    top: '700px',
-                    width: '100px',
-                    height: '100px',
+                    left: '1600px',
+                    top: '550px',
+                    width: '150px',
+                    height: '150px',
                     textAlign: 'center',
                     border: '1px solid black'
                 }
             },
             {
-                title: '',
+                index: 4,
                 styleObject: {
                     position: 'absolute',
-                    left: '1000px',
-                    top: '800px',
-                    width: '100px',
-                    height: '100px',
+                    left: '1450px',
+                    top: '600px',
+                    width: '150px',
+                    height: '50px',
                     textAlign: 'center',
                     border: '1px solid black'
                 }
             },
             {
-                title: '',
+                index: 5,
                 styleObject: {
                     position: 'absolute',
-                    left: '900px',
-                    top: '800px',
-                    width: '100px',
-                    height: '100px',
+                    left: '1300px',
+                    top: '600px',
+                    width: '150px',
+                    height: '50px',
                     textAlign: 'center',
                     border: '1px solid black'
                 }
             },
             {
+                index: 6,
                 title: '버스를 탔다.',
                 subTitle: '4칸 앞으로 가서 지시에 따른다.',
                 styleObject: {
                     position: 'absolute',
-                    left: '800px',
-                    top: '800px',
-                    width: '100px',
-                    height: '100px',
+                    left: '1150px',
+                    top: '600px',
+                    width: '150px',
+                    height: '50px',
                     textAlign: 'center',
                     border: '1px solid black'
                 }

@@ -18,9 +18,9 @@
 <body>
 <div id="app">
     <div v-for="cell in cellList" v-bind:style="cell.styleObject">
-        <strong>{{ cell.title }}</strong>
+        <strong>{{ cell.title }} - {{ cell.index }}</strong>
         <div v-if="cell.subTitle" style="font-size: 12px">{{ cell.subTitle }}</div>
-        <div v-if="cell.trick" style="font-size: 12px;text-align: right;background-color: red;margin-left: 60px;color: white;">
+        <div v-if="cell.trick" style="font-size: 12px;text-align: right;background-color: red;margin-left: 100px;color: white;">
             <strong>속임수</strong>
         </div>
     </div>
