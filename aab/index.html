@@ -1,0 +1,264 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="cell.js"></script>
+    <script src="lib/three.js"></script>
+    <script src="lib/teal.js"></script>
+    <script src="lib/cannon.js"></script>
+    <script src="lib/dice.js"></script>
+</head>
+<body>
+<div id="app">
+    <div v-for="cell in cellList" v-bind:style="cell.styleObject">
+        <strong>{{ cell.title }}</strong>
+        <div v-if="cell.subTitle" style="font-size: 12px">{{ cell.subTitle }}</div>
+        <div v-if="cell.trick" style="font-size: 12px;text-align: right;background-color: red;margin-left: 60px;color: white;">
+            <strong>속임수</strong>
+        </div>
+    </div>
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            cellList: [
+                {
+                    title: '아지트',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1000px',
+                        top: '1000px',
+                        width: '200px',
+                        height: '200px',
+                        textAlign: 'center',
+                        lineHeight: '200px',
+                        border: '2px solid red'
+                    }
+                },
+                {
+                    title: '경찰위협',
+                    subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1100px',
+                        top: '900px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    },
+
+                },
+                {
+                    title: '',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1100px',
+                        top: '800px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    },
+                    trick: true
+                },
+                {
+                    title: '',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1100px',
+                        top: '700px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    title: '',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1000px',
+                        top: '800px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    title: '',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '900px',
+                        top: '800px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    title: '버스를 탔다.',
+                    subTitle: '4칸 앞으로 가서 지시에 따른다.',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '800px',
+                        top: '800px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '800px',
+                        top: '900px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '800px',
+                        top: '1000px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '800px',
+                        top: '1100px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    title: '도둑은 위치 이동을 한다.',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1100px',
+                        top: '600px',
+                        width: '100px',
+                        height: '100px',
+                        backgroundColor: 'red',
+                        color: 'white',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    },
+                    move: true,
+                    target: 'burglar',
+                    trick: true
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1100px',
+                        top: '500px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1100px',
+                        top: '400px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    },
+                    trick: true
+                },
+                {
+                    title: '멈춤',
+                    subTitle: '주사위 수가 남아도 반드시 멈춘다',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1000px',
+                        top: '400px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '900px',
+                        top: '400px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '800px',
+                        top: '400px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    },
+                    trick: true
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '1000px',
+                        top: '600px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    title: '보석을 떨어뜨렸다',
+                    subTitle: '도둑이 보석을 가지고 있으면 경찰에게 주고 경찰은 다시 숨긴다.',
+                    styleObject: {
+                        position: 'absolute',
+                        left: '900px',
+                        top: '600px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                },
+                {
+                    styleObject: {
+                        position: 'absolute',
+                        left: '800px',
+                        top: '600px',
+                        width: '100px',
+                        height: '100px',
+                        textAlign: 'center',
+                        border: '1px solid black'
+                    }
+                }
+            ]
+        }
+    })
+</script>
+</body>
+</html>
