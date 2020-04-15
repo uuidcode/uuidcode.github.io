@@ -13,15 +13,26 @@
 </head>
 <body>
 <div id="app">
-    <div v-for="(cell in cellList"
+    <div class="block"
+         v-for="cell in cellList"
          v-bind:style="cell.styleObject"
-         v-bind:class="{ movePolice: cell.movePolice, moveBurglar: cell.moveBurglar }">
-        <strong v-bind:style="cell.titleStyleObject">{{ cell.title }}</strong>
-        <div v-if="cell.subTitle" style="font-size: 11px">{{ cell.subTitle }} - {{ cell.index }}</div>
-        <div v-if="!cell.subTitle" style="font-size: 11px">{{ cell.index }}</div>
-        <div v-if="cell.trick" v-bind:class="{ trick: cell.trick }">
-            속임수
-        </div>
+         v-bind:class="{
+            movePolice: cell.movePolice,
+            moveBurglar: cell.moveBurglar,
+            police: cell.police,
+            burglar: cell.burglar,
+            start: cell.start,
+            changePosition: cell.changePosition,
+            goHome: cell.goHome
+         }">
+            <strong v-bind:style="cell.titleStyleObject">{{ cell.title }}</strong>
+            <div v-if="cell.subTitle" style="font-size: 11px">{{ cell.subTitle }}</div>
+            <div v-if="cell.trick" v-bind:class="{ trick: cell.trick }">
+                속임수
+            </div>
+            <div class="index">
+                {{ cell.index }}
+            </div>
     </div>
     <div v-for="burglar in burglarList" v-bind:style="burglar.styleObject"></div>
     <div v-for="police in policeList" v-bind:style="police.styleObject"></div>

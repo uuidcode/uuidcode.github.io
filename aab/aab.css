@@ -2,22 +2,74 @@
     font-family:굴림;
 }
 
-.trick {
+.index {
     position: absolute;
     font-size: 12px;
-    background-color: red;
-    left: 50px;
+    left: 2px;
     top: 30px;
     width: 50px;
     height: 20px;
+    line-height: 20px;
+    text-align: left;
+}
+
+.trick {
+    position: absolute;
+    font-size: 11px;
+    background-color: deeppink;
+    left: 48px;
+    top: 30px;
+    width: 48px;
+    height: 16px;
     color: white;
     line-height: 20px;
 }
 
-.movePolice {
+.police {
     background-color: skyblue;
 }
 
-.moveBurglar {
+.burglar {
     background-color: pink;
+}
+
+.block {
+    position: absolute;
+    width: 92px;
+    height: 42px;
+    text-align: center;
+    margin: 2px;
+    padding: 2px;
+    border: 1px solid lightgrey;
+}
+
+.start {
+    width: 92px !important;
+    height: 92px !important;
+    line-height: 92px !important;
+    color: white;
+}
+
+.burglar.start {
+    background-color: deeppink !important;
+}
+
+.police.start {
+    background-color: deepskyblue !important;
+}
+
+.start .index {
+    top: 80px;
+}
+
+.changePosition {
+    background-color: orange;
+}
+
+.goHome {
+    background-color: lightgreen;
+}
+
+body {
+    margin: 1px;
 }
