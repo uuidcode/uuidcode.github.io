@@ -17,9 +17,7 @@ var blockList = [
             left: '1800px',
             top: '650px',
         },
-        classObject: {
-            threat: true
-        }
+        threat: true
     },
     {
         index: 2,
@@ -212,9 +210,7 @@ var blockList = [
             left: '1400px',
             top: '750px',
         },
-        classObject: {
-            goHome: true
-        }
+        goHome: true
     },
     {
         index: 26,
@@ -405,9 +401,7 @@ var blockList = [
             left: '1100px',
             top: '250px',
         },
-        classObject: {
-            threat: true
-        }
+        threat: true
     },
     {
         index: 57,
@@ -882,9 +876,7 @@ var blockList = [
             left: '600px',
             top: '650px',
         },
-        classObject: {
-            onlyBurglar: true,
-        }
+        onlyBurglar: true
     },
     {
         index: 113,
@@ -952,9 +944,7 @@ var blockList = [
             left: '0px',
             top: '700px',
         },
-        classObject: {
-            threat: true,
-        }
+        threat: true
     },
     {
         index: 122,
@@ -962,9 +952,7 @@ var blockList = [
             left: '0px',
             top: '750px',
         },
-        classObject: {
-            goHome: true,
-        }
+        goHome: true
     },
     {
         index: 123,
@@ -995,9 +983,7 @@ var blockList = [
             left: '200px',
             top: '600px',
         },
-        classObject: {
-            onlyBurglar: true,
-        }
+        onlyBurglar: true
     },
     {
         index: 127,
@@ -1109,9 +1095,7 @@ var blockList = [
             left: '400px',
             top: '150px',
         },
-        classObject: {
-            onlyBurglar: true,
-        }
+        onlyBurglar: true
     },
     {
         index: 140,
@@ -1119,9 +1103,7 @@ var blockList = [
             left: '400px',
             top: '50px',
         },
-        classObject: {
-            threat: true
-        }
+        threat: true
     },
     {
         index: 141,
@@ -1162,36 +1144,66 @@ var blockList = [
     }
 ];
 
-blockList.map(block => {
+blockList = blockList.map(block => {
     if (block.moveBurglar) {
-        if (!block.classObject) {
-            block.classObject = {}
-        }
-
-        block.classObject.burglar = true;
+        block = {
+            ...block,
+            classObject : {
+                burglar: true
+            }
+        };
     }
 
     if (block.movePolice) {
-        if (!block.classObject) {
-            block.classObject = {}
-        }
-
-        block.classObject.police = true;
+        block = {
+            ...block,
+            classObject : {
+                police: true
+            }
+        };
     }
 
-    if (block.classObject && block.classObject.onlyBurglar) {
-        block.subTitle = '경찰은 들어 갈 수 없다.';
-        block.classObject.burglar = true;
+    if (block.onlyBurglar) {
+        block = {
+            ...block,
+            subTitle: '경찰은 들어 갈 수 없다.',
+            classObject : {
+                burglar: true
+            }
+        };
     }
 
-    if (block.classObject && block.classObject.goHome) {
-        block.subTitle = '도둑은 아지트로 경찰은 경찰서로';
+    if (block.onlyBurglar) {
+        block = {
+            ...block,
+            subTitle: '경찰은 들어 갈 수 없다.',
+            classObject : {
+                burglar: true
+            }
+        };
     }
 
-    if (block.classObject && block.classObject.threat) {
-        block.subTitle = '도둑은 보석이 있는 건물 한곳을 알 수 있다.';
-        block.classObject.burglar = true;
+    if (block.threat) {
+        block = {
+            ...block,
+            subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
+            classObject : {
+                burglar: true
+            }
+        };
     }
+
+    if (block.goHome) {
+        block = {
+            ...block,
+            subTitle: '도둑은 아지트로 경찰은 경찰서로',
+            classObject : {
+                goHome: true
+            }
+        };
+    }
+
+    return block;
 });
 
 var app = new Vue({
