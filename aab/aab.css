@@ -1,0 +1,23 @@
+* {
+    font-family:굴림;
+}
+
+.trick {
+    position: absolute;
+    font-size: 12px;
+    background-color: red;
+    left: 50px;
+    top: 30px;
+    width: 50px;
+    height: 20px;
+    color: white;
+    line-height: 20px;
+}
+
+.movePolice {
+    background-color: skyblue;
+}
+
+.moveBurglar {
+    background-color: pink;
+}
