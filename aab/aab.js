@@ -6,8 +6,10 @@ var blockList = [
             left: '1800px',
             top: '700px',
         },
-        start: true,
-        burglar: true
+        classObject: {
+            start: true,
+            burglar: true
+        }
     },
     {
         index: 1,
@@ -15,7 +17,9 @@ var blockList = [
             left: '1800px',
             top: '650px',
         },
-        threat: true
+        classObject: {
+            threat: true
+        }
     },
     {
         index: 2,
@@ -85,10 +89,10 @@ var blockList = [
             left: '1800px',
             top: '500px',
         },
-        move: true,
-        target: 'burglar',
-        trick: true,
-        burglar: true
+        classObject: {
+            burglar: true
+        },
+        trick: true
     },
     {
         index: 11,
@@ -173,7 +177,9 @@ var blockList = [
             left: '1200px',
             top: '400px',
         },
-        comeBackHome: true
+        classObject: {
+            comeBackHome: true
+        }
     },
     {
         index: 22,
@@ -196,7 +202,9 @@ var blockList = [
             left: '1300px',
             top: '350px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true
+        }
     },
     {
         index: 25,
@@ -204,7 +212,9 @@ var blockList = [
             left: '1400px',
             top: '750px',
         },
-        goHome: true
+        classObject: {
+            goHome: true
+        }
     },
     {
         index: 26,
@@ -228,7 +238,9 @@ var blockList = [
             left: '1300px',
             top: '650px',
         },
-        police: true
+        classObject: {
+            police: true
+        }
     },
     {
         index: 29,
@@ -244,7 +256,9 @@ var blockList = [
             left: '1200px',
             top: '600px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true
+        }
     },
     {
         index: 39,
@@ -275,21 +289,21 @@ var blockList = [
         styleObject: {
             left: '1200px',
             top: '500px',
-        },
+        }
     },
     {
         index: 43,
         styleObject: {
             left: '1100px',
             top: '500px',
-        },
+        }
     },
     {
         index: 44,
         styleObject: {
             left: '1000px',
             top: '500px',
-        },
+        }
     },
     {
         index: 45,
@@ -298,28 +312,30 @@ var blockList = [
             left: '900px',
             top: '500px',
         },
-        changePosition: true
+        classObject: {
+            changePosition: true
+        }
     },
     {
         index: 46,
         styleObject: {
             left: '800px',
             top: '500px',
-        },
+        }
     },
     {
         index: 47,
         styleObject: {
             left: '700px',
             top: '500px',
-        },
+        }
     },
     {
         index: 48,
         styleObject: {
             left: '700px',
             top: '450px',
-        },
+        }
     },
     {
         index: 49,
@@ -343,7 +359,9 @@ var blockList = [
             left: '900px',
             top: '400px',
         },
-        changePosition: true
+        classObject: {
+            changePosition: true
+        }
     },
     {
         index: 52,
@@ -366,7 +384,9 @@ var blockList = [
             left: '700px',
             top: '300px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true
+        }
     },
     {
         index: 55,
@@ -375,7 +395,9 @@ var blockList = [
             left: '1100px',
             top: '300px',
         },
-        movePolice: true,
+        classObject: {
+            police: true
+        }
     },
     {
         index: 56,
@@ -383,7 +405,9 @@ var blockList = [
             left: '1100px',
             top: '250px',
         },
-        threat: true
+        classObject: {
+            threat: true
+        }
     },
     {
         index: 57,
@@ -420,7 +444,9 @@ var blockList = [
             left: '1300px',
             top: '100px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true
+        }
     },
     {
         index: 62,
@@ -435,7 +461,8 @@ var blockList = [
         styleObject: {
             left: '1500px',
             top: '300px',
-        }
+        },
+        movePolice: true
     },
     {
         index: 64,
@@ -443,7 +470,8 @@ var blockList = [
         styleObject: {
             left: '1500px',
             top: '250px',
-        }
+        },
+        moveBurglar: true
     },
     {
         index: 65,
@@ -489,7 +517,8 @@ var blockList = [
         styleObject: {
             left: '1800px',
             top: '350px',
-        }
+        },
+        movePolice: true
     },
     {
         index: 71,
@@ -537,8 +566,10 @@ var blockList = [
             left: '1800px',
             top: '250px',
         },
-        trick: true,
-        tunnel: true
+        classObject: {
+            tunnel: true
+        },
+        trick: true
     },
     {
         index: 77,
@@ -554,7 +585,9 @@ var blockList = [
             left: '1800px',
             top: '150px',
         },
-        movePolice:true,
+        classObject: {
+            movePolice: true,
+        }
     },
     {
         index: 79,
@@ -592,7 +625,9 @@ var blockList = [
             left: '1200px',
             top: '0px',
         },
-        stop: true
+        classObject: {
+            stop: true,
+        }
     },
     {
         index: 84,
@@ -615,7 +650,9 @@ var blockList = [
             left: '900px',
             top: '0px',
         },
-        changePosition: true
+        classObject: {
+            changePosition: true,
+        }
     },
     {
         index: 87,
@@ -645,9 +682,7 @@ var blockList = [
         styleObject: {
             left: '500px',
             top: '0px',
-        },
-        move: true,
-        moveTarget: 'burglar'
+        }
     },
     {
         index: 91,
@@ -703,7 +738,9 @@ var blockList = [
             left: '500px',
             top: '350px',
         },
-        police: true
+        classObject: {
+            police: true,
+        }
     },
     {
         index: 98,
@@ -712,10 +749,11 @@ var blockList = [
             left: '500px',
             top: '400px',
         },
-        police: true,
-        trick: true,
+        classObject: {
+            movePolice: true
+        },
         move: 120,
-        moveTarget: 'police'
+        trick: true
     },
     {
         index: 99,
@@ -724,9 +762,10 @@ var blockList = [
             left: '600px',
             top: '400px',
         },
-        burglar: true,
-        move: 121,
-        moveTarget: 'buglar'
+        classObject: {
+            moveBurglar: true
+        },
+        move: 121
     },
     {
         index: 100,
@@ -742,7 +781,9 @@ var blockList = [
             left: '1100px',
             top: '750px',
         },
-        movePolice:true,
+        classObject: {
+            movePolice: true
+        }
     },
     {
         index: 102,
@@ -758,8 +799,10 @@ var blockList = [
             left: '900px',
             top: '750px',
         },
-        move: 86,
-        changePosition: true
+        classObject: {
+            changePosition: true
+        },
+        move: 86
     },
     {
         index: 104,
@@ -775,9 +818,10 @@ var blockList = [
             left: '700px',
             top: '750px',
         },
-        burglar: true,
+        classObject: {
+            burglarMove: true
+        },
         move: 99,
-        burglarMove: true
     },
     {
         index: 106,
@@ -786,9 +830,10 @@ var blockList = [
             left: '600px',
             top: '750px',
         },
-        police: true,
-        move: 98,
-        movePolice: true
+        classObject: {
+            movePolice: true
+        },
+        move: 98
 
     },
     {
@@ -819,8 +864,10 @@ var blockList = [
             left: '400px',
             top: '650px',
         },
-        trick: true,
-        burglar: true
+        classObject: {
+            burglar: true
+        },
+        trick: true
     },
     {
         index: 111,
@@ -835,7 +882,9 @@ var blockList = [
             left: '600px',
             top: '650px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true,
+        }
     },
     {
         index: 113,
@@ -903,7 +952,9 @@ var blockList = [
             left: '0px',
             top: '700px',
         },
-        threat: true
+        classObject: {
+            threat: true,
+        }
     },
     {
         index: 122,
@@ -911,7 +962,9 @@ var blockList = [
             left: '0px',
             top: '750px',
         },
-        goHome: true
+        classObject: {
+            goHome: true,
+        }
     },
     {
         index: 123,
@@ -942,7 +995,9 @@ var blockList = [
             left: '200px',
             top: '600px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true,
+        }
     },
     {
         index: 127,
@@ -989,7 +1044,9 @@ var blockList = [
             left: '300px',
             top: '400px',
         },
-        rest: true
+        classObject: {
+            rest: true,
+        }
     },
     {
         index: 133,
@@ -998,7 +1055,9 @@ var blockList = [
             left: '400px',
             top: '400px',
         },
-        moveBurglar: true
+        classObject: {
+            moveBurglar: true,
+        }
     },
     {
         index: 134,
@@ -1022,7 +1081,9 @@ var blockList = [
             left: '100px',
             top: '250px',
         },
-        moveBurglar: true
+        classObject: {
+            moveBurglar: true,
+        }
     },
     {
         index: 137,
@@ -1038,7 +1099,9 @@ var blockList = [
             left: '0px',
             top: '200px',
         },
-        tunnel: true
+        classObject: {
+            tunnel: true,
+        }
     },
     {
         index: 139,
@@ -1046,7 +1109,9 @@ var blockList = [
             left: '400px',
             top: '150px',
         },
-        onlyBurglar: true
+        classObject: {
+            onlyBurglar: true,
+        }
     },
     {
         index: 140,
@@ -1054,7 +1119,9 @@ var blockList = [
             left: '400px',
             top: '50px',
         },
-        threat: true
+        classObject: {
+            threat: true
+        }
     },
     {
         index: 141,
@@ -1063,7 +1130,9 @@ var blockList = [
             left: '300px',
             top: '50px',
         },
-        movePolice:true,
+        classObject: {
+            movePolice: true,
+        }
     },
     {
         index: 142,
@@ -1086,25 +1155,42 @@ var blockList = [
             left: '0px',
             top: '0px',
         },
-        start: true,
-        police: true
+        classObject: {
+            start: true,
+            police: true
+        }
     }
 ];
 
 blockList.map(block => {
-    if (block.onlyBurglar) {
+    if (block.moveBurglar) {
+        if (!block.classObject) {
+            block.classObject = {}
+        }
+
+        block.classObject.burglar = true;
+    }
+
+    if (block.movePolice) {
+        if (!block.classObject) {
+            block.classObject = {}
+        }
+
+        block.classObject.police = true;
+    }
+
+    if (block.classObject && block.classObject.onlyBurglar) {
         block.subTitle = '경찰은 들어 갈 수 없다.';
-        block.burglar = true;
+        block.classObject.burglar = true;
     }
 
-    if (block.goHome) {
+    if (block.classObject && block.classObject.goHome) {
         block.subTitle = '도둑은 아지트로 경찰은 경찰서로';
-        block.burglar = true;
     }
 
-    if (block.threat) {
+    if (block.classObject && block.classObject.threat) {
         block.subTitle = '도둑은 보석이 있는 건물 한곳을 알 수 있다.';
-        block.burglar = true;
+        block.classObject.burglar = true;
     }
 });
 
