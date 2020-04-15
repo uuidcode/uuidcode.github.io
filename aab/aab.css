@@ -73,3 +73,8 @@
 body {
     margin: 1px;
 }
+
+.tunnel {
+    background-color: grey;
+    color: white;
+}

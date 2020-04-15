@@ -11,12 +11,11 @@ var blockList = [
     },
     {
         index: 1,
-        subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
         styleObject: {
             left: '1800px',
             top: '650px',
         },
-        burglar: true
+        threat: true
     },
     {
         index: 2,
@@ -379,30 +378,29 @@ var blockList = [
         movePolice: true,
     },
     {
-        index: 57,
-        subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
+        index: 56,
         styleObject: {
             left: '1100px',
             top: '250px',
         },
-        burglar: true
+        threat: true
     },
     {
-        index: 58,
+        index: 57,
         styleObject: {
             left: '1100px',
             top: '200px',
         }
     },
     {
-        index: 59,
+        index: 58,
         styleObject: {
             left: '1200px',
             top: '200px',
         }
     },
     {
-        index: 60,
+        index: 59,
         styleObject: {
             left: '1300px',
             top: '200px',
@@ -410,14 +408,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 61,
+        index: 60,
         styleObject: {
             left: '1300px',
             top: '150px',
         }
     },
     {
-        index: 62,
+        index: 61,
         styleObject: {
             left: '1300px',
             top: '100px',
@@ -425,14 +423,14 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 63,
+        index: 62,
         styleObject: {
             left: '1500px',
             top: '350px',
         }
     },
     {
-        index: 64,
+        index: 63,
         subTitle: '경찰은 71로 이동',
         styleObject: {
             left: '1500px',
@@ -440,7 +438,7 @@ var blockList = [
         }
     },
     {
-        index: 65,
+        index: 64,
         subTitle: '도둑은 72로 이동',
         styleObject: {
             left: '1500px',
@@ -448,7 +446,7 @@ var blockList = [
         }
     },
     {
-        index: 66,
+        index: 65,
         subTitle: '비타민을 먹었다. 5칸 전진',
         styleObject: {
             left: '1500px',
@@ -457,28 +455,28 @@ var blockList = [
         trick: true
     },
     {
-        index: 67,
+        index: 66,
         styleObject: {
             left: '1500px',
             top: '150px',
         }
     },
     {
-        index: 68,
+        index: 67,
         styleObject: {
             left: '1500px',
             top: '100px',
         }
     },
     {
-        index: 69,
+        index: 68,
         styleObject: {
             left: '1500px',
             top: '50px',
         }
     },
     {
-        index: 70,
+        index: 69,
         styleObject: {
             left: '1500px',
             top: '0px',
@@ -486,7 +484,7 @@ var blockList = [
         trick: true
     },
     {
-        index: 71,
+        index: 70,
         subTitle: '경찰은 64으로 이동',
         styleObject: {
             left: '1800px',
@@ -494,7 +492,7 @@ var blockList = [
         }
     },
     {
-        index: 72,
+        index: 71,
         subTitle: '도둑은 65로 이동',
         styleObject: {
             left: '1800px',
@@ -503,7 +501,7 @@ var blockList = [
         moveBurglar: true
     },
     {
-        index: 73,
+        index: 72,
         subTitle: '경찰은 주사위를 던져서 3이 나오면 도둑 한명 체포',
         styleObject: {
             left: '1400px',
@@ -511,21 +509,21 @@ var blockList = [
         }
     },
     {
-        index: 74,
+        index: 73,
         styleObject: {
             left: '1600px',
             top: '0px',
         },
     },
     {
-        index: 75,
+        index: 74,
         styleObject: {
             left: '1700px',
             top: '0px',
         },
     },
     {
-        index: 76,
+        index: 75,
         styleObject: {
             left: '1800px',
             top: '0px',
@@ -533,24 +531,24 @@ var blockList = [
         trick: true
     },
     {
-        index: 77,
-        title: '터널',
+        index: 76,
         subTitle: '138로 이동',
         styleObject: {
             left: '1800px',
             top: '250px',
         },
-        trick: true
+        trick: true,
+        tunnel: true
     },
     {
-        index: 78,
+        index: 77,
         styleObject: {
             left: '1800px',
             top: '200px',
         }
     },
     {
-        index: 79,
+        index: 78,
         subTitle: '경찰은 위치 이동을 한다.',
         styleObject: {
             left: '1800px',
@@ -559,21 +557,21 @@ var blockList = [
         movePolice:true,
     },
     {
-        index: 80,
+        index: 79,
         styleObject: {
             left: '1800px',
             top: '100px',
         }
     },
     {
-        index: 81,
+        index: 80,
         styleObject: {
             left: '1800px',
             top: '50px',
         }
     },
     {
-        index: 82,
+        index: 81,
         subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '1400px',
@@ -582,15 +580,14 @@ var blockList = [
         }
     },
     {
-        index: 83,
+        index: 82,
         styleObject: {
             left: '1300px',
             top: '0px',
         }
     },
     {
-        index: 84,
-        subTitle: '주사위 수가 남아도 반드시 멈춘다.',
+        index: 83,
         styleObject: {
             left: '1200px',
             top: '0px',
@@ -902,11 +899,11 @@ var blockList = [
     },
     {
         index: 121,
-        subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
         styleObject: {
             left: '0px',
             top: '700px',
-        }
+        },
+        threat: true
     },
     {
         index: 122,
@@ -1036,12 +1033,12 @@ var blockList = [
     },
     {
         index: 138,
-        title: '터널',
-        subTitle: '77로 이동',
+        subTitle: '75로 이동',
         styleObject: {
             left: '0px',
             top: '200px',
-        }
+        },
+        tunnel: true
     },
     {
         index: 139,
@@ -1053,11 +1050,11 @@ var blockList = [
     },
     {
         index: 140,
-        subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
         styleObject: {
             left: '400px',
             top: '50px',
-        }
+        },
+        threat: true
     },
     {
         index: 141,
@@ -1102,6 +1099,11 @@ blockList.map(block => {
 
     if (block.goHome) {
         block.subTitle = '도둑은 아지트로 경찰은 경찰서로';
+        block.burglar = true;
+    }
+
+    if (block.threat) {
+        block.subTitle = '도둑은 보석이 있는 건물 한곳을 알 수 있다.';
         block.burglar = true;
     }
 });
