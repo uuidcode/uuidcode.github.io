@@ -1085,9 +1085,10 @@ let data = {
                 position: 'absolute',
                 left: '0px',
                 top: '0px',
-                width: '200px',
-                height: '160px',
-                backgroundImage: 'url(image/j1.png)'
+                width: '50px',
+                height: '40px',
+                backgroundImage: 'url(image/j1.png)',
+                backgroundSize: 'cover'
             },
             classObject: {
                 jewelry: true,
@@ -1100,9 +1101,10 @@ let data = {
                 position: 'absolute',
                 left: '0px',
                 top: '0px',
-                width: '200px',
-                height: '160px',
-                backgroundImage: 'url(image/j2.png)'
+                width: '50px',
+                height: '40px',
+                backgroundImage: 'url(image/j2.png)',
+                backgroundSize: 'cover'
             },
             classObject: {
                 jewelry: true,
@@ -1263,7 +1265,7 @@ let data = {
     ],
     blockList: blockList,
     status: {
-        hideJewelry: false,
+        hideJewelryMode: false,
         hideJewelryCount: 0
     }
 };
@@ -1272,11 +1274,22 @@ let app = new Vue({
     el: '#app',
     data: data,
     methods: {
-        hideJewelry: function (event) {
+        hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
             building.classObject.blink = false;
             Vue.set(this.buildingList, index, building);
+
+            let $jewelry = $('.jewelry').eq(this.status.hideJewelryCount);
+            $jewelry.show();
+
+            $jewelry.animate({
+                left: $(event.target).offset().left + 50,
+                top: $(event.target).offset().top + 25,
+            }, 1000, function () {
+                app.status.hideJewelryCount++;
+                $jewelry.hide();
+            });
         },
         getDirection: function(block) {
             if (block.backward) {
@@ -1454,7 +1467,7 @@ let $jewelryModal = $('#jewelryModal').modal();
 
 $('.hide-jewelry-button').on('click', () => {
     $jewelryModal.modal('hide');
-    data.status.hideJewelry = true;
+    data.status.hideJewelryMode = true;
 
     for (let i = 0; i < app.buildingList.length; i++) {
         let building = app.buildingList[i];
@@ -1463,9 +1476,5 @@ $('.hide-jewelry-button').on('click', () => {
     }
 
     let jewelry = app.jewelryList[app.status.hideJewelryCount];
-    jewelry.classObject.hideJewelry = false;
-
-    $('.jewelry')
-
     Vue.set(app.jewelryList, app.status.hideJewelryCount, jewelry);
 });

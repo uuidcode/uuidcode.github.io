@@ -31,15 +31,17 @@
     <div v-for="burglar in burglarList" v-bind:style="burglar.styleObject"></div>
     <div v-for="police in policeList" v-bind:style="police.styleObject"></div>
 
-    <div v-for="building in buildingList"
+    <div class="building"
+         v-for="building in buildingList"
          :data-index="building.index"
          v-bind:key="building.index"
          v-bind:class="building.classObject"
          v-bind:style="building.styleObject"
-         v-on:click="hideJewelry"></div>
+         v-on:click="hideJewelryAtBuilding"></div>
 
     <div v-for="jewelry in jewelryList"
          :id="jewelry.index"
+         v-bind:class="jewelry.classObject"
          v-bind:style="jewelry.styleObject"></div>
     </div>
 </div>
