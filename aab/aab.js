@@ -50,11 +50,13 @@ var blockList = [
     },
     {
         index: 6,
-        subTitle: '4칸 앞으로 가서 지시에 따른다.',
         styleObject: {
             left: '1500px',
             top: '600px',
-        }
+        },
+        mission: true,
+        forward: true,
+        move: 4
     },
     {
         index: 7,
@@ -79,18 +81,12 @@ var blockList = [
     },
     {
         index: 10,
-        subTitle: '도둑은 위치 이동을 한다.',
-        titleStyleObject: {
-            fontSize: '13px'
-        },
         styleObject: {
             left: '1800px',
             top: '500px',
         },
-        classObject: {
-            burglar: true
-        },
-        trick: true
+        trick: true,
+        changeBurglar: true
     },
     {
         index: 11,
@@ -109,11 +105,11 @@ var blockList = [
     },
     {
         index: 13,
-        subTitle: '주사위 수가 남아도 반드시 멈춘다',
         styleObject: {
             left: '1700px',
             top: '400px',
-        }
+        },
+        stop: true
     },
     {
         index: 14,
@@ -139,10 +135,13 @@ var blockList = [
     },
     {
         index: 17,
-        subTitle: '도둑이 보석을 가지고 있으면 경찰에게 주고 경찰은 다시 숨긴다.',
+        subTitle: '보석을 가지고 있으면 경찰에게 주고 경찰은 다시 숨긴다.',
         styleObject: {
             left: '1600px',
             top: '500px',
+        },
+        classObject: {
+            burglar: true
         }
     },
     {
@@ -154,11 +153,13 @@ var blockList = [
     },
     {
         index: 19,
-        subTitle: '경찰은 도둑의 1칸 앞으로 간다.',
         styleObject: {
             left: '1400px',
             top: '400px',
-        }
+        },
+        run: true,
+        forward: true,
+        move: 1
     },
     {
         index: 20,
@@ -170,14 +171,11 @@ var blockList = [
     },
     {
         index: 21,
-        subTitle: '도둑은 아지트로 경찰은 감옥으로',
         styleObject: {
             left: '1200px',
             top: '400px',
         },
-        classObject: {
-            comeBackHome: true
-        }
+        goHome: true
     },
     {
         index: 22,
@@ -229,14 +227,12 @@ var blockList = [
     },
     {
         index: 28,
-        subTitle: '경찰은 주사위를 던져서 2가 나오면 도둑 한명 체포',
         styleObject: {
             left: '1300px',
             top: '650px',
         },
-        classObject: {
-            police: true
-        }
+        arrest: true,
+        dice: 2
     },
     {
         index: 29,
@@ -258,11 +254,11 @@ var blockList = [
     },
     {
         index: 39,
-        subTitle: '주사위 수가 남아도 반드시 멈춘다',
         styleObject: {
             left: '1300px',
             top: '550px',
-        }
+        },
+        stop: true
     },
     {
         index: 40,
@@ -285,6 +281,9 @@ var blockList = [
         styleObject: {
             left: '1200px',
             top: '500px',
+        },
+        classObject: {
+            burglar: true
         }
     },
     {
@@ -361,11 +360,11 @@ var blockList = [
     },
     {
         index: 52,
-        subTitle: '주사위 수가 남아도 반드시 멈춘다',
         styleObject: {
             left: '800px',
             top: '400px',
-        }
+        },
+        stop: true
     },
     {
         index: 53,
@@ -451,30 +450,32 @@ var blockList = [
     },
     {
         index: 63,
-        subTitle: '경찰은 71로 이동',
         styleObject: {
             left: '1500px',
             top: '300px',
         },
-        movePolice: true
+        movePolice: true,
+        move: 71
     },
     {
         index: 64,
-        subTitle: '도둑은 72로 이동',
         styleObject: {
             left: '1500px',
             top: '250px',
         },
-        moveBurglar: true
+        moveBurglar: true,
+        move: 72
     },
     {
         index: 65,
-        subTitle: '비타민을 먹었다. 5칸 전진',
         styleObject: {
             left: '1500px',
             top: '200px',
         },
-        trick: true
+        trick: true,
+        mission: true,
+        move: 3,
+        forward: true
     },
     {
         index: 66,
@@ -507,29 +508,30 @@ var blockList = [
     },
     {
         index: 70,
-        subTitle: '경찰은 64으로 이동',
         styleObject: {
             left: '1800px',
             top: '350px',
         },
-        movePolice: true
+        movePolice: true,
+        move: 64
     },
     {
         index: 71,
-        subTitle: '도둑은 65로 이동',
         styleObject: {
             left: '1800px',
             top: '300px',
         },
-        moveBurglar: true
+        moveBurglar: true,
+        move: 65
     },
     {
         index: 72,
-        subTitle: '경찰은 주사위를 던져서 3이 나오면 도둑 한명 체포',
         styleObject: {
             left: '1400px',
             top: '200px',
-        }
+        },
+        arrest: true,
+        dice: 3
     },
     {
         index: 73,
@@ -574,14 +576,11 @@ var blockList = [
     },
     {
         index: 78,
-        subTitle: '경찰은 위치 이동을 한다.',
         styleObject: {
             left: '1800px',
             top: '150px',
         },
-        classObject: {
-            movePolice: true,
-        }
+        changePolice: true
     },
     {
         index: 79,
@@ -599,12 +598,11 @@ var blockList = [
     },
     {
         index: 81,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '1400px',
             top: '0px',
-            width: '100px',
-        }
+        },
+        changeBurglar: true
     },
     {
         index: 82,
@@ -619,9 +617,7 @@ var blockList = [
             left: '1200px',
             top: '0px',
         },
-        classObject: {
-            stop: true,
-        }
+        stop: true
     },
     {
         index: 84,
@@ -657,11 +653,11 @@ var blockList = [
     },
     {
         index: 88,
-        subTitle: '밑에 있는 건물을 뒤져라',
         styleObject: {
             left: '700px',
             top: '0px',
-        }
+        },
+        search: true
     },
     {
         index: 89,
@@ -672,11 +668,11 @@ var blockList = [
     },
     {
         index: 90,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '500px',
             top: '0px',
-        }
+        },
+        changeBurglar: true
     },
     {
         index: 91,
@@ -688,11 +684,11 @@ var blockList = [
     },
     {
         index: 92,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '500px',
             top: '100px',
-        }
+        },
+        changeBurglar: true
     },
     {
         index: 93,
@@ -704,12 +700,13 @@ var blockList = [
     },
     {
         index: 94,
-        subTitle: '뒤로 2칸 이동해서 지시에 따른다.',
         styleObject: {
             left: '500px',
             top: '200px',
         },
-        back: 2
+        mission: true,
+        backward: true,
+        move: 2
     },
     {
         index: 95,
@@ -727,14 +724,12 @@ var blockList = [
     },
     {
         index: 97,
-        subTitle: '경찰은 주사위를 던져서 6이 나오면 도둑 한명 체포',
         styleObject: {
             left: '500px',
             top: '350px',
         },
-        classObject: {
-            police: true,
-        }
+        arrest: true,
+        dice: 6
     },
     {
         index: 98,
@@ -743,23 +738,18 @@ var blockList = [
             left: '500px',
             top: '400px',
         },
-        classObject: {
-            movePolice: true
-        },
-        move: 120,
-        trick: true
+        move: 106,
+        trick: true,
+        movePolice: true
     },
     {
         index: 99,
-        subTitle: '도둑은 121으로 이동',
         styleObject: {
             left: '600px',
             top: '400px',
         },
-        classObject: {
-            moveBurglar: true
-        },
-        move: 121
+        moveBurglar: true,
+        move: 105
     },
     {
         index: 100,
@@ -770,14 +760,11 @@ var blockList = [
     },
     {
         index: 101,
-        subTitle: '경찰은 위치 이동을 한다.',
         styleObject: {
             left: '1100px',
             top: '750px',
         },
-        classObject: {
-            movePolice: true
-        }
+        changePolice: true
     },
     {
         index: 102,
@@ -807,26 +794,20 @@ var blockList = [
     },
     {
         index: 105,
-        subTitle: '도둑은 99로 이동',
         styleObject: {
             left: '700px',
             top: '750px',
         },
-        classObject: {
-            burglarMove: true
-        },
+        moveBurglar: true,
         move: 99,
     },
     {
         index: 106,
-        subTitle: '경찰은 98로 이동',
         styleObject: {
             left: '600px',
             top: '750px',
         },
-        classObject: {
-            movePolice: true
-        },
+        movePolice: true,
         move: 98
 
     },
@@ -909,19 +890,21 @@ var blockList = [
     },
     {
         index: 117,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '100px',
             top: '550px',
-        }
+        },
+        changeBurglar: true
     },
     {
         index: 118,
-        subTitle: '밥을 먹고 힘이 났다. 3칸 앞으로',
         styleObject: {
             left: '0px',
             top: '550px',
-        }
+        },
+        mission: true,
+        move: 3,
+        forward: true
     },
     {
         index: 119,
@@ -956,11 +939,11 @@ var blockList = [
     },
     {
         index: 123,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '100px',
             top: '750px',
-        }
+        },
+        changeBurglar: true
     },
     {
         index: 124,
@@ -1002,11 +985,13 @@ var blockList = [
     },
     {
         index: 129,
-        subTitle: '경찰은 도둑의 1칸 앞으로',
         styleObject: {
             left: '0px',
             top: '400px',
-        }
+        },
+        run: true,
+        move: 1,
+        forward: true
     },
     {
         index: 130,
@@ -1025,25 +1010,19 @@ var blockList = [
     },
     {
         index: 132,
-        subTitle: '이 칸에 멈추면 1회 휴식',
         styleObject: {
             left: '300px',
             top: '400px',
         },
-        classObject: {
-            rest: true,
-        }
+        rest: true
     },
     {
         index: 133,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '400px',
             top: '400px',
         },
-        classObject: {
-            moveBurglar: true,
-        }
+        changeBurglar: true
     },
     {
         index: 134,
@@ -1054,22 +1033,19 @@ var blockList = [
     },
     {
         index: 135,
-        subTitle: '도둑은 아지트로 경찰은 감옥으로',
         styleObject: {
             left: '100px',
             top: '300px',
-        }
+        },
+        goHome: true
     },
     {
         index: 136,
-        subTitle: '도둑은 위치 이동을 한다.',
         styleObject: {
             left: '100px',
             top: '250px',
         },
-        classObject: {
-            moveBurglar: true,
-        }
+        changeBurglar: true
     },
     {
         index: 137,
@@ -1107,14 +1083,11 @@ var blockList = [
     },
     {
         index: 141,
-        subTitle: '경찰은 위치 이동을 한다.',
         styleObject: {
             left: '300px',
             top: '50px',
         },
-        classObject: {
-            movePolice: true,
-        }
+        changePolice: true,
     },
     {
         index: 142,
@@ -1144,7 +1117,67 @@ var blockList = [
     }
 ];
 
+let getDirection = (block) => {
+    if (block.backward) {
+        return '뒤';
+    }
+
+    return "앞";
+};
+
 blockList = blockList.map(block => {
+    if (block.mission) {
+        let direction = getDirection(block);
+
+        block = {
+            ...block,
+            subTitle: `${block.move}칸 ${direction}으로 가서 지시에 따른다.`,
+            classObject : {
+                mission: true
+            }
+        };
+    }
+
+    if (block.arrest) {
+        block = {
+            ...block,
+            subTitle: `경찰은 주사위를 던져서 ${block.dice}이 나오면 도둑 한명 체포`,
+            classObject : {
+                police: true
+            }
+        };
+    }
+
+    if (block.search) {
+        block = {
+            ...block,
+            subTitle: '밑에 있는 건물을 뒤져라',
+            classObject : {
+                burglar: true
+            }
+        };
+    }
+
+    if (block.rest) {
+        block = {
+            ...block,
+            subTitle: '이 칸에 멈추면 1회 휴식',
+            classObject : {
+                rest: true
+            }
+        };
+    }
+
+    if (block.stop) {
+        block = {
+            ...block,
+            subTitle: '주사위 수가 남아도 반드시 멈춘다',
+            classObject : {
+                stop: true
+            }
+        };
+    }
+
     if (block.moveBurglar) {
         block = {
             ...block,
@@ -1154,9 +1187,52 @@ blockList = blockList.map(block => {
         };
     }
 
+    if (block.changeBurglar) {
+        block = {
+            ...block,
+            subTitle: '도둑은 위치 이동을 한다.',
+            classObject : {
+                burglar: true
+            }
+        };
+    }
+
+    if (block.moveBurglar) {
+        block = {
+            ...block,
+            subTitle: `도둑은 ${block.move}으로 이동`,
+            classObject : {
+                burglar: true
+            }
+        };
+    }
+
+    if (block.changePolice) {
+        block = {
+            ...block,
+            subTitle: '경찰은 위치 이동을 한다.',
+            classObject : {
+                police: true
+            }
+        };
+    }
+
+    if (block.run) {
+        let direction = getDirection(block);
+
+        block = {
+            ...block,
+            subTitle: `경찰은 도둑의 ${block.move}칸으로 ${direction}으로 이동`,
+            classObject : {
+                police: true
+            }
+        };
+    }
+
     if (block.movePolice) {
         block = {
             ...block,
+            subTitle: `경찰은 ${block.move}으로 이동`,
             classObject : {
                 police: true
             }
@@ -1379,3 +1455,43 @@ $app.append($dic);
 
 var die = new Die();
 $app.append(die.$element);
+
+$(document.body).curvedArrow({
+    p0x: 550,
+    p0y: 460,
+    p1x: 500,
+    p1y: 650,
+    p2x: 650,
+    p2y: 740,
+    strokeStyle: 'rgba(135, 206, 235, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 650,
+    p0y: 740,
+    p1x: 500,
+    p1y: 650,
+    p2x: 550,
+    p2y: 460,
+    strokeStyle: 'rgba(135, 206, 235, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 650,
+    p0y: 460,
+    p1x: 650,
+    p1y: 460,
+    p2x: 750,
+    p2y: 740,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 750,
+    p0y: 740,
+    p1x: 750,
+    p1y: 740,
+    p2x: 650,
+    p2y: 460,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});

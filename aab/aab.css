@@ -65,7 +65,7 @@
 }
 
 .changePosition {
-    background-color: orange;
+    background-color: lightsalmon;
 }
 
 .goHome {
@@ -77,6 +77,18 @@ body {
 }
 
 .tunnel {
-    background-color: grey;
+    background-color: lightsteelblue;
     color: white;
+}
+
+.stop {
+    background-color: lightyellow;
+}
+
+.mission {
+    background-color: lightyellow;
+}
+
+.rest {
+    background-color: lightyellow;
 }
