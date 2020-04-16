@@ -98,3 +98,13 @@ body {
 *::after {
     box-sizing: unset;
 }
+
+.blink {
+    animation: blink-animation 2s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}

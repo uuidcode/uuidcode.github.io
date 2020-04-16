@@ -30,19 +30,40 @@
     </div>
     <div v-for="burglar in burglarList" v-bind:style="burglar.styleObject"></div>
     <div v-for="police in policeList" v-bind:style="police.styleObject"></div>
-    <div v-for="building in buildingList" v-bind:style="building.styleObject"></div>
+
+    <div v-for="building in buildingList"
+         v-bind:key="building.index"
+         v-bind:class="building.classObject"
+         v-bind:style="building.styleObject"></div>
+
     <div v-for="jewelry in jewelryList" v-bind:style="jewelry.styleObject"></div>
     </div>
 </div>
 <div class="modal"
-     id="diceModal"
-     tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+    id="diceModal"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div id="die"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal"
+     id="jewelryModal"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                보석을 숨길 건물을 클릭하세요.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary hide-jewelry-button">확인</button>
             </div>
         </div>
     </div>

@@ -30,6 +30,7 @@ function Die() {
 
         this.$element.on('click', function () {
             that.roll(function (notation, count) {
+                console.log(count[0]);
             });
         });
     };
@@ -51,7 +52,4 @@ function Die() {
     };
 
     this.init();
-    
-    console.log('init');
-    
 }

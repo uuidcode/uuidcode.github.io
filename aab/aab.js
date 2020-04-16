@@ -1267,176 +1267,184 @@ blockList = blockList.map(block => {
     return block;
 });
 
-var app = new Vue({
-    el: '#app',
-    data: {
+let data = {
         jewelryList: [
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2000px',
-                    top: '0px',
-                    width: '200px',
-                    height: '160px',
-                    backgroundImage: 'url(image/j1.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2200px',
-                    top: '0px',
-                    width: '200px',
-                    height: '160px',
-                    backgroundImage: 'url(image/j2.png)'
-                }
-            }
-        ]
-        ,
-        buildingList:[
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '1300px',
-                    top: '250px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/1.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '1100px',
-                    top: '580px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/2.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '700px',
-                    top: '200px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/3.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '1200px',
-                    top: '50px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/4.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '500px',
-                    top: '550px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/5.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '200px',
-                    top: '650px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/6.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '300px',
-                    top: '100px',
-                    width: '100px',
-                    height: '100px',
-                    backgroundImage: 'url(image/7.png)'
-                }
-            }
-        ],
-        policeList:[
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2300px',
-                    top: '380px',
-                    width: '80px',
-                    height: '80px',
-                    backgroundImage: 'url(image/d.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2380px',
-                    top: '380px',
-                    width: '80px',
-                    height: '80px',
-                    backgroundImage: 'url(image/e.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2460px',
-                    top: '380px',
-                    width: '80px',
-                    height: '80px',
-                    backgroundImage: 'url(image/f.png)'
-                }
-            }
-        ],
-        burglarList:[
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2300px',
-                    top: '300px',
-                    width: '80px',
-                    height: '80px',
-                    backgroundImage: 'url(image/a.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2380px',
-                    top: '300px',
-                    width: '80px',
-                    height: '80px',
-                    backgroundImage: 'url(image/b.png)'
-                }
-            },
-            {
-                styleObject: {
-                    position: 'absolute',
-                    left: '2460px',
-                    top: '300px',
-                    width: '80px',
-                    height: '80px',
-                    backgroundImage: 'url(image/c.png)'
-                }
-            }
-        ],
-        cellList: blockList
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2000px',
+            top: '0px',
+            width: '200px',
+            height: '160px',
+            backgroundImage: 'url(image/j1.png)'
+        }
+    },
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2200px',
+            top: '0px',
+            width: '200px',
+            height: '160px',
+            backgroundImage: 'url(image/j2.png)'
+        }
     }
-});
+]
+    ,
+    buildingList:[
+    {
+        index: 0,
+        styleObject: {
+            position: 'absolute',
+            left: '1300px',
+            top: '250px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/1.png)'
+        }
+    },
+    {
+        index: 1,
+        styleObject: {
+            position: 'absolute',
+            left: '1100px',
+            top: '580px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/2.png)'
+        }
+    },
+    {
+        index: 2,
+        styleObject: {
+            position: 'absolute',
+            left: '700px',
+            top: '200px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/3.png)'
+        }
+    },
+    {
+        index: 3,
+        styleObject: {
+            position: 'absolute',
+            left: '1200px',
+            top: '50px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/4.png)'
+        }
+    },
+    {
+        index: 4,
+        styleObject: {
+            position: 'absolute',
+            left: '500px',
+            top: '550px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/5.png)'
+        }
+    },
+    {
+        index: 5,
+        styleObject: {
+            position: 'absolute',
+            left: '200px',
+            top: '650px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/6.png)'
+        }
+    },
+    {
+        index: 6,
+        styleObject: {
+            position: 'absolute',
+            left: '300px',
+            top: '100px',
+            width: '100px',
+            height: '100px',
+            backgroundImage: 'url(image/7.png)'
+        }
+    }
+],
+    policeList:[
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2300px',
+            top: '380px',
+            width: '80px',
+            height: '80px',
+            backgroundImage: 'url(image/d.png)'
+        }
+    },
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2380px',
+            top: '380px',
+            width: '80px',
+            height: '80px',
+            backgroundImage: 'url(image/e.png)'
+        }
+    },
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2460px',
+            top: '380px',
+            width: '80px',
+            height: '80px',
+            backgroundImage: 'url(image/f.png)'
+        }
+    }
+],
+    burglarList:[
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2300px',
+            top: '300px',
+            width: '80px',
+            height: '80px',
+            backgroundImage: 'url(image/a.png)'
+        }
+    },
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2380px',
+            top: '300px',
+            width: '80px',
+            height: '80px',
+            backgroundImage: 'url(image/b.png)'
+        }
+    },
+    {
+        styleObject: {
+            position: 'absolute',
+            left: '2460px',
+            top: '300px',
+            width: '80px',
+            height: '80px',
+            backgroundImage: 'url(image/c.png)'
+        }
+    }
+],
+    cellList: blockList,
+    status: {
+        hideJewelery: false,
+        hideJeweleryCount: 0
+    }
+};
 
-// var $app = $('#app');
-// var $dic = $('<div></div>');
-// $dic.attr('id', 'die');
-// $app.append($dic);
+let app = new Vue({
+    el: '#app',
+    data: data
+});
 
 $(document.body).curvedArrow({
     p0x: 550,
@@ -1533,10 +1541,26 @@ $('.modal-dialog').css({
     height: 400
 });
 
-$('#diceModal').modal();
+// $('#diceModal').modal();
 
 var die = new Die();
 $('#die').append(die.$element);
 
+let $jewelryModal = $('#jewelryModal').modal();
 
+$('.hide-jewelry-button').on('click', () => {
+    $jewelryModal.modal('hide');
+    data.status.hideJewelery = true;
 
+    for (let i = 0; i < app.buildingList.length; i++) {
+        let building = app.buildingList[i];
+
+        if (!building.classObject) {
+            building.classObject = {};
+        }
+
+        building.classObject.blink = true;
+
+        Vue.set(app.buildingList, i, building);
+    }
+});
