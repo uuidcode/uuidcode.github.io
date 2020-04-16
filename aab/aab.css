@@ -92,3 +92,9 @@ body {
 .rest {
     background-color: lightyellow;
 }
+
+*,
+*::before,
+*::after {
+    box-sizing: unset;
+}

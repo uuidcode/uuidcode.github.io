@@ -8,10 +8,10 @@ function Die() {
         var css = {
             position: 'absolute',
             border: '1px solid black',
-            left: '2000px',
-            top: '700px',
-            width: 200,
-            height: 200
+            left: '0px',
+            top: '0px',
+            width: 400,
+            height: 400
         };
 
         this.$element.addClass('shadow');

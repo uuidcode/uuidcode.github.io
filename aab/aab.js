@@ -1433,13 +1433,10 @@ var app = new Vue({
     }
 });
 
-var $app = $('#app');
-var $dic = $('<div></div>');
-$dic.attr('id', 'die');
-$app.append($dic);
-
-var die = new Die();
-$app.append(die.$element);
+// var $app = $('#app');
+// var $dic = $('<div></div>');
+// $dic.attr('id', 'die');
+// $app.append($dic);
 
 $(document.body).curvedArrow({
     p0x: 550,
@@ -1520,3 +1517,26 @@ $(document.body).curvedArrow({
     p2y: 275,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
+
+$('.modal-content').css({
+    width: 400,
+    height: 400
+});
+
+$('.modal-body').css({
+    width: 400,
+    height: 400
+});
+
+$('.modal-dialog').css({
+    width: 400,
+    height: 400
+});
+
+$('#diceModal').modal();
+
+var die = new Die();
+$('#die').append(die.$element);
+
+
+

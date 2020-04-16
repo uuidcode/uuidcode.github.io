@@ -9,6 +9,8 @@
     <script src="lib/dice.js"></script>
     <script src="lib/die.js"></script>
     <script src="lib/jquery.curvedarrow.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <link href="lib/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="aab.css" rel="stylesheet" type="text/css">
 </head>
 <body>
@@ -30,6 +32,19 @@
     <div v-for="police in policeList" v-bind:style="police.styleObject"></div>
     <div v-for="building in buildingList" v-bind:style="building.styleObject"></div>
     <div v-for="jewelry in jewelryList" v-bind:style="jewelry.styleObject"></div>
+    </div>
+</div>
+<div class="modal"
+     id="diceModal"
+     tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="die"></div>
+            </div>
+        </div>
     </div>
 </div>
 <script src="aab.js"></script>
