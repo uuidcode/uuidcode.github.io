@@ -1,4 +1,4 @@
-<html xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
@@ -32,9 +32,11 @@
     <div v-for="police in policeList" v-bind:style="police.styleObject"></div>
 
     <div v-for="building in buildingList"
+         :data-index="building.index"
          v-bind:key="building.index"
          v-bind:class="building.classObject"
-         v-bind:style="building.styleObject"></div>
+         v-bind:style="building.styleObject"
+         v-on:click="hideJewelry"></div>
 
     <div v-for="jewelry in jewelryList" v-bind:style="jewelry.styleObject"></div>
     </div>

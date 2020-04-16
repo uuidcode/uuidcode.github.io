@@ -101,6 +101,7 @@ body {
 
 .blink {
     animation: blink-animation 2s steps(5, start) infinite;
+    cursor: pointer;
 }
 
 @keyframes blink-animation {

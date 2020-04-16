@@ -1301,7 +1301,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/1.png)'
-        }
+        },
+        classObject: {}
     },
     {
         index: 1,
@@ -1312,7 +1313,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/2.png)'
-        }
+        },
+        classObject: {}
     },
     {
         index: 2,
@@ -1323,7 +1325,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/3.png)'
-        }
+        },
+        classObject: {}
     },
     {
         index: 3,
@@ -1334,7 +1337,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/4.png)'
-        }
+        },
+        classObject: {}
     },
     {
         index: 4,
@@ -1345,7 +1349,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/5.png)'
-        }
+        },
+        classObject: {}
     },
     {
         index: 5,
@@ -1356,7 +1361,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/6.png)'
-        }
+        },
+        classObject: {}
     },
     {
         index: 6,
@@ -1367,7 +1373,8 @@ let data = {
             width: '100px',
             height: '100px',
             backgroundImage: 'url(image/7.png)'
-        }
+        },
+        classObject: {}
     }
 ],
     policeList:[
@@ -1436,14 +1443,22 @@ let data = {
 ],
     cellList: blockList,
     status: {
-        hideJewelery: false,
-        hideJeweleryCount: 0
+        hideJewelry: false,
+        hideJewelryCount: 0
     }
 };
 
 let app = new Vue({
     el: '#app',
-    data: data
+    data: data,
+    methods: {
+        hideJewelry: function (event) {
+            let index = $(event.target).attr('data-index');
+            let building = this.buildingList[index];
+            building.classObject.blink = false;
+            Vue.set(this.buildingList, index, building);
+        }
+    }
 });
 
 $(document.body).curvedArrow({
@@ -1554,13 +1569,7 @@ $('.hide-jewelry-button').on('click', () => {
 
     for (let i = 0; i < app.buildingList.length; i++) {
         let building = app.buildingList[i];
-
-        if (!building.classObject) {
-            building.classObject = {};
-        }
-
         building.classObject.blink = true;
-
         Vue.set(app.buildingList, i, building);
     }
 });
