@@ -16,16 +16,16 @@
 <body>
 <div id="app">
     <div class="block"
-         v-for="cell in cellList"
-         v-bind:style="cell.styleObject"
-         v-bind:class="cell.classObject">
-            <strong v-bind:style="cell.titleStyleObject">{{ cell.title }}</strong>
-            <div v-if="cell.subTitle" style="font-size: 11px">{{ cell.subTitle }}</div>
-            <div v-if="cell.trick" v-bind:class="{ trick: cell.trick }">
+         v-for="block in blockList"
+         v-bind:style="block.styleObject"
+         v-bind:class="block.classObject">
+            <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
+            <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
+            <div v-if="block.trick" v-bind:class="{ trick: block.trick }">
                 속임수
             </div>
             <div class="index">
-                {{ cell.index }}
+                {{ block.index }}
             </div>
     </div>
     <div v-for="burglar in burglarList" v-bind:style="burglar.styleObject"></div>
@@ -38,7 +38,9 @@
          v-bind:style="building.styleObject"
          v-on:click="hideJewelry"></div>
 
-    <div v-for="jewelry in jewelryList" v-bind:style="jewelry.styleObject"></div>
+    <div v-for="jewelry in jewelryList"
+         :id="jewelry.index"
+         v-bind:style="jewelry.styleObject"></div>
     </div>
 </div>
 <div class="modal"

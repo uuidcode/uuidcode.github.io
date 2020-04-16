@@ -6,10 +6,7 @@ var blockList = [
             left: '1800px',
             top: '700px',
         },
-        classObject: {
-            start: true,
-            burglar: true
-        }
+        start: true
     },
     {
         index: 1,
@@ -140,9 +137,7 @@ var blockList = [
             left: '1600px',
             top: '500px',
         },
-        classObject: {
-            burglar: true
-        }
+        burglar: true
     },
     {
         index: 18,
@@ -273,14 +268,13 @@ var blockList = [
     },
     {
         index: 42,
-        subTitle: '경찰은 도둑의 4칸 앞으로 간다.',
         styleObject: {
             left: '1200px',
             top: '500px',
         },
-        classObject: {
-            burglar: true
-        }
+        movePolice: true,
+        move: 4,
+        forward: true
     },
     {
         index: 43,
@@ -303,9 +297,7 @@ var blockList = [
             left: '900px',
             top: '500px',
         },
-        classObject: {
-            changePosition: true
-        }
+        changePosition: true
     },
     {
         index: 46,
@@ -350,9 +342,7 @@ var blockList = [
             left: '900px',
             top: '400px',
         },
-        classObject: {
-            changePosition: true
-        }
+        changePosition: true
     },
     {
         index: 52,
@@ -379,14 +369,11 @@ var blockList = [
     },
     {
         index: 55,
-        subTitle: '경찰은 위치 이동을 한다.',
         styleObject: {
             left: '1100px',
             top: '300px',
         },
-        classObject: {
-            police: true
-        }
+        police: true
     },
     {
         index: 56,
@@ -554,9 +541,7 @@ var blockList = [
             left: '1800px',
             top: '250px',
         },
-        classObject: {
-            tunnel: true
-        },
+        tunnel: true,
         trick: true
     },
     {
@@ -632,9 +617,7 @@ var blockList = [
             left: '900px',
             top: '0px',
         },
-        classObject: {
-            changePosition: true,
-        }
+        changePosition: true,
     },
     {
         index: 87,
@@ -725,7 +708,6 @@ var blockList = [
     },
     {
         index: 98,
-        subTitle: '경찰은 120으로 이동',
         styleObject: {
             left: '500px',
             top: '400px',
@@ -772,9 +754,7 @@ var blockList = [
             left: '900px',
             top: '750px',
         },
-        classObject: {
-            changePosition: true
-        },
+        changePosition: true,
         move: 86
     },
     {
@@ -826,15 +806,13 @@ var blockList = [
     },
     {
         index: 110,
-        subTitle: '도둑은 보석을 동료에게 넘겨준다',
         styleObject: {
             left: '400px',
             top: '650px',
         },
-        classObject: {
-            burglar: true
-        },
-        trick: true
+        burglar: true,
+        trick: true,
+        send: true
     },
     {
         index: 112,
@@ -1046,9 +1024,8 @@ var blockList = [
             left: '0px',
             top: '200px',
         },
-        classObject: {
-            tunnel: true,
-        }
+        tunnel: true,
+        move: 75
     },
     {
         index: 139,
@@ -1095,353 +1072,196 @@ var blockList = [
             left: '0px',
             top: '0px',
         },
-        classObject: {
-            start: true,
-            police: true
-        }
+        start: true,
+        police: true
     }
 ];
 
-let getDirection = (block) => {
-    if (block.backward) {
-        return '뒤';
-    }
-
-    return "앞";
-};
-
-blockList = blockList.map(block => {
-    if (block.mission) {
-        let direction = getDirection(block);
-
-        block = {
-            ...block,
-            subTitle: `${block.move}칸 ${direction}으로 가서 지시에 따른다.`,
-            classObject : {
-                mission: true
-            }
-        };
-    }
-
-    if (block.arrest) {
-        block = {
-            ...block,
-            subTitle: `경찰은 주사위를 던져서 ${block.dice}이 나오면 도둑 한명 체포`,
-            classObject : {
-                police: true
-            }
-        };
-    }
-
-    if (block.search) {
-        block = {
-            ...block,
-            subTitle: '밑에 있는 건물을 뒤져라',
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.rest) {
-        block = {
-            ...block,
-            subTitle: '이 칸에 멈추면 1회 휴식',
-            classObject : {
-                rest: true
-            }
-        };
-    }
-
-    if (block.stop) {
-        block = {
-            ...block,
-            subTitle: '주사위 수가 남아도 반드시 멈춘다',
-            classObject : {
-                stop: true
-            }
-        };
-    }
-
-    if (block.moveBurglar) {
-        block = {
-            ...block,
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.changeBurglar) {
-        block = {
-            ...block,
-            subTitle: '도둑은 위치 이동을 한다.',
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.moveBurglar) {
-        block = {
-            ...block,
-            subTitle: `도둑은 ${block.move}으로 이동`,
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.changePolice) {
-        block = {
-            ...block,
-            subTitle: '경찰은 위치 이동을 한다.',
-            classObject : {
-                police: true
-            }
-        };
-    }
-
-    if (block.run) {
-        let direction = getDirection(block);
-
-        block = {
-            ...block,
-            subTitle: `경찰은 도둑의 ${block.move}칸으로 ${direction}으로 이동`,
-            classObject : {
-                police: true
-            }
-        };
-    }
-
-    if (block.movePolice) {
-        block = {
-            ...block,
-            subTitle: `경찰은 ${block.move}으로 이동`,
-            classObject : {
-                police: true
-            }
-        };
-    }
-
-    if (block.onlyBurglar) {
-        block = {
-            ...block,
-            subTitle: '경찰은 들어 갈 수 없다.',
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.onlyBurglar) {
-        block = {
-            ...block,
-            subTitle: '경찰은 들어 갈 수 없다.',
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.threat) {
-        block = {
-            ...block,
-            subTitle: '도둑은 보석이 있는 건물 한곳을 알 수 있다.',
-            classObject : {
-                burglar: true
-            }
-        };
-    }
-
-    if (block.goHome) {
-        block = {
-            ...block,
-            subTitle: '도둑은 아지트로 경찰은 경찰서로',
-            classObject : {
-                goHome: true
-            }
-        };
-    }
-
-    return block;
-});
-
 let data = {
-        jewelryList: [
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2000px',
-            top: '0px',
-            width: '200px',
-            height: '160px',
-            backgroundImage: 'url(image/j1.png)'
+    jewelryList: [
+        {
+            index: 0,
+            styleObject: {
+                position: 'absolute',
+                left: '0px',
+                top: '0px',
+                width: '200px',
+                height: '160px',
+                backgroundImage: 'url(image/j1.png)'
+            },
+            classObject: {
+                jewelry: true,
+                hideJewelry: true
+            }
+        },
+        {
+            index: 1,
+            styleObject: {
+                position: 'absolute',
+                left: '0px',
+                top: '0px',
+                width: '200px',
+                height: '160px',
+                backgroundImage: 'url(image/j2.png)'
+            },
+            classObject: {
+                jewelry: true,
+                hideJewelry: true
+            }
         }
-    },
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2200px',
-            top: '0px',
-            width: '200px',
-            height: '160px',
-            backgroundImage: 'url(image/j2.png)'
-        }
-    }
-]
+    ]
     ,
     buildingList:[
-    {
-        index: 0,
-        styleObject: {
-            position: 'absolute',
-            left: '1300px',
-            top: '250px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/1.png)'
+        {
+            index: 0,
+            styleObject: {
+                position: 'absolute',
+                left: '1300px',
+                top: '250px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/1.png)'
+            },
+            classObject: {}
         },
-        classObject: {}
-    },
-    {
-        index: 1,
-        styleObject: {
-            position: 'absolute',
-            left: '1100px',
-            top: '580px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/2.png)'
+        {
+            index: 1,
+            styleObject: {
+                position: 'absolute',
+                left: '1100px',
+                top: '580px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/2.png)'
+            },
+            classObject: {}
         },
-        classObject: {}
-    },
-    {
-        index: 2,
-        styleObject: {
-            position: 'absolute',
-            left: '700px',
-            top: '200px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/3.png)'
+        {
+            index: 2,
+            styleObject: {
+                position: 'absolute',
+                left: '700px',
+                top: '200px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/3.png)'
+            },
+            classObject: {}
         },
-        classObject: {}
-    },
-    {
-        index: 3,
-        styleObject: {
-            position: 'absolute',
-            left: '1200px',
-            top: '50px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/4.png)'
+        {
+            index: 3,
+            styleObject: {
+                position: 'absolute',
+                left: '1200px',
+                top: '50px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/4.png)'
+            },
+            classObject: {}
         },
-        classObject: {}
-    },
-    {
-        index: 4,
-        styleObject: {
-            position: 'absolute',
-            left: '500px',
-            top: '550px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/5.png)'
+        {
+            index: 4,
+            styleObject: {
+                position: 'absolute',
+                left: '500px',
+                top: '550px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/5.png)'
+            },
+            classObject: {}
         },
-        classObject: {}
-    },
-    {
-        index: 5,
-        styleObject: {
-            position: 'absolute',
-            left: '200px',
-            top: '650px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/6.png)'
+        {
+            index: 5,
+            styleObject: {
+                position: 'absolute',
+                left: '200px',
+                top: '650px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/6.png)'
+            },
+            classObject: {}
         },
-        classObject: {}
-    },
-    {
-        index: 6,
-        styleObject: {
-            position: 'absolute',
-            left: '300px',
-            top: '100px',
-            width: '100px',
-            height: '100px',
-            backgroundImage: 'url(image/7.png)'
-        },
-        classObject: {}
-    }
-],
+        {
+            index: 6,
+            styleObject: {
+                position: 'absolute',
+                left: '300px',
+                top: '100px',
+                width: '100px',
+                height: '100px',
+                backgroundImage: 'url(image/7.png)'
+            },
+            classObject: {}
+        }
+    ],
     policeList:[
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2300px',
-            top: '380px',
-            width: '80px',
-            height: '80px',
-            backgroundImage: 'url(image/d.png)'
+        {
+            styleObject: {
+                position: 'absolute',
+                left: '2300px',
+                top: '380px',
+                width: '80px',
+                height: '80px',
+                backgroundImage: 'url(image/d.png)'
+            }
+        },
+        {
+            styleObject: {
+                position: 'absolute',
+                left: '2380px',
+                top: '380px',
+                width: '80px',
+                height: '80px',
+                backgroundImage: 'url(image/e.png)'
+            }
+        },
+        {
+            styleObject: {
+                position: 'absolute',
+                left: '2460px',
+                top: '380px',
+                width: '80px',
+                height: '80px',
+                backgroundImage: 'url(image/f.png)'
+            }
         }
-    },
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2380px',
-            top: '380px',
-            width: '80px',
-            height: '80px',
-            backgroundImage: 'url(image/e.png)'
-        }
-    },
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2460px',
-            top: '380px',
-            width: '80px',
-            height: '80px',
-            backgroundImage: 'url(image/f.png)'
-        }
-    }
-],
+    ],
     burglarList:[
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2300px',
-            top: '300px',
-            width: '80px',
-            height: '80px',
-            backgroundImage: 'url(image/a.png)'
+        {
+            styleObject: {
+                position: 'absolute',
+                left: '2300px',
+                top: '300px',
+                width: '80px',
+                height: '80px',
+                backgroundImage: 'url(image/a.png)'
+            }
+        },
+        {
+            styleObject: {
+                position: 'absolute',
+                left: '2380px',
+                top: '300px',
+                width: '80px',
+                height: '80px',
+                backgroundImage: 'url(image/b.png)'
+            }
+        },
+        {
+            styleObject: {
+                position: 'absolute',
+                left: '2460px',
+                top: '300px',
+                width: '80px',
+                height: '80px',
+                backgroundImage: 'url(image/c.png)'
+            }
         }
-    },
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2380px',
-            top: '300px',
-            width: '80px',
-            height: '80px',
-            backgroundImage: 'url(image/b.png)'
-        }
-    },
-    {
-        styleObject: {
-            position: 'absolute',
-            left: '2460px',
-            top: '300px',
-            width: '80px',
-            height: '80px',
-            backgroundImage: 'url(image/c.png)'
-        }
-    }
-],
-    cellList: blockList,
+    ],
+    blockList: blockList,
     status: {
         hideJewelry: false,
         hideJewelryCount: 0
@@ -1457,8 +1277,79 @@ let app = new Vue({
             let building = this.buildingList[index];
             building.classObject.blink = false;
             Vue.set(this.buildingList, index, building);
+        },
+        getDirection: function(block) {
+            if (block.backward) {
+                return '뒤';
+            }
+
+            return "앞";
+        },
+        getSubTitle: function (block) {
+            const direction = this.getDirection(block);
+
+            if (block.mission) {
+                return `${block.move}칸 ${direction}으로 가서 지시에 따른다.`;
+            } else if (block.arrest) {
+                return `경찰은 주사위를 던져서 ${block.dice}이 나오면 도둑 한명 체포`;
+            } else if (block.search) {
+                return `밑에 있는 건물을 뒤져라`;
+            } else if (block.rest) {
+                return `이 칸에 멈추면 1회 휴식`;
+            } else if (block.stop) {
+                return `주사위 수가 남아도 반드시 멈춘다`;
+            } else if (block.changeBurglar) {
+                return `도둑은 위치 이동을 한다`;
+            } else if (block.moveBurglar) {
+                return `도둑은 ${block.move}으로 이동`;
+            } else if (block.changePolice) {
+                return `경찰은 위치 이동을 한다`;
+            } else if (block.run) {
+                return `경찰은 도둑의 ${block.move}칸으로 ${direction}으로 이동`;
+            } else if (block.movePolice) {
+                return `경찰은 ${this.move}으로 이동`;
+            } else if (block.onlyBurglar) {
+                return `경찰은 들어 갈 수 없다`;
+            } else if (block.threat) {
+                return `도둑은 보석이 있는 건물 한곳을 알 수 있다`;
+            } else if (block.goHome) {
+                return `도둑은 아지트로 경찰은 경찰서로`;
+            } else if (block.send) {
+                return `도둑은 보석을 동료에게 넘겨준다`;
+            }
+
+            return block.subTitle;
         }
+    },
+    created: function () {
+        this.blockList = this.blockList.map((block) => {
+            return {
+                ...block,
+                subTitle: this.getSubTitle(block),
+                classObject: {
+                    burglar: block.burglar ||
+                        block.moveBurglar ||
+                        block.changeBurglar ||
+                        block.search ||
+                        block.onlyBurglar ||
+                        block.threat ||
+                        block.send,
+                    police: block.police ||
+                        block.movePolice ||
+                        block.changePolice ||
+                        block.arrest ||
+                        block.run,
+                    changePosition: block.changePosition,
+                    tunnel: block.tunnel,
+                    mission: block.mission,
+                    rest: block.rest,
+                    stop: block.stop,
+                    goHome: block.goHome
+                }
+            }
+        })
     }
+    
 });
 
 $(document.body).curvedArrow({
@@ -1556,8 +1447,6 @@ $('.modal-dialog').css({
     height: 400
 });
 
-// $('#diceModal').modal();
-
 var die = new Die();
 $('#die').append(die.$element);
 
@@ -1565,11 +1454,18 @@ let $jewelryModal = $('#jewelryModal').modal();
 
 $('.hide-jewelry-button').on('click', () => {
     $jewelryModal.modal('hide');
-    data.status.hideJewelery = true;
+    data.status.hideJewelry = true;
 
     for (let i = 0; i < app.buildingList.length; i++) {
         let building = app.buildingList[i];
         building.classObject.blink = true;
         Vue.set(app.buildingList, i, building);
     }
+
+    let jewelry = app.jewelryList[app.status.hideJewelryCount];
+    jewelry.classObject.hideJewelry = false;
+
+    $('.jewelry')
+
+    Vue.set(app.jewelryList, app.status.hideJewelryCount, jewelry);
 });
