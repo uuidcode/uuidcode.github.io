@@ -1495,3 +1495,43 @@ $(document.body).curvedArrow({
     p2y: 460,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
+
+$(document.body).curvedArrow({
+    p0x: 1610,
+    p0y: 325,
+    p1x: 1610,
+    p1y: 325,
+    p2x: 1790,
+    p2y: 375,
+    strokeStyle: 'rgba(135, 206, 235, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 1790,
+    p0y: 375,
+    p1x: 1790,
+    p1y: 375,
+    p2x: 1610,
+    p2y: 325,
+    strokeStyle: 'rgba(135, 206, 235, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 1610,
+    p0y: 275,
+    p1x: 1610,
+    p1y: 275,
+    p2x: 1790,
+    p2y: 325,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 1790,
+    p0y: 325,
+    p1x: 1790,
+    p1y: 325,
+    p2x: 1610,
+    p2y: 275,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
