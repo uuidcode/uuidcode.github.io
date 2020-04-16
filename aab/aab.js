@@ -6,7 +6,8 @@ var blockList = [
             left: '1800px',
             top: '700px',
         },
-        start: true
+        start: true,
+        burglar: true
     },
     {
         index: 1,
@@ -1070,7 +1071,7 @@ var blockList = [
         title: '경찰서',
         styleObject: {
             left: '0px',
-            top: '0px',
+            top: '0px'
         },
         start: true,
         police: true
@@ -1281,11 +1282,10 @@ let app = new Vue({
     data: data,
     methods: {
         resetBuilding: function () {
-            for (let i = 0; i < app.buildingList.length; i++) {
-                let building = app.buildingList[i];
+            app.buildingList.map((building, index) => {
                 building.classObject.blink = false;
-                Vue.set(app.buildingList, i, building);
-            }
+                Vue.set(app.buildingList, index, building);
+            });
         },
         hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
@@ -1373,6 +1373,7 @@ let app = new Vue({
                     changePosition: block.changePosition,
                     tunnel: block.tunnel,
                     mission: block.mission,
+                    start: block.start,
                     rest: block.rest,
                     stop: block.stop,
                     goHome: block.goHome
