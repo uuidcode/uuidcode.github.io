@@ -198,9 +198,7 @@ var blockList = [
             left: '1300px',
             top: '350px',
         },
-        classObject: {
-            onlyBurglar: true
-        }
+        onlyBurglar: true
     },
     {
         index: 25,
@@ -248,9 +246,7 @@ var blockList = [
             left: '1200px',
             top: '600px',
         },
-        classObject: {
-            onlyBurglar: true
-        }
+        onlyBurglar: true
     },
     {
         index: 39,
@@ -379,9 +375,7 @@ var blockList = [
             left: '700px',
             top: '300px',
         },
-        classObject: {
-            onlyBurglar: true
-        }
+        onlyBurglar: true
     },
     {
         index: 55,
@@ -437,9 +431,7 @@ var blockList = [
             left: '1300px',
             top: '100px',
         },
-        classObject: {
-            onlyBurglar: true
-        }
+        onlyBurglar: true
     },
     {
         index: 62,
@@ -845,16 +837,9 @@ var blockList = [
         trick: true
     },
     {
-        index: 111,
-        styleObject: {
-            left: '500px',
-            top: '650px',
-        }
-    },
-    {
         index: 112,
         styleObject: {
-            left: '600px',
+            left: '500px',
             top: '650px',
         },
         onlyBurglar: true
@@ -1352,7 +1337,7 @@ var app = new Vue({
             {
                 styleObject: {
                     position: 'absolute',
-                    left: '600px',
+                    left: '500px',
                     top: '550px',
                     width: '100px',
                     height: '100px',
@@ -1459,8 +1444,8 @@ $app.append(die.$element);
 $(document.body).curvedArrow({
     p0x: 550,
     p0y: 460,
-    p1x: 500,
-    p1y: 650,
+    p1x: 550,
+    p1y: 460,
     p2x: 650,
     p2y: 740,
     strokeStyle: 'rgba(135, 206, 235, 1)'
@@ -1469,8 +1454,8 @@ $(document.body).curvedArrow({
 $(document.body).curvedArrow({
     p0x: 650,
     p0y: 740,
-    p1x: 500,
-    p1y: 650,
+    p1x: 650,
+    p1y: 740,
     p2x: 550,
     p2y: 460,
     strokeStyle: 'rgba(135, 206, 235, 1)'
