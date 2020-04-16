@@ -15,6 +15,7 @@
 </head>
 <body>
 <div id="app">
+    <div v-bind:class="background.classObject"></div>
     <div class="block"
          v-for="block in blockList"
          v-bind:style="block.styleObject"

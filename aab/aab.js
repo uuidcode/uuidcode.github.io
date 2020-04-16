@@ -1267,6 +1267,12 @@ let data = {
     status: {
         hideJewelryMode: false,
         hideJewelryCount: 0
+    },
+    background: {
+        classObject: {
+            backgroundActive: false,
+            background: true
+        }
     }
 };
 
@@ -1274,6 +1280,13 @@ let app = new Vue({
     el: '#app',
     data: data,
     methods: {
+        resetBuilding: function () {
+            for (let i = 0; i < app.buildingList.length; i++) {
+                let building = app.buildingList[i];
+                building.classObject.blink = false;
+                Vue.set(app.buildingList, i, building);
+            }
+        },
         hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
@@ -1289,6 +1302,11 @@ let app = new Vue({
             }, 1000, function () {
                 app.status.hideJewelryCount++;
                 $jewelry.hide();
+
+                if (app.status.hideJewelryCount === 2) {
+                    app.background.classObject.backgroundActive = false;
+                    app.resetBuilding();
+                }
             });
         },
         getDirection: function(block) {
@@ -1466,6 +1484,7 @@ $('#die').append(die.$element);
 let $jewelryModal = $('#jewelryModal').modal();
 
 $('.hide-jewelry-button').on('click', () => {
+    data.background.classObject.backgroundActive = true;
     $jewelryModal.modal('hide');
     data.status.hideJewelryMode = true;
 
