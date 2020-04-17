@@ -163,3 +163,8 @@ body {
     z-index: 0;
     display: none;
 }
+
+#turnModal .modal-body {
+    width: 400px;
+    height: 500px;
+}

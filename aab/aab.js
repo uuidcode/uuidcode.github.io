@@ -1563,21 +1563,6 @@ $(document.body).curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-$('.modal-content').css({
-    width: 420,
-    height: 520
-});
-
-$('.modal-body').css({
-    width: 420,
-    height: 520
-});
-
-$('.modal-dialog').css({
-    width: 420,
-    height: 520
-});
-
 let $jewelryModal = $('#jewelryModal').modal();
 
 $('.hide-jewelry-button').on('click', () => {
