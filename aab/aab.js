@@ -1087,7 +1087,7 @@ let data = {
                 left: '0px',
                 top: '0px',
                 width: '50px',
-                height: '40px',
+                height: '50px',
                 backgroundImage: 'url(image/j1.png)',
                 backgroundSize: 'cover'
             },
@@ -1103,7 +1103,7 @@ let data = {
                 left: '0px',
                 top: '0px',
                 width: '50px',
-                height: '40px',
+                height: '50px',
                 backgroundImage: 'url(image/j2.png)',
                 backgroundSize: 'cover'
             },
@@ -1232,6 +1232,20 @@ let data = {
             }
         }
     ],
+    hiddenPolice: {
+        styleObject: {
+            position: 'absolute',
+            left: '0px',
+            top: '0px',
+            width: '50px',
+            height: '50px',
+            backgroundImage: 'url(image/police2.png)',
+            backgroundSize: 'cover'
+        },
+        classObject: {
+            hiddenPolice: true
+        }
+    },
     burglarList:[
         {
             styleObject: {
@@ -1267,7 +1281,8 @@ let data = {
     blockList: blockList,
     status: {
         hideJewelryMode: false,
-        hideJewelryCount: 0
+        hideJewelryCount: 0,
+        hidePoliceMode: false
     },
     background: {
         classObject: {
@@ -1293,19 +1308,32 @@ let app = new Vue({
             building.classObject.blink = false;
             Vue.set(this.buildingList, index, building);
 
-            let $jewelry = $('.jewelry').eq(this.status.hideJewelryCount);
-            $jewelry.show();
+            let $target;
+            if (app.status.hidePoliceMode) {
+                $target = $('.hiddenPolice');
+            } else {
+                $target = $('.jewelry').eq(this.status.hideJewelryCount);
+            }
 
-            $jewelry.animate({
+            $target.show();
+
+            $target.animate({
                 left: $(event.target).offset().left + 50,
                 top: $(event.target).offset().top + 25,
             }, 1000, function () {
-                app.status.hideJewelryCount++;
-                $jewelry.hide();
+                if (!app.status.hidePoliceMode) {
+                    app.status.hideJewelryCount++;
+                }
+
+                $target.hide();
 
                 if (app.status.hideJewelryCount === 2) {
-                    app.background.classObject.backgroundActive = false;
-                    app.resetBuilding();
+                    if (app.status.hidePoliceMode) {
+                        app.background.classObject.backgroundActive = false;
+                        app.resetBuilding();
+                    } else {
+                        app.status.hidePoliceMode = true;
+                    }
                 }
             });
         },

@@ -16,6 +16,8 @@
 <body>
 <div id="app">
     <div v-bind:class="background.classObject"></div>
+    <div v-bind:style="hiddenPolice.styleObject"
+        v-bind:class="hiddenPolice.classObject"></div>
     <div class="block"
          v-for="block in blockList"
          v-bind:style="block.styleObject"
@@ -67,7 +69,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                보석을 숨길 건물을 클릭하세요.
+                보석과 잠복 경찰을 건물에 숨기세요.
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary hide-jewelry-button">확인</button>
