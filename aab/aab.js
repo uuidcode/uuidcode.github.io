@@ -1358,14 +1358,27 @@ let app = new Vue({
 
                 let currentBurglar = app.burglarList[app.status.turn];
                 let resultList = [];
-                count = 6;
 
                 app.go(count, currentBurglar.position, currentBurglar.position, resultList);
-                
-                alert(resultList);
+
+                app.backgroundActive();
+
+                app.blinkBlock(resultList);
             });
 
             $('#die').append(die.$element);
+        },
+
+        blinkBlock: function (indexList) {
+            indexList.forEach(index => app.blockList[index].classObject.blink = true);
+        },
+
+        backgroundActive: function () {
+            data.background.classObject.backgroundActive = true;
+        },
+
+        backgroundInactive: function () {
+            data.background.classObject.backgroundActive = false;
         },
 
         go: function(count, previousPosition, currentPosition, resultList) {
@@ -1374,8 +1387,6 @@ let app = new Vue({
             if (app.status.burglarTurn) {
                 let currentBlock = app.blockList
                     .filter(target => target.index === currentPosition)[0];
-
-                console.log(currentBlock);
 
                 let currentIndex = currentBlock.index;
 
@@ -1567,7 +1578,7 @@ $('.modal-dialog').css({
 let $jewelryModal = $('#jewelryModal').modal();
 
 $('.hide-jewelry-button').on('click', () => {
-    data.background.classObject.backgroundActive = true;
+    app.backgroundActive();
     $jewelryModal.modal('hide');
     data.status.hideJewelryMode = true;
 
