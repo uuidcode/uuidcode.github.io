@@ -84,7 +84,8 @@ let blockList = [
         styleObject: {
             left: '1500px',
             top: '750px',
-        }
+        },
+        linkList: [8, 25],
     },
     {
         index: 10,
@@ -92,6 +93,7 @@ let blockList = [
             left: '1800px',
             top: '500px',
         },
+        linkList: [3, 11, 16],
         trick: true,
         changeBurglar: true
     },
@@ -100,8 +102,8 @@ let blockList = [
         styleObject: {
             left: '1800px',
             top: '450px',
-        }
-        linkList: [8, 25]
+        },
+        linkList: [10, 12]
     },
     {
         index: 12,
@@ -109,6 +111,7 @@ let blockList = [
             left: '1800px',
             top: '400px',
         },
+        linkList: [11, 13, 62],
         trick: true
     },
     {
@@ -117,6 +120,7 @@ let blockList = [
             left: '1700px',
             top: '400px',
         },
+        linkList: [12, 14],
         stop: true
     },
     {
@@ -124,7 +128,8 @@ let blockList = [
         styleObject: {
             left: '1600px',
             top: '400px',
-        }
+        },
+        linkList: [13, 15]
     },
     {
         index: 15,
@@ -132,6 +137,7 @@ let blockList = [
             left: '1500px',
             top: '400px',
         },
+        linkList: [14, 19, 54],
         trick: true
     },
     {
@@ -139,7 +145,8 @@ let blockList = [
         styleObject: {
             left: '1700px',
             top: '500px',
-        }
+        },
+        linkList: [10, 17]
     },
     {
         index: 17,
@@ -445,7 +452,7 @@ let blockList = [
             top: '300px',
         },
         movePolice: true,
-        move: 71
+        move: 62
     },
     {
         index: 56,
@@ -454,7 +461,7 @@ let blockList = [
             top: '250px',
         },
         moveBurglar: true,
-        move: 72
+        move: 63
     },
     {
         index: 57,
@@ -503,7 +510,7 @@ let blockList = [
             top: '350px',
         },
         movePolice: true,
-        move: 64
+        move: 55
     },
     {
         index: 63,
@@ -512,7 +519,7 @@ let blockList = [
             top: '300px',
         },
         moveBurglar: true,
-        move: 65
+        move: 56
     },
     {
         index: 64,
@@ -1272,7 +1279,10 @@ let data = {
     status: {
         hideJewelryMode: false,
         hideJewelryCount: 0,
-        hidePoliceMode: false
+        hidePoliceMode: false,
+        policeTurn: false,
+        burglarTurn: true,
+        turn: 0
     },
     background: {
         classObject: {
@@ -1345,12 +1355,45 @@ let app = new Vue({
             let $turnModal = $('#turnModal').modal();
             let die = new Die(function (count) {
                 $turnModal.modal('hide');
-                alert(count);
+
+                let currentBurglar = app.burglarList[app.status.turn];
+                let resultList = [];
+                count = 6;
+
+                app.go(count, currentBurglar.position, currentBurglar.position, resultList);
+                
+                alert(resultList);
             });
 
             $('#die').append(die.$element);
         },
-        
+
+        go: function(count, previousPosition, currentPosition, resultList) {
+            console.dir(count, previousPosition, currentPosition, resultList)
+            
+            if (app.status.burglarTurn) {
+                let currentBlock = app.blockList
+                    .filter(target => target.index === currentPosition)[0];
+
+                console.log(currentBlock);
+
+                let currentIndex = currentBlock.index;
+
+                if (count === 0) {
+                    resultList.push(currentIndex);
+                    return;
+                }
+
+                let linkList = currentBlock.linkList;
+
+                for (const link of linkList) {
+                    if (link !== previousPosition) {
+                        app.go(count - 1, currentPosition, link, resultList);
+                    }
+                }
+            }
+        },
+
         getDirection: function(block) {
             if (block.backward) {
                 return '뒤';
@@ -1380,7 +1423,7 @@ let app = new Vue({
             } else if (block.run) {
                 return `경찰은 도둑의 ${block.move}칸으로 ${direction}으로 이동`;
             } else if (block.movePolice) {
-                return `경찰은 ${this.move}으로 이동`;
+                return `경찰은 ${block.move}으로 이동`;
             } else if (block.onlyBurglar) {
                 return `경찰은 들어 갈 수 없다`;
             } else if (block.threat) {
