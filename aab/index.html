@@ -55,31 +55,35 @@
          v-bind:class="jewelry.classObject"
          v-bind:style="jewelry.styleObject"></div>
     </div>
-</div>
-<div class="modal"
-    id="turnModal"
-    tabindex="-1"
-    role="dialog"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div id="die"></div>
+
+    <div class="modal"
+         id="turnModal"
+         role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div>
+                        <img class="turnImage">
+                    </div>
+                    <div id="die"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="modal"
-     id="jewelryModal"
-     role="dialog"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                보석과 잠복 경찰을 건물에 숨기세요.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary hide-jewelry-button">확인</button>
+
+    <div class="modal"
+         id="jewelryModal"
+         role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    보석과 잠복 경찰을 건물에 숨기세요.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary hide-jewelry-button">확인</button>
+                </div>
             </div>
         </div>
     </div>

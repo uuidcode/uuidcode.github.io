@@ -8,8 +8,8 @@ function Die(rollCallback) {
         var css = {
             position: 'absolute',
             border: '1px solid black',
-            left: '0px',
-            top: '0px',
+            left: '10px',
+            top: '100px',
             width: 400,
             height: 400
         };

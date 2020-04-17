@@ -1352,7 +1352,10 @@ let app = new Vue({
             app.jewelryList.forEach((target) => target.styleObject.display = 'none');
             app.hiddenPolice.styleObject.display = 'none';
 
+            $('.turnImage').attr('src', 'image/burglar/' + (app.status.turn + 1) + '.png');
+
             let $turnModal = $('#turnModal').modal();
+
             let die = new Die(function (count) {
                 $turnModal.modal('hide');
 
@@ -1561,18 +1564,18 @@ $(document.body).curvedArrow({
 });
 
 $('.modal-content').css({
-    width: 400,
-    height: 400
+    width: 420,
+    height: 520
 });
 
 $('.modal-body').css({
-    width: 400,
-    height: 400
+    width: 420,
+    height: 520
 });
 
 $('.modal-dialog').css({
-    width: 400,
-    height: 400
+    width: 420,
+    height: 520
 });
 
 let $jewelryModal = $('#jewelryModal').modal();
