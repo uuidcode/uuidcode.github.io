@@ -1250,31 +1250,37 @@ let data = {
         {
             styleObject: {
                 position: 'absolute',
-                left: '2300px',
-                top: '300px',
-                width: '80px',
-                height: '80px',
-                backgroundImage: 'url(image/a.png)'
+                left: '0',
+                top: '0',
+                width: '30px',
+                height: '30px',
+                backgroundImage: 'url(image/a.png)',
+                backgroundSize: 'cover',
+                display: 'none'
             }
         },
         {
             styleObject: {
                 position: 'absolute',
-                left: '2380px',
-                top: '300px',
-                width: '80px',
-                height: '80px',
-                backgroundImage: 'url(image/b.png)'
+                left: '0',
+                top: '0',
+                width: '30px',
+                height: '30px',
+                backgroundImage: 'url(image/b.png)',
+                backgroundSize: 'cover',
+                display: 'none'
             }
         },
         {
             styleObject: {
                 position: 'absolute',
-                left: '2460px',
-                top: '300px',
-                width: '80px',
-                height: '80px',
-                backgroundImage: 'url(image/c.png)'
+                left: '0px',
+                top: '0px',
+                width: '30px',
+                height: '30px',
+                backgroundImage: 'url(image/c.png)',
+                backgroundSize: 'cover',
+                display: 'none'
             }
         }
     ],
@@ -1302,6 +1308,11 @@ let app = new Vue({
                 Vue.set(app.buildingList, index, building);
             });
         },
+        computePixel: function (pixel, diff) {
+            let value = pixel.replace('px', '');
+            return (diff + parseInt(value)) + 'px';
+        },
+        
         hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
@@ -1331,6 +1342,29 @@ let app = new Vue({
                     if (app.status.hidePoliceMode) {
                         app.background.classObject.backgroundActive = false;
                         app.resetBuilding();
+
+                        app.burglarList[0].styleObject.display = 'block';
+                        app.burglarList[1].styleObject.display = 'block';
+                        app.burglarList[2].styleObject.display = 'block';
+
+                        app.burglarList[0].styleObject.left =
+                            app.blockList[0].styleObject.left;
+
+                        app.burglarList[0].styleObject.top =
+                            app.blockList[0].styleObject.top;
+
+                        app.burglarList[1].styleObject.left =
+                            app.computePixel(app.burglarList[0].styleObject.left, 30);
+
+                        app.burglarList[1].styleObject.top =
+                            app.burglarList[0].styleObject.top;
+
+                        app.burglarList[2].styleObject.left =
+                            app.computePixel(app.burglarList[1].styleObject.left, 30);
+
+                        app.burglarList[2].styleObject.top =
+                            app.burglarList[1].styleObject.top;
+
                     } else {
                         app.status.hidePoliceMode = true;
                     }
