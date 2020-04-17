@@ -31,8 +31,13 @@
                 {{ block.index }}
             </div>
     </div>
-    <div v-for="burglar in burglarList" v-bind:style="burglar.styleObject"></div>
-    <div v-for="police in policeList" v-bind:style="police.styleObject"></div>
+
+    <div v-for="burglar in burglarList"
+         v-bind:style="burglar.styleObject"></div>
+
+    <div v-for="police in policeList"
+         v-bind:class="police.classObject"
+         v-bind:style="police.styleObject"></div>
 
     <div class="building"
          v-for="building in buildingList"

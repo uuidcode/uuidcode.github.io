@@ -245,7 +245,7 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 39,
+        index: 31,
         styleObject: {
             left: '1300px',
             top: '550px',
@@ -253,7 +253,7 @@ var blockList = [
         stop: true
     },
     {
-        index: 40,
+        index: 32,
         styleObject: {
             left: '1300px',
             top: '500px',
@@ -261,14 +261,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 41,
+        index: 33,
         styleObject: {
             left: '1400px',
             top: '500px',
         }
     },
     {
-        index: 42,
+        index: 34,
         styleObject: {
             left: '1200px',
             top: '500px',
@@ -278,21 +278,21 @@ var blockList = [
         forward: true
     },
     {
-        index: 43,
+        index: 35,
         styleObject: {
             left: '1100px',
             top: '500px',
         }
     },
     {
-        index: 44,
+        index: 36,
         styleObject: {
             left: '1000px',
             top: '500px',
         }
     },
     {
-        index: 45,
+        index: 37,
         subTitle: '51로 이동',
         styleObject: {
             left: '900px',
@@ -301,28 +301,28 @@ var blockList = [
         changePosition: true
     },
     {
-        index: 46,
+        index: 38,
         styleObject: {
             left: '800px',
             top: '500px',
         }
     },
     {
-        index: 47,
+        index: 39,
         styleObject: {
             left: '700px',
             top: '500px',
         }
     },
     {
-        index: 48,
+        index: 40,
         styleObject: {
             left: '700px',
             top: '450px',
         }
     },
     {
-        index: 49,
+        index: 41,
         styleObject: {
             left: '700px',
             top: '400px',
@@ -330,14 +330,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 50,
+        index: 42,
         styleObject: {
             left: '1000px',
             top: '400px',
         }
     },
     {
-        index: 51,
+        index: 43,
         subTitle: '45로 이동',
         styleObject: {
             left: '900px',
@@ -346,7 +346,7 @@ var blockList = [
         changePosition: true
     },
     {
-        index: 52,
+        index: 44,
         styleObject: {
             left: '800px',
             top: '400px',
@@ -354,14 +354,14 @@ var blockList = [
         stop: true
     },
     {
-        index: 53,
+        index: 45,
         styleObject: {
             left: '700px',
             top: '350px',
         }
     },
     {
-        index: 54,
+        index: 46,
         styleObject: {
             left: '700px',
             top: '300px',
@@ -369,7 +369,7 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 55,
+        index: 47,
         styleObject: {
             left: '1100px',
             top: '300px',
@@ -377,7 +377,7 @@ var blockList = [
         police: true
     },
     {
-        index: 56,
+        index: 48,
         styleObject: {
             left: '1100px',
             top: '250px',
@@ -385,21 +385,21 @@ var blockList = [
         threat: true
     },
     {
-        index: 57,
+        index: 49,
         styleObject: {
             left: '1100px',
             top: '200px',
         }
     },
     {
-        index: 58,
+        index: 50,
         styleObject: {
             left: '1200px',
             top: '200px',
         }
     },
     {
-        index: 59,
+        index: 51,
         styleObject: {
             left: '1300px',
             top: '200px',
@@ -407,14 +407,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 60,
+        index: 52,
         styleObject: {
             left: '1300px',
             top: '150px',
         }
     },
     {
-        index: 61,
+        index: 53,
         styleObject: {
             left: '1300px',
             top: '100px',
@@ -422,14 +422,14 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 62,
+        index: 54,
         styleObject: {
             left: '1500px',
             top: '350px',
         }
     },
     {
-        index: 63,
+        index: 55,
         styleObject: {
             left: '1500px',
             top: '300px',
@@ -438,7 +438,7 @@ var blockList = [
         move: 71
     },
     {
-        index: 64,
+        index: 56,
         styleObject: {
             left: '1500px',
             top: '250px',
@@ -447,7 +447,7 @@ var blockList = [
         move: 72
     },
     {
-        index: 65,
+        index: 57,
         styleObject: {
             left: '1500px',
             top: '200px',
@@ -458,28 +458,28 @@ var blockList = [
         forward: true
     },
     {
-        index: 66,
+        index: 58,
         styleObject: {
             left: '1500px',
             top: '150px',
         }
     },
     {
-        index: 67,
+        index: 59,
         styleObject: {
             left: '1500px',
             top: '100px',
         }
     },
     {
-        index: 68,
+        index: 60,
         styleObject: {
             left: '1500px',
             top: '50px',
         }
     },
     {
-        index: 69,
+        index: 61,
         styleObject: {
             left: '1500px',
             top: '0px',
@@ -487,7 +487,7 @@ var blockList = [
         trick: true
     },
     {
-        index: 70,
+        index: 62,
         styleObject: {
             left: '1800px',
             top: '350px',
@@ -496,7 +496,7 @@ var blockList = [
         move: 64
     },
     {
-        index: 71,
+        index: 63,
         styleObject: {
             left: '1800px',
             top: '300px',
@@ -505,7 +505,7 @@ var blockList = [
         move: 65
     },
     {
-        index: 72,
+        index: 64,
         styleObject: {
             left: '1400px',
             top: '200px',
@@ -514,21 +514,21 @@ var blockList = [
         dice: 3
     },
     {
-        index: 73,
+        index: 65,
         styleObject: {
             left: '1600px',
             top: '0px',
         },
     },
     {
-        index: 74,
+        index: 66,
         styleObject: {
             left: '1700px',
             top: '0px',
         },
     },
     {
-        index: 75,
+        index: 67,
         styleObject: {
             left: '1800px',
             top: '0px',
@@ -536,7 +536,7 @@ var blockList = [
         trick: true
     },
     {
-        index: 76,
+        index: 68,
         subTitle: '138로 이동',
         styleObject: {
             left: '1800px',
@@ -546,14 +546,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 77,
+        index: 69,
         styleObject: {
             left: '1800px',
             top: '200px',
         }
     },
     {
-        index: 78,
+        index: 70,
         styleObject: {
             left: '1800px',
             top: '150px',
@@ -561,21 +561,21 @@ var blockList = [
         changePolice: true
     },
     {
-        index: 79,
+        index: 71,
         styleObject: {
             left: '1800px',
             top: '100px',
         }
     },
     {
-        index: 80,
+        index: 72,
         styleObject: {
             left: '1800px',
             top: '50px',
         }
     },
     {
-        index: 81,
+        index: 73,
         styleObject: {
             left: '1400px',
             top: '0px',
@@ -583,14 +583,14 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 82,
+        index: 74,
         styleObject: {
             left: '1300px',
             top: '0px',
         }
     },
     {
-        index: 83,
+        index: 75,
         styleObject: {
             left: '1200px',
             top: '0px',
@@ -598,21 +598,21 @@ var blockList = [
         stop: true
     },
     {
-        index: 84,
+        index: 76,
         styleObject: {
             left: '1100px',
             top: '0px',
         }
     },
     {
-        index: 85,
+        index: 77,
         styleObject: {
             left: '1000px',
             top: '0px',
         }
     },
     {
-        index: 86,
+        index: 78,
         subTitle: '103으로 이동',
         styleObject: {
             left: '900px',
@@ -621,14 +621,14 @@ var blockList = [
         changePosition: true,
     },
     {
-        index: 87,
+        index: 79,
         styleObject: {
             left: '800px',
             top: '0px',
         }
     },
     {
-        index: 88,
+        index: 80,
         styleObject: {
             left: '700px',
             top: '0px',
@@ -636,14 +636,14 @@ var blockList = [
         search: true
     },
     {
-        index: 89,
+        index: 81,
         styleObject: {
             left: '600px',
             top: '0px',
         }
     },
     {
-        index: 90,
+        index: 82,
         styleObject: {
             left: '500px',
             top: '0px',
@@ -651,7 +651,7 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 91,
+        index: 83,
         styleObject: {
             left: '500px',
             top: '50px',
@@ -659,7 +659,7 @@ var blockList = [
         trick: true
     },
     {
-        index: 92,
+        index: 84,
         styleObject: {
             left: '500px',
             top: '100px',
@@ -667,7 +667,7 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 93,
+        index: 85,
         styleObject: {
             left: '500px',
             top: '150px',
@@ -675,7 +675,7 @@ var blockList = [
         trick: true
     },
     {
-        index: 94,
+        index: 86,
         styleObject: {
             left: '500px',
             top: '200px',
@@ -685,21 +685,21 @@ var blockList = [
         move: 2
     },
     {
-        index: 95,
+        index: 87,
         styleObject: {
             left: '500px',
             top: '250px',
         }
     },
     {
-        index: 96,
+        index: 88,
         styleObject: {
             left: '500px',
             top: '300px',
         }
     },
     {
-        index: 97,
+        index: 89,
         styleObject: {
             left: '500px',
             top: '350px',
@@ -708,7 +708,7 @@ var blockList = [
         dice: 6
     },
     {
-        index: 98,
+        index: 90,
         styleObject: {
             left: '500px',
             top: '400px',
@@ -718,7 +718,7 @@ var blockList = [
         movePolice: true
     },
     {
-        index: 99,
+        index: 91,
         styleObject: {
             left: '600px',
             top: '400px',
@@ -727,14 +727,14 @@ var blockList = [
         move: 105
     },
     {
-        index: 100,
+        index: 92,
         styleObject: {
             left: '1200px',
             top: '750px',
         }
     },
     {
-        index: 101,
+        index: 93,
         styleObject: {
             left: '1100px',
             top: '750px',
@@ -742,14 +742,14 @@ var blockList = [
         changePolice: true
     },
     {
-        index: 102,
+        index: 94,
         styleObject: {
             left: '1000px',
             top: '750px',
         }
     },
     {
-        index: 103,
+        index: 95,
         subTitle: '86으로 이동',
         styleObject: {
             left: '900px',
@@ -759,14 +759,14 @@ var blockList = [
         move: 86
     },
     {
-        index: 104,
+        index: 96,
         styleObject: {
             left: '800px',
             top: '750px',
         }
     },
     {
-        index: 105,
+        index: 97,
         styleObject: {
             left: '700px',
             top: '750px',
@@ -775,7 +775,7 @@ var blockList = [
         move: 99,
     },
     {
-        index: 106,
+        index: 98,
         styleObject: {
             left: '600px',
             top: '750px',
@@ -785,28 +785,28 @@ var blockList = [
 
     },
     {
-        index: 107,
+        index: 99,
         styleObject: {
             left: '500px',
             top: '750px',
         }
     },
     {
-        index: 108,
+        index: 100,
         styleObject: {
             left: '400px',
             top: '750px',
         }
     },
     {
-        index: 109,
+        index: 101,
         styleObject: {
             left: '400px',
             top: '700px',
         }
     },
     {
-        index: 110,
+        index: 102,
         styleObject: {
             left: '400px',
             top: '650px',
@@ -816,7 +816,7 @@ var blockList = [
         send: true
     },
     {
-        index: 112,
+        index: 103,
         styleObject: {
             left: '500px',
             top: '650px',
@@ -824,28 +824,28 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 113,
+        index: 104,
         styleObject: {
             left: '400px',
             top: '600px',
         }
     },
     {
-        index: 114,
+        index: 105,
         styleObject: {
             left: '400px',
             top: '550px',
         }
     },
     {
-        index: 115,
+        index: 106,
         styleObject: {
             left: '300px',
             top: '550px',
         }
     },
     {
-        index: 116,
+        index: 107,
         styleObject: {
             left: '200px',
             top: '550px',
@@ -853,7 +853,7 @@ var blockList = [
         trick: true
     },
     {
-        index: 117,
+        index: 108,
         styleObject: {
             left: '100px',
             top: '550px',
@@ -861,7 +861,7 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 118,
+        index: 109,
         styleObject: {
             left: '0px',
             top: '550px',
@@ -871,7 +871,7 @@ var blockList = [
         forward: true
     },
     {
-        index: 119,
+        index: 110,
         styleObject: {
             left: '0px',
             top: '600px',
@@ -879,14 +879,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 120,
+        index: 111,
         styleObject: {
             left: '0px',
             top: '650px',
         }
     },
     {
-        index: 121,
+        index: 112,
         styleObject: {
             left: '0px',
             top: '700px',
@@ -894,7 +894,7 @@ var blockList = [
         threat: true
     },
     {
-        index: 122,
+        index: 113,
         styleObject: {
             left: '0px',
             top: '750px',
@@ -902,7 +902,7 @@ var blockList = [
         goHome: true
     },
     {
-        index: 123,
+        index: 114,
         styleObject: {
             left: '100px',
             top: '750px',
@@ -910,7 +910,7 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 124,
+        index: 115,
         styleObject: {
             left: '200px',
             top: '750px',
@@ -918,14 +918,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 125,
+        index: 116,
         styleObject: {
             left: '300px',
             top: '750px',
         }
     },
     {
-        index: 126,
+        index: 117,
         styleObject: {
             left: '200px',
             top: '600px',
@@ -933,7 +933,7 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 127,
+        index: 118,
         styleObject: {
             left: '0px',
             top: '500px',
@@ -941,14 +941,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 128,
+        index: 119,
         styleObject: {
             left: '0px',
             top: '450px',
         }
     },
     {
-        index: 129,
+        index: 120,
         styleObject: {
             left: '0px',
             top: '400px',
@@ -958,7 +958,7 @@ var blockList = [
         forward: true
     },
     {
-        index: 130,
+        index: 121,
         styleObject: {
             left: '100px',
             top: '400px',
@@ -966,14 +966,14 @@ var blockList = [
         trick: true
     },
     {
-        index: 131,
+        index: 122,
         styleObject: {
             left: '200px',
             top: '400px',
         }
     },
     {
-        index: 132,
+        index: 123,
         styleObject: {
             left: '300px',
             top: '400px',
@@ -981,7 +981,7 @@ var blockList = [
         rest: true
     },
     {
-        index: 133,
+        index: 124,
         styleObject: {
             left: '400px',
             top: '400px',
@@ -989,14 +989,14 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 134,
+        index: 125,
         styleObject: {
             left: '100px',
             top: '350px',
         }
     },
     {
-        index: 135,
+        index: 126,
         styleObject: {
             left: '100px',
             top: '300px',
@@ -1004,7 +1004,7 @@ var blockList = [
         goHome: true
     },
     {
-        index: 136,
+        index: 127,
         styleObject: {
             left: '100px',
             top: '250px',
@@ -1012,14 +1012,14 @@ var blockList = [
         changeBurglar: true
     },
     {
-        index: 137,
+        index: 128,
         styleObject: {
             left: '100px',
             top: '200px',
         }
     },
     {
-        index: 138,
+        index: 129,
         subTitle: '75로 이동',
         styleObject: {
             left: '0px',
@@ -1029,7 +1029,7 @@ var blockList = [
         move: 75
     },
     {
-        index: 139,
+        index: 130,
         styleObject: {
             left: '400px',
             top: '150px',
@@ -1037,7 +1037,7 @@ var blockList = [
         onlyBurglar: true
     },
     {
-        index: 140,
+        index: 131,
         styleObject: {
             left: '400px',
             top: '50px',
@@ -1045,7 +1045,7 @@ var blockList = [
         threat: true
     },
     {
-        index: 141,
+        index: 132,
         styleObject: {
             left: '300px',
             top: '50px',
@@ -1053,21 +1053,21 @@ var blockList = [
         changePolice: true,
     },
     {
-        index: 142,
+        index: 133,
         styleObject: {
             left: '200px',
             top: '50px',
         }
     },
     {
-        index: 143,
+        index: 134,
         styleObject: {
             left: '100px',
             top: '50px',
         }
     },
     {
-        index: 144,
+        index: 135,
         title: '경찰서',
         styleObject: {
             left: '0px',
@@ -1204,31 +1204,37 @@ let data = {
         {
             styleObject: {
                 position: 'absolute',
-                left: '2300px',
-                top: '380px',
-                width: '80px',
-                height: '80px',
-                backgroundImage: 'url(image/d.png)'
+                left: '0',
+                top: '0',
+                width: '30px',
+                height: '30px',
+                backgroundImage: 'url(image/d.png)',
+                backgroundSize: 'cover',
+                display: 'none'
             }
         },
         {
             styleObject: {
                 position: 'absolute',
-                left: '2380px',
-                top: '380px',
-                width: '80px',
-                height: '80px',
-                backgroundImage: 'url(image/e.png)'
+                left: '0',
+                top: '0',
+                width: '30px',
+                height: '30px',
+                backgroundImage: 'url(image/e.png)',
+                backgroundSize: 'cover',
+                display: 'none'
             }
         },
         {
             styleObject: {
                 position: 'absolute',
-                left: '2460px',
-                top: '380px',
-                width: '80px',
-                height: '80px',
-                backgroundImage: 'url(image/f.png)'
+                left: '0',
+                top: '0',
+                width: '30px',
+                height: '30px',
+                backgroundImage: 'url(image/f.png)',
+                backgroundSize: 'cover',
+                display: 'none'
             }
         }
     ],
@@ -1365,6 +1371,27 @@ let app = new Vue({
                         app.burglarList[2].styleObject.top =
                             app.burglarList[1].styleObject.top;
 
+                        app.policeList[0].styleObject.display = 'block';
+                        app.policeList[1].styleObject.display = 'block';
+                        app.policeList[2].styleObject.display = 'block';
+
+                        app.policeList[0].styleObject.left =
+                            app.blockList[135].styleObject.left;
+
+                        app.policeList[0].styleObject.top =
+                            app.blockList[135].styleObject.top;
+
+                        app.policeList[1].styleObject.left =
+                            app.computePixel(app.policeList[0].styleObject.left, 30);
+
+                        app.policeList[1].styleObject.top =
+                            app.policeList[0].styleObject.top;
+
+                        app.policeList[2].styleObject.left =
+                            app.computePixel(app.policeList[1].styleObject.left, 30);
+
+                        app.policeList[2].styleObject.top =
+                            app.policeList[1].styleObject.top;
                     } else {
                         app.status.hidePoliceMode = true;
                     }
