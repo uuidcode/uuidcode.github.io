@@ -132,8 +132,13 @@ body {
 }
 
 .hiddenPolice {
+    position: absolute;
     z-index: 200;
     display: none;
+    width: 50px;
+    height: 50px;
+    background-image: url(image/police2.png);
+    background-size: cover;
 }
 
 .hideJewelry {
@@ -150,4 +155,10 @@ body {
 .backgroundActive {
     background-color: rgba(26, 26, 26, 0.5);
     z-index: 100;
+    display: block;
+}
+
+.backgroundInactive {
+    z-index: 0;
+    display: none;
 }

@@ -1,4 +1,4 @@
-function Die() {
+function Die(rollCallback) {
     this.$element = null;
     this.box = null;
 
@@ -30,7 +30,7 @@ function Die() {
 
         this.$element.on('click', function () {
             that.roll(function (notation, count) {
-                console.log(count[0]);
+                rollCallback(count[0]);
             });
         });
     };

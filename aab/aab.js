@@ -1225,13 +1225,8 @@ let data = {
     ],
     hiddenPolice: {
         styleObject: {
-            position: 'absolute',
             left: '0px',
-            top: '0px',
-            width: '50px',
-            height: '50px',
-            backgroundImage: 'url(image/police2.png)',
-            backgroundSize: 'cover'
+            top: '0px'
         },
         classObject: {
             hiddenPolice: true
@@ -1289,10 +1284,6 @@ let app = new Vue({
             return (diff + parseInt(value)) + 'px';
         },
 
-        initActor: function() {
-
-        },
-
         hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
@@ -1300,10 +1291,13 @@ let app = new Vue({
             Vue.set(this.buildingList, index, building);
 
             let $target;
+
             if (app.status.hidePoliceMode) {
                 $target = $('.hiddenPolice');
+                building.hasHiddenPolice = true;
             } else {
-                $target = $('.jewelry').eq(this.status.hideJewelryCount);
+                $target = $('.jewelry').eq(app.status.hideJewelryCount);
+                building.jewelryIndex = app.status.hideJewelryCount;
             }
 
             $target.show();
@@ -1316,21 +1310,34 @@ let app = new Vue({
                     app.status.hideJewelryCount++;
                 }
 
-                $target.hide();
-
                 if (app.status.hideJewelryCount === 2) {
                     if (app.status.hidePoliceMode) {
-                        app.background.classObject.backgroundActive = false;
-                        app.resetBuilding();
-
-                        app.burglarList.forEach((target) => target.styleObject.display = 'block');
-                        app.policeList.forEach((target) => target.styleObject.display = 'block');
+                        app.readyToPlay();
                     } else {
                         app.status.hidePoliceMode = true;
                     }
                 }
             });
         },
+
+        readyToPlay: function () {
+            app.background.classObject.backgroundActive = false;
+            app.resetBuilding();
+
+            app.burglarList.forEach((target) => target.styleObject.display = 'block');
+            app.policeList.forEach((target) => target.styleObject.display = 'block');
+            app.jewelryList.forEach((target) => target.styleObject.display = 'none');
+            app.hiddenPolice.styleObject.display = 'none';
+
+            let $turnModal = $('#turnModal').modal();
+            let die = new Die(function (count) {
+                $turnModal.modal('hide');
+                alert(count);
+            });
+
+            $('#die').append(die.$element);
+        },
+        
         getDirection: function(block) {
             if (block.backward) {
                 return '뒤';
@@ -1500,9 +1507,6 @@ $('.modal-dialog').css({
     width: 400,
     height: 400
 });
-
-var die = new Die();
-$('#die').append(die.$element);
 
 let $jewelryModal = $('#jewelryModal').modal();
 
