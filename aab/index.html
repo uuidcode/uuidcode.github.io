@@ -32,10 +32,13 @@
             </div>
     </div>
 
-    <div v-for="burglar in burglarList"
+    <div class="character"
+         v-for="burglar in burglarList"
+         v-bind:class="burglar.classObject"
          v-bind:style="burglar.styleObject"></div>
 
-    <div v-for="police in policeList"
+    <div class="character"
+         v-for="police in policeList"
          v-bind:class="police.classObject"
          v-bind:style="police.styleObject"></div>
 

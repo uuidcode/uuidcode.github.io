@@ -29,6 +29,18 @@
     background-color: skyblue;
 }
 
+.character {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    display: none;
+}
+
+.policeCharacter {
+
+}
+
 .burglar {
     background-color: pink;
 }

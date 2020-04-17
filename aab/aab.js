@@ -1203,38 +1203,23 @@ let data = {
     policeList:[
         {
             styleObject: {
-                position: 'absolute',
                 left: '0',
                 top: '0',
-                width: '30px',
-                height: '30px',
-                backgroundImage: 'url(image/d.png)',
-                backgroundSize: 'cover',
-                display: 'none'
+                backgroundImage: 'url(image/police/1.png)',
             }
         },
         {
             styleObject: {
-                position: 'absolute',
-                left: '0',
+                left: '30px',
                 top: '0',
-                width: '30px',
-                height: '30px',
-                backgroundImage: 'url(image/e.png)',
-                backgroundSize: 'cover',
-                display: 'none'
+                backgroundImage: 'url(image/police/2.png)'
             }
         },
         {
             styleObject: {
-                position: 'absolute',
-                left: '0',
+                left: '60px',
                 top: '0',
-                width: '30px',
-                height: '30px',
-                backgroundImage: 'url(image/f.png)',
-                backgroundSize: 'cover',
-                display: 'none'
+                backgroundImage: 'url(image/police/3.png)'
             }
         }
     ],
@@ -1255,38 +1240,23 @@ let data = {
     burglarList:[
         {
             styleObject: {
-                position: 'absolute',
-                left: '0',
-                top: '0',
-                width: '30px',
-                height: '30px',
-                backgroundImage: 'url(image/a.png)',
-                backgroundSize: 'cover',
-                display: 'none'
+                left: '1800px',
+                top: '700px',
+                backgroundImage: 'url(image/burglar/1.png)'
             }
         },
         {
             styleObject: {
-                position: 'absolute',
-                left: '0',
-                top: '0',
-                width: '30px',
-                height: '30px',
-                backgroundImage: 'url(image/b.png)',
-                backgroundSize: 'cover',
-                display: 'none'
+                left: '1830px',
+                top: '700px',
+                backgroundImage: 'url(image/burglar/2.png)'
             }
         },
         {
             styleObject: {
-                position: 'absolute',
-                left: '0px',
-                top: '0px',
-                width: '30px',
-                height: '30px',
-                backgroundImage: 'url(image/c.png)',
-                backgroundSize: 'cover',
-                display: 'none'
+                left: '1860px',
+                top: '700px',
+                backgroundImage: 'url(image/burglar/3.png)'
             }
         }
     ],
@@ -1318,7 +1288,11 @@ let app = new Vue({
             let value = pixel.replace('px', '');
             return (diff + parseInt(value)) + 'px';
         },
-        
+
+        initActor: function() {
+
+        },
+
         hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
@@ -1349,49 +1323,8 @@ let app = new Vue({
                         app.background.classObject.backgroundActive = false;
                         app.resetBuilding();
 
-                        app.burglarList[0].styleObject.display = 'block';
-                        app.burglarList[1].styleObject.display = 'block';
-                        app.burglarList[2].styleObject.display = 'block';
-
-                        app.burglarList[0].styleObject.left =
-                            app.blockList[0].styleObject.left;
-
-                        app.burglarList[0].styleObject.top =
-                            app.blockList[0].styleObject.top;
-
-                        app.burglarList[1].styleObject.left =
-                            app.computePixel(app.burglarList[0].styleObject.left, 30);
-
-                        app.burglarList[1].styleObject.top =
-                            app.burglarList[0].styleObject.top;
-
-                        app.burglarList[2].styleObject.left =
-                            app.computePixel(app.burglarList[1].styleObject.left, 30);
-
-                        app.burglarList[2].styleObject.top =
-                            app.burglarList[1].styleObject.top;
-
-                        app.policeList[0].styleObject.display = 'block';
-                        app.policeList[1].styleObject.display = 'block';
-                        app.policeList[2].styleObject.display = 'block';
-
-                        app.policeList[0].styleObject.left =
-                            app.blockList[135].styleObject.left;
-
-                        app.policeList[0].styleObject.top =
-                            app.blockList[135].styleObject.top;
-
-                        app.policeList[1].styleObject.left =
-                            app.computePixel(app.policeList[0].styleObject.left, 30);
-
-                        app.policeList[1].styleObject.top =
-                            app.policeList[0].styleObject.top;
-
-                        app.policeList[2].styleObject.left =
-                            app.computePixel(app.policeList[1].styleObject.left, 30);
-
-                        app.policeList[2].styleObject.top =
-                            app.policeList[1].styleObject.top;
+                        app.burglarList.forEach((target) => target.styleObject.display = 'block');
+                        app.policeList.forEach((target) => target.styleObject.display = 'block');
                     } else {
                         app.status.hidePoliceMode = true;
                     }
