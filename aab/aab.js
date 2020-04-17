@@ -17,7 +17,7 @@ let blockList = [
             top: '650px',
         },
         threat: true,
-        linkList: [1, 2]
+        linkList: [0, 2]
     },
     {
         index: 2,
@@ -1248,21 +1248,24 @@ let data = {
                 left: '1800px',
                 top: '700px',
                 backgroundImage: 'url(image/burglar/1.png)'
-            }
+            },
+            position: 0
         },
         {
             styleObject: {
                 left: '1830px',
                 top: '700px',
                 backgroundImage: 'url(image/burglar/2.png)'
-            }
+            },
+            position: 0
         },
         {
             styleObject: {
                 left: '1860px',
                 top: '700px',
                 backgroundImage: 'url(image/burglar/3.png)'
-            }
+            },
+            position: 0
         }
     ],
     blockList: blockList,
