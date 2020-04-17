@@ -1,4 +1,4 @@
-var blockList = [
+let blockList = [
     {
         index: 0,
         title: '아지트',
@@ -7,7 +7,8 @@ var blockList = [
             top: '700px',
         },
         start: true,
-        burglar: true
+        burglar: true,
+        linkList: [1]
     },
     {
         index: 1,
@@ -15,7 +16,8 @@ var blockList = [
             left: '1800px',
             top: '650px',
         },
-        threat: true
+        threat: true,
+        linkList: [1, 2]
     },
     {
         index: 2,
@@ -23,28 +25,32 @@ var blockList = [
             left: '1800px',
             top: '600px',
         },
-        trick: true
+        trick: true,
+        linkList: [1, 3, 4]
     },
     {
         index: 3,
         styleObject: {
             left: '1800px',
             top: '550px',
-        }
+        },
+        linkList: [2, 10]
     },
     {
         index: 4,
         styleObject: {
             left: '1700px',
             top: '600px',
-        }
+        },
+        linkList: [2, 5]
     },
     {
         index: 5,
         styleObject: {
             left: '1600px',
             top: '600px',
-        }
+        },
+        linkList: [4, 6]
     },
     {
         index: 6,
@@ -54,21 +60,24 @@ var blockList = [
         },
         mission: true,
         forward: true,
-        move: 4
+        move: 4,
+        linkList: [5, 7]
     },
     {
         index: 7,
         styleObject: {
             left: '1500px',
             top: '650px',
-        }
+        },
+        linkList: [6, 8]
     },
     {
         index: 8,
         styleObject: {
             left: '1500px',
             top: '700px',
-        }
+        },
+        linkList: [7, 9]
     },
     {
         index: 9,
@@ -92,6 +101,7 @@ var blockList = [
             left: '1800px',
             top: '450px',
         }
+        linkList: [8, 25]
     },
     {
         index: 12,
