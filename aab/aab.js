@@ -906,7 +906,8 @@ let blockList = [
         styleObject: {
             left: '400px',
             top: '700px',
-        }
+        },
+        linkList: [100, 102]
     },
     {
         index: 102,
@@ -914,6 +915,7 @@ let blockList = [
             left: '400px',
             top: '650px',
         },
+        linkList: [101, 103, 104],
         burglar: true,
         trick: true,
         send: true
@@ -924,6 +926,7 @@ let blockList = [
             left: '500px',
             top: '650px',
         },
+        linkList: [102],
         onlyBurglar: true
     },
     {
@@ -931,21 +934,24 @@ let blockList = [
         styleObject: {
             left: '400px',
             top: '600px',
-        }
+        },
+        linkList: [102, 105],
     },
     {
         index: 105,
         styleObject: {
             left: '400px',
             top: '550px',
-        }
+        },
+        linkList: [104, 106]
     },
     {
         index: 106,
         styleObject: {
             left: '300px',
             top: '550px',
-        }
+        },
+        linkList: [105, 107]
     },
     {
         index: 107,
@@ -953,6 +959,7 @@ let blockList = [
             left: '200px',
             top: '550px',
         },
+        linkList: [106, 108, 117],
         trick: true
     },
     {
@@ -961,6 +968,7 @@ let blockList = [
             left: '100px',
             top: '550px',
         },
+        linkList: [107, 109],
         changeBurglar: true
     },
     {
@@ -969,6 +977,7 @@ let blockList = [
             left: '0px',
             top: '550px',
         },
+        linkList: [108, 110, 118],
         mission: true,
         move: 3,
         forward: true
