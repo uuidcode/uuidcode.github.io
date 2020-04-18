@@ -22,6 +22,7 @@
 
     <div class="block"
          v-for="block in blockList"
+         :data-index="block.index"
          v-bind:style="block.styleObject"
          v-bind:class="block.classObject"
          v-on:click="move">

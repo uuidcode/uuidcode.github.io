@@ -607,13 +607,13 @@ let blockList = [
     },
     {
         index: 68,
-        subTitle: '138로 이동',
         styleObject: {
             left: '1800px',
             top: '250px',
         },
         linkList: [63, 69],
         tunnel: true,
+        move: 129,
         trick: true
     },
     {
@@ -732,7 +732,7 @@ let blockList = [
             left: '500px',
             top: '0px',
         },
-        linkList: [81, 83],
+        linkList: [81, 83, 131],
         changeBurglar: true
     },
     {
@@ -1120,7 +1120,8 @@ let blockList = [
         styleObject: {
             left: '100px',
             top: '350px',
-        }
+        },
+        linkList: [121, 126]
     },
     {
         index: 126,
@@ -1128,6 +1129,7 @@ let blockList = [
             left: '100px',
             top: '300px',
         },
+        linkList: [125, 127],
         goHome: true
     },
     {
@@ -1136,6 +1138,7 @@ let blockList = [
             left: '100px',
             top: '250px',
         },
+        linkList: [126, 128],
         changeBurglar: true
     },
     {
@@ -1143,17 +1146,18 @@ let blockList = [
         styleObject: {
             left: '100px',
             top: '200px',
-        }
+        },
+        linkList: [127, 129]
     },
     {
         index: 129,
-        subTitle: '75로 이동',
         styleObject: {
             left: '0px',
             top: '200px',
         },
+        linkList: [68, 128],
         tunnel: true,
-        move: 75
+        move: 68
     },
     {
         index: 130,
@@ -1161,6 +1165,7 @@ let blockList = [
             left: '400px',
             top: '150px',
         },
+        linkList: [85],
         onlyBurglar: true
     },
     {
@@ -1169,6 +1174,7 @@ let blockList = [
             left: '400px',
             top: '50px',
         },
+        linkList: [83, 132],
         threat: true
     },
     {
@@ -1177,6 +1183,7 @@ let blockList = [
             left: '300px',
             top: '50px',
         },
+        linkList: [131, 133],
         changePolice: true,
     },
     {
@@ -1184,14 +1191,16 @@ let blockList = [
         styleObject: {
             left: '200px',
             top: '50px',
-        }
+        },
+        linkList: [132, 134]
     },
     {
         index: 134,
         styleObject: {
             left: '100px',
             top: '50px',
-        }
+        },
+        linkList: [133, 135]
     },
     {
         index: 135,
@@ -1200,6 +1209,7 @@ let blockList = [
             left: '0px',
             top: '0px'
         },
+        linkList: [134],
         start: true,
         police: true
     }
@@ -1333,21 +1343,24 @@ let data = {
                 left: '0',
                 top: '0',
                 backgroundImage: 'url(image/police/0.png)',
-            }
+            },
+            position: 135
         },
         {
             styleObject: {
                 left: '30px',
                 top: '0',
                 backgroundImage: 'url(image/police/1.png)'
-            }
+            },
+            position: 135
         },
         {
             styleObject: {
                 left: '60px',
                 top: '0',
                 backgroundImage: 'url(image/police/2.png)'
-            }
+            },
+            position: 135
         }
     ],
     hiddenPolice: {
@@ -1422,20 +1435,47 @@ let app = new Vue({
             return app.burglarList[app.status.turn];
         },
 
+        getCurrentPolice: function () {
+            return app.policeList[app.status.turn];
+        },
+
+        getCurrentBurglarElement: function () {
+            return $('.burglarCharacter').eq(app.status.turn);
+        },
+
+        getCurrentPoliceElement: function () {
+            return $('.policeCharacter').eq(app.status.turn);
+        },
+
+        getCurrentCharacterElement: function () {
+            if (app.status.burglarTurn) {
+                return app.getCurrentBurglarElement();
+            }
+
+            return app.getCurrentPoliceElement();
+        },
+
+        getClickedBlock: function (event) {
+            return $(event.target).closest('.block');
+        },
+        
         getSelectedBlock: function (event) {
-            let index = $(event.target).attr('data-index');
-            return app.blockList[index];
+            let index = app.getClickedBlock(event).attr('data-index');
+            index = parseInt(index);
+            return app.blockList.filter(block => block.index === index)[0];
         },
 
         move: function (event) {
-            let $currentBurglar = $('.burglarCharacter').eq(app.status.turn);
-            let $selectedBlock = $(event.target);
+            let $currentCharacter = app.getCurrentCharacterElement();
+            let $selectedBlock = app.getClickedBlock(event);
             let offset = app.status.turn * 30;
 
-            $currentBurglar.animate({
+            $currentCharacter.animate({
                 left: $selectedBlock.offset().left + offset,
                 top: $selectedBlock.offset().top,
             }, 1000, function () {
+                let selectedBlock = app.getSelectedBlock(event);
+                app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
                 app.removeBlinkBlock();
                 app.nextTurn();
@@ -1501,7 +1541,7 @@ let app = new Vue({
                 return 'police';
             }
 
-            return 'burglar';;
+            return 'burglar';
         },
 
         getCharacterImage: function () {
@@ -1509,9 +1549,16 @@ let app = new Vue({
             return `image/${turnType}/${app.status.turn}.png`;
         },
         
+        getCurrentCharacter: function () {
+            if (app.status.burglarTurn) {
+                return app.getCurrentBurglar();
+            }
+
+            return app.getCurrentPolice();
+        },
+        
         rollDie: function () {
             $('.turnImage').attr('src', app.getCharacterImage());
-
 
             let $turnModal = $('#turnModal').modal();
 
@@ -1519,10 +1566,10 @@ let app = new Vue({
                 die = new Die(function (count) {
                     $turnModal.modal('hide');
 
-                    let currentBurglar = app.burglarList[app.status.turn];
+                    let currentCharacter = app.getCurrentCharacter();
                     let resultList = [];
 
-                    app.go(count, currentBurglar.position, currentBurglar.position, resultList);
+                    app.go(count, currentCharacter.position, currentCharacter.position, resultList);
 
                     app.backgroundActive();
 
@@ -1562,25 +1609,27 @@ let app = new Vue({
         },
 
         go: function(count, previousPosition, currentPosition, resultList) {
-            console.dir(count, previousPosition, currentPosition, resultList)
-            
-            if (app.status.burglarTurn) {
-                let currentBlock = app.blockList
-                    .filter(target => target.index === currentPosition)[0];
+            let currentBlock = app.blockList
+                .filter(target => target.index === currentPosition)[0];
 
-                let currentIndex = currentBlock.index;
+            let currentIndex = currentBlock.index;
 
-                if (count === 0) {
-                    resultList.push(currentIndex);
-                    return;
-                }
+            console.log('>>> count', count);
+            console.log('>>> previousPosition', previousPosition);
+            console.log('>>> currentPosition', currentPosition);
+            console.log('>>> currentPosition', currentPosition);
+            console.log('>>> resultList', resultList);
 
-                let linkList = currentBlock.linkList;
+            if (count === 0) {
+                resultList.push(currentIndex);
+                return;
+            }
 
-                for (const link of linkList) {
-                    if (link !== previousPosition) {
-                        app.go(count - 1, currentPosition, link, resultList);
-                    }
+            let linkList = currentBlock.linkList;
+
+            for (const link of linkList) {
+                if (link !== previousPosition) {
+                    app.go(count - 1, currentPosition, link, resultList);
                 }
             }
         },
@@ -1623,6 +1672,8 @@ let app = new Vue({
                 return `도둑은 아지트로 경찰은 경찰서로`;
             } else if (block.send) {
                 return `도둑은 보석을 동료에게 넘겨준다`;
+            } else if (block.tunnel) {
+                return `${block.move}로 이동`;
             }
 
             return block.subTitle;
