@@ -1049,6 +1049,7 @@ let blockList = [
             left: '200px',
             top: '600px',
         },
+        linkList: [107],
         onlyBurglar: true
     },
     {
@@ -1057,6 +1058,7 @@ let blockList = [
             left: '0px',
             top: '500px',
         },
+        linkList: [109, 119],
         trick: true
     },
     {
@@ -1064,7 +1066,8 @@ let blockList = [
         styleObject: {
             left: '0px',
             top: '450px',
-        }
+        },
+        linkList: [118, 120]
     },
     {
         index: 120,
@@ -1072,6 +1075,7 @@ let blockList = [
             left: '0px',
             top: '400px',
         },
+        linkList: [119, 121],
         run: true,
         move: 1,
         forward: true
@@ -1082,6 +1086,7 @@ let blockList = [
             left: '100px',
             top: '400px',
         },
+        linkList: [120, 122],
         trick: true
     },
     {
@@ -1089,7 +1094,8 @@ let blockList = [
         styleObject: {
             left: '200px',
             top: '400px',
-        }
+        },
+        linkList: [121, 123]
     },
     {
         index: 123,
@@ -1097,6 +1103,7 @@ let blockList = [
             left: '300px',
             top: '400px',
         },
+        linkList: [122, 124],
         rest: true
     },
     {
@@ -1105,6 +1112,7 @@ let blockList = [
             left: '400px',
             top: '400px',
         },
+        linkList: [123, 90],
         changeBurglar: true
     },
     {
