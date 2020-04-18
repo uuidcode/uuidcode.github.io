@@ -1332,21 +1332,21 @@ let data = {
             styleObject: {
                 left: '0',
                 top: '0',
-                backgroundImage: 'url(image/police/1.png)',
+                backgroundImage: 'url(image/police/0.png)',
             }
         },
         {
             styleObject: {
                 left: '30px',
                 top: '0',
-                backgroundImage: 'url(image/police/2.png)'
+                backgroundImage: 'url(image/police/1.png)'
             }
         },
         {
             styleObject: {
                 left: '60px',
                 top: '0',
-                backgroundImage: 'url(image/police/3.png)'
+                backgroundImage: 'url(image/police/2.png)'
             }
         }
     ],
@@ -1496,8 +1496,22 @@ let app = new Vue({
             });
         },
 
+        getTurnType: function () {
+            if (app.status.policeTurn) {
+                return 'police';
+            }
+
+            return 'burglar';;
+        },
+
+        getCharacterImage: function () {
+            let turnType = app.getTurnType();
+            return `image/${turnType}/${app.status.turn}.png`;
+        },
+        
         rollDie: function () {
-            $('.turnImage').attr('src', 'image/burglar/' + app.status.turn + '.png');
+            $('.turnImage').attr('src', app.getCharacterImage());
+
 
             let $turnModal = $('#turnModal').modal();
 
