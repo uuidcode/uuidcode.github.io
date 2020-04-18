@@ -157,6 +157,7 @@ let blockList = [
             left: '1600px',
             top: '500px',
         },
+        linkList: [16, 18],
         burglar: true
     },
     {
@@ -164,7 +165,8 @@ let blockList = [
         styleObject: {
             left: '1500px',
             top: '500px',
-        }
+        },
+        linkList: [17, 33],
     },
     {
         index: 19,
@@ -172,6 +174,7 @@ let blockList = [
             left: '1400px',
             top: '400px',
         },
+        linkList: [15, 20],
         run: true,
         forward: true,
         move: 1
@@ -182,6 +185,7 @@ let blockList = [
             left: '1300px',
             top: '400px',
         },
+        linkList: [19, 21, 24],
         trick: true
     },
     {
@@ -190,6 +194,7 @@ let blockList = [
             left: '1200px',
             top: '400px',
         },
+        linkList: [20, 22],
         goHome: true
     },
     {
@@ -198,6 +203,7 @@ let blockList = [
             left: '1100px',
             top: '400px',
         },
+        linkList: [21, 23, 42],
         trick: true
     },
     {
@@ -205,7 +211,8 @@ let blockList = [
         styleObject: {
             left: '1100px',
             top: '350px',
-        }
+        },
+        linkList: [22, 47],
     },
     {
         index: 24,
@@ -213,6 +220,7 @@ let blockList = [
             left: '1300px',
             top: '350px',
         },
+        linkList: [20],
         onlyBurglar: true
     },
     {
@@ -221,6 +229,7 @@ let blockList = [
             left: '1400px',
             top: '750px',
         },
+        linkList: [9, 26],
         goHome: true
     },
     {
@@ -229,6 +238,7 @@ let blockList = [
             left: '1300px',
             top: '750px',
         },
+        linkList: [25, 27, 92],
         trick: true
     },
     {
@@ -237,6 +247,7 @@ let blockList = [
             left: '1300px',
             top: '700px',
         },
+        linkList: [26, 28]
     },
     {
         index: 28,
@@ -244,6 +255,7 @@ let blockList = [
             left: '1300px',
             top: '650px',
         },
+        linkList: [27, 29],
         arrest: true,
         dice: 2
     },
@@ -253,6 +265,7 @@ let blockList = [
             left: '1300px',
             top: '600px',
         },
+        linkList: [28, 30, 31],
         trick: true
     },
     {
@@ -261,6 +274,7 @@ let blockList = [
             left: '1200px',
             top: '600px',
         },
+        linkList: [29],
         onlyBurglar: true
     },
     {
@@ -269,6 +283,7 @@ let blockList = [
             left: '1300px',
             top: '550px',
         },
+        linkList: [29, 32],
         stop: true
     },
     {
@@ -277,6 +292,7 @@ let blockList = [
             left: '1300px',
             top: '500px',
         },
+        linkList: [31, 33, 34],
         trick: true
     },
     {
