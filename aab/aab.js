@@ -1,3 +1,5 @@
+let die = null;
+
 let blockList = [
     {
         index: 0,
@@ -1254,7 +1256,7 @@ let data = {
             styleObject: {
                 left: '1800px',
                 top: '700px',
-                backgroundImage: 'url(image/burglar/1.png)'
+                backgroundImage: 'url(image/burglar/0.png)'
             },
             position: 0
         },
@@ -1262,7 +1264,7 @@ let data = {
             styleObject: {
                 left: '1830px',
                 top: '700px',
-                backgroundImage: 'url(image/burglar/2.png)'
+                backgroundImage: 'url(image/burglar/1.png)'
             },
             position: 0
         },
@@ -1270,7 +1272,7 @@ let data = {
             styleObject: {
                 left: '1860px',
                 top: '700px',
-                backgroundImage: 'url(image/burglar/3.png)'
+                backgroundImage: 'url(image/burglar/2.png)'
             },
             position: 0
         }
@@ -1302,11 +1304,54 @@ let app = new Vue({
                 Vue.set(app.buildingList, index, building);
             });
         },
-        computePixel: function (pixel, diff) {
+
+        processPixel: function (pixel, diff) {
             let value = pixel.replace('px', '');
             return (diff + parseInt(value)) + 'px';
         },
 
+        getCurrentBurglar: function () {
+            return app.burglarList[app.status.turn];
+        },
+
+        getSelectedBlock: function (event) {
+            let index = $(event.target).attr('data-index');
+            return app.blockList[index];
+        },
+
+        move: function (event) {
+            let $currentBurglar = $('.burglarCharacter').eq(app.status.turn);
+            let $selectedBlock = $(event.target);
+            let offset = app.status.turn * 30;
+
+            $currentBurglar.animate({
+                left: $selectedBlock.offset().left + offset,
+                top: $selectedBlock.offset().top,
+            }, 1000, function () {
+                app.backgroundInactive();
+                app.removeBlinkBlock();
+                app.nextTurn();
+            });
+        },
+        
+        nextTurn: function () {
+            app.status.turn++;
+
+            if (app.status.turn === 3) {
+                app.status.turn = 0;
+
+                if (app.status.burglarTurn) {
+                    app.status.burglarTurn = false;
+                    app.status.policeTurn = true;
+                } else if (app.status.policeTurn) {
+                    app.status.policeTurn = false;
+                    app.status.burglarTurn = true;
+                }
+            }
+
+            app.rollDie();
+        },
+        
         hideJewelryAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
@@ -1343,6 +1388,29 @@ let app = new Vue({
             });
         },
 
+        rollDie: function () {
+            $('.turnImage').attr('src', 'image/burglar/' + app.status.turn + '.png');
+
+            let $turnModal = $('#turnModal').modal();
+
+            if (die == null) {
+                die = new Die(function (count) {
+                    $turnModal.modal('hide');
+
+                    let currentBurglar = app.burglarList[app.status.turn];
+                    let resultList = [];
+
+                    app.go(count, currentBurglar.position, currentBurglar.position, resultList);
+
+                    app.backgroundActive();
+
+                    app.blinkBlock(resultList);
+                });
+
+                $('#die').append(die.$element);
+            }
+        },
+        
         readyToPlay: function () {
             app.background.classObject.backgroundActive = false;
             app.resetBuilding();
@@ -1352,24 +1420,11 @@ let app = new Vue({
             app.jewelryList.forEach((target) => target.styleObject.display = 'none');
             app.hiddenPolice.styleObject.display = 'none';
 
-            $('.turnImage').attr('src', 'image/burglar/' + (app.status.turn + 1) + '.png');
+            app.rollDie();
+        },
 
-            let $turnModal = $('#turnModal').modal();
-
-            let die = new Die(function (count) {
-                $turnModal.modal('hide');
-
-                let currentBurglar = app.burglarList[app.status.turn];
-                let resultList = [];
-
-                app.go(count, currentBurglar.position, currentBurglar.position, resultList);
-
-                app.backgroundActive();
-
-                app.blinkBlock(resultList);
-            });
-
-            $('#die').append(die.$element);
+        removeBlinkBlock: function (indexList) {
+            app.blockList.forEach(block => block.classObject.blink = false);
         },
 
         blinkBlock: function (indexList) {

@@ -16,12 +16,15 @@
 <body>
 <div id="app">
     <div v-bind:class="background.classObject"></div>
+
     <div v-bind:style="hiddenPolice.styleObject"
         v-bind:class="hiddenPolice.classObject"></div>
+
     <div class="block"
          v-for="block in blockList"
          v-bind:style="block.styleObject"
-         v-bind:class="block.classObject">
+         v-bind:class="block.classObject"
+         v-on:click="move">
             <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
             <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
             <div v-if="block.trick" v-bind:class="{ trick: block.trick }">
@@ -32,12 +35,12 @@
             </div>
     </div>
 
-    <div class="character"
+    <div class="character burglarCharacter"
          v-for="burglar in burglarList"
          v-bind:class="burglar.classObject"
          v-bind:style="burglar.styleObject"></div>
 
-    <div class="character"
+    <div class="character policeCharacter"
          v-for="police in policeList"
          v-bind:class="police.classObject"
          v-bind:style="police.styleObject"></div>
