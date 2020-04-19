@@ -169,3 +169,7 @@ body {
     width: 400px;
     height: 500px;
 }
+
+#turnModal .modal-dialog {
+    width: 430px;
+}

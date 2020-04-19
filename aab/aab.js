@@ -1383,7 +1383,8 @@ let data = {
                 backgroundImage: 'url(image/burglar/0.png)'
             },
             classObject: {},
-            position: 0
+            position: 0,
+            rest: 0
         },
         {
             styleObject: {
@@ -1392,7 +1393,8 @@ let data = {
                 backgroundImage: 'url(image/burglar/1.png)'
             },
             classObject: {},
-            position: 0
+            position: 0,
+            rest: 0
         },
         {
             styleObject: {
@@ -1401,7 +1403,8 @@ let data = {
                 backgroundImage: 'url(image/burglar/2.png)'
             },
             classObject: {},
-            position: 0
+            position: 0,
+            rest: 0
         }
     ],
     blockList: blockList,
@@ -1563,11 +1566,42 @@ let app = new Vue({
 
             return app.getCurrentPolice();
         },
+
+        isOnlyBurglar: function (block) {
+            return block.onlyBurglar;
+        },
+
+        isRestable: function (block) {
+            return app.isOnlyBurglar(block) || block.index === 0;
+        },
         
         rollDie: function () {
             $('.turnImage').attr('src', app.getCharacterImage());
 
             let $turnModal = $('#turnModal').modal();
+
+            let $restCountButton = $('.btn-rest-count');
+            let $restButton = $('.btn-rest');
+
+            $restCountButton.hide();
+            $restButton.hide();
+
+            if (app.status.burglarTurn) {
+                let currentBurglar = app.getCurrentBurglar();
+                $restCountButton.show().text(`쉰 횟수: ${currentBurglar.rest}`);
+                let currentBlock = app.getBlock(currentBurglar.position);
+
+                if (app.isRestable(currentBlock)) {
+                    $restButton.show()
+                        .off('click')
+                        .on('click', function () {
+                            currentBurglar.rest++;
+                            $turnModal.modal('hide');
+                            app.removeBlinkCharacter();
+                            app.nextTurn();
+                        });
+                }
+            }
 
             if (die == null) {
                 die = new Die(function (count) {
@@ -1626,14 +1660,35 @@ let app = new Vue({
             data.background.classObject.backgroundActive = false;
         },
 
-        go: function(count, previousPosition, currentPosition, resultList) {
-            let currentBlock = app.blockList
+        getBlock: function (currentPosition) {
+            return app.blockList
                 .filter(target => target.index === currentPosition)[0];
+        },
 
-            let currentIndex = currentBlock.index;
+        go: function(count, previousPosition, currentPosition, resultList) {
+            console.log('>>> count', count);
+            console.log('>>> previousPosition', previousPosition);
+            console.log('>>> currentPosition', currentPosition);
+            console.log('>>> resultList', resultList);
+
+            let currentBlock = app.getBlock(currentPosition);
+
+            if (currentPosition === 135 && previousPosition === 134) {
+                if (app.status.policeTurn) {
+                    resultList.push(currentPosition);
+                    return;
+                }
+            }
+
+            if (currentPosition === 0 && previousPosition === 1) {
+                if (app.status.burglarTurn) {
+                    resultList.push(currentPosition);
+                    return;
+                }
+            }
 
             if (count === 0) {
-                resultList.push(currentIndex);
+                resultList.push(currentPosition);
                 return;
             }
 
