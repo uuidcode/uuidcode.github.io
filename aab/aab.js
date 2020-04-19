@@ -1487,7 +1487,7 @@ let app = new Vue({
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
                 app.removeBlinkBlock();
-                app.removeBlinkCharacter();
+                app.removeRippleCharacter();
                 app.nextTurn();
             });
         },
@@ -1574,12 +1574,43 @@ let app = new Vue({
         isRestable: function (block) {
             return app.isOnlyBurglar(block) || block.index === 0;
         },
+
+        moveToTurn: function (callback) {
+            let $turnImage = $('.turnImage');
+            let $newTurnImage = $turnImage.clone().appendTo('body');
+            let $currentCharacterElement = app.getCurrentCharacterElement();
+
+            $newTurnImage.css({
+                position: 'absolute',
+                left: $turnImage.offset().left,
+                top: $turnImage.offset().top
+            });
+
+            app.hideTurnModal();
+
+            $newTurnImage.animate({
+                left: $currentCharacterElement.offset().left,
+                top: $currentCharacterElement.offset().top,
+                width: '30px',
+                height: '30px'
+            }, 500, function () {
+                $newTurnImage.remove();
+                callback();
+            });
+        },
+
+        hideTurnModal: function () {
+            app.getTurnModalElement().modal('hide');
+        },
+
+        getTurnModalElement: function () {
+            return $('#turnModal');
+        },
         
         rollDie: function () {
             $('.turnImage').attr('src', app.getCharacterImage());
 
-            let $turnModal = $('#turnModal').modal();
-
+            let $turnModal = app.getTurnModalElement().modal();
             let $restCountButton = $('.btn-rest-count');
             let $restButton = $('.btn-rest');
 
@@ -1605,18 +1636,22 @@ let app = new Vue({
 
             if (die == null) {
                 die = new Die(function (count) {
-                    $turnModal.modal('hide');
+                    app.moveToTurn(function () {
+                        let currentCharacter = app.getCurrentCharacter();
+                        let resultList = [];
 
-                    let currentCharacter = app.getCurrentCharacter();
-                    let resultList = [];
+                        app.go(count, currentCharacter.position, currentCharacter.position, resultList);
 
-                    app.go(count, currentCharacter.position, currentCharacter.position, resultList);
+                        app.backgroundActive();
 
-                    app.backgroundActive();
+                        app.blinkBlock(resultList);
 
-                    app.blinkBlock(resultList);
-
-                    currentCharacter.classObject.blink = true;
+                        if (app.status.burglarTurn) {
+                            currentCharacter.classObject.burglarRipple = true;
+                        } else {
+                            currentCharacter.classObject.policeRipple = true;
+                        }
+                    });
                 });
 
                 $('#die').append(die.$element);
@@ -1644,8 +1679,18 @@ let app = new Vue({
             app.removeBlink(app.policeList);
         },
 
+        removeRippleCharacter: function () {
+            app.removeRipple(app.burglarList);
+            app.removeRipple(app.policeList);
+        },
+
         removeBlink: function (list) {
             list.forEach(target => target.classObject.blink = false);
+        },
+
+        removeRipple: function (list) {
+            list.forEach(target => target.classObject.burglarRipple = false);
+            list.forEach(target => target.classObject.policeRipple = false);
         },
 
         blinkBlock: function (indexList) {
@@ -1666,11 +1711,6 @@ let app = new Vue({
         },
 
         go: function(count, previousPosition, currentPosition, resultList) {
-            console.log('>>> count', count);
-            console.log('>>> previousPosition', previousPosition);
-            console.log('>>> currentPosition', currentPosition);
-            console.log('>>> resultList', resultList);
-
             let currentBlock = app.getBlock(currentPosition);
 
             if (currentPosition === 135 && previousPosition === 134) {

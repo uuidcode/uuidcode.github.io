@@ -36,6 +36,7 @@
     background-size: cover;
     display: none;
     z-index: 300;
+    border-radius: 15px;
 }
 
 .policeCharacter {
@@ -43,7 +44,7 @@
 }
 
 .burglar {
-    background-color: pink !important;
+        background-color: pink !important;
 }
 
 .block {
@@ -114,18 +115,27 @@ body {
 }
 
 .blink {
-    animation: blink-animation 3s infinite;
     cursor: pointer;
     z-index: 200;
 }
 
-@keyframes blink-animation {
-    0% {
-        opacity: 0.3;
-    }
+.blink::before, .blink::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    /*border-radius: 50%;*/
+    animation: blink 3s linear infinite 1s;
+}
 
+@keyframes blink {
+    0% {
+        box-shadow: 0 0 0 10px rgba(144, 238, 144, 0.2);
+    }
     100% {
-        opacity: 1;
+        box-shadow: 0 0 0 30px rgba(144, 238, 144, 0);
     }
 }
 
@@ -155,9 +165,10 @@ body {
 }
 
 .backgroundActive {
-    background-color: rgba(26, 26, 26, 0.5);
+    background-color: black;
     z-index: 100;
     display: block;
+    opacity: .1;
 }
 
 .backgroundInactive {
@@ -172,4 +183,72 @@ body {
 
 #turnModal .modal-dialog {
     width: 430px;
+}
+
+.burglarRipple {
+    animation: burglarRipple 3s linear infinite;
+}
+
+.burglarRipple::before, .burglarRipple::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border-radius: 50%;
+    animation: burglarRipple 3s linear infinite 1s;
+}
+
+.burglarRipple::after {
+    animation: burglarRipple 3s linear infinite 2s;
+}
+
+@keyframes burglarRipple {
+    0% {
+        box-shadow: 0 0 0 10px rgba(255,20,147, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 30px rgba(255,20,147, 0);
+    }
+}
+
+.policeRipple {
+    animation: policeRipple 3s linear infinite;
+}
+
+.policeRipple::before, .policeRipple::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border-radius: 50%;
+    animation: policeRipple 3s linear infinite 1s;
+}
+
+.policeRipple::after {
+    animation: policeRipple 3s linear infinite 2s;
+}
+
+@keyframes policeRipple {
+    0% {
+        box-shadow: 0 0 0 10px rgba(0, 191, 255, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 30px rgba(0, 191, 255, 0);
+    }
+}
+
+.turnImage {
+    border-radius: 50%;
+}
+
+.modal-backdrop {
+    background-color: black !important;
+}
+
+.modal-backdrop.show {
+    opacity: .1 !important;
 }
