@@ -1414,7 +1414,8 @@ let data = {
         hidePoliceMode: false,
         policeTurn: false,
         burglarTurn: true,
-        turn: 0
+        turn: 0,
+        stealJewelryCount: 0
     },
     background: {
         classObject: {
@@ -1488,10 +1489,39 @@ let app = new Vue({
                 app.backgroundInactive();
                 app.removeBlinkBlock();
                 app.removeRippleCharacter();
+
+                if (selectedBlock.threat) {
+                    app.threat(app.nextTurn);
+                    return;
+                }
+
                 app.nextTurn();
             });
         },
-        
+
+        threat: function (callback) {
+            if (app.status.stealJewelryCount !== 0) {
+                return;
+            }
+
+            let index = 0;
+
+            if (Math.random() > 0.5) {
+                index = 1;
+            }
+
+            let $jewelry = $('.jewelry').eq(index).show();
+
+            let currentJewelry = app.jewelryList.filter(target => target.index === index)[0];
+            currentJewelry.classObject.blink = true;
+
+            setTimeout(() => {
+                callback();
+                currentJewelry.classObject.blink = false;
+                $jewelry.hide();
+            }, 2000);
+        },
+
         nextTurn: function () {
             app.status.turn++;
 
@@ -1636,6 +1666,7 @@ let app = new Vue({
 
             if (die == null) {
                 die = new Die(function (count) {
+                    count = 1;
                     app.moveToTurn(function () {
                         let currentCharacter = app.getCurrentCharacter();
                         let resultList = [];

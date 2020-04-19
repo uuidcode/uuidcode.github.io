@@ -55,7 +55,7 @@
          v-on:click="hideJewelryAtBuilding"></div>
 
     <div v-for="jewelry in jewelryList"
-         :id="jewelry.index"
+         :data-index="jewelry.index"
          v-bind:class="jewelry.classObject"
          v-bind:style="jewelry.styleObject"></div>
     </div>
