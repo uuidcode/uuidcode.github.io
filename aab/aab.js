@@ -1415,7 +1415,8 @@ let data = {
         policeTurn: false,
         burglarTurn: true,
         turn: 0,
-        stealJewelryCount: 0
+        stealJewelryCount: 0,
+        threatCount: 0
     },
     background: {
         classObject: {
@@ -1500,27 +1501,30 @@ let app = new Vue({
         },
 
         threat: function (callback) {
-            if (app.status.stealJewelryCount !== 0) {
+            if (app.status.stealJewelryCount === 0 && app.status.threatCount === 0) {
+                let index = 0;
+
+                if (Math.random() > 0.5) {
+                    index = 1;
+                }
+
+                let $jewelry = $('.jewelry').eq(index).show();
+
+                let currentJewelry = app.jewelryList.filter(target => target.index === index)[0];
+                currentJewelry.classObject.blink = true;
+
+                setTimeout(() => {
+                    alert('확인하였습니까?');
+                    callback();
+                    currentJewelry.classObject.blink = false;
+                    $jewelry.hide();
+                    app.status.threatCount = 1;
+                }, 2000);
+
                 return;
             }
 
-            let index = 0;
-
-            if (Math.random() > 0.5) {
-                index = 1;
-            }
-
-            let $jewelry = $('.jewelry').eq(index).show();
-
-            let currentJewelry = app.jewelryList.filter(target => target.index === index)[0];
-            currentJewelry.classObject.blink = true;
-
-            setTimeout(() => {
-                callback();
-                alert('확인하였습니까?');
-                currentJewelry.classObject.blink = false;
-                $jewelry.hide();
-            }, 2000);
+            callback();
         },
 
         nextTurn: function () {
@@ -1667,7 +1671,6 @@ let app = new Vue({
 
             if (die == null) {
                 die = new Die(function (count) {
-                    count = 1;
                     app.moveToTurn(function () {
                         let currentCharacter = app.getCurrentCharacter();
                         let resultList = [];
