@@ -1517,6 +1517,7 @@ let app = new Vue({
 
             setTimeout(() => {
                 callback();
+                alert('확인하였습니까?');
                 currentJewelry.classObject.blink = false;
                 $jewelry.hide();
             }, 2000);
