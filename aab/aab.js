@@ -1344,6 +1344,7 @@ let data = {
                 top: '0',
                 backgroundImage: 'url(image/police/0.png)',
             },
+            classObject: {},
             position: 135
         },
         {
@@ -1352,6 +1353,7 @@ let data = {
                 top: '0',
                 backgroundImage: 'url(image/police/1.png)'
             },
+            classObject: {},
             position: 135
         },
         {
@@ -1360,6 +1362,7 @@ let data = {
                 top: '0',
                 backgroundImage: 'url(image/police/2.png)'
             },
+            classObject: {},
             position: 135
         }
     ],
@@ -1379,6 +1382,7 @@ let data = {
                 top: '700px',
                 backgroundImage: 'url(image/burglar/0.png)'
             },
+            classObject: {},
             position: 0
         },
         {
@@ -1387,6 +1391,7 @@ let data = {
                 top: '700px',
                 backgroundImage: 'url(image/burglar/1.png)'
             },
+            classObject: {},
             position: 0
         },
         {
@@ -1395,6 +1400,7 @@ let data = {
                 top: '700px',
                 backgroundImage: 'url(image/burglar/2.png)'
             },
+            classObject: {},
             position: 0
         }
     ],
@@ -1478,6 +1484,7 @@ let app = new Vue({
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
                 app.removeBlinkBlock();
+                app.removeBlinkCharacter();
                 app.nextTurn();
             });
         },
@@ -1574,6 +1581,8 @@ let app = new Vue({
                     app.backgroundActive();
 
                     app.blinkBlock(resultList);
+
+                    currentCharacter.classObject.blink = true;
                 });
 
                 $('#die').append(die.$element);
@@ -1592,8 +1601,17 @@ let app = new Vue({
             app.rollDie();
         },
 
-        removeBlinkBlock: function (indexList) {
-            app.blockList.forEach(block => block.classObject.blink = false);
+        removeBlinkBlock: function () {
+            app.removeBlink(app.blockList);
+        },
+
+        removeBlinkCharacter: function () {
+            app.removeBlink(app.burglarList);
+            app.removeBlink(app.policeList);
+        },
+
+        removeBlink: function (list) {
+            list.forEach(target => target.classObject.blink = false);
         },
 
         blinkBlock: function (indexList) {
@@ -1613,12 +1631,6 @@ let app = new Vue({
                 .filter(target => target.index === currentPosition)[0];
 
             let currentIndex = currentBlock.index;
-
-            console.log('>>> count', count);
-            console.log('>>> previousPosition', previousPosition);
-            console.log('>>> currentPosition', currentPosition);
-            console.log('>>> currentPosition', currentPosition);
-            console.log('>>> resultList', resultList);
 
             if (count === 0) {
                 resultList.push(currentIndex);
