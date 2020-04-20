@@ -114,7 +114,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [11, 13, 62],
-        trick: true
+        trick: true,
     },
     {
         index: 13,
@@ -1478,13 +1478,38 @@ let app = new Vue({
             return app.blockList.filter(block => block.index === index)[0];
         },
 
+        setTrickDirection: function (block, direction) {
+            block.trickDirection = direction;
+
+            if (direction === "up") {
+                block.trickDirectionIcon = "▲";
+            } else if (direction === "down") {
+                block.trickDirectionIcon = "▼";
+            } else if (direction === "left") {
+                block.trickDirectionIcon = "◀";
+            } else if (direction === "right") {
+                block.trickDirectionIcon = "▶";
+            }
+        },
+
         move: function (event) {
+            let selectedBlock = app.getSelectedBlock(event);
+
             if (app.status.trickMode) {
+                let $trickModal = $('.trickModal').modal();
+
+                $('.btn-trick').off('click')
+                    .on('click', function (event) {
+                        let direction = $(this).attr('data-trick-direction');
+                        app.setTrickDirection(block, direction);
+                        $trickModal.modal('hide');
+                        app.status.trickCount--;
+                    });
+
                 return;
             }
 
             let $currentCharacter = app.getCurrentCharacterElement();
-            let $selectedBlock = app.getClickedBlock(event);
             let offset = app.status.turn * 30;
 
             $currentCharacter.animate({
@@ -1680,15 +1705,13 @@ let app = new Vue({
                     $trickButton.show()
                         .off('click')
                         .on('click', function () {
-                            app.status.trickMode = true;
-                            let indexList = app.buildingList
-                                .filter(target => target.trick)
+                            $turnModal.modal('hide');
+                            app.backgroundActive();
+
+                            let indexList = app.buildingList.filter(target => target.trick)
                                 .map(target => target.index);
-
                             app.blinkBlock(indexList);
-
-                            app.status.trickCount--;
-                            app.status.trickMode = false;
+                            app.status.trickMode = true;
                         });
                 }
             }
@@ -1850,6 +1873,8 @@ let app = new Vue({
             return {
                 ...block,
                 subTitle: this.getSubTitle(block),
+                trickDirection: null,
+                trickDirectionIcon: '',
                 classObject: {
                     burglar: block.burglar ||
                         block.moveBurglar ||

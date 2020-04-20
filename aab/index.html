@@ -29,7 +29,7 @@
             <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
             <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
             <div v-if="block.trick" v-bind:class="{ trick: block.trick }">
-                속임수
+                속임수 {{ block.trickDirectionIcon }}
             </div>
             <div class="index">
                 {{ block.index }}
@@ -72,12 +72,7 @@
                         <img class="turnImage">
                         <button class="btn btn-default btn-rest-count" disabled></button>
                         <button class="btn btn-success btn-rest">쉬기</button>
-                        </div>
-                        <div class="trickButtonGroup">
-                            <button class="btn btn-success btn-trick btn-trick-left">속임수←</button>
-                            <button class="btn btn-success btn-trick btn-trick-right">속임수→</button>
-                            <button class="btn btn-success btn-trick btn-trick-up">속임수↑</button>
-                            <button class="btn btn-success btn-trick btn-trick-down">속임수↓</button>
+                        <button class="btn btn-success btn-trick">속임수</button>
                         </div>
                     </div>
                     <div id="die"></div>
@@ -85,6 +80,31 @@
             </div>
         </div>
     </div>
+
+<div class="modal"
+     id="trickModal"
+     role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div>
+                    <div class="trickButtonGroup">
+                        <button class="btn btn-default" disabled></button>
+                        <button data-trick-direction="up" class="btn btn-success btn-trick">▲</button>
+                        <button class="btn btn-default" disabled></button>
+                        <button data-trick-direction="left" class="btn btn-success btn-trick">◀</button>
+                        <button class="btn btn-default" disabled></button>
+                        <button data-trick-direction="right" class="btn btn-success btn-trick">▶</button>
+                        <button class="btn btn-default" disabled></button>
+                        <button data-trick-direction="down" class="btn btn-success btn-trick">▼</button>
+                        <button class="btn btn-default" disabled></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="modal"
          id="jewelryModal"
