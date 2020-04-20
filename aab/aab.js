@@ -756,7 +756,7 @@ let blockList = [
             left: '500px',
             top: '50px',
         },
-        linkList: [82, 84],
+        linkList: [82, 84, 131],
         trick: true,
         linkDirectionList: ['up', 'down', 'left']
     },
@@ -1442,7 +1442,8 @@ let data = {
         stealJewelryCount: 0,
         threatCount: 0,
         trickCount: 10,
-        trickMode: false
+        trickMode: false,
+        trickIndexList: []
     },
     background: {
         classObject: {
@@ -1534,7 +1535,7 @@ let app = new Vue({
 
                         setTimeout(function () {
                             app.nextTurn();
-                        }, 1000);
+                        }, 500);
                     });
 
                 return;
@@ -1547,12 +1548,16 @@ let app = new Vue({
             $currentCharacter.animate({
                 left: $clickedBlock.offset().left + offset,
                 top: $clickedBlock.offset().top,
-            }, 1000, function () {
+            }, 500, function () {
                 let selectedBlock = app.getSelectedBlock(event);
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
                 app.removeBlinkBlock();
                 app.removeRippleCharacter();
+
+                app.removeTrick(selectedBlock);
+                app.removeTrickList();
+                $('.trick').removeClass('blink');
 
                 if (selectedBlock.threat) {
                     app.threat(app.nextTurn);
@@ -1563,7 +1568,27 @@ let app = new Vue({
             });
         },
 
+        resetTrickIndexList: function () {
+            app.status.trickIndexList = [];
+        },
+        
+        removeTrick: function (selectedBlock) {
+            selectedBlock.trickDirection = null;
+            selectedBlock.trickDirectionIcon = null;
+        },
+
+        removeTrickList: function (selectedBlock) {
+            app.status.trickIndexList.map(index => app.getBlock(index))
+                .forEach(target => app.removeTrick(target));
+
+            app.resetTrickIndexList();
+        },
+        
         threat: function (callback) {
+            if (app.status.policeTurn) {
+                return;
+            }
+
             if (app.status.stealJewelryCount === 0 && app.status.threatCount === 0) {
                 let index = 0;
 
@@ -1629,7 +1654,7 @@ let app = new Vue({
             $target.animate({
                 left: $(event.target).offset().left + 50,
                 top: $(event.target).offset().top + 25,
-            }, 1000, function () {
+            }, 500, function () {
                 if (!app.status.hidePoliceMode) {
                     app.status.hideJewelryCount++;
                 }
@@ -1741,6 +1766,7 @@ let app = new Vue({
                             app.backgroundActive();
 
                             let indexList = app.blockList.filter(target => target.trick)
+                                .filter(target => target.trickDirection === null)
                                 .map(target => target.index);
 
                             app.blinkBlock(indexList);
@@ -1755,11 +1781,21 @@ let app = new Vue({
                         let currentCharacter = app.getCurrentCharacter();
                         let resultList = [];
 
+                        if (countForDebug !== null) {
+                            count = countForDebug;
+                        }
+
                         app.go(count, currentCharacter.position, currentCharacter.position, resultList);
 
                         app.backgroundActive();
 
                         app.blinkBlock(resultList);
+
+                        app.status.trickIndexList.forEach(index => {
+                            $('.block[data-index=' + index + ']')
+                                .find('.trick')
+                                .addClass('blink');
+                        });
 
                         if (app.status.burglarTurn) {
                             currentCharacter.classObject.burglarRipple = true;
@@ -1849,9 +1885,24 @@ let app = new Vue({
 
             let linkList = currentBlock.linkList;
 
-            for (const link of linkList) {
-                if (link !== previousPosition) {
-                    app.go(count - 1, currentPosition, link, resultList);
+            for (let i = 0; i < linkList.length; i++) {
+                let link = linkList[i];
+
+                if (app.status.burglarTurn) {
+                    if (link !== previousPosition) {
+                        app.go(count - 1, currentPosition, link, resultList);
+                    }
+                } else if (app.status.policeTurn) {
+                    if (currentBlock.trickDirection === null) {
+                        if (link !== previousPosition) {
+                            app.go(count - 1, currentPosition, link, resultList);
+                        }
+                    } else {
+                        if (currentBlock.trickDirection === currentBlock.linkDirectionList[i]) {
+                            app.status.trickIndexList.push(currentBlock.index);
+                            app.go(count - 1, currentPosition, link, resultList);
+                        }
+                    }
                 }
             }
         },
