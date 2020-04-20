@@ -23,8 +23,8 @@
     <div class="block"
          v-for="block in blockList"
          :data-index="block.index"
-         v-bind:style="block.styleObject"
-         v-bind:class="block.classObject"
+         :style="block.styleObject"
+         :class="block.classObject"
          v-on:click="move">
             <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
             <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
@@ -38,20 +38,24 @@
 
     <div class="character burglarCharacter"
          v-for="burglar in burglarList"
-         v-bind:class="burglar.classObject"
-         v-bind:style="burglar.styleObject"></div>
+         :data-index="burglar.index"
+         :key="burglar.index"
+         :class="burglar.classObject"
+         :style="burglar.styleObject"></div>
 
     <div class="character policeCharacter"
          v-for="police in policeList"
-         v-bind:class="police.classObject"
-         v-bind:style="police.styleObject"></div>
+         :data-index="police.index"
+         :key="police.index"
+         :class="police.classObject"
+         :style="police.styleObject"></div>
 
     <div class="building"
          v-for="building in buildingList"
          :data-index="building.index"
-         v-bind:key="building.index"
-         v-bind:class="building.classObject"
-         v-bind:style="building.styleObject"
+         :key="building.index"
+         :class="building.classObject"
+         :style="building.styleObject"
          v-on:click="hideJewelryAtBuilding"></div>
 
     <div v-for="jewelry in jewelryList"

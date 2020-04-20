@@ -1363,6 +1363,7 @@ let data = {
     ],
     policeList:[
         {
+            index: 0,
             styleObject: {
                 left: '0',
                 top: '0',
@@ -1372,6 +1373,7 @@ let data = {
             position: 135
         },
         {
+            index: 1,
             styleObject: {
                 left: '30px',
                 top: '0',
@@ -1381,6 +1383,7 @@ let data = {
             position: 135
         },
         {
+            index: 2,
             styleObject: {
                 left: '60px',
                 top: '0',
@@ -1401,6 +1404,7 @@ let data = {
     },
     burglarList:[
         {
+            index: 0,
             styleObject: {
                 left: '1800px',
                 top: '700px',
@@ -1408,9 +1412,11 @@ let data = {
             },
             classObject: {},
             position: 0,
-            rest: 0
+            rest: 0,
+            arrested: false
         },
         {
+            index: 1,
             styleObject: {
                 left: '1830px',
                 top: '700px',
@@ -1418,9 +1424,11 @@ let data = {
             },
             classObject: {},
             position: 0,
-            rest: 0
+            rest: 0,
+            arrested: false
         },
         {
+            index:2,
             styleObject: {
                 left: '1860px',
                 top: '700px',
@@ -1428,7 +1436,8 @@ let data = {
             },
             classObject: {},
             position: 0,
-            rest: 0
+            rest: 0,
+            arrested: false
         }
     ],
     blockList: blockList,
@@ -1443,7 +1452,8 @@ let data = {
         threatCount: 0,
         trickCount: 10,
         trickMode: false,
-        trickIndexList: []
+        trickIndexList: [],
+        blockPathList: []
     },
     background: {
         classObject: {
@@ -1479,6 +1489,10 @@ let app = new Vue({
 
         getCurrentBurglarElement: function () {
             return $('.burglarCharacter').eq(app.status.turn);
+        },
+
+        getBurglarElement: function (index) {
+            return $('.burglarCharacter[data-index=' + index + ']');
         },
 
         getCurrentPoliceElement: function () {
@@ -1517,27 +1531,37 @@ let app = new Vue({
             }
         },
 
+        processTrickDirection: function (selectedBlock) {
+            let $trickModal = $('#trickModal').modal();
+
+            $('.btn-trick').off('click')
+                .on('click', function (event) {
+                    let direction = $(this).attr('data-trick-direction');
+                    app.setTrickDirection(selectedBlock, direction);
+                    $trickModal.modal('hide');
+                    app.status.trickCount--;
+                    app.removeBlinkBlock();
+                    app.status.trickMode = false;
+                    app.backgroundInactive();
+
+                    setTimeout(function () {
+                        app.nextTurn();
+                    }, 500);
+                });
+        },
+
+        checkGameOver: function () {
+            if (app.burglarList.filter(burglar => burglar.arrested).length === 3) {
+                alert('경찰이 이겼습니다.');
+                location.reload();
+            }
+        },
+        
         move: function (event) {
             let selectedBlock = app.getSelectedBlock(event);
 
             if (app.status.trickMode) {
-                let $trickModal = $('#trickModal').modal();
-
-                $('.btn-trick').off('click')
-                    .on('click', function (event) {
-                        let direction = $(this).attr('data-trick-direction');
-                        app.setTrickDirection(selectedBlock, direction);
-                        $trickModal.modal('hide');
-                        app.status.trickCount--;
-                        app.removeBlinkBlock();
-                        app.status.trickMode = false;
-                        app.backgroundInactive();
-
-                        setTimeout(function () {
-                            app.nextTurn();
-                        }, 500);
-                    });
-
+                this.processTrickDirection(selectedBlock);
                 return;
             }
 
@@ -1557,6 +1581,27 @@ let app = new Vue({
 
                 app.removeTrick(selectedBlock);
                 app.removeTrickList();
+
+                let pathList = app.status.blockPathList
+                    .filter(target => target.index === selectedBlock.index)
+                    .map(target => target.path)[0];
+
+                if (app.status.policeTurn) {
+                    app.burglarList.filter(burglar => pathList.includes(burglar.position))
+                        .forEach(burglar => {
+                            let $currentBurglar = app.getBurglarElement(burglar.index);
+                            $currentBurglar.animate({
+                                left: burglar.index * 30,
+                                top: 70
+                            }, 500, function () {
+                                burglar.arrested = true;
+                                burglar.position = 135;
+
+                                app.checkGameOver();
+                            });
+                        })
+                }
+
                 $('.trick').removeClass('blink');
 
                 if (selectedBlock.threat) {
@@ -1779,17 +1824,21 @@ let app = new Vue({
                 die = new Die(function (count) {
                     app.moveToTurn(function () {
                         let currentCharacter = app.getCurrentCharacter();
-                        let resultList = [];
+                        app.status.blockPathList = [];
 
-                        if (countForDebug !== null) {
+                        try {
                             count = countForDebug;
+                        } catch (e) {
                         }
 
-                        app.go(count, currentCharacter.position, currentCharacter.position, resultList);
+                        app.go(count, currentCharacter.position, currentCharacter.position, []);
 
                         app.backgroundActive();
 
-                        app.blinkBlock(resultList);
+                        let blockIndexList = app.status.blockPathList
+                            .map(target => target.index);
+
+                        app.blinkBlock(blockIndexList);
 
                         app.status.trickIndexList.forEach(index => {
                             $('.block[data-index=' + index + ']')
@@ -1861,25 +1910,39 @@ let app = new Vue({
                 .filter(target => target.index === currentPosition)[0];
         },
 
-        go: function(count, previousPosition, currentPosition, resultList) {
+        go: function(count, previousPosition, currentPosition, path) {
+            path.push(currentPosition);
+
             let currentBlock = app.getBlock(currentPosition);
 
             if (currentPosition === 135 && previousPosition === 134) {
                 if (app.status.policeTurn) {
-                    resultList.push(currentPosition);
+                    app.status.blockPathList.push({
+                        index: currentPosition,
+                        path: path
+                    });
+
                     return;
                 }
             }
 
             if (currentPosition === 0 && previousPosition === 1) {
                 if (app.status.burglarTurn) {
-                    resultList.push(currentPosition);
+                    app.status.blockPathList.push({
+                        index: currentPosition,
+                        path: path
+                    });
+
                     return;
                 }
             }
 
             if (count === 0) {
-                resultList.push(currentPosition);
+                app.status.blockPathList.push({
+                    index: currentPosition,
+                    path: path
+                });
+
                 return;
             }
 
@@ -1890,17 +1953,17 @@ let app = new Vue({
 
                 if (app.status.burglarTurn) {
                     if (link !== previousPosition) {
-                        app.go(count - 1, currentPosition, link, resultList);
+                        app.go(count - 1, currentPosition, link, [...path]);
                     }
                 } else if (app.status.policeTurn) {
                     if (currentBlock.trickDirection === null) {
                         if (link !== previousPosition) {
-                            app.go(count - 1, currentPosition, link, resultList);
+                            app.go(count - 1, currentPosition, link, [...path]);
                         }
                     } else {
                         if (currentBlock.trickDirection === currentBlock.linkDirectionList[i]) {
                             app.status.trickIndexList.push(currentBlock.index);
-                            app.go(count - 1, currentPosition, link, resultList);
+                            app.go(count - 1, currentPosition, link, [...path]);
                         }
                     }
                 }
