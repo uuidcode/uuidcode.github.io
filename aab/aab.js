@@ -1501,9 +1501,16 @@ let app = new Vue({
                 $('.btn-trick').off('click')
                     .on('click', function (event) {
                         let direction = $(this).attr('data-trick-direction');
-                        app.setTrickDirection(block, direction);
+                        app.setTrickDirection(selectedBlock, direction);
                         $trickModal.modal('hide');
                         app.status.trickCount--;
+                        app.removeBlinkBlock();
+                        app.status.trickMode = false;
+                        app.backgroundInactive();
+
+                        setTimeout(function () {
+                            app.nextTurn();
+                        }, 1000);
                     });
 
                 return;
@@ -1511,10 +1518,11 @@ let app = new Vue({
 
             let $currentCharacter = app.getCurrentCharacterElement();
             let offset = app.status.turn * 30;
+            let $clickedBlock = app.getClickedBlock(event);
 
             $currentCharacter.animate({
-                left: $selectedBlock.offset().left + offset,
-                top: $selectedBlock.offset().top,
+                left: $clickedBlock.offset().left + offset,
+                top: $clickedBlock.offset().top,
             }, 1000, function () {
                 let selectedBlock = app.getSelectedBlock(event);
                 app.getCurrentCharacter().position = selectedBlock.index;
