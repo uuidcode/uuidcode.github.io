@@ -1945,6 +1945,21 @@ let app = new Vue({
 
             let currentBlock = app.getBlock(currentPosition);
 
+            if (app.status.policeTurn) {
+                if (currentBlock.onlyBurglar) {
+                    return;
+                }
+            }
+
+            if (currentBlock.stop) {
+                app.status.blockPathList.push({
+                    index: currentPosition,
+                    path: path
+                });
+
+                return;
+            }
+
             if (currentPosition === 135 && previousPosition === 134) {
                 if (app.status.policeTurn) {
                     app.status.blockPathList.push({
