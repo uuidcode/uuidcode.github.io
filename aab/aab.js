@@ -1416,7 +1416,9 @@ let data = {
         burglarTurn: true,
         turn: 0,
         stealJewelryCount: 0,
-        threatCount: 0
+        threatCount: 0,
+        trickCount: 10,
+        trickMode: false
     },
     background: {
         classObject: {
@@ -1477,6 +1479,10 @@ let app = new Vue({
         },
 
         move: function (event) {
+            if (app.status.trickMode) {
+                return;
+            }
+
             let $currentCharacter = app.getCurrentCharacterElement();
             let $selectedBlock = app.getClickedBlock(event);
             let offset = app.status.turn * 30;
@@ -1648,9 +1654,11 @@ let app = new Vue({
             let $turnModal = app.getTurnModalElement().modal();
             let $restCountButton = $('.btn-rest-count');
             let $restButton = $('.btn-rest');
+            let $trickButton = $('.btn-trick');
 
             $restCountButton.hide();
             $restButton.hide();
+            $trickButton.hide();
 
             if (app.status.burglarTurn) {
                 let currentBurglar = app.getCurrentBurglar();
@@ -1665,6 +1673,20 @@ let app = new Vue({
                             $turnModal.modal('hide');
                             app.removeBlinkCharacter();
                             app.nextTurn();
+                        });
+                }
+
+                if (app.status.trickCount > 0) {
+                    $trickButton.show()
+                        .off('click')
+                        .on('click', function () {
+                            let indexList = app.buildingList
+                                .filter(target => target.trick)
+                                .map(target => target.index);
+
+                            app.blinkBlock(indexList);
+
+                            app.status.trickCount--;
                         });
                 }
             }
