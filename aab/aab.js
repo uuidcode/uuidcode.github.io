@@ -1680,6 +1680,7 @@ let app = new Vue({
                     $trickButton.show()
                         .off('click')
                         .on('click', function () {
+                            app.status.trickMode = true;
                             let indexList = app.buildingList
                                 .filter(target => target.trick)
                                 .map(target => target.index);
@@ -1687,6 +1688,7 @@ let app = new Vue({
                             app.blinkBlock(indexList);
 
                             app.status.trickCount--;
+                            app.status.trickMode = false;
                         });
                 }
             }
