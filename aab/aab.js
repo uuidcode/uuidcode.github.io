@@ -28,7 +28,8 @@ let blockList = [
             top: '600px',
         },
         trick: true,
-        linkList: [1, 3, 4]
+        linkList: [1, 3, 4],
+        linkDirectionList: ['down', 'up', 'left']
     },
     {
         index: 3,
@@ -97,6 +98,7 @@ let blockList = [
         },
         linkList: [3, 11, 16],
         trick: true,
+        linkDirectionList: ['down', 'up', 'left'],
         changeBurglar: true
     },
     {
@@ -115,6 +117,7 @@ let blockList = [
         },
         linkList: [11, 13, 62],
         trick: true,
+        linkDirectionList: ['down', 'left', 'up']
     },
     {
         index: 13,
@@ -140,7 +143,8 @@ let blockList = [
             top: '400px',
         },
         linkList: [14, 19, 54],
-        trick: true
+        trick: true,
+        linkDirectionList: ['right', 'left', 'up']
     },
     {
         index: 16,
@@ -186,7 +190,8 @@ let blockList = [
             top: '400px',
         },
         linkList: [19, 21, 24],
-        trick: true
+        trick: true,
+        linkDirectionList: ['right', 'left', 'up']
     },
     {
         index: 21,
@@ -204,7 +209,8 @@ let blockList = [
             top: '400px',
         },
         linkList: [21, 23, 42],
-        trick: true
+        trick: true,
+        linkDirectionList: ['right', 'up', 'left']
     },
     {
         index: 23,
@@ -239,7 +245,8 @@ let blockList = [
             top: '750px',
         },
         linkList: [25, 27, 92],
-        trick: true
+        trick: true,
+        linkDirectionList: ['right', 'up', 'left']
     },
     {
         index: 27,
@@ -266,7 +273,8 @@ let blockList = [
             top: '600px',
         },
         linkList: [28, 30, 31],
-        trick: true
+        trick: true,
+        linkDirectionList: ['down', 'left', 'up']
     },
     {
         index: 30,
@@ -293,7 +301,8 @@ let blockList = [
             top: '500px',
         },
         linkList: [31, 33, 34],
-        trick: true
+        trick: true,
+        linkDirectionList: ['down', 'right', 'left']
     },
     {
         index: 33,
@@ -332,11 +341,11 @@ let blockList = [
     },
     {
         index: 37,
-        subTitle: '51로 이동',
         styleObject: {
             left: '900px',
             top: '500px',
         },
+        move: 43,
         linkList: [36, 38],
         changePosition: true
     },
@@ -370,8 +379,9 @@ let blockList = [
             left: '700px',
             top: '400px',
         },
-        linkList: [44, 45, 91],
-        trick: true
+        linkList: [40, 44, 45, 91],
+        trick: true,
+        linkDirectionList: ['down', 'right', 'up', 'left']
     },
     {
         index: 42,
@@ -379,7 +389,7 @@ let blockList = [
             left: '1000px',
             top: '400px',
         },
-        linkList: [22, 43],
+        linkList: [22, 43]
     },
     {
         index: 43,
@@ -458,7 +468,8 @@ let blockList = [
             top: '200px',
         },
         linkList: [50, 52, 64],
-        trick: true
+        trick: true,
+        linkDirectionList: ['left', 'up', 'right']
     },
     {
         index: 52,
@@ -513,6 +524,7 @@ let blockList = [
         },
         linkList: [56, 58],
         trick: true,
+        linkDirectionList: ['down', 'up', 'left'],
         mission: true,
         move: 3,
         forward: true
@@ -548,7 +560,8 @@ let blockList = [
             top: '0px',
         },
         linkList: [60, 65, 73],
-        trick: true
+        trick: true,
+        linkDirectionList: ['down', 'right', 'left']
     },
     {
         index: 62,
@@ -603,7 +616,8 @@ let blockList = [
             top: '0px',
         },
         linkList: [66, 72],
-        trick: true
+        trick: true,
+        linkDirectionList: ['left', 'down']
     },
     {
         index: 68,
@@ -614,7 +628,8 @@ let blockList = [
         linkList: [63, 69],
         tunnel: true,
         move: 129,
-        trick: true
+        trick: true,
+        linkDirectionList: ['left', 'up']
     },
     {
         index: 69,
@@ -742,7 +757,8 @@ let blockList = [
             top: '50px',
         },
         linkList: [82, 84],
-        trick: true
+        trick: true,
+        linkDirectionList: ['up', 'down', 'left']
     },
     {
         index: 84,
@@ -760,7 +776,8 @@ let blockList = [
             top: '150px',
         },
         linkList: [84, 86, 130],
-        trick: true
+        trick: true,
+        linkDirectionList: ['up', 'down', 'left']
     },
     {
         index: 86,
@@ -808,6 +825,7 @@ let blockList = [
         linkList: [91, 124],
         move: 106,
         trick: true,
+        linkDirectionList: ['up', 'right', 'left'],
         movePolice: true
     },
     {
@@ -918,6 +936,7 @@ let blockList = [
         linkList: [101, 103, 104],
         burglar: true,
         trick: true,
+        linkDirectionList: ['down', 'right', 'up'],
         send: true
     },
     {
@@ -960,7 +979,8 @@ let blockList = [
             top: '550px',
         },
         linkList: [106, 108, 117],
-        trick: true
+        trick: true,
+        linkDirectionList: ['right', 'left', 'down']
     },
     {
         index: 108,
@@ -989,7 +1009,8 @@ let blockList = [
             top: '600px',
         },
         linkList: [109, 111],
-        trick: true
+        trick: true,
+        linkDirectionList: ['up', 'down'],
     },
     {
         index: 111,
@@ -1033,7 +1054,8 @@ let blockList = [
             top: '750px',
         },
         linkList: [114, 116],
-        trick: true
+        trick: true,
+        linkDirectionList: ['left', 'right']
     },
     {
         index: 116,
@@ -1059,7 +1081,8 @@ let blockList = [
             top: '500px',
         },
         linkList: [109, 119],
-        trick: true
+        trick: true,
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 119,
@@ -1087,7 +1110,8 @@ let blockList = [
             top: '400px',
         },
         linkList: [120, 122],
-        trick: true
+        trick: true,
+        linkDirectionList: ['left', 'right', 'up']
     },
     {
         index: 122,
@@ -1870,7 +1894,7 @@ let app = new Vue({
                 return `도둑은 아지트로 경찰은 경찰서로`;
             } else if (block.send) {
                 return `도둑은 보석을 동료에게 넘겨준다`;
-            } else if (block.tunnel) {
+            } else if (block.tunnel || block.changePosition) {
                 return `${block.move}로 이동`;
             }
 
