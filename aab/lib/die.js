@@ -9,9 +9,9 @@ function Die(rollCallback) {
             position: 'absolute',
             border: '1px solid black',
             left: '10px',
-            top: '100px',
-            width: 400,
-            height: 400
+            top: '200px',
+            width: 600,
+            height: 600
         };
 
         this.$element.addClass('shadow');

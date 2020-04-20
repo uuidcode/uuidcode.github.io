@@ -1662,7 +1662,7 @@ let app = new Vue({
 
             if (app.status.burglarTurn) {
                 let currentBurglar = app.getCurrentBurglar();
-                $restCountButton.show().text(`쉰 횟수: ${currentBurglar.rest}`);
+                $restCountButton.text(`쉰 횟수: ${currentBurglar.rest}`).show();
                 let currentBlock = app.getBlock(currentBurglar.position);
 
                 if (app.isRestable(currentBlock)) {

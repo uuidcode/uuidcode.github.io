@@ -176,12 +176,18 @@ body {
 }
 
 #turnModal .modal-body {
-    width: 400px;
-    height: 500px;
+    width: 630px;
+    height: 810px;
+}
+
+#turnModal .modal-content {
+    width: 630px !important;
+    height: 810px !important;
 }
 
 #turnModal .modal-dialog {
-    width: 430px;
+    max-width: 630px!important;
+    width: 630px;
 }
 
 .burglarRipple {
@@ -250,4 +256,8 @@ body {
 
 .modal-backdrop.show {
     opacity: .1 !important;
+}
+
+.trickButtonGroup {
+    margin-top: 10px;
 }
