@@ -393,13 +393,13 @@ let blockList = [
     },
     {
         index: 43,
-        subTitle: '45로 이동',
         styleObject: {
             left: '900px',
             top: '400px',
         },
         linkList: [42, 44],
-        changePosition: true
+        changePosition: true,
+        move: 37
     },
     {
         index: 44,
@@ -625,11 +625,11 @@ let blockList = [
             left: '1800px',
             top: '250px',
         },
-        linkList: [63, 69],
+        linkList: [63, 69, 129],
         tunnel: true,
         move: 129,
         trick: true,
-        linkDirectionList: ['left', 'up']
+        linkDirectionList: ['left', 'up', 'right']
     },
     {
         index: 69,
@@ -708,13 +708,13 @@ let blockList = [
     },
     {
         index: 78,
-        subTitle: '103으로 이동',
         styleObject: {
             left: '900px',
             top: '0px',
         },
         linkList: [77, 79],
         changePosition: true,
+        move: 95
     },
     {
         index: 79,
@@ -1119,7 +1119,8 @@ let blockList = [
             left: '200px',
             top: '400px',
         },
-        linkList: [121, 123]
+        linkList: [121, 123],
+        linkDirectionList: ['left', 'right']
     },
     {
         index: 123,
@@ -1128,6 +1129,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [122, 124],
+        linkDirectionList: ['left', 'right'],
         rest: true
     },
     {
@@ -1136,7 +1138,8 @@ let blockList = [
             left: '400px',
             top: '400px',
         },
-        linkList: [123, 90],
+        linkList: [90, 123],
+        linkDirectionList: ['right', 'left'],
         changeBurglar: true
     },
     {
@@ -1145,7 +1148,8 @@ let blockList = [
             left: '100px',
             top: '350px',
         },
-        linkList: [121, 126]
+        linkList: [121, 126],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 126,
@@ -1154,6 +1158,7 @@ let blockList = [
             top: '300px',
         },
         linkList: [125, 127],
+        linkDirectionList: ['down', 'up'],
         goHome: true
     },
     {
@@ -1163,6 +1168,7 @@ let blockList = [
             top: '250px',
         },
         linkList: [126, 128],
+        linkDirectionList: ['down', 'up'],
         changeBurglar: true
     },
     {
@@ -1171,7 +1177,8 @@ let blockList = [
             left: '100px',
             top: '200px',
         },
-        linkList: [127, 129]
+        linkList: [127, 129],
+        linkDirectionList: ['down', 'left']
     },
     {
         index: 129,
@@ -1180,6 +1187,7 @@ let blockList = [
             top: '200px',
         },
         linkList: [68, 128],
+        linkDirectionList: ['left', 'right'],
         tunnel: true,
         move: 68
     },
@@ -1190,6 +1198,7 @@ let blockList = [
             top: '150px',
         },
         linkList: [85],
+        linkDirectionList: ['right'],
         onlyBurglar: true
     },
     {
@@ -1199,6 +1208,7 @@ let blockList = [
             top: '50px',
         },
         linkList: [83, 132],
+        linkDirectionList: ['right', 'left'],
         threat: true
     },
     {
@@ -1208,6 +1218,7 @@ let blockList = [
             top: '50px',
         },
         linkList: [131, 133],
+        linkDirectionList: ['right', 'left'],
         changePolice: true,
     },
     {
@@ -1216,7 +1227,8 @@ let blockList = [
             left: '200px',
             top: '50px',
         },
-        linkList: [132, 134]
+        linkList: [132, 134],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 134,
@@ -1224,7 +1236,8 @@ let blockList = [
             left: '100px',
             top: '50px',
         },
-        linkList: [133, 135]
+        linkList: [133, 135],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 135,
@@ -1234,6 +1247,7 @@ let blockList = [
             top: '0px'
         },
         linkList: [134],
+        linkDirectionList: ['right'],
         start: true,
         police: true
     }
@@ -1447,6 +1461,7 @@ let data = {
         hidePoliceMode: false,
         policeTurn: false,
         burglarTurn: true,
+        changeBurglarMode: false,
         turn: 0,
         stealJewelryCount: 0,
         threatCount: 0,
@@ -1603,6 +1618,21 @@ let app = new Vue({
                 }
 
                 $('.trick').removeClass('blink');
+
+                if (app.status.changeBurglarMode) {
+                    app.status.changeBurglarMode = false;
+                } else {
+                    if (selectedBlock.changeBurglar && app.status.burglarTurn) {
+                        let indexList = app.blockList.filter(target => target.changeBurglar)
+                            .filter(target => target.index !== selectedBlock.index)
+                            .map(target => target.index);
+
+                        app.backgroundActive();
+                        app.blinkBlock(indexList);
+                        app.status.changeBurglarMode = true;
+                        return;
+                    }
+                }
 
                 if (selectedBlock.threat) {
                     app.threat(app.nextTurn);

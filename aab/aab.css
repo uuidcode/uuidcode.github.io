@@ -26,7 +26,7 @@
 }
 
 .police {
-    background-color: skyblue;
+    background-color: skyblue !important;
 }
 
 .character {
