@@ -1496,7 +1496,7 @@ let app = new Vue({
             let selectedBlock = app.getSelectedBlock(event);
 
             if (app.status.trickMode) {
-                let $trickModal = $('.trickModal').modal();
+                let $trickModal = $('#trickModal').modal();
 
                 $('.btn-trick').off('click')
                     .on('click', function (event) {
@@ -1679,7 +1679,7 @@ let app = new Vue({
             let $turnModal = app.getTurnModalElement().modal();
             let $restCountButton = $('.btn-rest-count');
             let $restButton = $('.btn-rest');
-            let $trickButton = $('.btn-trick');
+            let $trickButton = $('.btn-select-block-for-trick');
 
             $restCountButton.hide();
             $restButton.hide();
@@ -1708,8 +1708,9 @@ let app = new Vue({
                             $turnModal.modal('hide');
                             app.backgroundActive();
 
-                            let indexList = app.buildingList.filter(target => target.trick)
+                            let indexList = app.blockList.filter(target => target.trick)
                                 .map(target => target.index);
+
                             app.blinkBlock(indexList);
                             app.status.trickMode = true;
                         });

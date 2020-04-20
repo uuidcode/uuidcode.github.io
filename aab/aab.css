@@ -190,6 +190,11 @@ body {
     width: 630px;
 }
 
+#trickModal .modal-dialog {
+    width: 162px;
+    height: 162px;
+}
+
 .burglarRipple {
     animation: burglarRipple 3s linear infinite;
 }
