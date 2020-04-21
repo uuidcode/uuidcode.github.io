@@ -1591,7 +1591,7 @@ let app = new Vue({
         },
 
         move: function (selectedBlock) {
-            let $clickedBlock = app.getBlockElement(selectedBlock.index);
+            let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
 
             if (app.status.trickMode) {
                 this.processTrickDirection(selectedBlock);
@@ -1602,8 +1602,8 @@ let app = new Vue({
             let offset = app.status.turn * 30;
 
             $currentCharacter.animate({
-                left: $clickedBlock.offset().left + offset,
-                top: $clickedBlock.offset().top,
+                left: $selectedBlockElement.offset().left + offset,
+                top: $selectedBlockElement.offset().top,
             }, 500, function () {
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
@@ -1618,9 +1618,11 @@ let app = new Vue({
                         .filter(target => target.index === selectedBlock.index)
                         .map(target => target.path)[0];
 
-                    if (app.status.movePoliceMode && app.status.changePoliceMode) {
+                    if (app.status.movePoliceMode || app.status.changePoliceMode) {
                         pathList = [selectedBlock.index];
                     }
+
+                    console.log('>>> pathList', pathList);
 
                     app.burglarList.filter(burglar => pathList.includes(burglar.position))
                         .forEach(burglar => {
