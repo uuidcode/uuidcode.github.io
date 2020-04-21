@@ -824,7 +824,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [91, 124],
-        move: 106,
+        move: 98,
         trick: true,
         linkDirectionList: ['up', 'right', 'left'],
         movePolice: true
@@ -836,8 +836,9 @@ let blockList = [
             top: '400px',
         },
         linkList: [41, 90],
+        linkDirectionList: ['right', 'left'],
         moveBurglar: true,
-        move: 105
+        move: 97
     },
     {
         index: 92,
@@ -845,7 +846,8 @@ let blockList = [
             left: '1200px',
             top: '750px',
         },
-        linkList: [26, 93]
+        linkList: [26, 93],
+        linkDirectionList: ['right', 'left'],
     },
     {
         index: 93,
@@ -854,6 +856,7 @@ let blockList = [
             top: '750px',
         },
         linkList: [92, 94],
+        linkDirectionList: ['right', 'left'],
         changePolice: true
     },
     {
@@ -862,16 +865,17 @@ let blockList = [
             left: '1000px',
             top: '750px',
         },
-        linkList: [93, 95]
+        linkList: [93, 95],
+        linkDirectionList: ['right', 'left'],
     },
     {
         index: 95,
-        subTitle: '86으로 이동',
         styleObject: {
             left: '900px',
             top: '750px',
         },
         linkList: [94, 96],
+        linkDirectionList: ['right', 'left'],
         changePosition: true,
         move: 86
     },
@@ -881,7 +885,8 @@ let blockList = [
             left: '800px',
             top: '750px',
         },
-        linkList: [94, 96]
+        linkList: [95, 97],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 97,
@@ -890,8 +895,9 @@ let blockList = [
             top: '750px',
         },
         linkList: [96, 98],
+        linkDirectionList: ['right', 'left'],
         moveBurglar: true,
-        move: 99,
+        move: 91,
     },
     {
         index: 98,
@@ -900,8 +906,9 @@ let blockList = [
             top: '750px',
         },
         linkList: [97, 99],
+        linkDirectionList: ['right', 'left'],
         movePolice: true,
-        move: 98
+        move: 90
 
     },
     {
@@ -911,6 +918,7 @@ let blockList = [
             top: '750px',
         },
         linkList: [98, 100],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 100,
@@ -918,7 +926,8 @@ let blockList = [
             left: '400px',
             top: '750px',
         },
-        linkList: [99, 116]
+        linkList: [99, 116],
+        linkDirectionList: ['right', 'left'],
     },
     {
         index: 101,
@@ -926,7 +935,8 @@ let blockList = [
             left: '400px',
             top: '700px',
         },
-        linkList: [100, 102]
+        linkList: [100, 102],
+        linkDirectionList: ['down', 'up'],
     },
     {
         index: 102,
@@ -1603,11 +1613,15 @@ let app = new Vue({
                 app.removeTrick(selectedBlock);
                 app.removeTrickList();
 
-                let pathList = app.status.blockPathList
-                    .filter(target => target.index === selectedBlock.index)
-                    .map(target => target.path)[0];
+                if (app.status.policeTurn) {
+                    let pathList = app.status.blockPathList
+                        .filter(target => target.index === selectedBlock.index)
+                        .map(target => target.path)[0];
 
-                if (app.status.policeTurn && !app.status.changePoliceMode) {
+                    if (app.status.movePoliceMode && app.status.changePoliceMode) {
+                        pathList = [selectedBlock.index];
+                    }
+
                     app.burglarList.filter(burglar => pathList.includes(burglar.position))
                         .forEach(burglar => {
                             let $currentBurglar = app.getBurglarElement(burglar.index);
@@ -1658,8 +1672,8 @@ let app = new Vue({
                 } else if (selectedBlock.moveBurglar && app.status.burglarTurn) {
                     app.status.moveBurglarMode = true;
                     app.moveByIndex(selectedBlock.move);
-                } else if (selectedBlock.movePolice && app.status.policeTurne) {
-                    app.status.moveBurglarMode = true;
+                } else if (selectedBlock.movePolice && app.status.policeTurn) {
+                    app.status.movePoliceMode = true;
                     app.moveByIndex(selectedBlock.move);
                 } else {
                     app.nextTurn();
