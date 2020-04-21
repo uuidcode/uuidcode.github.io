@@ -126,7 +126,7 @@ body {
     left:0;
     right:0;
     bottom:0;
-    animation: blink 3s linear infinite 1s;
+    animation: blink 3s linear infinite;
 }
 
 @keyframes blink {

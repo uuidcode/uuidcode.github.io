@@ -25,7 +25,7 @@
          :data-index="block.index"
          :style="block.styleObject"
          :class="block.classObject"
-         v-on:click="move">
+         v-on:click="moveByEvent">
             <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
             <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
             <div v-if="block.trick" v-bind:class="{ trick: block.trick }">

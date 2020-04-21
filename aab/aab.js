@@ -1464,6 +1464,8 @@ let data = {
         burglarTurn: true,
         changeBurglarMode: false,
         changePoliceMode: false,
+        moveBurglarMode: false,
+        movePoliceMode: false,
         turn: 0,
         stealJewelryCount: 0,
         threatCount: 0,
@@ -1512,6 +1514,10 @@ let app = new Vue({
             return $('.burglarCharacter[data-index=' + index + ']');
         },
 
+        getBlockElement: function (index) {
+            return $('.block[data-index=' + index + ']')
+        },
+
         getCurrentPoliceElement: function () {
             return $('.policeCharacter').eq(app.status.turn);
         },
@@ -1527,7 +1533,7 @@ let app = new Vue({
         getClickedBlock: function (event) {
             return $(event.target).closest('.block');
         },
-        
+
         getSelectedBlock: function (event) {
             let index = app.getClickedBlock(event).attr('data-index');
             index = parseInt(index);
@@ -1573,9 +1579,9 @@ let app = new Vue({
                 location.reload();
             }
         },
-        
-        move: function (event) {
-            let selectedBlock = app.getSelectedBlock(event);
+
+        move: function (selectedBlock) {
+            let $clickedBlock = app.getBlockElement(selectedBlock.index);
 
             if (app.status.trickMode) {
                 this.processTrickDirection(selectedBlock);
@@ -1584,13 +1590,11 @@ let app = new Vue({
 
             let $currentCharacter = app.getCurrentCharacterElement();
             let offset = app.status.turn * 30;
-            let $clickedBlock = app.getClickedBlock(event);
 
             $currentCharacter.animate({
                 left: $clickedBlock.offset().left + offset,
                 top: $clickedBlock.offset().top,
             }, 500, function () {
-                let selectedBlock = app.getSelectedBlock(event);
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
                 app.removeBlinkBlock();
@@ -1627,6 +1631,12 @@ let app = new Vue({
                 } else if (app.status.changePoliceMode) {
                     app.status.changePoliceMode = false;
                     app.nextTurn();
+                } else if (app.status.moveBurglarMode) {
+                    app.status.moveBurglarMode = false;
+                    app.nextTurn();
+                } else if (app.status.movePoliceMode) {
+                    app.status.movePoliceMode = false;
+                    app.nextTurn();
                 } else if (selectedBlock.threat) {
                     app.threat(app.nextTurn);
                 } else if (selectedBlock.changeBurglar && app.status.burglarTurn) {
@@ -1645,10 +1655,26 @@ let app = new Vue({
                     app.backgroundActive();
                     app.blinkBlock(indexList);
                     app.status.changePoliceMode = true;
+                } else if (selectedBlock.moveBurglar && app.status.burglarTurn) {
+                    app.status.moveBurglarMode = true;
+                    app.moveByIndex(selectedBlock.move);
+                } else if (selectedBlock.movePolice && app.status.policeTurne) {
+                    app.status.moveBurglarMode = true;
+                    app.moveByIndex(selectedBlock.move);
                 } else {
                     app.nextTurn();
                 }
             });
+        },
+
+        moveByIndex: function (index) {
+            let selectedBlock = app.getBlock(index);
+            app.move(selectedBlock);
+        },
+
+        moveByEvent: function (event) {
+            let selectedBlock = app.getSelectedBlock(event);
+            app.move(selectedBlock);
         },
 
         resetTrickIndexList: function () {
