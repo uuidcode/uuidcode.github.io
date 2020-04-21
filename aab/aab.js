@@ -927,7 +927,7 @@ let blockList = [
             top: '750px',
         },
         linkList: [99, 116],
-        linkDirectionList: ['right', 'left'],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 101,
@@ -936,7 +936,7 @@ let blockList = [
             top: '700px',
         },
         linkList: [100, 102],
-        linkDirectionList: ['down', 'up'],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 102,
