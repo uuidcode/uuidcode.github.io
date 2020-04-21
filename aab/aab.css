@@ -131,10 +131,10 @@ body {
 
 @keyframes blink {
     0% {
-        box-shadow: 0 0 0 10px rgba(144, 238, 144, 0.5);
+        box-shadow: 0 0 0 10px rgba(255, 255, 0, 0.5);
     }
     100% {
-        box-shadow: 0 0 0 30px rgba(144, 238, 144, 0);
+        box-shadow: 0 0 0 30px rgba(255, 255, 0, 0);
     }
 }
 
@@ -167,7 +167,7 @@ body {
     background-color: black;
     z-index: 100;
     display: block;
-    opacity: .1;
+    opacity: .2;
 }
 
 .backgroundInactive {
@@ -260,7 +260,7 @@ body {
 }
 
 .modal-backdrop.show {
-    opacity: .1 !important;
+    opacity: .2 !important;
 }
 
 .trickButtonGroup {

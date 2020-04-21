@@ -434,7 +434,8 @@ let blockList = [
             top: '300px',
         },
         linkList: [23, 48],
-        police: true
+        police: true,
+        changePolice: true
     },
     {
         index: 48,
@@ -1219,7 +1220,7 @@ let blockList = [
         },
         linkList: [131, 133],
         linkDirectionList: ['right', 'left'],
-        changePolice: true,
+        changePolice: true
     },
     {
         index: 133,
@@ -1462,6 +1463,7 @@ let data = {
         policeTurn: false,
         burglarTurn: true,
         changeBurglarMode: false,
+        changePoliceMode: false,
         turn: 0,
         stealJewelryCount: 0,
         threatCount: 0,
@@ -1601,7 +1603,7 @@ let app = new Vue({
                     .filter(target => target.index === selectedBlock.index)
                     .map(target => target.path)[0];
 
-                if (app.status.policeTurn) {
+                if (app.status.policeTurn && !app.status.changePoliceMode) {
                     app.burglarList.filter(burglar => pathList.includes(burglar.position))
                         .forEach(burglar => {
                             let $currentBurglar = app.getBurglarElement(burglar.index);
@@ -1621,25 +1623,31 @@ let app = new Vue({
 
                 if (app.status.changeBurglarMode) {
                     app.status.changeBurglarMode = false;
-                } else {
-                    if (selectedBlock.changeBurglar && app.status.burglarTurn) {
-                        let indexList = app.blockList.filter(target => target.changeBurglar)
-                            .filter(target => target.index !== selectedBlock.index)
-                            .map(target => target.index);
-
-                        app.backgroundActive();
-                        app.blinkBlock(indexList);
-                        app.status.changeBurglarMode = true;
-                        return;
-                    }
-                }
-
-                if (selectedBlock.threat) {
+                    app.nextTurn();
+                } else if (app.status.changePoliceMode) {
+                    app.status.changePoliceMode = false;
+                    app.nextTurn();
+                } else if (selectedBlock.threat) {
                     app.threat(app.nextTurn);
-                    return;
-                }
+                } else if (selectedBlock.changeBurglar && app.status.burglarTurn) {
+                    let indexList = app.blockList.filter(target => target.changeBurglar)
+                        .filter(target => target.index !== selectedBlock.index)
+                        .map(target => target.index);
 
-                app.nextTurn();
+                    app.backgroundActive();
+                    app.blinkBlock(indexList);
+                    app.status.changeBurglarMode = true;
+                } else if (selectedBlock.changePolice && app.status.policeTurn) {
+                    let indexList = app.blockList.filter(target => target.changePolice)
+                        .filter(target => target.index !== selectedBlock.index)
+                        .map(target => target.index);
+
+                    app.backgroundActive();
+                    app.blinkBlock(indexList);
+                    app.status.changePoliceMode = true;
+                } else {
+                    app.nextTurn();
+                }
             });
         },
 
