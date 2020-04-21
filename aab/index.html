@@ -56,10 +56,11 @@
          :key="building.index"
          :class="building.classObject"
          :style="building.styleObject"
-         v-on:click="hideJewelryAtBuilding"></div>
+         v-on:click="hideAtBuilding"></div>
 
     <div v-for="jewelry in jewelryList"
          :data-index="jewelry.index"
+         :key="jewelry.index"
          v-bind:class="jewelry.classObject"
          v-bind:style="jewelry.styleObject"></div>
     </div>
@@ -125,7 +126,8 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    보석과 잠복 경찰을 건물에 숨기세요.
+                    보석2개와 잠복 경찰 1명을 건물에 숨기세요.<br>
+                    건물을 클릭하면 보석, 잠복 경찰 순서로 숨기게 됩니다.
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary hide-jewelry-button">확인</button>

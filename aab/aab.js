@@ -62,7 +62,6 @@ let blockList = [
             top: '600px',
         },
         mission: true,
-        forward: true,
         move: 4,
         linkList: [5, 7]
     },
@@ -156,13 +155,13 @@ let blockList = [
     },
     {
         index: 17,
-        subTitle: '보석을 가지고 있으면 경찰에게 주고 경찰은 다시 숨긴다.',
         styleObject: {
             left: '1600px',
             top: '500px',
         },
         linkList: [16, 18],
-        burglar: true
+        mission: true,
+        move: 3
     },
     {
         index: 18,
@@ -527,8 +526,7 @@ let blockList = [
         trick: true,
         linkDirectionList: ['down', 'up', 'left'],
         mission: true,
-        move: 3,
-        forward: true
+        move: 3
     },
     {
         index: 58,
@@ -788,7 +786,6 @@ let blockList = [
         },
         linkList: [85, 87],
         mission: true,
-        backward: true,
         move: 2
     },
     {
@@ -1010,8 +1007,7 @@ let blockList = [
         },
         linkList: [108, 110, 118],
         mission: true,
-        move: 3,
-        forward: true
+        move: 3
     },
     {
         index: 110,
@@ -1269,13 +1265,10 @@ let data = {
         {
             index: 0,
             styleObject: {
-                position: 'absolute',
-                left: '0px',
+                left: '100px',
                 top: '0px',
-                width: '50px',
-                height: '50px',
-                backgroundImage: 'url(image/j1.png)',
-                backgroundSize: 'cover'
+                backgroundImage: 'url(image/jewelry/0.jpg)'
+
             },
             classObject: {
                 jewelry: true,
@@ -1285,13 +1278,9 @@ let data = {
         {
             index: 1,
             styleObject: {
-                position: 'absolute',
-                left: '0px',
+                left: '150px',
                 top: '0px',
-                width: '50px',
-                height: '50px',
-                backgroundImage: 'url(image/j2.png)',
-                backgroundSize: 'cover'
+                backgroundImage: 'url(image/jewelry/1.jpg)'
             },
             classObject: {
                 jewelry: true,
@@ -1420,7 +1409,7 @@ let data = {
     ],
     hiddenPolice: {
         styleObject: {
-            left: '0px',
+            left: '200px',
             top: '0px'
         },
         classObject: {
@@ -1476,6 +1465,8 @@ let data = {
         changePoliceMode: false,
         moveBurglarMode: false,
         movePoliceMode: false,
+        missionBurglarMode: false,
+        missionPoliceMode: false,
         turn: 0,
         stealJewelryCount: 0,
         threatCount: 0,
@@ -1613,16 +1604,14 @@ let app = new Vue({
                 app.removeTrick(selectedBlock);
                 app.removeTrickList();
 
-                if (app.status.policeTurn) {
-                    let pathList = app.status.blockPathList
-                        .filter(target => target.index === selectedBlock.index)
-                        .map(target => target.path)[0];
+                let pathList = app.status.blockPathList
+                    .filter(target => target.index === selectedBlock.index)
+                    .map(target => target.path)[0];
 
+                if (app.status.policeTurn) {
                     if (app.status.movePoliceMode || app.status.changePoliceMode) {
                         pathList = [selectedBlock.index];
                     }
-
-                    console.log('>>> pathList', pathList);
 
                     app.burglarList.filter(burglar => pathList.includes(burglar.position))
                         .forEach(burglar => {
@@ -1646,6 +1635,12 @@ let app = new Vue({
                     app.nextTurn();
                 } else if (app.status.changePoliceMode) {
                     app.status.changePoliceMode = false;
+                    app.nextTurn();
+                } else if (app.status.missionBurglarMode) {
+                    app.status.missionBurglarMode = false;
+                    app.nextTurn();
+                } else if (app.status.missionPoliceMode) {
+                    app.status.missionPoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.moveBurglarMode) {
                     app.status.moveBurglarMode = false;
@@ -1677,6 +1672,12 @@ let app = new Vue({
                 } else if (selectedBlock.movePolice && app.status.policeTurn) {
                     app.status.movePoliceMode = true;
                     app.moveByIndex(selectedBlock.move);
+                } else if (selectedBlock.mission && app.status.burglarTurn) {
+                    app.status.missionBurglarMode = true;
+                    app.moveByIndex(pathList[pathList - selectedBlock.move - 1]);
+                } else if (selectedBlock.mission && app.status.policeTurn) {
+                    app.status.missionPoliceMode = true;
+                    app.moveByIndex(pathList[pathList - selectedBlock.move - 1]);
                 } else {
                     app.nextTurn();
                 }
@@ -1757,8 +1758,14 @@ let app = new Vue({
 
             app.rollDie();
         },
+
+        blinkJewelry: function (index, blink) {
+            let jewelry = app.jewelryList[index];
+            jewelry.classObject.roundBlink = blink;
+            Vue.set(app.jewelryList, index, jewelry);
+        },
         
-        hideJewelryAtBuilding: function (event) {
+        hideAtBuilding: function (event) {
             let index = $(event.target).attr('data-index');
             let building = this.buildingList[index];
             building.classObject.blink = false;
@@ -1777,18 +1784,31 @@ let app = new Vue({
             $target.show();
 
             $target.animate({
-                left: $(event.target).offset().left + 50,
+                left: $(event.target).offset().left + 25,
                 top: $(event.target).offset().top + 25,
             }, 500, function () {
-                if (!app.status.hidePoliceMode) {
+                if (app.status.hidePoliceMode) {
+                    app.hiddenPolice.classObject.blink = false;
+                } else {
+                    app.blinkJewelry(app.status.hideJewelryCount, false);
+
+                    if (app.status.hideJewelryCount === 0) {
+                        app.blinkJewelry(app.status.hideJewelryCount + 1, true);
+                    }
+
                     app.status.hideJewelryCount++;
                 }
 
                 if (app.status.hideJewelryCount === 2) {
                     if (app.status.hidePoliceMode) {
-                        app.readyToPlay();
+                        if (confirm('이대로 진행하시겠습니다까?')) {
+                            app.readyToPlay();
+                        } else {
+                            location.reload();
+                        }
                     } else {
                         app.status.hidePoliceMode = true;
+                        app.hiddenPolice.classObject.roundBlink = true;
                     }
                 }
             });
@@ -1995,6 +2015,12 @@ let app = new Vue({
 
             let currentBlock = app.getBlock(currentPosition);
 
+            if (app.status.forwardStartIndex != null) {
+                if (currentPosition === app.status.forwardStartIndex) {
+                    return;
+                }
+            }
+
             if (app.status.policeTurn) {
                 if (currentBlock.onlyBurglar) {
                     return;
@@ -2078,7 +2104,7 @@ let app = new Vue({
             if (block.mission) {
                 return `${block.move}칸 ${direction}으로 가서 지시에 따른다.`;
             } else if (block.arrest) {
-                return `경찰은 주사위를 던져서 ${block.dice}이 나오면 도둑 한명 체포`;
+                return `경찰은 ${block.dice}이 나오면 도둑 한명 체포`;
             } else if (block.search) {
                 return `밑에 있는 건물을 뒤져라`;
             } else if (block.rest) {
@@ -2228,6 +2254,9 @@ let $jewelryModal = $('#jewelryModal').modal();
 
 $('.hide-jewelry-button').on('click', () => {
     app.backgroundActive();
+
+    app.blinkJewelry(app.status.hideJewelryCount, true)
+
     $jewelryModal.modal('hide');
     data.status.hideJewelryMode = true;
 
