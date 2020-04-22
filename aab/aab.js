@@ -1616,9 +1616,13 @@ let app = new Vue({
                 let pathList = app.status.blockPathList
                     .filter(target => target.index === selectedBlock.index)
                     .map(target => target.path)[0];
+                
+                console.log('>>> pathList', pathList);
 
-                if (app.status.policeTurn && !app.status.runMode) {
-                    if (app.status.movePoliceMode || app.status.changePoliceMode) {
+                if (app.status.policeTurn && !app.status.runMode && !app.status.runModeComplete) {
+                    if (app.status.movePoliceMode ||
+                        app.status.changePoliceMode ||
+                        app.status.missionPoliceMode) {
                         pathList = [selectedBlock.index];
                     }
 
@@ -1638,6 +1642,9 @@ let app = new Vue({
                 }
 
                 $('.trick').removeClass('blink');
+
+                console.log('>>> selectedBlock', selectedBlock);
+                console.log('>>> app.status', app.status);
 
                 if (app.status.runMode) {
                     app.status.blockPathList = [];
@@ -1697,10 +1704,10 @@ let app = new Vue({
                     app.moveByIndex(selectedBlock.move);
                 } else if (selectedBlock.mission && app.status.burglarTurn) {
                     app.status.missionBurglarMode = true;
-                    app.moveByIndex(pathList[pathList - selectedBlock.move - 1]);
+                    app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
                 } else if (selectedBlock.mission && app.status.policeTurn && !app.status.runModeComplete) {
                     app.status.missionPoliceMode = true;
-                    app.moveByIndex(pathList[pathList - selectedBlock.move - 1]);
+                    app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
                 } else if (selectedBlock.run && app.status.policeTurn && !app.status.runModeComplete) {
                     app.status.runCount = selectedBlock.move;
                     app.status.runMode = true;
@@ -1721,6 +1728,8 @@ let app = new Vue({
 
         moveByIndex: function (index) {
             let selectedBlock = app.getBlock(index);
+            console.log('>>> index', index);
+            console.log('>>> selectedBlock', selectedBlock);
             app.move(selectedBlock);
         },
 
