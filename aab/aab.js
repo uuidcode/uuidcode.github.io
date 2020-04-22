@@ -179,7 +179,6 @@ let blockList = [
         },
         linkList: [15, 20],
         run: true,
-        forward: true,
         move: 1
     },
     {
@@ -318,9 +317,8 @@ let blockList = [
             top: '500px',
         },
         linkList: [32, 35],
-        movePolice: true,
-        move: 4,
-        forward: true
+        run: true,
+        move: 4
     },
     {
         index: 35,
@@ -1007,7 +1005,7 @@ let blockList = [
         },
         linkList: [108, 110, 118],
         mission: true,
-        move: 3
+        move: 2
     },
     {
         index: 110,
@@ -1473,7 +1471,10 @@ let data = {
         trickCount: 10,
         trickMode: false,
         trickIndexList: [],
-        blockPathList: []
+        blockPathList: [],
+        runMode: false,
+        runModeComplete: false,
+        runCount: 0
     },
     background: {
         classObject: {
@@ -1592,9 +1593,17 @@ let app = new Vue({
             let $currentCharacter = app.getCurrentCharacterElement();
             let offset = app.status.turn * 30;
 
+            let left = $selectedBlockElement.offset().left + offset;
+            let top = $selectedBlockElement.offset().top;
+
+            if (app.status.runMode) {
+                left = $currentCharacter.offset().left;
+                top = $currentCharacter.offset().top;
+            }
+
             $currentCharacter.animate({
-                left: $selectedBlockElement.offset().left + offset,
-                top: $selectedBlockElement.offset().top,
+                left: left,
+                top: top,
             }, 500, function () {
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.backgroundInactive();
@@ -1608,7 +1617,7 @@ let app = new Vue({
                     .filter(target => target.index === selectedBlock.index)
                     .map(target => target.path)[0];
 
-                if (app.status.policeTurn) {
+                if (app.status.policeTurn && !app.status.runMode) {
                     if (app.status.movePoliceMode || app.status.changePoliceMode) {
                         pathList = [selectedBlock.index];
                     }
@@ -1630,22 +1639,36 @@ let app = new Vue({
 
                 $('.trick').removeClass('blink');
 
-                if (app.status.changeBurglarMode) {
+                if (app.status.runMode) {
+                    app.status.blockPathList = [];
+
+                    app.go(app.status.runCount, selectedBlock.index, selectedBlock.index, []);
+
+                    app.backgroundActive();
+
+                    let blockIndexList = app.status.blockPathList
+                        .map(target => target.index);
+
+                    app.blinkBlock(blockIndexList);
+                    app.status.runMode = false;
+                    app.status.runModeComplete = true;
+                    return;
+                } else if (app.status.changeBurglarMode) {
                     app.status.changeBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.changePoliceMode) {
+                } else if (app.status.changePoliceMode && !app.status.runModeComplete) {
                     app.status.changePoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.missionBurglarMode) {
                     app.status.missionBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.missionPoliceMode) {
+                } else if (app.status.missionPoliceMode && !app.status.runModeComplete) {
                     app.status.missionPoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.moveBurglarMode) {
                     app.status.moveBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.movePoliceMode) {
+                } else if (app.status.movePoliceMode && !app.status.runModeComplete) {
                     app.status.movePoliceMode = false;
                     app.nextTurn();
                 } else if (selectedBlock.threat) {
@@ -1658,7 +1681,7 @@ let app = new Vue({
                     app.backgroundActive();
                     app.blinkBlock(indexList);
                     app.status.changeBurglarMode = true;
-                } else if (selectedBlock.changePolice && app.status.policeTurn) {
+                } else if (selectedBlock.changePolice && app.status.policeTurn && !app.status.runModeComplete) {
                     let indexList = app.blockList.filter(target => target.changePolice)
                         .filter(target => target.index !== selectedBlock.index)
                         .map(target => target.index);
@@ -1669,18 +1692,30 @@ let app = new Vue({
                 } else if (selectedBlock.moveBurglar && app.status.burglarTurn) {
                     app.status.moveBurglarMode = true;
                     app.moveByIndex(selectedBlock.move);
-                } else if (selectedBlock.movePolice && app.status.policeTurn) {
+                } else if (selectedBlock.movePolice && app.status.policeTurn && !app.status.runModeComplete) {
                     app.status.movePoliceMode = true;
                     app.moveByIndex(selectedBlock.move);
                 } else if (selectedBlock.mission && app.status.burglarTurn) {
                     app.status.missionBurglarMode = true;
                     app.moveByIndex(pathList[pathList - selectedBlock.move - 1]);
-                } else if (selectedBlock.mission && app.status.policeTurn) {
+                } else if (selectedBlock.mission && app.status.policeTurn && !app.status.runModeComplete) {
                     app.status.missionPoliceMode = true;
                     app.moveByIndex(pathList[pathList - selectedBlock.move - 1]);
+                } else if (selectedBlock.run && app.status.policeTurn && !app.status.runModeComplete) {
+                    app.status.runCount = selectedBlock.move;
+                    app.status.runMode = true;
+                    app.backgroundActive();
+
+                    let indexList = app.burglarList
+                        .filter(target => !target.arrested)
+                        .map(target => target.position);
+
+                    app.blinkBlock(indexList);
                 } else {
                     app.nextTurn();
                 }
+
+                app.status.runModeComplete = false;
             });
         },
 
@@ -1733,7 +1768,7 @@ let app = new Vue({
                     currentJewelry.classObject.blink = false;
                     $jewelry.hide();
                     app.status.threatCount = 1;
-                }, 2000);
+                }, 3000);
 
                 return;
             }
@@ -2015,35 +2050,33 @@ let app = new Vue({
 
             let currentBlock = app.getBlock(currentPosition);
 
-            if (app.status.forwardStartIndex != null) {
-                if (currentPosition === app.status.forwardStartIndex) {
-                    return;
-                }
-            }
-
             if (app.status.policeTurn) {
                 if (currentBlock.onlyBurglar) {
                     return;
                 }
             }
 
-            if (currentBlock.stop) {
-                app.status.blockPathList.push({
-                    index: currentPosition,
-                    path: path
-                });
-
-                return;
-            }
-
-            if (currentPosition === 135 && previousPosition === 134) {
-                if (app.status.policeTurn) {
+            if (!app.status.runMode) {
+                if (currentBlock.stop) {
                     app.status.blockPathList.push({
                         index: currentPosition,
                         path: path
                     });
 
                     return;
+                }
+            }
+
+            if (!app.status.runMode) {
+                if (currentPosition === 135 && previousPosition === 134) {
+                    if (app.status.policeTurn) {
+                        app.status.blockPathList.push({
+                            index: currentPosition,
+                            path: path
+                        });
+
+                        return;
+                    }
                 }
             }
 
@@ -2077,7 +2110,7 @@ let app = new Vue({
                         app.go(count - 1, currentPosition, link, [...path]);
                     }
                 } else if (app.status.policeTurn) {
-                    if (currentBlock.trickDirection === null) {
+                    if (currentBlock.trickDirection === null || app.status.runMode) {
                         if (link !== previousPosition) {
                             app.go(count - 1, currentPosition, link, [...path]);
                         }
