@@ -1,4 +1,5 @@
 let die = null;
+let countForDebug = null;
 
 let blockList = [
     {
@@ -1135,7 +1136,7 @@ let blockList = [
         },
         linkList: [122, 124],
         linkDirectionList: ['left', 'right'],
-        rest: true
+        skip: true
     },
     {
         index: 124,
@@ -1382,7 +1383,8 @@ let data = {
                 backgroundImage: 'url(image/police/0.png)',
             },
             classObject: {},
-            position: 135
+            position: 135,
+            skip: false
         },
         {
             index: 1,
@@ -1392,7 +1394,8 @@ let data = {
                 backgroundImage: 'url(image/police/1.png)'
             },
             classObject: {},
-            position: 135
+            position: 135,
+            skip: false
         },
         {
             index: 2,
@@ -1402,7 +1405,8 @@ let data = {
                 backgroundImage: 'url(image/police/2.png)'
             },
             classObject: {},
-            position: 135
+            position: 135,
+            skip: false
         }
     ],
     hiddenPolice: {
@@ -1425,7 +1429,8 @@ let data = {
             classObject: {},
             position: 0,
             rest: 0,
-            arrested: false
+            arrested: false,
+            skip: false
         },
         {
             index: 1,
@@ -1437,7 +1442,8 @@ let data = {
             classObject: {},
             position: 0,
             rest: 0,
-            arrested: false
+            arrested: false,
+            skip: false
         },
         {
             index:2,
@@ -1449,7 +1455,8 @@ let data = {
             classObject: {},
             position: 0,
             rest: 0,
-            arrested: false
+            arrested: false,
+            skip: false
         }
     ],
     blockList: blockList,
@@ -1718,6 +1725,10 @@ let app = new Vue({
                         .map(target => target.position);
 
                     app.blinkBlock(indexList);
+                } else if (selectedBlock.skip) {
+                    let currentCharacter = app.getCurrentCharacter();
+                    currentCharacter.skip = true;
+                    app.nextTurn();
                 } else {
                     app.nextTurn();
                 }
@@ -1964,15 +1975,16 @@ let app = new Vue({
                 }
             }
 
+            let $die = $('#die');
+
             if (die == null) {
                 die = new Die(function (count) {
                     app.moveToTurn(function () {
                         let currentCharacter = app.getCurrentCharacter();
                         app.status.blockPathList = [];
 
-                        try {
+                        if (countForDebug) {
                             count = countForDebug;
-                        } catch (e) {
                         }
 
                         app.go(count, currentCharacter.position, currentCharacter.position, []);
@@ -1998,7 +2010,15 @@ let app = new Vue({
                     });
                 });
 
-                $('#die').append(die.$element);
+                $die.append(die.$element);
+            }
+
+            if (app.getCurrentCharacter().skip) {
+                setTimeout(function () {
+                    alert('1회 휴식합니다.');
+                    app.getCurrentCharacter().skip = false;
+                    app.nextTurn();
+                }, 500);
             }
         },
 
@@ -2149,7 +2169,7 @@ let app = new Vue({
                 return `경찰은 ${block.dice}이 나오면 도둑 한명 체포`;
             } else if (block.search) {
                 return `밑에 있는 건물을 뒤져라`;
-            } else if (block.rest) {
+            } else if (block.skip) {
                 return `이 칸에 멈추면 1회 휴식`;
             } else if (block.stop) {
                 return `주사위 수가 남아도 반드시 멈춘다`;
