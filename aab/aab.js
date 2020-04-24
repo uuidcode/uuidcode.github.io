@@ -1686,7 +1686,11 @@ let app = new Vue({
                     app.status.movePoliceMode = false;
                     app.nextTurn();
                 } else if (selectedBlock.threat) {
-                    app.threat(app.nextTurn);
+                    if (app.status.policeTurn) {
+                        app.nextTurn();
+                    } else {
+                        app.threat(app.nextTurn);
+                    }
                 } else if (selectedBlock.changeBurglar && app.status.burglarTurn) {
                     let indexList = app.blockList.filter(target => target.changeBurglar)
                         .filter(target => target.index !== selectedBlock.index)
@@ -1766,10 +1770,6 @@ let app = new Vue({
         },
 
         threat: function (callback) {
-            if (app.status.policeTurn) {
-                return;
-            }
-
             if (app.status.stealJewelryCount === 0 && app.status.threatCount === 0) {
                 let index = 0;
 
