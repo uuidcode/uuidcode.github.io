@@ -282,7 +282,8 @@ let blockList = [
             top: '600px',
         },
         linkList: [29],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 1
     },
     {
         index: 31,
@@ -1733,6 +1734,19 @@ let app = new Vue({
                     let currentCharacter = app.getCurrentCharacter();
                     currentCharacter.skip = true;
                     app.nextTurn();
+                } else if (selectedBlock.onlyBurglar) {
+                    let buildingIndex = selectedBlock.buildingIndex;
+
+                    if (buildingIndex != null) {
+                        let jewelryIndex = app.getBuilding(buildingIndex).jewelryIndex;
+                        
+                        if (jewelryIndex != null) {
+                            let jewelry = app.getJewelry(jewelryIndex);
+                            $('.jewelry').eq(jewelryIndex).show();
+                        }
+                    }
+
+                    app.nextTurn();
                 } else {
                     app.nextTurn();
                 }
@@ -1834,6 +1848,7 @@ let app = new Vue({
             } else {
                 $target = $('.jewelry').eq(app.status.hideJewelryCount);
                 building.jewelryIndex = app.status.hideJewelryCount;
+                Vue.set(this.buildingList, index, building);
             }
 
             $target.show();
@@ -2074,6 +2089,16 @@ let app = new Vue({
                 .filter(target => target.index === currentPosition)[0];
         },
 
+        getBuilding: function (currentPosition) {
+            return app.buildingList
+                .filter(target => target.index === currentPosition)[0];
+        },
+
+        getJewelry: function (currentPosition) {
+            return app.jewelryList
+                .filter(target => target.index === currentPosition)[0];
+        },
+
         go: function(count, previousPosition, currentPosition, path) {
             path.push(currentPosition);
 
@@ -2081,6 +2106,17 @@ let app = new Vue({
 
             if (app.status.policeTurn) {
                 if (currentBlock.onlyBurglar) {
+                    return;
+                }
+            }
+
+            if (app.status.burglarTurn) {
+                if (currentBlock.onlyBurglar) {
+                    app.status.blockPathList.push({
+                        index: currentPosition,
+                        path: path
+                    });
+
                     return;
                 }
             }
@@ -2200,11 +2236,16 @@ let app = new Vue({
     },
     created: function () {
         this.blockList = this.blockList.map((block) => {
+            if (block.buildingIndex === undefined) {
+                block.buildingIndex = null;
+            }
+
             return {
                 ...block,
                 subTitle: this.getSubTitle(block),
                 trickDirection: null,
                 trickDirectionIcon: '',
+                jewelryIndex: null,
                 classObject: {
                     burglar: block.burglar ||
                         block.moveBurglar ||
