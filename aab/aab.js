@@ -1742,11 +1742,30 @@ let app = new Vue({
                         
                         if (jewelryIndex != null) {
                             let jewelry = app.getJewelry(jewelryIndex);
-                            $('.jewelry').eq(jewelryIndex).show();
+                            let $jewelry = $('.jewelry').eq(jewelryIndex)
+                                .show();
+
+                            app.blinkJewelry(jewelryIndex, true);
+
+                            setTimeout(function () {
+                                app.blinkJewelry(jewelryIndex, false);
+                                jewelry.classObject.steal = true;
+                                Vue.set(app.jewelryList, jewelryIndex, jewelry);
+
+                                $jewelry.css({
+                                    left: 0,
+                                    top: 0
+                                });
+
+                                app.getCurrentBurglarElement().append($jewelry);
+                                
+                                setTimeout(function () {
+                                    app.nextTurn();
+                                }, 3000);
+
+                            }, 3000);
                         }
                     }
-
-                    app.nextTurn();
                 } else {
                     app.nextTurn();
                 }
