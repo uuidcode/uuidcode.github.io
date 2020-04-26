@@ -1273,7 +1273,8 @@ let data = {
             classObject: {
                 jewelry: true,
                 hideJewelry: true
-            }
+            },
+            steal: false
         },
         {
             index: 1,
@@ -1285,7 +1286,8 @@ let data = {
             classObject: {
                 jewelry: true,
                 hideJewelry: true
-            }
+            },
+            steal: false
         }
     ]
     ,
@@ -1657,7 +1659,7 @@ let app = new Vue({
                 if (app.status.runMode) {
                     app.status.blockPathList = [];
 
-                    app.go(app.status.runCount, selectedBlock.index, selectedBlock.index, []);
+                    app.go(app.status.runCount, app.status.runCount, selectedBlock.index, selectedBlock.index, []);
 
                     app.backgroundActive();
 
@@ -1738,10 +1740,15 @@ let app = new Vue({
                     let buildingIndex = selectedBlock.buildingIndex;
 
                     if (buildingIndex != null) {
-                        let jewelryIndex = app.getBuilding(buildingIndex).jewelryIndex;
+                        let building = app.getBuilding(buildingIndex);
+                        let jewelryIndex = building.jewelryIndex;
                         
                         if (jewelryIndex != null) {
+                            building.jewelryIndex = null;
+
                             let jewelry = app.getJewelry(jewelryIndex);
+                            jewelry.steal = true;
+
                             let $jewelry = $('.jewelry').eq(jewelryIndex)
                                 .show();
 
@@ -2021,7 +2028,7 @@ let app = new Vue({
                             count = countForDebug;
                         }
 
-                        app.go(count, currentCharacter.position, currentCharacter.position, []);
+                        app.go(count, count, currentCharacter.position, currentCharacter.position, []);
 
                         app.backgroundActive();
 
@@ -2118,7 +2125,7 @@ let app = new Vue({
                 .filter(target => target.index === currentPosition)[0];
         },
 
-        go: function(count, previousPosition, currentPosition, path) {
+        go: function(originCount, count, previousPosition, currentPosition, path) {
             path.push(currentPosition);
 
             let currentBlock = app.getBlock(currentPosition);
@@ -2131,12 +2138,14 @@ let app = new Vue({
 
             if (app.status.burglarTurn) {
                 if (currentBlock.onlyBurglar) {
-                    app.status.blockPathList.push({
-                        index: currentPosition,
-                        path: path
-                    });
+                    if (originCount !== count) {
+                        app.status.blockPathList.push({
+                            index: currentPosition,
+                            path: path
+                        });
 
-                    return;
+                        return;
+                    }
                 }
             }
 
@@ -2191,17 +2200,17 @@ let app = new Vue({
 
                 if (app.status.burglarTurn) {
                     if (link !== previousPosition) {
-                        app.go(count - 1, currentPosition, link, [...path]);
+                        app.go(originCount, count - 1, currentPosition, link, [...path]);
                     }
                 } else if (app.status.policeTurn) {
                     if (currentBlock.trickDirection === null || app.status.runMode) {
                         if (link !== previousPosition) {
-                            app.go(count - 1, currentPosition, link, [...path]);
+                            app.go(originCount, count - 1, currentPosition, link, [...path]);
                         }
                     } else {
                         if (currentBlock.trickDirection === currentBlock.linkDirectionList[i]) {
                             app.status.trickIndexList.push(currentBlock.index);
-                            app.go(count - 1, currentPosition, link, [...path]);
+                            app.go(originCount, count - 1, currentPosition, link, [...path]);
                         }
                     }
                 }
