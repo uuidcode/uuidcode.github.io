@@ -1485,7 +1485,8 @@ let data = {
         blockPathList: [],
         runMode: false,
         runModeComplete: false,
-        runCount: 0
+        runCount: 0,
+        stealJewelryList: []
     },
     background: {
         classObject: {
@@ -1521,6 +1522,10 @@ let app = new Vue({
 
         getCurrentBurglarElement: function () {
             return $('.burglarCharacter').eq(app.status.turn);
+        },
+
+        getJewelryElement: function (index) {
+            return $('.jewelry').eq(index);
         },
 
         getBurglarElement: function (index) {
@@ -1737,6 +1742,30 @@ let app = new Vue({
                     let currentCharacter = app.getCurrentCharacter();
                     currentCharacter.skip = true;
                     app.nextTurn();
+                } else if (selectedBlock.index === 0) {
+                    let currentBurglar = app.getCurrentBurglar();
+
+                    if (currentBurglar.jewelryIndex != null) {
+                        let $jewelry = app.getJewelryElement(currentBurglar.jewelryIndex);
+                        let $block = app.getBlockElement(selectedBlock.index);
+
+                        $jewelry.appendTo($block).css({
+                            width: 30,
+                            height: 30,
+                            top: 70,
+                            left: app.status.stealJewelryList.length * 30
+                        });
+
+                        app.blinkJewelry(currentBurglar.jewelryIndex, true);
+                        app.status.stealJewelryList.push(currentBurglar.jewelryIndex);
+
+                        setTimeout(function () {
+                            app.blinkJewelry(currentBurglar.jewelryIndex, false);
+                            app.nextTurn();
+                        }, 1000)
+                    } else {
+                        app.nextTurn();
+                    }
                 } else if (selectedBlock.onlyBurglar) {
                     let buildingIndex = selectedBlock.buildingIndex;
 
@@ -1745,6 +1774,8 @@ let app = new Vue({
                         let jewelryIndex = building.jewelryIndex;
                         
                         if (jewelryIndex != null) {
+                            app.getCurrentBurglar().jewelryIndex = jewelryIndex;
+
                             building.jewelryIndex = null;
 
                             let jewelry = app.getJewelry(jewelryIndex);
@@ -1769,9 +1800,8 @@ let app = new Vue({
                                 
                                 setTimeout(function () {
                                     app.nextTurn();
-                                }, 3000);
-
-                            }, 3000);
+                                }, 1000);
+                            }, 1000);
                         }
                     }
                 } else {
