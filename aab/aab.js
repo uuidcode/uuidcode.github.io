@@ -424,7 +424,8 @@ let blockList = [
             top: '300px',
         },
         linkList: [45],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 2
     },
     {
         index: 47,
@@ -1810,16 +1811,14 @@ let app = new Vue({
         },
 
         threat: function (callback) {
-            if (app.status.stealJewelryCount === 0 && app.status.threatCount === 0) {
-                let index = 0;
+            let currentJewelryList = app.jewelryList
+                .filter(jewelry => jewelry.steal === false);
 
-                if (Math.random() > 0.5) {
-                    index = 1;
-                }
-
+            if (currentJewelryList.length > 0) {
+                let currentJewelry = currentJewelryList[0];
+                let index = currentJewelry.index;
                 let $jewelry = $('.jewelry').eq(index).show();
 
-                let currentJewelry = app.jewelryList.filter(target => target.index === index)[0];
                 currentJewelry.classObject.blink = true;
 
                 setTimeout(() => {
@@ -1959,6 +1958,7 @@ let app = new Vue({
                 height: '30px'
             }, 500, function () {
                 $newTurnImage.remove();
+
                 callback();
             });
         },
@@ -2250,7 +2250,7 @@ let app = new Vue({
             } else if (block.onlyBurglar) {
                 return `경찰은 들어 갈 수 없다`;
             } else if (block.threat) {
-                return `도둑은 보석이 있는 건물 한곳을 알 수 있다`;
+                return `도둑은 보석이 있는 건물 알 수 있다`;
             } else if (block.goHome) {
                 return `도둑은 아지트로 경찰은 경찰서로`;
             } else if (block.send) {
