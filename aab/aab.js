@@ -226,7 +226,8 @@ let blockList = [
             top: '350px',
         },
         linkList: [20],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 0
     },
     {
         index: 25,
@@ -487,7 +488,8 @@ let blockList = [
             top: '100px',
         },
         linkList: [52],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 3
     },
     {
         index: 54,
@@ -955,7 +957,8 @@ let blockList = [
             top: '650px',
         },
         linkList: [102],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 4
     },
     {
         index: 104,
@@ -1080,7 +1083,8 @@ let blockList = [
             top: '600px',
         },
         linkList: [107],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 5
     },
     {
         index: 118,
@@ -1207,7 +1211,8 @@ let blockList = [
         },
         linkList: [85],
         linkDirectionList: ['right'],
-        onlyBurglar: true
+        onlyBurglar: true,
+        buildingIndex: 6
     },
     {
         index: 131,
@@ -1301,7 +1306,7 @@ let data = {
                 top: '250px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/1.png)'
+                backgroundImage: 'url(image/building/0.png)'
             },
             classObject: {}
         },
@@ -1313,7 +1318,7 @@ let data = {
                 top: '580px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/2.png)'
+                backgroundImage: 'url(image/building/1.png)'
             },
             classObject: {}
         },
@@ -1325,7 +1330,7 @@ let data = {
                 top: '200px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/3.png)'
+                backgroundImage: 'url(image/building/2.png)'
             },
             classObject: {}
         },
@@ -1337,7 +1342,7 @@ let data = {
                 top: '50px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/4.png)'
+                backgroundImage: 'url(image/building/3.png)'
             },
             classObject: {}
         },
@@ -1349,7 +1354,7 @@ let data = {
                 top: '550px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/5.png)'
+                backgroundImage: 'url(image/building/4.png)'
             },
             classObject: {}
         },
@@ -1361,7 +1366,7 @@ let data = {
                 top: '650px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/6.png)'
+                backgroundImage: 'url(image/building/5.png)'
             },
             classObject: {}
         },
@@ -1373,7 +1378,7 @@ let data = {
                 top: '100px',
                 width: '100px',
                 height: '100px',
-                backgroundImage: 'url(image/7.png)'
+                backgroundImage: 'url(image/building/6.png)'
             },
             classObject: {}
         }
@@ -1593,7 +1598,7 @@ let app = new Vue({
 
         checkGameOver: function () {
             if (app.burglarList.filter(burglar => burglar.arrested).length === 3) {
-                alert('경찰이 이겼습니다.');
+                alert('경찰 승리');
                 location.reload();
             }
         },
@@ -1761,7 +1766,12 @@ let app = new Vue({
 
                         setTimeout(function () {
                             app.blinkJewelry(currentBurglar.jewelryIndex, false);
-                            app.nextTurn();
+
+                            if (app.status.stealJewelryList.length === 2) {
+                                alert('도둑 승리');
+                            } else {
+                                app.nextTurn();
+                            }
                         }, 1000)
                     } else {
                         app.nextTurn();
