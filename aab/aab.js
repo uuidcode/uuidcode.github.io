@@ -2088,7 +2088,7 @@ let app = new Vue({
                                     app.burglarList.filter(target => target.arrested === false)
                                         .forEach(target => {
                                             target.classObject.burglarRipple = true;
-                                            Vue.set(app.buildingList, target.index, target);
+                                            Vue.set(app.burglarList, target.index, target);
                                         });
                                 } else {
                                     alert('도둑을 체포하지 못했습니다.');
