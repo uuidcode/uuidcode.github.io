@@ -1776,6 +1776,9 @@ let app = new Vue({
                     } else {
                         app.nextTurn();
                     }
+                } else if (selectedBlock.arrest) {
+                    app.status.turn--;
+                    app.nextTurn();
                 } else if (selectedBlock.onlyBurglar) {
                     let buildingIndex = selectedBlock.buildingIndex;
 
@@ -2018,10 +2021,12 @@ let app = new Vue({
             let $restCountButton = $('.btn-rest-count');
             let $restButton = $('.btn-rest');
             let $trickButton = $('.btn-select-block-for-trick');
+            let $arrestTile = $('.arrest-title');
 
             $restCountButton.hide();
             $restButton.hide();
             $trickButton.hide();
+            $arrestTile.hide();
 
             if (app.status.burglarTurn) {
                 let currentBurglar = app.getCurrentBurglar();
@@ -2054,19 +2059,47 @@ let app = new Vue({
                             app.status.trickMode = true;
                         });
                 }
+            } else {
+                let currentBlock = app.getBlock(app.getCurrentCharacter().position);
+
+                if (currentBlock.arrest) {
+                    $arrestTile
+                        .text('주사위를 던져 ' + currentBlock.dice + "이면 도둑을 체포할 수 있습니다.")
+                        .show()
+                }
             }
 
             let $die = $('#die');
 
             if (die == null) {
                 die = new Die(function (count) {
+                    if (countForDebug) {
+                        count = countForDebug;
+                    }
+
                     app.moveToTurn(function () {
+                        if (app.status.policeTurn) {
+                            let currentPolice = app.getCurrentPolice();
+                            let currentBlock = app.getBlock(currentPolice.position);
+
+                            if (currentBlock.arrest) {
+                                if (currentBlock.dice === count) {
+                                    alert('도둑을 체포합니다.\n체포할 도둑을 선택하세요.');
+                                    app.burglarList.filter(target => target.arrested === false)
+                                        .forEach(target => {
+                                            target.classObject.burglarRipple = true;
+                                            Vue.set(app.buildingList, target.index, target);
+                                        });
+                                } else {
+                                    alert('도둑을 체포하지 못했습니다.');
+                                }
+
+                                return;
+                            }
+                        }
+
                         let currentCharacter = app.getCurrentCharacter();
                         app.status.blockPathList = [];
-
-                        if (countForDebug) {
-                            count = countForDebug;
-                        }
 
                         app.go(count, count, currentCharacter.position, currentCharacter.position, []);
 
