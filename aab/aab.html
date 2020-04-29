@@ -41,7 +41,8 @@
          :data-index="burglar.index"
          :key="burglar.index"
          :class="burglar.classObject"
-         :style="burglar.styleObject"></div>
+         :style="burglar.styleObject"
+         v-on:click="catchBurglar"></div>
 
     <div class="character policeCharacter"
          v-for="police in policeList"

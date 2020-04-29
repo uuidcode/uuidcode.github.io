@@ -129,6 +129,11 @@ body {
     box-sizing: unset;
 }
 
+.selectable {
+    cursor: pointer;
+    z-index: 200;
+}
+
 .blink {
     cursor: pointer;
     z-index: 200;
@@ -231,6 +236,7 @@ body {
 
 .burglarRipple {
     animation: burglarRipple 3s linear infinite;
+    z-index: 200;
 }
 
 .burglarRipple::before, .burglarRipple::after{

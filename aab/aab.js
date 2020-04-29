@@ -1470,6 +1470,7 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        catch: false,
         hideJewelryMode: false,
         hideJewelryCount: 0,
         hidePoliceMode: false,
@@ -1603,6 +1604,22 @@ let app = new Vue({
             }
         },
 
+        catchBurglarWithPathList: function (pathList) {
+            app.burglarList.filter(burglar => pathList.includes(burglar.position))
+                .forEach(burglar => {
+                    let $currentBurglar = app.getBurglarElement(burglar.index);
+                    $currentBurglar.animate({
+                        left: burglar.index * 30,
+                        top: 70
+                    }, 500, function () {
+                        burglar.arrested = true;
+                        burglar.position = 135;
+
+                        app.checkGameOver();
+                    });
+                })
+        },
+
         move: function (selectedBlock) {
             let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
 
@@ -1647,19 +1664,7 @@ let app = new Vue({
                         pathList = [selectedBlock.index];
                     }
 
-                    app.burglarList.filter(burglar => pathList.includes(burglar.position))
-                        .forEach(burglar => {
-                            let $currentBurglar = app.getBurglarElement(burglar.index);
-                            $currentBurglar.animate({
-                                left: burglar.index * 30,
-                                top: 70
-                            }, 500, function () {
-                                burglar.arrested = true;
-                                burglar.position = 135;
-
-                                app.checkGameOver();
-                            });
-                        })
+                    app.catchBurglarWithPathList(pathList);
                 }
 
                 $('.trick').removeClass('blink');
@@ -1827,14 +1832,20 @@ let app = new Vue({
 
         moveByIndex: function (index) {
             let selectedBlock = app.getBlock(index);
-            console.log('>>> index', index);
-            console.log('>>> selectedBlock', selectedBlock);
             app.move(selectedBlock);
         },
 
         moveByEvent: function (event) {
             let selectedBlock = app.getSelectedBlock(event);
             app.move(selectedBlock);
+        },
+
+        catchBurglar: function (event) {
+            let index = $(event.target).attr('data-index');
+            let burglar = app.burglarList.filter(target => target.index == index)[0];
+            app.catchBurglarWithPathList([burglar.position]);
+            app.removeRippleCharacter();
+            app.nextTurn();
         },
 
         resetTrickIndexList: function () {
@@ -2085,9 +2096,13 @@ let app = new Vue({
                             if (currentBlock.arrest) {
                                 if (currentBlock.dice === count) {
                                     alert('도둑을 체포합니다.\n체포할 도둑을 선택하세요.');
+
+                                    app.status.catch = true;
+
                                     app.burglarList.filter(target => target.arrested === false)
                                         .forEach(target => {
                                             target.classObject.burglarRipple = true;
+                                            target.classObject.selectable = true;
                                             Vue.set(app.burglarList, target.index, target);
                                         });
                                 } else {
