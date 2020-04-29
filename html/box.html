@@ -1,0 +1,44 @@
+<style>
+    .box {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        padding: 10px;
+        left: 0;
+        border: 10px solid lightgreen;
+        z-index: 10;
+    }
+
+    #a {
+        top: 0;
+        box-sizing: content-box;
+        background-color: lightyellow;
+    }
+
+    #b {
+        top: 200px;
+        box-sizing: border-box;
+        background-color: lightblue;
+    }
+
+    .box:after {
+        background-color: lightgray;
+        content: '';
+        display: block;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+        z-index: -1;
+    }
+
+    body {
+        margin: 10px;
+    }
+</style>
+<body>
+<div class="box" id="a">content-box</div>
+<div class="box" id="b">border-box</div>
+</body>
+
