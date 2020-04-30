@@ -1784,6 +1784,23 @@ let app = new Vue({
                 } else if (selectedBlock.arrest) {
                     app.status.turn--;
                     app.nextTurn();
+                } else if (selectedBlock.goHome) {
+                    let $burglarStartBlock = $('.block[data-index=0]');
+                    let $policeStartBlock = $('.block[data-index=135]');
+
+                    $('.burglarCharacter').each(function () {
+                        $(this).animate({
+                            left: $burglarStartBlock.offset().left + 30 * $(this).attr('data-index'),
+                            top: $burglarStartBlock.offset().top
+                        }, 1000);
+                    });
+
+                    $('.policeCharacter').each(function () {
+                        $(this).animate({
+                            left: $policeStartBlock.offset().left + 30 * $(this).attr('data-index'),
+                            top: $policeStartBlock.offset().top
+                        }, 1000);
+                    });
                 } else if (selectedBlock.onlyBurglar) {
                     let buildingIndex = selectedBlock.buildingIndex;
 
