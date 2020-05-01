@@ -1491,8 +1491,7 @@ let data = {
         blockPathList: [],
         runMode: false,
         runModeComplete: false,
-        runCount: 0,
-        stealJewelryList: []
+        runCount: 0
     },
     background: {
         classObject: {
@@ -1527,11 +1526,15 @@ let app = new Vue({
         },
 
         getCurrentBurglarElement: function () {
-            return $('.burglarCharacter').eq(app.status.turn);
+            return $('.burglarCharacter').filter(function () {
+                return $(this).attr('data-index') == app.status.turn;
+            });
         },
 
         getJewelryElement: function (index) {
-            return $('.jewelry').eq(index);
+            return $('.jewelry').filter(function () {
+                return $(this).attr('data-index') == index;
+            });
         },
 
         getBurglarElement: function (index) {
@@ -1620,6 +1623,37 @@ let app = new Vue({
                 })
         },
 
+        checkSteal: function (currentBurglar, callNextTurn) {
+            if (currentBurglar.jewelryIndex == null) {
+                return;
+            }
+
+            let $jewelry = app.getJewelryElement(currentBurglar.jewelryIndex);
+            let $block = app.getBlockElement(0);
+
+            $jewelry.appendTo($block).css({
+                width: 30,
+                height: 30,
+                top: 70,
+                left: currentBurglar.jewelryIndex * 30
+            });
+
+            app.blinkJewelry(currentBurglar.jewelryIndex, true);
+
+            if ($block.find('.jewelry').length === 2) {
+                alert('도둑 승리');
+                location.reload();
+            }
+
+            setTimeout(function () {
+                app.blinkJewelry(currentBurglar.jewelryIndex, false);
+
+                if (callNextTurn) {
+                    app.nextTurn();
+                }
+            }, 1000)
+        },
+        
         move: function (selectedBlock) {
             let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
 
@@ -1756,28 +1790,7 @@ let app = new Vue({
                     let currentBurglar = app.getCurrentBurglar();
 
                     if (currentBurglar.jewelryIndex != null) {
-                        let $jewelry = app.getJewelryElement(currentBurglar.jewelryIndex);
-                        let $block = app.getBlockElement(selectedBlock.index);
-
-                        $jewelry.appendTo($block).css({
-                            width: 30,
-                            height: 30,
-                            top: 70,
-                            left: app.status.stealJewelryList.length * 30
-                        });
-
-                        app.blinkJewelry(currentBurglar.jewelryIndex, true);
-                        app.status.stealJewelryList.push(currentBurglar.jewelryIndex);
-
-                        setTimeout(function () {
-                            app.blinkJewelry(currentBurglar.jewelryIndex, false);
-
-                            if (app.status.stealJewelryList.length === 2) {
-                                alert('도둑 승리');
-                            } else {
-                                app.nextTurn();
-                            }
-                        }, 1000)
+                        app.checkSteal(currentBurglar, true);
                     } else {
                         app.nextTurn();
                     }
@@ -1788,18 +1801,31 @@ let app = new Vue({
                     let $burglarStartBlock = $('.block[data-index=0]');
                     let $policeStartBlock = $('.block[data-index=135]');
 
-                    $('.burglarCharacter').each(function () {
-                        $(this).animate({
-                            left: $burglarStartBlock.offset().left + 30 * $(this).attr('data-index'),
-                            top: $burglarStartBlock.offset().top
-                        }, 1000);
-                    });
-
                     $('.policeCharacter').each(function () {
                         $(this).animate({
                             left: $policeStartBlock.offset().left + 30 * $(this).attr('data-index'),
                             top: $policeStartBlock.offset().top
                         }, 1000);
+                    });
+
+                    var count = 0;
+
+                    let $burglarCharacter = $('.burglarCharacter');
+                    
+                    console.log('>>> $burglarCharacter.length', $burglarCharacter.length);
+                    
+                    $burglarCharacter.each(function () {
+                        $(this).animate({
+                            left: $burglarStartBlock.offset().left + 30 * $(this).attr('data-index'),
+                            top: $burglarStartBlock.offset().top
+                        }, 1000, function () {
+                            count++;
+
+                            if (count == 3) {
+                                app.burglarList.forEach(bruglar => app.checkSteal(bruglar, false));
+                                app.nextTurn();
+                            }
+                        });
                     });
                 } else if (selectedBlock.onlyBurglar) {
                     let buildingIndex = selectedBlock.buildingIndex;
@@ -1807,16 +1833,20 @@ let app = new Vue({
                     if (buildingIndex != null) {
                         let building = app.getBuilding(buildingIndex);
                         let jewelryIndex = building.jewelryIndex;
-                        
+
                         if (jewelryIndex != null) {
-                            app.getCurrentBurglar().jewelryIndex = jewelryIndex;
+                            let burglar = app.getCurrentBurglar();
+                            burglar.jewelryIndex = jewelryIndex;
 
                             building.jewelryIndex = null;
 
                             let jewelry = app.getJewelry(jewelryIndex);
                             jewelry.steal = true;
 
-                            let $jewelry = $('.jewelry').eq(jewelryIndex)
+                            let $jewelry = $('.jewelry')
+                                .filter(function () {
+                                    return $(this).attr('data-index') == jewelryIndex;
+                                })
                                 .show();
 
                             app.blinkJewelry(jewelryIndex, true);
@@ -1832,7 +1862,7 @@ let app = new Vue({
                                 });
 
                                 app.getCurrentBurglarElement().append($jewelry);
-                                
+
                                 setTimeout(function () {
                                     app.nextTurn();
                                 }, 1000);
