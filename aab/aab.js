@@ -1867,6 +1867,8 @@ let app = new Vue({
                                     app.nextTurn();
                                 }, 1000);
                             }, 1000);
+                        } else {
+                            alert('보석이 없습니다.');
                         }
                     }
                 } else {
@@ -2286,12 +2288,14 @@ let app = new Vue({
 
             if (!app.status.runMode) {
                 if (currentBlock.stop) {
-                    app.status.blockPathList.push({
-                        index: currentPosition,
-                        path: path
-                    });
+                    if (originCount !== count) {
+                        app.status.blockPathList.push({
+                            index: currentPosition,
+                            path: path
+                        });
 
-                    return;
+                        return;
+                    }
                 }
             }
 
