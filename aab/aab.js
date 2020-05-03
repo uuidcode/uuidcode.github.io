@@ -1607,19 +1607,24 @@ let app = new Vue({
             }
         },
 
+        arrestBurglar: function (burglar) {
+            let $currentBurglar = app.getBurglarElement(burglar.index);
+
+            $currentBurglar.animate({
+                left: burglar.index * 30,
+                top: 70
+            }, 500, function () {
+                burglar.arrested = true;
+                burglar.position = 135;
+
+                app.checkGameOver();
+            });
+        },
+        
         catchBurglarWithPathList: function (pathList) {
             app.burglarList.filter(burglar => pathList.includes(burglar.position))
                 .forEach(burglar => {
-                    let $currentBurglar = app.getBurglarElement(burglar.index);
-                    $currentBurglar.animate({
-                        left: burglar.index * 30,
-                        top: 70
-                    }, 500, function () {
-                        burglar.arrested = true;
-                        burglar.position = 135;
-
-                        app.checkGameOver();
-                    });
+                    app.arrestBurglar(burglar);
                 })
         },
 
@@ -1868,7 +1873,23 @@ let app = new Vue({
                                 }, 1000);
                             }, 1000);
                         } else {
-                            alert('보석이 없습니다.');
+                            if (building.hasHiddenPolice) {
+                                app.hiddenPolice.classObject.roundBlink = true;
+                                let $hiddenPolice = $('.hiddenPolice').show();
+
+                                setTimeout(function () {
+                                    let burglar = app.getCurrentBurglar();
+                                    app.arrestBurglar(burglar);
+                                    $hiddenPolice.remove();
+
+                                    setTimeout(function () {
+                                        app.nextTurn();
+                                    }, 2000)
+                                }, 2000);
+                            } else {
+                                alert('보석이 없습니다.');
+                                app.nextTurn();
+                            }
                         }
                     }
                 } else {
