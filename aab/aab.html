@@ -74,13 +74,19 @@
             <div class="modal-content">
                 <div class="modal-body">
                     <div>
-                        <div>
-                            <img class="turnImage">
-                            <h4 style="display:inline" class="arrest-title"></h4>
-                            <button class="btn btn-default btn-rest-count" disabled></button>
-                            <button class="btn btn-success btn-rest">쉬기</button>
-                            <button class="btn btn-success btn-select-block-for-trick">속임수</button>
-                        </div>
+                            <table>
+                                <tr>
+                                    <td><img class="turnImage"></td>
+                                    <td>
+                                        <h4 class="arrest-title"></h4>
+                                        <div>
+                                            <button type="button" class="btn btn-default btn-sm btn-rest-count" disabled></button><br>
+                                            <button type="button" class="btn btn-success btn-sm btn-rest">쉬기</button>
+                                            <button type="button" class="btn btn-success btn-sm btn-select-block-for-trick">속임수</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                     </div>
                     <div id="die"></div>
                 </div>

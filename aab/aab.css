@@ -225,19 +225,17 @@ body {
     box-sizing: border-box;
 }
 
-#turnModal .modal-body {
+#turnModal .modal-dialog {
+    left: 800px;
+    top: 50px;
     width: 300px;
     height: 300px;
+    margin: unset;
 }
 
-#turnModal .modal-content {
-    width: 300px !important;
-    height: 300px !important;
-}
-
-#turnModal .modal-dialog {
-    max-width: 300px!important;
-    width: 300px;
+#turnModal .modal-body {
+    box-sizing: border-box;
+    height: 300px;
 }
 
 #trickModal .modal-dialog {

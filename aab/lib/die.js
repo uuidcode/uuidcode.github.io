@@ -7,11 +7,11 @@ function Die(rollCallback) {
 
         var css = {
             position: 'absolute',
-            border: '1px solid black',
+            border: '1px solid lightgrey',
             left: '10px',
             top: '100px',
             width: 280,
-            height: 200
+            height: 190
         };
 
         this.$element.addClass('shadow');
