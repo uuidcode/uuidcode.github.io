@@ -2124,6 +2124,14 @@ let app = new Vue({
                         });
                 }
 
+                if (currentBurglar.position === 135) {
+                    if (currentBurglar.arrested) {
+                        $arrestTile
+                            .text('주사위를 던져 1이면 탈출합니다.')
+                            .show()
+                    }
+                }
+
                 if (app.status.trickCount > 0) {
                     $trickButton.show()
                         .off('click')
@@ -2147,12 +2155,6 @@ let app = new Vue({
                     $arrestTile
                         .text('주사위를 던져 ' + currentBlock.dice + '이면 도둑을 체포할 수 있습니다.')
                         .show();
-                } else if (currentBlock === 135) {
-                    if (app.status.burglarTurn && currentBurglar.arrested) {
-                        $arrestTile
-                            .text('주사위를 던져 1이면 탈출합니다.')
-                            .show()
-                    }
                 }
             }
 
@@ -2186,11 +2188,20 @@ let app = new Vue({
                                 }
 
                                 return;
-                            } else if (currentBlock.index === 135) {
-                                if (currentBlock.dice === 1) {
+                            }
+                        } else {
+                            let currentBurglar = app.getCurrentBurglar();
+                            let currentBlock = app.getBlock(currentBurglar.position);
+
+                            if (currentBlock.index === 135) {
+                                if (count === 1) {
                                     alert('탙출합니다.\n주사위를 다시 던지세요.');
                                     app.status.turn--;
                                     app.status.escape = true;
+                                    app.nextTurn();
+                                    return;
+                                } else {
+                                    alert('탙출하지 못했습니다.');
                                     app.nextTurn();
                                     return;
                                 }

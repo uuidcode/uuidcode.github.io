@@ -315,3 +315,9 @@ body {
 .trickButtonGroup {
     margin-top: 10px;
 }
+
+.arrest-title {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
