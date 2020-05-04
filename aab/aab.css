@@ -213,19 +213,31 @@ body {
     display: none;
 }
 
+#jewelryModal .modal-dialog {
+    left: 800px;
+    top: 50px;
+    width: 300px;
+    height: 100px;
+    margin: unset;
+}
+
+#jewelryModal .modal-body {
+    box-sizing: border-box;
+}
+
 #turnModal .modal-body {
-    width: 630px;
-    height: 810px;
+    width: 300px;
+    height: 300px;
 }
 
 #turnModal .modal-content {
-    width: 630px !important;
-    height: 810px !important;
+    width: 300px !important;
+    height: 300px !important;
 }
 
 #turnModal .modal-dialog {
-    max-width: 630px!important;
-    width: 630px;
+    max-width: 300px!important;
+    width: 300px;
 }
 
 #trickModal .modal-dialog {

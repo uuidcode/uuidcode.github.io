@@ -1470,6 +1470,7 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        escape: false,
         catch: false,
         hideJewelryMode: false,
         hideJewelryCount: 0,
@@ -1707,9 +1708,6 @@ let app = new Vue({
                 }
 
                 $('.trick').removeClass('blink');
-
-                console.log('>>> selectedBlock', selectedBlock);
-                console.log('>>> app.status', app.status);
 
                 if (app.status.runMode) {
                     app.status.blockPathList = [];
@@ -2109,8 +2107,9 @@ let app = new Vue({
             $trickButton.hide();
             $arrestTile.hide();
 
+            let currentBurglar = app.getCurrentBurglar();
+
             if (app.status.burglarTurn) {
-                let currentBurglar = app.getCurrentBurglar();
                 $restCountButton.text(`쉰 횟수: ${currentBurglar.rest}`).show();
                 let currentBlock = app.getBlock(currentBurglar.position);
 
@@ -2141,12 +2140,19 @@ let app = new Vue({
                         });
                 }
             } else {
-                let currentBlock = app.getBlock(app.getCurrentCharacter().position);
+                let currentPosition = app.getCurrentCharacter().position;
+                let currentBlock = app.getBlock(currentPosition);
 
                 if (currentBlock.arrest) {
                     $arrestTile
-                        .text('주사위를 던져 ' + currentBlock.dice + "이면 도둑을 체포할 수 있습니다.")
-                        .show()
+                        .text('주사위를 던져 ' + currentBlock.dice + '이면 도둑을 체포할 수 있습니다.')
+                        .show();
+                } else if (currentBlock === 135) {
+                    if (app.status.burglarTurn && currentBurglar.arrested) {
+                        $arrestTile
+                            .text('주사위를 던져 1이면 탈출합니다.')
+                            .show()
+                    }
                 }
             }
 
@@ -2180,6 +2186,14 @@ let app = new Vue({
                                 }
 
                                 return;
+                            } else if (currentBlock.index === 135) {
+                                if (currentBlock.dice === 1) {
+                                    alert('탙출합니다.\n주사위를 다시 던지세요.');
+                                    app.status.turn--;
+                                    app.status.escape = true;
+                                    app.nextTurn();
+                                    return;
+                                }
                             }
                         }
 
