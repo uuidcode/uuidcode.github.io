@@ -1271,8 +1271,8 @@ let data = {
         {
             index: 0,
             styleObject: {
-                left: '100px',
-                top: '0px',
+                left: '820px',
+                top: '200px',
                 backgroundImage: 'url(image/jewelry/0.jpg)'
 
             },
@@ -1285,8 +1285,8 @@ let data = {
         {
             index: 1,
             styleObject: {
-                left: '150px',
-                top: '0px',
+                left: '870px',
+                top: '200px',
                 backgroundImage: 'url(image/jewelry/1.jpg)'
             },
             classObject: {
@@ -1420,8 +1420,8 @@ let data = {
     ],
     hiddenPolice: {
         styleObject: {
-            left: '200px',
-            top: '0px'
+            left: '920px',
+            top: '200px'
         },
         classObject: {
             hiddenPolice: true
@@ -2093,6 +2093,42 @@ let app = new Vue({
             return $('#turnModal');
         },
 
+        burglar0: function () {
+            app.status.burglarTurn = true;
+            app.status.policeTurn = false;
+            app.status.turn = 0;
+        },
+
+        burglar1: function () {
+            app.status.burglarTurn = true;
+            app.status.policeTurn = false;
+            app.status.turn = 1;
+        },
+
+        burglar2: function () {
+            app.status.burglarTurn = true;
+            app.status.policeTurn = false;
+            app.status.turn = 2;
+        },
+
+        police0: function () {
+            app.status.burglarTurn = false;
+            app.status.policeTurn = true;
+            app.status.turn = 0;
+        },
+
+        police1: function () {
+            app.status.burglarTurn = false;
+            app.status.policeTurn = true;
+            app.status.turn = 1;
+        },
+
+        police2: function () {
+            app.status.burglarTurn = false;
+            app.status.policeTurn = true;
+            app.status.turn = 2;
+        },
+        
         rollDie: function () {
             $('.turnImage').attr('src', app.getCharacterImage());
 
@@ -2566,11 +2602,10 @@ $(document.body).curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-let $jewelryModal = $('#jewelryModal').modal();
+let $jewelryModal = $('#jewelryModal');
+app.backgroundActive();
 
 $('.hide-jewelry-button').on('click', () => {
-    app.backgroundActive();
-
     app.blinkJewelry(app.status.hideJewelryCount, true)
 
     $jewelryModal.modal('hide');

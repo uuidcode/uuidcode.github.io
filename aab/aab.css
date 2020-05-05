@@ -183,7 +183,7 @@ body {
 
 .hiddenPolice {
     position: absolute;
-    z-index: 200;
+    z-index: 2000;
     width: 50px;
     height: 50px;
     background-image: url(image/police2.png);
@@ -192,6 +192,7 @@ body {
 }
 
 .hideJewelry {
+    z-index: 2000;
 }
 
 .background {
@@ -213,16 +214,20 @@ body {
     display: none;
 }
 
+#jewelryModal {
+    display: block;
+}
+
 #jewelryModal .modal-dialog {
     left: 800px;
     top: 50px;
     width: 300px;
-    height: 100px;
     margin: unset;
 }
 
 #jewelryModal .modal-body {
     box-sizing: border-box;
+    height: 280px;
 }
 
 #turnModal .modal-dialog {
@@ -320,4 +325,14 @@ body {
     position: absolute;
     left: 0;
     top: 0;
+}
+
+.debug-container {
+    position: fixed;
+    padding: 20px;
+    margin: 5px;
+    left: 0;
+    top: 800px;
+    z-index: 2000;
+    background: white;
 }
