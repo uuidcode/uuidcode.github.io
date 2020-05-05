@@ -2250,8 +2250,6 @@ let app = new Vue({
 
                         app.go(count, count, currentCharacter.position, currentCharacter.position, []);
 
-                        app.backgroundActive();
-
                         let blockIndexList = app.status.blockPathList
                             .map(target => target.index);
 
@@ -2292,7 +2290,6 @@ let app = new Vue({
             $('.btn-select-block-for-trick').show();
             $('#die').show();
 
-            app.background.classObject.backgroundActive = false;
             app.resetBuilding();
 
             app.burglarList.forEach((target) => target.styleObject.display = 'block');
@@ -2318,7 +2315,10 @@ let app = new Vue({
         },
 
         removeBlink: function (list) {
-            list.forEach(target => target.classObject.blink = false);
+            list.forEach((target, index) => {
+                target.classObject.blink = false;
+                Vue.set(list, index, target);
+            });
         },
 
         removeRipple: function (list) {
@@ -2327,7 +2327,11 @@ let app = new Vue({
         },
 
         blinkBlock: function (indexList) {
-            indexList.forEach(index => app.blockList[index].classObject.blink = true);
+            indexList.forEach(index => {
+                let block = app.blockList[index];
+                block.classObject.blink = true;
+                Vue.set(app.blockList, index, block);
+            });
         },
 
         backgroundActive: function () {
@@ -2528,7 +2532,6 @@ let app = new Vue({
             }
         })
     }
-
 });
 
 $(document.body).curvedArrow({
