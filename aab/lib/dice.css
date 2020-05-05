@@ -69,3 +69,7 @@
     position: absolute;
     border: solid black 1px;
 }
+
+.btn-rest-count {
+    margin-left: 10px;
+}

@@ -50,7 +50,7 @@
     height: 30px;
     background-size: cover;
     display: none;
-    z-index: 300;
+    z-index: 3000;
     border-radius: 15px;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .burglar {
-        background-color: pink !important;
+    background-color: pink !important;
 }
 
 .block {
@@ -135,7 +135,7 @@ body {
 
 .blink {
     cursor: pointer;
-    z-index: 200;
+    z-index: 2000;
 }
 
 .blink::before, .blink::after{
@@ -158,7 +158,7 @@ body {
 }
 
 .roundBlink {
-    z-index: 200;
+    z-index: 2000;
 }
 
 .roundBlink::before, .roundBlink::after{
@@ -204,7 +204,7 @@ body {
 
 .backgroundActive {
     background-color: black;
-    z-index: 100;
+    z-index: 1900;
     display: block;
     opacity: .2;
 }
@@ -216,6 +216,7 @@ body {
 
 #jewelryModal {
     display: block;
+    z-index: 1900;
 }
 
 #jewelryModal .modal-dialog {
@@ -250,7 +251,7 @@ body {
 
 .burglarRipple {
     animation: burglarRipple 3s linear infinite;
-    z-index: 200;
+    z-index: 3000;
 }
 
 .burglarRipple::before, .burglarRipple::after{
@@ -279,6 +280,7 @@ body {
 
 .policeRipple {
     animation: policeRipple 3s linear infinite;
+    z-index: 3000;
 }
 
 .policeRipple::before, .policeRipple::after{

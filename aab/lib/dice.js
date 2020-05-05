@@ -450,7 +450,7 @@
             this.h = this.ch;
         }
         this.aspect = Math.min(this.cw / this.w, this.ch / this.h);
-        that.scale = Math.sqrt(this.w * this.w + this.h * this.h) / 4;
+        that.scale = Math.sqrt(this.w * this.w + this.h * this.h) / 5;
 
         this.renderer.setSize(this.cw * 2, this.ch * 2);
 

@@ -67,35 +67,6 @@
     </div>
 
     <div class="modal"
-         id="turnModal"
-         role="dialog"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div>
-                            <table>
-                                <tr>
-                                    <td><img class="turnImage"></td>
-                                    <td>
-                                        <div>
-                                            <button type="button" class="btn btn-default btn-sm btn-rest-count" disabled></button><br>
-                                            <button type="button" class="btn btn-success btn-sm btn-rest">쉬기</button>
-                                            <button type="button" class="btn btn-success btn-sm btn-select-block-for-trick">속임수</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                    </div>
-                    <div id="die">
-                        <h4 class="arrest-title"></h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal"
          id="trickModal"
          role="dialog"
          aria-hidden="true">
@@ -133,11 +104,26 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    보석2개와 잠복 경찰 1명을 건물에 숨기세요.<br>
-                    건물을 클릭하면 보석, 잠복 경찰 순서로 숨기게 됩니다.
+                    <div class="start-comment">
+                    보석2개와 잠복 경찰 1명을<br>건물에 숨기세요.
+                    </div>
+                    <table class="player-info" style="display: none">
+                        <tr>
+                            <td><img class="turnImage"></td>
+                            <td>
+                                <div class="btn-rest-count"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="die">
+                        <h4 class="arrest-title"></h4>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary hide-jewelry-button">확인</button>
+                    <button type="button" class="btn btn-primary start-game-button" disabled>게임시작</button>
+                    <button type="button" class="btn btn-primary hide-jewelry-button" disabled>다시 숨기기</button>
+                    <button type="button" class="btn btn-primary btn-rest" style="display: none">쉬기</button>
+                    <button type="button" class="btn btn-primary btn-select-block-for-trick" style="display: none">속임수</button>
                 </div>
             </div>
         </div>

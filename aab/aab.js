@@ -1285,7 +1285,7 @@ let data = {
         {
             index: 1,
             styleObject: {
-                left: '870px',
+                left: '920px',
                 top: '200px',
                 backgroundImage: 'url(image/jewelry/1.jpg)'
             },
@@ -1420,7 +1420,7 @@ let data = {
     ],
     hiddenPolice: {
         styleObject: {
-            left: '920px',
+            left: '1020px',
             top: '200px'
         },
         classObject: {
@@ -1593,7 +1593,6 @@ let app = new Vue({
                     app.status.trickCount--;
                     app.removeBlinkBlock();
                     app.status.trickMode = false;
-                    app.backgroundInactive();
 
                     setTimeout(function () {
                         app.nextTurn();
@@ -1684,7 +1683,6 @@ let app = new Vue({
                 top: top,
             }, 500, function () {
                 app.getCurrentCharacter().position = selectedBlock.index;
-                app.backgroundInactive();
                 app.removeBlinkBlock();
                 app.removeRippleCharacter();
 
@@ -2018,11 +2016,14 @@ let app = new Vue({
 
                 if (app.status.hideJewelryCount === 2) {
                     if (app.status.hidePoliceMode) {
-                        if (confirm('이대로 진행하시겠습니다까?')) {
-                            app.readyToPlay();
-                        } else {
-                            location.reload();
-                        }
+                        $('.start-game-button').prop('disabled', false)
+                            .on('click', function () {
+                                app.readyToPlay();
+                            });
+                        $('.hide-jewelry-button').prop('disabled', false)
+                            .on('click', function () {
+                                location.reload();
+                            });
                     } else {
                         app.status.hidePoliceMode = true;
                         app.hiddenPolice.classObject.roundBlink = true;
@@ -2283,6 +2284,14 @@ let app = new Vue({
         },
 
         readyToPlay: function () {
+            $('.start-game-button').hide();
+            $('.hide-jewelry-button').hide();
+            $('.start-comment').hide();
+            $('.player-info').show();
+            $('.btn-rest').show();
+            $('.btn-select-block-for-trick').show();
+            $('#die').show();
+
             app.background.classObject.backgroundActive = false;
             app.resetBuilding();
 
@@ -2605,18 +2614,15 @@ $(document.body).curvedArrow({
 let $jewelryModal = $('#jewelryModal');
 app.backgroundActive();
 
-$('.hide-jewelry-button').on('click', () => {
-    app.blinkJewelry(app.status.hideJewelryCount, true)
+app.blinkJewelry(app.status.hideJewelryCount, true);
 
-    $jewelryModal.modal('hide');
-    data.status.hideJewelryMode = true;
+data.status.hideJewelryMode = true;
 
-    for (let i = 0; i < app.buildingList.length; i++) {
-        let building = app.buildingList[i];
-        building.classObject.blink = true;
-        Vue.set(app.buildingList, i, building);
-    }
+for (let i = 0; i < app.buildingList.length; i++) {
+    let building = app.buildingList[i];
+    building.classObject.blink = true;
+    Vue.set(app.buildingList, i, building);
+}
 
-    let jewelry = app.jewelryList[app.status.hideJewelryCount];
-    Vue.set(app.jewelryList, app.status.hideJewelryCount, jewelry);
-});
+let jewelry = app.jewelryList[app.status.hideJewelryCount];
+Vue.set(app.jewelryList, app.status.hideJewelryCount, jewelry);

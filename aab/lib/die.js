@@ -11,7 +11,7 @@ function Die(rollCallback) {
             left: '10px',
             top: '100px',
             width: 280,
-            height: 190
+            height: 170
         };
 
         this.$element.addClass('shadow');
