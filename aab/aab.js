@@ -648,7 +648,7 @@ let blockList = [
             top: '150px',
         },
         linkList: [69, 71],
-        linkDirectionList: ['up', 'down']
+        linkDirectionList: ['up', 'down'],
         changePolice: true
     },
     {
@@ -1561,7 +1561,9 @@ let app = new Vue({
         },
 
         getCurrentPoliceElement: function () {
-            return $('.policeCharacter').eq(app.status.turn);
+            return $('.policeCharacter').filter(function () {
+                return $(this).attr('data-index') == app.status.turn;
+            });
         },
 
         getCurrentCharacterElement: function () {
@@ -1622,7 +1624,7 @@ let app = new Vue({
         },
 
         arrestBurglar: function (burglar) {
-            if (app.policeTurn) {
+            if (app.status.policeTurn) {
                 let $currentPolice = app.getCurrentPoliceElement();
                 let currentPolice = app.getCurrentPolice();
 
@@ -2672,3 +2674,33 @@ for (let i = 0; i < app.buildingList.length; i++) {
 
 let jewelry = app.jewelryList[app.status.hideJewelryCount];
 Vue.set(app.jewelryList, app.status.hideJewelryCount, jewelry);
+
+$('body').on('click', '.debug-container .btn-default', function () {
+    if ($(this).hasClass('burglar0')) {
+        app.status.burglarTurn = true;
+        app.status.policeTurn = false;
+        app.status.turn = 0;
+    } else if ($(this).hasClass('burglar1')) {
+        app.status.burglarTurn = true;
+        app.status.policeTurn = false;
+        app.status.turn = 1;
+    } else if ($(this).hasClass('burglar2')) {
+        app.status.burglarTurn = true;
+        app.status.policeTurn = false;
+        app.status.turn = 2;
+    } else if ($(this).hasClass('police0')) {
+        app.status.burglarTurn = false;
+        app.status.policeTurn = true;
+        app.status.turn = 0;
+    } else if ($(this).hasClass('police1')) {
+        app.status.burglarTurn = false;
+        app.status.policeTurn = true;
+        app.status.turn = 1;
+    } else if ($(this).hasClass('police2')) {
+        app.status.burglarTurn = false;
+        app.status.policeTurn = true;
+        app.status.turn = 2;
+    }
+
+    app.rollDie();
+});
