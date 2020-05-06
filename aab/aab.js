@@ -2702,5 +2702,6 @@ $('body').on('click', '.debug-container .btn-default', function () {
         app.status.turn = 2;
     }
 
+    app.removeBlinkBlock();
     app.rollDie();
 });

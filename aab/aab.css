@@ -203,10 +203,8 @@ body {
 }
 
 .backgroundActive {
-    background-color: black;
     z-index: 1900;
     display: block;
-    opacity: .2;
 }
 
 .backgroundInactive {
