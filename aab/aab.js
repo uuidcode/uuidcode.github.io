@@ -638,7 +638,8 @@ let blockList = [
             left: '1800px',
             top: '200px',
         },
-        linkList: [68, 70]
+        linkList: [68, 70],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 70,
@@ -647,6 +648,7 @@ let blockList = [
             top: '150px',
         },
         linkList: [69, 71],
+        linkDirectionList: ['up', 'down']
         changePolice: true
     },
     {
@@ -655,7 +657,8 @@ let blockList = [
             left: '1800px',
             top: '100px',
         },
-        linkList: [70, 72]
+        linkList: [70, 72],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 72,
@@ -663,7 +666,8 @@ let blockList = [
             left: '1800px',
             top: '50px',
         },
-        linkList: [67, 71]
+        linkList: [67, 71],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 73,
@@ -672,7 +676,8 @@ let blockList = [
             top: '0px',
         },
         linkList: [61, 74],
-        changeBurglar: true
+        changeBurglar: true,
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 74,
@@ -680,7 +685,8 @@ let blockList = [
             left: '1300px',
             top: '0px',
         },
-        linkList: [73, 75]
+        linkList: [73, 75],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 75,
@@ -689,6 +695,7 @@ let blockList = [
             top: '0px',
         },
         linkList: [74, 76],
+        linkDirectionList: ['right', 'left'],
         stop: true
     },
     {
@@ -697,7 +704,8 @@ let blockList = [
             left: '1100px',
             top: '0px',
         },
-        linkList: [75, 77]
+        linkList: [75, 77],
+        linkDirectionList: ['right', 'left'],
     },
     {
         index: 77,
@@ -705,7 +713,8 @@ let blockList = [
             left: '1000px',
             top: '0px',
         },
-        linkList: [76, 78]
+        linkList: [76, 78],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 78,
@@ -714,6 +723,7 @@ let blockList = [
             top: '0px',
         },
         linkList: [77, 79],
+        linkDirectionList: ['right', 'left'],
         changePosition: true,
         move: 95
     },
@@ -723,7 +733,8 @@ let blockList = [
             left: '800px',
             top: '0px',
         },
-        linkList: [78, 80]
+        linkList: [78, 80],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 80,
@@ -732,6 +743,7 @@ let blockList = [
             top: '0px',
         },
         linkList: [79, 81],
+        linkDirectionList: ['right', 'left'],
         search: true,
         buildingIndex: 2
     },
@@ -741,7 +753,8 @@ let blockList = [
             left: '600px',
             top: '0px',
         },
-        linkList: [80, 82]
+        linkList: [80, 82],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 82,
@@ -749,7 +762,8 @@ let blockList = [
             left: '500px',
             top: '0px',
         },
-        linkList: [81, 83, 131],
+        linkList: [81, 83],
+        linkDirectionList: ['right', 'down'],
         changeBurglar: true
     },
     {
@@ -1608,6 +1622,18 @@ let app = new Vue({
         },
 
         arrestBurglar: function (burglar) {
+            if (app.policeTurn) {
+                let $currentPolice = app.getCurrentPoliceElement();
+                let currentPolice = app.getCurrentPolice();
+
+                $currentPolice.animate({
+                    left: currentPolice.index * 30,
+                    top: 0
+                }, 500, function () {
+                    currentPolice.position = 135;
+                });
+            }
+
             let $currentBurglar = app.getBurglarElement(burglar.index);
 
             $currentBurglar.animate({
