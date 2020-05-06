@@ -1706,6 +1706,8 @@ let app = new Vue({
                 top = $currentCharacter.offset().top;
             }
 
+            $('.jump-sound').get(0).play();
+
             $currentCharacter.animate({
                 left: left,
                 top: top,
@@ -1830,14 +1832,22 @@ let app = new Vue({
                     let $burglarStartBlock = $('.block[data-index=0]');
                     let $policeStartBlock = $('.block[data-index=135]');
 
+                    let count = 0;
+
                     $('.policeCharacter').each(function () {
                         $(this).animate({
                             left: $policeStartBlock.offset().left + 30 * $(this).attr('data-index'),
                             top: $policeStartBlock.offset().top
-                        }, 1000);
+                        }, 1000, function () {
+                            count++;
+
+                            if (count === 3) {
+                                app.policeList.forEach(police => police.position = 135);
+                            }
+                        });
                     });
 
-                    var count = 0;
+                    count = 0;
 
                     let $burglarCharacter = $('.burglarCharacter');
                     
@@ -1850,8 +1860,12 @@ let app = new Vue({
                         }, 1000, function () {
                             count++;
 
-                            if (count == 3) {
-                                app.burglarList.forEach(bruglar => app.checkSteal(bruglar, false));
+                            if (count === 3) {
+                                app.burglarList.forEach(burglar => {
+                                    burglar.position = 0;
+                                    return app.checkSteal(burglar, false);
+                                });
+
                                 app.nextTurn();
                             }
                         });
