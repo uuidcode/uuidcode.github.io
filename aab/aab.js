@@ -1,5 +1,4 @@
 let die = null;
-let countForDebug = null;
 
 let blockList = [
     {
@@ -733,7 +732,8 @@ let blockList = [
             top: '0px',
         },
         linkList: [79, 81],
-        search: true
+        search: true,
+        buildingIndex: 2
     },
     {
         index: 81,
@@ -823,7 +823,7 @@ let blockList = [
             left: '500px',
             top: '400px',
         },
-        linkList: [91, 124],
+        linkList: [89, 91, 124],
         move: 98,
         trick: true,
         linkDirectionList: ['up', 'right', 'left'],
@@ -1828,7 +1828,12 @@ let app = new Vue({
                             }
                         });
                     });
-                } else if (selectedBlock.onlyBurglar) {
+                } else if (selectedBlock.onlyBurglar || selectedBlock.search) {
+                    if (app.status.policeTurn) {
+                        app.nextTurn();
+                        return;
+                    }
+
                     let buildingIndex = selectedBlock.buildingIndex;
 
                     if (buildingIndex != null) {
@@ -2199,7 +2204,9 @@ let app = new Vue({
 
             if (die == null) {
                 die = new Die(function (count) {
-                    if (countForDebug) {
+                    let countForDebug = $('#countForDebug').val();
+
+                    if (countForDebug !== '0') {
                         count = countForDebug;
                     }
 
@@ -2611,6 +2618,16 @@ $(document.body).curvedArrow({
     p1y: 325,
     p2x: 1610,
     p2y: 275,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 750,
+    p0y: 60,
+    p1x: 750,
+    p1y: 50,
+    p2x: 750,
+    p2y: 190,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
