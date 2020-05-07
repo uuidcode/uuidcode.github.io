@@ -1288,7 +1288,10 @@ let data = {
                 left: '820px',
                 top: '200px',
                 backgroundImage: 'url(image/jewelry/0.jpg)'
-
+            },
+            originStyleObject: {
+                left: '820px',
+                top: '200px',
             },
             classObject: {
                 jewelry: true,
@@ -1302,6 +1305,10 @@ let data = {
                 left: '920px',
                 top: '200px',
                 backgroundImage: 'url(image/jewelry/1.jpg)'
+            },
+            originStyleObject: {
+                left: '920px',
+                top: '200px',
             },
             classObject: {
                 jewelry: true,
@@ -1484,10 +1491,11 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        start: false,
         escape: false,
         catch: false,
         hideJewelryMode: false,
-        hideJewelryCount: 0,
+        hideJewelryIndex: 0,
         hidePoliceMode: false,
         policeTurn: false,
         burglarTurn: true,
@@ -1647,6 +1655,8 @@ let app = new Vue({
 
                 app.checkGameOver();
             });
+
+            app.collectJewelry(burglar);
         },
         
         catchBurglarWithPathList: function (pathList) {
@@ -2038,8 +2048,8 @@ let app = new Vue({
                 $target = $('.hiddenPolice');
                 building.hasHiddenPolice = true;
             } else {
-                $target = $('.jewelry').eq(app.status.hideJewelryCount);
-                building.jewelryIndex = app.status.hideJewelryCount;
+                $target = $('.jewelry[data-index=' + app.status.hideJewelryIndex + ']');
+                building.jewelryIndex = app.status.hideJewelryIndex;
                 Vue.set(this.buildingList, index, building);
             }
 
@@ -2052,16 +2062,16 @@ let app = new Vue({
                 if (app.status.hidePoliceMode) {
                     app.hiddenPolice.classObject.blink = false;
                 } else {
-                    app.blinkJewelry(app.status.hideJewelryCount, false);
+                    app.blinkJewelry(app.status.hideJewelryIndex, false);
 
-                    if (app.status.hideJewelryCount === 0) {
-                        app.blinkJewelry(app.status.hideJewelryCount + 1, true);
+                    if (app.status.hideJewelryIndex === 0) {
+                        app.blinkJewelry(app.status.hideJewelryIndex + 1, true);
                     }
 
-                    app.status.hideJewelryCount++;
+                    app.status.hideJewelryIndex++;
                 }
 
-                if (app.status.hideJewelryCount === 2) {
+                if (app.status.hideJewelryIndex === 2) {
                     if (app.status.hidePoliceMode) {
                         $('.start-game-button').prop('disabled', false)
                             .on('click', function () {
@@ -2332,6 +2342,7 @@ let app = new Vue({
 
         readyToPlay: function () {
             $('.start-game-button').hide();
+            $('.hide-comment').hide();
             $('.hide-jewelry-button').hide();
             $('.start-comment').hide();
             $('.player-info').show();
@@ -2341,11 +2352,25 @@ let app = new Vue({
 
             app.resetBuilding();
 
-            app.burglarList.forEach((target) => target.styleObject.display = 'block');
-            app.policeList.forEach((target) => target.styleObject.display = 'block');
-            app.jewelryList.forEach((target) => target.styleObject.display = 'none');
-            app.hiddenPolice.styleObject.display = 'none';
+            app.burglarList.forEach((target) => {
+                return target.styleObject.display = 'block';
+            });
 
+            app.policeList.forEach((target) => {
+                return target.styleObject.display = 'block';
+            });
+
+            app.jewelryList.forEach((target, index) => {
+                if (app.status.start && target.steal === false) {
+                    target.styleObject.display = 'none';
+                    Vue.set(app.jewelryList, index, target);
+                } else {
+                    target.styleObject.display = 'none';
+                }
+            });
+
+            app.hiddenPolice.styleObject.display = 'none';
+            app.status.start = true;
             app.rollDie();
         },
 
@@ -2507,6 +2532,7 @@ let app = new Vue({
 
             return "앞";
         },
+
         getSubTitle: function (block) {
             const direction = this.getDirection(block);
 
@@ -2543,7 +2569,53 @@ let app = new Vue({
             }
 
             return block.subTitle;
+        },
+
+        collectJewelry: function (burglar) {
+            let jewelryIndex = burglar.jewelryIndex;
+
+            if (jewelryIndex == null) {
+                return;
+            }
+
+            burglar.jewelryIndex = null;
+            jewelry.classObject.steal = false;
+            jewelry.classObject.roundBlink = true;
+            jewelry.styleObject.left = jewelry.originStyleObject.left;
+            jewelry.styleObject.top = jewelry.originStyleObject.top;
+
+            Vue.set(app.jewelryList, jewelryIndex, jewelry);
+
+            let $jewelry = $('.jewelry')
+                .filter(function () {
+                    return $(this).attr('data-index') == jewelryIndex;
+                });
+
+            $jewelry.appendTo($('#app')).animate({
+                left: jewelry.originStyleObject.left,
+                top: jewelry.originStyleObject.top
+            });
+
+            $('.hide-comment').show();
+            $('.modal-footer .btn').hide();
+            $('#die').hide();
+            $('.start-game-button').show();
+            $('.player-info').hide();
+
+            data.status.hideJewelryMode = true;
+            data.status.hidePoliceMode = false;
+            data.status.hideJewelryIndex = jewelryIndex;
+
+            for (let i = 0; i < app.buildingList.length; i++) {
+                let building = app.buildingList[i];
+                
+                if (building.jewelryIndex == null) {
+                    building.classObject.blink = true;
+                    Vue.set(app.buildingList, i, building);
+                }
+            }
         }
+
     },
     created: function () {
         this.blockList = this.blockList.map((block) => {
@@ -2676,7 +2748,7 @@ $(document.body).curvedArrow({
 let $jewelryModal = $('#jewelryModal');
 app.backgroundActive();
 
-app.blinkJewelry(app.status.hideJewelryCount, true);
+app.blinkJewelry(app.status.hideJewelryIndex, true);
 
 data.status.hideJewelryMode = true;
 
@@ -2686,8 +2758,8 @@ for (let i = 0; i < app.buildingList.length; i++) {
     Vue.set(app.buildingList, i, building);
 }
 
-let jewelry = app.jewelryList[app.status.hideJewelryCount];
-Vue.set(app.jewelryList, app.status.hideJewelryCount, jewelry);
+let jewelry = app.jewelryList[app.status.hideJewelryIndex];
+Vue.set(app.jewelryList, app.status.hideJewelryIndex, jewelry);
 
 $('body').on('click', '.debug-container .btn-default', function () {
     if ($(this).hasClass('burglar0')) {
