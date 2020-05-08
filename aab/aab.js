@@ -2365,9 +2365,8 @@ let app = new Vue({
             });
 
             app.jewelryList.forEach((target, index) => {
-                if (app.status.start && target.steal === true) {
+                if (app.status.start && target.steal === false) {
                     target.styleObject.display = 'none';
-                    target.steal = false;
                     Vue.set(app.jewelryList, index, target);
                     let jewelry = app.jewelryList[index];
                     console.log('>>> jewelry', jewelry);
