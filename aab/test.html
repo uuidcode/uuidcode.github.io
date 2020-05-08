@@ -1,0 +1,25 @@
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="lib/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div id="child">{{value}}</div>
+    <div id="parent"></div>
+</div>
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            value: "1"
+        }
+    });
+
+    let move = function () {
+      $('#child').appendTo($('#parent'));
+    };
+</script>
+</body>
+</html>
