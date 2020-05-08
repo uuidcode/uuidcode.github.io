@@ -2364,6 +2364,8 @@ let app = new Vue({
                 if (app.status.start && target.steal === false) {
                     target.styleObject.display = 'none';
                     Vue.set(app.jewelryList, index, target);
+                    let jewelry = app.jewelryList[index];
+                    console.log('>>> jewelry', jewelry);
                 } else {
                     target.styleObject.display = 'none';
                 }
@@ -2579,6 +2581,8 @@ let app = new Vue({
             }
 
             burglar.jewelryIndex = null;
+
+            let jewelry = app.jewelryList[jewelryIndex];
             jewelry.classObject.steal = false;
             jewelry.classObject.roundBlink = true;
             jewelry.styleObject.left = jewelry.originStyleObject.left;
