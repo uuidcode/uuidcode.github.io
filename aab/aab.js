@@ -1994,7 +1994,7 @@ let app = new Vue({
             if (currentJewelryList.length > 0) {
                 let currentJewelry = currentJewelryList[0];
                 let index = currentJewelry.index;
-                let $jewelry = $('.jewelry').eq(index).show();
+                let $jewelry = $('.jewelry[data-index=' + index + ']').show();
 
                 currentJewelry.classObject.blink = true;
 
@@ -2365,8 +2365,9 @@ let app = new Vue({
             });
 
             app.jewelryList.forEach((target, index) => {
-                if (app.status.start && target.steal === false) {
+                if (app.status.start && target.steal === true) {
                     target.styleObject.display = 'none';
+                    target.steal = false;
                     Vue.set(app.jewelryList, index, target);
                     let jewelry = app.jewelryList[index];
                     console.log('>>> jewelry', jewelry);
