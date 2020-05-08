@@ -2368,6 +2368,7 @@ let app = new Vue({
                 if (app.status.start && target.steal === false) {
                     target.styleObject.display = 'none';
                     Vue.set(app.jewelryList, index, target);
+
                     let jewelry = app.jewelryList[index];
                     console.log('>>> jewelry', jewelry);
                 } else {
@@ -2591,13 +2592,11 @@ let app = new Vue({
             jewelry.classObject.roundBlink = true;
             jewelry.styleObject.left = jewelry.originStyleObject.left;
             jewelry.styleObject.top = jewelry.originStyleObject.top;
+            jewelry.styleObject.display = 'block';
 
             Vue.set(app.jewelryList, jewelryIndex, jewelry);
 
-            let $jewelry = $('.jewelry')
-                .filter(function () {
-                    return $(this).attr('data-index') == jewelryIndex;
-                });
+            let $jewelry = $('.jewelry[data-index=' + jewelryIndex + ']');
 
             $jewelry.appendTo($('#app')).animate({
                 left: jewelry.originStyleObject.left,
