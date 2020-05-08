@@ -2062,6 +2062,10 @@ let app = new Vue({
                 if (app.status.hidePoliceMode) {
                     app.hiddenPolice.classObject.blink = false;
                 } else {
+                    let currentJewelry = app.jewelryList[app.status.hideJewelryIndex];
+                    currentJewelry.styleObject.left = $target.offset().left + 'px';
+                    currentJewelry.styleObject.top = $target.offset().top + 'px';
+
                     app.blinkJewelry(app.status.hideJewelryIndex, false);
 
                     if (app.status.hideJewelryIndex === 0) {
