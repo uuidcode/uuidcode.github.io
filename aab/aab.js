@@ -1894,32 +1894,28 @@ let app = new Vue({
 
                         if (jewelryIndex != null) {
                             let burglar = app.getCurrentBurglar();
-                            burglar.jewelryIndex = jewelryIndex;
+
+                            burglar.jewelry = {
+                                classObject: {
+                                    stealJewelry: true,
+                                    stealJewelry0: jewelryIndex === 0,
+                                    stealJewelry1: jewelryIndex === 1
+                                }
+                            };
 
                             building.jewelryIndex = null;
 
                             let jewelry = app.getJewelry(jewelryIndex);
                             jewelry.steal = true;
-
-                            let $jewelry = $('.jewelry')
-                                .filter(function () {
-                                    return $(this).attr('data-index') == jewelryIndex;
-                                })
-                                .show();
-
+                            jewelry.classObject.hideJewelry = false;
                             app.blinkJewelry(jewelryIndex, true);
 
                             setTimeout(function () {
                                 app.blinkJewelry(jewelryIndex, false);
                                 jewelry.classObject.steal = true;
+
                                 Vue.set(app.jewelryList, jewelryIndex, jewelry);
-
-                                $jewelry.css({
-                                    left: 0,
-                                    top: 0
-                                });
-
-                                app.getCurrentBurglarElement().append($jewelry);
+                                Vue.set(app.burglarList, app.status.turn, burglar);
 
                                 setTimeout(function () {
                                     app.nextTurn();
@@ -2572,29 +2568,20 @@ let app = new Vue({
         },
 
         collectJewelry: function (burglar) {
-            let jewelryIndex = burglar.jewelryIndex;
-
-            if (jewelryIndex == null) {
+            if (!burglar.jewelry) {
                 return;
             }
 
-            burglar.jewelryIndex = null;
+
+            burglar.jewelry = null;
+
             jewelry.classObject.steal = false;
             jewelry.classObject.roundBlink = true;
+            jewelry.classObject.hideJewelry = false;
             jewelry.styleObject.left = jewelry.originStyleObject.left;
             jewelry.styleObject.top = jewelry.originStyleObject.top;
 
             Vue.set(app.jewelryList, jewelryIndex, jewelry);
-
-            let $jewelry = $('.jewelry')
-                .filter(function () {
-                    return $(this).attr('data-index') == jewelryIndex;
-                });
-
-            $jewelry.appendTo($('#app')).animate({
-                left: jewelry.originStyleObject.left,
-                top: jewelry.originStyleObject.top
-            });
 
             $('.hide-comment').show();
             $('.modal-footer .btn').hide();

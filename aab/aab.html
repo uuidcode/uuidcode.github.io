@@ -42,14 +42,20 @@
          :key="burglar.index"
          :class="burglar.classObject"
          :style="burglar.styleObject"
-         v-on:click="catchBurglar"></div>
+         v-on:click="catchBurglar">
+        <div v-if="burglar.jewelry"
+             :class="burglar.jewelry.classObject"
+             class="steal-jewelry">
+        </div>
+    </div>
 
     <div class="character policeCharacter"
          v-for="police in policeList"
          :data-index="police.index"
          :key="police.index"
          :class="police.classObject"
-         :style="police.styleObject"></div>
+         :style="police.styleObject">
+    </div>
 
     <div class="building"
          v-for="building in buildingList"
@@ -57,13 +63,14 @@
          :key="building.index"
          :class="building.classObject"
          :style="building.styleObject"
-         v-on:click="hideAtBuilding"></div>
+         v-on:click="hideAtBuilding">
+    </div>
 
     <div v-for="jewelry in jewelryList"
          :data-index="jewelry.index"
          :key="jewelry.index"
          v-bind:class="jewelry.classObject"
-         v-bind:style="jewelry.styleObject"></div>
+         v-bind:style="jewelry.styleObject">
     </div>
 
     <div class="modal"
