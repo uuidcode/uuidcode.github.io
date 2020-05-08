@@ -1895,6 +1895,8 @@ let app = new Vue({
                         if (jewelryIndex != null) {
                             let burglar = app.getCurrentBurglar();
 
+                            burglar.jewelryIndex = jewelryIndex;
+
                             burglar.jewelry = {
                                 classObject: {
                                     stealJewelry: true,
@@ -2058,6 +2060,10 @@ let app = new Vue({
                 if (app.status.hidePoliceMode) {
                     app.hiddenPolice.classObject.blink = false;
                 } else {
+                    let currentJewelry = app.jewelryList[app.status.hideJewelryIndex];
+                    currentJewelry.styleObject.left = $target.offset().left + 'px';
+                    currentJewelry.styleObject.top = $target.offset().top + 'px';
+
                     app.blinkJewelry(app.status.hideJewelryIndex, false);
 
                     if (app.status.hideJewelryIndex === 0) {
@@ -2572,14 +2578,19 @@ let app = new Vue({
                 return;
             }
 
+            let jewelryIndex = burglar.jewelryIndex;
+            console.log('>>> jewelryIndex', jewelryIndex);
 
             burglar.jewelry = null;
+            burglar.jewelryIndex = null;
 
+            let jewelry = app.jewelryList[jewelryIndex];
             jewelry.classObject.steal = false;
             jewelry.classObject.roundBlink = true;
             jewelry.classObject.hideJewelry = false;
             jewelry.styleObject.left = jewelry.originStyleObject.left;
             jewelry.styleObject.top = jewelry.originStyleObject.top;
+            jewelry.styleObject.display = 'block';
 
             Vue.set(app.jewelryList, jewelryIndex, jewelry);
 

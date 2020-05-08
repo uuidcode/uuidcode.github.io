@@ -339,6 +339,8 @@ body {
 
 .stealJewelry {
     position: absolute;
+    background-size: cover;
+    border-radius: 50%;
     left: 0;
     top: 0;
     width: 15px;
