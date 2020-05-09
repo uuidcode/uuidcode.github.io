@@ -2752,6 +2752,54 @@ $(document.body).curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
+$('#top').curvedArrow({
+    p0x: 20,
+    p0y: 30,
+    p1x: 20,
+    p1y: 30,
+    p2x: 20,
+    p2y: 10,
+    lineWidth: 7,
+    size: 20,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
+$('#right').curvedArrow({
+    p0x: 10,
+    p0y: 20,
+    p1x: 10,
+    p1y: 20,
+    p2x: 30,
+    p2y: 20,
+    lineWidth: 7,
+    size: 20,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
+$('#bottom').curvedArrow({
+    p0x: 20,
+    p0y: 10,
+    p1x: 20,
+    p1y: 10,
+    p2x: 20,
+    p2y: 30,
+    lineWidth: 7,
+    size: 20,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
+$('#left').curvedArrow({
+    p0x: 30,
+    p0y: 20,
+    p1x: 30,
+    p1y: 20,
+    p2x: 10,
+    p2y: 20,
+    lineWidth: 7,
+    size: 20,
+    strokeStyle: 'rgba(255, 192, 203, 1)'
+});
+
 let $jewelryModal = $('#jewelryModal');
 app.backgroundActive();
 

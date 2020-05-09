@@ -336,3 +336,18 @@ body {
     z-index: 2000;
     background: white;
 }
+
+#trickModal {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 300px;
+    height: 300px;
+}
+
+.direction {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 1px solid black;
+}

@@ -67,39 +67,6 @@
     </div>
 
     <div class="modal"
-         id="trickModal"
-         role="dialog"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div>
-                        <div class="trickButtonGroup">
-                            <table>
-                                <tr>
-                                    <td><button class="btn btn-default" disabled> </button></td>
-                                    <td><button data-trick-direction="up" class="btn btn-success btn-trick">▲</button></td>
-                                    <td><button class="btn btn-default" disabled> </button><br></td>
-                                </tr>
-                                <tr>
-                                    <td><button data-trick-direction="left" class="btn btn-success btn-trick">◀</button></td>
-                                    <td><button class="btn btn-default" disabled> </button></td>
-                                    <td><button data-trick-direction="right" class="btn btn-success btn-trick">▶</button></td>
-                                </tr>
-                                <tr>
-                                    <td><button class="btn btn-default" disabled> </button></td>
-                                    <td><button data-trick-direction="down" class="btn btn-success btn-trick">▼</button></td>
-                                    <td><button class="btn btn-default" disabled> </button></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal"
          id="jewelryModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -145,6 +112,12 @@
 </div>
 <audio class="die-sound"><source src="mp3/die.mp3"></audio>
 <audio class="jump-sound"><source src="mp3/jump.mp3"></audio>
+<div id="trickModal">
+    <div class="direction" id="left" style="left:0;top:0"></div>
+    <div class="direction" id="top" style="left:40px;top:0"></div>
+    <div class="direction" id="bottom" style="left:80px;top:0"></div>
+    <div class="direction" id="right" style="left:120px;top:0"></div>
+</div>
 <script src="aab.js"></script>
 </body>
 </html>
