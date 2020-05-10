@@ -339,15 +339,15 @@ body {
 
 #trickModal {
     position: absolute;
-    left: 10px;
-    top: 10px;
-    width: 300px;
-    height: 300px;
+    left: 0;
+    top: 0;
+    width: 100px;
+    height: 50px;
 }
 
 .direction {
     position: absolute;
     width: 25px;
     height: 25px;
-    border: 1px solid black;
+    z-index: 3000;
 }

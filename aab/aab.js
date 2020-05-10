@@ -1707,6 +1707,10 @@ let app = new Vue({
             return sound + app.status.turn + '-sound';
         },
 
+        playChangeSound: function () {
+            $('.change-sound').get(0).play();
+        },
+
         move: function (selectedBlock) {
             let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
 
@@ -1803,6 +1807,7 @@ let app = new Vue({
                     app.backgroundActive();
                     app.blinkBlock(indexList);
                     app.status.changeBurglarMode = true;
+                    app.playChangeSound();
                 } else if (selectedBlock.changePolice && app.status.policeTurn && !app.status.runModeComplete) {
                     let indexList = app.blockList.filter(target => target.changePolice)
                         .filter(target => target.index !== selectedBlock.index)
@@ -1811,6 +1816,7 @@ let app = new Vue({
                     app.backgroundActive();
                     app.blinkBlock(indexList);
                     app.status.changePoliceMode = true;
+                    app.playChangeSound();
                 } else if (selectedBlock.moveBurglar && app.status.burglarTurn) {
                     app.status.moveBurglarMode = true;
                     app.moveByIndex(selectedBlock.move);
@@ -2631,9 +2637,19 @@ let app = new Vue({
                     Vue.set(app.buildingList, i, building);
                 }
             }
-        }
+        },
 
+        showTrickDirection: function (event) {
+            let offset = $(event.target).offset();
+            $('#trickModal')
+                .css({
+                    left: offset.left,
+                    top: offset.top
+                })
+                .show()
+        },
     },
+
     created: function () {
         this.blockList = this.blockList.map((block) => {
             if (block.buildingIndex === undefined) {
