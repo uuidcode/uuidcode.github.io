@@ -1696,7 +1696,17 @@ let app = new Vue({
                 }
             }, 1000)
         },
-        
+
+        getSoundClass: function () {
+            let sound = "burglar";
+
+            if (app.status.policeTurn) {
+                sound = "police";
+            }
+
+            return sound + app.status.turn + '-sound';
+        },
+
         move: function (selectedBlock) {
             let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
 
@@ -1716,7 +1726,7 @@ let app = new Vue({
                 top = $currentCharacter.offset().top;
             }
 
-            $('.jump-sound').get(0).play();
+            $('.' + app.getSoundClass()).get(0).play();
 
             $currentCharacter.animate({
                 left: left,
