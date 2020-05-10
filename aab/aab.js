@@ -2762,51 +2762,51 @@ $(document.body).curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-$('#top').curvedArrow({
+$('#left').curvedArrow({
     p0x: 20,
-    p0y: 30,
+    p0y: 12,
     p1x: 20,
-    p1y: 30,
-    p2x: 20,
-    p2y: 10,
-    lineWidth: 7,
-    size: 20,
+    p1y: 12,
+    p2x: 5,
+    p2y: 12,
+    lineWidth: 5,
+    size: 15,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-$('#right').curvedArrow({
-    p0x: 10,
+$('#top').curvedArrow({
+    p0x: 12,
     p0y: 20,
-    p1x: 10,
+    p1x: 12,
     p1y: 20,
-    p2x: 30,
-    p2y: 20,
-    lineWidth: 7,
-    size: 20,
+    p2x: 12,
+    p2y: 5,
+    lineWidth: 5,
+    size: 15,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
 $('#bottom').curvedArrow({
-    p0x: 20,
-    p0y: 10,
-    p1x: 20,
-    p1y: 10,
-    p2x: 20,
-    p2y: 30,
-    lineWidth: 7,
-    size: 20,
+    p0x: 12,
+    p0y: 5,
+    p1x: 12,
+    p1y: 5,
+    p2x: 12,
+    p2y: 20,
+    lineWidth: 5,
+    size: 15,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-$('#left').curvedArrow({
-    p0x: 30,
-    p0y: 20,
-    p1x: 30,
-    p1y: 20,
-    p2x: 10,
-    p2y: 20,
-    lineWidth: 7,
-    size: 20,
+$('#right').curvedArrow({
+    p0x: 5,
+    p0y: 12,
+    p1x: 5,
+    p1y: 12,
+    p2x: 20,
+    p2y: 12,
+    lineWidth: 5,
+    size: 15,
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
