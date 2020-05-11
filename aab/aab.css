@@ -150,10 +150,10 @@ body {
 
 @keyframes blink {
     0% {
-        box-shadow: 0 0 0 10px rgba(255, 255, 0, 0.3);
+        box-shadow: 0 0 0 10px rgba(0, 255, 0, 0.3);
     }
     100% {
-        box-shadow: 0 0 0 30px rgba(255, 255, 0, 0);
+        box-shadow: 0 0 0 30px rgba(0, 255, 0, 0);
     }
 }
 
@@ -350,4 +350,17 @@ body {
     width: 25px;
     height: 25px;
     z-index: 3000;
+    cursor: pointer;
+}
+
+.direction:hover {
+    background-color: deeppink;
+}
+
+.direction.disabled {
+    background-color: lightgrey;
+}
+
+.direction.disabled:hover {
+    background-color: lightgrey;
 }

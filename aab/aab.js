@@ -783,6 +783,7 @@ let blockList = [
             top: '100px',
         },
         linkList: [83, 85],
+        linkDirectionList: ['up', 'down'],
         changeBurglar: true
     },
     {
@@ -802,6 +803,7 @@ let blockList = [
             top: '200px',
         },
         linkList: [85, 87],
+        linkDirectionList: ['up', 'down'],
         mission: true,
         move: 2
     },
@@ -811,7 +813,8 @@ let blockList = [
             left: '500px',
             top: '250px',
         },
-        linkList: [86, 88]
+        linkList: [86, 88],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 88,
@@ -819,7 +822,8 @@ let blockList = [
             left: '500px',
             top: '300px',
         },
-        linkList: [87, 89]
+        linkList: [87, 89],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 89,
@@ -828,6 +832,7 @@ let blockList = [
             top: '350px',
         },
         linkList: [88, 90],
+        linkDirectionList: ['up', 'down'],
         arrest: true,
         dice: 6
     },
@@ -2640,13 +2645,30 @@ let app = new Vue({
         },
 
         showTrickDirection: function (event) {
+            if (!app.status.trickMode) {
+                return;
+            }
+
+            let selectedBlock = app.getSelectedBlock(event);
+
+            if (selectedBlock.trickDirection != null) {
+                return;
+            }
+
             let offset = $(event.target).offset();
+
+            $('.direction').addClass('disabled');
+
+            selectedBlock.linkDirectionList.forEach(target => {
+                $('#' + target).removeClass('disabled');
+            });
+
             $('#trickModal')
                 .css({
                     left: offset.left,
                     top: offset.top
                 })
-                .show()
+                .show();
         },
     },
 
@@ -2790,7 +2812,7 @@ $('#left').curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-$('#top').curvedArrow({
+$('#up').curvedArrow({
     p0x: 12,
     p0y: 20,
     p1x: 12,
@@ -2802,7 +2824,7 @@ $('#top').curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
-$('#bottom').curvedArrow({
+$('#down').curvedArrow({
     p0x: 12,
     p0y: 5,
     p1x: 12,

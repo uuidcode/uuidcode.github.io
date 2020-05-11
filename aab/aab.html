@@ -25,7 +25,7 @@
          :data-index="block.index"
          :style="block.styleObject"
          :class="block.classObject"
-         v-on:mouseover="showTrickDirection"
+         v-on:mouseenter="showTrickDirection"
          v-on:click="moveByEvent">
             <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
             <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
@@ -121,8 +121,8 @@
 <audio class="change-sound"><source src="mp3/change.mp3"></audio>
 <div id="trickModal" style="display: none">
     <div class="direction" id="left" style="left:0;top:0"></div>
-    <div class="direction" id="top" style="left:25px;top:0"></div>
-    <div class="direction" id="bottom" style="left:50px;top:0"></div>
+    <div class="direction" id="up" style="left:25px;top:0"></div>
+    <div class="direction" id="down" style="left:50px;top:0"></div>
     <div class="direction" id="right" style="left:75px;top:0"></div>
 </div>
 <script src="aab.js"></script>
