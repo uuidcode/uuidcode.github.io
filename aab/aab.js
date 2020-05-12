@@ -2896,7 +2896,7 @@ $('body').on('click', '.debug-container .btn-default', function () {
     app.rollDie();
 });
 
-$('.direction').on('click', function () {
+$('#trickModal.live .direction').on('click', function () {
     let direction = $(this).attr('id');
     let $parent = $(this).closest('#trickModal');
 
@@ -2913,8 +2913,7 @@ $('.direction').on('click', function () {
        visibility: 'visible'
    }).addClass('installed');
 
-    app.getBlockElement(blockIndex)
-        .append($newDirection);
+   $('body').append($newDirection);
 
     app.status.trickCount--;
     app.removeBlinkBlock();

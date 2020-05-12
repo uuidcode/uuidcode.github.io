@@ -366,6 +366,10 @@ body {
 }
 
 .direction.installed {
-    background-color: white;
     cursor: unset;
 }
+
+.direction.installed:hover {
+    background-color: unset;
+}
+
