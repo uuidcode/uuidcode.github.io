@@ -2018,10 +2018,6 @@ let app = new Vue({
                 }
             }
 
-            setTimeout(function () {
-                app.playThrowSound();
-            }, 1000);
-
             app.rollDie();
         },
 
@@ -2187,6 +2183,10 @@ let app = new Vue({
         },
         
         rollDie: function () {
+            setTimeout(function () {
+                app.playThrowSound();
+            }, 1000);
+
             $('.turnImage').attr('src', app.getCharacterImage());
 
             let $turnModal = app.getTurnModalElement().modal();
