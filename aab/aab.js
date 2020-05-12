@@ -2553,6 +2553,17 @@ let app = new Vue({
             }
         },
 
+        cloneCanvas: function ($source, $target) {
+            let oldCanvas = $source.find('canvas').get(0);
+            let newCanvas = $target.find('canvas').get(0);
+            let context = newCanvas.getContext('2d');
+
+            newCanvas.width = oldCanvas.width;
+            newCanvas.height = oldCanvas.height;
+
+            context.drawImage(oldCanvas, 0, 0);
+        },
+
         getDirection: function(block) {
             if (block.backward) {
                 return '뒤';
@@ -2903,6 +2914,15 @@ $('#trickModal.live .direction').on('click', function () {
     let blockIndex = $parent.attr('data-block-index');
     let $newDirection = $parent.clone().removeClass('live');
 
+    $('#trickModal.live').hide();
+
+    $parent.find('.direction')
+        .each(function (index, element) {
+            let $target = $newDirection.find('.direction').eq(index);
+            console.log('>>> $target', $target);
+            app.cloneCanvas($(element), $target);
+        });
+    
     $newDirection.find('.direction')
        .off('click')
        .css({
@@ -2911,9 +2931,9 @@ $('#trickModal.live .direction').on('click', function () {
 
     $newDirection.find('#' + direction).css({
        visibility: 'visible'
-   }).addClass('installed');
+    }).addClass('installed');
 
-   $('body').append($newDirection);
+    $('body').append($newDirection);
 
     app.status.trickCount--;
     app.removeBlinkBlock();
