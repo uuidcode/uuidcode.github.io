@@ -2657,17 +2657,18 @@ let app = new Vue({
 
             let offset = $(event.target).offset();
 
-            $('.direction').addClass('disabled');
+            $('#trickModal.live .direction').addClass('disabled');
 
             selectedBlock.linkDirectionList.forEach(target => {
-                $('#' + target).removeClass('disabled');
+                $('#trickModal.live').find('#' + target).removeClass('disabled');
             });
 
-            $('#trickModal')
+            $('#trickModal.live')
                 .css({
                     left: offset.left,
                     top: offset.top
                 })
+                .attr('data-block-index', selectedBlock.index)
                 .show();
         },
     },
@@ -2893,4 +2894,34 @@ $('body').on('click', '.debug-container .btn-default', function () {
 
     app.removeBlinkBlock();
     app.rollDie();
+});
+
+$('.direction').on('click', function () {
+    let direction = $(this).attr('id');
+    let $parent = $(this).closest('#trickModal');
+
+    let blockIndex = $parent.attr('data-block-index');
+    let $newDirection = $parent.clone().removeClass('live');
+
+    $newDirection.find('.direction')
+       .off('click')
+       .css({
+           visibility: 'hidden'
+       });
+
+    $newDirection.find('#' + direction).css({
+       visibility: 'visible'
+   }).addClass('installed');
+
+    app.getBlockElement(blockIndex)
+        .append($newDirection);
+
+    app.status.trickCount--;
+    app.removeBlinkBlock();
+    app.status.trickMode = false;
+    app.blockList[blockIndex].trickDirection = direction;
+
+    setTimeout(function () {
+        app.nextTurn();
+    }, 500);
 });

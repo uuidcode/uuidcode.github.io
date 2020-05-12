@@ -364,3 +364,8 @@ body {
 .direction.disabled:hover {
     background-color: lightgrey;
 }
+
+.direction.installed {
+    background-color: white;
+    cursor: unset;
+}
