@@ -524,7 +524,7 @@ let blockList = [
             left: '1500px',
             top: '200px',
         },
-        linkList: [56, 58],
+        linkList: [56, 58, 54],
         trick: true,
         linkDirectionList: ['down', 'up', 'left'],
         mission: true,
@@ -1597,38 +1597,6 @@ let app = new Vue({
             return app.blockList.filter(block => block.index === index)[0];
         },
 
-        setTrickDirection: function (block, direction) {
-            block.trickDirection = direction;
-
-            if (direction === "up") {
-                block.trickDirectionIcon = "▲";
-            } else if (direction === "down") {
-                block.trickDirectionIcon = "▼";
-            } else if (direction === "left") {
-                block.trickDirectionIcon = "◀";
-            } else if (direction === "right") {
-                block.trickDirectionIcon = "▶";
-            }
-        },
-
-        processTrickDirection: function (selectedBlock) {
-            let $trickModal = $('#trickModal').modal();
-
-            $('.btn-trick').off('click')
-                .on('click', function (event) {
-                    let direction = $(this).attr('data-trick-direction');
-                    app.setTrickDirection(selectedBlock, direction);
-                    $trickModal.modal('hide');
-                    app.status.trickCount--;
-                    app.removeBlinkBlock();
-                    app.status.trickMode = false;
-
-                    setTimeout(function () {
-                        app.nextTurn();
-                    }, 500);
-                });
-        },
-
         checkGameOver: function () {
             if (app.burglarList.filter(burglar => burglar.arrested).length === 3) {
                 alert('경찰 승리');
@@ -1713,17 +1681,19 @@ let app = new Vue({
         },
 
         playChangeSound: function () {
-            $('.change-sound').get(0).play();
+            app.playSound('change');
+        },
+
+        playThrowSound: function () {
+            app.playSound('throw');
+        },
+
+        playSound: function (className) {
+            $('.' + className + '-sound').get(0).play();
         },
 
         move: function (selectedBlock) {
             let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
-
-            if (app.status.trickMode) {
-                this.processTrickDirection(selectedBlock);
-                return;
-            }
-
             let $currentCharacter = app.getCurrentCharacterElement();
             let offset = app.status.turn * 30;
 
@@ -1998,7 +1968,7 @@ let app = new Vue({
 
         removeTrick: function (selectedBlock) {
             selectedBlock.trickDirection = null;
-            selectedBlock.trickDirectionIcon = null;
+            $('.trick-modal[data-block-index=' + selectedBlock.index + ']').remove();
         },
 
         removeTrickList: function (selectedBlock) {
@@ -2047,6 +2017,10 @@ let app = new Vue({
                     app.status.burglarTurn = true;
                 }
             }
+
+            setTimeout(function () {
+                app.playThrowSound();
+            }, 1000);
 
             app.rollDie();
         },
@@ -2671,7 +2645,19 @@ let app = new Vue({
             $('#trickModal.live .direction').addClass('disabled');
 
             selectedBlock.linkDirectionList.forEach(target => {
-                $('#trickModal.live').find('#' + target).removeClass('disabled');
+                $('#trickModal.live')
+                    .find('#' + target)
+                    .removeClass('disabled');
+            });
+
+            selectedBlock.linkList.forEach((target, index) => {
+                if (app.blockList[target].onlyBurglar) {
+                    let currentDirection = selectedBlock.linkDirectionList[index];
+
+                    $('#trickModal.live')
+                        .find('#' + currentDirection)
+                        .addClass('disabled');
+                }
             });
 
             $('#trickModal.live')
@@ -2908,6 +2894,10 @@ $('body').on('click', '.debug-container .btn-default', function () {
 });
 
 $('#trickModal.live .direction').on('click', function () {
+    if ($(this).hasClass('disabled')) {
+        return;
+    }
+
     let direction = $(this).attr('id');
     let $parent = $(this).closest('#trickModal');
 
@@ -2919,7 +2909,6 @@ $('#trickModal.live .direction').on('click', function () {
     $parent.find('.direction')
         .each(function (index, element) {
             let $target = $newDirection.find('.direction').eq(index);
-            console.log('>>> $target', $target);
             app.cloneCanvas($(element), $target);
         });
     

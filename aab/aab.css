@@ -359,10 +359,12 @@ body {
 
 .direction.disabled {
     background-color: lightgrey;
+    cursor: unset;
 }
 
 .direction.disabled:hover {
     background-color: lightgrey;
+    cursor: unset;
 }
 
 .direction.installed {
@@ -371,5 +373,6 @@ body {
 
 .direction.installed:hover {
     background-color: unset;
+    cursor: unset;
 }
 
