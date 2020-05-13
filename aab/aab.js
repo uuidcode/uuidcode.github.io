@@ -1519,7 +1519,8 @@ let data = {
         blockPathList: [],
         runMode: false,
         runModeComplete: false,
-        runCount: 0
+        runCount: 0,
+        searchCount: 6
     },
     background: {
         classObject: {
@@ -2181,6 +2182,14 @@ let app = new Vue({
             app.status.policeTurn = true;
             app.status.turn = 2;
         },
+
+        disabled: function ($target) {
+            $target.props('disabled', true);
+        },
+
+        enabled: function ($target) {
+            $target.props('disabled', false);
+        },
         
         rollDie: function () {
             setTimeout(function () {
@@ -2194,6 +2203,7 @@ let app = new Vue({
             let $restButton = $('.btn-rest');
             let $trickButton = $('.btn-select-block-for-trick');
             let $arrestTile = $('.arrest-title');
+            let $searchButton = $('.btn-search');
 
             $restCountButton.hide();
             $restButton.hide();
@@ -2203,6 +2213,7 @@ let app = new Vue({
             let currentBurglar = app.getCurrentBurglar();
 
             if (app.status.burglarTurn) {
+                $searchButton.hide();
                 $restCountButton.text(`쉰 횟수: ${currentBurglar.rest}`).show();
                 let currentBlock = app.getBlock(currentBurglar.position);
 
@@ -2241,6 +2252,12 @@ let app = new Vue({
                         });
                 }
             } else {
+                $searchButton.show();
+
+                if (app.status.searchCount === 0) {
+                    app.disable($searchButton);
+                }
+
                 let currentPosition = app.getCurrentCharacter().position;
                 let currentBlock = app.getBlock(currentPosition);
 
