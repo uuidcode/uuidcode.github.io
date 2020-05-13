@@ -1694,6 +1694,10 @@ let app = new Vue({
             $('.' + className + '-sound').get(0).play();
         },
 
+        updateBlock: function (selectedBlock) {
+            Vue.set(app.blockList, selectedBlock.index, selectedBlock);
+        },
+        
         move: function (selectedBlock) {
             let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
             let $currentCharacter = app.getCurrentCharacterElement();
@@ -1718,7 +1722,6 @@ let app = new Vue({
                 return;
             }
 
-
             $currentCharacter.animate({
                 left: left,
                 top: top,
@@ -1734,9 +1737,10 @@ let app = new Vue({
                     .filter(target => target.index === selectedBlock.index)
                     .map(target => target.path)[0];
                 
-                console.log('>>> pathList', pathList);
+                if (app.status.policeTurn &&
+                    !app.status.runMode &&
+                    !app.status.runModeComplete) {
 
-                if (app.status.policeTurn && !app.status.runMode && !app.status.runModeComplete) {
                     if (app.status.movePoliceMode ||
                         app.status.changePoliceMode ||
                         app.status.missionPoliceMode) {
@@ -1748,7 +1752,11 @@ let app = new Vue({
 
                 $('.trick').removeClass('blink');
 
-                if (app.status.runMode) {
+                if (selectedBlock.check && app.status.burglarTurn) {
+                    selectedBlock.check = false;
+                    app.updateBlock(selectedBlock);
+                    app.nextTurn();
+                } else if (app.status.runMode) {
                     app.status.blockPathList = [];
 
                     app.go(app.status.runCount, app.status.runCount, selectedBlock.index, selectedBlock.index, []);
@@ -2500,6 +2508,15 @@ let app = new Vue({
 
                         return;
                     }
+                }
+
+                if (currentBlock.check) {
+                    app.status.blockPathList.push({
+                        index: currentPosition,
+                        path: path
+                    });
+
+                    return;
                 }
             }
 
