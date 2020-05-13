@@ -25,6 +25,18 @@
     line-height: 20px;
 }
 
+.check {
+    position: absolute;
+    font-size: 11px;
+    background-color: deepskyblue;
+    left: 48px;
+    top: 00px;
+    width: 48px;
+    height: 16px;
+    color: white;
+    line-height: 20px;
+}
+
 .police {
     background-color: skyblue !important;
 }

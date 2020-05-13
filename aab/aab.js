@@ -1520,7 +1520,8 @@ let data = {
         runMode: false,
         runModeComplete: false,
         runCount: 0,
-        searchCount: 6
+        checkCount: 6,
+        checkMode: false
     },
     background: {
         classObject: {
@@ -1708,6 +1709,16 @@ let app = new Vue({
 
             $('.' + app.getSoundClass()).get(0).play();
 
+            if (app.status.checkMode) {
+                selectedBlock.check = true;
+                Vue.set(app.blockList, selectedBlock.index, selectedBlock);
+                app.status.checkMode = false;
+                app.removeBlinkBlock();
+                app.nextTurn();
+                return;
+            }
+
+
             $currentCharacter.animate({
                 left: left,
                 top: top,
@@ -1852,8 +1863,6 @@ let app = new Vue({
                     count = 0;
 
                     let $burglarCharacter = $('.burglarCharacter');
-                    
-                    console.log('>>> $burglarCharacter.length', $burglarCharacter.length);
                     
                     $burglarCharacter.each(function () {
                         $(this).animate({
@@ -2184,11 +2193,11 @@ let app = new Vue({
         },
 
         disabled: function ($target) {
-            $target.props('disabled', true);
+            $target.prop('disabled', true);
         },
 
         enabled: function ($target) {
-            $target.props('disabled', false);
+            $target.prop('disabled', false);
         },
         
         rollDie: function () {
@@ -2203,17 +2212,19 @@ let app = new Vue({
             let $restButton = $('.btn-rest');
             let $trickButton = $('.btn-select-block-for-trick');
             let $arrestTile = $('.arrest-title');
-            let $searchButton = $('.btn-search');
+            let $checkButton = $('.btn-check');
+            let $checkComment = $('.check-comment');
 
             $restCountButton.hide();
             $restButton.hide();
             $trickButton.hide();
             $arrestTile.hide();
+            $checkComment.hide();
 
             let currentBurglar = app.getCurrentBurglar();
 
             if (app.status.burglarTurn) {
-                $searchButton.hide();
+                $checkButton.hide();
                 $restCountButton.text(`쉰 횟수: ${currentBurglar.rest}`).show();
                 let currentBlock = app.getBlock(currentBurglar.position);
 
@@ -2252,11 +2263,30 @@ let app = new Vue({
                         });
                 }
             } else {
-                $searchButton.show();
+                $checkComment.show();
+                $checkComment.text(`${app.status.checkCount}번 검문 할 수 있습니다.`);
 
-                if (app.status.searchCount === 0) {
-                    app.disable($searchButton);
+                if (app.status.checkCount === 0) {
+                    $checkComment.text('검문할 수 없습니다.');
+                    app.disabled($checkButton);
                 }
+
+                $checkButton.show()
+                    .off('click')
+                    .on('click', function () {
+                        let burglarPositionList = app.burglarList.map(target => target.position);
+
+                        let blockIndexList = app.blockList.filter(target => !target.onlyBurglar)
+                            .filter(target => target.index !== 0 )
+                            .filter(target => target.index !== 135 )
+                            .filter(target => !burglarPositionList.includes(target.index))
+                            .filter(target => !target.check)
+                            .map(target => target.index);
+
+                        app.status.checkMode = true;
+                        app.blinkBlock(blockIndexList);
+                        app.status.checkCount--;
+                    });
 
                 let currentPosition = app.getCurrentCharacter().position;
                 let currentBlock = app.getBlock(currentPosition);
@@ -2382,7 +2412,6 @@ let app = new Vue({
                     Vue.set(app.jewelryList, index, target);
 
                     let jewelry = app.jewelryList[index];
-                    console.log('>>> jewelry', jewelry);
                 } else {
                     target.styleObject.display = 'none';
                 }
@@ -2695,6 +2724,7 @@ let app = new Vue({
 
             return {
                 ...block,
+                check: false,
                 subTitle: this.getSubTitle(block),
                 trickDirection: null,
                 trickDirectionIcon: '',

@@ -30,7 +30,10 @@
             <strong v-bind:style="block.titleStyleObject">{{ block.title }}</strong>
             <div v-if="block.subTitle" style="font-size: 11px">{{ block.subTitle }}</div>
             <div v-if="block.trick" v-bind:class="{ trick: block.trick }">
-                속임수 {{ block.trickDirectionIcon }}
+                속임수
+            </div>
+            <div v-if="block.check" v-bind:class="{ check: block.check }">
+                검문
             </div>
             <div class="index">
                 {{ block.index }}
@@ -72,7 +75,6 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="search-comment"></div>
                     <div class="start-comment">
                     보석2개와 잠복 경찰 1명을<br>건물에 숨기세요.
                     </div>
@@ -86,6 +88,7 @@
                             </td>
                             <td>
                                 <div class="btn-rest-count"></div>
+                                <div class="check-comment"></div>
                             </td>
                         </tr>
                     </table>
@@ -98,7 +101,7 @@
                     <button type="button" class="btn btn-primary hide-jewelry-button" disabled>다시 숨기기</button>
                     <button type="button" class="btn btn-primary btn-rest" style="display: none">쉬기</button>
                     <button type="button" class="btn btn-primary btn-select-block-for-trick" style="display: none">속임수</button>
-                    <button type="button" class="btn btn-primary btn-search" style="display: none">검문</button>
+                    <button type="button" class="btn btn-primary btn-check" style="display: none">검문</button>
                 </div>
             </div>
         </div>
@@ -122,12 +125,14 @@
 <audio class="police2-sound"><source src="mp3/police2.mp3"></audio>
 <audio class="change-sound"><source src="mp3/change.mp3"></audio>
 <audio class="throw-sound"><source src="mp3/throw.mp3"></audio>
+
 <div id="trickModal" class="live trick-modal" style="display: none">
     <div class="direction" id="left" style="left:0;top:0"></div>
     <div class="direction" id="up" style="left:25px;top:0"></div>
     <div class="direction" id="down" style="left:50px;top:0"></div>
     <div class="direction" id="right" style="left:75px;top:0"></div>
 </div>
+
 <script src="aab.js"></script>
 </body>
 </html>
