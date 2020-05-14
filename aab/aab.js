@@ -64,8 +64,10 @@ let blockList = [
         mission: true,
         move: 4,
         forward: true,
-        beforeList: [7, 8, 9, 25, 26, 27, 92],
-        afterList: [0, 1, 2, 3, 4, 5, 10, 11, 16],
+        directionLinkList: [
+            [7, 8, 9, 25, 26, 27, 92],
+            [0, 1, 2, 3, 4, 5, 10, 11, 16]
+        ],
         linkList: [5, 7]
     },
     {
@@ -531,7 +533,13 @@ let blockList = [
         trick: true,
         linkDirectionList: ['down', 'up', 'left'],
         mission: true,
-        move: 3
+        forward: true,
+        move: 5,
+        directionLinkList: [
+            [47, 48, 49, 50, 51, 64],
+            [58, 59, 60, 61, 73, 74, 65, 66],
+            [55, 55, 54, 15, 19, 20, 14, 13]
+        ]
     },
     {
         index: 58,
@@ -1519,6 +1527,7 @@ let data = {
         trickCount: 10,
         trickMode: false,
         trickIndexList: [],
+        checkIndexList: [],
         blockPathList: [],
         runMode: false,
         runModeComplete: false,
@@ -1737,6 +1746,9 @@ let app = new Vue({
                 app.removeTrick(selectedBlock);
                 app.removeTrickList();
 
+                app.removeCheck(selectedBlock);
+                app.removeCheckList();
+
                 console.log('>>> app.status.blockPathList', app.status.blockPathList);
 
                 let pathList = app.status.blockPathList
@@ -1759,14 +1771,9 @@ let app = new Vue({
                 }
 
                 $('.trick').removeClass('blink');
+                $('.check').removeClass('blink');
 
-                if (selectedBlock.index === 6) {
-                    if (selectedBlock.beforeList.includes(currentPosition)) {
-                        app.goAndBlink(selectedBlock.move, selectedBlock.beforeList);
-                    } else if (selectedBlock.afterList.includes(currentPosition)) {
-                        app.goAndBlink(selectedBlock.move, selectedBlock.afterList);
-                    }
-                } else if (selectedBlock.check && app.status.burglarTurn) {
+                if (selectedBlock.check && app.status.burglarTurn) {
                     selectedBlock.check = false;
                     app.updateBlock(selectedBlock);
                     app.nextTurn();
@@ -1833,8 +1840,18 @@ let app = new Vue({
                     app.status.movePoliceMode = true;
                     app.moveByIndex(selectedBlock.move);
                 } else if (selectedBlock.mission && app.status.burglarTurn) {
-                    app.status.missionBurglarMode = true;
-                    app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
+                    if (selectedBlock.forward) {
+                        for (let i = 0; i < selectedBlock.directionLinkList.length; i++) {
+                            let link = selectedBlock.directionLinkList[i];
+
+                            if (link.includes(currentPosition)) {
+                                app.goAndBlink(selectedBlock.move, link);
+                            }
+                        }
+                    } else {
+                        app.status.missionBurglarMode = true;
+                        app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
+                    }
                 } else if (selectedBlock.mission && app.status.policeTurn && !app.status.runModeComplete) {
                     app.status.missionPoliceMode = true;
                     app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
@@ -1998,16 +2015,32 @@ let app = new Vue({
             app.status.trickIndexList = [];
         },
 
+        resetCheckIndexList: function () {
+            app.status.checkIndexList = [];
+        },
+
         removeTrick: function (selectedBlock) {
             selectedBlock.trickDirection = null;
             $('.trick-modal[data-block-index=' + selectedBlock.index + ']').remove();
         },
 
-        removeTrickList: function (selectedBlock) {
+        removeCheck: function (selectedBlock) {
+            selectedBlock.check = false;
+            app.updateBlock(selectedBlock);
+        },
+
+        removeTrickList: function () {
             app.status.trickIndexList.map(index => app.getBlock(index))
                 .forEach(target => app.removeTrick(target));
 
             app.resetTrickIndexList();
+        },
+
+        removeCheckList: function () {
+            app.status.checkIndexList.map(index => app.getBlock(index))
+                .forEach(target => app.removeTrick(target));
+
+            app.resetCheckIndexList();
         },
 
         threat: function (callback) {
@@ -2414,6 +2447,14 @@ let app = new Vue({
                     .addClass('blink');
             });
 
+            app.status.checkIndexList
+                .filter(index => !filter.includes(index))
+                .forEach(index => {
+                    $('.block[data-index=' + index + ']')
+                        .find('.check')
+                        .addClass('blink');
+                });
+
             if (app.status.burglarTurn) {
                 currentCharacter.classObject.burglarRipple = true;
             } else {
@@ -2518,6 +2559,10 @@ let app = new Vue({
             path.push(currentPosition);
 
             let currentBlock = app.getBlock(currentPosition);
+
+            if (app.status.burglarTurn && currentBlock.check) {
+                app.status.checkIndexList.push(currentBlock.index);
+            }
 
             if (app.status.policeTurn) {
                 if (currentBlock.onlyBurglar) {
