@@ -2993,6 +2993,16 @@ $('#right').curvedArrow({
     strokeStyle: 'rgba(255, 192, 203, 1)'
 });
 
+$(document.body).curvedArrow({
+    p0x: 350,
+    p0y: 720,
+    p1x: 400,
+    p1y: 680,
+    p2x: 350,
+    p2y: 630,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
 let $jewelryModal = $('#jewelryModal');
 app.backgroundActive();
 
