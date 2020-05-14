@@ -1041,7 +1041,12 @@ let blockList = [
         },
         linkList: [108, 110, 118],
         mission: true,
-        move: 2
+        move: 3,
+        forward: true,
+        directionLinkList: [
+            [108, 107, 117, 106, 105, 104, 102],
+            [118, 119, 120, 121, 125, 126, 122, 123]
+        ],
     },
     {
         index: 110,
