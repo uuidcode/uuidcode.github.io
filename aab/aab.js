@@ -3144,10 +3144,6 @@ $(document.body).curvedArrow({
 let $jewelryModal = $('#jewelryModal');
 app.backgroundActive();
 
-jQuery(function() {
-    app.playHideJewelrySound();
-});
-
 app.blinkJewelry(app.status.hideJewelryIndex, true);
 
 data.status.hideJewelryMode = true;
