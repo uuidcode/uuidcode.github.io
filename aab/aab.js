@@ -1041,7 +1041,7 @@ let blockList = [
         },
         linkList: [108, 110, 118],
         mission: true,
-        move: 3,
+        move: 4,
         forward: true,
         directionLinkList: [
             [108, 107, 117, 106, 105, 104, 102],
@@ -3000,6 +3000,36 @@ $(document.body).curvedArrow({
     p1y: 680,
     p2x: 350,
     p2y: 630,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 150,
+    p0y: 630,
+    p1x: 100,
+    p1y: 680,
+    p2x: 150,
+    p2y: 720,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 275,
+    p0y: 575,
+    p1x: 275,
+    p1y: 575,
+    p2x: 225,
+    p2y: 575,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 225,
+    p0y: 775,
+    p1x: 275,
+    p1y: 775,
+    p2x: 275,
+    p2y: 775,
     strokeStyle: 'rgba(133, 255, 133, 1)'
 });
 
