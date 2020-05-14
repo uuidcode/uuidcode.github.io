@@ -1,4 +1,5 @@
 let die = null;
+let sound = null;
 
 let blockList = [
     {
@@ -1703,12 +1704,49 @@ let app = new Vue({
             app.playSound('change');
         },
 
+        playHideJewelrySound: function () {
+            app.playSound('hide-jewelry');
+        },
+
+        playHidePoliceSound: function () {
+            app.playSound('hide-police');
+        },
+
+        playStartSound: function () {
+            app.playSound('start');
+        },
+
+        pausePlayStartSound: function () {
+            app.pauseSound('start');
+        },
+
         playThrowSound: function () {
             app.playSound('throw');
         },
 
+        playDieSound: function () {
+            app.playSound('die');
+        },
+
+        playMoveSound: function () {
+            app.playSound('move');
+        },
+
+        getAudio: function (className) {
+            return $('.' + className + '-sound').get(0)
+        },
+
         playSound: function (className) {
-            $('.' + className + '-sound').get(0).play();
+            if (sound != null) {
+                sound.pause();
+            }
+
+            sound = app.getAudio(className)
+            sound.play();
+        },
+
+        pauseSound: function (className) {
+            app.getAudio(className).pause();
         },
 
         updateBlock: function (selectedBlock) {
@@ -2136,10 +2174,15 @@ let app = new Vue({
                     app.status.hideJewelryIndex++;
                 }
 
-                if (app.status.hideJewelryIndex === 2) {
+                if (app.status.hideJewelryIndex === 1) {
+                    app.playHideJewelrySound();
+                } else if (app.status.hideJewelryIndex === 2) {
                     if (app.status.hidePoliceMode) {
+                        app.playStartSound();
+
                         $('.start-game-button').prop('disabled', false)
                             .on('click', function () {
+                                app.pausePlayStartSound();
                                 app.readyToPlay();
                             });
                         $('.hide-jewelry-button').prop('disabled', false)
@@ -2147,6 +2190,7 @@ let app = new Vue({
                                 location.reload();
                             });
                     } else {
+                        app.playHidePoliceSound();
                         app.status.hidePoliceMode = true;
                         app.hiddenPolice.classObject.roundBlink = true;
                     }
@@ -2263,7 +2307,7 @@ let app = new Vue({
         rollDie: function () {
             setTimeout(function () {
                 app.playThrowSound();
-            }, 1000);
+            }, 500);
 
             $('.turnImage').attr('src', app.getCharacterImage());
 
@@ -2285,8 +2329,29 @@ let app = new Vue({
 
             if (app.status.burglarTurn) {
                 $checkButton.hide();
-                $restCountButton.text(`쉰 횟수: ${currentBurglar.rest}`).show();
+                let message = '남은 휴식: ' + (3 - currentBurglar.rest) + '<br>';
+                message += '남은 속임수: ' + app.status.trickCount;
+
+                $restCountButton.html(message)
+                    .show();
+
                 let currentBlock = app.getBlock(currentBurglar.position);
+
+                $restButton.show();
+
+                if (app.isRestable(currentBlock)) {
+                    app.enabled($restButton);
+                } else {
+                    app.disabled($restButton);
+                }
+
+                $restButton.off('click')
+                    .on('click', function () {
+                        currentBurglar.rest++;
+                        $turnModal.modal('hide');
+                        app.removeBlinkCharacter();
+                        app.nextTurn();
+                    });
 
                 if (app.isRestable(currentBlock)) {
                     $restButton.show()
@@ -2444,6 +2509,8 @@ let app = new Vue({
 
             app.blinkBlock(blockIndexList);
 
+            app.playMoveSound();
+
             app.status.trickIndexList
                 .filter(index => !filter.includes(index))
                 .forEach(index => {
@@ -2491,7 +2558,6 @@ let app = new Vue({
                 if (app.status.start && target.steal === false) {
                     target.styleObject.display = 'none';
                     Vue.set(app.jewelryList, index, target);
-
                     let jewelry = app.jewelryList[index];
                 } else {
                     target.styleObject.display = 'none';
@@ -2760,6 +2826,8 @@ let app = new Vue({
             $('#die').hide();
             $('.start-game-button').show();
             $('.player-info').hide();
+
+            app.playHideJewelrySound();
 
             data.status.hideJewelryMode = true;
             data.status.hidePoliceMode = false;
@@ -3033,8 +3101,52 @@ $(document.body).curvedArrow({
     strokeStyle: 'rgba(133, 255, 133, 1)'
 });
 
+$(document.body).curvedArrow({
+    p0x: 475,
+    p0y: 775,
+    p1x: 525,
+    p1y: 775,
+    p2x: 525,
+    p2y: 775,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 450,
+    p0y: 775,
+    p1x: 450,
+    p1y: 775,
+    p2x: 450,
+    p2y: 725,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 50,
+    p0y: 560,
+    p1x: 50,
+    p1y: 560,
+    p2x: 50,
+    p2y: 520,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
+$(document.body).curvedArrow({
+    p0x: 50,
+    p0y: 590,
+    p1x: 50,
+    p1y: 590,
+    p2x: 50,
+    p2y: 620,
+    strokeStyle: 'rgba(133, 255, 133, 1)'
+});
+
 let $jewelryModal = $('#jewelryModal');
 app.backgroundActive();
+
+jQuery(function() {
+    app.playHideJewelrySound();
+});
 
 app.blinkJewelry(app.status.hideJewelryIndex, true);
 

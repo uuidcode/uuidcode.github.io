@@ -48,7 +48,7 @@ function Die(rollCallback) {
             callback = function () {};
         }
 
-        $('.die-sound').get(0).play();
+        app.playDieSound();
         this.box.start_throw(this.notationGetter, this.beforeRoll, callback);
     };
 
