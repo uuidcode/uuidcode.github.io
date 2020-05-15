@@ -1972,19 +1972,28 @@ let app = new Vue({
 
                     let burglarCount = 0;
 
-                    let $burglarCharacter = $('.burglarCharacter');
-                    
+                    let $burglarCharacter = $('.burglarCharacter')
+                        .filter(function () {
+                            let index = $(this).attr('data-index');
+                            return !app.burglarList[index].arrested;
+                        });
+
+                    let notArrestBurglarCount = $burglarCharacter.length;
+
                     $burglarCharacter.each(function () {
+                        let index = $(this).attr('data-index');
+
                         $(this).animate({
-                            left: $burglarStartBlock.offset().left + 30 * $(this).attr('data-index'),
+                            left: $burglarStartBlock.offset().left + 30 * index,
                             top: $burglarStartBlock.offset().top
                         }, 1000, function () {
+                            app.burglarList[index].position = 0;
+
                             burglarCount++;
 
-                            if (burglarCount === 3) {
+                            if (notArrestBurglarCount === burglarCount) {
                                 app.burglarList.forEach(burglar => {
-                                    burglar.position = 0;
-                                    return app.checkSteal(burglar, false);
+                                    app.checkSteal(burglar, false);
                                 });
 
                                 app.nextTurn();
