@@ -957,8 +957,8 @@ let blockList = [
             left: '400px',
             top: '750px',
         },
-        linkList: [99, 116],
-        linkDirectionList: ['right', 'left']
+        linkList: [99, 101],
+        linkDirectionList: ['right', 'up']
     },
     {
         index: 101,
@@ -966,8 +966,8 @@ let blockList = [
             left: '400px',
             top: '700px',
         },
-        linkList: [100, 102],
-        linkDirectionList: ['down', 'up']
+        linkList: [102],
+        linkDirectionList: ['up']
     },
     {
         index: 102,
@@ -975,10 +975,10 @@ let blockList = [
             left: '400px',
             top: '650px',
         },
-        linkList: [101, 103, 104],
+        linkList: [103, 104],
         burglar: true,
         trick: true,
-        linkDirectionList: ['down', 'right', 'up'],
+        linkDirectionList: ['right', 'up'],
         send: true
     },
     {
@@ -988,6 +988,7 @@ let blockList = [
             top: '650px',
         },
         linkList: [102],
+        linkDirectionList: ['left'],
         onlyBurglar: true,
         buildingIndex: 4
     },
@@ -997,7 +998,8 @@ let blockList = [
             left: '400px',
             top: '600px',
         },
-        linkList: [102, 105],
+        linkList: [105],
+        linkDirectionList: ['up']
     },
     {
         index: 105,
@@ -1005,7 +1007,8 @@ let blockList = [
             left: '400px',
             top: '550px',
         },
-        linkList: [104, 106]
+        linkList: [106],
+        linkDirectionList: ['left']
     },
     {
         index: 106,
@@ -1013,7 +1016,8 @@ let blockList = [
             left: '300px',
             top: '550px',
         },
-        linkList: [105, 107]
+        linkList: [107],
+        linkDirectionList: ['left']
     },
     {
         index: 107,
@@ -1021,9 +1025,9 @@ let blockList = [
             left: '200px',
             top: '550px',
         },
-        linkList: [106, 108, 117],
-        trick: true,
-        linkDirectionList: ['right', 'left', 'down']
+        linkList: [108, 117],
+        linkDirectionList: ['left', 'down'],
+        trick: true
     },
     {
         index: 108,
@@ -1031,7 +1035,8 @@ let blockList = [
             left: '100px',
             top: '550px',
         },
-        linkList: [107, 109],
+        linkList: [109],
+        linkDirectionList: ['left'],
         changeBurglar: true
     },
     {
@@ -1040,7 +1045,8 @@ let blockList = [
             left: '0px',
             top: '550px',
         },
-        linkList: [108, 110, 118],
+        linkList: [110, 118],
+        linkDirectionList: ['down', 'up'],
         mission: true,
         move: 4,
         forward: true,
@@ -1055,9 +1061,9 @@ let blockList = [
             left: '0px',
             top: '600px',
         },
-        linkList: [109, 111],
-        trick: true,
-        linkDirectionList: ['up', 'down'],
+        linkList: [111],
+        linkDirectionList: ['down'],
+        trick: true
     },
     {
         index: 111,
@@ -1065,7 +1071,8 @@ let blockList = [
             left: '0px',
             top: '650px',
         },
-        linkList: [110, 112]
+        linkList: [112],
+        linkDirectionList: ['down']
     },
     {
         index: 112,
@@ -1073,7 +1080,8 @@ let blockList = [
             left: '0px',
             top: '700px',
         },
-        linkList: [111, 113],
+        linkList: [113],
+        linkDirectionList: ['down'],
         threat: true
     },
     {
@@ -1082,7 +1090,8 @@ let blockList = [
             left: '0px',
             top: '750px',
         },
-        linkList: [112, 114],
+        linkList: [114],
+        linkDirectionList: ['right'],
         goHome: true
     },
     {
@@ -1091,7 +1100,8 @@ let blockList = [
             left: '100px',
             top: '750px',
         },
-        linkList: [113, 115],
+        linkList: [115],
+        linkDirectionList: ['right'],
         changeBurglar: true
     },
     {
@@ -1100,9 +1110,9 @@ let blockList = [
             left: '200px',
             top: '750px',
         },
-        linkList: [114, 116],
-        trick: true,
-        linkDirectionList: ['left', 'right']
+        linkList: [116],
+        linkDirectionList: ['right'],
+        trick: true
     },
     {
         index: 116,
@@ -1110,7 +1120,8 @@ let blockList = [
             left: '300px',
             top: '750px',
         },
-        linkList: [100, 115]
+        linkList: [100],
+        linkDirectionList: ['right']
     },
     {
         index: 117,
@@ -1119,6 +1130,7 @@ let blockList = [
             top: '600px',
         },
         linkList: [107],
+        linkDirectionList: ['up'],
         onlyBurglar: true,
         buildingIndex: 5
     },
@@ -1138,7 +1150,8 @@ let blockList = [
             left: '0px',
             top: '450px',
         },
-        linkList: [118, 120]
+        linkList: [118, 120],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 120,
@@ -1147,6 +1160,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [119, 121],
+        linkDirectionList: ['down', 'right'],
         run: true,
         move: 1,
         forward: true
@@ -1158,8 +1172,8 @@ let blockList = [
             top: '400px',
         },
         linkList: [120, 122],
+        linkDirectionList: ['left', 'right', 'up'],
         trick: true,
-        linkDirectionList: ['left', 'right', 'up']
     },
     {
         index: 122,
@@ -1746,19 +1760,21 @@ let app = new Vue({
         },
 
         pauseSound: function (className) {
-            app.getAudio(className).pause();
+            let audio = app.getAudio(className);
+            audio.currentTime = 0;
+            audio.pause();
         },
 
         updateBlock: function (selectedBlock) {
             Vue.set(app.blockList, selectedBlock.index, selectedBlock);
         },
-        
-        move: function (selectedBlock) {
-            let currentPosition = app.getCurrentCharacter().position;
-            let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
-            let $currentCharacter = app.getCurrentCharacterElement();
-            let offset = app.status.turn * 30;
 
+        animateCharacter: function (selectedBlock, callback) {
+            console.log('>>> selectedBlock', selectedBlock);
+
+            let $currentCharacter = app.getCurrentCharacterElement();
+            let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
+            let offset = app.status.turn * 30;
             let left = $selectedBlockElement.offset().left + offset;
             let top = $selectedBlockElement.offset().top;
 
@@ -1766,6 +1782,21 @@ let app = new Vue({
                 left = $currentCharacter.offset().left;
                 top = $currentCharacter.offset().top;
             }
+
+            $currentCharacter.animate({
+                left: left,
+                top: top,
+            }, 500, function () {
+                if (callback) {
+                    callback();
+                }
+            });
+        },
+        
+        move: function (selectedBlock) {
+            let currentPosition = app.getCurrentCharacter().position;
+            let $selectedBlockElement = app.getBlockElement(selectedBlock.index);
+            let $currentCharacter = app.getCurrentCharacterElement();
 
             $('.' + app.getSoundClass()).get(0).play();
 
@@ -1778,10 +1809,7 @@ let app = new Vue({
                 return;
             }
 
-            $currentCharacter.animate({
-                left: left,
-                top: top,
-            }, 500, function () {
+            app.animateCharacter(selectedBlock, function () {
                 app.getCurrentCharacter().position = selectedBlock.index;
                 app.removeBlinkBlock();
                 app.removeRippleCharacter();
@@ -2238,20 +2266,33 @@ let app = new Vue({
                 top: $turnImage.offset().top
             });
 
-            app.hideTurnModal();
-
             $newTurnImage.animate({
                 left: $currentCharacterElement.offset().left,
                 top: $currentCharacterElement.offset().top,
                 width: '30px',
                 height: '30px'
-            }, 500, function () {
+            }, 1000, function () {
                 $newTurnImage.remove();
-
-                callback();
+                app.rippleCharacter();
+                
+                if (callback) {
+                    callback();
+                }
             });
         },
 
+        rippleCharacter: function () {
+            if (app.status.burglarTurn) {
+                let currentBurglar = app.getCurrentBurglar();
+                currentBurglar.classObject.burglarRipple = true;
+                Vue.set(app.burglarList, app.status.turn, currentBurglar);
+            } else {
+                let currentPolice = app.getCurrentPolice();
+                currentPolice.classObject.policeRipple = true;
+                Vue.set(app.policeList, app.status.turn, currentPolice);
+            }
+        },
+        
         hideTurnModal: function () {
             app.getTurnModalElement().modal('hide');
         },
@@ -2423,6 +2464,11 @@ let app = new Vue({
                 }
             }
 
+            let position = app.getCurrentCharacter().position;
+            let block = app.getBlock(position);
+            
+            app.moveToTurn();
+
             let $die = $('#die');
 
             if (die == null) {
@@ -2452,6 +2498,7 @@ let app = new Vue({
                                         });
                                 } else {
                                     alert('도둑을 체포하지 못했습니다.');
+                                    app.nextTurn();
                                 }
 
                                 return;
