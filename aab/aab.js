@@ -1669,6 +1669,7 @@ let app = new Vue({
         
         catchBurglarWithPathList: function (pathList) {
             app.burglarList
+                .filter(burglar => !burglar.arrested)
                 .filter(burglar => pathList.includes(burglar.position))
                 .forEach(burglar => {
                     app.arrestBurglar(burglar);
@@ -1788,8 +1789,8 @@ let app = new Vue({
             let top = $selectedBlockElement.offset().top;
 
             if (app.status.runMode) {
-                left = $currentCharacter.offset().left;
-                top = $currentCharacter.offset().top;
+                callback();
+                return;
             }
 
             $currentCharacter.animate({
@@ -1857,7 +1858,11 @@ let app = new Vue({
                 $('.trick').removeClass('blink');
                 $('.check').removeClass('blink');
 
-                if (selectedBlock.check && app.status.burglarTurn) {
+                if (app.status.runModeComplete) {
+                    app.catchBurglarWithPathList([selectedBlock.index]);
+                    app.status.runModeComplete = false;
+                    app.nextTurn();
+                } else if (selectedBlock.check && app.status.burglarTurn) {
                     selectedBlock.check = false;
                     app.updateBlock(selectedBlock);
                     app.nextTurn();
@@ -1875,28 +1880,24 @@ let app = new Vue({
 
                     app.status.runMode = false;
                     app.status.runModeComplete = true;
-                    return;
                 } else if (app.status.changeBurglarMode) {
                     app.status.changeBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.changePoliceMode &&
-                    !app.status.runModeComplete) {
+                } else if (app.status.changePoliceMode) {
 
                     app.status.changePoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.missionBurglarMode) {
                     app.status.missionBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.missionPoliceMode &&
-                    !app.status.runModeComplete) {
+                } else if (app.status.missionPoliceMode) {
 
                     app.status.missionPoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.moveBurglarMode) {
                     app.status.moveBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.movePoliceMode &&
-                    !app.status.runModeComplete) {
+                } else if (app.status.movePoliceMode) {
 
                     app.status.movePoliceMode = false;
                     app.nextTurn();
@@ -1915,9 +1916,7 @@ let app = new Vue({
                     app.blinkBlock(indexList);
                     app.status.changeBurglarMode = true;
                     app.playChangeSound();
-                } else if (selectedBlock.changePolice &&
-                    app.status.policeTurn &&
-                    !app.status.runModeComplete) {
+                } else if (selectedBlock.changePolice && app.status.policeTurn) {
 
                     let indexList = app.blockList.filter(target => target.changePolice)
                         .filter(target => target.index !== selectedBlock.index)
@@ -1929,9 +1928,7 @@ let app = new Vue({
                 } else if (selectedBlock.moveBurglar && app.status.burglarTurn) {
                     app.status.moveBurglarMode = true;
                     app.moveByIndex(selectedBlock.move);
-                } else if (selectedBlock.movePolice &&
-                    app.status.policeTurn &&
-                    !app.status.runModeComplete) {
+                } else if (selectedBlock.movePolice && app.status.policeTurn ) {
                     app.status.movePoliceMode = true;
                     app.moveByIndex(selectedBlock.move);
                 } else if (selectedBlock.mission && app.status.burglarTurn) {
@@ -1947,15 +1944,11 @@ let app = new Vue({
                         app.status.missionBurglarMode = true;
                         app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
                     }
-                } else if (selectedBlock.mission &&
-                    app.status.policeTurn &&
-                    !app.status.runModeComplete) {
+                } else if (selectedBlock.mission && app.status.policeTurn) {
 
                     app.status.missionPoliceMode = true;
                     app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
-                } else if (selectedBlock.run &&
-                    app.status.policeTurn &&
-                    !app.status.runModeComplete) {
+                } else if (selectedBlock.run && app.status.policeTurn) {
 
                     app.status.runCount = selectedBlock.move;
                     app.status.runMode = true;
@@ -2095,13 +2088,9 @@ let app = new Vue({
                             }
                         }
                     }
-                } else if (app.status.runModeComplete) {
-                    app.catchBurglarWithPathList([selectedBlock.index]);
                 } else {
                     app.nextTurn();
                 }
-
-                app.status.runModeComplete = false;
             });
         },
 
