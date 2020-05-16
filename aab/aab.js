@@ -1553,7 +1553,8 @@ let data = {
         runModeComplete: false,
         runCount: 0,
         checkCount: 6,
-        checkMode: false
+        checkMode: false,
+
     },
     background: {
         classObject: {
@@ -1667,7 +1668,8 @@ let app = new Vue({
         },
         
         catchBurglarWithPathList: function (pathList) {
-            app.burglarList.filter(burglar => pathList.includes(burglar.position))
+            app.burglarList
+                .filter(burglar => pathList.includes(burglar.position))
                 .forEach(burglar => {
                     app.arrestBurglar(burglar);
                 })
@@ -1862,7 +1864,6 @@ let app = new Vue({
                 } else if (app.status.runMode) {
                     app.status.blockPathList = [];
 
-                    app.status.runModeComplete = true;
                     app.go(app.status.runCount, app.status.runCount, selectedBlock.index, selectedBlock.index, []);
 
                     let blockIndexList = app.status.blockPathList
@@ -1873,23 +1874,30 @@ let app = new Vue({
                     app.playMoveSound();
 
                     app.status.runMode = false;
+                    app.status.runModeComplete = true;
                     return;
                 } else if (app.status.changeBurglarMode) {
                     app.status.changeBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.changePoliceMode && !app.status.runModeComplete) {
+                } else if (app.status.changePoliceMode &&
+                    !app.status.runModeComplete) {
+
                     app.status.changePoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.missionBurglarMode) {
                     app.status.missionBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.missionPoliceMode && !app.status.runModeComplete) {
+                } else if (app.status.missionPoliceMode &&
+                    !app.status.runModeComplete) {
+
                     app.status.missionPoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.moveBurglarMode) {
                     app.status.moveBurglarMode = false;
                     app.nextTurn();
-                } else if (app.status.movePoliceMode && !app.status.runModeComplete) {
+                } else if (app.status.movePoliceMode &&
+                    !app.status.runModeComplete) {
+
                     app.status.movePoliceMode = false;
                     app.nextTurn();
                 } else if (selectedBlock.threat) {
@@ -1907,19 +1915,23 @@ let app = new Vue({
                     app.blinkBlock(indexList);
                     app.status.changeBurglarMode = true;
                     app.playChangeSound();
-                } else if (selectedBlock.changePolice && app.status.policeTurn && !app.status.runModeComplete) {
+                } else if (selectedBlock.changePolice &&
+                    app.status.policeTurn &&
+                    !app.status.runModeComplete) {
+
                     let indexList = app.blockList.filter(target => target.changePolice)
                         .filter(target => target.index !== selectedBlock.index)
                         .map(target => target.index);
 
-                    app.backgroundActive();
                     app.blinkBlock(indexList);
                     app.status.changePoliceMode = true;
                     app.playChangeSound();
                 } else if (selectedBlock.moveBurglar && app.status.burglarTurn) {
                     app.status.moveBurglarMode = true;
                     app.moveByIndex(selectedBlock.move);
-                } else if (selectedBlock.movePolice && app.status.policeTurn && !app.status.runModeComplete) {
+                } else if (selectedBlock.movePolice &&
+                    app.status.policeTurn &&
+                    !app.status.runModeComplete) {
                     app.status.movePoliceMode = true;
                     app.moveByIndex(selectedBlock.move);
                 } else if (selectedBlock.mission && app.status.burglarTurn) {
@@ -1935,7 +1947,10 @@ let app = new Vue({
                         app.status.missionBurglarMode = true;
                         app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
                     }
-                } else if (selectedBlock.mission && app.status.policeTurn && !app.status.runModeComplete) {
+                } else if (selectedBlock.mission &&
+                    app.status.policeTurn &&
+                    !app.status.runModeComplete) {
+
                     app.status.missionPoliceMode = true;
                     app.moveByIndex(pathList[pathList.length - selectedBlock.move - 1]);
                 } else if (selectedBlock.run &&
@@ -2080,6 +2095,8 @@ let app = new Vue({
                             }
                         }
                     }
+                } else if (app.status.runModeComplete) {
+                    app.catchBurglarWithPathList([selectedBlock.index]);
                 } else {
                     app.nextTurn();
                 }
@@ -2711,10 +2728,8 @@ let app = new Vue({
                     return;
                 }
 
-                if (currentBlock.index === 0) {
-                    if (!app.status.runModeComplete) {
-                        return;
-                    }
+                if (currentPosition === 0 && previousPosition === 1) {
+                    return;
                 }
             }
 
