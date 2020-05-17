@@ -1671,7 +1671,9 @@ let app = new Vue({
                 app.checkGameOver();
             });
 
-            app.collectJewelry(burglar);
+            if (app.collectJewelry(burglar)) {
+                app.status.restartMode = true;
+            }
         },
         
         catchBurglarWithPathList: function (pathList) {
@@ -2999,6 +3001,7 @@ let app = new Vue({
             $('#die').hide();
             $('.start-game-button').show();
             $('.player-info').hide();
+            $('.btn-check').hide();
 
             app.playHideJewelrySound();
 
