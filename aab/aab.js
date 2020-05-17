@@ -174,8 +174,7 @@ let blockList = [
             top: '500px',
         },
         linkList: [17, 33],
-        mission: true,
-        move: 2
+        drop: true
     },
     {
         index: 19,
@@ -1527,6 +1526,7 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        restartMode: false,
         passMode: false,
         arrestMode: false,
         start: false,
@@ -1728,6 +1728,10 @@ let app = new Vue({
             app.playSound('change');
         },
 
+        playRestartSound: function () {
+            app.playSound('restart');
+        },
+
         playHideJewelrySound: function () {
             app.playSound('hide-jewelry');
         },
@@ -1873,6 +1877,12 @@ let app = new Vue({
                     app.catchBurglarWithPathList([selectedBlock.index]);
                     app.status.runModeComplete = false;
                     app.nextTurn();
+                } else if (selectedBlock.drop && app.status.burglarTurn) {
+                    let currentBurglar = app.getCurrentBurglar();
+
+                    if (app.collectJewelry(currentBurglar)) {
+                        app.status.restartMode = true;
+                    }
                 } else if (selectedBlock.pass) {
                     let currentBurglar = app.getCurrentBurglar();
 
@@ -2270,44 +2280,51 @@ let app = new Vue({
                 left: $(event.target).offset().left + 25,
                 top: $(event.target).offset().top + 25,
             }, 500, function () {
-                if (app.status.hidePoliceMode) {
-                    app.hiddenPolice.classObject.blink = false;
+                if (app.status.restartMode) {
+                    app.initStartButton();
+                    app.playRestartSound();
                 } else {
-                    let currentJewelry = app.jewelryList[app.status.hideJewelryIndex];
-                    currentJewelry.styleObject.left = $target.offset().left + 'px';
-                    currentJewelry.styleObject.top = $target.offset().top + 'px';
+                    if (app.status.hidePoliceMode) {
+                        app.hiddenPolice.classObject.blink = false;
+                    } else {
+                        let currentJewelry = app.jewelryList[app.status.hideJewelryIndex];
+                        currentJewelry.styleObject.left = $target.offset().left + 'px';
+                        currentJewelry.styleObject.top = $target.offset().top + 'px';
 
-                    app.blinkJewelry(app.status.hideJewelryIndex, false);
+                        app.blinkJewelry(app.status.hideJewelryIndex, false);
 
-                    if (app.status.hideJewelryIndex === 0) {
-                        app.blinkJewelry(app.status.hideJewelryIndex + 1, true);
+                        if (app.status.hideJewelryIndex === 0) {
+                            app.blinkJewelry(app.status.hideJewelryIndex + 1, true);
+                        }
+
+                        app.status.hideJewelryIndex++;
                     }
 
-                    app.status.hideJewelryIndex++;
-                }
-
-                if (app.status.hideJewelryIndex === 1) {
-                    app.playHideJewelrySound();
-                } else if (app.status.hideJewelryIndex === 2) {
-                    if (app.status.hidePoliceMode) {
-                        app.playStartSound();
-
-                        $('.start-game-button').prop('disabled', false)
-                            .on('click', function () {
-                                app.pausePlayStartSound();
-                                app.readyToPlay();
-                            });
-                        $('.hide-jewelry-button').prop('disabled', false)
-                            .on('click', function () {
-                                location.reload();
-                            });
-                    } else {
-                        app.playHidePoliceSound();
-                        app.status.hidePoliceMode = true;
-                        app.hiddenPolice.classObject.roundBlink = true;
+                    if (app.status.hideJewelryIndex === 1) {
+                        app.playHideJewelrySound();
+                    } else if (app.status.hideJewelryIndex === 2) {
+                        if (app.status.hidePoliceMode) {
+                            app.playStartSound();
+                            app.initStartButton();
+                        } else {
+                            app.playHidePoliceSound();
+                            app.status.hidePoliceMode = true;
+                            app.hiddenPolice.classObject.roundBlink = true;
+                        }
                     }
                 }
             });
+        },
+
+        initStartButton: function () {
+            $('.start-game-button').prop('disabled', false)
+                .on('click', function () {
+                    app.readyToPlay();
+                });
+            $('.hide-jewelry-button').prop('disabled', false)
+                .on('click', function () {
+                    location.reload();
+                });
         },
 
         getTurnType: function () {
@@ -2706,7 +2723,13 @@ let app = new Vue({
 
             app.hiddenPolice.styleObject.display = 'none';
             app.status.start = true;
-            app.rollDie();
+
+            if (app.status.restartMode) {
+                app.nextTurn();
+                app.status.restartMode = false;
+            } else {
+                app.rollDie();
+            }
         },
 
         removeBlinkBlock: function () {
@@ -2937,6 +2960,8 @@ let app = new Vue({
                 return `도둑은 아지트로 경찰은 경찰서로`;
             } else if (block.pass) {
                 return `도둑은 보석을 동료에게 넘겨준다`;
+            } else if (block.drop) {
+                return `보석을 떨어뜨렸다. 보석을 다시 숨김니다.`;
             } else if (block.tunnel || block.changePosition) {
                 return `${block.move}로 이동`;
             }
@@ -2948,7 +2973,7 @@ let app = new Vue({
             let jewelryIndex = burglar.jewelryIndex;
 
             if (jewelryIndex == null) {
-                return;
+                return false;
             }
 
             burglar.jewelryIndex = null;
@@ -2989,6 +3014,8 @@ let app = new Vue({
                     Vue.set(app.buildingList, i, building);
                 }
             }
+
+            return true;
         },
 
         showTrickDirection: function (event) {
@@ -3052,6 +3079,7 @@ let app = new Vue({
                         block.search ||
                         block.onlyBurglar ||
                         block.threat ||
+                        block.drop ||
                         block.pass,
                     police: block.police ||
                         block.movePolice ||
