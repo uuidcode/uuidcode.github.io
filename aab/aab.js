@@ -979,7 +979,7 @@ let blockList = [
         burglar: true,
         trick: true,
         linkDirectionList: ['right', 'up'],
-        send: true
+        pass: true
     },
     {
         index: 103,
@@ -1527,6 +1527,8 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        passMode: false,
+        arrestMode: false,
         start: false,
         escape: false,
         catch: false,
@@ -1635,6 +1637,11 @@ let app = new Vue({
         checkGameOver: function () {
             if (app.burglarList.filter(burglar => burglar.arrested).length === 3) {
                 alert('경찰 승리');
+                location.reload();
+            }
+
+            if (app.getBlockElement(0).find('.jewelry').length === 2) {
+                alert('도둑 승리');
                 location.reload();
             }
         },
@@ -1806,6 +1813,10 @@ let app = new Vue({
         playClickBlockSound: function () {
             app.playSound('click-block');
         },
+
+        playPassJewelrySound: function () {
+            app.playSound('pass-jewelry');
+        },
         
         move: function (selectedBlock) {
             let currentPosition = app.getCurrentCharacter().position;
@@ -1862,6 +1873,32 @@ let app = new Vue({
                     app.catchBurglarWithPathList([selectedBlock.index]);
                     app.status.runModeComplete = false;
                     app.nextTurn();
+                } else if (selectedBlock.pass) {
+                    let currentBurglar = app.getCurrentBurglar();
+
+                    if (currentBurglar.jewelryIndex != null) {
+                        let currentBurglarList = app.burglarList
+                            .filter(target => !target.arrested)
+                            .filter(target => target.jewelryIndex == null)
+                            .filter(target => target.index !== currentBurglar.index);
+
+                        if (currentBurglarList.length > 0) {
+                            app.playPassJewelrySound();
+
+                            currentBurglarList.forEach((target) => {
+                                target.classObject.burglarRipple = true;
+                                target.classObject.selectable = true;
+                                Vue.set(app.burglarList, target.index, target);
+                            });
+
+                            app.status.passMode = true;
+                        } else {
+                            alert('보석을 넘겨줄 도둑이 없습니다.');
+                        }
+                    } else {
+                        alert('보석이 없습니다.');
+                        app.nextTurn();
+                    }
                 } else if (selectedBlock.check && app.status.burglarTurn) {
                     selectedBlock.check = false;
                     app.updateBlock(selectedBlock);
@@ -1974,6 +2011,7 @@ let app = new Vue({
                 } else if (selectedBlock.arrest) {
                     app.status.turn--;
                     app.nextTurn();
+                    app.status.arrestMode = true;
                 } else if (selectedBlock.goHome) {
                     let $burglarStartBlock = $('.block[data-index=0]');
                     let $policeStartBlock = $('.block[data-index=135]');
@@ -2104,12 +2142,28 @@ let app = new Vue({
             app.move(selectedBlock);
         },
 
-        catchBurglar: function (event) {
+        clickBurglar: function (event) {
             let index = $(event.target).attr('data-index');
-            let burglar = app.burglarList.filter(target => target.index == index)[0];
-            app.catchBurglarWithPathList([burglar.position]);
-            app.removeRippleCharacter();
-            app.nextTurn();
+            let burglar = app.burglarList
+                .filter(target => target.index == index)[0];
+
+            if (app.status.arrestMode) {
+                app.arrestBurglar(burglar);
+                app.removeRippleCharacter();
+                app.nextTurn();
+                app.status.arrestMode = false;
+            } else if (app.status.passMode) {
+                burglar.jewelryIndex = app.getCurrentBurglar().jewelryIndex;
+                app.getCurrentBurglar().jewelryIndex = null;
+
+                let $jewelry = app.getCurrentBurglarElement().find('.jewelry');
+                app.getBurglarElement(index).append($jewelry);
+
+                app.removeRippleCharacter();
+                app.status.passMode = false;
+
+                app.checkSteal(burglar, true);
+            }
         },
 
         resetTrickIndexList: function () {
@@ -2322,7 +2376,7 @@ let app = new Vue({
                 Vue.set(app.policeList, app.status.turn, currentPolice);
             }
         },
-        
+
         hideTurnModal: function () {
             app.getTurnModalElement().modal('hide');
         },
@@ -2503,19 +2557,18 @@ let app = new Vue({
 
             if (die == null) {
                 die = new Die(function (count) {
-                    let countForDebug = $('#countForDebug').val();
-
-                    if (countForDebug !== '0') {
-                        count = countForDebug;
-                    }
-
                     app.moveToTurn(function () {
+                        count = app.getDiceCount(count);
+
                         if (app.status.policeTurn) {
                             let currentPolice = app.getCurrentPolice();
                             let currentBlock = app.getBlock(currentPolice.position);
 
                             if (currentBlock.arrest) {
-                                if (currentBlock.dice === count) {
+                                console.log('>>> currentBlock.dice', currentBlock.dice);
+                                console.log('>>> count', count);
+
+                                if (currentBlock.dice == count) {
                                     alert('도둑을 체포합니다.\n체포할 도둑을 선택하세요.');
 
                                     app.status.catch = true;
@@ -2566,6 +2619,16 @@ let app = new Vue({
                     app.nextTurn();
                 }, 500);
             }
+        },
+
+        getDiceCount: function (count) {
+            let countForDebug = $('#countForDebug').val();
+
+            if (countForDebug !== '0') {
+                count = countForDebug;
+            }
+
+            return count;
         },
 
         goAndBlink: function (count, filter) {
@@ -2668,8 +2731,12 @@ let app = new Vue({
         },
 
         removeRipple: function (list) {
-            list.forEach(target => target.classObject.burglarRipple = false);
-            list.forEach(target => target.classObject.policeRipple = false);
+            list.forEach((target, index) => {
+                target.classObject.policeRipple = false;
+                target.classObject.burglarRipple = false;
+                target.classObject.selectable = false;
+                Vue.set(list, index, target)
+            });
         },
 
         blinkBlock: function (indexList) {
@@ -2868,7 +2935,7 @@ let app = new Vue({
                 return `도둑은 보석이 있는 건물 알 수 있다`;
             } else if (block.goHome) {
                 return `도둑은 아지트로 경찰은 경찰서로`;
-            } else if (block.send) {
+            } else if (block.pass) {
                 return `도둑은 보석을 동료에게 넘겨준다`;
             } else if (block.tunnel || block.changePosition) {
                 return `${block.move}로 이동`;
@@ -2985,7 +3052,7 @@ let app = new Vue({
                         block.search ||
                         block.onlyBurglar ||
                         block.threat ||
-                        block.send,
+                        block.pass,
                     police: block.police ||
                         block.movePolice ||
                         block.changePolice ||

@@ -28,6 +28,7 @@
 <audio class="start-sound"><source src="mp3/start.mp3"></audio>
 <audio class="move-sound"><source src="mp3/move.mp3"></audio>
 <audio class="click-block-sound"><source src="mp3/click-block.mp3"></audio>
+<audio class="pass-jewelry-sound"><source src="mp3/pass.mp3"></audio>
 
 <div id="app">
     <div v-bind:class="background.classObject"></div>
@@ -61,7 +62,7 @@
          :key="burglar.index"
          :class="burglar.classObject"
          :style="burglar.styleObject"
-         v-on:click="catchBurglar"></div>
+         v-on:click="clickBurglar"></div>
 
     <div class="character policeCharacter"
          v-for="police in policeList"

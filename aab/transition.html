@@ -1,0 +1,42 @@
+<meta charset="UTF-8">
+<script src="lib/jquery-3.3.1.min.js"></script>
+<script src="lib/bootstrap.js"></script>
+<link href="lib/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="aab.css" rel="stylesheet" type="text/css">
+<style>
+    .box {
+        position: absolute;
+        border: 1px solid black;
+        left: 0;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        color: lightgray;
+        transition-duration: 0.5s;
+        background-color: lightcoral;
+    }
+
+    .container {
+        background-color: lightgray;
+        height: 100px;
+        width: 100%;
+    }
+</style>
+<div class="example">
+    <div class="container">
+        <div class="box"></div>
+    </div>
+    <button class="btn btn-default move-button">이동</button>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $('.move-button').on('click', function () {
+            $(this).closest('.example')
+                .find('.box')
+                .css({
+                    left: 100
+                });
+        });
+    });
+</script>
