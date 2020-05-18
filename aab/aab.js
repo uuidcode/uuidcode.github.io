@@ -11,7 +11,8 @@ let blockList = [
         },
         start: true,
         burglar: true,
-        linkList: [1]
+        linkList: [1],
+        linkDirectionList: ['up']
     },
     {
         index: 1,
@@ -20,7 +21,8 @@ let blockList = [
             top: '650px',
         },
         threat: true,
-        linkList: [0, 2]
+        linkList: [0, 2],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 2,
@@ -38,7 +40,8 @@ let blockList = [
             left: '1800px',
             top: '550px',
         },
-        linkList: [2, 10]
+        linkList: [2, 10],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 4,
@@ -46,7 +49,8 @@ let blockList = [
             left: '1700px',
             top: '600px',
         },
-        linkList: [2, 5]
+        linkList: [2, 5],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 5,
@@ -54,7 +58,8 @@ let blockList = [
             left: '1600px',
             top: '600px',
         },
-        linkList: [4, 6]
+        linkList: [4, 6],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 6,
@@ -69,7 +74,8 @@ let blockList = [
             [7, 8, 9, 25, 26, 27, 92],
             [0, 1, 2, 3, 4, 5, 10, 11, 16]
         ],
-        linkList: [5, 7]
+        linkList: [5, 7],
+        linkDirectionList: ['right', 'down']
     },
     {
         index: 7,
@@ -77,7 +83,8 @@ let blockList = [
             left: '1500px',
             top: '650px',
         },
-        linkList: [6, 8]
+        linkList: [6, 8],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 8,
@@ -85,7 +92,8 @@ let blockList = [
             left: '1500px',
             top: '700px',
         },
-        linkList: [7, 9]
+        linkList: [7, 9],
+        linkDirectionList: ['up', 'down']
     },
     {
         index: 9,
@@ -94,6 +102,7 @@ let blockList = [
             top: '750px',
         },
         linkList: [8, 25],
+        linkDirectionList: ['up', 'left']
     },
     {
         index: 10,
@@ -112,7 +121,8 @@ let blockList = [
             left: '1800px',
             top: '450px',
         },
-        linkList: [10, 12]
+        linkList: [10, 12],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 12,
@@ -131,6 +141,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [12, 14],
+        linkDirectionList: ['right', 'left'],
         stop: true
     },
     {
@@ -139,7 +150,8 @@ let blockList = [
             left: '1600px',
             top: '400px',
         },
-        linkList: [13, 15]
+        linkList: [13, 15],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 15,
@@ -157,7 +169,8 @@ let blockList = [
             left: '1700px',
             top: '500px',
         },
-        linkList: [10, 17]
+        linkList: [10, 17],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 17,
@@ -165,7 +178,8 @@ let blockList = [
             left: '1600px',
             top: '500px',
         },
-        linkList: [16, 18]
+        linkList: [16, 18],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 18,
@@ -174,6 +188,7 @@ let blockList = [
             top: '500px',
         },
         linkList: [17, 33],
+        linkDirectionList: ['right', 'left'],
         drop: true
     },
     {
@@ -183,6 +198,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [15, 20],
+        linkDirectionList: ['right', 'left'],
         run: true,
         move: 1
     },
@@ -203,6 +219,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [20, 22],
+        linkDirectionList: ['right', 'left'],
         goHome: true
     },
     {
@@ -222,6 +239,7 @@ let blockList = [
             top: '350px',
         },
         linkList: [22, 47],
+        linkDirectionList: ['down', 'up'],
     },
     {
         index: 24,
@@ -230,6 +248,7 @@ let blockList = [
             top: '350px',
         },
         linkList: [20],
+        linkDirectionList: ['down'],
         onlyBurglar: true,
         buildingIndex: 0
     },
@@ -240,6 +259,7 @@ let blockList = [
             top: '750px',
         },
         linkList: [9, 26],
+        linkDirectionList: ['right', 'left'],
         goHome: true
     },
     {
@@ -258,7 +278,8 @@ let blockList = [
             left: '1300px',
             top: '700px',
         },
-        linkList: [26, 28]
+        linkList: [26, 28],
+        linkDirectionList: ['down', 'up'],
     },
     {
         index: 28,
@@ -267,6 +288,7 @@ let blockList = [
             top: '650px',
         },
         linkList: [27, 29],
+        linkDirectionList: ['down', 'up'],
         arrest: true,
         dice: 2
     },
@@ -287,6 +309,7 @@ let blockList = [
             top: '600px',
         },
         linkList: [29],
+        linkDirectionList: ['right'],
         onlyBurglar: true,
         buildingIndex: 1
     },
@@ -297,6 +320,7 @@ let blockList = [
             top: '550px',
         },
         linkList: [29, 32],
+        linkDirectionList: ['down', 'up'],
         stop: true
     },
     {
@@ -315,7 +339,8 @@ let blockList = [
             left: '1400px',
             top: '500px',
         },
-        linkList: [18, 32]
+        linkList: [18, 32],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 34,
@@ -324,6 +349,7 @@ let blockList = [
             top: '500px',
         },
         linkList: [32, 35],
+        linkDirectionList: ['right', 'left'],
         run: true,
         move: 4
     },
@@ -333,7 +359,8 @@ let blockList = [
             left: '1100px',
             top: '500px',
         },
-        linkList: [34, 36]
+        linkList: [34, 36],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 36,
@@ -341,7 +368,8 @@ let blockList = [
             left: '1000px',
             top: '500px',
         },
-        linkList: [35, 37]
+        linkList: [35, 37],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 37,
@@ -351,6 +379,7 @@ let blockList = [
         },
         move: 43,
         linkList: [36, 38],
+        linkDirectionList: ['right', 'left'],
         changePosition: true
     },
     {
@@ -359,7 +388,8 @@ let blockList = [
             left: '800px',
             top: '500px',
         },
-        linkList: [37, 39]
+        linkList: [37, 39],
+        linkDirectionList: ['right', 'left']
     },
     {
         index: 39,
@@ -367,7 +397,8 @@ let blockList = [
             left: '700px',
             top: '500px',
         },
-        linkList: [38, 40]
+        linkList: [38, 40],
+        linkDirectionList: ['right', 'up']
     },
     {
         index: 40,
@@ -375,7 +406,8 @@ let blockList = [
             left: '700px',
             top: '450px',
         },
-        linkList: [39, 41]
+        linkList: [39, 41],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 41,
@@ -393,7 +425,8 @@ let blockList = [
             left: '1000px',
             top: '400px',
         },
-        linkList: [22, 43]
+        linkList: [22, 43],
+        linkDirectionList: ['right', 'left'],
     },
     {
         index: 43,
@@ -402,6 +435,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [42, 44],
+        linkDirectionList: ['right', 'left'],
         changePosition: true,
         move: 37
     },
@@ -412,6 +446,7 @@ let blockList = [
             top: '400px',
         },
         linkList: [41, 43],
+        linkDirectionList: ['left', 'right'],
         stop: true
     },
     {
@@ -420,7 +455,8 @@ let blockList = [
             left: '700px',
             top: '350px',
         },
-        linkList: [41, 46]
+        linkList: [41, 46],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 46,
@@ -429,6 +465,7 @@ let blockList = [
             top: '300px',
         },
         linkList: [45],
+        linkDirectionList: ['down'],
         onlyBurglar: true,
         buildingIndex: 2
     },
@@ -439,6 +476,7 @@ let blockList = [
             top: '300px',
         },
         linkList: [23, 48],
+        linkDirectionList: ['down', 'up'],
         police: true,
         changePolice: true
     },
@@ -449,6 +487,7 @@ let blockList = [
             top: '250px',
         },
         linkList: [47, 49],
+        linkDirectionList: ['down', 'up'],
         threat: true
     },
     {
@@ -457,7 +496,8 @@ let blockList = [
             left: '1100px',
             top: '200px',
         },
-        linkList: [48, 50]
+        linkList: [48, 50],
+        linkDirectionList: ['down', 'right']
     },
     {
         index: 50,
@@ -465,7 +505,8 @@ let blockList = [
             left: '1200px',
             top: '200px',
         },
-        linkList: [49, 51]
+        linkList: [49, 51],
+        linkDirectionList: ['left', 'right']
     },
     {
         index: 51,
@@ -484,6 +525,7 @@ let blockList = [
             top: '150px',
         },
         linkList: [51, 53],
+        linkDirectionList: ['down', 'up'],
     },
     {
         index: 53,
@@ -492,6 +534,7 @@ let blockList = [
             top: '100px',
         },
         linkList: [52],
+        linkDirectionList: ['down'],
         onlyBurglar: true,
         buildingIndex: 3
     },
@@ -501,7 +544,8 @@ let blockList = [
             left: '1500px',
             top: '350px',
         },
-        linkList: [15, 55]
+        linkList: [15, 55],
+        linkDirectionList: ['down', 'up'],
     },
     {
         index: 55,
@@ -510,6 +554,7 @@ let blockList = [
             top: '300px',
         },
         linkList: [54, 56],
+        linkDirectionList: ['down', 'up'],
         movePolice: true,
         move: 62
     },
@@ -520,6 +565,7 @@ let blockList = [
             top: '250px',
         },
         linkList: [55, 57],
+        linkDirectionList: ['down', 'up'],
         moveBurglar: true,
         move: 63
     },
@@ -547,7 +593,8 @@ let blockList = [
             left: '1500px',
             top: '150px',
         },
-        linkList: [57, 59]
+        linkList: [57, 59],
+        linkDirectionList: ['down', 'up']
     },
     {
         index: 59,
@@ -572,8 +619,8 @@ let blockList = [
             top: '0px',
         },
         linkList: [60, 65, 73],
-        trick: true,
-        linkDirectionList: ['down', 'right', 'left']
+        linkDirectionList: ['down', 'right', 'left'],
+        trick: true
     },
     {
         index: 62,
@@ -582,6 +629,7 @@ let blockList = [
             top: '350px',
         },
         linkList: [12, 63],
+        linkDirectionList: ['down', 'up'],
         movePolice: true,
         move: 55
     },
@@ -592,6 +640,7 @@ let blockList = [
             top: '300px',
         },
         linkList: [62, 68],
+        linkDirectionList: ['down', 'up'],
         moveBurglar: true,
         move: 56
     },
@@ -602,6 +651,7 @@ let blockList = [
             top: '200px',
         },
         linkList: [51, 57],
+        linkDirectionList: ['left', 'right'],
         arrest: true,
         dice: 3
     },
@@ -611,7 +661,8 @@ let blockList = [
             left: '1600px',
             top: '0px',
         },
-        linkList: [61, 66]
+        linkList: [61, 66],
+        linkDirectionList: ['left', 'right']
     },
     {
         index: 66,
@@ -619,7 +670,8 @@ let blockList = [
             left: '1700px',
             top: '0px',
         },
-        linkList: [65, 67]
+        linkList: [65, 67],
+        linkDirectionList: ['left', 'right']
     },
     {
         index: 67,
