@@ -1643,11 +1643,13 @@ let app = new Vue({
 
         checkGameOver: function () {
             if (app.burglarList.filter(burglar => burglar.arrested).length === 3) {
+                app.playWinPoliceSound();
                 alert('경찰 승리');
                 location.reload();
             }
 
             if (app.getBlockElement(0).find('.jewelry').length === 2) {
+                app.playWinBurglarSound();
                 alert('도둑 승리');
                 location.reload();
             }
@@ -1735,6 +1737,14 @@ let app = new Vue({
 
         playChangeSound: function () {
             app.playSound('change');
+        },
+
+        playWinPoliceSound: function () {
+            app.playSound('win-police');
+        },
+
+        playWinBurglarSound: function () {
+            app.playSound('win-burglar');
         },
 
         playRestartSound: function () {
