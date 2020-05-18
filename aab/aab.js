@@ -2628,7 +2628,7 @@ let app = new Vue({
                                 console.log('>>> count', count);
 
                                 if (currentBlock.dice == count) {
-                                    alert('도둑을 체포합니다.\n체포할 도둑을 선택하세요.');
+                                    app.playSelectBurgarSound();
 
                                     app.status.catch = true;
 
@@ -2639,7 +2639,7 @@ let app = new Vue({
                                             Vue.set(app.burglarList, target.index, target);
                                         });
                                 } else {
-                                    alert('도둑을 체포하지 못했습니다.');
+                                    app.playNotArrestSound();
                                     app.nextTurn();
                                 }
 
