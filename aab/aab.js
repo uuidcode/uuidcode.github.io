@@ -1735,6 +1735,18 @@ let app = new Vue({
             return sound + app.status.turn + '-sound';
         },
 
+        playArrestSound: function () {
+            app.playSound('arrest');
+        },
+
+        playSelectBurgarSound: function () {
+            app.playSound('select-burglar');
+        },
+
+        playNotArrestSound: function () {
+            app.playSound('not-arrest');
+        },
+
         playChangeSound: function () {
             app.playSound('change');
         },
@@ -1901,6 +1913,8 @@ let app = new Vue({
 
                     if (app.collectJewelry(currentBurglar)) {
                         app.status.restartMode = true;
+                    } else {
+                        app.nextTurn();
                     }
                 } else if (selectedBlock.pass) {
                     let currentBurglar = app.getCurrentBurglar();
@@ -2039,6 +2053,7 @@ let app = new Vue({
                     }
                 } else if (selectedBlock.arrest) {
                     app.status.turn--;
+                    app.playArrestSound();
                     app.nextTurn();
                     app.status.arrestMode = true;
                 } else if (selectedBlock.goHome) {
@@ -2590,12 +2605,6 @@ let app = new Vue({
 
                 let currentPosition = app.getCurrentCharacter().position;
                 let currentBlock = app.getBlock(currentPosition);
-
-                if (currentBlock.arrest) {
-                    $arrestTile
-                        .text('주사위를 던져 ' + currentBlock.dice + '이면 도둑을 체포할 수 있습니다.')
-                        .show();
-                }
             }
 
             let position = app.getCurrentCharacter().position;
