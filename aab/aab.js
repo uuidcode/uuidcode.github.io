@@ -1739,7 +1739,7 @@ let app = new Vue({
             app.playSound('arrest');
         },
 
-        playSelectBurgarSound: function () {
+        playSelectBurglarSound: function () {
             app.playSound('select-burglar');
         },
 
@@ -2628,7 +2628,7 @@ let app = new Vue({
                                 console.log('>>> count', count);
 
                                 if (currentBlock.dice == count) {
-                                    app.playSelectBurgarSound();
+                                    app.playSelectBurglarSound();
 
                                     app.status.catch = true;
 
