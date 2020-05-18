@@ -2271,6 +2271,13 @@ let app = new Vue({
                 $target = $('.hiddenPolice');
                 building.hasHiddenPolice = true;
             } else {
+                let jewelryBuildingList = app.buildingList
+                    .filter(target => target.jewelryIndex === app.status.hideJewelryIndex);
+
+                if (jewelryBuildingList.length !== 0) {
+                    app.status.hideJewelryIndex++;
+                }
+
                 $target = $('.jewelry[data-index=' + app.status.hideJewelryIndex + ']');
                 building.jewelryIndex = app.status.hideJewelryIndex;
                 Vue.set(this.buildingList, index, building);
@@ -2282,37 +2289,40 @@ let app = new Vue({
                 left: $(event.target).offset().left + 25,
                 top: $(event.target).offset().top + 25,
             }, 500, function () {
-                if (app.status.restartMode) {
-                    app.initStartButton();
-                    app.playRestartSound();
+                if (app.status.hidePoliceMode) {
+                    app.hiddenPolice.classObject.blink = false;
                 } else {
-                    if (app.status.hidePoliceMode) {
-                        app.hiddenPolice.classObject.blink = false;
-                    } else {
-                        let currentJewelry = app.jewelryList[app.status.hideJewelryIndex];
-                        currentJewelry.styleObject.left = $target.offset().left + 'px';
-                        currentJewelry.styleObject.top = $target.offset().top + 'px';
+                    let currentJewelry = app.jewelryList[app.status.hideJewelryIndex];
+                    currentJewelry.styleObject.left = $target.offset().left + 'px';
+                    currentJewelry.styleObject.top = $target.offset().top + 'px';
 
-                        app.blinkJewelry(app.status.hideJewelryIndex, false);
+                    app.blinkJewelry(app.status.hideJewelryIndex, false);
 
-                        if (app.status.hideJewelryIndex === 0) {
+                    if (app.status.hideJewelryIndex === 0) {
+                        let jewelryBuildingList = app.buildingList
+                            .filter(target => target.jewelryIndex === app.status.hideJewelryIndex + 1);
+
+                        if (jewelryBuildingList.length > 0) {
                             app.blinkJewelry(app.status.hideJewelryIndex + 1, true);
+                            app.status.hideJewelryIndex = 2;
                         }
 
-                        app.status.hideJewelryIndex++;
+                        app.status.hideJewelryIndex = 1;
+                    } else {
+                        app.status.hideJewelryIndex = 2;
                     }
+                }
 
-                    if (app.status.hideJewelryIndex === 1) {
-                        app.playHideJewelrySound();
-                    } else if (app.status.hideJewelryIndex === 2) {
-                        if (app.status.hidePoliceMode) {
-                            app.playStartSound();
-                            app.initStartButton();
-                        } else {
-                            app.playHidePoliceSound();
-                            app.status.hidePoliceMode = true;
-                            app.hiddenPolice.classObject.roundBlink = true;
-                        }
+                if (app.status.hideJewelryIndex === 1) {
+                    app.playHideJewelrySound();
+                } else if (app.status.hideJewelryIndex === 2) {
+                    if (app.status.hidePoliceMode) {
+                        app.playStartSound();
+                        app.initStartButton();
+                    } else {
+                        app.playHidePoliceSound();
+                        app.status.hidePoliceMode = true;
+                        app.hiddenPolice.classObject.roundBlink = true;
                     }
                 }
             });
@@ -3003,11 +3013,12 @@ let app = new Vue({
             $('.player-info').hide();
             $('.btn-check').hide();
 
-            app.playHideJewelrySound();
+            app.buildingList.filter(target => target.jewelryIndex === jewelryIndex)
+                .forEach(target => target.jewelryIndex = null);
 
             data.status.hideJewelryMode = true;
             data.status.hidePoliceMode = false;
-            data.status.hideJewelryIndex = jewelryIndex;
+            data.status.hideJewelryIndex = 0;
 
             for (let i = 0; i < app.buildingList.length; i++) {
                 let building = app.buildingList[i];
