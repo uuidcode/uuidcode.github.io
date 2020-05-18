@@ -1711,13 +1711,11 @@ let app = new Vue({
 
             app.blinkJewelry(currentBurglar.jewelryIndex, true);
 
-            if ($block.find('.jewelry').length === 2) {
-                alert('도둑 승리');
-                location.reload();
-            }
+            app.checkGameOver();
 
             setTimeout(function () {
                 app.blinkJewelry(currentBurglar.jewelryIndex, false);
+                currentBurglar.jewelryIndex = null;
 
                 if (callNextTurn) {
                     app.nextTurn();
@@ -2062,7 +2060,8 @@ let app = new Vue({
 
                     let policeCount = 0;
 
-                    $('.policeCharacter').each(function () {
+                    $('.policeCharacter')
+                        .each(function () {
                         $(this).animate({
                             left: $policeStartBlock.offset().left + 30 * $(this).attr('data-index'),
                             top: $policeStartBlock.offset().top
@@ -2623,7 +2622,7 @@ let app = new Vue({
                             let currentPolice = app.getCurrentPolice();
                             let currentBlock = app.getBlock(currentPolice.position);
 
-                            if (currentBlock.arrest) {
+                            if (app.status.arrestMode) {
                                 console.log('>>> currentBlock.dice', currentBlock.dice);
                                 console.log('>>> count', count);
 
@@ -2640,8 +2639,11 @@ let app = new Vue({
                                         });
                                 } else {
                                     app.playNotArrestSound();
+                                    app.removeRippleCharacter();
                                     app.nextTurn();
                                 }
+
+                                app.status.arrestMode = false;
 
                                 return;
                             }
