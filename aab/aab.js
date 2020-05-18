@@ -1585,6 +1585,7 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        rolling: false,
         restartMode: false,
         passMode: false,
         arrestMode: false,
@@ -2333,6 +2334,8 @@ let app = new Vue({
                 }
             }
 
+            app.status.rolling = false;
+
             app.rollDie();
         },
 
@@ -2675,8 +2678,6 @@ let app = new Vue({
                             let currentBlock = app.getBlock(currentPolice.position);
 
                             if (app.status.arrestMode) {
-                                console.log('>>> currentBlock.dice', currentBlock.dice);
-                                console.log('>>> count', count);
 
                                 if (currentBlock.dice == count) {
                                     app.playSelectBurglarSound();

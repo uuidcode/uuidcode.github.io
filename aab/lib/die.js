@@ -29,6 +29,12 @@ function Die(rollCallback) {
         var that = this;
 
         this.$element.on('click', function () {
+            if (app.status.rolling) {
+                return;
+            }
+
+            app.status.rolling = true;
+
             that.roll(function (notation, count) {
                 rollCallback(count[0]);
             });
