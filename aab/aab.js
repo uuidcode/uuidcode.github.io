@@ -1364,6 +1364,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/0.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         },
         {
@@ -1376,6 +1377,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/1.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         },
         {
@@ -1388,6 +1390,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/2.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         },
         {
@@ -1400,6 +1403,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/3.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         },
         {
@@ -1412,6 +1416,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/4.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         },
         {
@@ -1424,6 +1429,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/5.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         },
         {
@@ -1436,6 +1442,7 @@ let data = {
                 height: '100px',
                 backgroundImage: 'url(image/building/6.png)'
             },
+            hasHiddenPolice: false,
             classObject: {}
         }
     ],
@@ -2302,12 +2309,14 @@ let app = new Vue({
                         let jewelryBuildingList = app.buildingList
                             .filter(target => target.jewelryIndex === app.status.hideJewelryIndex + 1);
 
+                        console.log('>>> jewelryBuildingList.length', jewelryBuildingList.length);
+
                         if (jewelryBuildingList.length > 0) {
                             app.blinkJewelry(app.status.hideJewelryIndex + 1, true);
                             app.status.hideJewelryIndex = 2;
+                        } else {
+                            app.status.hideJewelryIndex = 1;
                         }
-
-                        app.status.hideJewelryIndex = 1;
                     } else {
                         app.status.hideJewelryIndex = 2;
                     }
@@ -2316,8 +2325,10 @@ let app = new Vue({
                 if (app.status.hideJewelryIndex === 1) {
                     app.playHideJewelrySound();
                 } else if (app.status.hideJewelryIndex === 2) {
-                    if (app.status.hidePoliceMode) {
-                        app.playStartSound();
+                    let hiddenPoliceBuildingList = app.buildingList.filter(target => target.hasHiddenPolice);
+
+                    if (hiddenPoliceBuildingList.length > 0) {
+                        app.playRestartSound();
                         app.initStartButton();
                     } else {
                         app.playHidePoliceSound();
@@ -3023,7 +3034,7 @@ let app = new Vue({
             for (let i = 0; i < app.buildingList.length; i++) {
                 let building = app.buildingList[i];
                 
-                if (building.jewelryIndex == null) {
+                if (building.jewelryIndex == null && building.hasHiddenPolice === false) {
                     building.classObject.blink = true;
                     Vue.set(app.buildingList, i, building);
                 }
