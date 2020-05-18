@@ -32,11 +32,16 @@
 <script type="text/javascript">
     $(function() {
         $('.move-button').on('click', function () {
-            $(this).closest('.example')
-                .find('.box')
-                .css({
+            let $box = $(this).closest('.example')
+                .find('.box');
+
+            $box.css({
                     left: 100
                 });
+
+            $box.on('transitionend', () => {
+                console.log('transitionend')
+            })
         });
     });
 </script>
