@@ -1790,6 +1790,10 @@ let app = new Vue({
             app.playSound('arrest');
         },
 
+        playConfirmJewelrySound: function () {
+            app.playSound('confirm-jewelry');
+        },
+
         playSelectBurglarSound: function () {
             app.playSound('select-burglar');
         },
@@ -2295,6 +2299,10 @@ let app = new Vue({
         },
 
         threat: function (callback) {
+            if (app.status.threatCount > 0) {
+                return;
+            }
+
             let currentJewelryList = app.jewelryList
                 .filter(jewelry => jewelry.steal === false);
 
@@ -2305,18 +2313,15 @@ let app = new Vue({
 
                 currentJewelry.classObject.blink = true;
 
+                app.playConfirmJewelrySound();
+
                 setTimeout(() => {
-                    alert('확인하였습니까?');
-                    callback();
+                    app.nextTurn();
                     currentJewelry.classObject.blink = false;
                     $jewelry.hide();
                     app.status.threatCount = 1;
                 }, 3000);
-
-                return;
             }
-
-            callback();
         },
 
         nextTurn: function () {
