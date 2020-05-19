@@ -2742,6 +2742,7 @@ let app = new Vue({
                                         return;
                                     } else {
                                         app.playNoEscapeSound();
+                                        app.removeRippleCharacter();
 
                                         setTimeout(function () {
                                             app.nextTurn();
