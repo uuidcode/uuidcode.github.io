@@ -1790,6 +1790,10 @@ let app = new Vue({
             app.playSound('escape');
         },
 
+        playNoEscapeSound: function () {
+            app.playSound('no-escape');
+        },
+
         playTryEscapeSound: function () {
             app.playSound('try-escape');
         },
@@ -2729,12 +2733,20 @@ let app = new Vue({
                                         app.playEscapeSound();
                                         app.status.turn--;
                                         app.status.escape = true;
-                                        app.playThrowSound();
-                                        app.nextTurn();
+
+                                        setTimeout(function () {
+                                            app.playThrowSound();
+                                            app.nextTurn();
+                                        }, 1500);
+
                                         return;
                                     } else {
-                                        alert('탙출하지 못했습니다.');
-                                        app.nextTurn();
+                                        app.playNoEscapeSound();
+
+                                        setTimeout(function () {
+                                            app.nextTurn();
+                                        }, 1500);
+
                                         return;
                                     }
                                 }
