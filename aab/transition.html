@@ -30,18 +30,24 @@
 </div>
 
 <script type="text/javascript">
+    var transition = true;
+
     $(function() {
-        $('.move-button').on('click', function () {
-            let $box = $(this).closest('.example')
-                .find('.box');
+        $('.container').on('click', function(e) {
+            console.log('>>> click');
 
-            $box.css({
-                    left: 100
+            if (transition) {
+                transition = false;
+
+                $(this).find('.box').css({
+                    left: e.pageX,
+                    top: e.pageY
                 });
-
-            $box.on('transitionend', () => {
-                console.log('transitionend')
-            })
+            }
         });
+
+        $('.box').on('transitionend', () => {
+            transition = true;
+        })
     });
 </script>
