@@ -1786,6 +1786,14 @@ let app = new Vue({
             return sound + app.status.turn + '-sound';
         },
 
+        playEscapeSound: function () {
+            app.playSound('escape');
+        },
+
+        playTryEscapeSound: function () {
+            app.playSound('try-escape');
+        },
+
         playArrestSound: function () {
             app.playSound('arrest');
         },
@@ -1835,7 +1843,7 @@ let app = new Vue({
         },
 
         playThrowSound: function () {
-            // app.playSound('throw');
+            app.playSound('throw');
         },
 
         playDieSound: function () {
@@ -1851,6 +1859,8 @@ let app = new Vue({
         },
 
         playSound: function (className) {
+            console.log('>>> className', className);
+
             if (sound != null) {
                 sound.currentTime = 0;
                 sound.pause();
@@ -2555,7 +2565,7 @@ let app = new Vue({
         
         rollDie: function () {
             setTimeout(function () {
-                app.playThrowSound();
+                // app.playThrowSound();
             }, 500);
 
             $('.turnImage').attr('src', app.getCharacterImage());
@@ -2613,11 +2623,11 @@ let app = new Vue({
                         });
                 }
 
-                if (currentBurglar.position === 135) {
-                    if (currentBurglar.arrested) {
-                        $arrestTile
-                            .text('주사위를 던져 1이면 탈출합니다.')
-                            .show()
+                if (!app.status.escape) {
+                    if (currentBurglar.position === 135) {
+                        if (currentBurglar.arrested) {
+                            app.playTryEscapeSound();
+                        }
                     }
                 }
 
@@ -2683,7 +2693,6 @@ let app = new Vue({
                             let currentBlock = app.getBlock(currentPolice.position);
 
                             if (app.status.arrestMode) {
-
                                 if (currentBlock.dice == count) {
                                     app.playSelectBurglarSound();
 
@@ -2706,21 +2715,31 @@ let app = new Vue({
                                 return;
                             }
                         } else {
-                            let currentBurglar = app.getCurrentBurglar();
-                            let currentBlock = app.getBlock(currentBurglar.position);
+                            console.log('>>> app.status.escape', app.status.escape);
 
-                            if (currentBlock.index === 135) {
-                                if (count === 1) {
-                                    alert('탙출합니다.\n주사위를 다시 던지세요.');
-                                    app.status.turn--;
-                                    app.status.escape = true;
-                                    app.nextTurn();
-                                    return;
-                                } else {
-                                    alert('탙출하지 못했습니다.');
-                                    app.nextTurn();
-                                    return;
+                            if (!app.status.escape) {
+                                let currentBurglar = app.getCurrentBurglar();
+                                let currentBlock = app.getBlock(currentBurglar.position);
+
+                                console.log('>>> currentBlock.index', currentBlock.index);
+                                console.log('>>> count', count);
+
+                                if (currentBlock.index === 135) {
+                                    if (count == 1) {
+                                        app.playEscapeSound();
+                                        app.status.turn--;
+                                        app.status.escape = true;
+                                        app.playThrowSound();
+                                        app.nextTurn();
+                                        return;
+                                    } else {
+                                        alert('탙출하지 못했습니다.');
+                                        app.nextTurn();
+                                        return;
+                                    }
                                 }
+                            } else {
+                                app.status.escape = false;
                             }
                         }
 
