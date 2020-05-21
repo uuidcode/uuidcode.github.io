@@ -582,9 +582,9 @@ let blockList = [
         forward: true,
         move: 5,
         directionLinkList: [
-            [47, 48, 49, 50, 51, 64],
+            [56, 55, 54, 15, 19, 20, 14, 13],
             [58, 59, 60, 61, 73, 74, 65, 66],
-            [55, 55, 54, 15, 19, 20, 14, 13]
+            [47, 48, 49, 50, 51, 64]
         ]
     },
     {
@@ -1739,12 +1739,13 @@ let app = new Vue({
         },
         
         catchBurglarWithPathList: function (pathList) {
-            app.burglarList
+            let currentBurglarList = app.burglarList
                 .filter(burglar => !burglar.arrested)
-                .filter(burglar => pathList.includes(burglar.position))
-                .forEach(burglar => {
-                    app.arrestBurglar(burglar);
-                })
+                .filter(burglar => pathList.includes(burglar.position));
+
+            if (currentBurglarList && currentBurglarList.length > 0) {
+                app.arrestBurglar(currentBurglarList[0]);
+            }
         },
 
         checkSteal: function (currentBurglar, callNextTurn) {
@@ -2959,12 +2960,16 @@ let app = new Vue({
                 }
 
                 if (currentBlock.check) {
-                    app.status.blockPathList.push({
-                        index: currentPosition,
-                        path: path
-                    });
+                    let currentBurglar = app.getCurrentBurglar();
 
-                    return;
+                    if (currentBurglar.jewelryIndex != null) {
+                        app.status.blockPathList.push({
+                            index: currentPosition,
+                            path: path
+                        });
+
+                        return;
+                    }
                 }
             }
 
