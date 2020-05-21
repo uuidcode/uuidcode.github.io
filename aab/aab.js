@@ -575,15 +575,15 @@ let blockList = [
             left: '1500px',
             top: '200px',
         },
-        linkList: [56, 58, 54],
+        linkList: [56, 58, 64],
         trick: true,
         linkDirectionList: ['down', 'up', 'left'],
         mission: true,
         forward: true,
         move: 5,
         directionLinkList: [
-            [56, 55, 54, 15, 19, 20, 14, 13],
             [58, 59, 60, 61, 73, 74, 65, 66],
+            [56, 55, 54, 15, 19, 20, 14, 13],
             [47, 48, 49, 50, 51, 64]
         ]
     },
@@ -959,7 +959,7 @@ let blockList = [
         linkList: [94, 96],
         linkDirectionList: ['right', 'left'],
         changePosition: true,
-        move: 86
+        move: 78
     },
     {
         index: 96,
@@ -1585,6 +1585,7 @@ let data = {
     ],
     blockList: blockList,
     status: {
+        changePositionMode: false,
         rolling: false,
         restartMode: false,
         passMode: false,
@@ -1811,8 +1812,12 @@ let app = new Vue({
             app.playSound('select-burglar');
         },
 
-        playNotArrestSound: function () {
-            app.playSound('not-arrest');
+        playNoArrestSound: function () {
+            app.playSound('no-arrest');
+        },
+
+        playNoJewelrySound: function () {
+            app.playSound('no-jewelry');
         },
 
         playChangeSound: function () {
@@ -1885,6 +1890,12 @@ let app = new Vue({
             let audio = app.getAudio(className);
             audio.currentTime = 0;
             audio.pause();
+        },
+
+        nextTurnAfterAfterTwoSecond() {
+            setTimeout(function () {
+                app.nextTurn();
+            }, 2000);
         },
 
         updateBlock: function (selectedBlock) {
@@ -1978,6 +1989,12 @@ let app = new Vue({
                     app.catchBurglarWithPathList([selectedBlock.index]);
                     app.status.runModeComplete = false;
                     app.nextTurn();
+                } else if (app.status.changePositionMode) {
+                    app.status.changePositionMode = false;
+                    app.nextTurn();
+                } else if (selectedBlock.changePosition) {
+                    app.status.changePositionMode = true;
+                    app.moveByIndex(selectedBlock.move);
                 } else if (selectedBlock.drop && app.status.burglarTurn) {
                     let currentBurglar = app.getCurrentBurglar();
 
@@ -2009,8 +2026,8 @@ let app = new Vue({
                             alert('보석을 넘겨줄 도둑이 없습니다.');
                         }
                     } else {
-                        alert('보석이 없습니다.');
-                        app.nextTurn();
+                        app.playNoJewelrySound();
+                        app.nextTurnAfterAfterTwoSecond();
                     }
                 } else if (selectedBlock.check && app.status.burglarTurn) {
                     selectedBlock.check = false;
@@ -2041,14 +2058,12 @@ let app = new Vue({
                     app.status.missionBurglarMode = false;
                     app.nextTurn();
                 } else if (app.status.missionPoliceMode) {
-
                     app.status.missionPoliceMode = false;
                     app.nextTurn();
                 } else if (app.status.moveBurglarMode) {
                     app.status.moveBurglarMode = false;
                     app.nextTurn();
                 } else if (app.status.movePoliceMode) {
-
                     app.status.movePoliceMode = false;
                     app.nextTurn();
                 } else if (selectedBlock.threat) {
@@ -2230,14 +2245,11 @@ let app = new Vue({
                                     let burglar = app.getCurrentBurglar();
                                     app.arrestBurglar(burglar);
                                     $hiddenPolice.remove();
-
-                                    setTimeout(function () {
-                                        app.nextTurn();
-                                    }, 2000)
+                                    app.nextTurnAfterAfterTwoSecond();
                                 }, 2000);
                             } else {
-                                alert('보석이 없습니다.');
-                                app.nextTurn();
+                                app.playNoJewelrySound();
+                                app.nextTurnAfterAfterTwoSecond();
                             }
                         }
                     }
@@ -2290,6 +2302,10 @@ let app = new Vue({
         },
 
         removeTrick: function (selectedBlock) {
+            if (app.status.burglarTurn) {
+                return;
+            }
+
             selectedBlock.trickDirection = null;
             $('.trick-modal[data-block-index=' + selectedBlock.index + ']').remove();
         },
@@ -2698,7 +2714,7 @@ let app = new Vue({
                             let currentBlock = app.getBlock(currentPolice.position);
 
                             if (app.status.arrestMode) {
-                                if (currentBlock.dice == count) {
+                                if (currentBlock.dice === count) {
                                     app.playSelectBurglarSound();
 
                                     app.status.catch = true;
@@ -2710,7 +2726,7 @@ let app = new Vue({
                                             Vue.set(app.burglarList, target.index, target);
                                         });
                                 } else {
-                                    app.playNotArrestSound();
+                                    app.playNoArrestSound();
                                     app.removeRippleCharacter();
                                     app.nextTurn();
                                 }
@@ -2776,11 +2792,11 @@ let app = new Vue({
         getDiceCount: function (count) {
             let countForDebug = $('#countForDebug').val();
 
-            if (countForDebug !== '0') {
-                count = countForDebug;
+            if (countForDebug === '0') {
+                return count;
             }
 
-            return count;
+            return parseInt(countForDebug);
         },
 
         goAndBlink: function (count, filter) {
