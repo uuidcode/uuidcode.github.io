@@ -1,3 +1,13 @@
+(function($) {
+    $.fn.enabled = function () {
+        return $(this).prop( "disabled", false);
+    };
+
+    $.fn.disabled = function () {
+        return $(this).prop( "disabled", true);
+    };
+})(jQuery);
+
 let die = null;
 let sound = null;
 
@@ -1981,6 +1991,7 @@ let app = new Vue({
 
                     if (app.status.movePoliceMode ||
                         app.status.changePoliceMode ||
+                        app.status.changePositionMode ||
                         app.status.missionPoliceMode) {
                         pathList = [selectedBlock.index];
                     }
@@ -2145,8 +2156,8 @@ let app = new Vue({
                 } else if (selectedBlock.arrest) {
                     app.status.turn--;
                     app.playTryArrestSound(selectedBlock.dice);
-                    app.nextTurn();
                     app.status.arrestMode = true;
+                    app.nextTurn();
                 } else if (selectedBlock.goHome) {
                     let $burglarStartBlock = $('.block[data-index=0]');
                     let $policeStartBlock = $('.block[data-index=135]');
@@ -2685,7 +2696,7 @@ let app = new Vue({
 
                 if (app.status.checkCount === 0) {
                     $checkComment.text('검문할 수 없습니다.');
-                    app.disabled($checkButton);
+                    $checkButton.disabled();
                 }
 
                 $checkButton.show()
@@ -2703,14 +2714,23 @@ let app = new Vue({
                         app.status.checkMode = true;
                         app.blinkBlock(blockIndexList);
                         app.status.checkCount--;
-                    });
+                    })
+                    .enabled();
 
                 let currentPosition = app.getCurrentCharacter().position;
                 let currentBlock = app.getBlock(currentPosition);
 
-                if (currentBlock.arrest) {
+                if (currentBlock.arrest && app.status.arrestMode) {
+                    let name = '이';
+
+                    if (currentBlock.dice === 2) {
+                        name = '가';
+                    }
+
+                    $checkButton.disabled();
+
                     $arrestTile
-                        .text('주사위를 던져 ' + currentBlock.dice + '이면 도둑을 체포할 수 있습니다.')
+                        .text(`주사위를 던져서 ${currentBlock.dice}${name} 나오면 도둑 한명을 체포할 수 있습니다.`)
                         .show();
                 }
             }
@@ -2744,6 +2764,7 @@ let app = new Vue({
                                             Vue.set(app.burglarList, target.index, target);
                                         });
                                 } else {
+                                    app.status.arrestMode = false;
                                     app.playNoArrestSound();
                                     app.removeRippleCharacter();
                                     app.nextTurn();
@@ -3507,6 +3528,8 @@ let jewelry = app.jewelryList[app.status.hideJewelryIndex];
 Vue.set(app.jewelryList, app.status.hideJewelryIndex, jewelry);
 
 $('body').on('click', '.debug-container .btn-default', function () {
+    app.status.rolling = false;
+
     if ($(this).hasClass('burglar0')) {
         app.status.burglarTurn = true;
         app.status.policeTurn = false;
