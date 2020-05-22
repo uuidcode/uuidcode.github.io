@@ -2274,6 +2274,8 @@ let app = new Vue({
             let burglar = app.burglarList
                 .filter(target => target.index == index)[0];
 
+            console.log('>>> app.status.arrestMode', app.status.arrestMode);
+
             if (app.status.arrestMode) {
                 app.arrestBurglar(burglar);
                 app.removeRippleCharacter();
@@ -2647,6 +2649,10 @@ let app = new Vue({
                 if (!app.status.escape) {
                     if (currentBurglar.position === 135) {
                         if (currentBurglar.arrested) {
+                            $arrestTile
+                                .text('주사위를 던져 1이면 탈출합니다.')
+                                .show();
+
                             app.playTryEscapeSound();
                         }
                     }
@@ -2695,6 +2701,12 @@ let app = new Vue({
 
                 let currentPosition = app.getCurrentCharacter().position;
                 let currentBlock = app.getBlock(currentPosition);
+
+                if (currentBlock.arrest) {
+                    $arrestTile
+                        .text('주사위를 던져 ' + currentBlock.dice + '이면 도둑을 체포할 수 있습니다.')
+                        .show();
+                }
             }
 
             let position = app.getCurrentCharacter().position;
@@ -2730,8 +2742,6 @@ let app = new Vue({
                                     app.removeRippleCharacter();
                                     app.nextTurn();
                                 }
-
-                                app.status.arrestMode = false;
 
                                 return;
                             }
