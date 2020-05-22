@@ -1734,6 +1734,8 @@ let app = new Vue({
                 app.checkGameOver();
             });
 
+            app.playArrestSound();
+
             if (app.collectJewelry(burglar)) {
                 app.status.restartMode = true;
             }
@@ -1798,6 +1800,10 @@ let app = new Vue({
 
         playTryEscapeSound: function () {
             app.playSound('try-escape');
+        },
+
+        playTryArrestSound: function (move) {
+            app.playSound('try-arrest' + move);
         },
 
         playArrestSound: function () {
@@ -2138,7 +2144,7 @@ let app = new Vue({
                     }
                 } else if (selectedBlock.arrest) {
                     app.status.turn--;
-                    app.playArrestSound();
+                    app.playTryArrestSound(selectedBlock.dice);
                     app.nextTurn();
                     app.status.arrestMode = true;
                 } else if (selectedBlock.goHome) {
