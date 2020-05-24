@@ -2788,6 +2788,7 @@ let app = new Vue({
                                         app.playEscapeSound();
                                         app.status.turn--;
                                         app.status.escape = true;
+                                        currentBurglar.arrested = false;
 
                                         setTimeout(function () {
                                             app.playThrowSound();
