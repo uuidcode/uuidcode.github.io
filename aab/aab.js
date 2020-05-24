@@ -1974,7 +1974,7 @@ let app = new Vue({
                 app.removeTrick(selectedBlock);
                 app.removeTrickList();
 
-                app.removeCheck(selectedBlock);
+                // app.removeCheck(selectedBlock);
                 app.removeCheckList();
 
                 console.log('>>> app.status.blockPathList', app.status.blockPathList);
@@ -2087,7 +2087,7 @@ let app = new Vue({
                     if (app.status.policeTurn) {
                         app.nextTurn();
                     } else {
-                        app.threat(app.nextTurn);
+                        app.threat();
                     }
                 } else if (selectedBlock.changeBurglar && app.status.burglarTurn) {
                     let indexList = app.blockList.filter(target => target.changeBurglar)
@@ -2348,8 +2348,9 @@ let app = new Vue({
             app.resetCheckIndexList();
         },
 
-        threat: function (callback) {
+        threat: function () {
             if (app.status.threatCount > 0) {
+                app.nextTurn();
                 return;
             }
 
@@ -2864,13 +2865,17 @@ let app = new Vue({
                     .addClass('blink');
             });
 
-            app.status.checkIndexList
-                .filter(index => !filter.includes(index))
-                .forEach(index => {
-                    $('.block[data-index=' + index + ']')
-                        .find('.check')
-                        .addClass('blink');
-                });
+            let currentBurglar = app.getCurrentBurglar();
+
+            if (app.status.burglarTurn && currentBurglar.jewelryIndex != null) {
+                app.status.checkIndexList
+                    .filter(index => !filter.includes(index))
+                    .forEach(index => {
+                        $('.block[data-index=' + index + ']')
+                            .find('.check')
+                            .addClass('blink');
+                    });
+            }
 
             if (app.status.burglarTurn) {
                 currentCharacter.classObject.burglarRipple = true;
