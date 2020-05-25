@@ -1808,6 +1808,10 @@ let app = new Vue({
             app.playSound('escape');
         },
 
+        playShowJewelrySound: function () {
+            app.playSound('show-jewelry');
+        },
+
         playNoEscapeSound: function () {
             app.playSound('no-escape');
         },
@@ -2286,6 +2290,10 @@ let app = new Vue({
         },
 
         moveByEvent: function (event) {
+            if (app.status.trickMode) {
+                return;
+            }
+
             let selectedBlock = app.getSelectedBlock(event);
             app.move(selectedBlock);
         },
@@ -2616,12 +2624,12 @@ let app = new Vue({
             $('.turnImage').attr('src', app.getCharacterImage());
 
             let $turnModal = app.getTurnModalElement().modal();
-            let $restCountButton = $('.btn-rest-count');
-            let $restButton = $('.btn-rest');
-            let $trickButton = $('.btn-select-block-for-trick');
-            let $arrestTile = $('.arrest-title');
-            let $checkButton = $('.btn-check');
-            let $showJewelryButton = $('.btn-show-jewelry');
+            let $restCountButton = $('.btn-rest-count').enabled();
+            let $restButton = $('.btn-rest').enabled();
+            let $trickButton = $('.btn-select-block-for-trick').enabled();
+            let $arrestTile = $('.arrest-title').enabled();
+            let $checkButton = $('.btn-check').enabled();
+            let $showJewelryButton = $('.btn-show-jewelry').enabled();
             let $checkComment = $('.check-comment');
 
             $restCountButton.hide();
@@ -2663,6 +2671,7 @@ let app = new Vue({
                     $restButton.show()
                         .off('click')
                         .on('click', function () {
+                            $('.btn-select-block-for-trick').disabled();
                             currentBurglar.rest++;
                             $turnModal.modal('hide');
                             app.removeBlinkCharacter();
@@ -2686,6 +2695,7 @@ let app = new Vue({
                     $trickButton.show()
                         .off('click')
                         .on('click', function () {
+                            $('.btn-rest').disabled();
                             $turnModal.modal('hide');
                             app.backgroundActive();
 
@@ -2700,6 +2710,10 @@ let app = new Vue({
             } else {
                 $showJewelryButton.show().off('click')
                     .on('click', function () {
+                        $('.btn-check').disabled();
+                        app.status.rolling = true;
+                        app.playShowJewelrySound();
+
                         app.jewelryList.filter(target => !target.steal)
                             .forEach((target, index) => {
                                 target.styleObject.display = 'block';
@@ -2724,6 +2738,8 @@ let app = new Vue({
                                 app.hiddenPolice.classObject.roundBlink = false;
                                 $hiddenPolice.hide();
                             }
+
+                            app.status.rolling = false;
                         }, 3000);
                     });
 
@@ -2738,6 +2754,7 @@ let app = new Vue({
                 $checkButton.show()
                     .off('click')
                     .on('click', function () {
+                        $('.btn-show-jewelry').disabled();
                         let burglarPositionList = app.burglarList.map(target => target.position);
 
                         let blockIndexList = app.blockList.filter(target => !target.onlyBurglar)

@@ -29,6 +29,15 @@ function Die(rollCallback) {
         var that = this;
 
         this.$element.on('click', function () {
+            if (app.status.trickMode) {
+                return;
+            }
+
+            $('.btn-select-block-for-trick').disabled();
+            $('.btn-rest').disabled();
+            $('.btn-show-jewelry').disabled();
+            $('.btn-check').disabled();
+
             if (app.status.rolling) {
                 return;
             }
