@@ -6,6 +6,10 @@
     $.fn.disabled = function () {
         return $(this).prop( "disabled", true);
     };
+
+    $.fn.exists = function() {
+        return $(this).length > 0;
+    };
 })(jQuery);
 
 let die = null;
@@ -2617,12 +2621,14 @@ let app = new Vue({
             let $trickButton = $('.btn-select-block-for-trick');
             let $arrestTile = $('.arrest-title');
             let $checkButton = $('.btn-check');
+            let $showJewelryButton = $('.btn-show-jewelry');
             let $checkComment = $('.check-comment');
 
             $restCountButton.hide();
             $restButton.hide();
             $trickButton.hide();
             $arrestTile.hide();
+            $showJewelryButton.hide();
             $checkComment.hide();
 
             let currentBurglar = app.getCurrentBurglar();
@@ -2692,6 +2698,35 @@ let app = new Vue({
                         });
                 }
             } else {
+                $showJewelryButton.show().off('click')
+                    .on('click', function () {
+                        app.jewelryList.filter(target => !target.steal)
+                            .forEach((target, index) => {
+                                target.styleObject.display = 'block';
+                                app.blinkJewelry(index, true);
+                            });
+
+                        let $hiddenPolice = $('.hiddenPolice');
+                        
+                        if ($hiddenPolice.exists()) {
+                            app.hiddenPolice.classObject.roundBlink = true;
+                            $hiddenPolice.show();
+                        }
+                        
+                        setTimeout(function () {
+                            app.jewelryList.filter(target => !target.steal)
+                                .forEach((target, index) => {
+                                    target.styleObject.display = 'none';
+                                    app.blinkJewelry(index, false);
+                                });
+
+                            if ($hiddenPolice.exists()) {
+                                app.hiddenPolice.classObject.roundBlink = false;
+                                $hiddenPolice.hide();
+                            }
+                        }, 3000);
+                    });
+
                 $checkComment.show();
                 $checkComment.text(`${app.status.checkCount}번 검문 할 수 있습니다.`);
 
