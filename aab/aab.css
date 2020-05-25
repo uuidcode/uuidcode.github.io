@@ -371,6 +371,7 @@ body {
 .direction.disabled {
     background-color: lightgrey;
     cursor: unset;
+    visibility: hidden;
 }
 
 .direction.disabled:hover {

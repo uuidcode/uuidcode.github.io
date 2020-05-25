@@ -2330,7 +2330,7 @@ let app = new Vue({
             }
 
             selectedBlock.trickDirection = null;
-            $('.trick-modal[data-block-index=' + selectedBlock.index + ']').remove();
+            $('.cloned-trick-modal[data-block-index=' + selectedBlock.index + ']').remove();
         },
 
         removeCheck: function (selectedBlock) {
@@ -3597,6 +3597,7 @@ $('body').on('click', '.debug-container .btn-default', function () {
         app.status.turn = 2;
     }
 
+    app.removeRippleCharacter();
     app.removeBlinkBlock();
     app.rollDie();
 });
@@ -3610,7 +3611,9 @@ $('#trickModal.live .direction').on('click', function () {
     let $parent = $(this).closest('#trickModal');
 
     let blockIndex = $parent.attr('data-block-index');
-    let $newDirection = $parent.clone().removeClass('live');
+    let $newDirection = $parent.clone()
+        .removeClass('live')
+        .addClass('cloned-trick-modal');
 
     $('#trickModal.live').hide();
 
@@ -3638,6 +3641,7 @@ $('#trickModal.live .direction').on('click', function () {
     app.blockList[blockIndex].trickDirection = direction;
 
     setTimeout(function () {
+        app.removeRippleCharacter();
         app.nextTurn();
     }, 500);
 });
