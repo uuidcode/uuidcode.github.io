@@ -63,6 +63,8 @@
     background-size: cover;
     z-index: 3000;
     border-radius: 15px;
+    transition-duration: 1s;
+    transition-property: left, top;
 }
 
 .policeCharacter {

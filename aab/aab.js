@@ -1940,14 +1940,16 @@ let app = new Vue({
                 return;
             }
 
-            $currentCharacter.animate({
-                left: left,
-                top: top,
-            }, 500, function () {
-                if (callback) {
+            $currentCharacter
+                .off('transitionend')
+                .on('transitionend', function (e) {
+                    console.log('>>> transitionend');
                     callback();
-                }
-            });
+                })
+                .css({
+                    left: left,
+                    top: top,
+                });
         },
 
         playClickBlockSound: function () {
@@ -1982,7 +1984,6 @@ let app = new Vue({
                 app.removeTrick(selectedBlock);
                 app.removeTrickList();
 
-                // app.removeCheck(selectedBlock);
                 app.removeCheckList();
 
                 console.log('>>> app.status.blockPathList', app.status.blockPathList);
