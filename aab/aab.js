@@ -2162,9 +2162,12 @@ let app = new Vue({
                         app.nextTurn();
                     }
                 } else if (selectedBlock.arrest) {
-                    app.status.turn--;
-                    app.playTryArrestSound(selectedBlock.dice);
-                    app.status.arrestMode = true;
+                    if (app.status.policeTurn) {
+                        app.status.turn--;
+                        app.playTryArrestSound(selectedBlock.dice);
+                        app.status.arrestMode = true;
+                    }
+
                     app.nextTurn();
                 } else if (selectedBlock.goHome) {
                     let $burglarStartBlock = $('.block[data-index=0]');
