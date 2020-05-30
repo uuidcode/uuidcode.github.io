@@ -2,7 +2,7 @@ let data = {
     blockList: [
         {
             index: 0,
-            link: [1],
+            linkList: [1, 2],
             styleObject: {
                 left: 0,
                 top: 0
@@ -10,18 +10,41 @@ let data = {
         },
         {
             index: 1,
+            linkList: [],
             styleObject: {
                 left: 150,
                 top: 0
+            }
+        },
+        {
+            index: 2,
+            linkList: [],
+            styleObject: {
+                left: 0,
+                top: 150
             }
         }
     ]
 };
 
-data.blockList.forEach((item, index) => {
+data.blockList.forEach((item) => {
     item.classObject = {
         block: true
-    }
+    };
+
+    item.linkList.forEach((nextItemIndex) => {
+        let nextItem = data.blockList[nextItemIndex];
+
+        $(document.body).curvedArrow({
+            p0x: item.styleObject.left + 50,
+            p0y: item.styleObject.top + 50,
+            p1x: item.styleObject.left + 50,
+            p1y: item.styleObject.top + 50,
+            p2x: nextItem.styleObject.left + 50,
+            p2y: nextItem.styleObject.top + 50,
+            strokeStyle: 'rgba(133, 255, 133, 1)'
+        });
+    });
 });
 
 let app = new Vue({
@@ -29,3 +52,4 @@ let app = new Vue({
     data: data,
     methods: {}
 });
+
