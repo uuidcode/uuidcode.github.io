@@ -1,0 +1,27 @@
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="lib/jquery-3.3.1.min.js"></script>
+    <script src="lib/three.js"></script>
+    <script src="lib/teal.js"></script>
+    <script src="lib/cannon.js"></script>
+    <script src="lib/dice.js"></script>
+    <script src="lib/die.js"></script>
+    <script src="lib/jquery.curvedarrow.js"></script>
+    <script src="lib/bootstrap.js"></script>
+    <link href="lib/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="map.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="app">
+    <div v-for="block in blockList"
+         :data-index="block.index"
+         :style="block.styleObject"
+         :class="block.classObject">
+        {{ block.index }}
+    </div>
+</div>
+<script src="map.js"></script>
+</body>
+</html>
