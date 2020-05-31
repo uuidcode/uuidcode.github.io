@@ -101,12 +101,10 @@ function getCurvedArrow(item, nextItem) {
     let itemLinkList = getLinkList(item);
     let nextItemLinkList = getLinkList(nextItem);
 
-    console.log('>>> itemLinkList', itemLinkList);
-    console.log('>>> nextItemLinkList', nextItemLinkList);
-
     return itemLinkList.flatMap(x => {
         return nextItemLinkList.map(y => {
-            return [...x, ...y, Math.pow(x[0] - y[0], 2) + Math.pow(x[1] - y[1], 2)];
+            let distance = Math.pow(x[0] - y[0], 2) + Math.pow(x[1] - y[1], 2);
+            return [...x, ...y, distance];
         })
     })
     .sort((x, y) => x[4] - y[4]);
