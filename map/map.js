@@ -7,7 +7,7 @@ let data = {
             linkList: [1, 2],
             styleObject: {
                 left: 100,
-                top: 0
+                top: 50
             }
         },
         {
@@ -15,7 +15,7 @@ let data = {
             linkList: [3],
             styleObject: {
                 left: 200,
-                top: 0
+                top: 50
             }
         },
         {
@@ -23,7 +23,7 @@ let data = {
             linkList: [],
             styleObject: {
                 left: 100,
-                top: 100
+                top: 150
             }
         },
         {
@@ -31,7 +31,7 @@ let data = {
             linkList: [4],
             styleObject: {
                 left: 300,
-                top: 0
+                top: 50
             }
         },
         {
@@ -39,7 +39,7 @@ let data = {
             linkList: [5],
             styleObject: {
                 left: 400,
-                top: 0
+                top: 50
             }
         },
         {
@@ -47,7 +47,7 @@ let data = {
             linkList: [6],
             styleObject: {
                 left: 450,
-                top: 50
+                top: 100
             }
         },
         {
@@ -55,7 +55,7 @@ let data = {
             linkList: [7],
             styleObject: {
                 left: 450,
-                top: 125
+                top: 175
             }
         },
         {
@@ -63,7 +63,7 @@ let data = {
             linkList: [8],
             styleObject: {
                 left: 400,
-                top: 175
+                top: 225
             },
             classObject: {
                 gate: true
@@ -74,7 +74,7 @@ let data = {
             linkList: [9],
             styleObject: {
                 left: 350,
-                top: 125
+                top: 175
             }
         },
         {
@@ -82,7 +82,7 @@ let data = {
             linkList: [4],
             styleObject: {
                 left: 350,
-                top: 50
+                top: 100
             }
         }
     ]
@@ -99,15 +99,27 @@ function getLinkList(item) {
 
 function getCurvedArrow(item, nextItem) {
     let itemLinkList = getLinkList(item);
+    console.log('>>> item.linkPoint', item.linkPoint);
+
+    itemLinkList = rotate(itemLinkList, item.linkPoint);
+
     let nextItemLinkList = getLinkList(nextItem);
 
     return itemLinkList.flatMap(x => {
-        return nextItemLinkList.map(y => {
+        return nextItemLinkList.map((y, index) => {
             let distance = Math.pow(x[0] - y[0], 2) + Math.pow(x[1] - y[1], 2);
-            return [...x, ...y, distance];
+            return [...x, ...y, distance, index];
         })
     })
     .sort((x, y) => x[4] - y[4]);
+}
+
+function rotate (arr, count)  {
+    if (count === 0) {
+        return arr;
+    }
+
+    return [...arr.slice(count, arr.length), ...arr.slice(0, count)];
 }
 
 data.blockList.forEach((item) => {
@@ -123,6 +135,9 @@ data.blockList.forEach((item) => {
         console.log('>>> curvedArrow', curvedArrow);
 
         curvedArrow = curvedArrow[0];
+
+        nextItem.linkPoint = curvedArrow[5];
+
         $(document.body).curvedArrow({
             p0x: curvedArrow[0],
             p0y: curvedArrow[1],
