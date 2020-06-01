@@ -187,6 +187,9 @@ let data = {
             styleObject: {
                 left: 100,
                 top: 350
+            },
+            classObject: {
+                gate: true
             }
         },
         {
