@@ -44,10 +44,14 @@ let data = {
         },
         {
             index: 5,
-            linkList: [6],
+            linkList: [6, 12],
+            linkPosition: [2, 1],
             styleObject: {
                 left: 450,
                 top: 100
+            },
+            classObject: {
+                gate: true
             }
         },
         {
@@ -64,6 +68,7 @@ let data = {
         {
             index: 7,
             linkList: [8, 10],
+            linkPosition: [3, 2],
             styleObject: {
                 left: 400,
                 top: 225
@@ -101,9 +106,18 @@ let data = {
         },
         {
             index: 11,
-            linkList: [],
+            linkList: [12],
             styleObject: {
                 left: 500,
+                top: 300
+            }
+        }
+        ,
+        {
+            index: 12,
+            linkList: [],
+            styleObject: {
+                left: 600,
                 top: 300
             }
         }
@@ -119,11 +133,15 @@ function getLinkList(item) {
     ];
 }
 
-function getCurvedArrow(item, nextItem) {
+function getCurvedArrow(item, nextItem, index) {
     let itemLinkList = getLinkList(item);
-    console.log('>>> item.linkPoint', item.linkPoint);
 
-    itemLinkList = rotate(itemLinkList, item.linkPoint);
+    if (item.linkPosition) {
+        console.log('>>> item.linkPosition', item.linkPosition);
+        console.log('>>> index', index);
+        let linkPosition = item.linkPosition[index];
+        itemLinkList = [itemLinkList[linkPosition]];
+    }
 
     let nextItemLinkList = getLinkList(nextItem);
 
@@ -150,15 +168,13 @@ data.blockList.forEach((item) => {
         block: true
     };
 
-    item.linkList.forEach((nextItemIndex) => {
+    item.linkList.forEach((nextItemIndex, index) => {
         let nextItem = data.blockList[nextItemIndex];
-        let curvedArrow = getCurvedArrow(item, nextItem);
+        let curvedArrow = getCurvedArrow(item, nextItem, index);
 
         console.log('>>> curvedArrow', curvedArrow);
 
         curvedArrow = curvedArrow[0];
-
-        nextItem.linkPoint = curvedArrow[5];
 
         $(document.body).curvedArrow({
             p0x: curvedArrow[0],
