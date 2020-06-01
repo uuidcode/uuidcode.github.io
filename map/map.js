@@ -56,6 +56,9 @@ let data = {
             styleObject: {
                 left: 450,
                 top: 175
+            },
+            classObject: {
+                home: true
             }
         },
         {
@@ -75,6 +78,9 @@ let data = {
             styleObject: {
                 left: 350,
                 top: 175
+            },
+            classObject: {
+                forest: true
             }
         },
         {
