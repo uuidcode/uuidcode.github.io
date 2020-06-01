@@ -20,7 +20,7 @@ let data = {
         },
         {
             index: 2,
-            linkList: [],
+            linkList: [18],
             styleObject: {
                 left: 100,
                 top: 150
@@ -111,14 +111,62 @@ let data = {
                 left: 500,
                 top: 300
             }
-        }
-        ,
+        },
         {
             index: 12,
-            linkList: [],
+            linkList: [13],
             styleObject: {
                 left: 600,
                 top: 300
+            }
+        },
+        {
+            index: 13,
+            linkList: [14],
+            styleObject: {
+                left: 650,
+                top: 350
+            }
+        },
+        {
+            index: 14,
+            linkList: [15],
+            styleObject: {
+                left: 650,
+                top: 425
+            }
+        },
+        {
+            index: 15,
+            linkList: [16],
+            linkPosition: [3],
+            styleObject: {
+                left: 600,
+                top: 475
+            }
+        },
+        {
+            index: 16,
+            linkList: [17],
+            styleObject: {
+                left: 550,
+                top: 425
+            }
+        },
+        {
+            index: 17,
+            linkList: [12],
+            styleObject: {
+                left: 550,
+                top: 350
+            }
+        },
+        {
+            index: 18,
+            linkList: [],
+            styleObject: {
+                left: 100,
+                top: 250
             }
         }
     ]
