@@ -207,10 +207,13 @@ let data = {
         },
         {
             index: 23,
-            linkList: [24],
+            linkList: [24, 2],
             styleObject: {
                 left: 200,
                 top: 450
+            },
+            classObject: {
+                gate: true
             }
         },
         {
@@ -219,6 +222,9 @@ let data = {
             styleObject: {
                 left: 300,
                 top: 450
+            },
+            classObject: {
+                home: true
             }
         },
         {
@@ -279,8 +285,6 @@ data.blockList.forEach((item) => {
     item.linkList.forEach((nextItemIndex, index) => {
         let nextItem = data.blockList[nextItemIndex];
         let curvedArrow = getCurvedArrow(item, nextItem, index);
-
-        console.log('>>> curvedArrow', curvedArrow);
 
         curvedArrow = curvedArrow[0];
 
