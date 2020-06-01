@@ -110,6 +110,9 @@ let data = {
             styleObject: {
                 left: 500,
                 top: 300
+            },
+            classObject: {
+                sea: true
             }
         },
         {
@@ -163,10 +166,67 @@ let data = {
         },
         {
             index: 18,
-            linkList: [],
+            linkList: [19],
             styleObject: {
                 left: 100,
                 top: 250
+            }
+        },
+        {
+            index: 19,
+            linkList: [20],
+            styleObject: {
+                left: 150,
+                top: 300
+            }
+        },
+        {
+            index: 20,
+            linkList: [21, 22],
+            linkPosition: [3, 2],
+            styleObject: {
+                left: 100,
+                top: 350
+            }
+        },
+        {
+            index: 21,
+            linkList: [18],
+            styleObject: {
+                left: 50,
+                top: 300
+            }
+        },
+        {
+            index: 22,
+            linkList: [23],
+            styleObject: {
+                left: 100,
+                top: 450
+            }
+        },
+        {
+            index: 23,
+            linkList: [24],
+            styleObject: {
+                left: 200,
+                top: 450
+            }
+        },
+        {
+            index: 24,
+            linkList: [25],
+            styleObject: {
+                left: 300,
+                top: 450
+            }
+        },
+        {
+            index: 25,
+            linkList: [17],
+            styleObject: {
+                left: 400,
+                top: 450
             }
         }
     ]
