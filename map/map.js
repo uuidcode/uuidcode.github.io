@@ -60,7 +60,7 @@ let data = {
         },
         {
             index: 7,
-            linkList: [8],
+            linkList: [8, 10],
             styleObject: {
                 left: 400,
                 top: 225
@@ -83,6 +83,22 @@ let data = {
             styleObject: {
                 left: 350,
                 top: 100
+            }
+        },
+        {
+            index: 10,
+            linkList: [11],
+            styleObject: {
+                left: 400,
+                top: 300
+            }
+        },
+        {
+            index: 11,
+            linkList: [],
+            styleObject: {
+                left: 500,
+                top: 300
             }
         }
     ]
