@@ -4,52 +4,40 @@ let data = {
     blockList: [
         {
             index: 0,
+            x: 2,
+            y: 1,
             linkList: [1, 2],
-            styleObject: {
-                left: 100,
-                top: 50
-            }
         },
         {
             index: 1,
+            x: 4,
+            y: 1,
             linkList: [3],
-            styleObject: {
-                left: 200,
-                top: 50
-            }
         },
         {
             index: 2,
+            x: 2,
+            y: 3,
             linkList: [18],
-            styleObject: {
-                left: 100,
-                top: 150
-            }
         },
         {
             index: 3,
+            x: 6,
+            y: 1,
             linkList: [4],
-            styleObject: {
-                left: 300,
-                top: 50
-            }
         },
         {
             index: 4,
+            x: 8,
+            y: 1,
             linkList: [5],
-            styleObject: {
-                left: 400,
-                top: 50
-            }
         },
         {
             index: 5,
+            x: 9,
+            y: 2,
             linkList: [6, 12],
             linkPosition: [2, 1],
-            styleObject: {
-                left: 450,
-                top: 100
-            },
             classObject: {
                 gate: true,
                 link: true
@@ -57,61 +45,49 @@ let data = {
         },
         {
             index: 6,
+            x: 9,
+            y: 4,
             linkList: [7],
-            styleObject: {
-                left: 450,
-                top: 175
-            },
             classObject: {
                 home: true
             }
         },
         {
             index: 7,
+            x: 8,
+            y: 5,
             linkList: [8, 10],
             linkPosition: [3, 2],
-            styleObject: {
-                left: 400,
-                top: 225
-            },
             classObject: {
                 gate: true
             }
         },
         {
             index: 8,
+            x: 7,
+            y: 4,
             linkList: [9],
-            styleObject: {
-                left: 350,
-                top: 175
-            },
             classObject: {
                 forest: true
             }
         },
         {
             index: 9,
+            x: 7,
+            y: 2,
             linkList: [4],
-            styleObject: {
-                left: 350,
-                top: 100
-            }
         },
         {
             index: 10,
-            linkList: [11],
-            styleObject: {
-                left: 400,
-                top: 300
-            }
+            x: 8,
+            y: 7,
+            linkList: [11]
         },
         {
             index: 11,
             linkList: [12],
-            styleObject: {
-                left: 500,
-                top: 300
-            },
+            x: 10,
+            y: 7,
             classObject: {
                 sea: true
             }
@@ -119,76 +95,58 @@ let data = {
         {
             index: 12,
             linkList: [13],
-            styleObject: {
-                left: 600,
-                top: 300
-            }
+            x: 12,
+            y: 7,
         },
         {
             index: 13,
             linkList: [14],
-            styleObject: {
-                left: 650,
-                top: 350
-            }
+            x: 13,
+            y: 8,
         },
         {
             index: 14,
             linkList: [15],
-            styleObject: {
-                left: 650,
-                top: 425
-            }
+            x: 13,
+            y: 10,
         },
         {
             index: 15,
             linkList: [16],
             linkPosition: [3],
-            styleObject: {
-                left: 600,
-                top: 475
-            }
+            x: 12,
+            y: 11,
         },
         {
             index: 16,
             linkList: [17],
-            styleObject: {
-                left: 550,
-                top: 425
-            }
+            x: 11,
+            y: 10,
         },
         {
             index: 17,
             linkList: [12],
-            styleObject: {
-                left: 550,
-                top: 350
-            }
+            x: 11,
+            y: 8,
         },
         {
             index: 18,
             linkList: [19],
-            styleObject: {
-                left: 100,
-                top: 250
-            }
+            x: 2,
+            y: 5,
         },
         {
             index: 19,
             linkList: [20],
-            styleObject: {
-                left: 150,
-                top: 300
-            }
+            x: 3,
+            y: 6,
         },
         {
             index: 20,
             linkList: [21, 22],
             linkPosition: [3, 2],
-            styleObject: {
-                left: 100,
-                top: 350
-            },
+            x: 2,
+            y: 7,
             classObject: {
                 gate: true
             }
@@ -196,26 +154,20 @@ let data = {
         {
             index: 21,
             linkList: [18],
-            styleObject: {
-                left: 50,
-                top: 300
-            }
+            x: 1,
+            y: 6,
         },
         {
             index: 22,
             linkList: [23],
-            styleObject: {
-                left: 100,
-                top: 450
-            }
+            x: 2,
+            y: 9,
         },
         {
             index: 23,
             linkList: [24, 2],
-            styleObject: {
-                left: 200,
-                top: 450
-            },
+            x: 4,
+            y: 9,
             classObject: {
                 link: true
             }
@@ -223,10 +175,8 @@ let data = {
         {
             index: 24,
             linkList: [25],
-            styleObject: {
-                left: 300,
-                top: 450
-            },
+            x: 6,
+            y: 9,
             classObject: {
                 home: true
             }
@@ -234,10 +184,8 @@ let data = {
         {
             index: 25,
             linkList: [17],
-            styleObject: {
-                left: 400,
-                top: 450
-            }
+            x: 8,
+            y: 9,
         }
     ]
 };
@@ -286,6 +234,15 @@ data.blockList.forEach((item) => {
         block: true
     };
 
+    item.styleObject = {
+        left: 2 * OFFSET * item.x,
+        top: 2 * OFFSET * item.y
+    };
+});
+
+data.blockList.forEach((item) => {
+    console.log('>>> item.styleObject', item.styleObject);
+
     item.linkList.forEach((nextItemIndex, index) => {
         let nextItem = data.blockList[nextItemIndex];
         let curvedArrow = getCurvedArrow(item, nextItem, index);
@@ -310,5 +267,30 @@ let app = new Vue({
     el: '#app',
     data: data,
     methods: {}
+});
+
+for (let i = 0; i < 50; i++) {
+    for (let j = 0; j < 50; j++) {
+        let $div = $('<div/>').css({
+            position: 'absolute',
+            left: i * 50,
+            top: j * 50,
+            border: '1px solid lightgrey',
+            width: 50,
+            height: 50,
+            paddingTop: 30,
+            fontSize: 11
+        })
+        .text(`(${i}, ${j})`)
+            .addClass('grid');
+
+        $('body').append($div);
+    }
+}
+
+$('body').on('keyup', function (event) {
+   if (event.which === 65) {
+       $('.grid').toggle();
+   }
 });
 
