@@ -51,7 +51,8 @@ let data = {
                 top: 100
             },
             classObject: {
-                gate: true
+                gate: true,
+                link: true
             }
         },
         {
@@ -216,7 +217,7 @@ let data = {
                 top: 450
             },
             classObject: {
-                gate: true
+                link: true
             }
         },
         {
