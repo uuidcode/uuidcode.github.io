@@ -19,6 +19,10 @@ let data = {
             x: 2,
             y: 3,
             linkList: [18],
+            reverseLinkPosition: {
+                0: 0,
+                23: 1
+            }
         },
         {
             index: 3,
@@ -38,6 +42,7 @@ let data = {
             y: 2,
             linkList: [6, 12],
             linkPosition: [2, 1],
+            strokeStyle: [0, 1],
             classObject: {
                 gate: true,
                 link: true
@@ -166,8 +171,10 @@ let data = {
         {
             index: 23,
             linkList: [24, 2],
+            linkStyle: [0, 1],
             x: 4,
             y: 9,
+            strokeStyle: [0, 1],
             classObject: {
                 link: true
             }
@@ -203,13 +210,16 @@ function getCurvedArrow(item, nextItem, index) {
     let itemLinkList = getLinkList(item);
 
     if (item.linkPosition) {
-        console.log('>>> item.linkPosition', item.linkPosition);
-        console.log('>>> index', index);
         let linkPosition = item.linkPosition[index];
         itemLinkList = [itemLinkList[linkPosition]];
     }
 
     let nextItemLinkList = getLinkList(nextItem);
+
+    if (nextItem.reverseLinkPosition) {
+        let linkPosition = nextItem.reverseLinkPosition[item.index];
+        nextItemLinkList = [nextItemLinkList[linkPosition]];
+    }
 
     return itemLinkList.flatMap(x => {
         return nextItemLinkList.map((y, index) => {
@@ -249,14 +259,33 @@ data.blockList.forEach((item) => {
 
         curvedArrow = curvedArrow[0];
 
+        let p1x = curvedArrow[0];
+        let p1y = curvedArrow[1];
+
+        if (item.linkStyle) {
+            let linkStyle = item.linkStyle[index];
+
+            if (linkStyle === 1) {
+                p1y = curvedArrow[3];
+            }
+        }
+
+        let strokeStyle = 'rgba(133, 255, 133, 1)';
+
+        if (item.strokeStyle) {
+            if (item.strokeStyle[index] === 1) {
+                strokeStyle = 'rgba(169, 169, 169, 1)';
+            }
+        }
+
         $(document.body).curvedArrow({
             p0x: curvedArrow[0],
             p0y: curvedArrow[1],
-            p1x: curvedArrow[0],
-            p1y: curvedArrow[1],
+            p1x: p1x,
+            p1y: p1y,
             p2x: curvedArrow[2],
             p2y: curvedArrow[3],
-            strokeStyle: 'rgba(133, 255, 133, 1)',
+            strokeStyle: strokeStyle,
             lineWidth: 5,
             size: 15
         });
