@@ -41,6 +41,7 @@ let data = {
             x: 9,
             y: 2,
             linkList: [6, 12],
+            linkStyle: [0, 2],
             linkPosition: [2, 1],
             strokeStyle: [0, 1],
             classObject: {
@@ -108,12 +109,18 @@ let data = {
             linkList: [14],
             x: 13,
             y: 8,
+            classObject: {
+                change: true
+            }
         },
         {
             index: 14,
-            linkList: [15],
+            linkList: [15, 26],
             x: 13,
             y: 10,
+            classObject: {
+                gate: true
+            }
         },
         {
             index: 15,
@@ -164,9 +171,15 @@ let data = {
         },
         {
             index: 22,
-            linkList: [23],
+            linkList: [23, 16],
+            linkPosition: [1, 2],
+            linkStyle: [0, 1],
             x: 2,
             y: 9,
+            strokeStyle: [0, 1],
+            classObject: {
+                link: true
+            }
         },
         {
             index: 23,
@@ -193,6 +206,18 @@ let data = {
             linkList: [17],
             x: 8,
             y: 9,
+        },
+        {
+            index: 26,
+            linkList: [27],
+            x: 15,
+            y: 10,
+        },
+        {
+            index: 27,
+            linkList: [],
+            x: 15,
+            y: 10,
         }
     ]
 };
@@ -267,6 +292,8 @@ data.blockList.forEach((item) => {
 
             if (linkStyle === 1) {
                 p1y = curvedArrow[3];
+            } else if (linkStyle === 2) {
+                p1x = curvedArrow[2];
             }
         }
 
