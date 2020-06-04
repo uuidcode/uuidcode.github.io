@@ -215,9 +215,18 @@ let data = {
         },
         {
             index: 27,
-            linkList: [],
+            linkList: [28],
             x: 15,
             y: 10,
+        },
+        {
+            index: 28,
+            linkList: [],
+            x: 17,
+            y: 10,
+            classObject: {
+                sea: true
+            }
         }
     ]
 };
