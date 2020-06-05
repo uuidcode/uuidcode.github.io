@@ -110,7 +110,7 @@ let data = {
             x: 13,
             y: 8,
             classObject: {
-                change: true
+
             }
         },
         {
@@ -119,6 +119,7 @@ let data = {
             x: 13,
             y: 10,
             classObject: {
+                change: true
             }
         },
         {
@@ -220,31 +221,26 @@ let data = {
             linkList: [28],
             x: 15,
             y: 12,
-        },
-        {
-            index: 28,
-            linkList: [29],
-            x: 17,
-            y: 12,
             classObject: {
                 sea: true
             }
         },
         {
-            index: 29,
-            linkList: [30, 14],
-            x: 19,
+            index: 28,
+            linkList: [29, 13],
+            x: 17,
             y: 12,
             linkStyle: [0, 1],
             strokeStyle: [0, 1],
+            linkPosition: [1, 0],
             classObject: {
                 link: true
             }
         },
         {
-            index: 30,
+            index: 29,
             linkList: [],
-            x: 21,
+            x: 19,
             y: 12
         }
     ]
