@@ -239,8 +239,29 @@ let data = {
         },
         {
             index: 29,
-            linkList: [],
+            linkList: [30],
             x: 19,
+            y: 12
+        },
+        {
+            index: 30,
+            linkList: [31],
+            x: 21,
+            y: 12
+        },
+        {
+            index: 31,
+            linkList: [32],
+            x: 23,
+            y: 12,
+            classObject: {
+                sea: true
+            }
+        },
+        {
+            index: 32,
+            linkList: [],
+            x: 25,
             y: 12
         }
     ]
