@@ -115,19 +115,21 @@ let data = {
         },
         {
             index: 14,
-            linkList: [15, 26],
+            linkList: [15],
             x: 13,
             y: 10,
             classObject: {
-                gate: true
             }
         },
         {
             index: 15,
-            linkList: [16],
-            linkPosition: [3],
+            linkList: [16, 26],
+            linkPosition: [3, 2],
             x: 12,
             y: 11,
+            classObject: {
+                gate: true
+            }
         },
         {
             index: 16,
@@ -210,33 +212,52 @@ let data = {
         {
             index: 26,
             linkList: [27],
-            x: 15,
-            y: 10,
+            x: 13,
+            y: 12,
         },
         {
             index: 27,
             linkList: [28],
             x: 15,
-            y: 10,
+            y: 12,
         },
         {
             index: 28,
-            linkList: [],
+            linkList: [29],
             x: 17,
-            y: 10,
+            y: 12,
             classObject: {
                 sea: true
             }
+        },
+        {
+            index: 29,
+            linkList: [30, 14],
+            x: 19,
+            y: 12,
+            linkStyle: [0, 1],
+            strokeStyle: [0, 1],
+            classObject: {
+                link: true
+            }
+        },
+        {
+            index: 30,
+            linkList: [],
+            x: 21,
+            y: 12
         }
     ]
 };
 
 function getLinkList(item) {
+    console.log('>>> item', item);
+
     return [
-        [item.styleObject.left + OFFSET, item.styleObject.top],
-        [item.styleObject.left + 2 * OFFSET, item.styleObject.top + OFFSET],
-        [item.styleObject.left + OFFSET, item.styleObject.top + 2 * OFFSET],
-        [item.styleObject.left, item.styleObject.top + OFFSET]
+        [item.x * (2 * OFFSET) + OFFSET, item.y * (2 * OFFSET)],
+        [item.x * (2 * OFFSET) + 2 * OFFSET, item.y * (2 * OFFSET) + OFFSET],
+        [item.x * (2 * OFFSET) + OFFSET, item.y * (2 * OFFSET) + 2 * OFFSET],
+        [item.x * (2 * OFFSET), item.y * (2 * OFFSET) + OFFSET]
     ];
 }
 
