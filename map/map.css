@@ -30,3 +30,11 @@
 .change {
     background-color: blueviolet;
 }
+
+.start {
+    background-color: yellow;
+}
+
+.end {
+    background-color: darkblue;
+}

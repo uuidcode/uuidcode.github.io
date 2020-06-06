@@ -7,6 +7,9 @@ let data = {
             x: 2,
             y: 1,
             linkList: [1, 2],
+            classObject: {
+                start: true
+            }
         },
         {
             index: 1,
@@ -260,9 +263,36 @@ let data = {
         },
         {
             index: 32,
-            linkList: [],
+            linkList: [33],
             x: 25,
             y: 12
+        },
+        {
+            index: 33,
+            linkList: [34],
+            x: 27,
+            y: 12,
+            classObject: {
+                sea: true
+            }
+        },
+        {
+            index: 34,
+            linkList: [35],
+            x: 29,
+            y: 12,
+            classObject: {
+                home: true
+            }
+        },
+        {
+            index: 35,
+            linkList: [],
+            x: 31,
+            y: 12,
+            classObject: {
+                end: true
+            }
         }
     ]
 };
