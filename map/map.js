@@ -106,6 +106,13 @@ let data = {
             linkList: [13],
             x: 12,
             y: 7,
+            reverseLinkPosition: {
+                5: 0,
+                11: 3,
+                13: 1,
+                17: 3,
+                38: 1
+            }
         },
         {
             index: 13,
@@ -293,6 +300,32 @@ let data = {
             classObject: {
                 end: true
             }
+        },
+        {
+            index: 36,
+            linkList: [37],
+            x: 31,
+            y: 1
+        },
+        {
+            index: 37,
+            linkList: [38],
+            x: 29,
+            y: 1
+        },
+        {
+            index: 38,
+            linkList: [39, 12],
+            strokeStyle: [0, 1],
+            linkPosition: [2, 3],
+            x: 27,
+            y: 1
+        },
+        {
+            index: 39,
+            linkList: [],
+            x: 27,
+            y: 3
         }
     ]
 };
@@ -320,7 +353,10 @@ function getCurvedArrow(item, nextItem, index) {
 
     if (nextItem.reverseLinkPosition) {
         let linkPosition = nextItem.reverseLinkPosition[item.index];
+        console.log('>>> linkPosition', linkPosition);
+        console.log('>>> item.index', item.index);
         nextItemLinkList = [nextItemLinkList[linkPosition]];
+        console.log('>>> nextItemLinkList', nextItemLinkList);
     }
 
     return itemLinkList.flatMap(x => {
