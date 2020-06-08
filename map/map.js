@@ -111,7 +111,7 @@ let data = {
                 11: 3,
                 13: 1,
                 17: 3,
-                38: 1
+                38: 0
             }
         },
         {
@@ -251,13 +251,21 @@ let data = {
             index: 29,
             linkList: [30],
             x: 19,
-            y: 12
+            y: 12,
+            reverseLinkPosition: {
+                28: 3,
+                46: 0
+            }
         },
         {
             index: 30,
             linkList: [31],
             x: 21,
-            y: 12
+            y: 12,
+            reverseLinkPosition: {
+                29: 3,
+                47: 0
+            }
         },
         {
             index: 31,
@@ -285,7 +293,7 @@ let data = {
         },
         {
             index: 34,
-            linkList: [35],
+            linkList: [47],
             x: 29,
             y: 12,
             classObject: {
@@ -296,7 +304,7 @@ let data = {
             index: 35,
             linkList: [],
             x: 31,
-            y: 12,
+            y: 10,
             classObject: {
                 end: true
             }
@@ -305,7 +313,10 @@ let data = {
             index: 36,
             linkList: [37],
             x: 31,
-            y: 1
+            y: 1,
+            classObject: {
+                sea: true
+            }
         },
         {
             index: 37,
@@ -318,15 +329,82 @@ let data = {
             linkList: [39, 12],
             strokeStyle: [0, 1],
             linkPosition: [2, 3],
+            linkStyle: [0, 2],
             x: 27,
             y: 1
         },
         {
             index: 39,
-            linkList: [],
+            linkList: [40],
             x: 27,
             y: 3
-        }
+        },
+        {
+            index: 40,
+            linkList: [41],
+            x: 29,
+            y: 3
+        },
+        {
+            index: 41,
+            linkList: [42],
+            x: 31,
+            y: 3,
+            classObject: {
+                change: true
+            }
+        },
+        {
+            index: 42,
+            linkList: [43],
+            x: 31,
+            y: 5
+        },
+        {
+            index: 43,
+            linkList: [44],
+            x: 29,
+            y: 5,
+            classObject: {
+                forest: true
+            }
+        },
+        {
+            index: 44,
+            linkList: [45],
+            x: 27,
+            y: 5
+        },
+        {
+            index: 45,
+            linkList: [46],
+            x: 27,
+            y: 7,
+            classObject: {
+                forest: true
+            }
+        },
+        {
+            index: 46,
+            linkList: [29],
+            linkStyle: [2],
+            x: 25,
+            y: 7,
+            classObject: {
+                home: true
+            }
+        },
+        {
+            index: 47,
+            linkList: [35, 30],
+            strokeStyle: [0, 1],
+            linkStyle: [0, 2],
+            x: 29,
+            y: 10,
+            classObject: {
+                link: true
+            }
+        },
     ]
 };
 
