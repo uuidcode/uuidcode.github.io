@@ -259,7 +259,7 @@ let data = {
         },
         {
             index: 30,
-            linkList: [31],
+            linkList: [31, 53],
             x: 21,
             y: 12,
             reverseLinkPosition: {
@@ -405,6 +405,106 @@ let data = {
                 link: true
             }
         },
+        {
+            index: 48,
+            linkList: [49],
+            x: 8,
+            y: 16,
+            classObject: {
+                forest: true
+            }
+        },
+        {
+            index: 49,
+            linkList: [50, 57],
+            x: 10,
+            y: 16
+        },
+        {
+            index: 50,
+            linkList: [51],
+            x: 12,
+            y: 16,
+            classObject: {
+                sea: true
+            }
+        },
+        {
+            index: 51,
+            linkList: [52],
+            x: 14,
+            y: 16
+        },
+        {
+            index: 52,
+            linkList: [54],
+            x: 16,
+            y: 16
+        },
+        {
+            index: 53,
+            linkList: [54],
+            x: 21,
+            y: 14,
+            classObject: {
+                home: true
+            }
+        },
+        {
+            index: 54,
+            linkList: [55],
+            x: 19,
+            y: 14,
+            reverseLinkPosition: {
+                53: 1,
+                52: 2
+            }
+        },
+        {
+            index: 55,
+            linkList: [56],
+            x: 17,
+            y: 14
+        },
+        {
+            index: 56,
+            linkList: [16],
+            strokeStyle: [1],
+            linkStyle: [2],
+            linkPosition: [3],
+            x: 15,
+            y: 14,
+            classObject: {
+                home: true
+            }
+        },
+        {
+            index: 57,
+            linkList: [58],
+            x: 10,
+            y: 14
+        },
+        {
+            index: 58,
+            linkList: [59],
+            x: 8,
+            y: 14,
+            classObject: {
+                home: true
+            }
+        },
+        {
+            index: 59,
+            linkList: [60],
+            x: 6,
+            y: 14
+        },
+        {
+            index: 60,
+            linkList: [25],
+            x: 4,
+            y: 14
+        }
     ]
 };
 
