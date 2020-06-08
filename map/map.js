@@ -629,7 +629,8 @@ for (let i = 0; i < 50; i++) {
             fontSize: 11
         })
         .text(`(${i}, ${j})`)
-            .addClass('grid');
+        .addClass('grid')
+        .hide();
 
         $('body').append($div);
     }
