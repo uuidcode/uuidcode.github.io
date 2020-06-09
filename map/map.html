@@ -20,6 +20,11 @@
          :class="block.classObject">
         {{ block.index }}
     </div>
+    <div v-for="player in playerList"
+         :data-index="player.index"
+         :style="player.styleObject"
+         :class="player.classObject">
+    </div>
 </div>
 <script src="map.js"></script>
 </body>

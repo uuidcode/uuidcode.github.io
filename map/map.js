@@ -1,6 +1,34 @@
 const OFFSET = 25;
 
 let data = {
+    playerList: [
+        {
+            index: 0,
+            x: 0,
+            y: 0,
+            classObject: {
+                player: true
+            },
+            styleObject: {
+                left: 50,
+                top: 0,
+                backgroundImage: 'url(image/apeach.png)'
+            }
+        },
+        {
+            index: 1,
+            x: 1,
+            y: 0,
+            classObject: {
+                player: true
+            },
+            styleObject: {
+                left: 100,
+                top: 0,
+                backgroundImage: 'url(image/lion.png)'
+            }
+        }
+    ],
     blockList: [
         {
             index: 0,
