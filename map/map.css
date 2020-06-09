@@ -52,3 +52,10 @@
     position: absolute;
     background-size: cover;
 }
+
+#die {
+    position: absolute;
+    left: 800px;
+    top: 200px;
+    z-index: 100;
+}

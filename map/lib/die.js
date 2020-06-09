@@ -8,8 +8,6 @@ function Die(rollCallback) {
         var css = {
             position: 'absolute',
             border: '1px solid lightgrey',
-            left: '10px',
-            top: '100px',
             width: 280,
             height: 170
         };
@@ -29,21 +27,6 @@ function Die(rollCallback) {
         var that = this;
 
         this.$element.on('click', function () {
-            if (app.status.trickMode) {
-                return;
-            }
-
-            $('.btn-select-block-for-trick').disabled();
-            $('.btn-rest').disabled();
-            $('.btn-show-jewelry').disabled();
-            $('.btn-check').disabled();
-
-            if (app.status.rolling) {
-                return;
-            }
-
-            app.status.rolling = true;
-
             that.roll(function (notation, count) {
                 rollCallback(count[0]);
             });

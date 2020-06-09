@@ -638,31 +638,51 @@ data.blockList.forEach((item) => {
     });
 });
 
+let sound = null;
+
 let app = new Vue({
     el: '#app',
     data: data,
-    methods: {}
+    methods: {
+        playDieSound: function () {
+            app.playSound('die');
+        },
+
+        playSound: function (className) {
+            if (sound != null) {
+                sound.currentTime = 0;
+                sound.pause();
+            }
+
+            sound = app.getAudio(className);
+            sound.play();
+        },
+
+        getAudio: function (className) {
+            return $('.' + className + '-sound').get(0)
+        }
+    }
 });
 
-for (let i = 0; i < 50; i++) {
-    for (let j = 0; j < 50; j++) {
-        let $div = $('<div/>').css({
-            position: 'absolute',
-            left: i * 50,
-            top: j * 50,
-            border: '1px solid lightgrey',
-            width: 50,
-            height: 50,
-            paddingTop: 30,
-            fontSize: 11
-        })
-        .text(`(${i}, ${j})`)
-        .addClass('grid')
-        .hide();
-
-        $('body').append($div);
-    }
-}
+// for (let i = 0; i < 50; i++) {
+//     for (let j = 0; j < 50; j++) {
+//         let $div = $('<div/>').css({
+//             position: 'absolute',
+//             left: i * 50,
+//             top: j * 50,
+//             border: '1px solid lightgrey',
+//             width: 50,
+//             height: 50,
+//             paddingTop: 30,
+//             fontSize: 11
+//         })
+//         .text(`(${i}, ${j})`)
+//         .addClass('grid')
+//         .hide();
+//
+//         $('body').append($div);
+//     }
+// }
 
 $('body').on('keyup', function (event) {
    if (event.which === 65) {
@@ -670,3 +690,10 @@ $('body').on('keyup', function (event) {
    }
 });
 
+let $die = $('#die');
+
+let die = new Die(function (count) {
+   console.log('>>> count', count);
+});
+
+$die.append(die.$element);
