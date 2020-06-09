@@ -1,0 +1,27 @@
+<html xmlns:v-bind="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <style>
+        .item {
+            width: 100px;
+            height: 30px;
+            border: 1px solid lightgray;
+            padding: 10px;
+        }
+
+        #app {
+            margin: 10px auto;
+            width: 200px;
+        }
+    </style>
+</head>
+<div id="app">
+    <div v-for="item in list"
+         class="item">
+        <strong>{{ item }}</strong>
+    </div>
+</div>
+<script src="random.js"></script>
+</body>
+</html>
