@@ -3,7 +3,7 @@ const OFFSET = 25;
 let data = {
     status: {
         playerIndex: 0,
-        blockList:[],
+        blockIndexList:[],
         count: '0',
         background: {
             classObject: {
@@ -685,12 +685,12 @@ let app = new Vue({
         
         nextBlock: function (position, count, start) {
             if (start) {
-                app.status.blockList = [];
+                app.status.blockIndexList = [];
             }
 
             if (count === 0) {
                 console.log('>>> position', position);
-                app.status.blockList.push(position);
+                app.status.blockIndexList.push(position);
                 return;
             }
 
@@ -741,21 +741,19 @@ let die = new Die(function (count) {
     let playerIndex = app.status.playerIndex;
     let position = app.playerList[playerIndex].position;
     app.nextBlock(position, count, true);
-    console.log('>>> app.status.blockList', app.status.blockList);
+    console.log('>>> app.status.blockIndexList', app.status.blockIndexList);
     app.status.background.classObject.backgroundEnabled = true;
 
-    for (let i = 0; i < app.blockList.length; i++) {
-        let block = app.blockList[i];
+    app.blockList.forEach((block, index) => {
         block.classObject.ripple = false;
-        Vue.set(app.blockList, i, block);
-    }
+        Vue.set(app.blockList, index, block);
+    });
 
-    for (let i = 0; i < app.status.blockList.length; i++) {
-        let blockIndex = app.status.blockList[i];
+    app.status.blockIndexList.forEach(blockIndex => {
         let block = app.blockList[blockIndex];
         block.classObject.ripple = true;
         Vue.set(app.blockList, blockIndex, block);
-    }
+    });
 });
 
 $die.append(die.$element);
