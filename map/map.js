@@ -4,7 +4,13 @@ let data = {
     status: {
         playerIndex: 0,
         blockList:[],
-        count: '0'
+        count: '0',
+        background: {
+            classObject: {
+                backgroundEnabled: false,
+                background: true
+            }
+        }
     },
     playerList: [
         {
@@ -647,6 +653,14 @@ data.blockList.forEach((item) => {
 
 let sound = null;
 
+for (let i = 0; i < data.blockList.length; i++) {
+    let block = data.blockList[i];
+    block.classObject = {
+        ...block.classObject,
+        ripple: false
+    }
+}
+
 let app = new Vue({
     el: '#app',
     data: data,
@@ -728,6 +742,20 @@ let die = new Die(function (count) {
     let position = app.playerList[playerIndex].position;
     app.nextBlock(position, count, true);
     console.log('>>> app.status.blockList', app.status.blockList);
+    app.status.background.classObject.backgroundEnabled = true;
+
+    for (let i = 0; i < app.blockList.length; i++) {
+        let block = app.blockList[i];
+        block.classObject.ripple = false;
+        Vue.set(app.blockList, i, block);
+    }
+
+    for (let i = 0; i < app.status.blockList.length; i++) {
+        let blockIndex = app.status.blockList[i];
+        let block = app.blockList[blockIndex];
+        block.classObject.ripple = true;
+        Vue.set(app.blockList, blockIndex, block);
+    }
 });
 
 $die.append(die.$element);

@@ -5,6 +5,7 @@
     border-radius: 50px;
     background-color: lightgrey;
     /*box-shadow: 0 2px 9px 0 rgba(0,0,0,0.06);*/
+    z-index: 2;
 }
 
 .gate {
@@ -51,6 +52,7 @@
     height: 50px;
     position: absolute;
     background-size: cover;
+    z-index: 3;
 }
 
 #die {
@@ -66,4 +68,46 @@
     top: 160px;
     width: 50px;
     z-index: 100;
+}
+
+.background {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+.backgroundEnabled {
+    z-index: 4;
+    background-color: lightgrey;
+    opacity: 0.1;
+}
+
+.ripple {
+    animation: ripple 3s linear infinite;
+    z-index: 3000;
+}
+
+.ripple::before, .ripple::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    border-radius: 50%;
+    animation: burglarRipple 3s linear infinite 1s;
+}
+
+.ripple::after {
+    animation: burglarRipple 3s linear infinite 2s;
+}
+
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 10px rgba(255,20,147, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 0 30px rgba(255,20,147, 0);
+    }
 }
