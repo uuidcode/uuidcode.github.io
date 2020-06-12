@@ -85,11 +85,11 @@ let data = {
             x: 9,
             y: 2,
             linkList: [6, 12],
+            gateLinkList: [12],
             linkStyle: [0, 2],
             linkPosition: [2, 1],
             strokeStyle: [0, 1],
             classObject: {
-                gate: true,
                 link: true
             }
         },
@@ -211,6 +211,7 @@ let data = {
             index: 20,
             linkList: [21, 22],
             linkPosition: [3, 2],
+            gateLinkList: [22],
             x: 2,
             y: 7,
             classObject: {
@@ -695,9 +696,15 @@ let app = new Vue({
             }
 
             let linkList = app.blockList[position].linkList;
+            let gateLinkList = app.blockList[position].gateLinkList;
 
             for (let i = 0; i < linkList.length; i++) {
                 let blockIndex = linkList[i];
+
+                if (gateLinkList && gateLinkList.includes(blockIndex)) {
+                    continue;
+                }
+
                 let block = app.blockList[blockIndex];
                 app.nextBlock(block.index, count - 1, false);
             }
