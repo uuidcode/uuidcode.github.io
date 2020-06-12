@@ -1,9 +1,15 @@
 const OFFSET = 25;
 
 let data = {
+    status: {
+        playerIndex: 0,
+        blockList:[],
+        count: '0'
+    },
     playerList: [
         {
             index: 0,
+            position: 0,
             x: 0,
             y: 0,
             classObject: {
@@ -17,6 +23,7 @@ let data = {
         },
         {
             index: 1,
+            position: 0,
             x: 1,
             y: 0,
             classObject: {
@@ -660,6 +667,26 @@ let app = new Vue({
 
         getAudio: function (className) {
             return $('.' + className + '-sound').get(0)
+        },
+        
+        nextBlock: function (position, count, start) {
+            if (start) {
+                app.status.blockList = [];
+            }
+
+            if (count === 0) {
+                console.log('>>> position', position);
+                app.status.blockList.push(position);
+                return;
+            }
+
+            let linkList = app.blockList[position].linkList;
+
+            for (let i = 0; i < linkList.length; i++) {
+                let blockIndex = linkList[i];
+                let block = app.blockList[blockIndex];
+                app.nextBlock(block.index, count - 1, false);
+            }
         }
     }
 });
@@ -693,7 +720,14 @@ $('body').on('keyup', function (event) {
 let $die = $('#die');
 
 let die = new Die(function (count) {
-   console.log('>>> count', count);
+    if (app.status.count !== '0') {
+        count = parseInt(app.status.count);
+    }
+
+    let playerIndex = app.status.playerIndex;
+    let position = app.playerList[playerIndex].position;
+    app.nextBlock(position, count, true);
+    console.log('>>> app.status.blockList', app.status.blockList);
 });
 
 $die.append(die.$element);
