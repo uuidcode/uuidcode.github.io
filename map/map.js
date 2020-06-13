@@ -10,7 +10,8 @@ let data = {
                 backgroundEnabled: false,
                 background: true
             }
-        }
+        },
+        rolling: false
     },
     playerList: [
         {
@@ -88,9 +89,9 @@ let data = {
             gateLinkList: [12],
             linkStyle: [0, 2],
             linkPosition: [2, 1],
-            strokeStyle: [0, 1],
+            strokeStyle: [0, 0],
             classObject: {
-                link: true
+                gate: true
             }
         },
         {
@@ -719,12 +720,15 @@ let app = new Vue({
             let player = app.playerList[playerIndex];
             player.styleObject.left = block.x * 2 * OFFSET;
             player.styleObject.top = block.y * 2 * OFFSET;
+            player.position = block.index;
+
             Vue.set(app.playerList, playerIndex, player);
             
             setTimeout(function () {
                 app.status.playerIndex = (app.status.playerIndex + 1) % 2;
                 app.setBlockRippleOff();
                 app.setBackgroundOff();
+                app.status.rolling = false;
             }, 1000);
         },
         setBlockRipple: function (mode) {
@@ -789,7 +793,6 @@ let die = new Die(function (count) {
     app.nextBlock(position, count, true);
 
     app.setBackgroundOn();
-
     app.setBlockRippleOff();
 
     app.status.blockIndexList.forEach(blockIndex => {
