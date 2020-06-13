@@ -17,9 +17,10 @@
 <audio class="die-sound"><source src="mp3/die.mp3"></audio>
 <div id="app">
     <div v-for="block in blockList"
-         :data-index="block.index"
+         :data-block-index="block.index"
          :style="block.styleObject"
-         :class="block.classObject">
+         :class="block.classObject"
+         v-on:click="moveByEvent">
         {{ block.index }}
     </div>
     <div v-for="player in playerList"

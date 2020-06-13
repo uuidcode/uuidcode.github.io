@@ -708,6 +708,45 @@ let app = new Vue({
                 let block = app.blockList[blockIndex];
                 app.nextBlock(block.index, count - 1, false);
             }
+        },
+        moveByEvent: function (event) {
+            let blockIndex = $(event.target).attr('data-block-index');
+            app.moveByIndex(blockIndex);
+        },
+        moveByIndex: function (blockIndex) {
+            let block = app.blockList[blockIndex];
+            let playerIndex = app.status.playerIndex;
+            let player = app.playerList[playerIndex];
+            player.styleObject.left = block.x * 2 * OFFSET;
+            player.styleObject.top = block.y * 2 * OFFSET;
+            Vue.set(app.playerList, playerIndex, player);
+            
+            setTimeout(function () {
+                app.status.playerIndex = (app.status.playerIndex + 1) % 2;
+                app.setBlockRippleOff();
+                app.setBackgroundOff();
+            }, 1000);
+        },
+        setBlockRipple: function (mode) {
+            app.blockList.forEach((block, index) => {
+                block.classObject.ripple = mode;
+                Vue.set(app.blockList, block.index, block);
+            });
+        },
+        setBlockRippleOn: function () {
+            app.setBlockRipple(true);
+        },
+        setBlockRippleOff: function () {
+            app.setBlockRipple(false);
+        },
+        setBackgroundOn: function () {
+            app.setBackground(true);
+        },
+        setBackgroundOff: function () {
+            app.setBackground(false);
+        },
+        setBackground: function (mode) {
+            app.status.background.classObject.backgroundEnabled = mode;
         }
     }
 });
@@ -748,18 +787,15 @@ let die = new Die(function (count) {
     let playerIndex = app.status.playerIndex;
     let position = app.playerList[playerIndex].position;
     app.nextBlock(position, count, true);
-    console.log('>>> app.status.blockIndexList', app.status.blockIndexList);
-    app.status.background.classObject.backgroundEnabled = true;
 
-    app.blockList.forEach((block, index) => {
-        block.classObject.ripple = false;
-        Vue.set(app.blockList, index, block);
-    });
+    app.setBackgroundOn();
+
+    app.setBlockRippleOff();
 
     app.status.blockIndexList.forEach(blockIndex => {
         let block = app.blockList[blockIndex];
         block.classObject.ripple = true;
-        Vue.set(app.blockList, blockIndex, block);
+        Vue.set(app.blockList, block.index, block);
     });
 });
 

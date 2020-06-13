@@ -52,7 +52,8 @@
     height: 50px;
     position: absolute;
     background-size: cover;
-    z-index: 3;
+    z-index: 100;
+    transition-Duration: 1s;
 }
 
 #die {
@@ -85,7 +86,8 @@
 
 .ripple {
     animation: ripple 3s linear infinite;
-    z-index: 3000;
+    z-index: 100;
+    cursor: pointer;
 }
 
 .ripple::before, .ripple::after{
