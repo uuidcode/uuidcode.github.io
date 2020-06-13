@@ -7,7 +7,7 @@ let data = {
         count: '0',
         background: {
             classObject: {
-                backgroundEnabled: false,
+                backgroundEnabled: true,
                 background: true
             }
         },
@@ -86,12 +86,12 @@ let data = {
             x: 9,
             y: 2,
             linkList: [6, 12],
-            gateLinkList: [12],
+            jumpIndex: 12,
             linkStyle: [0, 2],
             linkPosition: [2, 1],
-            strokeStyle: [0, 0],
+            strokeStyle: [0, 1],
             classObject: {
-                gate: true
+                jump: true
             }
         },
         {
@@ -671,6 +671,10 @@ let app = new Vue({
             app.playSound('die');
         },
 
+        playJumpSound: function () {
+            app.playSound('jump');
+        },
+
         playSound: function (className) {
             if (sound != null) {
                 sound.currentTime = 0;
@@ -688,6 +692,8 @@ let app = new Vue({
         nextBlock: function (position, count, start) {
             if (start) {
                 app.status.blockIndexList = [];
+
+                let block = app.blockList[position];
             }
 
             if (count === 0) {
@@ -697,12 +703,12 @@ let app = new Vue({
             }
 
             let linkList = app.blockList[position].linkList;
-            let gateLinkList = app.blockList[position].gateLinkList;
+            let jumpIndex = app.blockList[position].jumpIndex;
 
             for (let i = 0; i < linkList.length; i++) {
                 let blockIndex = linkList[i];
 
-                if (gateLinkList && gateLinkList.includes(blockIndex)) {
+                if (jumpIndex && jumpIndex === blockIndex) {
                     continue;
                 }
 
@@ -711,10 +717,12 @@ let app = new Vue({
             }
         },
         moveByEvent: function (event) {
-            let blockIndex = $(event.target).attr('data-block-index');
+            let $target = $(event.target);
+            let blockIndex = $target.attr('data-block-index');
             app.moveByIndex(blockIndex);
         },
         moveByIndex: function (blockIndex) {
+            app.playJumpSound();
             let block = app.blockList[blockIndex];
             let playerIndex = app.status.playerIndex;
             let player = app.playerList[playerIndex];
@@ -725,10 +733,25 @@ let app = new Vue({
             Vue.set(app.playerList, playerIndex, player);
             
             setTimeout(function () {
-                app.status.playerIndex = (app.status.playerIndex + 1) % 2;
                 app.setBlockRippleOff();
                 app.setBackgroundOff();
-                app.status.rolling = false;
+
+                if (block.jumpIndex) {
+                    app.moveByIndex(block.jumpIndex);
+                } else {
+                    if (player.position === 0) {
+                        return;
+                    }
+
+                    let nextPlayerIndex = (app.status.playerIndex + 1) % 2;
+                    app.status.playerIndex = nextPlayerIndex;
+
+                    if (player.position === app.playerList[nextPlayerIndex].position) {
+                        app.moveByIndex(0);
+                    }
+
+                    app.status.rolling = false;
+                }
             }, 1000);
         },
         setBlockRipple: function (mode) {
@@ -747,7 +770,7 @@ let app = new Vue({
             app.setBackground(true);
         },
         setBackgroundOff: function () {
-            app.setBackground(false);
+            // app.setBackground(false);
         },
         setBackground: function (mode) {
             app.status.background.classObject.backgroundEnabled = mode;

@@ -24,7 +24,7 @@
     background-color: lightsalmon;
 }
 
-.link {
+.jump {
     background-color: darkgray;
 }
 
@@ -52,8 +52,9 @@
     height: 50px;
     position: absolute;
     background-size: cover;
-    z-index: 100;
     transition-Duration: 1s;
+    z-index: 300;
+    pointer-events: none;
 }
 
 #die {
@@ -79,14 +80,14 @@
 }
 
 .backgroundEnabled {
-    z-index: 4;
+    z-index: 100;
     background-color: lightgrey;
     opacity: 0.1;
 }
 
 .ripple {
     animation: ripple 3s linear infinite;
-    z-index: 100;
+    z-index: 200;
     cursor: pointer;
 }
 
@@ -112,4 +113,8 @@
     100% {
         box-shadow: 0 0 0 30px rgba(255,20,147, 0);
     }
+}
+
+.count {
+    z-index: 300;
 }

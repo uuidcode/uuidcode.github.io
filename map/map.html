@@ -15,6 +15,7 @@
 </head>
 <body>
 <audio class="die-sound"><source src="mp3/die.mp3"></audio>
+<audio class="jump-sound"><source src="mp3/jump.mp3"></audio>
 <div id="app">
     <div v-for="block in blockList"
          :data-block-index="block.index"
@@ -26,7 +27,8 @@
     <div v-for="player in playerList"
          :data-index="player.index"
          :style="player.styleObject"
-         :class="player.classObject">
+         :class="player.classObject"
+         v-on:click="moveByEvent">
     </div>
     <input type="text" class="count" v-model="status.count">
     <div :class="status.background.classObject"></div>
