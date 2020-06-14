@@ -1,4 +1,6 @@
 const OFFSET = 25;
+const FOREST = 48;
+const HOME = 0;
 
 let data = {
     status: {
@@ -108,6 +110,7 @@ let data = {
             x: 8,
             y: 5,
             linkList: [8, 10],
+            linkIndex: 10,
             linkPosition: [3, 2],
             classObject: {
                 gate: true
@@ -213,6 +216,7 @@ let data = {
             linkList: [21, 22],
             linkPosition: [3, 2],
             gateLinkList: [22],
+            linkIndex: 22,
             x: 2,
             y: 7,
             classObject: {
@@ -229,6 +233,7 @@ let data = {
             index: 22,
             linkList: [23, 16],
             linkPosition: [1, 2],
+            jumpIndex: 16,
             linkStyle: [0, 1],
             x: 2,
             y: 9,
@@ -241,6 +246,7 @@ let data = {
             index: 23,
             linkList: [24, 2],
             linkStyle: [0, 1],
+            jumpIndex: 2,
             x: 4,
             y: 9,
             strokeStyle: [0, 1],
@@ -705,12 +711,19 @@ let app = new Vue({
 
             let linkList = app.blockList[position].linkList;
             let jumpIndex = app.blockList[position].jumpIndex;
+            let linkIndex = app.blockList[position].linkIndex;
 
             for (let i = 0; i < linkList.length; i++) {
                 let blockIndex = linkList[i];
 
                 if (jumpIndex && jumpIndex === blockIndex) {
                     continue;
+                }
+
+                if (!start) {
+                    if (linkIndex && linkIndex === blockIndex) {
+                        continue;
+                    }
                 }
 
                 let block = app.blockList[blockIndex];
@@ -720,9 +733,9 @@ let app = new Vue({
         moveByEvent: function (event) {
             let $target = $(event.target);
             let blockIndex = $target.attr('data-block-index');
-            app.moveByIndex(blockIndex);
+            app.moveByIndex(blockIndex, true);
         },
-        moveByIndex: function (blockIndex) {
+        moveByIndex: function (blockIndex, nextTurn) {
             app.playJumpSound();
             let block = app.blockList[blockIndex];
             let playerIndex = app.status.playerIndex;
@@ -738,30 +751,29 @@ let app = new Vue({
                 app.setBackgroundOff();
 
                 if (block.jumpIndex) {
-                    app.moveByIndex(block.jumpIndex);
+                    app.moveByIndex(block.jumpIndex, true);
                 } else if (block.classObject.home) {
-                    app.moveByIndex(0);
-                } else if (block.classObject.forest) {
-                    if (!block.classObject.forestEntry) {
-                        app.moveByIndex(48);
-                        app.status.rolling = false;
-                    }
-                } else {
+                    app.moveByIndex(HOME, true);
+                } else if (!block.classObject.forestEntry &&
+                    block.classObject.forest) {
+                    app.moveByIndex(FOREST, true);
+                } else if (block.classObject.start) {
                     app.status.rolling = false;
+                } else {
+                    app.nextTurn();
 
-                    if (player.position === 0) {
-                        return;
-                    }
-
-                    let nextPlayerIndex = (app.status.playerIndex + 1) % 2;
-                    app.status.playerIndex = nextPlayerIndex;
-
-                    if (player.position === app.playerList[nextPlayerIndex].position) {
-                        app.moveByIndex(0);
+                    if (player.position === app.playerList[app.status.playerIndex].position) {
+                        app.moveByIndex(HOME, false);
                     }
                 }
             }, 1000);
         },
+        nextTurn: function () {
+            app.status.rolling = false;
+            let nextPlayerIndex = (app.status.playerIndex + 1) % 2;
+            app.status.playerIndex = nextPlayerIndex;
+        },
+
         setBlockRipple: function (mode) {
             app.blockList.forEach((block, index) => {
                 block.classObject.ripple = mode;
