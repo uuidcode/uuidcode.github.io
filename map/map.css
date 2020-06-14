@@ -81,8 +81,8 @@
 
 .backgroundEnabled {
     z-index: 100;
-    background-color: lightgrey;
-    opacity: 0.1;
+    /*background-color: lightgrey;*/
+    /*opacity: 0.1;*/
 }
 
 .ripple {

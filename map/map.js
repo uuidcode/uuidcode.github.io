@@ -118,18 +118,25 @@ let app = new Vue({
             app.playSound('die');
         },
 
+        playThrow: function () {
+            app.playSound('throw');
+        },
+
         playJumpSound: function () {
             app.playSound('jump');
         },
 
         playSound: function (className) {
-            if (sound != null) {
-                sound.currentTime = 0;
-                sound.pause();
-            }
+            try {
+                if (sound != null) {
+                    sound.currentTime = 0;
+                    sound.pause();
+                }
 
-            sound = app.getAudio(className);
-            sound.play();
+                sound = app.getAudio(className);
+                sound.play();
+            } catch (e) {
+            }
         },
 
         getAudio: function (className) {
@@ -139,8 +146,6 @@ let app = new Vue({
         nextBlock: function (position, count, start) {
             if (start) {
                 app.status.blockIndexList = [];
-
-                let block = app.blockList[position];
             }
 
             if (count === 0) {
@@ -149,9 +154,14 @@ let app = new Vue({
                 return;
             }
 
+            if (position === END) {
+                app.status.blockIndexList.push(position);
+            }
+
+
             let linkList = app.blockList[position].linkList;
             let jumpIndex = app.blockList[position].jumpIndex;
-            let linkIndex = app.blockList[position].linkIndex;
+            let gateIndex = app.blockList[position].gateIndex;
 
             for (let i = 0; i < linkList.length; i++) {
                 let blockIndex = linkList[i];
@@ -161,7 +171,7 @@ let app = new Vue({
                 }
 
                 if (!start) {
-                    if (linkIndex && linkIndex === blockIndex) {
+                    if (gateIndex && gateIndex === blockIndex) {
                         continue;
                     }
                 }
@@ -175,7 +185,7 @@ let app = new Vue({
             let blockIndex = $target.attr('data-block-index');
             app.moveByIndex(blockIndex, true);
         },
-        moveByIndex: function (blockIndex, nextTurn) {
+        moveByIndex: function (blockIndex) {
             app.playJumpSound();
             let block = app.blockList[blockIndex];
             let playerIndex = app.status.playerIndex;
@@ -191,24 +201,48 @@ let app = new Vue({
                 app.setBackgroundOff();
 
                 if (block.jumpIndex) {
-                    app.moveByIndex(block.jumpIndex, true);
+                    app.moveByIndex(block.jumpIndex);
                 } else if (block.classObject.home) {
-                    app.moveByIndex(HOME, true);
-                } else if (!block.classObject.forestEntry &&
+                    app.moveByIndex(START, true);
+                    app.status.homeMode = true;
+                } else if (!block.classObject.forestStart &&
                     block.classObject.forest) {
-                    app.moveByIndex(FOREST, true);
+                    app.moveByIndex(FOREST_START);
+                } else if (!block.classObject.seaStart &&
+                    block.classObject.sea) {
+                    app.moveByIndex(SEA_START);
                 } else if (block.classObject.start) {
                     app.status.rolling = false;
+
+                    if (app.status.homeMode) {
+                        app.nextTurn(true);
+                        app.status.homeMode = false;
+                    }
+                } else if (!app.status.changeMode && block.classObject.change) {
+                    app.status.changeMode = true;
+                    app.status.changeIndex = block.index;
+                    app.moveByIndex(app.playerList[(app.status.playerIndex + 1) % 2].position);
+
+                    app.nextTurn(false);
+                    app.moveByIndex(app.status.changeIndex);
+                    app.status.changeComplete = true;
+                } else if (app.status.changeMode) {
+                } else if (app.status.changeComplete) {
+                    app.status.changeMode = false;
                 } else {
-                    app.nextTurn();
+                    app.nextTurn(true);
 
                     if (player.position === app.playerList[app.status.playerIndex].position) {
-                        app.moveByIndex(HOME, false);
+                        app.moveByIndex(START);
                     }
                 }
             }, 1000);
         },
-        nextTurn: function () {
+        nextTurn: function (sound) {
+            if (sound) {
+                app.playThrow();
+            }
+
             app.status.rolling = false;
             let nextPlayerIndex = (app.status.playerIndex + 1) % 2;
             app.status.playerIndex = nextPlayerIndex;

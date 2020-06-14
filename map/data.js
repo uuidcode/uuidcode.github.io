@@ -1,6 +1,8 @@
 const OFFSET = 25;
-const FOREST = 48;
-const HOME = 0;
+const FOREST_START = 48;
+const SEA_START = 36;
+const START = 0;
+const END = 35;
 
 let data = {
     status: {
@@ -13,7 +15,11 @@ let data = {
                 background: true
             }
         },
-        rolling: false
+        rolling: false,
+        changeIndex: 0,
+        changeMode: false,
+        changeComplete: false,
+        homeMode: false
     },
     playerList: [
         {
@@ -110,7 +116,7 @@ let data = {
             x: 8,
             y: 5,
             linkList: [8, 10],
-            linkIndex: 10,
+            gateIndex: 10,
             linkPosition: [3, 2],
             classObject: {
                 gate: true
@@ -181,6 +187,7 @@ let data = {
             index: 15,
             linkList: [16, 26],
             linkPosition: [3, 2],
+            gateIndex: 26,
             x: 12,
             y: 11,
             classObject: {
@@ -216,7 +223,7 @@ let data = {
             linkList: [21, 22],
             linkPosition: [3, 2],
             gateLinkList: [22],
-            linkIndex: 22,
+            gateIndex: 22,
             x: 2,
             y: 7,
             classObject: {
@@ -292,6 +299,7 @@ let data = {
             linkStyle: [0, 1],
             strokeStyle: [0, 1],
             linkPosition: [1, 0],
+            jumpIndex: 13,
             classObject: {
                 link: true
             }
@@ -364,7 +372,8 @@ let data = {
             x: 31,
             y: 1,
             classObject: {
-                sea: true
+                sea: true,
+                seaStart: true
             }
         },
         {
@@ -379,6 +388,7 @@ let data = {
             strokeStyle: [0, 1],
             linkPosition: [2, 3],
             linkStyle: [0, 2],
+            jumpIndex: 12,
             x: 27,
             y: 1
         },
@@ -448,6 +458,7 @@ let data = {
             linkList: [35, 30],
             strokeStyle: [0, 1],
             linkStyle: [0, 2],
+            jumpIndex: 30,
             x: 29,
             y: 10,
             classObject: {
@@ -461,7 +472,7 @@ let data = {
             y: 16,
             classObject: {
                 forest: true,
-                forestEntry: true
+                forestStart: true
             }
         },
         {
@@ -519,9 +530,10 @@ let data = {
         {
             index: 56,
             linkList: [16],
-            strokeStyle: [1],
+            strokeStyle: [0],
             linkStyle: [2],
             linkPosition: [3],
+            jumpIndex: 16,
             x: 15,
             y: 14,
             classObject: {
