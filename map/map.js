@@ -454,7 +454,8 @@ let data = {
             x: 8,
             y: 16,
             classObject: {
-                forest: true
+                forest: true,
+                forestEntry: true
             }
         },
         {
@@ -738,7 +739,16 @@ let app = new Vue({
 
                 if (block.jumpIndex) {
                     app.moveByIndex(block.jumpIndex);
+                } else if (block.classObject.home) {
+                    app.moveByIndex(0);
+                } else if (block.classObject.forest) {
+                    if (!block.classObject.forestEntry) {
+                        app.moveByIndex(48);
+                        app.status.rolling = false;
+                    }
                 } else {
+                    app.status.rolling = false;
+
                     if (player.position === 0) {
                         return;
                     }
@@ -749,8 +759,6 @@ let app = new Vue({
                     if (player.position === app.playerList[nextPlayerIndex].position) {
                         app.moveByIndex(0);
                     }
-
-                    app.status.rolling = false;
                 }
             }, 1000);
         },
