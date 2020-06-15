@@ -16,7 +16,15 @@
     background-color: lightseagreen;
 }
 
+.forestStart {
+    background-color: lightseagreen;
+}
+
 .sea {
+    background-color: lightskyblue;
+}
+
+.seaStart {
     background-color: lightskyblue;
 }
 
@@ -117,5 +125,5 @@
 
 .count {
     z-index: 300;
-    display: none;
+    /*display: none;*/
 }

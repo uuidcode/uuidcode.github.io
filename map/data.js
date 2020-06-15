@@ -374,7 +374,6 @@ let data = {
             x: 31,
             y: 1,
             classObject: {
-                sea: true,
                 seaStart: true
             }
         },
@@ -473,7 +472,6 @@ let data = {
             x: 8,
             y: 16,
             classObject: {
-                forest: true,
                 forestStart: true
             }
         },
@@ -570,3 +568,31 @@ let data = {
         }
     ]
 };
+
+function isSpecial(block) {
+    if (block.classObject) {
+        return block.classObject.home ||
+            block.classObject.sea ||
+            block.classObject.forest ||
+            block.classObject.change;
+    }
+
+    return  false;
+}
+
+let classObjectList = data.blockList
+    .filter(block => isSpecial(block))
+    .map(block => block.classObject)
+    .sort(() => Math.random() - 0.5);
+
+console.log('>>> classObjectList', classObjectList);
+
+let i = 0;
+
+data.blockList
+    .map(block => {
+        if (isSpecial(block)) {
+            block.classObject = classObjectList[i++];
+        }
+    });
+

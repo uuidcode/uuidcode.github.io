@@ -200,7 +200,9 @@ let app = new Vue({
                 app.setBlockRippleOff();
                 app.setBackgroundOff();
 
-                if (block.classObject.end) {
+                if (app.status.changeMode) {
+                    callback();
+                } else if (block.classObject.end) {
                     alert(`${player.name} 승리`);
                     location.reload();
                 } else if (block.jumpIndex) {
@@ -208,11 +210,9 @@ let app = new Vue({
                 } else if (block.classObject.home) {
                     app.moveByIndex(START, true);
                     app.status.homeMode = true;
-                } else if (!block.classObject.forestStart &&
-                    block.classObject.forest) {
+                } else if (!block.classObject.forestStart && block.classObject.forest) {
                     app.moveByIndex(FOREST_START);
-                } else if (!block.classObject.seaStart &&
-                    block.classObject.sea) {
+                } else if (!block.classObject.seaStart && block.classObject.sea) {
                     app.moveByIndex(SEA_START);
                 } else if (block.classObject.start) {
                     app.status.rolling = false;
@@ -221,21 +221,21 @@ let app = new Vue({
                         app.nextTurn(true);
                         app.status.homeMode = false;
                     }
-                } else if (!app.status.changeMode &&
-                    block.classObject.change) {
+                } else if (!app.status.changeMode && block.classObject.change) {
                     app.status.changeMode = true;
                     app.status.changeIndex = block.index;
+                    console.log('>>> app.status.changeIndex', app.status.changeIndex);
+
                     let otherPlayer = app.playerList[(app.status.playerIndex + 1) % 2];
 
                     app.moveByIndex(otherPlayer.position, function () {
                         app.nextTurn(false);
+
                         app.moveByIndex(app.status.changeIndex, function () {
                             app.status.rolling = false;
                             app.status.changeMode = false;
                         });
                     });
-                } else if (app.status.changeMode) {
-                    callback();
                 } else {
                     app.nextTurn(true);
 
@@ -273,6 +273,7 @@ let app = new Vue({
         setBackgroundOff: function () {
             // app.setBackground(false);
         },
+
         setBackground: function (mode) {
             app.status.background.classObject.backgroundEnabled = mode;
         }
