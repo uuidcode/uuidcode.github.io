@@ -117,4 +117,5 @@
 
 .count {
     z-index: 300;
+    display: none;
 }
