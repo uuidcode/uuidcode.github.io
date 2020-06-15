@@ -185,7 +185,7 @@ let app = new Vue({
             let blockIndex = $target.attr('data-block-index');
             app.moveByIndex(blockIndex, true);
         },
-        moveByIndex: function (blockIndex) {
+        moveByIndex: function (blockIndex, callback) {
             app.playJumpSound();
             let block = app.blockList[blockIndex];
             let playerIndex = app.status.playerIndex;
@@ -221,19 +221,21 @@ let app = new Vue({
                         app.nextTurn(true);
                         app.status.homeMode = false;
                     }
-                } else if (!app.status.changeMode && block.classObject.change) {
+                } else if (!app.status.changeMode &&
+                    block.classObject.change) {
                     app.status.changeMode = true;
                     app.status.changeIndex = block.index;
-                    app.moveByIndex(app.playerList[(app.status.playerIndex + 1) % 2].position);
+                    let otherPlayer = app.playerList[(app.status.playerIndex + 1) % 2];
 
-                    app.nextTurn(false);
-                    app.moveByIndex(app.status.changeIndex);
-                    app.status.changeComplete = true;
+                    app.moveByIndex(otherPlayer.position, function () {
+                        app.nextTurn(false);
+                        app.moveByIndex(app.status.changeIndex, function () {
+                            app.status.rolling = false;
+                            app.status.changeMode = false;
+                        });
+                    });
                 } else if (app.status.changeMode) {
-                } else if (app.status.changeComplete) {
-                    app.status.changeMode = false;
-                    app.status.rolling = false;
-                    app.status.changeComplete = false;
+                    callback();
                 } else {
                     app.nextTurn(true);
 

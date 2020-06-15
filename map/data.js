@@ -535,7 +535,6 @@ let data = {
             strokeStyle: [0],
             linkStyle: [2],
             linkPosition: [3],
-            jumpIndex: 16,
             x: 15,
             y: 14,
             classObject: {
