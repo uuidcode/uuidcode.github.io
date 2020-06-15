@@ -23,6 +23,7 @@ let data = {
     },
     playerList: [
         {
+            name: '어피치',
             index: 0,
             position: 0,
             x: 0,
@@ -37,6 +38,7 @@ let data = {
             }
         },
         {
+            name: '라이언',
             index: 1,
             position: 0,
             x: 1,

@@ -200,7 +200,10 @@ let app = new Vue({
                 app.setBlockRippleOff();
                 app.setBackgroundOff();
 
-                if (block.jumpIndex) {
+                if (block.classObject.end) {
+                    alert(`${player.name} 승리`);
+                    location.reload();
+                } else if (block.jumpIndex) {
                     app.moveByIndex(block.jumpIndex);
                 } else if (block.classObject.home) {
                     app.moveByIndex(START, true);
@@ -229,6 +232,8 @@ let app = new Vue({
                 } else if (app.status.changeMode) {
                 } else if (app.status.changeComplete) {
                     app.status.changeMode = false;
+                    app.status.rolling = false;
+                    app.status.changeComplete = false;
                 } else {
                     app.nextTurn(true);
 
