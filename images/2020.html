@@ -139,6 +139,18 @@
 <pre>
 <h2>20200721</h2>
 
+systemctl status docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; disabled; vendor preset: disabled)
+  Drop-In: /etc/systemd/system/docker.service.d
+           └─http-proxy.conf
+   Active: active (running) since Wed 2020-07-22 00:15:52 KST; 1min 12s ago
+     Docs: http://docs.docker.com
+ Main PID: 2634 (dockerd-current)
+   CGroup: /system.slice/docker.service
+           ├─2634 /usr/bin/dockerd-current --add-runtime docker-runc=/usr/libexec/docker/docker-runc-current --default-runtime=...
+           └─2642 /usr/bin/docker-containerd-current -l unix:///var/run/docker/libcontainerd/docker-containerd.sock --metrics-i...
+
 <img src="../i/20200721_01.png">
 
 <img src="../i/20200721.png">
