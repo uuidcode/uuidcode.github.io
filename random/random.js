@@ -5,7 +5,8 @@ let data = {
         'messi',
         'tube',
         'kale',
-        'ciao'
+        'ciao',
+        'stuart'
     ]
 };
 
