@@ -26,6 +26,25 @@
         <strong>{{ item }}</strong>
     </div>
 </div>
-<script src="random.js"></script>
+<script type="text/javascript">
+    let data = {
+        list: [
+            'ted',
+            'krystal',
+            'messi',
+            'tube',
+            'kale',
+            'ciao',
+            'stuart'
+        ]
+    };
+
+    data.list.sort(() => Math.random() - 0.5);
+
+    let app = new Vue({
+        el: '#app',
+        data: data
+    });
+</script>
 </body>
 </html>
