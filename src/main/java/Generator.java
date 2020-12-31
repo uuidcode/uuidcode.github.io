@@ -12,7 +12,7 @@ import com.google.common.io.Files;
 public class Generator {
     public static final Charset CHARSET = Charset.defaultCharset();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         List<File> fileList = Lists.newArrayList(new File("images").listFiles());
         fileList.addAll(Lists.newArrayList(new File("codegen").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("virtualform").listFiles()));
@@ -22,9 +22,7 @@ public class Generator {
         fileList.addAll(Lists.newArrayList(new File("at").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("people").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("deployable").listFiles()));
-        //fileList.add(new File("querydsl/index.html"));
         fileList.add(new File("programming/programming.html"));
-        //fileList.add(new File("lambda/index.html"));
         fileList.add(new File("antlr4/index.html"));
         fileList.add(new File("generateAssertJ/index.html"));
         fileList.add(new File("redux/index.html"));
