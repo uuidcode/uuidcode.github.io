@@ -1,6 +1,7 @@
 var config = {
     blockSize: 40,
     selectedColor: 'rgba(0, 123, 255, 0.5)',
+    salary: 1000000,
     fundAmount: 150000,
     start: '출발',
     fundingName: '사회복지기금',
@@ -31,7 +32,7 @@ var config = {
             width: 50,
             height: 50,
             image: 'apeach.png',
-            amount: 3000000,
+            amount: 5000000,
             name: '다은'
 
         },
@@ -41,7 +42,7 @@ var config = {
             width: 50,
             height: 50,
             image: 'lion.png',
-            amount: 3000000,
+            amount: 5000000,
             name: '아빠'
         }
     ],
