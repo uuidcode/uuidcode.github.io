@@ -421,7 +421,7 @@ function Player(index) {
     this.getPay = function (callback) {
         this.amount += config.salary;
         board.updatePlayInfo(this);
-        new Toast().show('월급 50만원을 받았습니다.', callback);
+        new Toast().show('월급 100만원을 받았습니다.', callback);
     };
 
     this.getPayAndReadyToNextTurn = function () {
