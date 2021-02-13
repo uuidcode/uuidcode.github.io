@@ -46,7 +46,9 @@
                 <Player player={katan.playerList[0]}></Player>
             </td>
             <td valign="top">
-                <Board resourceList="{katan.resourceList}"></Board>
+                <Board resourceList="{katan.resourceList}"
+                       castleList="{katan.castleList}">
+                </Board>
             </td>
             <td valign="top">
                 <Player player={katan.playerList[1]}></Player>

@@ -1,3 +1,5 @@
+import config from './config.js'
+
 const katan = {
     dice: [6, 6],
     playerList: [
@@ -30,6 +32,52 @@ function random() {
 
 function shuffle(list) {
     return list.sort(random());
+}
+
+katan.castleList = [];
+
+for (let i = 0; i < 6; i++) {
+    for (let j = 0; j < 11; j++) {
+        if (i === 0 || i === 5) {
+            if (j >= 2 && j <= 8) {
+                let top = 0;
+
+                if (i === 5) {
+                    top = 5 * config.cell.height;
+                }
+
+                katan.castleList.push({
+                    left: j * (config.cell.width / 2) - config.castle.width / 2,
+                    top: top - config.castle.height / 2
+                });
+            }
+        } else if (i === 1 || i === 4) {
+            if (j >= 1 && j <= 9) {
+                let top = config.cell.height;
+
+                if (i === 4) {
+                    top = 4 * config.cell.height;
+                }
+
+                katan.castleList.push({
+                    left: j * (config.cell.width / 2) - config.castle.width / 2,
+                    top: top - config.castle.height / 2
+                });
+            }
+        } else if (i === 2 || i === 3) {
+            let top = 2 * config.cell.height;
+
+            if (i === 3) {
+                top = 3 * config.cell.height;
+            }
+
+            katan.castleList.push({
+                left: j * (config.cell.width / 2) - config.castle.width / 2,
+                top: top - config.castle.height / 2
+            });
+        }
+
+    }
 }
 
 let resourceList = [];
@@ -90,19 +138,19 @@ katan.resourceList = katan.resourceList
         let top = 0;
 
         if (0 <= index && index <= 2) {
-            left = 100 + 100 * index;
+            left = config.cell.width + config.cell.width * index;
         } else if (3 <= index && index <= 6) {
-            left = 50 + 100 * (index - 3);
-            top = 100;
+            left = config.cell.width / 2 + config.cell.width * (index - 3);
+            top = config.cell.height;
         } else if (7 <= index && index <= 11) {
-            left = 100 * (index - 7);
-            top = 200;
+            left = config.cell.width * (index - 7);
+            top = 2 * config.cell.height;
         } else if (12 <= index && index <= 15) {
-            left = 50 + 100 * (index - 12);
-            top = 300;
+            left = config.cell.width / 2 + config.cell.width * (index - 12);
+            top = 3 * config.cell.height;
         } else if (16 <= index && index <= 18) {
-            left = 100 * (index - 15);
-            top = 400;
+            left = config.cell.width * (index - 15);
+            top = 4 * config.cell.height;
         }
 
         resource.left = left;

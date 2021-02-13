@@ -13,25 +13,26 @@
 <style>
     .cell {
         position: absolute;
-        width: 102px;
-        height: 102px;
+        width: 162px;
+        height: 162px;
         text-align: center;
         border: 1px solid black;
     }
 
     .cell img {
-        width: 100px;
-        height: 100px;
+        width: 160px;
+        height: 160px;
     }
 
     .number {
         position: absolute;
-        left: 0;
-        top: 0;
-        width: 30px;
-        height: 30px;
+        left: 60px;
+        top: 60px;
+        width: 40px;
+        height: 40px;
         background-color: #2e6da4;
         color: white;
         opacity: 0.6;
+        line-height: 40px;
     }
 </style>
