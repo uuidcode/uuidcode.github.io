@@ -9,6 +9,19 @@
     function play() {
         katan.dice[0] = Math.floor(Math.random() * 6) + 1;
         katan.dice[1] = Math.floor(Math.random() * 6) + 1;
+
+        const number = katan.dice[0] + katan.dice[1];
+
+        katan.resourceList
+                .filter(resouce => resouce.number === number)
+                .forEach(resouce => {
+                    const player = katan.playerList
+                        .find(play => play.turn);
+
+                    player.resource[resouce.type]++;
+                });
+
+        katan.turn();
     }
 </script>
 
@@ -21,6 +34,11 @@
                 <Dice number={katan.dice[1]}></Dice>
                 <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
             </td>
+            <td></td>
+        </tr>
+        <tr style="height: 20px">
+            <td></td>
+            <td></td>
             <td></td>
         </tr>
         <tr>

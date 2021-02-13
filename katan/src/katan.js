@@ -2,7 +2,7 @@ const katan = {
     dice: [6, 6],
     playerList: [
         {
-            turn: false,
+            turn: true,
             resource: {
                 tree: 0,
                 mud: 0,
@@ -12,7 +12,7 @@ const katan = {
             }
         },
         {
-            turn: true,
+            turn: false,
             resource: {
                 tree: 0,
                 mud: 0,
@@ -63,6 +63,13 @@ for (let i = 0; i < 3; i++) {
 }
 
 katan.resourceList = resourceList;
+
+katan.turn = () => {
+    katan.playerList
+        .forEach(player => {
+            player.turn = !player.turn
+        });
+};
 
 let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
 numberList = shuffle(numberList);

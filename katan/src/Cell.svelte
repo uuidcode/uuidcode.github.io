@@ -13,9 +13,10 @@
 <style>
     .cell {
         position: absolute;
-        width: 100px;
-        height: 100px;
+        width: 102px;
+        height: 102px;
         text-align: center;
+        border: 1px solid black;
     }
 
     .cell img {

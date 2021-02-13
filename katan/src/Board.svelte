@@ -23,5 +23,6 @@
         position: relative;
         width: 500px;
         height: 500px;
+        margin: 50px;
     }
 </style>
