@@ -1,11 +1,15 @@
 const config = {
     cell: {
-        width: 160,
-        height: 160,
+        width: 200,
+        height: 200,
     },
     castle: {
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
+    },
+    number: {
+        width: 50,
+        height: 50,
     }
 };
 

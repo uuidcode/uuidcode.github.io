@@ -28,20 +28,6 @@
 <main>
     <table>
         <tr>
-            <td></td>
-            <td>
-                <Dice number={katan.dice[0]}></Dice>
-                <Dice number={katan.dice[1]}></Dice>
-                <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
-            </td>
-            <td></td>
-        </tr>
-        <tr style="height: 20px">
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
             <td valign="top">
                 <Player player={katan.playerList[0]}></Player>
             </td>
@@ -52,6 +38,11 @@
             </td>
             <td valign="top">
                 <Player player={katan.playerList[1]}></Player>
+            </td>
+            <td valign="top">
+                <Dice number={katan.dice[0]}></Dice>
+                <Dice number={katan.dice[1]}></Dice>
+                <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
             </td>
         </tr>
     </table>

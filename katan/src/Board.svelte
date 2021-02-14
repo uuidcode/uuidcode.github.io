@@ -1,12 +1,19 @@
 <script>
+    import config from './config.js'
+    import { toStyle } from './util.js'
     import Cell from './Cell.svelte'
     import Castle from './Castle.svelte'
 
     export let resourceList;
     export let castleList;
+
+    let boardStyle = toStyle({
+        width: 5 * config.cell.width + 'px',
+        height: 5 * config.cell.width + 'px'
+    });
 </script>
 
-<main class="board">
+<main class="board" style={boardStyle}>
     {#each resourceList as resource}
         <Cell resource={resource}></Cell>
     {/each}
@@ -26,8 +33,6 @@
 
     .board {
         position: relative;
-        width: 800px;
-        height: 800px;
         margin: 50px;
     }
 </style>

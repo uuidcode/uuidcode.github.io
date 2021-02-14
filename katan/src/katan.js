@@ -43,7 +43,11 @@ for (let i = 0; i < 6; i++) {
                 let top = 0;
 
                 if (i === 5) {
-                    top = 5 * config.cell.height;
+                    top = i * (3 * config.cell.height / 4);
+                }
+
+                if (j % 2 === i % 2) {
+                    top += config.cell.height / 4
                 }
 
                 katan.castleList.push({
@@ -53,10 +57,14 @@ for (let i = 0; i < 6; i++) {
             }
         } else if (i === 1 || i === 4) {
             if (j >= 1 && j <= 9) {
-                let top = config.cell.height;
+                let top = (3 * config.cell.height / 4);
 
                 if (i === 4) {
-                    top = 4 * config.cell.height;
+                    top = i * (3 * config.cell.height / 4);
+                }
+
+                if (j % 2 === i % 2) {
+                    top += config.cell.height / 4
                 }
 
                 katan.castleList.push({
@@ -65,10 +73,14 @@ for (let i = 0; i < 6; i++) {
                 });
             }
         } else if (i === 2 || i === 3) {
-            let top = 2 * config.cell.height;
+            let top = 2 * (3 * config.cell.height / 4);
 
             if (i === 3) {
-                top = 3 * config.cell.height;
+                top = i * (3 * config.cell.height / 4);
+            }
+
+            if (j % 2 === i % 2) {
+                top += config.cell.height / 4
             }
 
             katan.castleList.push({
@@ -76,7 +88,6 @@ for (let i = 0; i < 6; i++) {
                 top: top - config.castle.height / 2
             });
         }
-
     }
 }
 
@@ -141,16 +152,16 @@ katan.resourceList = katan.resourceList
             left = config.cell.width + config.cell.width * index;
         } else if (3 <= index && index <= 6) {
             left = config.cell.width / 2 + config.cell.width * (index - 3);
-            top = config.cell.height;
+            top = 3 * config.cell.height / 4;
         } else if (7 <= index && index <= 11) {
             left = config.cell.width * (index - 7);
-            top = 2 * config.cell.height;
+            top = 2 * (3 * config.cell.height / 4);
         } else if (12 <= index && index <= 15) {
             left = config.cell.width / 2 + config.cell.width * (index - 12);
-            top = 3 * config.cell.height;
+            top = 3 * (3 * config.cell.height / 4);
         } else if (16 <= index && index <= 18) {
             left = config.cell.width * (index - 15);
-            top = 4 * config.cell.height;
+            top = 4 * (3 * config.cell.height / 4);
         }
 
         resource.left = left;
