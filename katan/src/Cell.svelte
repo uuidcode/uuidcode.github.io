@@ -21,7 +21,8 @@
         width: config.number.width + 'px',
         height: config.number.height + 'px',
         "line-height": config.number.height + 'px',
-        "border-radius": config.number.height / 2 + 'px'
+        "border-radius": config.number.height / 2 + 'px',
+        "font-size": 2 * config.number.height / 5 + 'px'
     });
 
     let imageSrc = `${resource.type}.png`;
@@ -42,8 +43,9 @@
 
     .number {
         position: absolute;
-        background-color: #2e6da4;
-        color: white;
+        background-color: white;
+        color: black;
         opacity: 0.6;
+        font-weight: bolder;
     }
 </style>
