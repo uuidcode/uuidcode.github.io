@@ -1,7 +1,8 @@
 const config = {
     cell: {
-        width: 200,
+        width: 180,
         height: 200,
+        margin: 5
     },
     castle: {
         width: 50,

@@ -3,11 +3,18 @@
     import { toStyle } from './util.js'
     export let resource;
 
+    const margin = config.cell.margin;
+    const offset = 100 - config.cell.margin;
+
     let cellStyle = toStyle({
         left: resource.left + 'px',
         top: resource.top + 'px',
         width: config.cell.width + 'px',
-        height: config.cell.height + 'px',
+        height: config.cell.height + 'px'
+    });
+
+    let innerCellStyle = toStyle({
+        'clip-path': `polygon(50% ${margin}%, ${offset}% 25%, ${offset}% 75%, 50% ${offset}%, ${margin}% 75%, ${margin}% 25%)`
     });
 
     let imageStyle = toStyle({
@@ -29,16 +36,17 @@
 </script>
 
 <div class="cell" style={cellStyle}>
-    <img src={imageSrc} style={imageStyle} alt={imageSrc}>
-    <div class="number" style={numberStyle}>{resource.number}</div>
+    <div class="inner-cell" style={innerCellStyle}>
+        <img src={imageSrc} style={imageStyle} alt={imageSrc}>
+        <div class="number" style={numberStyle}>{resource.number}</div>
+    </div>
 </div>
-
 
 <style>
     .cell {
         position: absolute;
         text-align: center;
-        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
     }
 
     .number {
