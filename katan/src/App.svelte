@@ -7,15 +7,17 @@
     export let name;
     
     function play() {
-        katan.dice[0] = Math.floor(Math.random() * 6) + 1;
-        katan.dice[1] = Math.floor(Math.random() * 6) + 1;
+        const a = Math.floor(Math.random() * 6) + 1;
+        const b = Math.floor(Math.random() * 6) + 1;
 
-        const number = katan.dice[0] + katan.dice[1];
+        katan.roll(a, b);
 
-        katan.resourceList
+        const number = katan.getNumber();
+
+        $katan.resourceList
                 .filter(resouce => resouce.number === number)
                 .forEach(resouce => {
-                    const player = katan.playerList
+                    const player = $katan.playerList
                         .find(play => play.turn);
 
                     player.resource[resouce.type]++;
@@ -29,19 +31,19 @@
     <table>
         <tr>
             <td valign="top">
-                <Player player={katan.playerList[0]}></Player>
+                <Player player={$katan.playerList[0]}></Player>
             </td>
             <td valign="top">
-                <Board resourceList="{katan.resourceList}"
-                       castleList="{katan.castleList}">
+                <Board resourceList="{$katan.resourceList}"
+                       castleList="{$katan.castleList}">
                 </Board>
             </td>
             <td valign="top">
-                <Player player={katan.playerList[1]}></Player>
+                <Player player={$katan.playerList[1]}></Player>
             </td>
             <td valign="top">
-                <Dice number={katan.dice[0]}></Dice>
-                <Dice number={katan.dice[1]}></Dice>
+                <Dice number={$katan.dice[0]}></Dice>
+                <Dice number={$katan.dice[1]}></Dice>
                 <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
             </td>
         </tr>

@@ -1,7 +1,9 @@
+import {writable} from "svelte/store";
 import config from './config.js'
 
-const katan = {
+let katan = {
     dice: [6, 6],
+    mode: 'ready',
     playerList: [
         {
             turn: true,
@@ -25,6 +27,7 @@ const katan = {
         }
     ]
 };
+
 
 function random() {
     return () => Math.random() - 0.5;
@@ -173,4 +176,25 @@ katan.resourceList = katan.resourceList
         return resource;
     });
 
-export default katan;
+const { subscribe, set, update } = writable(katan);
+
+export default {
+    subscribe,
+
+    isReady: () => katan.mode === 'ready',
+
+    isStart: () => katan.mode === 'start',
+
+    start: () => update(katan => {
+            katan.mode = 'start';
+            return katan;
+        }),
+
+    roll: (a, b) => update(katna => {
+        katna.dice[0] = a;
+        katna.dice[1] = b;
+        return katan;
+    }),
+
+    getNumber: () => katna.dice[0] =  + katna.dice[1]
+};

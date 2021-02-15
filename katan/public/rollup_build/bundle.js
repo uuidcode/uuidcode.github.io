@@ -27,6 +27,21 @@ var app = (function () {
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
+    function validate_store(store, name) {
+        if (store != null && typeof store.subscribe !== 'function') {
+            throw new Error(`'${name}' is not a store with a 'subscribe' method`);
+        }
+    }
+    function subscribe(store, ...callbacks) {
+        if (store == null) {
+            return noop;
+        }
+        const unsub = store.subscribe(...callbacks);
+        return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
+    }
+    function component_subscribe(component, store, callback) {
+        component.$$.on_destroy.push(subscribe(store, callback));
+    }
 
     function append(target, node) {
         target.appendChild(node);
@@ -179,6 +194,12 @@ var app = (function () {
             block.o(local);
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -841,25 +862,281 @@ var app = (function () {
     	}
     }
 
+    const subscriber_queue = [];
+    /**
+     * Create a `Writable` store that allows both updating and reading by subscription.
+     * @param {*=}value initial value
+     * @param {StartStopNotifier=}start start and stop notifications for subscriptions
+     */
+    function writable(value, start = noop) {
+        let stop;
+        const subscribers = [];
+        function set(new_value) {
+            if (safe_not_equal(value, new_value)) {
+                value = new_value;
+                if (stop) { // store is ready
+                    const run_queue = !subscriber_queue.length;
+                    for (let i = 0; i < subscribers.length; i += 1) {
+                        const s = subscribers[i];
+                        s[1]();
+                        subscriber_queue.push(s, value);
+                    }
+                    if (run_queue) {
+                        for (let i = 0; i < subscriber_queue.length; i += 2) {
+                            subscriber_queue[i][0](subscriber_queue[i + 1]);
+                        }
+                        subscriber_queue.length = 0;
+                    }
+                }
+            }
+        }
+        function update(fn) {
+            set(fn(value));
+        }
+        function subscribe(run, invalidate = noop) {
+            const subscriber = [run, invalidate];
+            subscribers.push(subscriber);
+            if (subscribers.length === 1) {
+                stop = start(set) || noop;
+            }
+            run(value);
+            return () => {
+                const index = subscribers.indexOf(subscriber);
+                if (index !== -1) {
+                    subscribers.splice(index, 1);
+                }
+                if (subscribers.length === 0) {
+                    stop();
+                    stop = null;
+                }
+            };
+        }
+        return { set, update, subscribe };
+    }
+
+    let katan = {
+        dice: [6, 6],
+        mode: 'ready',
+        playerList: [
+            {
+                turn: true,
+                resource: {
+                    tree: 0,
+                    mud: 0,
+                    wheat: 0,
+                    sheep: 0,
+                    iron: 0
+                }
+            },
+            {
+                turn: false,
+                resource: {
+                    tree: 0,
+                    mud: 0,
+                    wheat: 0,
+                    sheep: 0,
+                    iron: 0
+                }
+            }
+        ]
+    };
+
+
+    function random() {
+        return () => Math.random() - 0.5;
+    }
+
+    function shuffle(list) {
+        return list.sort(random());
+    }
+
+    katan.castleList = [];
+
+    for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 11; j++) {
+            if (i === 0 || i === 5) {
+                if (j >= 2 && j <= 8) {
+                    let top = 0;
+
+                    if (i === 5) {
+                        top = i * (3 * config.cell.height / 4);
+                    }
+
+                    if (j % 2 === i % 2) {
+                        top += config.cell.height / 4;
+                    }
+
+                    katan.castleList.push({
+                        left: j * (config.cell.width / 2) - config.castle.width / 2,
+                        top: top - config.castle.height / 2,
+                        ripple: false
+                    });
+                }
+            } else if (i === 1 || i === 4) {
+                if (j >= 1 && j <= 9) {
+                    let top = (3 * config.cell.height / 4);
+
+                    if (i === 4) {
+                        top = i * (3 * config.cell.height / 4);
+                    }
+
+                    if (j % 2 === i % 2) {
+                        top += config.cell.height / 4;
+                    }
+
+                    katan.castleList.push({
+                        left: j * (config.cell.width / 2) - config.castle.width / 2,
+                        top: top - config.castle.height / 2,
+                        ripple: j >= 3 && j <= 7
+                    });
+                }
+            } else if (i === 2 || i === 3) {
+                let top = 2 * (3 * config.cell.height / 4);
+
+                if (i === 3) {
+                    top = i * (3 * config.cell.height / 4);
+                }
+
+                if (j % 2 === i % 2) {
+                    top += config.cell.height / 4;
+                }
+
+                katan.castleList.push({
+                    left: j * (config.cell.width / 2) - config.castle.width / 2,
+                    top: top - config.castle.height / 2,
+                    ripple: j >= 2 && j <= 8
+                });
+            }
+        }
+    }
+
+    let resourceList = [];
+
+    resourceList.push({
+        type: 'dessert'
+    });
+
+    for (let i = 0; i < 4; i++) {
+        resourceList.push({
+            type: 'tree'
+        });
+
+        resourceList.push({
+            type: 'iron'
+        });
+
+        resourceList.push({
+            type: 'sheep'
+        });
+    }
+
+    for (let i = 0; i < 3; i++) {
+        resourceList.push({
+            type: 'mud'
+        });
+
+        resourceList.push({
+            type: 'wheat'
+        });
+    }
+
+    katan.resourceList = resourceList;
+
+    katan.turn = () => {
+        katan.playerList
+            .forEach(player => {
+                player.turn = !player.turn;
+            });
+    };
+
+    let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
+    numberList = shuffle(numberList);
+
+    katan.resourceList = katan.resourceList
+        .map((resource, index) => {
+            if (resource.type === 'dessert') {
+                resource.number = 7;
+            } else {
+                resource.number = numberList.pop();
+            }
+
+            return resource;
+        })
+        .sort(random())
+        .map((resource, index) => {
+            let left = 0;
+            let top = 0;
+
+            if (0 <= index && index <= 2) {
+                left = config.cell.width + config.cell.width * index;
+            } else if (3 <= index && index <= 6) {
+                left = config.cell.width / 2 + config.cell.width * (index - 3);
+                top = 3 * config.cell.height / 4;
+            } else if (7 <= index && index <= 11) {
+                left = config.cell.width * (index - 7);
+                top = 2 * (3 * config.cell.height / 4);
+            } else if (12 <= index && index <= 15) {
+                left = config.cell.width / 2 + config.cell.width * (index - 12);
+                top = 3 * (3 * config.cell.height / 4);
+            } else if (16 <= index && index <= 18) {
+                left = config.cell.width * (index - 15);
+                top = 4 * (3 * config.cell.height / 4);
+            }
+
+            resource.left = left;
+            resource.top = top;
+
+            return resource;
+        });
+
+    const { subscribe: subscribe$1, set, update: update$1 } = writable(katan);
+
+    var katan$1 = {
+        subscribe: subscribe$1,
+
+        isReady: () => katan.mode === 'ready',
+
+        isStart: () => katan.mode === 'start',
+
+        start: () => update$1(katan => {
+                katan.mode = 'start';
+                return katan;
+            }),
+
+        roll: (a, b) => update$1(katna => {
+            katna.dice[0] = a;
+            katna.dice[1] = b;
+            return katan;
+        }),
+
+        getNumber: () => katna.dice[0] =  + katna.dice[1]
+    };
+
     /* src\Castle.svelte generated by Svelte v3.32.3 */
+
+    const { console: console_1 } = globals;
     const file$2 = "src\\Castle.svelte";
 
     function create_fragment$2(ctx) {
     	let div;
+    	let t_value = katan$1.isStart() + "";
+    	let t;
 
     	const block = {
     		c: function create() {
     			div = element("div");
+    			t = text(t_value);
     			attr_dev(div, "class", "castle ripple svelte-1e4spsa");
     			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
-    			add_location(div, file$2, 14, 0, 365);
+    			add_location(div, file$2, 18, 0, 436);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+    			append_dev(div, t);
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*castle*/ 1) {
@@ -888,6 +1165,7 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Castle", slots, []);
     	let { castle } = $$props;
+    	console.log(">>> katan", katan$1);
 
     	let castleStyle = toStyle({
     		left: castle.left + "px",
@@ -900,14 +1178,20 @@ var app = (function () {
     	const writable_props = ["castle"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
     		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
     	};
 
-    	$$self.$capture_state = () => ({ config, toStyle, castle, castleStyle });
+    	$$self.$capture_state = () => ({
+    		katan: katan$1,
+    		config,
+    		toStyle,
+    		castle,
+    		castleStyle
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
@@ -937,7 +1221,7 @@ var app = (function () {
     		const props = options.props || {};
 
     		if (/*castle*/ ctx[0] === undefined && !("castle" in props)) {
-    			console.warn("<Castle> was created without expected prop 'castle'");
+    			console_1.warn("<Castle> was created without expected prop 'castle'");
     		}
     	}
 
@@ -1413,179 +1697,6 @@ var app = (function () {
     	}
     }
 
-    const katan = {
-        dice: [6, 6],
-        playerList: [
-            {
-                turn: true,
-                resource: {
-                    tree: 0,
-                    mud: 0,
-                    wheat: 0,
-                    sheep: 0,
-                    iron: 0
-                }
-            },
-            {
-                turn: false,
-                resource: {
-                    tree: 0,
-                    mud: 0,
-                    wheat: 0,
-                    sheep: 0,
-                    iron: 0
-                }
-            }
-        ]
-    };
-
-    function random() {
-        return () => Math.random() - 0.5;
-    }
-
-    function shuffle(list) {
-        return list.sort(random());
-    }
-
-    katan.castleList = [];
-
-    for (let i = 0; i < 6; i++) {
-        for (let j = 0; j < 11; j++) {
-            if (i === 0 || i === 5) {
-                if (j >= 2 && j <= 8) {
-                    let top = 0;
-
-                    if (i === 5) {
-                        top = i * (3 * config.cell.height / 4);
-                    }
-
-                    if (j % 2 === i % 2) {
-                        top += config.cell.height / 4;
-                    }
-
-                    katan.castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
-                        ripple: false
-                    });
-                }
-            } else if (i === 1 || i === 4) {
-                if (j >= 1 && j <= 9) {
-                    let top = (3 * config.cell.height / 4);
-
-                    if (i === 4) {
-                        top = i * (3 * config.cell.height / 4);
-                    }
-
-                    if (j % 2 === i % 2) {
-                        top += config.cell.height / 4;
-                    }
-
-                    katan.castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
-                        ripple: j >= 3 && j <= 7
-                    });
-                }
-            } else if (i === 2 || i === 3) {
-                let top = 2 * (3 * config.cell.height / 4);
-
-                if (i === 3) {
-                    top = i * (3 * config.cell.height / 4);
-                }
-
-                if (j % 2 === i % 2) {
-                    top += config.cell.height / 4;
-                }
-
-                katan.castleList.push({
-                    left: j * (config.cell.width / 2) - config.castle.width / 2,
-                    top: top - config.castle.height / 2,
-                    ripple: j >= 2 && j <= 8
-                });
-            }
-        }
-    }
-
-    let resourceList = [];
-
-    resourceList.push({
-        type: 'dessert'
-    });
-
-    for (let i = 0; i < 4; i++) {
-        resourceList.push({
-            type: 'tree'
-        });
-
-        resourceList.push({
-            type: 'iron'
-        });
-
-        resourceList.push({
-            type: 'sheep'
-        });
-    }
-
-    for (let i = 0; i < 3; i++) {
-        resourceList.push({
-            type: 'mud'
-        });
-
-        resourceList.push({
-            type: 'wheat'
-        });
-    }
-
-    katan.resourceList = resourceList;
-
-    katan.turn = () => {
-        katan.playerList
-            .forEach(player => {
-                player.turn = !player.turn;
-            });
-    };
-
-    let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
-    numberList = shuffle(numberList);
-
-    katan.resourceList = katan.resourceList
-        .map((resource, index) => {
-            if (resource.type === 'dessert') {
-                resource.number = 7;
-            } else {
-                resource.number = numberList.pop();
-            }
-
-            return resource;
-        })
-        .sort(random())
-        .map((resource, index) => {
-            let left = 0;
-            let top = 0;
-
-            if (0 <= index && index <= 2) {
-                left = config.cell.width + config.cell.width * index;
-            } else if (3 <= index && index <= 6) {
-                left = config.cell.width / 2 + config.cell.width * (index - 3);
-                top = 3 * config.cell.height / 4;
-            } else if (7 <= index && index <= 11) {
-                left = config.cell.width * (index - 7);
-                top = 2 * (3 * config.cell.height / 4);
-            } else if (12 <= index && index <= 15) {
-                left = config.cell.width / 2 + config.cell.width * (index - 12);
-                top = 3 * (3 * config.cell.height / 4);
-            } else if (16 <= index && index <= 18) {
-                left = config.cell.width * (index - 15);
-                top = 4 * (3 * config.cell.height / 4);
-            }
-
-            resource.left = left;
-            resource.top = top;
-
-            return resource;
-        });
-
     /* src\App.svelte generated by Svelte v3.32.3 */
     const file$5 = "src\\App.svelte";
 
@@ -1613,30 +1724,30 @@ var app = (function () {
     	let dispose;
 
     	player0 = new Player({
-    			props: { player: /*katan*/ ctx[0].playerList[0] },
+    			props: { player: /*$katan*/ ctx[0].playerList[0] },
     			$$inline: true
     		});
 
     	board = new Board({
     			props: {
-    				resourceList: /*katan*/ ctx[0].resourceList,
-    				castleList: /*katan*/ ctx[0].castleList
+    				resourceList: /*$katan*/ ctx[0].resourceList,
+    				castleList: /*$katan*/ ctx[0].castleList
     			},
     			$$inline: true
     		});
 
     	player1 = new Player({
-    			props: { player: /*katan*/ ctx[0].playerList[1] },
+    			props: { player: /*$katan*/ ctx[0].playerList[1] },
     			$$inline: true
     		});
 
     	dice0 = new Dice({
-    			props: { number: /*katan*/ ctx[0].dice[0] },
+    			props: { number: /*$katan*/ ctx[0].dice[0] },
     			$$inline: true
     		});
 
     	dice1 = new Dice({
-    			props: { number: /*katan*/ ctx[0].dice[1] },
+    			props: { number: /*$katan*/ ctx[0].dice[1] },
     			$$inline: true
     		});
 
@@ -1662,18 +1773,18 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "주사위 굴리기";
     			attr_dev(td0, "valign", "top");
-    			add_location(td0, file$5, 30, 12, 771);
+    			add_location(td0, file$5, 32, 12, 776);
     			attr_dev(td1, "valign", "top");
-    			add_location(td1, file$5, 33, 12, 882);
+    			add_location(td1, file$5, 35, 12, 888);
     			attr_dev(td2, "valign", "top");
-    			add_location(td2, file$5, 38, 12, 1070);
+    			add_location(td2, file$5, 40, 12, 1078);
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$5, 44, 16, 1321);
+    			add_location(button, file$5, 46, 16, 1332);
     			attr_dev(td3, "valign", "top");
-    			add_location(td3, file$5, 41, 12, 1181);
-    			add_location(tr, file$5, 29, 8, 754);
-    			add_location(table, file$5, 28, 4, 738);
-    			add_location(main, file$5, 27, 0, 727);
+    			add_location(td3, file$5, 43, 12, 1190);
+    			add_location(tr, file$5, 31, 8, 759);
+    			add_location(table, file$5, 30, 4, 743);
+    			add_location(main, file$5, 29, 0, 732);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1706,11 +1817,11 @@ var app = (function () {
     		},
     		p: function update(ctx, [dirty]) {
     			const player0_changes = {};
-    			if (dirty & /*katan*/ 1) player0_changes.player = /*katan*/ ctx[0].playerList[0];
+    			if (dirty & /*$katan*/ 1) player0_changes.player = /*$katan*/ ctx[0].playerList[0];
     			player0.$set(player0_changes);
     			const board_changes = {};
-    			if (dirty & /*katan*/ 1) board_changes.resourceList = /*katan*/ ctx[0].resourceList;
-    			if (dirty & /*katan*/ 1) board_changes.castleList = /*katan*/ ctx[0].castleList;
+    			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
+    			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
     			if (dirty & /*$$scope*/ 16) {
     				board_changes.$$scope = { dirty, ctx };
@@ -1718,13 +1829,13 @@ var app = (function () {
 
     			board.$set(board_changes);
     			const player1_changes = {};
-    			if (dirty & /*katan*/ 1) player1_changes.player = /*katan*/ ctx[0].playerList[1];
+    			if (dirty & /*$katan*/ 1) player1_changes.player = /*$katan*/ ctx[0].playerList[1];
     			player1.$set(player1_changes);
     			const dice0_changes = {};
-    			if (dirty & /*katan*/ 1) dice0_changes.number = /*katan*/ ctx[0].dice[0];
+    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
     			dice0.$set(dice0_changes);
     			const dice1_changes = {};
-    			if (dirty & /*katan*/ 1) dice1_changes.number = /*katan*/ ctx[0].dice[1];
+    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
     			dice1.$set(dice1_changes);
     		},
     		i: function intro(local) {
@@ -1768,21 +1879,25 @@ var app = (function () {
     }
 
     function instance$5($$self, $$props, $$invalidate) {
+    	let $katan;
+    	validate_store(katan$1, "katan");
+    	component_subscribe($$self, katan$1, $$value => $$invalidate(0, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
     	let { name } = $$props;
 
     	function play() {
-    		$$invalidate(0, katan.dice[0] = Math.floor(Math.random() * 6) + 1, katan);
-    		$$invalidate(0, katan.dice[1] = Math.floor(Math.random() * 6) + 1, katan);
-    		const number = katan.dice[0] + katan.dice[1];
+    		const a = Math.floor(Math.random() * 6) + 1;
+    		const b = Math.floor(Math.random() * 6) + 1;
+    		katan$1.roll(a, b);
+    		const number = katan$1.getNumber();
 
-    		katan.resourceList.filter(resouce => resouce.number === number).forEach(resouce => {
-    			const player = katan.playerList.find(play => play.turn);
+    		$katan.resourceList.filter(resouce => resouce.number === number).forEach(resouce => {
+    			const player = $katan.playerList.find(play => play.turn);
     			player.resource[resouce.type]++;
     		});
 
-    		katan.turn();
+    		katan$1.turn();
     	}
 
     	const writable_props = ["name"];
@@ -1797,7 +1912,15 @@ var app = (function () {
     		if ("name" in $$props) $$invalidate(2, name = $$props.name);
     	};
 
-    	$$self.$capture_state = () => ({ Player, Board, Dice, katan, name, play });
+    	$$self.$capture_state = () => ({
+    		Player,
+    		Board,
+    		Dice,
+    		katan: katan$1,
+    		name,
+    		play,
+    		$katan
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ("name" in $$props) $$invalidate(2, name = $$props.name);
@@ -1807,7 +1930,7 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [katan, play, name, click_handler];
+    	return [$katan, play, name, click_handler];
     }
 
     class App extends SvelteComponentDev {
