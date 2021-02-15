@@ -80,6 +80,9 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
     function toggle_class(element, name, toggle) {
         element.classList[toggle ? 'add' : 'remove'](name);
     }
@@ -194,6 +197,12 @@ var app = (function () {
             block.o(local);
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -405,48 +414,53 @@ var app = (function () {
     	let table;
     	let tr0;
     	let td0;
+    	let t0_value = /*player*/ ctx[0].name + "";
+    	let t0;
+    	let t1;
+    	let tr1;
+    	let td1;
     	let img0;
     	let img0_src_value;
-    	let t0;
-    	let td1;
-    	let t1_value = /*player*/ ctx[0].resource.tree + "";
-    	let t1;
     	let t2;
-    	let tr1;
     	let td2;
+    	let t3_value = /*player*/ ctx[0].resource.tree + "";
+    	let t3;
+    	let t4;
+    	let tr2;
+    	let td3;
     	let img1;
     	let img1_src_value;
-    	let t3;
-    	let td3;
-    	let t4_value = /*player*/ ctx[0].resource.mud + "";
-    	let t4;
     	let t5;
-    	let tr2;
     	let td4;
+    	let t6_value = /*player*/ ctx[0].resource.mud + "";
+    	let t6;
+    	let t7;
+    	let tr3;
+    	let td5;
     	let img2;
     	let img2_src_value;
-    	let t6;
-    	let td5;
-    	let t7_value = /*player*/ ctx[0].resource.wheat + "";
-    	let t7;
     	let t8;
-    	let tr3;
     	let td6;
+    	let t9_value = /*player*/ ctx[0].resource.wheat + "";
+    	let t9;
+    	let t10;
+    	let tr4;
+    	let td7;
     	let img3;
     	let img3_src_value;
-    	let t9;
-    	let td7;
-    	let t10_value = /*player*/ ctx[0].resource.sheep + "";
-    	let t10;
     	let t11;
-    	let tr4;
     	let td8;
+    	let t12_value = /*player*/ ctx[0].resource.sheep + "";
+    	let t12;
+    	let t13;
+    	let tr5;
+    	let td9;
     	let img4;
     	let img4_src_value;
-    	let t12;
-    	let td9;
-    	let t13_value = /*player*/ ctx[0].resource.iron + "";
-    	let t13;
+    	let t14;
+    	let td10;
+    	let t15_value = /*player*/ ctx[0].resource.iron + "";
+    	let t15;
 
     	const block = {
     		c: function create() {
@@ -454,79 +468,88 @@ var app = (function () {
     			table = element("table");
     			tr0 = element("tr");
     			td0 = element("td");
-    			img0 = element("img");
-    			t0 = space();
-    			td1 = element("td");
-    			t1 = text(t1_value);
-    			t2 = space();
+    			t0 = text(t0_value);
+    			t1 = space();
     			tr1 = element("tr");
+    			td1 = element("td");
+    			img0 = element("img");
+    			t2 = space();
     			td2 = element("td");
-    			img1 = element("img");
-    			t3 = space();
-    			td3 = element("td");
-    			t4 = text(t4_value);
-    			t5 = space();
+    			t3 = text(t3_value);
+    			t4 = space();
     			tr2 = element("tr");
+    			td3 = element("td");
+    			img1 = element("img");
+    			t5 = space();
     			td4 = element("td");
-    			img2 = element("img");
-    			t6 = space();
-    			td5 = element("td");
-    			t7 = text(t7_value);
-    			t8 = space();
+    			t6 = text(t6_value);
+    			t7 = space();
     			tr3 = element("tr");
+    			td5 = element("td");
+    			img2 = element("img");
+    			t8 = space();
     			td6 = element("td");
-    			img3 = element("img");
-    			t9 = space();
-    			td7 = element("td");
-    			t10 = text(t10_value);
-    			t11 = space();
+    			t9 = text(t9_value);
+    			t10 = space();
     			tr4 = element("tr");
+    			td7 = element("td");
+    			img3 = element("img");
+    			t11 = space();
     			td8 = element("td");
-    			img4 = element("img");
-    			t12 = space();
+    			t12 = text(t12_value);
+    			t13 = space();
+    			tr5 = element("tr");
     			td9 = element("td");
-    			t13 = text(t13_value);
-    			if (img0.src !== (img0_src_value = "tree.png")) attr_dev(img0, "src", img0_src_value);
-    			attr_dev(img0, "class", "svelte-1e6a4vz");
-    			add_location(img0, file, 7, 16, 133);
-    			attr_dev(td0, "class", "svelte-1e6a4vz");
+    			img4 = element("img");
+    			t14 = space();
+    			td10 = element("td");
+    			t15 = text(t15_value);
+    			attr_dev(td0, "colspan", "2");
+    			set_style(td0, "background-color", /*player*/ ctx[0].color);
+    			attr_dev(td0, "class", "svelte-y669d0");
     			add_location(td0, file, 7, 12, 129);
-    			attr_dev(td1, "class", "svelte-1e6a4vz");
-    			add_location(td1, file, 8, 12, 171);
     			add_location(tr0, file, 6, 8, 112);
-    			if (img1.src !== (img1_src_value = "mud.png")) attr_dev(img1, "src", img1_src_value);
-    			attr_dev(img1, "class", "svelte-1e6a4vz");
-    			add_location(img1, file, 11, 16, 246);
-    			attr_dev(td2, "class", "svelte-1e6a4vz");
-    			add_location(td2, file, 11, 12, 242);
-    			attr_dev(td3, "class", "svelte-1e6a4vz");
-    			add_location(td3, file, 12, 12, 283);
-    			add_location(tr1, file, 10, 8, 225);
-    			if (img2.src !== (img2_src_value = "wheat.png")) attr_dev(img2, "src", img2_src_value);
-    			attr_dev(img2, "class", "svelte-1e6a4vz");
-    			add_location(img2, file, 15, 16, 357);
-    			attr_dev(td4, "class", "svelte-1e6a4vz");
-    			add_location(td4, file, 15, 12, 353);
-    			attr_dev(td5, "class", "svelte-1e6a4vz");
-    			add_location(td5, file, 16, 12, 396);
-    			add_location(tr2, file, 14, 8, 336);
-    			if (img3.src !== (img3_src_value = "sheep.png")) attr_dev(img3, "src", img3_src_value);
-    			attr_dev(img3, "class", "svelte-1e6a4vz");
-    			add_location(img3, file, 19, 16, 472);
-    			attr_dev(td6, "class", "svelte-1e6a4vz");
-    			add_location(td6, file, 19, 12, 468);
-    			attr_dev(td7, "class", "svelte-1e6a4vz");
-    			add_location(td7, file, 20, 12, 511);
-    			add_location(tr3, file, 18, 8, 451);
-    			if (img4.src !== (img4_src_value = "iron.png")) attr_dev(img4, "src", img4_src_value);
-    			attr_dev(img4, "class", "svelte-1e6a4vz");
-    			add_location(img4, file, 23, 16, 587);
-    			attr_dev(td8, "class", "svelte-1e6a4vz");
-    			add_location(td8, file, 23, 12, 583);
-    			attr_dev(td9, "class", "svelte-1e6a4vz");
-    			add_location(td9, file, 24, 12, 625);
-    			add_location(tr4, file, 22, 8, 566);
-    			attr_dev(table, "class", "resource svelte-1e6a4vz");
+    			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
+    			attr_dev(img0, "class", "svelte-y669d0");
+    			add_location(img0, file, 10, 16, 247);
+    			attr_dev(td1, "class", "svelte-y669d0");
+    			add_location(td1, file, 10, 12, 243);
+    			attr_dev(td2, "class", "number svelte-y669d0");
+    			add_location(td2, file, 11, 12, 290);
+    			add_location(tr1, file, 9, 8, 226);
+    			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
+    			attr_dev(img1, "class", "svelte-y669d0");
+    			add_location(img1, file, 14, 16, 380);
+    			attr_dev(td3, "class", "svelte-y669d0");
+    			add_location(td3, file, 14, 12, 376);
+    			attr_dev(td4, "class", "number svelte-y669d0");
+    			add_location(td4, file, 15, 12, 422);
+    			add_location(tr2, file, 13, 8, 359);
+    			if (img2.src !== (img2_src_value = "wheat_item.png")) attr_dev(img2, "src", img2_src_value);
+    			attr_dev(img2, "class", "svelte-y669d0");
+    			add_location(img2, file, 18, 16, 511);
+    			attr_dev(td5, "class", "svelte-y669d0");
+    			add_location(td5, file, 18, 12, 507);
+    			attr_dev(td6, "class", "number svelte-y669d0");
+    			add_location(td6, file, 19, 12, 555);
+    			add_location(tr3, file, 17, 8, 490);
+    			if (img3.src !== (img3_src_value = "sheep_item.png")) attr_dev(img3, "src", img3_src_value);
+    			attr_dev(img3, "class", "svelte-y669d0");
+    			add_location(img3, file, 22, 16, 646);
+    			attr_dev(td7, "class", "svelte-y669d0");
+    			add_location(td7, file, 22, 12, 642);
+    			attr_dev(td8, "class", "number svelte-y669d0");
+    			add_location(td8, file, 23, 12, 690);
+    			add_location(tr4, file, 21, 8, 625);
+    			if (img4.src !== (img4_src_value = "iron_item.png")) attr_dev(img4, "src", img4_src_value);
+    			attr_dev(img4, "class", "svelte-y669d0");
+    			add_location(img4, file, 26, 16, 781);
+    			attr_dev(td9, "class", "svelte-y669d0");
+    			add_location(td9, file, 26, 12, 777);
+    			attr_dev(td10, "class", "number svelte-y669d0");
+    			add_location(td10, file, 27, 12, 824);
+    			add_location(tr5, file, 25, 8, 760);
+    			attr_dev(table, "class", "resource svelte-y669d0");
     			toggle_class(table, "turn", /*player*/ ctx[0].turn);
     			add_location(table, file, 5, 4, 54);
     			add_location(main, file, 4, 0, 43);
@@ -539,45 +562,55 @@ var app = (function () {
     			append_dev(main, table);
     			append_dev(table, tr0);
     			append_dev(tr0, td0);
-    			append_dev(td0, img0);
-    			append_dev(tr0, t0);
-    			append_dev(tr0, td1);
-    			append_dev(td1, t1);
-    			append_dev(table, t2);
+    			append_dev(td0, t0);
+    			append_dev(table, t1);
     			append_dev(table, tr1);
+    			append_dev(tr1, td1);
+    			append_dev(td1, img0);
+    			append_dev(tr1, t2);
     			append_dev(tr1, td2);
-    			append_dev(td2, img1);
-    			append_dev(tr1, t3);
-    			append_dev(tr1, td3);
-    			append_dev(td3, t4);
-    			append_dev(table, t5);
+    			append_dev(td2, t3);
+    			append_dev(table, t4);
     			append_dev(table, tr2);
+    			append_dev(tr2, td3);
+    			append_dev(td3, img1);
+    			append_dev(tr2, t5);
     			append_dev(tr2, td4);
-    			append_dev(td4, img2);
-    			append_dev(tr2, t6);
-    			append_dev(tr2, td5);
-    			append_dev(td5, t7);
-    			append_dev(table, t8);
+    			append_dev(td4, t6);
+    			append_dev(table, t7);
     			append_dev(table, tr3);
+    			append_dev(tr3, td5);
+    			append_dev(td5, img2);
+    			append_dev(tr3, t8);
     			append_dev(tr3, td6);
-    			append_dev(td6, img3);
-    			append_dev(tr3, t9);
-    			append_dev(tr3, td7);
-    			append_dev(td7, t10);
-    			append_dev(table, t11);
+    			append_dev(td6, t9);
+    			append_dev(table, t10);
     			append_dev(table, tr4);
+    			append_dev(tr4, td7);
+    			append_dev(td7, img3);
+    			append_dev(tr4, t11);
     			append_dev(tr4, td8);
-    			append_dev(td8, img4);
-    			append_dev(tr4, t12);
-    			append_dev(tr4, td9);
-    			append_dev(td9, t13);
+    			append_dev(td8, t12);
+    			append_dev(table, t13);
+    			append_dev(table, tr5);
+    			append_dev(tr5, td9);
+    			append_dev(td9, img4);
+    			append_dev(tr5, t14);
+    			append_dev(tr5, td10);
+    			append_dev(td10, t15);
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*player*/ 1 && t1_value !== (t1_value = /*player*/ ctx[0].resource.tree + "")) set_data_dev(t1, t1_value);
-    			if (dirty & /*player*/ 1 && t4_value !== (t4_value = /*player*/ ctx[0].resource.mud + "")) set_data_dev(t4, t4_value);
-    			if (dirty & /*player*/ 1 && t7_value !== (t7_value = /*player*/ ctx[0].resource.wheat + "")) set_data_dev(t7, t7_value);
-    			if (dirty & /*player*/ 1 && t10_value !== (t10_value = /*player*/ ctx[0].resource.sheep + "")) set_data_dev(t10, t10_value);
-    			if (dirty & /*player*/ 1 && t13_value !== (t13_value = /*player*/ ctx[0].resource.iron + "")) set_data_dev(t13, t13_value);
+    			if (dirty & /*player*/ 1 && t0_value !== (t0_value = /*player*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*player*/ 1) {
+    				set_style(td0, "background-color", /*player*/ ctx[0].color);
+    			}
+
+    			if (dirty & /*player*/ 1 && t3_value !== (t3_value = /*player*/ ctx[0].resource.tree + "")) set_data_dev(t3, t3_value);
+    			if (dirty & /*player*/ 1 && t6_value !== (t6_value = /*player*/ ctx[0].resource.mud + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*player*/ 1 && t9_value !== (t9_value = /*player*/ ctx[0].resource.wheat + "")) set_data_dev(t9, t9_value);
+    			if (dirty & /*player*/ 1 && t12_value !== (t12_value = /*player*/ ctx[0].resource.sheep + "")) set_data_dev(t12, t12_value);
+    			if (dirty & /*player*/ 1 && t15_value !== (t15_value = /*player*/ ctx[0].resource.iron + "")) set_data_dev(t15, t15_value);
 
     			if (dirty & /*player*/ 1) {
     				toggle_class(table, "turn", /*player*/ ctx[0].turn);
@@ -913,24 +946,34 @@ var app = (function () {
         mode: 'ready',
         playerList: [
             {
+                color: 'lightblue',
+                name: '다은',
                 turn: true,
+                pickTown: true,
+                pickLoad: false,
                 resource: {
                     tree: 0,
                     mud: 0,
                     wheat: 0,
                     sheep: 0,
                     iron: 0
-                }
+                },
+                index: 0
             },
             {
+                color: 'lightcoral',
+                name: '아빠',
                 turn: false,
+                pickTown: false,
+                pickLoad: false,
                 resource: {
                     tree: 0,
                     mud: 0,
                     wheat: 0,
                     sheep: 0,
                     iron: 0
-                }
+                },
+                index: 1
             }
         ]
     };
@@ -1103,38 +1146,60 @@ var app = (function () {
             return katan;
         }),
 
-        getNumber: () => katna.dice[0] =  + katna.dice[1]
+        getNumber: () => katna.dice[0] =  + katna.dice[1],
+
+        getActivePlayer: () => {
+            return katan.playerList
+                .filter(player => player.turn)[0];
+        },
+
+        setCastle: (castleIndex, playerIndex) => update$1(katan => {
+            katan.castleList[castleIndex].playerIndex = playerIndex;
+            return katan;
+        }),
     };
 
     /* src\Castle.svelte generated by Svelte v3.32.3 */
+
+    const { console: console_1 } = globals;
     const file$2 = "src\\Castle.svelte";
 
     function create_fragment$2(ctx) {
     	let div;
+    	let mounted;
+    	let dispose;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "castle ripple svelte-1e4spsa");
-    			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
-    			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
-    			add_location(div, file$2, 16, 0, 398);
+    			attr_dev(div, "class", "castle svelte-1lv8tvv");
+    			attr_dev(div, "style", /*castleStyle*/ ctx[0]);
+    			toggle_class(div, "ripple", /*castle*/ ctx[1].ripple);
+    			toggle_class(div, "pick", /*castle*/ ctx[1].ripple);
+    			add_location(div, file$2, 40, 0, 1043);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*castle*/ 1) {
-    				toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    			if (dirty & /*castleStyle*/ 1) {
+    				attr_dev(div, "style", /*castleStyle*/ ctx[0]);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -1150,52 +1215,82 @@ var app = (function () {
     }
 
     function instance$2($$self, $$props, $$invalidate) {
+    	let $katan;
+    	validate_store(storeKatan, "katan");
+    	component_subscribe($$self, storeKatan, $$value => $$invalidate(5, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Castle", slots, []);
-    	let { castle } = $$props;
+    	let { castleIndex } = $$props;
+    	const castle = $katan.castleList[castleIndex];
+    	let castleStyle;
 
-    	let castleStyle = toStyle({
-    		left: castle.left + "px",
-    		top: castle.top + "px",
-    		width: config.castle.width + "px",
-    		height: config.castle.height + "px",
-    		borderRadius: config.castle.height + "px"
-    	});
+    	const pick = () => {
+    		const player = storeKatan.getActivePlayer();
+    		console.log(">>> player", player);
 
-    	const writable_props = ["castle"];
+    		if (player.pickTown === true) {
+    			storeKatan.setCastle(castleIndex, player.index);
+    			$$invalidate(0, castleStyle = createStyle());
+    		}
+    	};
+
+    	const createStyle = () => {
+    		let castleStyleObject = {
+    			left: castle.left + "px",
+    			top: castle.top + "px",
+    			width: config.castle.width + "px",
+    			height: config.castle.height + "px",
+    			borderRadius: config.castle.height + "px"
+    		};
+
+    		if (castle.playerIndex !== undefined) {
+    			castleStyleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
+    		}
+
+    		return toStyle(castleStyleObject);
+    	};
+
+    	castleStyle = createStyle();
+    	const writable_props = ["castleIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = () => pick();
+
     	$$self.$$set = $$props => {
-    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
+    		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
     	};
 
     	$$self.$capture_state = () => ({
     		katan: storeKatan,
     		config,
     		toStyle,
+    		castleIndex,
     		castle,
-    		castleStyle
+    		castleStyle,
+    		pick,
+    		createStyle,
+    		$katan
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
-    		if ("castleStyle" in $$props) $$invalidate(1, castleStyle = $$props.castleStyle);
+    		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
+    		if ("castleStyle" in $$props) $$invalidate(0, castleStyle = $$props.castleStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [castle, castleStyle];
+    	return [castleStyle, castle, pick, castleIndex, click_handler];
     }
 
     class Castle extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castle: 0 });
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castleIndex: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1207,16 +1302,16 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*castle*/ ctx[0] === undefined && !("castle" in props)) {
-    			console.warn("<Castle> was created without expected prop 'castle'");
+    		if (/*castleIndex*/ ctx[3] === undefined && !("castleIndex" in props)) {
+    			console_1.warn("<Castle> was created without expected prop 'castleIndex'");
     		}
     	}
 
-    	get castle() {
+    	get castleIndex() {
     		throw new Error("<Castle>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set castle(value) {
+    	set castleIndex(value) {
     		throw new Error("<Castle>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -1227,6 +1322,7 @@ var app = (function () {
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[3] = list[i];
+    	child_ctx[5] = i;
     	return child_ctx;
     }
 
@@ -1284,13 +1380,13 @@ var app = (function () {
     	return block;
     }
 
-    // (20:4) {#each castleList as castle}
+    // (20:4) {#each castleList as castle, i}
     function create_each_block(ctx) {
     	let castle;
     	let current;
 
     	castle = new Castle({
-    			props: { castle: /*castle*/ ctx[3] },
+    			props: { castleIndex: /*i*/ ctx[5] },
     			$$inline: true
     		});
 
@@ -1302,11 +1398,7 @@ var app = (function () {
     			mount_component(castle, target, anchor);
     			current = true;
     		},
-    		p: function update(ctx, dirty) {
-    			const castle_changes = {};
-    			if (dirty & /*castleList*/ 2) castle_changes.castle = /*castle*/ ctx[3];
-    			castle.$set(castle_changes);
-    		},
+    		p: noop,
     		i: function intro(local) {
     			if (current) return;
     			transition_in(castle.$$.fragment, local);
@@ -1325,7 +1417,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(20:4) {#each castleList as castle}",
+    		source: "(20:4) {#each castleList as castle, i}",
     		ctx
     	});
 

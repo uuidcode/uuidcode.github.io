@@ -17,8 +17,8 @@
     {#each resourceList as resource}
         <Cell resource={resource}></Cell>
     {/each}
-    {#each castleList as castle}
-        <Castle castle={castle}></Castle>
+    {#each castleList as castle, i}
+        <Castle castleIndex={i}></Castle>
     {/each}
 </main>
 

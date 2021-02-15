@@ -7,24 +7,34 @@ let katan = {
     mode: 'ready',
     playerList: [
         {
+            color: 'lightblue',
+            name: '다은',
             turn: true,
+            pickTown: true,
+            pickLoad: false,
             resource: {
                 tree: 0,
                 mud: 0,
                 wheat: 0,
                 sheep: 0,
                 iron: 0
-            }
+            },
+            index: 0
         },
         {
+            color: 'lightcoral',
+            name: '아빠',
             turn: false,
+            pickTown: false,
+            pickLoad: false,
             resource: {
                 tree: 0,
                 mud: 0,
                 wheat: 0,
                 sheep: 0,
                 iron: 0
-            }
+            },
+            index: 1
         }
     ]
 };
@@ -197,7 +207,17 @@ const storeKatan = {
         return katan;
     }),
 
-    getNumber: () => katna.dice[0] =  + katna.dice[1]
+    getNumber: () => katna.dice[0] =  + katna.dice[1],
+
+    getActivePlayer: () => {
+        return katan.playerList
+            .filter(player => player.turn)[0];
+    },
+
+    setCastle: (castleIndex, playerIndex) => update(katan => {
+        katan.castleList[castleIndex].playerIndex = playerIndex;
+        return katan;
+    }),
 };
 
 export default storeKatan;
