@@ -1,5 +1,6 @@
 import {writable} from "svelte/store";
 import config from './config.js'
+import { getDisplay } from './util.js'
 
 let katan = {
     dice: [6, 6],
@@ -178,7 +179,7 @@ katan.resourceList = katan.resourceList
 
 const { subscribe, set, update } = writable(katan);
 
-export default {
+const storeKatan = {
     subscribe,
 
     isReady: () => katan.mode === 'ready',
@@ -186,9 +187,9 @@ export default {
     isStart: () => katan.mode === 'start',
 
     start: () => update(katan => {
-            katan.mode = 'start';
-            return katan;
-        }),
+        katan.mode = 'start';
+        return katan;
+    }),
 
     roll: (a, b) => update(katna => {
         katna.dice[0] = a;
@@ -198,3 +199,5 @@ export default {
 
     getNumber: () => katna.dice[0] =  + katna.dice[1]
 };
+
+export default storeKatan;

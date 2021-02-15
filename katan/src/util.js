@@ -1,5 +1,13 @@
 export const camelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
 
+export const getDisplay = condition => {
+    if (condition === true) {
+        return 'show';
+    }
+
+    return 'hide';
+};
+
 export function toStyle (styleObject) {
     let style = '';
 

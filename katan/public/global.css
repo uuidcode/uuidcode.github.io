@@ -75,3 +75,11 @@ button:focus {
         box-shadow: 0 0 0 30px rgba(255,20,147, 0);
     }
 }
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}

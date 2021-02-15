@@ -5,8 +5,6 @@
 
     export let castle;
 
-    console.log('>>> katan', katan);
-
     let castleStyle = toStyle({
         left: castle.left + 'px',
         top: castle.top + 'px',
@@ -19,7 +17,6 @@
 <div class="castle ripple"
      class:ripple={castle.ripple}
      style={castleStyle}>
-    {katan.isStart()}
 </div>
 
 <style>
