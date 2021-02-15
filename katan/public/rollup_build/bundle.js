@@ -1,5 +1,5 @@
 
-(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35730/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
+(function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
 var app = (function () {
     'use strict';
 
@@ -694,13 +694,13 @@ var app = (function () {
     			attr_dev(img, "style", /*imageStyle*/ ctx[3]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
     			add_location(img, file$1, 39, 8, 1268);
-    			attr_dev(div0, "class", "number svelte-gz25ts");
+    			attr_dev(div0, "class", "number svelte-1h966hm");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[4]);
     			add_location(div0, file$1, 40, 8, 1331);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[2]);
     			add_location(div1, file$1, 38, 4, 1212);
-    			attr_dev(div2, "class", "cell svelte-gz25ts");
+    			attr_dev(div2, "class", "cell svelte-1h966hm");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[1]);
     			add_location(div2, file$1, 37, 0, 1171);
     		},
@@ -847,7 +847,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "castle svelte-1e4spsa");
+    			attr_dev(div, "class", "castle ripple svelte-1e4spsa");
     			attr_dev(div, "style", /*castleStyle*/ ctx[0]);
     			add_location(div, file$2, 14, 0, 368);
     		},

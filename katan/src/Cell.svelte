@@ -47,6 +47,8 @@
         position: absolute;
         text-align: center;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+        -webkit-mask-image: -webkit-gradient(
+                radial, 50% 50%, 0, 50% 50%, 200, from(#000), to(rgba(0,0,0,0.3)));
     }
 
     .number {
@@ -55,5 +57,6 @@
         color: black;
         opacity: 0.6;
         font-weight: bolder;
+        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
     }
 </style>

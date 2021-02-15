@@ -12,7 +12,7 @@
     });
 </script>
 
-<div class="castle" style={castleStyle}>
+<div class="castle ripple" style={castleStyle}>
 </div>
 
 <style>
