@@ -658,12 +658,15 @@ var app = (function () {
         }
     };
 
+    const camelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
+
     function toStyle (styleObject) {
         let style = '';
 
         Object.entries(styleObject)
             .forEach(([key, value]) => {
-                style += `${key}:${value};`;
+                let cssKey = camelToDash(key);
+                style += `${cssKey}:${value};`;
             });
 
         return style;
@@ -848,8 +851,9 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "castle ripple svelte-1e4spsa");
-    			attr_dev(div, "style", /*castleStyle*/ ctx[0]);
-    			add_location(div, file$2, 14, 0, 368);
+    			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
+    			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    			add_location(div, file$2, 14, 0, 365);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -857,7 +861,11 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
@@ -886,7 +894,7 @@ var app = (function () {
     		top: castle.top + "px",
     		width: config.castle.width + "px",
     		height: config.castle.height + "px",
-    		"border-radius": config.castle.height + "px"
+    		borderRadius: config.castle.height + "px"
     	});
 
     	const writable_props = ["castle"];
@@ -896,27 +904,27 @@ var app = (function () {
     	});
 
     	$$self.$$set = $$props => {
-    		if ("castle" in $$props) $$invalidate(1, castle = $$props.castle);
+    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
     	};
 
     	$$self.$capture_state = () => ({ config, toStyle, castle, castleStyle });
 
     	$$self.$inject_state = $$props => {
-    		if ("castle" in $$props) $$invalidate(1, castle = $$props.castle);
-    		if ("castleStyle" in $$props) $$invalidate(0, castleStyle = $$props.castleStyle);
+    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
+    		if ("castleStyle" in $$props) $$invalidate(1, castleStyle = $$props.castleStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [castleStyle, castle];
+    	return [castle, castleStyle];
     }
 
     class Castle extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castle: 1 });
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castle: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -928,7 +936,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*castle*/ ctx[1] === undefined && !("castle" in props)) {
+    		if (/*castle*/ ctx[0] === undefined && !("castle" in props)) {
     			console.warn("<Castle> was created without expected prop 'castle'");
     		}
     	}
@@ -1457,7 +1465,8 @@ var app = (function () {
 
                     katan.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2
+                        top: top - config.castle.height / 2,
+                        ripple: false
                     });
                 }
             } else if (i === 1 || i === 4) {
@@ -1474,7 +1483,8 @@ var app = (function () {
 
                     katan.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2
+                        top: top - config.castle.height / 2,
+                        ripple: j >= 3 && j <= 7
                     });
                 }
             } else if (i === 2 || i === 3) {
@@ -1490,7 +1500,8 @@ var app = (function () {
 
                 katan.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
-                    top: top - config.castle.height / 2
+                    top: top - config.castle.height / 2,
+                    ripple: j >= 2 && j <= 8
                 });
             }
         }

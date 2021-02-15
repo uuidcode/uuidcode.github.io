@@ -8,11 +8,13 @@
         top: castle.top + 'px',
         width: config.castle.width + 'px',
         height: config.castle.height + 'px',
-        'border-radius': config.castle.height + 'px'
+        borderRadius: config.castle.height + 'px'
     });
 </script>
 
-<div class="castle ripple" style={castleStyle}>
+<div class="castle ripple"
+     class:ripple={castle.ripple}
+     style={castleStyle}>
 </div>
 
 <style>
