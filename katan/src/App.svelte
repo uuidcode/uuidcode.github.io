@@ -2,7 +2,7 @@
     import Player from './Player.svelte'
     import Board from './Board.svelte'
     import Dice from './Dice.svelte'
-    import katan from './katan.js'
+    import katanStore from './katanStore.js'
 
     function play() {
         const a = Math.floor(Math.random() * 6) + 1;
@@ -32,9 +32,7 @@
                 <Player player={$katan.playerList[0]}></Player>
             </td>
             <td valign="top">
-                <Board resourceList="{$katan.resourceList}"
-                       castleList="{$katan.castleList}">
-                </Board>
+                <Board />
             </td>
             <td valign="top">
                 <Player player={$katan.playerList[1]}></Player>

@@ -2,13 +2,14 @@
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
+    import playListStore from './playListStore';
 
     export let castleIndex;
     const castle = $katan.castleList[castleIndex];
     let castleStyle;
 
     const pick = () => {
-        const player = katan.getActivePlayer();
+        const player = playListStore.getActivePlayer();
 
         if (player.pickTown === true) {
             katan.setCastle(castleIndex, player.index);

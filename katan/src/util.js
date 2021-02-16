@@ -19,3 +19,7 @@ export function toStyle (styleObject) {
 
     return style;
 }
+
+export const shuffle = (list) => list.sort(random());
+
+export const random = () => Math.random() - 0.5;

@@ -4,7 +4,9 @@
     import Cell from './Cell.svelte'
     import Castle from './Castle.svelte'
     import Load from './Load.svelte'
-    import katan from './katan.js'
+    import playListStore from './playListStore'
+    import resourceListStore from './resourceListStore'
+    import roadListStore from './roadListStore'
 
     export let resourceList;
     export let castleList;
@@ -16,13 +18,13 @@
 </script>
 
 <main class="board" style={boardStyle}>
-    {#each resourceList as resource}
+    {#each $resourceListStore as resource}
         <Cell resource={resource}></Cell>
     {/each}
-    {#each castleList as castle, i}
+    {#each $castleListStore as castle, i}
         <Castle castleIndex={i}></Castle>
     {/each}
-    {#each $katan.loadList as load, i}
+    {#each roadListStore as load, i}
         <Load loadIndex={i}></Load>
     {/each}
 </main>
