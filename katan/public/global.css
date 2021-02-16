@@ -76,6 +76,20 @@ button:focus {
     }
 }
 
+.load-ripple {
+    animation: load-ripple 3s linear infinite;
+    z-index: 100;
+}
+
+@keyframes load-ripple {
+    0% {
+        box-shadow: 0 0 0 10px rgba(206,232,240, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 30px rgba(206,232,240, 0);
+    }
+}
+
 .show {
     display: block;
 }

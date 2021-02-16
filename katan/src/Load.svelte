@@ -37,13 +37,18 @@
     };
 
     loadStyle = createStyle();
+
+    $: {
+        console.log('....');
+    }
 </script>
 
 <div class="load"
      on:click={() => pick()}
-     class:ripple={load.ripple}
-     class:pick={load.ripple}
+     class:load-ripple={load.loadRipple}
+     class:pick={load.loadRipple}
      style={loadStyle}>
+    {load.i},{load.j}
 </div>
 
 <style>
@@ -52,6 +57,7 @@
         text-align: center;
         border: 1px solid dodgerblue;
         background-color: lightblue;
+        opacity: 0.6;
     }
 
     .pick {

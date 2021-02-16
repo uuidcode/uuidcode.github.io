@@ -4,10 +4,10 @@
     import Cell from './Cell.svelte'
     import Castle from './Castle.svelte'
     import Load from './Load.svelte'
+    import katan from './katan.js'
 
     export let resourceList;
     export let castleList;
-    export let loadList;
 
     let boardStyle = toStyle({
         width: 5 * config.cell.width + 'px',
@@ -22,7 +22,7 @@
     {#each castleList as castle, i}
         <Castle castleIndex={i}></Castle>
     {/each}
-    {#each loadList as load, i}
+    {#each $katan.loadList as load, i}
         <Load loadIndex={i}></Load>
     {/each}
 </main>

@@ -12,6 +12,8 @@
 
         if (player.pickTown === true) {
             katan.setCastle(castleIndex, player.index);
+            katan.setCastleRippleDisabled();
+            katan.setLoadRippleEnabled();
             castleStyle = createStyle();
 
             player.pickTown = false;
@@ -44,6 +46,7 @@
      class:ripple={castle.ripple}
      class:pick={castle.ripple}
      style={castleStyle}>
+    {castle.i},{castle.j}
 </div>
 
 <style>
@@ -52,6 +55,7 @@
         text-align: center;
         border: 1px solid greenyellow;
         background-color: yellow;
+        opacity: 0.6;
     }
 
     .pick {

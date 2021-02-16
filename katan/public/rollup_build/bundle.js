@@ -197,6 +197,12 @@ var app = (function () {
             block.o(local);
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -1006,7 +1012,9 @@ var app = (function () {
                         top: top - config.castle.height / 2,
                         ripple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             } else if (i === 1 || i === 4) {
@@ -1028,7 +1036,9 @@ var app = (function () {
                         top: top - config.castle.height / 2,
                         ripple: constructable,
                         constructable: constructable,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             } else if (i === 2 || i === 3) {
@@ -1049,7 +1059,9 @@ var app = (function () {
                     top: top - config.castle.height / 2,
                     ripple: constructable,
                     constructable: constructable,
-                    empty: true
+                    empty: true,
+                    i,
+                    j
                 });
             }
         }
@@ -1057,99 +1069,110 @@ var app = (function () {
 
     katan.loadList = [];
 
+    const getLoadTopBySingle = (multiple) => {
+        return multiple * config.cell.height / 8 - config.load.width / 2 ;
+    };
+
+    const getLoadTop = (currentRow, targetRow, currentMultiple, targetMultiple) => {
+        let multiple = currentMultiple;
+
+        if (currentRow === targetRow) {
+            multiple = targetMultiple;
+        }
+
+        return getLoadTopBySingle(multiple) ;
+    };
+
     for (let i = 0; i <= 11; i++) {
         for (let j = 0; j <= 20; j++) {
             if (i === 0 || i === 11) {
                 if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
-                    let top = config.cell.height / 8 - config.load.width / 2 ;
-
-                    if (i === 11) {
-                        top = 31 * config.cell.height / 8 - config.load.width / 2 ;
-                    }
+                    let top = getLoadTop(i, 11, 1, 31);
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        ripple: false,
+                        loadRipple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             } else if (i === 1 || i === 10) {
                 if (j === 4 || j === 8 || j === 12 || j === 16) {
-                    let top = config.cell.height / 2 - config.load.width / 2 ;
-
-                    if (i === 10) {
-                        top = 28 * config.cell.height / 8 - config.load.width / 2 ;
-                    }
+                    let top = getLoadTop(i, 10, 4, 28);
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        ripple: false,
+                        loadRipple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
+
                     });
                 }
             } else if (i === 2 || i === 9) {
-                if (j === 3 || j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15 || j === 17) {
-                    let top = 7 * config.cell.height / 8 - config.load.width / 2 ;
-
-                    if (i === 9) {
-                        top = 25 * config.cell.height / 8 - config.load.width / 2 ;
-                    }
+                if (j === 3 || j === 5 || j === 7 || j === 9 ||
+                    j === 11 || j === 13 || j === 15 || j === 17) {
+                    let top = getLoadTop(i, 9, 7, 25);
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        ripple: false,
+                        loadRipple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             } else if (i === 3 || i === 8) {
                 if (j === 2 || j === 6 || j === 10 || j === 14 || j === 18) {
-                    let top = 5 * config.cell.height / 4 - config.load.width / 2 ;
 
-                    if (i === 8) {
-                        top = 22 * config.cell.height / 8 - config.load.width / 2 ;
-                    }
+                    let top = getLoadTop(i, 8, 10, 22);
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        ripple: false,
+                        loadRipple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             } else if (i === 4 || i === 7) {
                 if (j === 1 || j === 3 || j === 5 || j === 7 || j === 9 ||
                     j === 11 || j === 13 || j === 15 || j === 17 || j === 19) {
-                    let top = 13 * config.cell.height / 8 - config.load.width / 2 ;
 
-                    if (i === 7) {
-                        top = 19 * config.cell.height / 8 - config.load.width / 2 ;
-                    }
+                    let top = getLoadTop(i, 7, 13, 19);
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        ripple: false,
+                        loadRipple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             } else if (i === 5) {
                 if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
-                    let top = 8 * config.cell.height / 4 - config.load.width / 2 ;
+
+                    let top = getLoadTopBySingle(8);
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        ripple: false,
+                        loadRipple: false,
                         constructable: false,
-                        empty: true
+                        empty: true,
+                        i,
+                        j
                     });
                 }
             }
@@ -1268,6 +1291,25 @@ var app = (function () {
             katan.castleList[castleIndex].playerIndex = playerIndex;
             return katan;
         }),
+
+        setCastleRippleDisabled: () => update$1(katan => {
+            katan.castleList.forEach(castle => castle.ripple = false);
+            return katan;
+        }),
+
+        setLoadRippleEnabled: () => update$1(katan => {
+            for (const load of katan.loadList) {
+                load.loadRipple = true;
+            }
+
+            // katan.loadList = katan.loadList.map(load => {
+            //     load.loadRipple = true
+            // });
+
+            console.log('>>> katan', katan);
+
+            return katan;
+        })
     };
 
     /* src\Castle.svelte generated by Svelte v3.32.3 */
@@ -1275,23 +1317,34 @@ var app = (function () {
 
     function create_fragment$2(ctx) {
     	let div;
+    	let t0_value = /*castle*/ ctx[1].i + "";
+    	let t0;
+    	let t1;
+    	let t2_value = /*castle*/ ctx[1].j + "";
+    	let t2;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "castle svelte-1lv8tvv");
+    			t0 = text(t0_value);
+    			t1 = text(",");
+    			t2 = text(t2_value);
+    			attr_dev(div, "class", "castle svelte-1aqsadr");
     			attr_dev(div, "style", /*castleStyle*/ ctx[0]);
     			toggle_class(div, "ripple", /*castle*/ ctx[1].ripple);
     			toggle_class(div, "pick", /*castle*/ ctx[1].ripple);
-    			add_location(div, file$2, 41, 0, 1088);
+    			add_location(div, file$2, 43, 0, 1175);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+    			append_dev(div, t0);
+    			append_dev(div, t1);
+    			append_dev(div, t2);
 
     			if (!mounted) {
     				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
@@ -1338,6 +1391,8 @@ var app = (function () {
 
     		if (player.pickTown === true) {
     			storeKatan.setCastle(castleIndex, player.index);
+    			storeKatan.setCastleRippleDisabled();
+    			storeKatan.setLoadRippleEnabled();
     			$$invalidate(0, castleStyle = createStyle());
     			player.pickTown = false;
     			player.pickLoad = true;
@@ -1427,27 +1482,40 @@ var app = (function () {
     }
 
     /* src\Load.svelte generated by Svelte v3.32.3 */
+
+    const { console: console_1 } = globals;
     const file$3 = "src\\Load.svelte";
 
     function create_fragment$3(ctx) {
     	let div;
+    	let t0_value = /*load*/ ctx[1].i + "";
+    	let t0;
+    	let t1;
+    	let t2_value = /*load*/ ctx[1].j + "";
+    	let t2;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "load svelte-1xdwn0n");
+    			t0 = text(t0_value);
+    			t1 = text(",");
+    			t2 = text(t2_value);
+    			attr_dev(div, "class", "load svelte-1accgx7");
     			attr_dev(div, "style", /*loadStyle*/ ctx[0]);
-    			toggle_class(div, "ripple", /*load*/ ctx[1].ripple);
-    			toggle_class(div, "pick", /*load*/ ctx[1].ripple);
-    			add_location(div, file$3, 41, 0, 1068);
+    			toggle_class(div, "load-ripple", /*load*/ ctx[1].loadRipple);
+    			toggle_class(div, "pick", /*load*/ ctx[1].loadRipple);
+    			add_location(div, file$3, 45, 0, 1113);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+    			append_dev(div, t0);
+    			append_dev(div, t1);
+    			append_dev(div, t2);
 
     			if (!mounted) {
     				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
@@ -1520,7 +1588,7 @@ var app = (function () {
     	const writable_props = ["loadIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Load> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Load> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => pick();
@@ -1550,6 +1618,10 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
+    	{
+    		console.log("....");
+    	}
+
     	return [loadStyle, load, pick, loadIndex, click_handler];
     }
 
@@ -1569,7 +1641,7 @@ var app = (function () {
     		const props = options.props || {};
 
     		if (/*loadIndex*/ ctx[3] === undefined && !("loadIndex" in props)) {
-    			console.warn("<Load> was created without expected prop 'loadIndex'");
+    			console_1.warn("<Load> was created without expected prop 'loadIndex'");
     		}
     	}
 
@@ -1697,7 +1769,7 @@ var app = (function () {
     	return block;
     }
 
-    // (25:4) {#each loadList as load, i}
+    // (25:4) {#each $katan.loadList as load, i}
     function create_each_block(ctx) {
     	let load;
     	let current;
@@ -1734,7 +1806,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(25:4) {#each loadList as load, i}",
+    		source: "(25:4) {#each $katan.loadList as load, i}",
     		ctx
     	});
 
@@ -1770,7 +1842,7 @@ var app = (function () {
     		each_blocks_1[i] = null;
     	});
 
-    	let each_value = /*loadList*/ ctx[2];
+    	let each_value = /*$katan*/ ctx[2].loadList;
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -1804,7 +1876,7 @@ var app = (function () {
 
     			attr_dev(main, "class", "board svelte-sj58u5");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
-    			add_location(main, file$4, 17, 0, 424);
+    			add_location(main, file$4, 17, 0, 434);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1887,8 +1959,8 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if (dirty & /*loadList*/ 4) {
-    				each_value = /*loadList*/ ctx[2];
+    			if (dirty & /*$katan*/ 4) {
+    				each_value = /*$katan*/ ctx[2].loadList;
     				validate_each_argument(each_value);
     				let i;
 
@@ -1973,18 +2045,20 @@ var app = (function () {
     }
 
     function instance$4($$self, $$props, $$invalidate) {
+    	let $katan;
+    	validate_store(storeKatan, "katan");
+    	component_subscribe($$self, storeKatan, $$value => $$invalidate(2, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Board", slots, []);
     	let { resourceList } = $$props;
     	let { castleList } = $$props;
-    	let { loadList } = $$props;
 
     	let boardStyle = toStyle({
     		width: 5 * config.cell.width + "px",
     		height: 5 * config.cell.width + "px"
     	});
 
-    	const writable_props = ["resourceList", "castleList", "loadList"];
+    	const writable_props = ["resourceList", "castleList"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Board> was created with unknown prop '${key}'`);
@@ -1993,7 +2067,6 @@ var app = (function () {
     	$$self.$$set = $$props => {
     		if ("resourceList" in $$props) $$invalidate(0, resourceList = $$props.resourceList);
     		if ("castleList" in $$props) $$invalidate(1, castleList = $$props.castleList);
-    		if ("loadList" in $$props) $$invalidate(2, loadList = $$props.loadList);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2002,16 +2075,16 @@ var app = (function () {
     		Cell,
     		Castle,
     		Load,
+    		katan: storeKatan,
     		resourceList,
     		castleList,
-    		loadList,
-    		boardStyle
+    		boardStyle,
+    		$katan
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("resourceList" in $$props) $$invalidate(0, resourceList = $$props.resourceList);
     		if ("castleList" in $$props) $$invalidate(1, castleList = $$props.castleList);
-    		if ("loadList" in $$props) $$invalidate(2, loadList = $$props.loadList);
     		if ("boardStyle" in $$props) $$invalidate(3, boardStyle = $$props.boardStyle);
     	};
 
@@ -2019,18 +2092,13 @@ var app = (function () {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [resourceList, castleList, loadList, boardStyle];
+    	return [resourceList, castleList, $katan, boardStyle];
     }
 
     class Board extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {
-    			resourceList: 0,
-    			castleList: 1,
-    			loadList: 2
-    		});
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { resourceList: 0, castleList: 1 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -2049,10 +2117,6 @@ var app = (function () {
     		if (/*castleList*/ ctx[1] === undefined && !("castleList" in props)) {
     			console.warn("<Board> was created without expected prop 'castleList'");
     		}
-
-    		if (/*loadList*/ ctx[2] === undefined && !("loadList" in props)) {
-    			console.warn("<Board> was created without expected prop 'loadList'");
-    		}
     	}
 
     	get resourceList() {
@@ -2068,14 +2132,6 @@ var app = (function () {
     	}
 
     	set castleList(value) {
-    		throw new Error("<Board>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get loadList() {
-    		throw new Error("<Board>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set loadList(value) {
     		throw new Error("<Board>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -2218,8 +2274,7 @@ var app = (function () {
     	board = new Board({
     			props: {
     				resourceList: /*$katan*/ ctx[0].resourceList,
-    				castleList: /*$katan*/ ctx[0].castleList,
-    				loadList: /*$katan*/ ctx[0].loadList
+    				castleList: /*$katan*/ ctx[0].castleList
     			},
     			$$inline: true
     		});
@@ -2269,14 +2324,14 @@ var app = (function () {
     			attr_dev(td1, "valign", "top");
     			add_location(td1, file$6, 33, 12, 862);
     			attr_dev(td2, "valign", "top");
-    			add_location(td2, file$6, 39, 12, 1104);
-    			add_location(div0, file$6, 43, 16, 1250);
+    			add_location(td2, file$6, 38, 12, 1052);
+    			add_location(div0, file$6, 42, 16, 1198);
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 47, 16, 1450);
+    			add_location(button, file$6, 46, 16, 1398);
     			toggle_class(div1, "hide", storeKatan.isReady());
-    			add_location(div1, file$6, 44, 16, 1291);
+    			add_location(div1, file$6, 43, 16, 1239);
     			attr_dev(td3, "valign", "top");
-    			add_location(td3, file$6, 42, 12, 1216);
+    			add_location(td3, file$6, 41, 12, 1164);
     			add_location(tr, file$6, 29, 8, 733);
     			add_location(table, file$6, 28, 4, 717);
     			add_location(main, file$6, 27, 0, 706);
@@ -2321,7 +2376,6 @@ var app = (function () {
     			const board_changes = {};
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
-    			if (dirty & /*$katan*/ 1) board_changes.loadList = /*$katan*/ ctx[0].loadList;
 
     			if (dirty & /*$$scope*/ 8) {
     				board_changes.$$scope = { dirty, ctx };
