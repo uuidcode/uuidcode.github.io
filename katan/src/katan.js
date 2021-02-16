@@ -67,7 +67,9 @@ for (let i = 0; i < 6; i++) {
                 katan.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: false
+                    ripple: false,
+                    constructable: false,
+                    empty: true
                 });
             }
         } else if (i === 1 || i === 4) {
@@ -82,10 +84,14 @@ for (let i = 0; i < 6; i++) {
                     top += config.cell.height / 4
                 }
 
+                const constructable = j >= 3 && j <= 7;
+
                 katan.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: j >= 3 && j <= 7
+                    ripple: constructable,
+                    constructable: constructable,
+                    empty: true
                 });
             }
         } else if (i === 2 || i === 3) {
@@ -99,10 +105,14 @@ for (let i = 0; i < 6; i++) {
                 top += config.cell.height / 4
             }
 
+            const constructable = j >= 2 && j <= 8;
+
             katan.castleList.push({
                 left: j * (config.cell.width / 2) - config.castle.width / 2,
                 top: top - config.castle.height / 2,
-                ripple: j >= 2 && j <= 8
+                ripple: constructable,
+                constructable: constructable,
+                empty: true
             });
         }
     }

@@ -10,11 +10,12 @@
     const pick = () => {
         const player = katan.getActivePlayer();
 
-        console.log('>>> player', player);
-
         if (player.pickTown === true) {
             katan.setCastle(castleIndex, player.index);
             castleStyle = createStyle();
+
+            player.pickTown = false;
+            player.pickLoad = true;
         }
     };
 
@@ -28,14 +29,14 @@
         };
 
         if (castle.playerIndex !== undefined) {
-            castleStyleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
+            castleStyleObject.backgroundColor =
+                $katan.playerList[castle.playerIndex].color;
         }
 
         return toStyle(castleStyleObject);
     };
 
     castleStyle = createStyle();
-
 </script>
 
 <div class="castle"
