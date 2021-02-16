@@ -118,6 +118,70 @@ for (let i = 0; i < 6; i++) {
     }
 }
 
+katan.loadList = [];
+
+for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 10; j++) {
+        if (i === 0 || i === 10) {
+            if (j >= 2 && j <= 7) {
+                let top = config.cell.height / 8 - config.load.width / 2 ;
+
+                katan.loadList.push({
+                    left: j * (config.cell.width / 2) - config.load.width / 2 + config.cell.width / 4,
+                    top: top,
+                    ripple: false,
+                    constructable: false,
+                    empty: true
+                });
+            }
+        } else if (i === 1 || i === 4) {
+            // if (j >= 1 && j <= 9) {
+            //     let top = (3 * config.cell.height / 4);
+            //
+            //     if (i === 4) {
+            //         top = i * (3 * config.cell.height / 4);
+            //     }
+            //
+            //     if (j % 2 === i % 2) {
+            //         top += config.cell.height / 4
+            //     }
+            //
+            //     const constructable = j >= 3 && j <= 7;
+            //
+            //     katan.loadList.push({
+            //         left: j * (config.cell.width / 2) - config.castle.width / 2,
+            //         top: top - config.castle.height / 2,
+            //         ripple: constructable,
+            //         constructable: constructable,
+            //         empty: true
+            //     });
+            // }
+        } else if (i === 2 || i === 3) {
+            // let top = 2 * (3 * config.cell.height / 4);
+            //
+            // if (i === 3) {
+            //     top = i * (3 * config.cell.height / 4);
+            // }
+            //
+            // if (j % 2 === i % 2) {
+            //     top += config.cell.height / 4
+            // }
+            //
+            // const constructable = j >= 2 && j <= 8;
+            //
+            // katan.loadList.push({
+            //     left: j * (config.cell.width / 2) - config.castle.width / 2,
+            //     top: top - config.castle.height / 2,
+            //     ripple: constructable,
+            //     constructable: constructable,
+            //     empty: true
+            // });
+        }
+    }
+}
+
+console.log('>>> katan.loadList', katan.loadList);
+
 let resourceList = [];
 
 resourceList.push({

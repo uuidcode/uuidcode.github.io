@@ -33,7 +33,8 @@
             </td>
             <td valign="top">
                 <Board resourceList="{$katan.resourceList}"
-                       castleList="{$katan.castleList}">
+                       castleList="{$katan.castleList}"
+                       loadList="{$katan.loadList}">
                 </Board>
             </td>
             <td valign="top">

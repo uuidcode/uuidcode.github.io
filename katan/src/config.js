@@ -5,8 +5,12 @@ const config = {
         margin: 5
     },
     castle: {
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
+    },
+    load: {
+        width: 40,
+        height: 40,
     },
     number: {
         width: 80,
