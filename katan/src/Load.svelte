@@ -2,9 +2,14 @@
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
+    import { onDestroy } from 'svelte';
 
+    export let loadList;
     export let loadIndex;
-    const load = $katan.loadList[loadIndex];
+
+    console.log('>>> loadList', loadList);
+
+    let load = loadList[loadIndex];
     let loadStyle;
 
     const pick = () => {
@@ -38,9 +43,12 @@
 
     loadStyle = createStyle();
 
-    $: {
-        console.log('....');
-    }
+    const unsubscribe = katan.subscribe(currentKatan => {
+        loadStyle = createStyle();
+        load = currentKatan.loadList[loadIndex];
+    });
+
+    onDestroy(unsubscribe);
 </script>
 
 <div class="load"

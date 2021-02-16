@@ -96,6 +96,14 @@ var app = (function () {
     function set_current_component(component) {
         current_component = component;
     }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error('Function called outside component initialization');
+        return current_component;
+    }
+    function onDestroy(fn) {
+        get_current_component().$$.on_destroy.push(fn);
+    }
 
     const dirty_components = [];
     const binding_callbacks = [];
@@ -1298,15 +1306,10 @@ var app = (function () {
         }),
 
         setLoadRippleEnabled: () => update$1(katan => {
-            for (const load of katan.loadList) {
+            katan.loadList = katan.loadList.map(load => {
                 load.loadRipple = true;
-            }
-
-            // katan.loadList = katan.loadList.map(load => {
-            //     load.loadRipple = true
-            // });
-
-            console.log('>>> katan', katan);
+                return load;
+            });
 
             return katan;
         })
@@ -1335,7 +1338,7 @@ var app = (function () {
     			attr_dev(div, "style", /*castleStyle*/ ctx[0]);
     			toggle_class(div, "ripple", /*castle*/ ctx[1].ripple);
     			toggle_class(div, "pick", /*castle*/ ctx[1].ripple);
-    			add_location(div, file$2, 43, 0, 1175);
+    			add_location(div, file$2, 43, 0, 1218);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1488,10 +1491,10 @@ var app = (function () {
 
     function create_fragment$3(ctx) {
     	let div;
-    	let t0_value = /*load*/ ctx[1].i + "";
+    	let t0_value = /*load*/ ctx[0].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*load*/ ctx[1].j + "";
+    	let t2_value = /*load*/ ctx[0].j + "";
     	let t2;
     	let mounted;
     	let dispose;
@@ -1503,10 +1506,10 @@ var app = (function () {
     			t1 = text(",");
     			t2 = text(t2_value);
     			attr_dev(div, "class", "load svelte-1accgx7");
-    			attr_dev(div, "style", /*loadStyle*/ ctx[0]);
-    			toggle_class(div, "load-ripple", /*load*/ ctx[1].loadRipple);
-    			toggle_class(div, "pick", /*load*/ ctx[1].loadRipple);
-    			add_location(div, file$3, 45, 0, 1113);
+    			attr_dev(div, "style", /*loadStyle*/ ctx[1]);
+    			toggle_class(div, "load-ripple", /*load*/ ctx[0].loadRipple);
+    			toggle_class(div, "pick", /*load*/ ctx[0].loadRipple);
+    			add_location(div, file$3, 53, 0, 1349);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1518,13 +1521,24 @@ var app = (function () {
     			append_dev(div, t2);
 
     			if (!mounted) {
-    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[5], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*loadStyle*/ 1) {
-    				attr_dev(div, "style", /*loadStyle*/ ctx[0]);
+    			if (dirty & /*load*/ 1 && t0_value !== (t0_value = /*load*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*load*/ 1 && t2_value !== (t2_value = /*load*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+
+    			if (dirty & /*loadStyle*/ 2) {
+    				attr_dev(div, "style", /*loadStyle*/ ctx[1]);
+    			}
+
+    			if (dirty & /*load*/ 1) {
+    				toggle_class(div, "load-ripple", /*load*/ ctx[0].loadRipple);
+    			}
+
+    			if (dirty & /*load*/ 1) {
+    				toggle_class(div, "pick", /*load*/ ctx[0].loadRipple);
     			}
     		},
     		i: noop,
@@ -1548,13 +1562,12 @@ var app = (function () {
     }
 
     function instance$3($$self, $$props, $$invalidate) {
-    	let $katan;
-    	validate_store(storeKatan, "katan");
-    	component_subscribe($$self, storeKatan, $$value => $$invalidate(5, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Load", slots, []);
+    	let { loadList } = $$props;
     	let { loadIndex } = $$props;
-    	const load = $katan.loadList[loadIndex];
+    	console.log(">>> loadList", loadList);
+    	let load = loadList[loadIndex];
     	let loadStyle;
 
     	const pick = () => {
@@ -1562,7 +1575,7 @@ var app = (function () {
 
     		if (player.pickTown === true) {
     			storeKatan.setCastle(loadIndex, player.index);
-    			$$invalidate(0, loadStyle = createStyle());
+    			$$invalidate(1, loadStyle = createStyle());
     			player.pickTown = false;
     			player.pickLoad = true;
     		}
@@ -1585,7 +1598,14 @@ var app = (function () {
     	};
 
     	loadStyle = createStyle();
-    	const writable_props = ["loadIndex"];
+
+    	const unsubscribe = storeKatan.subscribe(currentKatan => {
+    		$$invalidate(1, loadStyle = createStyle());
+    		$$invalidate(0, load = currentKatan.loadList[loadIndex]);
+    	});
+
+    	onDestroy(unsubscribe);
+    	const writable_props = ["loadList", "loadIndex"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Load> was created with unknown prop '${key}'`);
@@ -1594,41 +1614,42 @@ var app = (function () {
     	const click_handler = () => pick();
 
     	$$self.$$set = $$props => {
-    		if ("loadIndex" in $$props) $$invalidate(3, loadIndex = $$props.loadIndex);
+    		if ("loadList" in $$props) $$invalidate(3, loadList = $$props.loadList);
+    		if ("loadIndex" in $$props) $$invalidate(4, loadIndex = $$props.loadIndex);
     	};
 
     	$$self.$capture_state = () => ({
     		katan: storeKatan,
     		config,
     		toStyle,
+    		onDestroy,
+    		loadList,
     		loadIndex,
     		load,
     		loadStyle,
     		pick,
     		createStyle,
-    		$katan
+    		unsubscribe
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("loadIndex" in $$props) $$invalidate(3, loadIndex = $$props.loadIndex);
-    		if ("loadStyle" in $$props) $$invalidate(0, loadStyle = $$props.loadStyle);
+    		if ("loadList" in $$props) $$invalidate(3, loadList = $$props.loadList);
+    		if ("loadIndex" in $$props) $$invalidate(4, loadIndex = $$props.loadIndex);
+    		if ("load" in $$props) $$invalidate(0, load = $$props.load);
+    		if ("loadStyle" in $$props) $$invalidate(1, loadStyle = $$props.loadStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	{
-    		console.log("....");
-    	}
-
-    	return [loadStyle, load, pick, loadIndex, click_handler];
+    	return [load, loadStyle, pick, loadList, loadIndex, click_handler];
     }
 
     class Load extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { loadIndex: 3 });
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { loadList: 3, loadIndex: 4 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1640,9 +1661,21 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*loadIndex*/ ctx[3] === undefined && !("loadIndex" in props)) {
+    		if (/*loadList*/ ctx[3] === undefined && !("loadList" in props)) {
+    			console_1.warn("<Load> was created without expected prop 'loadList'");
+    		}
+
+    		if (/*loadIndex*/ ctx[4] === undefined && !("loadIndex" in props)) {
     			console_1.warn("<Load> was created without expected prop 'loadIndex'");
     		}
+    	}
+
+    	get loadList() {
+    		throw new Error("<Load>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set loadList(value) {
+    		throw new Error("<Load>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
     	get loadIndex() {
@@ -1775,7 +1808,10 @@ var app = (function () {
     	let current;
 
     	load = new Load({
-    			props: { loadIndex: /*i*/ ctx[6] },
+    			props: {
+    				loadList: /*$katan*/ ctx[2].loadList,
+    				loadIndex: /*i*/ ctx[6]
+    			},
     			$$inline: true
     		});
 
@@ -1787,7 +1823,11 @@ var app = (function () {
     			mount_component(load, target, anchor);
     			current = true;
     		},
-    		p: noop,
+    		p: function update(ctx, dirty) {
+    			const load_changes = {};
+    			if (dirty & /*$katan*/ 4) load_changes.loadList = /*$katan*/ ctx[2].loadList;
+    			load.$set(load_changes);
+    		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(load.$$.fragment, local);
@@ -1876,7 +1916,7 @@ var app = (function () {
 
     			attr_dev(main, "class", "board svelte-sj58u5");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
-    			add_location(main, file$4, 17, 0, 434);
+    			add_location(main, file$4, 17, 0, 451);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2320,21 +2360,21 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "주사위 굴리기";
     			attr_dev(td0, "valign", "top");
-    			add_location(td0, file$6, 30, 12, 750);
+    			add_location(td0, file$6, 30, 12, 780);
     			attr_dev(td1, "valign", "top");
-    			add_location(td1, file$6, 33, 12, 862);
+    			add_location(td1, file$6, 33, 12, 895);
     			attr_dev(td2, "valign", "top");
-    			add_location(td2, file$6, 38, 12, 1052);
-    			add_location(div0, file$6, 42, 16, 1198);
+    			add_location(td2, file$6, 38, 12, 1090);
+    			add_location(div0, file$6, 42, 16, 1240);
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 46, 16, 1398);
+    			add_location(button, file$6, 46, 16, 1444);
     			toggle_class(div1, "hide", storeKatan.isReady());
-    			add_location(div1, file$6, 43, 16, 1239);
+    			add_location(div1, file$6, 43, 16, 1282);
     			attr_dev(td3, "valign", "top");
-    			add_location(td3, file$6, 41, 12, 1164);
-    			add_location(tr, file$6, 29, 8, 733);
-    			add_location(table, file$6, 28, 4, 717);
-    			add_location(main, file$6, 27, 0, 706);
+    			add_location(td3, file$6, 41, 12, 1205);
+    			add_location(tr, file$6, 29, 8, 762);
+    			add_location(table, file$6, 28, 4, 745);
+    			add_location(main, file$6, 27, 0, 733);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

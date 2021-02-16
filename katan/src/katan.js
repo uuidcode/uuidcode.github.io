@@ -355,15 +355,10 @@ const storeKatan = {
     }),
 
     setLoadRippleEnabled: () => update(katan => {
-        for (const load of katan.loadList) {
+        katan.loadList = katan.loadList.map(load => {
             load.loadRipple = true;
-        }
-
-        // katan.loadList = katan.loadList.map(load => {
-        //     load.loadRipple = true
-        // });
-
-        console.log('>>> katan', katan);
+            return load;
+        });
 
         return katan;
     })

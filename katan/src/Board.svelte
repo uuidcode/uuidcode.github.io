@@ -23,7 +23,8 @@
         <Castle castleIndex={i}></Castle>
     {/each}
     {#each $katan.loadList as load, i}
-        <Load loadIndex={i}></Load>
+        <Load loadList={$katan.loadList}
+                loadIndex={i}></Load>
     {/each}
 </main>
 
