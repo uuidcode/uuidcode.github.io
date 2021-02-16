@@ -1057,23 +1057,15 @@ var app = (function () {
 
     katan.loadList = [];
 
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 20; j++) {
-            if (i === 0) {
+    for (let i = 0; i <= 11; i++) {
+        for (let j = 0; j <= 20; j++) {
+            if (i === 0 || i === 11) {
                 if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
                     let top = config.cell.height / 8 - config.load.width / 2 ;
 
-                    katan.loadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        ripple: false,
-                        constructable: false,
-                        empty: true
-                    });
-                }
-            } else if (i === 1) {
-                if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15 || j === 17) {
-                    let top = 7 * config.cell.height / 8 - config.load.width / 2 ;
+                    if (i === 11) {
+                        top = 31 * config.cell.height / 8 - config.load.width / 2 ;
+                    }
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
@@ -1083,9 +1075,74 @@ var app = (function () {
                         empty: true
                     });
                 }
-            } else if (i === 2) {
+            } else if (i === 1 || i === 10) {
                 if (j === 4 || j === 8 || j === 12 || j === 16) {
                     let top = config.cell.height / 2 - config.load.width / 2 ;
+
+                    if (i === 10) {
+                        top = 28 * config.cell.height / 8 - config.load.width / 2 ;
+                    }
+
+                    katan.loadList.push({
+                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        top: top,
+                        ripple: false,
+                        constructable: false,
+                        empty: true
+                    });
+                }
+            } else if (i === 2 || i === 9) {
+                if (j === 3 || j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15 || j === 17) {
+                    let top = 7 * config.cell.height / 8 - config.load.width / 2 ;
+
+                    if (i === 9) {
+                        top = 25 * config.cell.height / 8 - config.load.width / 2 ;
+                    }
+
+                    katan.loadList.push({
+                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        top: top,
+                        ripple: false,
+                        constructable: false,
+                        empty: true
+                    });
+                }
+            } else if (i === 3 || i === 8) {
+                if (j === 2 || j === 6 || j === 10 || j === 14 || j === 18) {
+                    let top = 5 * config.cell.height / 4 - config.load.width / 2 ;
+
+                    if (i === 8) {
+                        top = 22 * config.cell.height / 8 - config.load.width / 2 ;
+                    }
+
+                    katan.loadList.push({
+                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        top: top,
+                        ripple: false,
+                        constructable: false,
+                        empty: true
+                    });
+                }
+            } else if (i === 4 || i === 7) {
+                if (j === 1 || j === 3 || j === 5 || j === 7 || j === 9 ||
+                    j === 11 || j === 13 || j === 15 || j === 17 || j === 19) {
+                    let top = 13 * config.cell.height / 8 - config.load.width / 2 ;
+
+                    if (i === 7) {
+                        top = 19 * config.cell.height / 8 - config.load.width / 2 ;
+                    }
+
+                    katan.loadList.push({
+                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        top: top,
+                        ripple: false,
+                        constructable: false,
+                        empty: true
+                    });
+                }
+            } else if (i === 5) {
+                if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
+                    let top = 8 * config.cell.height / 4 - config.load.width / 2 ;
 
                     katan.loadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
