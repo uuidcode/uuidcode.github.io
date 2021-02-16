@@ -50,6 +50,7 @@
         width: 100px;
         height: 100px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+        margin: 4px;
     }
 
     .number {
