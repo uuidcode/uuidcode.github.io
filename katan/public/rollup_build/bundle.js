@@ -1075,6 +1075,7 @@ var app = (function () {
         }
     }
 
+    katan.castleList.forEach((castle, index) => castle.index = index);
     katan.roadList = [];
 
     const getLoadTopBySingle = (multiple) => {
@@ -1186,8 +1187,53 @@ var app = (function () {
         }
     }
 
+    katan.roadList.forEach((road, index) => road.index = index);
     katan.roadList.forEach(road => road.hide = true);
     katan.roadList.forEach(road => road.show = false);
+
+    for (let i = 0; i <= 5; i++) {
+        katan.roadList[i].castleList = [i, i + 1];
+    }
+
+    for (let i = 6; i <= 9; i++) {
+        katan.roadList[i].castleList = [2 * (i - 6), 2 * (i - 6) + 10];
+    }
+
+    for (let i = 10; i <= 17; i++) {
+        katan.roadList[i].castleList = [i - 3, i - 2];
+    }
+
+    for (let i = 18; i <= 22; i++) {
+        katan.roadList[i].castleList = [i - 11, i - 1];
+    }
+
+    for (let i = 23; i <= 32; i++) {
+        katan.roadList[i].castleList = [i - 7, i - 6];
+    }
+
+    for (let i = 33; i <= 38; i++) {
+        katan.roadList[i].castleList = [i - 17, i - 6];
+    }
+
+    for (let i = 39; i <= 48; i++) {
+        katan.roadList[i].castleList = [i - 12, i - 11];
+    }
+
+    for (let i = 49; i <= 53; i++) {
+        katan.roadList[i].castleList = [i - 21, i - 11];
+    }
+
+    for (let i = 54; i <= 61; i++) {
+        katan.roadList[i].castleList = [i - 16, i - 15];
+    }
+
+    for (let i = 62; i <= 65; i++) {
+        katan.roadList[i].castleList = [i - 23, i - 15];
+    }
+
+    for (let i = 66; i <= 71; i++) {
+        katan.roadList[i].castleList = [i - 19, i - 18];
+    }
 
     let resourceList = [];
 
@@ -1369,71 +1415,87 @@ var app = (function () {
     const file$2 = "src\\Castle.svelte";
 
     function create_fragment$2(ctx) {
-    	let div;
+    	let div2;
+    	let div0;
     	let t0_value = /*castle*/ ctx[0].i + "";
     	let t0;
     	let t1;
     	let t2_value = /*castle*/ ctx[0].j + "";
     	let t2;
+    	let t3;
+    	let div1;
+    	let t4_value = /*castle*/ ctx[0].index + "";
+    	let t4;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			div2 = element("div");
+    			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = text(",");
     			t2 = text(t2_value);
-    			attr_dev(div, "class", "castle svelte-1aqsadr");
-    			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
-    			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
-    			toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
-    			toggle_class(div, "hide", /*castle*/ ctx[0].hide);
-    			toggle_class(div, "show", /*castle*/ ctx[0].show);
-    			add_location(div, file$2, 52, 0, 1447);
+    			t3 = space();
+    			div1 = element("div");
+    			t4 = text(t4_value);
+    			add_location(div0, file$2, 59, 0, 1651);
+    			add_location(div1, file$2, 60, 0, 1685);
+    			attr_dev(div2, "class", "castle svelte-1aqsadr");
+    			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
+    			toggle_class(div2, "ripple", /*castle*/ ctx[0].ripple);
+    			toggle_class(div2, "pick", /*castle*/ ctx[0].ripple);
+    			toggle_class(div2, "hide1", /*castle*/ ctx[0].hide);
+    			toggle_class(div2, "show1", /*castle*/ ctx[0].show);
+    			add_location(div2, file$2, 52, 0, 1447);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t0);
-    			append_dev(div, t1);
-    			append_dev(div, t2);
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div0);
+    			append_dev(div0, t0);
+    			append_dev(div0, t1);
+    			append_dev(div0, t2);
+    			append_dev(div2, t3);
+    			append_dev(div2, div1);
+    			append_dev(div1, t4);
 
     			if (!mounted) {
-    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div2, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*castle*/ 1 && t0_value !== (t0_value = /*castle*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
     			if (dirty & /*castle*/ 1 && t2_value !== (t2_value = /*castle*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*castle*/ 1 && t4_value !== (t4_value = /*castle*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
 
     			if (dirty & /*castleStyle*/ 2) {
-    				attr_dev(div, "style", /*castleStyle*/ ctx[1]);
+    				attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    				toggle_class(div2, "ripple", /*castle*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
+    				toggle_class(div2, "pick", /*castle*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div, "hide", /*castle*/ ctx[0].hide);
+    				toggle_class(div2, "hide1", /*castle*/ ctx[0].hide);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div, "show", /*castle*/ ctx[0].show);
+    				toggle_class(div2, "show1", /*castle*/ ctx[0].show);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div2);
     			mounted = false;
     			dispose();
     		}
@@ -1570,71 +1632,95 @@ var app = (function () {
     const file$3 = "src\\Road.svelte";
 
     function create_fragment$3(ctx) {
-    	let div;
+    	let div2;
+    	let div0;
     	let t0_value = /*road*/ ctx[0].i + "";
     	let t0;
     	let t1;
     	let t2_value = /*road*/ ctx[0].j + "";
     	let t2;
+    	let t3;
+    	let div1;
+    	let t4_value = /*road*/ ctx[0].index + "";
+    	let t4;
+    	let t5;
+    	let t6_value = /*road*/ ctx[0].castleList + "";
+    	let t6;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			div2 = element("div");
+    			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = text(",");
     			t2 = text(t2_value);
-    			attr_dev(div, "class", "road svelte-1qfvmb9");
-    			attr_dev(div, "style", /*roadStyle*/ ctx[1]);
-    			toggle_class(div, "road-ripple", /*road*/ ctx[0].roadRipple);
-    			toggle_class(div, "pick", /*road*/ ctx[0].roadRipple);
-    			toggle_class(div, "hide", /*road*/ ctx[0].hide);
-    			toggle_class(div, "show", /*road*/ ctx[0].show);
-    			add_location(div, file$3, 50, 0, 1172);
+    			t3 = space();
+    			div1 = element("div");
+    			t4 = text(t4_value);
+    			t5 = space();
+    			t6 = text(t6_value);
+    			add_location(div0, file$3, 57, 0, 1376);
+    			add_location(div1, file$3, 58, 0, 1405);
+    			attr_dev(div2, "class", "road svelte-1qfvmb9");
+    			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
+    			toggle_class(div2, "road-ripple", /*road*/ ctx[0].roadRipple);
+    			toggle_class(div2, "pick", /*road*/ ctx[0].roadRipple);
+    			toggle_class(div2, "hide1", /*road*/ ctx[0].hide);
+    			toggle_class(div2, "show1", /*road*/ ctx[0].show);
+    			add_location(div2, file$3, 50, 0, 1172);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t0);
-    			append_dev(div, t1);
-    			append_dev(div, t2);
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div0);
+    			append_dev(div0, t0);
+    			append_dev(div0, t1);
+    			append_dev(div0, t2);
+    			append_dev(div2, t3);
+    			append_dev(div2, div1);
+    			append_dev(div1, t4);
+    			append_dev(div1, t5);
+    			append_dev(div1, t6);
 
     			if (!mounted) {
-    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div2, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*road*/ 1 && t0_value !== (t0_value = /*road*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
     			if (dirty & /*road*/ 1 && t2_value !== (t2_value = /*road*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*road*/ 1 && t4_value !== (t4_value = /*road*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*road*/ 1 && t6_value !== (t6_value = /*road*/ ctx[0].castleList + "")) set_data_dev(t6, t6_value);
 
     			if (dirty & /*roadStyle*/ 2) {
-    				attr_dev(div, "style", /*roadStyle*/ ctx[1]);
+    				attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div, "road-ripple", /*road*/ ctx[0].roadRipple);
+    				toggle_class(div2, "road-ripple", /*road*/ ctx[0].roadRipple);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div, "pick", /*road*/ ctx[0].roadRipple);
+    				toggle_class(div2, "pick", /*road*/ ctx[0].roadRipple);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div, "hide", /*road*/ ctx[0].hide);
+    				toggle_class(div2, "hide1", /*road*/ ctx[0].hide);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div, "show", /*road*/ ctx[0].show);
+    				toggle_class(div2, "show1", /*road*/ ctx[0].show);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div2);
     			mounted = false;
     			dispose();
     		}

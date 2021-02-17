@@ -52,10 +52,11 @@
      on:click={() => pick()}
      class:road-ripple={road.roadRipple}
      class:pick={road.roadRipple}
-     class:hide={road.hide}
-     class:show={road.show}
+     class:hide1={road.hide}
+     class:show1={road.show}
      style={roadStyle}>
-    {road.i},{road.j}
+<div>{road.i},{road.j}</div>
+<div>{road.index} {road.castleList}</div>
 </div>
 
 <style>

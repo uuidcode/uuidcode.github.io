@@ -124,6 +124,7 @@ for (let i = 0; i < 6; i++) {
     }
 }
 
+katan.castleList.forEach((castle, index) => castle.index = index);
 katan.roadList = [];
 
 const getLoadTopBySingle = (multiple) => {
@@ -235,8 +236,53 @@ for (let i = 0; i <= 11; i++) {
     }
 }
 
+katan.roadList.forEach((road, index) => road.index = index);
 katan.roadList.forEach(road => road.hide = true);
 katan.roadList.forEach(road => road.show = false);
+
+for (let i = 0; i <= 5; i++) {
+    katan.roadList[i].castleList = [i, i + 1];
+}
+
+for (let i = 6; i <= 9; i++) {
+    katan.roadList[i].castleList = [2 * (i - 6), 2 * (i - 6) + 10];
+}
+
+for (let i = 10; i <= 17; i++) {
+    katan.roadList[i].castleList = [i - 3, i - 2];
+}
+
+for (let i = 18; i <= 22; i++) {
+    katan.roadList[i].castleList = [i - 11, i - 1];
+}
+
+for (let i = 23; i <= 32; i++) {
+    katan.roadList[i].castleList = [i - 7, i - 6];
+}
+
+for (let i = 33; i <= 38; i++) {
+    katan.roadList[i].castleList = [i - 17, i - 6];
+}
+
+for (let i = 39; i <= 48; i++) {
+    katan.roadList[i].castleList = [i - 12, i - 11];
+}
+
+for (let i = 49; i <= 53; i++) {
+    katan.roadList[i].castleList = [i - 21, i - 11];
+}
+
+for (let i = 54; i <= 61; i++) {
+    katan.roadList[i].castleList = [i - 16, i - 15];
+}
+
+for (let i = 62; i <= 65; i++) {
+    katan.roadList[i].castleList = [i - 23, i - 15];
+}
+
+for (let i = 66; i <= 71; i++) {
+    katan.roadList[i].castleList = [i - 19, i - 18];
+}
 
 let resourceList = [];
 

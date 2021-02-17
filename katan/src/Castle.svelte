@@ -54,10 +54,11 @@
     on:click={() => pick()}
     class:ripple={castle.ripple}
     class:pick={castle.ripple}
-    class:hide={castle.hide}
-    class:show={castle.show}
+    class:hide1={castle.hide}
+    class:show1={castle.show}
     style={castleStyle}>
-    {castle.i},{castle.j}
+<div>{castle.i},{castle.j}</div>
+<div>{castle.index}</div>
 </div>
 
 <style>
