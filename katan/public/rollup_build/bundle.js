@@ -961,8 +961,8 @@ var app = (function () {
                 color: 'lightblue',
                 name: '다은',
                 turn: true,
-                pickTown: true,
-                pickLoad: false,
+                pickCastle: true,
+                pickRoad: false,
                 resource: {
                     tree: 0,
                     mud: 0,
@@ -976,8 +976,8 @@ var app = (function () {
                 color: 'lightcoral',
                 name: '아빠',
                 turn: false,
-                pickTown: false,
-                pickLoad: false,
+                pickCastle: false,
+                pickRoad: false,
                 resource: {
                     tree: 0,
                     mud: 0,
@@ -1075,7 +1075,7 @@ var app = (function () {
         }
     }
 
-    katan.loadList = [];
+    katan.roadList = [];
 
     const getLoadTopBySingle = (multiple) => {
         return multiple * config.cell.height / 8 - config.load.width / 2 ;
@@ -1097,10 +1097,10 @@ var app = (function () {
                 if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
                     let top = getLoadTop(i, 11, 1, 31);
 
-                    katan.loadList.push({
+                    katan.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        loadRipple: false,
+                        roadRipple: false,
                         constructable: false,
                         empty: true,
                         i,
@@ -1111,10 +1111,10 @@ var app = (function () {
                 if (j === 4 || j === 8 || j === 12 || j === 16) {
                     let top = getLoadTop(i, 10, 4, 28);
 
-                    katan.loadList.push({
+                    katan.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        loadRipple: false,
+                        roadRipple: false,
                         constructable: false,
                         empty: true,
                         i,
@@ -1127,10 +1127,10 @@ var app = (function () {
                     j === 11 || j === 13 || j === 15 || j === 17) {
                     let top = getLoadTop(i, 9, 7, 25);
 
-                    katan.loadList.push({
+                    katan.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        loadRipple: false,
+                        roadRipple: false,
                         constructable: false,
                         empty: true,
                         i,
@@ -1142,10 +1142,10 @@ var app = (function () {
 
                     let top = getLoadTop(i, 8, 10, 22);
 
-                    katan.loadList.push({
+                    katan.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        loadRipple: false,
+                        roadRipple: false,
                         constructable: false,
                         empty: true,
                         i,
@@ -1158,10 +1158,10 @@ var app = (function () {
 
                     let top = getLoadTop(i, 7, 13, 19);
 
-                    katan.loadList.push({
+                    katan.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        loadRipple: false,
+                        roadRipple: false,
                         constructable: false,
                         empty: true,
                         i,
@@ -1170,13 +1170,12 @@ var app = (function () {
                 }
             } else if (i === 5) {
                 if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
+                    let top = getLoadTopBySingle(16);
 
-                    let top = getLoadTopBySingle(8);
-
-                    katan.loadList.push({
+                    katan.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
-                        loadRipple: false,
+                        roadRipple: false,
                         constructable: false,
                         empty: true,
                         i,
@@ -1187,7 +1186,8 @@ var app = (function () {
         }
     }
 
-    console.log('>>> katan.loadList', katan.loadList);
+    katan.roadList.forEach(road => road.hide = true);
+    katan.roadList.forEach(road => road.show = false);
 
     let resourceList = [];
 
@@ -1270,7 +1270,7 @@ var app = (function () {
 
     const { subscribe: subscribe$1, set, update: update$1 } = writable(katan);
 
-    const storeKatan = {
+    const katanStore = {
         subscribe: subscribe$1,
 
         isReady: () => katan.mode === 'ready',
@@ -1292,7 +1292,7 @@ var app = (function () {
 
         getActivePlayer: () => {
             return katan.playerList
-                .filter(player => player.turn)[0];
+                .find(player => player.turn);
         },
 
         setCastle: (castleIndex, playerIndex) => update$1(katan => {
@@ -1300,19 +1300,69 @@ var app = (function () {
             return katan;
         }),
 
-        setCastleRippleDisabled: () => update$1(katan => {
-            katan.castleList.forEach(castle => castle.ripple = false);
-            return katan;
+
+        setPickRoadMode: () => update$1(katan => {
+            let player = katanStore.getActivePlayer();
+            player.pickCastle = false;
+            player.pickRoad = true;
+
+            return katanStore._setRoadRippleEnabled(katan);
         }),
 
-        setLoadRippleEnabled: () => update$1(katan => {
-            katan.loadList = katan.loadList.map(load => {
-                load.loadRipple = true;
-                return load;
+        setRoadRippleEnabled: () => update$1(katanStore._setRoadRippleEnabled),
+
+        _setRoadRippleEnabled: katan => {
+            katan.roadList = katan.roadList.map(road => {
+                road.roadRipple = true;
+                return road;
             });
 
             return katan;
-        })
+        },
+
+        _setCastleRippleEnabled: katan => {
+            katan.caList = katan.caList.map(castle => {
+                castle.ripple = true;
+                return castle;
+            });
+
+            return katan;
+        },
+
+        _setCastleRippleDisabled: katan => {
+            katan.castleList = katan.castleList.map(castle => {
+                castle.ripple = false;
+                return castle;
+            });
+
+            return katan;
+        },
+
+        setCastleRippleDisabled: () => update$1(katanStore._setCastleRippleDisabled),
+
+        setShowRoad: () => update$1(katanStore._setShowRoad),
+
+        _setShowRoad: katan => {
+            katan.roadList = katan.roadList.map(road => {
+                road.show = true;
+                road.hide = false;
+                return road;
+            });
+
+            return katan;
+        },
+
+        setHideCastle: () => update$1(katanStore._setHideCastle),
+
+        _setHideCastle: katan => {
+            katan.castleList = katan.castleList.map(castle => {
+                castle.show = false;
+                castle.hide = true;
+                return castle;
+            });
+
+            return katan;
+        },
     };
 
     /* src\Castle.svelte generated by Svelte v3.32.3 */
@@ -1320,10 +1370,10 @@ var app = (function () {
 
     function create_fragment$2(ctx) {
     	let div;
-    	let t0_value = /*castle*/ ctx[1].i + "";
+    	let t0_value = /*castle*/ ctx[0].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*castle*/ ctx[1].j + "";
+    	let t2_value = /*castle*/ ctx[0].j + "";
     	let t2;
     	let mounted;
     	let dispose;
@@ -1335,10 +1385,12 @@ var app = (function () {
     			t1 = text(",");
     			t2 = text(t2_value);
     			attr_dev(div, "class", "castle svelte-1aqsadr");
-    			attr_dev(div, "style", /*castleStyle*/ ctx[0]);
-    			toggle_class(div, "ripple", /*castle*/ ctx[1].ripple);
-    			toggle_class(div, "pick", /*castle*/ ctx[1].ripple);
-    			add_location(div, file$2, 43, 0, 1218);
+    			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
+    			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    			toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
+    			toggle_class(div, "hide", /*castle*/ ctx[0].hide);
+    			toggle_class(div, "show", /*castle*/ ctx[0].show);
+    			add_location(div, file$2, 52, 0, 1447);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1355,8 +1407,27 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*castleStyle*/ 1) {
-    				attr_dev(div, "style", /*castleStyle*/ ctx[0]);
+    			if (dirty & /*castle*/ 1 && t0_value !== (t0_value = /*castle*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*castle*/ 1 && t2_value !== (t2_value = /*castle*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+
+    			if (dirty & /*castleStyle*/ 2) {
+    				attr_dev(div, "style", /*castleStyle*/ ctx[1]);
+    			}
+
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    			}
+
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
+    			}
+
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div, "hide", /*castle*/ ctx[0].hide);
+    			}
+
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div, "show", /*castle*/ ctx[0].show);
     			}
     		},
     		i: noop,
@@ -1381,24 +1452,24 @@ var app = (function () {
 
     function instance$2($$self, $$props, $$invalidate) {
     	let $katan;
-    	validate_store(storeKatan, "katan");
-    	component_subscribe($$self, storeKatan, $$value => $$invalidate(5, $katan = $$value));
+    	validate_store(katanStore, "katan");
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(5, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Castle", slots, []);
     	let { castleIndex } = $$props;
-    	const castle = $katan.castleList[castleIndex];
+    	let castle = $katan.castleList[castleIndex];
     	let castleStyle;
 
     	const pick = () => {
-    		const player = storeKatan.getActivePlayer();
+    		const player = katanStore.getActivePlayer();
 
-    		if (player.pickTown === true) {
-    			storeKatan.setCastle(castleIndex, player.index);
-    			storeKatan.setCastleRippleDisabled();
-    			storeKatan.setLoadRippleEnabled();
-    			$$invalidate(0, castleStyle = createStyle());
-    			player.pickTown = false;
-    			player.pickLoad = true;
+    		if (player.pickCastle === true) {
+    			katanStore.setCastle(castleIndex, player.index);
+    			katanStore.setHideCastle();
+    			katanStore.setCastleRippleDisabled();
+    			katanStore.setPickRoadMode();
+    			katanStore.setRoadRippleEnabled();
+    			katanStore.setShowRoad();
     		}
     	};
 
@@ -1418,6 +1489,12 @@ var app = (function () {
     		return toStyle(castleStyleObject);
     	};
 
+    	const unsubscribe = katanStore.subscribe(currentKatan => {
+    		$$invalidate(1, castleStyle = createStyle());
+    		$$invalidate(0, castle = currentKatan.castleList[castleIndex]);
+    	});
+
+    	onDestroy(unsubscribe);
     	castleStyle = createStyle();
     	const writable_props = ["castleIndex"];
 
@@ -1432,7 +1509,8 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
-    		katan: storeKatan,
+    		onDestroy,
+    		katan: katanStore,
     		config,
     		toStyle,
     		castleIndex,
@@ -1440,19 +1518,21 @@ var app = (function () {
     		castleStyle,
     		pick,
     		createStyle,
+    		unsubscribe,
     		$katan
     	});
 
     	$$self.$inject_state = $$props => {
     		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
-    		if ("castleStyle" in $$props) $$invalidate(0, castleStyle = $$props.castleStyle);
+    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
+    		if ("castleStyle" in $$props) $$invalidate(1, castleStyle = $$props.castleStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [castleStyle, castle, pick, castleIndex, click_handler];
+    	return [castle, castleStyle, pick, castleIndex, click_handler];
     }
 
     class Castle extends SvelteComponentDev {
@@ -1484,17 +1564,17 @@ var app = (function () {
     	}
     }
 
-    /* src\Load.svelte generated by Svelte v3.32.3 */
+    /* src\Road.svelte generated by Svelte v3.32.3 */
 
     const { console: console_1 } = globals;
-    const file$3 = "src\\Load.svelte";
+    const file$3 = "src\\Road.svelte";
 
     function create_fragment$3(ctx) {
     	let div;
-    	let t0_value = /*load*/ ctx[0].i + "";
+    	let t0_value = /*road*/ ctx[0].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*load*/ ctx[0].j + "";
+    	let t2_value = /*road*/ ctx[0].j + "";
     	let t2;
     	let mounted;
     	let dispose;
@@ -1505,11 +1585,13 @@ var app = (function () {
     			t0 = text(t0_value);
     			t1 = text(",");
     			t2 = text(t2_value);
-    			attr_dev(div, "class", "load svelte-1accgx7");
-    			attr_dev(div, "style", /*loadStyle*/ ctx[1]);
-    			toggle_class(div, "load-ripple", /*load*/ ctx[0].loadRipple);
-    			toggle_class(div, "pick", /*load*/ ctx[0].loadRipple);
-    			add_location(div, file$3, 53, 0, 1349);
+    			attr_dev(div, "class", "road svelte-1qfvmb9");
+    			attr_dev(div, "style", /*roadStyle*/ ctx[1]);
+    			toggle_class(div, "road-ripple", /*road*/ ctx[0].roadRipple);
+    			toggle_class(div, "pick", /*road*/ ctx[0].roadRipple);
+    			toggle_class(div, "hide", /*road*/ ctx[0].hide);
+    			toggle_class(div, "show", /*road*/ ctx[0].show);
+    			add_location(div, file$3, 50, 0, 1172);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1521,24 +1603,32 @@ var app = (function () {
     			append_dev(div, t2);
 
     			if (!mounted) {
-    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[5], false, false, false);
+    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*load*/ 1 && t0_value !== (t0_value = /*load*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*load*/ 1 && t2_value !== (t2_value = /*load*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*road*/ 1 && t0_value !== (t0_value = /*road*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*road*/ 1 && t2_value !== (t2_value = /*road*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty & /*loadStyle*/ 2) {
-    				attr_dev(div, "style", /*loadStyle*/ ctx[1]);
+    			if (dirty & /*roadStyle*/ 2) {
+    				attr_dev(div, "style", /*roadStyle*/ ctx[1]);
     			}
 
-    			if (dirty & /*load*/ 1) {
-    				toggle_class(div, "load-ripple", /*load*/ ctx[0].loadRipple);
+    			if (dirty & /*road*/ 1) {
+    				toggle_class(div, "road-ripple", /*road*/ ctx[0].roadRipple);
     			}
 
-    			if (dirty & /*load*/ 1) {
-    				toggle_class(div, "pick", /*load*/ ctx[0].loadRipple);
+    			if (dirty & /*road*/ 1) {
+    				toggle_class(div, "pick", /*road*/ ctx[0].roadRipple);
+    			}
+
+    			if (dirty & /*road*/ 1) {
+    				toggle_class(div, "hide", /*road*/ ctx[0].hide);
+    			}
+
+    			if (dirty & /*road*/ 1) {
+    				toggle_class(div, "show", /*road*/ ctx[0].show);
     			}
     		},
     		i: noop,
@@ -1562,98 +1652,96 @@ var app = (function () {
     }
 
     function instance$3($$self, $$props, $$invalidate) {
+    	let $katan;
+    	validate_store(katanStore, "katan");
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(5, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Load", slots, []);
-    	let { loadList } = $$props;
-    	let { loadIndex } = $$props;
-    	console.log(">>> loadList", loadList);
-    	let load = loadList[loadIndex];
-    	let loadStyle;
+    	validate_slots("Road", slots, []);
+    	let { roadIndex } = $$props;
+    	let roadList = $katan.roadList;
+    	console.log(">>> roadList", roadList);
+    	let road = roadList[roadIndex];
+    	console.log(">>> road", road);
+    	let roadStyle;
 
     	const pick = () => {
-    		const player = storeKatan.getActivePlayer();
+    		const player = katanStore.getActivePlayer();
 
     		if (player.pickTown === true) {
-    			storeKatan.setCastle(loadIndex, player.index);
-    			$$invalidate(1, loadStyle = createStyle());
+    			katanStore.setCastle(roadIndex, player.index);
+    			$$invalidate(1, roadStyle = createStyle());
     			player.pickTown = false;
     			player.pickLoad = true;
     		}
     	};
 
     	const createStyle = () => {
-    		let loadStyleObject = {
-    			left: load.left + "px",
-    			top: load.top + "px",
+    		return toStyle({
+    			left: road.left + "px",
+    			top: road.top + "px",
     			width: config.load.width + "px",
     			height: config.load.height + "px",
     			borderRadius: config.load.height + "px"
-    		};
-
-    		// if (castle.playerIndex !== undefined) {
-    		//     loadStyleObject.backgroundColor =
-    		//         $katan.playerList[castle.playerIndex].color;
-    		// }
-    		return toStyle(loadStyleObject);
+    		});
     	};
 
-    	loadStyle = createStyle();
+    	roadStyle = createStyle();
 
-    	const unsubscribe = storeKatan.subscribe(currentKatan => {
-    		$$invalidate(1, loadStyle = createStyle());
-    		$$invalidate(0, load = currentKatan.loadList[loadIndex]);
+    	const unsubscribe = katanStore.subscribe(currentKatan => {
+    		$$invalidate(1, roadStyle = createStyle());
+    		$$invalidate(0, road = currentKatan.roadList[roadIndex]);
     	});
 
     	onDestroy(unsubscribe);
-    	const writable_props = ["loadList", "loadIndex"];
+    	const writable_props = ["roadIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Load> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Road> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => pick();
 
     	$$self.$$set = $$props => {
-    		if ("loadList" in $$props) $$invalidate(3, loadList = $$props.loadList);
-    		if ("loadIndex" in $$props) $$invalidate(4, loadIndex = $$props.loadIndex);
+    		if ("roadIndex" in $$props) $$invalidate(3, roadIndex = $$props.roadIndex);
     	};
 
     	$$self.$capture_state = () => ({
-    		katan: storeKatan,
+    		katan: katanStore,
     		config,
     		toStyle,
     		onDestroy,
-    		loadList,
-    		loadIndex,
-    		load,
-    		loadStyle,
+    		roadIndex,
+    		roadList,
+    		road,
+    		roadStyle,
     		pick,
     		createStyle,
-    		unsubscribe
+    		unsubscribe,
+    		$katan
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("loadList" in $$props) $$invalidate(3, loadList = $$props.loadList);
-    		if ("loadIndex" in $$props) $$invalidate(4, loadIndex = $$props.loadIndex);
-    		if ("load" in $$props) $$invalidate(0, load = $$props.load);
-    		if ("loadStyle" in $$props) $$invalidate(1, loadStyle = $$props.loadStyle);
+    		if ("roadIndex" in $$props) $$invalidate(3, roadIndex = $$props.roadIndex);
+    		if ("roadList" in $$props) roadList = $$props.roadList;
+    		if ("road" in $$props) $$invalidate(0, road = $$props.road);
+    		if ("roadStyle" in $$props) $$invalidate(1, roadStyle = $$props.roadStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [load, loadStyle, pick, loadList, loadIndex, click_handler];
+    	return [road, roadStyle, pick, roadIndex, click_handler];
     }
 
-    class Load extends SvelteComponentDev {
+    class Road extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { loadList: 3, loadIndex: 4 });
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { roadIndex: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
-    			tagName: "Load",
+    			tagName: "Road",
     			options,
     			id: create_fragment$3.name
     		});
@@ -1661,29 +1749,17 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*loadList*/ ctx[3] === undefined && !("loadList" in props)) {
-    			console_1.warn("<Load> was created without expected prop 'loadList'");
-    		}
-
-    		if (/*loadIndex*/ ctx[4] === undefined && !("loadIndex" in props)) {
-    			console_1.warn("<Load> was created without expected prop 'loadIndex'");
+    		if (/*roadIndex*/ ctx[3] === undefined && !("roadIndex" in props)) {
+    			console_1.warn("<Road> was created without expected prop 'roadIndex'");
     		}
     	}
 
-    	get loadList() {
-    		throw new Error("<Load>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	get roadIndex() {
+    		throw new Error("<Road>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set loadList(value) {
-    		throw new Error("<Load>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	get loadIndex() {
-    		throw new Error("<Load>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set loadIndex(value) {
-    		throw new Error("<Load>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	set roadIndex(value) {
+    		throw new Error("<Road>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
@@ -1802,43 +1878,36 @@ var app = (function () {
     	return block;
     }
 
-    // (25:4) {#each $katan.loadList as load, i}
+    // (25:4) {#each $katan.roadList as road, i}
     function create_each_block(ctx) {
-    	let load;
+    	let road;
     	let current;
 
-    	load = new Load({
-    			props: {
-    				loadList: /*$katan*/ ctx[2].loadList,
-    				loadIndex: /*i*/ ctx[6]
-    			},
+    	road = new Road({
+    			props: { roadIndex: /*i*/ ctx[6] },
     			$$inline: true
     		});
 
     	const block = {
     		c: function create() {
-    			create_component(load.$$.fragment);
+    			create_component(road.$$.fragment);
     		},
     		m: function mount(target, anchor) {
-    			mount_component(load, target, anchor);
+    			mount_component(road, target, anchor);
     			current = true;
     		},
-    		p: function update(ctx, dirty) {
-    			const load_changes = {};
-    			if (dirty & /*$katan*/ 4) load_changes.loadList = /*$katan*/ ctx[2].loadList;
-    			load.$set(load_changes);
-    		},
+    		p: noop,
     		i: function intro(local) {
     			if (current) return;
-    			transition_in(load.$$.fragment, local);
+    			transition_in(road.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
-    			transition_out(load.$$.fragment, local);
+    			transition_out(road.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			destroy_component(load, detaching);
+    			destroy_component(road, detaching);
     		}
     	};
 
@@ -1846,7 +1915,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(25:4) {#each $katan.loadList as load, i}",
+    		source: "(25:4) {#each $katan.roadList as road, i}",
     		ctx
     	});
 
@@ -1882,7 +1951,7 @@ var app = (function () {
     		each_blocks_1[i] = null;
     	});
 
-    	let each_value = /*$katan*/ ctx[2].loadList;
+    	let each_value = /*$katan*/ ctx[2].roadList;
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -2000,7 +2069,7 @@ var app = (function () {
     			}
 
     			if (dirty & /*$katan*/ 4) {
-    				each_value = /*$katan*/ ctx[2].loadList;
+    				each_value = /*$katan*/ ctx[2].roadList;
     				validate_each_argument(each_value);
     				let i;
 
@@ -2086,8 +2155,8 @@ var app = (function () {
 
     function instance$4($$self, $$props, $$invalidate) {
     	let $katan;
-    	validate_store(storeKatan, "katan");
-    	component_subscribe($$self, storeKatan, $$value => $$invalidate(2, $katan = $$value));
+    	validate_store(katanStore, "katan");
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(2, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Board", slots, []);
     	let { resourceList } = $$props;
@@ -2114,8 +2183,8 @@ var app = (function () {
     		toStyle,
     		Cell,
     		Castle,
-    		Load,
-    		katan: storeKatan,
+    		Road,
+    		katan: katanStore,
     		resourceList,
     		castleList,
     		boardStyle,
@@ -2368,7 +2437,7 @@ var app = (function () {
     			add_location(div0, file$6, 42, 16, 1240);
     			attr_dev(button, "class", "btn btn-primary");
     			add_location(button, file$6, 46, 16, 1444);
-    			toggle_class(div1, "hide", storeKatan.isReady());
+    			toggle_class(div1, "hide", katanStore.isReady());
     			add_location(div1, file$6, 43, 16, 1282);
     			attr_dev(td3, "valign", "top");
     			add_location(td3, file$6, 41, 12, 1205);
@@ -2475,23 +2544,23 @@ var app = (function () {
 
     function instance$6($$self, $$props, $$invalidate) {
     	let $katan;
-    	validate_store(storeKatan, "katan");
-    	component_subscribe($$self, storeKatan, $$value => $$invalidate(0, $katan = $$value));
+    	validate_store(katanStore, "katan");
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(0, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
 
     	function play() {
     		const a = Math.floor(Math.random() * 6) + 1;
     		const b = Math.floor(Math.random() * 6) + 1;
-    		storeKatan.roll(a, b);
-    		const number = storeKatan.getNumber();
+    		katanStore.roll(a, b);
+    		const number = katanStore.getNumber();
 
     		$katan.resourceList.filter(resouce => resouce.number === number).forEach(resouce => {
     			const player = $katan.playerList.find(play => play.turn);
     			player.resource[resouce.type]++;
     		});
 
-    		storeKatan.turn();
+    		katanStore.turn();
     	}
 
     	const writable_props = [];
@@ -2501,7 +2570,7 @@ var app = (function () {
     	});
 
     	const click_handler = () => play();
-    	$$self.$capture_state = () => ({ Player, Board, Dice, katan: storeKatan, play, $katan });
+    	$$self.$capture_state = () => ({ Player, Board, Dice, katan: katanStore, play, $katan });
     	return [$katan, play, click_handler];
     }
 

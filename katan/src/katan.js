@@ -10,8 +10,8 @@ let katan = {
             color: 'lightblue',
             name: '다은',
             turn: true,
-            pickTown: true,
-            pickLoad: false,
+            pickCastle: true,
+            pickRoad: false,
             resource: {
                 tree: 0,
                 mud: 0,
@@ -25,8 +25,8 @@ let katan = {
             color: 'lightcoral',
             name: '아빠',
             turn: false,
-            pickTown: false,
-            pickLoad: false,
+            pickCastle: false,
+            pickRoad: false,
             resource: {
                 tree: 0,
                 mud: 0,
@@ -124,7 +124,7 @@ for (let i = 0; i < 6; i++) {
     }
 }
 
-katan.loadList = [];
+katan.roadList = [];
 
 const getLoadTopBySingle = (multiple) => {
     return multiple * config.cell.height / 8 - config.load.width / 2 ;
@@ -146,10 +146,10 @@ for (let i = 0; i <= 11; i++) {
             if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
                 let top = getLoadTop(i, 11, 1, 31);
 
-                katan.loadList.push({
+                katan.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
-                    loadRipple: false,
+                    roadRipple: false,
                     constructable: false,
                     empty: true,
                     i,
@@ -160,10 +160,10 @@ for (let i = 0; i <= 11; i++) {
             if (j === 4 || j === 8 || j === 12 || j === 16) {
                 let top = getLoadTop(i, 10, 4, 28);
 
-                katan.loadList.push({
+                katan.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
-                    loadRipple: false,
+                    roadRipple: false,
                     constructable: false,
                     empty: true,
                     i,
@@ -176,10 +176,10 @@ for (let i = 0; i <= 11; i++) {
                 j === 11 || j === 13 || j === 15 || j === 17) {
                 let top = getLoadTop(i, 9, 7, 25);
 
-                katan.loadList.push({
+                katan.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
-                    loadRipple: false,
+                    roadRipple: false,
                     constructable: false,
                     empty: true,
                     i,
@@ -191,10 +191,10 @@ for (let i = 0; i <= 11; i++) {
 
                 let top = getLoadTop(i, 8, 10, 22);
 
-                katan.loadList.push({
+                katan.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
-                    loadRipple: false,
+                    roadRipple: false,
                     constructable: false,
                     empty: true,
                     i,
@@ -207,10 +207,10 @@ for (let i = 0; i <= 11; i++) {
 
                 let top = getLoadTop(i, 7, 13, 19);
 
-                katan.loadList.push({
+                katan.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
-                    loadRipple: false,
+                    roadRipple: false,
                     constructable: false,
                     empty: true,
                     i,
@@ -219,13 +219,12 @@ for (let i = 0; i <= 11; i++) {
             }
         } else if (i === 5) {
             if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
+                let top = getLoadTopBySingle(16);
 
-                let top = getLoadTopBySingle(8);
-
-                katan.loadList.push({
+                katan.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
-                    loadRipple: false,
+                    roadRipple: false,
                     constructable: false,
                     empty: true,
                     i,
@@ -236,7 +235,8 @@ for (let i = 0; i <= 11; i++) {
     }
 }
 
-console.log('>>> katan.loadList', katan.loadList);
+katan.roadList.forEach(road => road.hide = true);
+katan.roadList.forEach(road => road.show = false);
 
 let resourceList = [];
 
@@ -319,7 +319,7 @@ katan.resourceList = katan.resourceList
 
 const { subscribe, set, update } = writable(katan);
 
-const storeKatan = {
+const katanStore = {
     subscribe,
 
     isReady: () => katan.mode === 'ready',
@@ -341,7 +341,7 @@ const storeKatan = {
 
     getActivePlayer: () => {
         return katan.playerList
-            .filter(player => player.turn)[0];
+            .find(player => player.turn);
     },
 
     setCastle: (castleIndex, playerIndex) => update(katan => {
@@ -349,19 +349,69 @@ const storeKatan = {
         return katan;
     }),
 
-    setCastleRippleDisabled: () => update(katan => {
-        katan.castleList.forEach(castle => castle.ripple = false);
-        return katan;
+
+    setPickRoadMode: () => update(katan => {
+        let player = katanStore.getActivePlayer();
+        player.pickCastle = false;
+        player.pickRoad = true;
+
+        return katanStore._setRoadRippleEnabled(katan);
     }),
 
-    setLoadRippleEnabled: () => update(katan => {
-        katan.loadList = katan.loadList.map(load => {
-            load.loadRipple = true;
-            return load;
+    setRoadRippleEnabled: () => update(katanStore._setRoadRippleEnabled),
+
+    _setRoadRippleEnabled: katan => {
+        katan.roadList = katan.roadList.map(road => {
+            road.roadRipple = true;
+            return road;
         });
 
         return katan;
-    })
+    },
+
+    _setCastleRippleEnabled: katan => {
+        katan.caList = katan.caList.map(castle => {
+            castle.ripple = true;
+            return castle;
+        });
+
+        return katan;
+    },
+
+    _setCastleRippleDisabled: katan => {
+        katan.castleList = katan.castleList.map(castle => {
+            castle.ripple = false;
+            return castle;
+        });
+
+        return katan;
+    },
+
+    setCastleRippleDisabled: () => update(katanStore._setCastleRippleDisabled),
+
+    setShowRoad: () => update(katanStore._setShowRoad),
+
+    _setShowRoad: katan => {
+        katan.roadList = katan.roadList.map(road => {
+            road.show = true;
+            road.hide = false;
+            return road;
+        });
+
+        return katan;
+    },
+
+    setHideCastle: () => update(katanStore._setHideCastle),
+
+    _setHideCastle: katan => {
+        katan.castleList = katan.castleList.map(castle => {
+            castle.show = false;
+            castle.hide = true;
+            return castle;
+        });
+
+        return katan;
+    },
 };
 
-export default storeKatan;
+export default katanStore;

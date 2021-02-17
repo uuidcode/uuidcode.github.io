@@ -1,23 +1,25 @@
 <script>
+    import { onDestroy } from 'svelte';
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
 
     export let castleIndex;
-    const castle = $katan.castleList[castleIndex];
+    let castle = $katan.castleList[castleIndex];
     let castleStyle;
 
     const pick = () => {
         const player = katan.getActivePlayer();
 
-        if (player.pickTown === true) {
+        if (player.pickCastle === true) {
             katan.setCastle(castleIndex, player.index);
-            katan.setCastleRippleDisabled();
-            katan.setLoadRippleEnabled();
-            castleStyle = createStyle();
 
-            player.pickTown = false;
-            player.pickLoad = true;
+            katan.setHideCastle();
+            katan.setCastleRippleDisabled();
+            katan.setPickRoadMode();
+
+            katan.setRoadRippleEnabled();
+            katan.setShowRoad();
         }
     };
 
@@ -38,14 +40,23 @@
         return toStyle(castleStyleObject);
     };
 
+    const unsubscribe = katan.subscribe(currentKatan => {
+        castleStyle = createStyle();
+        castle = currentKatan.castleList[castleIndex];
+    });
+
+    onDestroy(unsubscribe);
+
     castleStyle = createStyle();
 </script>
 
 <div class="castle"
-     on:click={() => pick()}
-     class:ripple={castle.ripple}
-     class:pick={castle.ripple}
-     style={castleStyle}>
+    on:click={() => pick()}
+    class:ripple={castle.ripple}
+    class:pick={castle.ripple}
+    class:hide={castle.hide}
+    class:show={castle.show}
+    style={castleStyle}>
     {castle.i},{castle.j}
 </div>
 

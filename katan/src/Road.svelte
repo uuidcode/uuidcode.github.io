@@ -4,20 +4,24 @@
     import { toStyle } from './util.js'
     import { onDestroy } from 'svelte';
 
-    export let loadList;
-    export let loadIndex;
+    export let roadIndex;
 
-    console.log('>>> loadList', loadList);
+    let roadList = $katan.roadList;
 
-    let load = loadList[loadIndex];
-    let loadStyle;
+    console.log('>>> roadList', roadList);
+
+    let road = roadList[roadIndex];
+
+    console.log('>>> road', road);
+
+    let roadStyle;
 
     const pick = () => {
         const player = katan.getActivePlayer();
 
         if (player.pickTown === true) {
-            katan.setCastle(loadIndex, player.index);
-            loadStyle = createStyle();
+            katan.setCastle(roadIndex, player.index);
+            roadStyle = createStyle();
 
             player.pickTown = false;
             player.pickLoad = true;
@@ -25,42 +29,37 @@
     };
 
     const createStyle = () => {
-        let loadStyleObject = {
-            left: load.left + 'px',
-            top: load.top + 'px',
+        return toStyle({
+            left: road.left + 'px',
+            top: road.top + 'px',
             width: config.load.width + 'px',
             height: config.load.height + 'px',
             borderRadius: config.load.height + 'px'
-        };
-
-        // if (castle.playerIndex !== undefined) {
-        //     loadStyleObject.backgroundColor =
-        //         $katan.playerList[castle.playerIndex].color;
-        // }
-
-        return toStyle(loadStyleObject);
+        });
     };
 
-    loadStyle = createStyle();
+    roadStyle = createStyle();
 
     const unsubscribe = katan.subscribe(currentKatan => {
-        loadStyle = createStyle();
-        load = currentKatan.loadList[loadIndex];
+        roadStyle = createStyle();
+        road = currentKatan.roadList[roadIndex];
     });
 
     onDestroy(unsubscribe);
 </script>
 
-<div class="load"
+<div class="road"
      on:click={() => pick()}
-     class:load-ripple={load.loadRipple}
-     class:pick={load.loadRipple}
-     style={loadStyle}>
-    {load.i},{load.j}
+     class:road-ripple={road.roadRipple}
+     class:pick={road.roadRipple}
+     class:hide={road.hide}
+     class:show={road.show}
+     style={roadStyle}>
+    {road.i},{road.j}
 </div>
 
 <style>
-    .load {
+    .road {
         position: absolute;
         text-align: center;
         border: 1px solid dodgerblue;
