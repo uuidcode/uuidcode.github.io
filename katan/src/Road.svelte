@@ -56,7 +56,7 @@
      class:show1={road.show}
      style={roadStyle}>
 <div>{road.i},{road.j}</div>
-<div>{road.index} {road.castleList}</div>
+<div>{road.index}</div>
 </div>
 
 <style>

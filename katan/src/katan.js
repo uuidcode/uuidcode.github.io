@@ -240,49 +240,19 @@ katan.roadList.forEach((road, index) => road.index = index);
 katan.roadList.forEach(road => road.hide = true);
 katan.roadList.forEach(road => road.show = false);
 
-for (let i = 0; i <= 5; i++) {
-    katan.roadList[i].castleList = [i, i + 1];
-}
+katan.roadList[0].castleList = [0, 1];
+katan.roadList[1].castleList = [1, 2];
+katan.roadList[2].castleList = [2, 3];
+katan.roadList[3].castleList = [3, 4];
+katan.roadList[4].castleList = [4, 5];
+katan.roadList[5].castleList = [5, 6];
 
-for (let i = 6; i <= 9; i++) {
-    katan.roadList[i].castleList = [2 * (i - 6), 2 * (i - 6) + 10];
-}
+katan.roadList[6].castleList = [0, 8];
+katan.roadList[7].castleList = [2, 10];
+katan.roadList[8].castleList = [4, 12];
+katan.roadList[9].castleList = [6, 14];
 
-for (let i = 10; i <= 17; i++) {
-    katan.roadList[i].castleList = [i - 3, i - 2];
-}
-
-for (let i = 18; i <= 22; i++) {
-    katan.roadList[i].castleList = [i - 11, i - 1];
-}
-
-for (let i = 23; i <= 32; i++) {
-    katan.roadList[i].castleList = [i - 7, i - 6];
-}
-
-for (let i = 33; i <= 38; i++) {
-    katan.roadList[i].castleList = [i - 17, i - 6];
-}
-
-for (let i = 39; i <= 48; i++) {
-    katan.roadList[i].castleList = [i - 12, i - 11];
-}
-
-for (let i = 49; i <= 53; i++) {
-    katan.roadList[i].castleList = [i - 21, i - 11];
-}
-
-for (let i = 54; i <= 61; i++) {
-    katan.roadList[i].castleList = [i - 16, i - 15];
-}
-
-for (let i = 62; i <= 65; i++) {
-    katan.roadList[i].castleList = [i - 23, i - 15];
-}
-
-for (let i = 66; i <= 71; i++) {
-    katan.roadList[i].castleList = [i - 19, i - 18];
-}
+console.log('>>> katan.roadList', katan.roadList);
 
 let resourceList = [];
 
