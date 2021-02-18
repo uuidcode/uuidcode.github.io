@@ -7,35 +7,40 @@
     export let roadIndex;
 
     let roadList = $katan.roadList;
-
-    console.log('>>> roadList', roadList);
-
     let road = roadList[roadIndex];
-
-    console.log('>>> road', road);
-
     let roadStyle;
 
     const pick = () => {
+        if (!road.pick) {
+            return;
+        }
+
         const player = katan.getActivePlayer();
 
-        if (player.pickTown === true) {
-            katan.setCastle(roadIndex, player.index);
-            roadStyle = createStyle();
+        if (player.pickRoad === true) {
+            katan.setRoad(roadIndex, player.index);
+            katan.turn();
 
-            player.pickTown = false;
-            player.pickLoad = true;
+            const player = katan.getActivePlayer();
+            player.pickCastle = true;
         }
     };
 
     const createStyle = () => {
-        return toStyle({
+        let styleObject = {
             left: road.left + 'px',
             top: road.top + 'px',
             width: config.load.width + 'px',
             height: config.load.height + 'px',
             borderRadius: config.load.height + 'px'
-        });
+        };
+
+        if (road.playerIndex !== -1) {
+            styleObject.backgroundColor =
+                    $katan.playerList[castle.playerIndex].color;
+        }
+
+        return toStyle(styleObject);
     };
 
     roadStyle = createStyle();
@@ -50,21 +55,21 @@
 
 <div class="road"
      on:click={() => pick()}
-     class:road-ripple={road.roadRipple}
-     class:pick={road.roadRipple}
-     class:hide1={road.hide}
-     class:show1={road.show}
+     class:ripple={road.ripple}
+     class:pick={road.ripple}
+     class:hide={road.hide}
+     class:show={road.show}
      style={roadStyle}>
-<div>{road.i},{road.j}</div>
-<div>{road.index}</div>
+<!--<div>{road.i},{road.j}</div>-->
+<!--<div>{road.index}</div>-->
 </div>
 
 <style>
     .road {
         position: absolute;
         text-align: center;
-        border: 1px solid dodgerblue;
-        background-color: lightblue;
+        border: 1px solid greenyellow;
+        background-color: yellow;
         opacity: 0.6;
     }
 

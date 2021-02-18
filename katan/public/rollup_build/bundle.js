@@ -1076,6 +1076,68 @@ var app = (function () {
     }
 
     katan.castleList.forEach((castle, index) => castle.index = index);
+    katan.castleList.forEach((castle) => castle.playerIndex = -1);
+
+    katan.castleList[0].roadList = [0, 6];
+    katan.castleList[1].roadList = [0, 1];
+    katan.castleList[2].roadList = [1, 2, 7];
+    katan.castleList[3].roadList = [2, 3];
+    katan.castleList[4].roadList = [3, 4, 8];
+    katan.castleList[5].roadList = [4, 5];
+    katan.castleList[6].roadList = [5, 9];
+
+    katan.castleList[7].roadList = [18, 10];
+    katan.castleList[8].roadList = [6, 10, 11];
+    katan.castleList[9].roadList = [11, 12, 19];
+    katan.castleList[10].roadList = [7, 12, 13];
+    katan.castleList[11].roadList = [13, 14, 20];
+    katan.castleList[12].roadList = [8, 14, 15];
+    katan.castleList[13].roadList = [15, 16, 21];
+    katan.castleList[14].roadList = [9, 16, 17];
+    katan.castleList[15].roadList = [17, 22];
+
+    katan.castleList[16].roadList = [23, 33];
+    katan.castleList[17].roadList = [18, 23, 24];
+    katan.castleList[18].roadList = [24, 25, 34];
+    katan.castleList[19].roadList = [19, 25, 26];
+    katan.castleList[20].roadList = [26, 27, 35];
+    katan.castleList[21].roadList = [20, 27, 28];
+    katan.castleList[22].roadList = [28, 29, 36];
+    katan.castleList[23].roadList = [21, 29, 30];
+    katan.castleList[24].roadList = [30, 31, 37];
+    katan.castleList[25].roadList = [22, 31, 32];
+    katan.castleList[26].roadList = [32, 38];
+
+    katan.castleList[27].roadList = [33, 39];
+    katan.castleList[28].roadList = [39, 40, 49];
+    katan.castleList[29].roadList = [34, 40, 41];
+    katan.castleList[30].roadList = [41, 42, 50];
+    katan.castleList[31].roadList = [35, 42, 43];
+    katan.castleList[32].roadList = [43, 44, 51];
+    katan.castleList[33].roadList = [36, 44, 45];
+    katan.castleList[34].roadList = [45, 46, 52];
+    katan.castleList[35].roadList = [37, 46, 47];
+    katan.castleList[36].roadList = [47, 48, 53];
+    katan.castleList[37].roadList = [38, 48];
+
+    katan.castleList[38].roadList = [49, 54];
+    katan.castleList[39].roadList = [54, 55, 62];
+    katan.castleList[40].roadList = [50, 55, 56];
+    katan.castleList[41].roadList = [56, 57, 63];
+    katan.castleList[42].roadList = [51, 57, 58];
+    katan.castleList[43].roadList = [58, 59, 64];
+    katan.castleList[44].roadList = [52, 59, 60];
+    katan.castleList[45].roadList = [60, 61, 65];
+    katan.castleList[46].roadList = [53, 61];
+
+    katan.castleList[47].roadList = [62, 66];
+    katan.castleList[48].roadList = [66, 67];
+    katan.castleList[49].roadList = [63, 67, 68];
+    katan.castleList[50].roadList = [68, 69];
+    katan.castleList[51].roadList = [64, 69, 70];
+    katan.castleList[52].roadList = [70, 71];
+    katan.castleList[53].roadList = [65, 71];
+
     katan.roadList = [];
 
     const getLoadTopBySingle = (multiple) => {
@@ -1190,6 +1252,8 @@ var app = (function () {
     katan.roadList.forEach((road, index) => road.index = index);
     katan.roadList.forEach(road => road.hide = true);
     katan.roadList.forEach(road => road.show = false);
+    katan.roadList.forEach(road => road.ripple = false);
+    katan.roadList.forEach(road => road.playerIndex = -1);
 
     katan.roadList[0].castleList = [0, 1];
     katan.roadList[1].castleList = [1, 2];
@@ -1203,7 +1267,76 @@ var app = (function () {
     katan.roadList[8].castleList = [4, 12];
     katan.roadList[9].castleList = [6, 14];
 
-    console.log('>>> katan.roadList', katan.roadList);
+    katan.roadList[10].castleList = [7, 8];
+    katan.roadList[11].castleList = [8, 9];
+    katan.roadList[12].castleList = [9, 10];
+    katan.roadList[13].castleList = [10, 11];
+    katan.roadList[14].castleList = [11, 12];
+    katan.roadList[15].castleList = [12, 13];
+    katan.roadList[16].castleList = [13, 14];
+    katan.roadList[17].castleList = [14, 15];
+
+    katan.roadList[18].castleList = [7, 17];
+    katan.roadList[19].castleList = [9, 19];
+    katan.roadList[20].castleList = [11, 21];
+    katan.roadList[21].castleList = [13, 23];
+    katan.roadList[22].castleList = [15, 25];
+
+    katan.roadList[23].castleList = [16, 17];
+    katan.roadList[24].castleList = [17, 18];
+    katan.roadList[25].castleList = [18, 19];
+    katan.roadList[26].castleList = [19, 20];
+    katan.roadList[27].castleList = [20, 21];
+    katan.roadList[28].castleList = [21, 22];
+    katan.roadList[29].castleList = [22, 23];
+    katan.roadList[30].castleList = [23, 24];
+    katan.roadList[31].castleList = [24, 25];
+    katan.roadList[32].castleList = [25, 26];
+
+    katan.roadList[33].castleList = [16, 27];
+    katan.roadList[34].castleList = [18, 29];
+    katan.roadList[35].castleList = [20, 31];
+    katan.roadList[36].castleList = [22, 33];
+    katan.roadList[37].castleList = [24, 35];
+    katan.roadList[38].castleList = [26, 37];
+
+    katan.roadList[39].castleList = [27, 28];
+    katan.roadList[40].castleList = [28, 29];
+    katan.roadList[41].castleList = [29, 30];
+    katan.roadList[42].castleList = [30, 31];
+    katan.roadList[43].castleList = [31, 32];
+    katan.roadList[44].castleList = [32, 33];
+    katan.roadList[45].castleList = [33, 34];
+    katan.roadList[46].castleList = [34, 35];
+    katan.roadList[47].castleList = [35, 36];
+    katan.roadList[48].castleList = [36, 37];
+
+    katan.roadList[49].castleList = [28, 38];
+    katan.roadList[50].castleList = [30, 40];
+    katan.roadList[51].castleList = [32, 42];
+    katan.roadList[52].castleList = [34, 44];
+    katan.roadList[53].castleList = [36, 46];
+
+    katan.roadList[54].castleList = [38, 39];
+    katan.roadList[55].castleList = [39, 40];
+    katan.roadList[56].castleList = [40, 41];
+    katan.roadList[57].castleList = [41, 42];
+    katan.roadList[58].castleList = [42, 43];
+    katan.roadList[59].castleList = [43, 44];
+    katan.roadList[60].castleList = [44, 45];
+    katan.roadList[61].castleList = [45, 46];
+
+    katan.roadList[62].castleList = [39, 47];
+    katan.roadList[63].castleList = [41, 49];
+    katan.roadList[64].castleList = [43, 51];
+    katan.roadList[65].castleList = [45, 53];
+
+    katan.roadList[66].castleList = [47, 48];
+    katan.roadList[67].castleList = [48, 49];
+    katan.roadList[68].castleList = [49, 50];
+    katan.roadList[69].castleList = [50, 51];
+    katan.roadList[70].castleList = [51, 52];
+    katan.roadList[71].castleList = [52, 53];
 
     let resourceList = [];
 
@@ -1311,11 +1444,29 @@ var app = (function () {
                 .find(player => player.turn);
         },
 
-        setCastle: (castleIndex, playerIndex) => update$1(katan => {
-            katan.castleList[castleIndex].playerIndex = playerIndex;
+        turn: () => update$1(katan => {
+            katan.playerList = katan.playerList
+                .map(player => {
+                    player.turn = !player.turn;
+                    return player;
+                });
+
             return katan;
         }),
 
+        setCastle: (castleIndex, playerIndex) => update$1(katan => {
+            let castle = katan.castleList[castleIndex];
+            castle.playerIndex = playerIndex;
+            castle.pick = false;
+            return katan;
+        }),
+
+        setRoad: (roadIndex, playerIndex) => update$1(katan => {
+            let road = katan.roadList[roadIndex];
+            road.playerIndex = playerIndex;
+            road.pick = false;
+            return katan;
+        }),
 
         setPickRoadMode: () => update$1(katan => {
             let player = katanStore.getActivePlayer();
@@ -1328,10 +1479,27 @@ var app = (function () {
         setRoadRippleEnabled: () => update$1(katanStore._setRoadRippleEnabled),
 
         _setRoadRippleEnabled: katan => {
-            katan.roadList = katan.roadList.map(road => {
-                road.roadRipple = true;
-                return road;
-            });
+            katan.roadList = katan.roadList
+                .map(road => {
+                    let player = katanStore.getActivePlayer();
+                    let playerIndex = player.index;
+
+                    let castleIndexList = katan.castleList
+                        .filter(castle => castle.playerIndex === playerIndex)
+                        .map(castle => castle.index);
+
+                    let linkCount = road.castleList
+                        .filter(castleIndex => castleIndexList.includes(castleIndex))
+                        .length;
+
+                    if (linkCount > 0) {
+                        road.ripple = true;
+                        road.hide = false;
+                        road.show = true;
+                    }
+
+                    return road;
+                });
 
             return katan;
         },
@@ -1346,7 +1514,7 @@ var app = (function () {
         },
 
         _setCastleRippleDisabled: katan => {
-            katan.castleList = katan.castleList.map(castle => {
+            katan.castleList =  katan.castleList.map(castle => {
                 castle.ripple = false;
                 return castle;
             });
@@ -1371,101 +1539,93 @@ var app = (function () {
         setHideCastle: () => update$1(katanStore._setHideCastle),
 
         _setHideCastle: katan => {
-            katan.castleList = katan.castleList.map(castle => {
-                castle.show = false;
-                castle.hide = true;
-                return castle;
-            });
+            katan.castleList =  katan.castleList
+                .map(castle => {
+                    if (castle.playerIndex === -1) {
+                        castle.show = false;
+                        castle.hide = true;
+                    }
+
+                    return castle;
+                });
+
+            return katan;
+        },
+
+        setShowCastle: () => update$1(katanStore._setShowCastle),
+
+        _setShowCastle: katan => {
+            katan.castleList =  katan.castleList
+                .map(castle => {
+                    if (castle.playerIndex === -1) {
+                        castle.show = true;
+                        castle.hide = false;
+                    }
+
+                    return castle;
+                });
 
             return katan;
         },
     };
 
     /* src\Castle.svelte generated by Svelte v3.32.3 */
+
+    const { console: console_1 } = globals;
     const file$2 = "src\\Castle.svelte";
 
     function create_fragment$2(ctx) {
-    	let div2;
-    	let div0;
-    	let t0_value = /*castle*/ ctx[0].i + "";
-    	let t0;
-    	let t1;
-    	let t2_value = /*castle*/ ctx[0].j + "";
-    	let t2;
-    	let t3;
-    	let div1;
-    	let t4_value = /*castle*/ ctx[0].index + "";
-    	let t4;
+    	let div;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
-    			div2 = element("div");
-    			div0 = element("div");
-    			t0 = text(t0_value);
-    			t1 = text(",");
-    			t2 = text(t2_value);
-    			t3 = space();
-    			div1 = element("div");
-    			t4 = text(t4_value);
-    			add_location(div0, file$2, 59, 0, 1651);
-    			add_location(div1, file$2, 60, 0, 1685);
-    			attr_dev(div2, "class", "castle svelte-1aqsadr");
-    			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
-    			toggle_class(div2, "ripple", /*castle*/ ctx[0].ripple);
-    			toggle_class(div2, "pick", /*castle*/ ctx[0].ripple);
-    			toggle_class(div2, "hide1", /*castle*/ ctx[0].hide);
-    			toggle_class(div2, "show1", /*castle*/ ctx[0].show);
-    			add_location(div2, file$2, 52, 0, 1447);
+    			div = element("div");
+    			attr_dev(div, "class", "castle svelte-1aqsadr");
+    			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
+    			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
+    			toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
+    			toggle_class(div, "hide", /*castle*/ ctx[0].hide);
+    			toggle_class(div, "show", /*castle*/ ctx[0].show);
+    			add_location(div, file$2, 58, 0, 1534);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div2, anchor);
-    			append_dev(div2, div0);
-    			append_dev(div0, t0);
-    			append_dev(div0, t1);
-    			append_dev(div0, t2);
-    			append_dev(div2, t3);
-    			append_dev(div2, div1);
-    			append_dev(div1, t4);
+    			insert_dev(target, div, anchor);
 
     			if (!mounted) {
-    				dispose = listen_dev(div2, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*castle*/ 1 && t0_value !== (t0_value = /*castle*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*castle*/ 1 && t2_value !== (t2_value = /*castle*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*castle*/ 1 && t4_value !== (t4_value = /*castle*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
-
     			if (dirty & /*castleStyle*/ 2) {
-    				attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
+    				attr_dev(div, "style", /*castleStyle*/ ctx[1]);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div2, "ripple", /*castle*/ ctx[0].ripple);
+    				toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div2, "pick", /*castle*/ ctx[0].ripple);
+    				toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div2, "hide1", /*castle*/ ctx[0].hide);
+    				toggle_class(div, "hide", /*castle*/ ctx[0].hide);
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div2, "show1", /*castle*/ ctx[0].show);
+    				toggle_class(div, "show", /*castle*/ ctx[0].show);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div2);
+    			if (detaching) detach_dev(div);
     			mounted = false;
     			dispose();
     		}
@@ -1493,20 +1653,26 @@ var app = (function () {
     	let castleStyle;
 
     	const pick = () => {
+    		if (!castle.pick) {
+    			return;
+    		}
+
     		const player = katanStore.getActivePlayer();
 
     		if (player.pickCastle === true) {
+    			player.pickRoad = true;
     			katanStore.setCastle(castleIndex, player.index);
     			katanStore.setHideCastle();
     			katanStore.setCastleRippleDisabled();
     			katanStore.setPickRoadMode();
     			katanStore.setRoadRippleEnabled();
-    			katanStore.setShowRoad();
     		}
     	};
 
     	const createStyle = () => {
-    		let castleStyleObject = {
+    		console.log(">>> castle", castle);
+
+    		let styleObject = {
     			left: castle.left + "px",
     			top: castle.top + "px",
     			width: config.castle.width + "px",
@@ -1514,11 +1680,11 @@ var app = (function () {
     			borderRadius: config.castle.height + "px"
     		};
 
-    		if (castle.playerIndex !== undefined) {
-    			castleStyleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
+    		if (castle.playerIndex !== -1) {
+    			styleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
     		}
 
-    		return toStyle(castleStyleObject);
+    		return toStyle(styleObject);
     	};
 
     	const unsubscribe = katanStore.subscribe(currentKatan => {
@@ -1531,7 +1697,7 @@ var app = (function () {
     	const writable_props = ["castleIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => pick();
@@ -1583,7 +1749,7 @@ var app = (function () {
     		const props = options.props || {};
 
     		if (/*castleIndex*/ ctx[3] === undefined && !("castleIndex" in props)) {
-    			console.warn("<Castle> was created without expected prop 'castleIndex'");
+    			console_1.warn("<Castle> was created without expected prop 'castleIndex'");
     		}
     	}
 
@@ -1597,92 +1763,60 @@ var app = (function () {
     }
 
     /* src\Road.svelte generated by Svelte v3.32.3 */
-
-    const { console: console_1 } = globals;
     const file$3 = "src\\Road.svelte";
 
     function create_fragment$3(ctx) {
-    	let div2;
-    	let div0;
-    	let t0_value = /*road*/ ctx[0].i + "";
-    	let t0;
-    	let t1;
-    	let t2_value = /*road*/ ctx[0].j + "";
-    	let t2;
-    	let t3;
-    	let div1;
-    	let t4_value = /*road*/ ctx[0].index + "";
-    	let t4;
+    	let div;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
-    			div2 = element("div");
-    			div0 = element("div");
-    			t0 = text(t0_value);
-    			t1 = text(",");
-    			t2 = text(t2_value);
-    			t3 = space();
-    			div1 = element("div");
-    			t4 = text(t4_value);
-    			add_location(div0, file$3, 57, 0, 1376);
-    			add_location(div1, file$3, 58, 0, 1405);
-    			attr_dev(div2, "class", "road svelte-1qfvmb9");
-    			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
-    			toggle_class(div2, "road-ripple", /*road*/ ctx[0].roadRipple);
-    			toggle_class(div2, "pick", /*road*/ ctx[0].roadRipple);
-    			toggle_class(div2, "hide1", /*road*/ ctx[0].hide);
-    			toggle_class(div2, "show1", /*road*/ ctx[0].show);
-    			add_location(div2, file$3, 50, 0, 1172);
+    			div = element("div");
+    			attr_dev(div, "class", "road svelte-111e7uh");
+    			attr_dev(div, "style", /*roadStyle*/ ctx[1]);
+    			toggle_class(div, "ripple", /*road*/ ctx[0].ripple);
+    			toggle_class(div, "pick", /*road*/ ctx[0].ripple);
+    			toggle_class(div, "hide", /*road*/ ctx[0].hide);
+    			toggle_class(div, "show", /*road*/ ctx[0].show);
+    			add_location(div, file$3, 55, 0, 1346);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div2, anchor);
-    			append_dev(div2, div0);
-    			append_dev(div0, t0);
-    			append_dev(div0, t1);
-    			append_dev(div0, t2);
-    			append_dev(div2, t3);
-    			append_dev(div2, div1);
-    			append_dev(div1, t4);
+    			insert_dev(target, div, anchor);
 
     			if (!mounted) {
-    				dispose = listen_dev(div2, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*road*/ 1 && t0_value !== (t0_value = /*road*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*road*/ 1 && t2_value !== (t2_value = /*road*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*road*/ 1 && t4_value !== (t4_value = /*road*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
-
     			if (dirty & /*roadStyle*/ 2) {
-    				attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
+    				attr_dev(div, "style", /*roadStyle*/ ctx[1]);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div2, "road-ripple", /*road*/ ctx[0].roadRipple);
+    				toggle_class(div, "ripple", /*road*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div2, "pick", /*road*/ ctx[0].roadRipple);
+    				toggle_class(div, "pick", /*road*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div2, "hide1", /*road*/ ctx[0].hide);
+    				toggle_class(div, "hide", /*road*/ ctx[0].hide);
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div2, "show1", /*road*/ ctx[0].show);
+    				toggle_class(div, "show", /*road*/ ctx[0].show);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div2);
+    			if (detaching) detach_dev(div);
     			mounted = false;
     			dispose();
     		}
@@ -1707,30 +1841,38 @@ var app = (function () {
     	validate_slots("Road", slots, []);
     	let { roadIndex } = $$props;
     	let roadList = $katan.roadList;
-    	console.log(">>> roadList", roadList);
     	let road = roadList[roadIndex];
-    	console.log(">>> road", road);
     	let roadStyle;
 
     	const pick = () => {
+    		if (!road.pick) {
+    			return;
+    		}
+
     		const player = katanStore.getActivePlayer();
 
-    		if (player.pickTown === true) {
-    			katanStore.setCastle(roadIndex, player.index);
-    			$$invalidate(1, roadStyle = createStyle());
-    			player.pickTown = false;
-    			player.pickLoad = true;
+    		if (player.pickRoad === true) {
+    			katanStore.setRoad(roadIndex, player.index);
+    			katanStore.turn();
+    			const player = katanStore.getActivePlayer();
+    			player.pickCastle = true;
     		}
     	};
 
     	const createStyle = () => {
-    		return toStyle({
+    		let styleObject = {
     			left: road.left + "px",
     			top: road.top + "px",
     			width: config.load.width + "px",
     			height: config.load.height + "px",
     			borderRadius: config.load.height + "px"
-    		});
+    		};
+
+    		if (road.playerIndex !== -1) {
+    			styleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
+    		}
+
+    		return toStyle(styleObject);
     	};
 
     	roadStyle = createStyle();
@@ -1744,7 +1886,7 @@ var app = (function () {
     	const writable_props = ["roadIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Road> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Road> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => pick();
@@ -1798,7 +1940,7 @@ var app = (function () {
     		const props = options.props || {};
 
     		if (/*roadIndex*/ ctx[3] === undefined && !("roadIndex" in props)) {
-    			console_1.warn("<Road> was created without expected prop 'roadIndex'");
+    			console.warn("<Road> was created without expected prop 'roadIndex'");
     		}
     	}
 

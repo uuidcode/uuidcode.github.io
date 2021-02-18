@@ -9,9 +9,14 @@
     let castleStyle;
 
     const pick = () => {
+        if (!castle.pick) {
+            return;
+        }
+
         const player = katan.getActivePlayer();
 
         if (player.pickCastle === true) {
+            player.pickRoad = true;
             katan.setCastle(castleIndex, player.index);
 
             katan.setHideCastle();
@@ -19,12 +24,13 @@
             katan.setPickRoadMode();
 
             katan.setRoadRippleEnabled();
-            katan.setShowRoad();
         }
     };
 
     const createStyle = () => {
-        let castleStyleObject = {
+        console.log('>>> castle', castle);
+
+        let styleObject = {
             left: castle.left + 'px',
             top: castle.top + 'px',
             width: config.castle.width + 'px',
@@ -32,12 +38,12 @@
             borderRadius: config.castle.height + 'px'
         };
 
-        if (castle.playerIndex !== undefined) {
-            castleStyleObject.backgroundColor =
+        if (castle.playerIndex !== -1) {
+            styleObject.backgroundColor =
                 $katan.playerList[castle.playerIndex].color;
         }
 
-        return toStyle(castleStyleObject);
+        return toStyle(styleObject);
     };
 
     const unsubscribe = katan.subscribe(currentKatan => {
@@ -54,11 +60,11 @@
     on:click={() => pick()}
     class:ripple={castle.ripple}
     class:pick={castle.ripple}
-    class:hide1={castle.hide}
-    class:show1={castle.show}
+    class:hide={castle.hide}
+    class:show={castle.show}
     style={castleStyle}>
-<div>{castle.i},{castle.j}</div>
-<div>{castle.index}</div>
+<!--<div>{castle.i},{castle.j}</div>-->
+<!--<div>{castle.index}</div>-->
 </div>
 
 <style>
