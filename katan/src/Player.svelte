@@ -5,7 +5,9 @@
 <main>
     <table class="resource" class:turn={player.turn}>
         <tr>
-            <td colspan="2" style="background-color:{player.color}">{player.name}</td>
+            <td colspan="2"
+                class="name"
+                style="background-color:{player.color}">{player.name}</td>
         </tr>
         <tr>
             <td><img src="tree_item.png"></td>
@@ -58,5 +60,11 @@
         font-size: 60px;
         font-weight: 600;
         width: 40px;
+    }
+
+    .name {
+        font-weight: bolder;
+        font-size: 20px;
+        color: white;
     }
 </style>

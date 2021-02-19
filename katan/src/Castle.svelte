@@ -29,8 +29,14 @@
             top: castle.top + 'px',
             width: config.castle.width + 'px',
             height: config.castle.height + 'px',
+            lineHeight: config.castle.height + 'px',
             borderRadius: config.castle.height + 'px'
         };
+
+        if (config.debug) {
+            delete styleObject.lineHeight;
+            styleObject.color = 'black';
+        }
 
         if (castle.playerIndex !== -1) {
             styleObject.backgroundColor =
@@ -50,19 +56,24 @@
     castleStyle = createStyle();
 </script>
 
-<div class="castle"
-    on:click={() => pick()}
+{#if config.debug}
+    <div class="castle" style={castleStyle}>
+    <div>{castle.i},{castle.j}</div>
+    <div>{castle.index}</div>
+</div>
+{:else}
+    <div class="castle"
+         on:click={() => pick()}
     class:ripple={castle.ripple}
     class:pick={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
     style={castleStyle}>
-<!--<div>{castle.i},{castle.j}</div>-->
-<!--<div>{castle.index}</div>-->
-{#if castle.title !== undefined}
-<div>{castle.title}</div>
-{/if}
+    {#if castle.title !== undefined}
+        <div>{castle.title}</div>
+    {/if}
 </div>
+{/if}
 
 <style>
     .castle {
@@ -70,7 +81,10 @@
         text-align: center;
         border: 1px solid greenyellow;
         background-color: yellow;
-        opacity: 0.6;
+        /*opacity: 0.6;*/
+        font-weight: bolder;
+        font-size: 12px;
+        /*color: white;*/
     }
 
     .pick {

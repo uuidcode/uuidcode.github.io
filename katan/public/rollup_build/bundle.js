@@ -67,6 +67,9 @@ var app = (function () {
     function space() {
         return text(' ');
     }
+    function empty() {
+        return text('');
+    }
     function listen(node, event, handler, options) {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
@@ -507,51 +510,51 @@ var app = (function () {
     			td10 = element("td");
     			t15 = text(t15_value);
     			attr_dev(td0, "colspan", "2");
+    			attr_dev(td0, "class", "name svelte-1asynt0");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
-    			attr_dev(td0, "class", "svelte-aq2o8j");
     			add_location(td0, file, 7, 12, 129);
     			add_location(tr0, file, 6, 8, 112);
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
-    			attr_dev(img0, "class", "svelte-aq2o8j");
-    			add_location(img0, file, 10, 16, 247);
-    			attr_dev(td1, "class", "svelte-aq2o8j");
-    			add_location(td1, file, 10, 12, 243);
-    			attr_dev(td2, "class", "number svelte-aq2o8j");
-    			add_location(td2, file, 11, 12, 290);
-    			add_location(tr1, file, 9, 8, 226);
+    			attr_dev(img0, "class", "svelte-1asynt0");
+    			add_location(img0, file, 12, 16, 292);
+    			attr_dev(td1, "class", "svelte-1asynt0");
+    			add_location(td1, file, 12, 12, 288);
+    			attr_dev(td2, "class", "number svelte-1asynt0");
+    			add_location(td2, file, 13, 12, 335);
+    			add_location(tr1, file, 11, 8, 271);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
-    			attr_dev(img1, "class", "svelte-aq2o8j");
-    			add_location(img1, file, 14, 16, 380);
-    			attr_dev(td3, "class", "svelte-aq2o8j");
-    			add_location(td3, file, 14, 12, 376);
-    			attr_dev(td4, "class", "number svelte-aq2o8j");
-    			add_location(td4, file, 15, 12, 422);
-    			add_location(tr2, file, 13, 8, 359);
+    			attr_dev(img1, "class", "svelte-1asynt0");
+    			add_location(img1, file, 16, 16, 425);
+    			attr_dev(td3, "class", "svelte-1asynt0");
+    			add_location(td3, file, 16, 12, 421);
+    			attr_dev(td4, "class", "number svelte-1asynt0");
+    			add_location(td4, file, 17, 12, 467);
+    			add_location(tr2, file, 15, 8, 404);
     			if (img2.src !== (img2_src_value = "wheat_item.png")) attr_dev(img2, "src", img2_src_value);
-    			attr_dev(img2, "class", "svelte-aq2o8j");
-    			add_location(img2, file, 18, 16, 511);
-    			attr_dev(td5, "class", "svelte-aq2o8j");
-    			add_location(td5, file, 18, 12, 507);
-    			attr_dev(td6, "class", "number svelte-aq2o8j");
-    			add_location(td6, file, 19, 12, 555);
-    			add_location(tr3, file, 17, 8, 490);
+    			attr_dev(img2, "class", "svelte-1asynt0");
+    			add_location(img2, file, 20, 16, 556);
+    			attr_dev(td5, "class", "svelte-1asynt0");
+    			add_location(td5, file, 20, 12, 552);
+    			attr_dev(td6, "class", "number svelte-1asynt0");
+    			add_location(td6, file, 21, 12, 600);
+    			add_location(tr3, file, 19, 8, 535);
     			if (img3.src !== (img3_src_value = "sheep_item.png")) attr_dev(img3, "src", img3_src_value);
-    			attr_dev(img3, "class", "svelte-aq2o8j");
-    			add_location(img3, file, 22, 16, 646);
-    			attr_dev(td7, "class", "svelte-aq2o8j");
-    			add_location(td7, file, 22, 12, 642);
-    			attr_dev(td8, "class", "number svelte-aq2o8j");
-    			add_location(td8, file, 23, 12, 690);
-    			add_location(tr4, file, 21, 8, 625);
+    			attr_dev(img3, "class", "svelte-1asynt0");
+    			add_location(img3, file, 24, 16, 691);
+    			attr_dev(td7, "class", "svelte-1asynt0");
+    			add_location(td7, file, 24, 12, 687);
+    			attr_dev(td8, "class", "number svelte-1asynt0");
+    			add_location(td8, file, 25, 12, 735);
+    			add_location(tr4, file, 23, 8, 670);
     			if (img4.src !== (img4_src_value = "iron_item.png")) attr_dev(img4, "src", img4_src_value);
-    			attr_dev(img4, "class", "svelte-aq2o8j");
-    			add_location(img4, file, 26, 16, 781);
-    			attr_dev(td9, "class", "svelte-aq2o8j");
-    			add_location(td9, file, 26, 12, 777);
-    			attr_dev(td10, "class", "number svelte-aq2o8j");
-    			add_location(td10, file, 27, 12, 824);
-    			add_location(tr5, file, 25, 8, 760);
-    			attr_dev(table, "class", "resource svelte-aq2o8j");
+    			attr_dev(img4, "class", "svelte-1asynt0");
+    			add_location(img4, file, 28, 16, 826);
+    			attr_dev(td9, "class", "svelte-1asynt0");
+    			add_location(td9, file, 28, 12, 822);
+    			attr_dev(td10, "class", "number svelte-1asynt0");
+    			add_location(td10, file, 29, 12, 869);
+    			add_location(tr5, file, 27, 8, 805);
+    			attr_dev(table, "class", "resource svelte-1asynt0");
     			toggle_class(table, "turn", /*player*/ ctx[0].turn);
     			add_location(table, file, 5, 4, 54);
     			add_location(main, file, 4, 0, 43);
@@ -693,6 +696,7 @@ var app = (function () {
     }
 
     const config = {
+        debug: true,
         cell: {
             width: 180,
             height: 200,
@@ -953,7 +957,7 @@ var app = (function () {
         mode: 'ready',
         playerList: [
             {
-                color: 'lightblue',
+                color: 'blue',
                 name: '다은',
                 turn: true,
                 pickCastle: true,
@@ -968,7 +972,7 @@ var app = (function () {
                 index: 0
             },
             {
-                color: 'lightcoral',
+                color: 'red',
                 name: '아빠',
                 turn: false,
                 pickCastle: false,
@@ -1102,6 +1106,66 @@ var app = (function () {
     katan.castleList[24].roadList = [30, 31, 37];
     katan.castleList[25].roadList = [22, 31, 32];
     katan.castleList[26].roadList = [32, 38];
+
+    katan.castleList[27].roadList = [33, 39];
+    katan.castleList[28].roadList = [39, 40, 49];
+    katan.castleList[29].roadList = [34, 40, 41];
+    katan.castleList[30].roadList = [41, 42, 50];
+    katan.castleList[31].roadList = [35, 42, 43];
+    katan.castleList[32].roadList = [43, 44, 51];
+    katan.castleList[33].roadList = [36, 44, 45];
+    katan.castleList[34].roadList = [45, 46, 52];
+    katan.castleList[35].roadList = [37, 46, 47];
+    katan.castleList[36].roadList = [47, 48, 53];
+    katan.castleList[37].roadList = [38, 48];
+
+    katan.castleList[38].roadList = [49, 54];
+    katan.castleList[39].roadList = [54, 55, 62];
+    katan.castleList[40].roadList = [50, 55, 56];
+    katan.castleList[41].roadList = [56, 57, 63];
+    katan.castleList[42].roadList = [51, 57, 58];
+    katan.castleList[43].roadList = [58, 59, 64];
+    katan.castleList[44].roadList = [52, 59, 60];
+    katan.castleList[45].roadList = [60, 61, 65];
+    katan.castleList[46].roadList = [53, 61];
+
+    katan.castleList[47].roadList = [62, 66];
+    katan.castleList[48].roadList = [66, 67];
+    katan.castleList[49].roadList = [63, 67, 68];
+    katan.castleList[50].roadList = [68, 69];
+    katan.castleList[51].roadList = [64, 69, 70];
+    katan.castleList[52].roadList = [70, 71];
+    katan.castleList[53].roadList = [65, 71];
+
+    katan.castleList[0].castleList = [1, 8];
+    katan.castleList[1].castleList = [0, 2];
+    katan.castleList[2].castleList = [1, 3, 10];
+    katan.castleList[3].castleList = [2, 4];
+    katan.castleList[4].castleList = [3, 5, 12];
+    katan.castleList[5].castleList = [4, 6];
+    katan.castleList[6].castleList = [5, 14];
+
+    katan.castleList[7].castleList = [8, 17];
+    katan.castleList[8].castleList = [7, 9];
+    katan.castleList[9].castleList = [8, 10, 19];
+    katan.castleList[10].castleList = [2, 9, 11];
+    katan.castleList[11].castleList = [10, 12, 21];
+    katan.castleList[12].castleList = [4, 11 ,13];
+    katan.castleList[13].castleList = [12, 14, 23];
+    katan.castleList[14].castleList = [6, 13, 15];
+    katan.castleList[15].castleList = [14, 25];
+
+    katan.castleList[16].roadList = [17, 27];
+    katan.castleList[17].roadList = [7, 16, 18];
+    katan.castleList[18].roadList = [17, 19, 29];
+    katan.castleList[19].roadList = [9, 18, 20];
+    katan.castleList[20].roadList = [19, 21, 31];
+    katan.castleList[21].roadList = [11, 20, 22];
+    katan.castleList[22].roadList = [21, 23, 33];
+    katan.castleList[23].roadList = [13, 22, 24];
+    katan.castleList[24].roadList = [23, 25, 35];
+    katan.castleList[25].roadList = [15, 24, 26];
+    katan.castleList[26].roadList = [25, 37];
 
     katan.castleList[27].roadList = [33, 39];
     katan.castleList[28].roadList = [39, 40, 49];
@@ -1585,61 +1649,24 @@ var app = (function () {
     /* src\Castle.svelte generated by Svelte v3.32.3 */
     const file$2 = "src\\Castle.svelte";
 
-    // (62:0) {#if castle.title !== undefined}
-    function create_if_block(ctx) {
-    	let div;
-    	let t_value = /*castle*/ ctx[0].title + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			t = text(t_value);
-    			add_location(div, file$2, 62, 0, 1736);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 1 && t_value !== (t_value = /*castle*/ ctx[0].title + "")) set_data_dev(t, t_value);
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block.name,
-    		type: "if",
-    		source: "(62:0) {#if castle.title !== undefined}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function create_fragment$2(ctx) {
+    // (64:0) {:else}
+    function create_else_block(ctx) {
     	let div;
     	let mounted;
     	let dispose;
-    	let if_block = /*castle*/ ctx[0].title !== undefined && create_if_block(ctx);
+    	let if_block = /*castle*/ ctx[0].title !== undefined && create_if_block_1(ctx);
 
     	const block = {
     		c: function create() {
     			div = element("div");
     			if (if_block) if_block.c();
-    			attr_dev(div, "class", "castle svelte-1aqsadr");
+    			attr_dev(div, "class", "castle svelte-w7nhio");
     			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
     			toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
     			toggle_class(div, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div, "show", /*castle*/ ctx[0].show);
-    			add_location(div, file$2, 52, 0, 1425);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(div, file$2, 64, 4, 1763);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1650,12 +1677,12 @@ var app = (function () {
     				mounted = true;
     			}
     		},
-    		p: function update(ctx, [dirty]) {
+    		p: function update(ctx, dirty) {
     			if (/*castle*/ ctx[0].title !== undefined) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block(ctx);
+    					if_block = create_if_block_1(ctx);
     					if_block.c();
     					if_block.m(div, null);
     				}
@@ -1684,13 +1711,156 @@ var app = (function () {
     				toggle_class(div, "show", /*castle*/ ctx[0].show);
     			}
     		},
-    		i: noop,
-    		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			if (if_block) if_block.d();
     			mounted = false;
     			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(64:0) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (59:0) {#if config.debug}
+    function create_if_block(ctx) {
+    	let div2;
+    	let div0;
+    	let t0_value = /*castle*/ ctx[0].i + "";
+    	let t0;
+    	let t1;
+    	let t2_value = /*castle*/ ctx[0].j + "";
+    	let t2;
+    	let t3;
+    	let div1;
+    	let t4_value = /*castle*/ ctx[0].index + "";
+    	let t4;
+
+    	const block = {
+    		c: function create() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = text(",");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			div1 = element("div");
+    			t4 = text(t4_value);
+    			add_location(div0, file$2, 60, 4, 1677);
+    			add_location(div1, file$2, 61, 4, 1715);
+    			attr_dev(div2, "class", "castle svelte-w7nhio");
+    			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
+    			add_location(div2, file$2, 59, 4, 1631);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div0);
+    			append_dev(div0, t0);
+    			append_dev(div0, t1);
+    			append_dev(div0, t2);
+    			append_dev(div2, t3);
+    			append_dev(div2, div1);
+    			append_dev(div1, t4);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*castle*/ 1 && t0_value !== (t0_value = /*castle*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*castle*/ 1 && t2_value !== (t2_value = /*castle*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*castle*/ 1 && t4_value !== (t4_value = /*castle*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
+
+    			if (dirty & /*castleStyle*/ 2) {
+    				attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div2);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(59:0) {#if config.debug}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (72:4) {#if castle.title !== undefined}
+    function create_if_block_1(ctx) {
+    	let div;
+    	let t_value = /*castle*/ ctx[0].title + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t = text(t_value);
+    			add_location(div, file$2, 72, 8, 2016);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*castle*/ 1 && t_value !== (t_value = /*castle*/ ctx[0].title + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(72:4) {#if castle.title !== undefined}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let if_block_anchor;
+
+    	function select_block_type(ctx, dirty) {
+    		if (config.debug) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type();
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if_block.p(ctx, dirty);
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -1734,8 +1904,14 @@ var app = (function () {
     			top: castle.top + "px",
     			width: config.castle.width + "px",
     			height: config.castle.height + "px",
+    			lineHeight: config.castle.height + "px",
     			borderRadius: config.castle.height + "px"
     		};
+
+    		if (config.debug) {
+    			delete styleObject.lineHeight;
+    			styleObject.color = "black";
+    		}
 
     		if (castle.playerIndex !== -1) {
     			styleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
@@ -1822,61 +1998,24 @@ var app = (function () {
     /* src\Road.svelte generated by Svelte v3.32.3 */
     const file$3 = "src\\Road.svelte";
 
-    // (66:0) {#if road.title !== undefined}
-    function create_if_block$1(ctx) {
-    	let div;
-    	let t_value = /*road*/ ctx[0].title + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			t = text(t_value);
-    			add_location(div, file$3, 66, 4, 1726);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*road*/ 1 && t_value !== (t_value = /*road*/ ctx[0].title + "")) set_data_dev(t, t_value);
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$1.name,
-    		type: "if",
-    		source: "(66:0) {#if road.title !== undefined}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function create_fragment$3(ctx) {
+    // (68:0) {:else}
+    function create_else_block$1(ctx) {
     	let div;
     	let mounted;
     	let dispose;
-    	let if_block = /*road*/ ctx[0].title !== undefined && create_if_block$1(ctx);
+    	let if_block = /*road*/ ctx[0].title !== undefined && create_if_block_1$1(ctx);
 
     	const block = {
     		c: function create() {
     			div = element("div");
     			if (if_block) if_block.c();
-    			attr_dev(div, "class", "road svelte-111e7uh");
+    			attr_dev(div, "class", "road svelte-1yspvtm");
     			attr_dev(div, "style", /*roadStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*road*/ ctx[0].ripple);
     			toggle_class(div, "pick", /*road*/ ctx[0].ripple);
     			toggle_class(div, "hide", /*road*/ ctx[0].hide);
     			toggle_class(div, "show", /*road*/ ctx[0].show);
-    			add_location(div, file$3, 56, 0, 1435);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(div, file$3, 68, 4, 1765);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1887,12 +2026,12 @@ var app = (function () {
     				mounted = true;
     			}
     		},
-    		p: function update(ctx, [dirty]) {
+    		p: function update(ctx, dirty) {
     			if (/*road*/ ctx[0].title !== undefined) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$1(ctx);
+    					if_block = create_if_block_1$1(ctx);
     					if_block.c();
     					if_block.m(div, null);
     				}
@@ -1921,13 +2060,156 @@ var app = (function () {
     				toggle_class(div, "show", /*road*/ ctx[0].show);
     			}
     		},
-    		i: noop,
-    		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
     			if (if_block) if_block.d();
     			mounted = false;
     			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$1.name,
+    		type: "else",
+    		source: "(68:0) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (63:0) {#if config.debug}
+    function create_if_block$1(ctx) {
+    	let div2;
+    	let div0;
+    	let t0_value = /*road*/ ctx[0].i + "";
+    	let t0;
+    	let t1;
+    	let t2_value = /*road*/ ctx[0].j + "";
+    	let t2;
+    	let t3;
+    	let div1;
+    	let t4_value = /*road*/ ctx[0].index + "";
+    	let t4;
+
+    	const block = {
+    		c: function create() {
+    			div2 = element("div");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = text(",");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			div1 = element("div");
+    			t4 = text(t4_value);
+    			add_location(div0, file$3, 64, 8, 1681);
+    			add_location(div1, file$3, 65, 8, 1718);
+    			attr_dev(div2, "class", "road svelte-1yspvtm");
+    			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
+    			add_location(div2, file$3, 63, 4, 1636);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, div0);
+    			append_dev(div0, t0);
+    			append_dev(div0, t1);
+    			append_dev(div0, t2);
+    			append_dev(div2, t3);
+    			append_dev(div2, div1);
+    			append_dev(div1, t4);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*road*/ 1 && t0_value !== (t0_value = /*road*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*road*/ 1 && t2_value !== (t2_value = /*road*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*road*/ 1 && t4_value !== (t4_value = /*road*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
+
+    			if (dirty & /*roadStyle*/ 2) {
+    				attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div2);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(63:0) {#if config.debug}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (76:4) {#if road.title !== undefined}
+    function create_if_block_1$1(ctx) {
+    	let div;
+    	let t_value = /*road*/ ctx[0].title + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t = text(t_value);
+    			add_location(div, file$3, 76, 8, 2021);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*road*/ 1 && t_value !== (t_value = /*road*/ ctx[0].title + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(76:4) {#if road.title !== undefined}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$3(ctx) {
+    	let if_block_anchor;
+
+    	function select_block_type(ctx, dirty) {
+    		if (config.debug) return create_if_block$1;
+    		return create_else_block$1;
+    	}
+
+    	let current_block_type = select_block_type();
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if_block.p(ctx, dirty);
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -1974,8 +2256,14 @@ var app = (function () {
     			top: road.top + "px",
     			width: config.load.width + "px",
     			height: config.load.height + "px",
-    			borderRadius: config.load.height + "px"
+    			lineHeight: config.castle.height + "px"
     		};
+
+    		if (config.debug) {
+    			delete styleObject.lineHeight;
+    			styleObject.color = "black";
+    			styleObject.backgroundColor = "lightblue";
+    		}
 
     		if (road.playerIndex !== -1) {
     			styleObject.backgroundColor = $katan.playerList[road.playerIndex].color;
@@ -2755,11 +3043,13 @@ var app = (function () {
     			add_location(td2, file$6, 40, 12, 1248);
     			add_location(tr0, file$6, 29, 8, 795);
     			attr_dev(td3, "valign", "top");
+    			attr_dev(td3, "class", "player svelte-bkwnzi");
     			add_location(td3, file$6, 43, 12, 1300);
     			attr_dev(td4, "valign", "top");
-    			add_location(td4, file$6, 46, 12, 1415);
+    			add_location(td4, file$6, 46, 12, 1430);
     			attr_dev(td5, "valign", "top");
-    			add_location(td5, file$6, 51, 12, 1610);
+    			attr_dev(td5, "class", "player svelte-bkwnzi");
+    			add_location(td5, file$6, 51, 12, 1625);
     			add_location(tr1, file$6, 42, 8, 1282);
     			add_location(table, file$6, 28, 4, 778);
     			set_style(main, "margin", "auto");

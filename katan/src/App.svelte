@@ -41,7 +41,7 @@
             <td></td>
         </tr>
         <tr>
-            <td valign="top">
+            <td valign="top" class="player">
                 <Player player={$katan.playerList[0]}></Player>
             </td>
             <td valign="top">
@@ -49,9 +49,15 @@
                        castleList="{$katan.castleList}">
                 </Board>
             </td>
-            <td valign="top">
+            <td valign="top" class="player">
                 <Player player={$katan.playerList[1]}></Player>
             </td>
         </tr>
     </table>
 </main>
+
+<style>
+    .player {
+        width: 120px;
+    }
+</style>

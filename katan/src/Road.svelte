@@ -33,8 +33,14 @@
             top: road.top + 'px',
             width: config.load.width + 'px',
             height: config.load.height + 'px',
-            borderRadius: config.load.height + 'px'
+            lineHeight: config.castle.height + 'px'
         };
+
+        if (config.debug) {
+            delete styleObject.lineHeight;
+            styleObject.color = 'black';
+            styleObject.backgroundColor = 'lightblue';
+        }
 
         if (road.playerIndex !== -1) {
             styleObject.backgroundColor =
@@ -54,19 +60,24 @@
     onDestroy(unsubscribe);
 </script>
 
-<div class="road"
-     on:click={() => pick()}
-     class:ripple={road.ripple}
-     class:pick={road.ripple}
-     class:hide={road.hide}
-     class:show={road.show}
-     style={roadStyle}>
-<!--<div>{road.i},{road.j}</div>-->
-<!--<div>{road.index}</div>-->
-{#if road.title !== undefined}
-    <div>{road.title}</div>
+{#if config.debug}
+    <div class="road" style={roadStyle}>
+        <div>{road.i},{road.j}</div>
+        <div>{road.index}</div>
+    </div>
+{:else}
+    <div class="road"
+         on:click={() => pick()}
+         class:ripple={road.ripple}
+         class:pick={road.ripple}
+         class:hide={road.hide}
+         class:show={road.show}
+         style={roadStyle}>
+    {#if road.title !== undefined}
+        <div>{road.title}</div>
+    {/if}
+    </div>
 {/if}
-</div>
 
 <style>
     .road {
@@ -74,7 +85,10 @@
         text-align: center;
         border: 1px solid greenyellow;
         background-color: yellow;
-        opacity: 0.6;
+        /*opacity: 0.6;*/
+        font-weight: bolder;
+        font-size: 12px;
+        color: white;
     }
 
     .pick {
