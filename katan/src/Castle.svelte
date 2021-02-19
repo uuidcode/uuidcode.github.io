@@ -9,10 +9,6 @@
     let castleStyle;
 
     const pick = () => {
-        if (!castle.pick) {
-            return;
-        }
-
         const player = katan.getActivePlayer();
 
         if (player.pickCastle === true) {
@@ -28,8 +24,6 @@
     };
 
     const createStyle = () => {
-        console.log('>>> castle', castle);
-
         let styleObject = {
             left: castle.left + 'px',
             top: castle.top + 'px',
@@ -65,6 +59,9 @@
     style={castleStyle}>
 <!--<div>{castle.i},{castle.j}</div>-->
 <!--<div>{castle.index}</div>-->
+{#if castle.title !== undefined}
+<div>{castle.title}</div>
+{/if}
 </div>
 
 <style>

@@ -25,8 +25,21 @@
     }
 </script>
 
-<main>
+<main style="margin: auto; width: 80%">
     <table>
+        <tr>
+            <td></td>
+            <td>
+                <div>{$katan.mode}</div>
+                <div>{$katan.message}</div>
+                <div class:hide={katan.isReady()}>
+                    <Dice number={$katan.dice[0]}></Dice>
+                    <Dice number={$katan.dice[1]}></Dice>
+                    <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
+                </div>
+            </td>
+            <td></td>
+        </tr>
         <tr>
             <td valign="top">
                 <Player player={$katan.playerList[0]}></Player>
@@ -38,14 +51,6 @@
             </td>
             <td valign="top">
                 <Player player={$katan.playerList[1]}></Player>
-            </td>
-            <td valign="top">
-                <div>{$katan.mode}</div>
-                <div class:hide={katan.isReady()}>
-                <Dice number={$katan.dice[0]}></Dice>
-                <Dice number={$katan.dice[1]}></Dice>
-                <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
-                </div>
             </td>
         </tr>
     </table>

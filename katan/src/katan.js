@@ -3,6 +3,7 @@ import config from './config.js'
 import { getDisplay } from './util.js'
 
 let katan = {
+    message: '마을을 만들곳을 클릭하세요',
     dice: [6, 6],
     mode: 'ready',
     playerList: [
@@ -68,7 +69,6 @@ for (let i = 0; i < 6; i++) {
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
                     ripple: false,
-                    constructable: false,
                     empty: true,
                     i,
                     j
@@ -86,13 +86,12 @@ for (let i = 0; i < 6; i++) {
                     top += config.cell.height / 4
                 }
 
-                const constructable = j >= 3 && j <= 7;
+                const ripple = j >= 3 && j <= 7;
 
                 katan.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: constructable,
-                    constructable: constructable,
+                    ripple: ripple,
                     empty: true,
                     i,
                     j
@@ -109,13 +108,12 @@ for (let i = 0; i < 6; i++) {
                 top += config.cell.height / 4
             }
 
-            const constructable = j >= 2 && j <= 8;
+            const ripple = j >= 2 && j <= 8;
 
             katan.castleList.push({
                 left: j * (config.cell.width / 2) - config.castle.width / 2,
                 top: top - config.castle.height / 2,
-                ripple: constructable,
-                constructable: constructable,
+                ripple: ripple,
                 empty: true,
                 i,
                 j
@@ -126,6 +124,9 @@ for (let i = 0; i < 6; i++) {
 
 katan.castleList.forEach((castle, index) => castle.index = index);
 katan.castleList.forEach((castle) => castle.playerIndex = -1);
+katan.castleList.forEach(castle => castle.hide = !castle.ripple);
+katan.castleList.forEach(castle => castle.show = castle.ripple);
+katan.castleList.forEach(castle => castle.constructable = castle.ripple);
 
 katan.castleList[0].roadList = [0, 6];
 katan.castleList[1].roadList = [0, 1];
@@ -493,6 +494,11 @@ const katanStore = {
             .find(player => player.turn);
     },
 
+    getCurrentPlayer: (katan) => {
+        return katan.playerList
+            .find(player => player.turn);
+    },
+
     turn: () => update(katan => {
         katan.playerList = katan.playerList
             .map(player => {
@@ -507,6 +513,7 @@ const katanStore = {
         let castle = katan.castleList[castleIndex];
         castle.playerIndex = playerIndex;
         castle.pick = false;
+        castle.title = '마을';
         return katan;
     }),
 
@@ -514,20 +521,23 @@ const katanStore = {
         let road = katan.roadList[roadIndex];
         road.playerIndex = playerIndex;
         road.pick = false;
+        road.title = '길';
         return katan;
     }),
 
     setPickRoadMode: () => update(katan => {
-        let player = katanStore.getActivePlayer();
+        let player = katanStore.getCurrentPlayer(katan);
         player.pickCastle = false;
         player.pickRoad = true;
 
-        return katanStore._setRoadRippleEnabled(katan);
+        katanStore.setRoadRippleEnabled();
+
+        return katan;
     }),
 
-    setRoadRippleEnabled: () => update(katanStore._setRoadRippleEnabled),
+    setRoadRippleEnabled: () => update(katan => {
+        katan.message = '길을 만들곳을 선택하세요.';
 
-    _setRoadRippleEnabled: katan => {
         katan.roadList = katan.roadList
             .map(road => {
                 let player = katanStore.getActivePlayer();
@@ -551,43 +561,40 @@ const katanStore = {
             });
 
         return katan;
-    },
+    }),
 
-    _setCastleRippleEnabled: katan => {
-        katan.caList = katan.caList.map(castle => {
-            castle.ripple = true;
-            return castle;
-        });
+    setRoadRippleDisabled: () => update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                road.ripple = false;
+                return road;
+            });
 
         return katan;
-    },
+    }),
 
-    _setCastleRippleDisabled: katan => {
-        katan.castleList =  katan.castleList.map(castle => {
+    setCastleRippleDisabled: () => update(katan => {
+        katan.castleList = katan.castleList.map(castle => {
             castle.ripple = false;
             return castle;
         });
 
         return katan;
-    },
+    }),
 
-    setCastleRippleDisabled: () => update(katanStore._setCastleRippleDisabled),
+    setCastleRippleEnabled: () => update(katan => {
+        katan.castleList = katan.castleList.map(castle => {
+            if (castle.constructable && castle.playerIndex === -1) {
+                castle.ripple = true;
+            }
 
-    setShowRoad: () => update(katanStore._setShowRoad),
-
-    _setShowRoad: katan => {
-        katan.roadList = katan.roadList.map(road => {
-            road.show = true;
-            road.hide = false;
-            return road;
+            return castle;
         });
 
         return katan;
-    },
+    }),
 
-    setHideCastle: () => update(katanStore._setHideCastle),
-
-    _setHideCastle: katan => {
+    setHideCastle: () => update( katan => {
         katan.castleList =  katan.castleList
             .map(castle => {
                 if (castle.playerIndex === -1) {
@@ -599,14 +606,26 @@ const katanStore = {
             });
 
         return katan;
-    },
+    }),
 
-    setShowCastle: () => update(katanStore._setShowCastle),
+    setHideRoad: () => update( katan => {
+        katan.roadList =  katan.roadList
+            .map(road => {
+                if (road.playerIndex === -1) {
+                    road.show = false;
+                    road.hide = true;
+                }
 
-    _setShowCastle: katan => {
+                return road;
+            });
+
+        return katan;
+    }),
+
+    setShowCastle: () => update(katan => {
         katan.castleList =  katan.castleList
             .map(castle => {
-                if (castle.playerIndex === -1) {
+                if (castle.constructable && castle.playerIndex === -1) {
                     castle.show = true;
                     castle.hide = false;
                 }
@@ -615,7 +634,7 @@ const katanStore = {
             });
 
         return katan;
-    },
+    })
 };
 
 export default katanStore;

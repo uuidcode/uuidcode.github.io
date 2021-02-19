@@ -11,17 +11,18 @@
     let roadStyle;
 
     const pick = () => {
-        if (!road.pick) {
-            return;
-        }
-
-        const player = katan.getActivePlayer();
+        let player = katan.getActivePlayer();
 
         if (player.pickRoad === true) {
             katan.setRoad(roadIndex, player.index);
+            katan.setHideRoad();
+            katan.setRoadRippleDisabled();
+            katan.setShowCastle();
+            katan.setCastleRippleEnabled();
+
             katan.turn();
 
-            const player = katan.getActivePlayer();
+            player = katan.getActivePlayer();
             player.pickCastle = true;
         }
     };
@@ -37,7 +38,7 @@
 
         if (road.playerIndex !== -1) {
             styleObject.backgroundColor =
-                    $katan.playerList[castle.playerIndex].color;
+                    $katan.playerList[road.playerIndex].color;
         }
 
         return toStyle(styleObject);
@@ -62,6 +63,9 @@
      style={roadStyle}>
 <!--<div>{road.i},{road.j}</div>-->
 <!--<div>{road.index}</div>-->
+{#if road.title !== undefined}
+    <div>{road.title}</div>
+{/if}
 </div>
 
 <style>

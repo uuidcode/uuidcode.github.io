@@ -38,6 +38,6 @@
 
     .board {
         position: relative;
-        margin: 50px;
+        margin: 30px;
     }
 </style>

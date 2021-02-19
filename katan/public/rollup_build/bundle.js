@@ -205,12 +205,6 @@ var app = (function () {
             block.o(local);
         }
     }
-
-    const globals = (typeof window !== 'undefined'
-        ? window
-        : typeof globalThis !== 'undefined'
-            ? globalThis
-            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -954,6 +948,7 @@ var app = (function () {
     }
 
     let katan = {
+        message: '마을을 만들곳을 클릭하세요',
         dice: [6, 6],
         mode: 'ready',
         playerList: [
@@ -1019,7 +1014,6 @@ var app = (function () {
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
                         top: top - config.castle.height / 2,
                         ripple: false,
-                        constructable: false,
                         empty: true,
                         i,
                         j
@@ -1037,13 +1031,12 @@ var app = (function () {
                         top += config.cell.height / 4;
                     }
 
-                    const constructable = j >= 3 && j <= 7;
+                    const ripple = j >= 3 && j <= 7;
 
                     katan.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
                         top: top - config.castle.height / 2,
-                        ripple: constructable,
-                        constructable: constructable,
+                        ripple: ripple,
                         empty: true,
                         i,
                         j
@@ -1060,13 +1053,12 @@ var app = (function () {
                     top += config.cell.height / 4;
                 }
 
-                const constructable = j >= 2 && j <= 8;
+                const ripple = j >= 2 && j <= 8;
 
                 katan.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: constructable,
-                    constructable: constructable,
+                    ripple: ripple,
                     empty: true,
                     i,
                     j
@@ -1077,6 +1069,9 @@ var app = (function () {
 
     katan.castleList.forEach((castle, index) => castle.index = index);
     katan.castleList.forEach((castle) => castle.playerIndex = -1);
+    katan.castleList.forEach(castle => castle.hide = !castle.ripple);
+    katan.castleList.forEach(castle => castle.show = castle.ripple);
+    katan.castleList.forEach(castle => castle.constructable = castle.ripple);
 
     katan.castleList[0].roadList = [0, 6];
     katan.castleList[1].roadList = [0, 1];
@@ -1444,6 +1439,11 @@ var app = (function () {
                 .find(player => player.turn);
         },
 
+        getCurrentPlayer: (katan) => {
+            return katan.playerList
+                .find(player => player.turn);
+        },
+
         turn: () => update$1(katan => {
             katan.playerList = katan.playerList
                 .map(player => {
@@ -1458,6 +1458,7 @@ var app = (function () {
             let castle = katan.castleList[castleIndex];
             castle.playerIndex = playerIndex;
             castle.pick = false;
+            castle.title = '마을';
             return katan;
         }),
 
@@ -1465,20 +1466,23 @@ var app = (function () {
             let road = katan.roadList[roadIndex];
             road.playerIndex = playerIndex;
             road.pick = false;
+            road.title = '길';
             return katan;
         }),
 
         setPickRoadMode: () => update$1(katan => {
-            let player = katanStore.getActivePlayer();
+            let player = katanStore.getCurrentPlayer(katan);
             player.pickCastle = false;
             player.pickRoad = true;
 
-            return katanStore._setRoadRippleEnabled(katan);
+            katanStore.setRoadRippleEnabled();
+
+            return katan;
         }),
 
-        setRoadRippleEnabled: () => update$1(katanStore._setRoadRippleEnabled),
+        setRoadRippleEnabled: () => update$1(katan => {
+            katan.message = '길을 만들곳을 선택하세요.';
 
-        _setRoadRippleEnabled: katan => {
             katan.roadList = katan.roadList
                 .map(road => {
                     let player = katanStore.getActivePlayer();
@@ -1502,43 +1506,40 @@ var app = (function () {
                 });
 
             return katan;
-        },
+        }),
 
-        _setCastleRippleEnabled: katan => {
-            katan.caList = katan.caList.map(castle => {
-                castle.ripple = true;
-                return castle;
-            });
+        setRoadRippleDisabled: () => update$1(katan => {
+            katan.roadList = katan.roadList
+                .map(road => {
+                    road.ripple = false;
+                    return road;
+                });
 
             return katan;
-        },
+        }),
 
-        _setCastleRippleDisabled: katan => {
-            katan.castleList =  katan.castleList.map(castle => {
+        setCastleRippleDisabled: () => update$1(katan => {
+            katan.castleList = katan.castleList.map(castle => {
                 castle.ripple = false;
                 return castle;
             });
 
             return katan;
-        },
+        }),
 
-        setCastleRippleDisabled: () => update$1(katanStore._setCastleRippleDisabled),
+        setCastleRippleEnabled: () => update$1(katan => {
+            katan.castleList = katan.castleList.map(castle => {
+                if (castle.constructable && castle.playerIndex === -1) {
+                    castle.ripple = true;
+                }
 
-        setShowRoad: () => update$1(katanStore._setShowRoad),
-
-        _setShowRoad: katan => {
-            katan.roadList = katan.roadList.map(road => {
-                road.show = true;
-                road.hide = false;
-                return road;
+                return castle;
             });
 
             return katan;
-        },
+        }),
 
-        setHideCastle: () => update$1(katanStore._setHideCastle),
-
-        _setHideCastle: katan => {
+        setHideCastle: () => update$1( katan => {
             katan.castleList =  katan.castleList
                 .map(castle => {
                     if (castle.playerIndex === -1) {
@@ -1550,14 +1551,26 @@ var app = (function () {
                 });
 
             return katan;
-        },
+        }),
 
-        setShowCastle: () => update$1(katanStore._setShowCastle),
+        setHideRoad: () => update$1( katan => {
+            katan.roadList =  katan.roadList
+                .map(road => {
+                    if (road.playerIndex === -1) {
+                        road.show = false;
+                        road.hide = true;
+                    }
 
-        _setShowCastle: katan => {
+                    return road;
+                });
+
+            return katan;
+        }),
+
+        setShowCastle: () => update$1(katan => {
             katan.castleList =  katan.castleList
                 .map(castle => {
-                    if (castle.playerIndex === -1) {
+                    if (castle.constructable && castle.playerIndex === -1) {
                         castle.show = true;
                         castle.hide = false;
                     }
@@ -1566,35 +1579,71 @@ var app = (function () {
                 });
 
             return katan;
-        },
+        })
     };
 
     /* src\Castle.svelte generated by Svelte v3.32.3 */
-
-    const { console: console_1 } = globals;
     const file$2 = "src\\Castle.svelte";
+
+    // (62:0) {#if castle.title !== undefined}
+    function create_if_block(ctx) {
+    	let div;
+    	let t_value = /*castle*/ ctx[0].title + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t = text(t_value);
+    			add_location(div, file$2, 62, 0, 1736);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*castle*/ 1 && t_value !== (t_value = /*castle*/ ctx[0].title + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(62:0) {#if castle.title !== undefined}",
+    		ctx
+    	});
+
+    	return block;
+    }
 
     function create_fragment$2(ctx) {
     	let div;
     	let mounted;
     	let dispose;
+    	let if_block = /*castle*/ ctx[0].title !== undefined && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
     			div = element("div");
+    			if (if_block) if_block.c();
     			attr_dev(div, "class", "castle svelte-1aqsadr");
     			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
     			toggle_class(div, "pick", /*castle*/ ctx[0].ripple);
     			toggle_class(div, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div, "show", /*castle*/ ctx[0].show);
-    			add_location(div, file$2, 58, 0, 1534);
+    			add_location(div, file$2, 52, 0, 1425);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+    			if (if_block) if_block.m(div, null);
 
     			if (!mounted) {
     				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
@@ -1602,6 +1651,19 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
+    			if (/*castle*/ ctx[0].title !== undefined) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(div, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
     			if (dirty & /*castleStyle*/ 2) {
     				attr_dev(div, "style", /*castleStyle*/ ctx[1]);
     			}
@@ -1626,6 +1688,7 @@ var app = (function () {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
+    			if (if_block) if_block.d();
     			mounted = false;
     			dispose();
     		}
@@ -1653,10 +1716,6 @@ var app = (function () {
     	let castleStyle;
 
     	const pick = () => {
-    		if (!castle.pick) {
-    			return;
-    		}
-
     		const player = katanStore.getActivePlayer();
 
     		if (player.pickCastle === true) {
@@ -1670,8 +1729,6 @@ var app = (function () {
     	};
 
     	const createStyle = () => {
-    		console.log(">>> castle", castle);
-
     		let styleObject = {
     			left: castle.left + "px",
     			top: castle.top + "px",
@@ -1697,7 +1754,7 @@ var app = (function () {
     	const writable_props = ["castleIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Castle> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => pick();
@@ -1749,7 +1806,7 @@ var app = (function () {
     		const props = options.props || {};
 
     		if (/*castleIndex*/ ctx[3] === undefined && !("castleIndex" in props)) {
-    			console_1.warn("<Castle> was created without expected prop 'castleIndex'");
+    			console.warn("<Castle> was created without expected prop 'castleIndex'");
     		}
     	}
 
@@ -1765,27 +1822,65 @@ var app = (function () {
     /* src\Road.svelte generated by Svelte v3.32.3 */
     const file$3 = "src\\Road.svelte";
 
-    function create_fragment$3(ctx) {
+    // (66:0) {#if road.title !== undefined}
+    function create_if_block$1(ctx) {
     	let div;
-    	let mounted;
-    	let dispose;
+    	let t_value = /*road*/ ctx[0].title + "";
+    	let t;
 
     	const block = {
     		c: function create() {
     			div = element("div");
+    			t = text(t_value);
+    			add_location(div, file$3, 66, 4, 1726);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*road*/ 1 && t_value !== (t_value = /*road*/ ctx[0].title + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(66:0) {#if road.title !== undefined}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$3(ctx) {
+    	let div;
+    	let mounted;
+    	let dispose;
+    	let if_block = /*road*/ ctx[0].title !== undefined && create_if_block$1(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			if (if_block) if_block.c();
     			attr_dev(div, "class", "road svelte-111e7uh");
     			attr_dev(div, "style", /*roadStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*road*/ ctx[0].ripple);
     			toggle_class(div, "pick", /*road*/ ctx[0].ripple);
     			toggle_class(div, "hide", /*road*/ ctx[0].hide);
     			toggle_class(div, "show", /*road*/ ctx[0].show);
-    			add_location(div, file$3, 55, 0, 1346);
+    			add_location(div, file$3, 56, 0, 1435);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+    			if (if_block) if_block.m(div, null);
 
     			if (!mounted) {
     				dispose = listen_dev(div, "click", /*click_handler*/ ctx[4], false, false, false);
@@ -1793,6 +1888,19 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
+    			if (/*road*/ ctx[0].title !== undefined) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$1(ctx);
+    					if_block.c();
+    					if_block.m(div, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
     			if (dirty & /*roadStyle*/ 2) {
     				attr_dev(div, "style", /*roadStyle*/ ctx[1]);
     			}
@@ -1817,6 +1925,7 @@ var app = (function () {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
+    			if (if_block) if_block.d();
     			mounted = false;
     			dispose();
     		}
@@ -1845,16 +1954,16 @@ var app = (function () {
     	let roadStyle;
 
     	const pick = () => {
-    		if (!road.pick) {
-    			return;
-    		}
-
-    		const player = katanStore.getActivePlayer();
+    		let player = katanStore.getActivePlayer();
 
     		if (player.pickRoad === true) {
     			katanStore.setRoad(roadIndex, player.index);
+    			katanStore.setHideRoad();
+    			katanStore.setRoadRippleDisabled();
+    			katanStore.setShowCastle();
+    			katanStore.setCastleRippleEnabled();
     			katanStore.turn();
-    			const player = katanStore.getActivePlayer();
+    			player = katanStore.getActivePlayer();
     			player.pickCastle = true;
     		}
     	};
@@ -1869,7 +1978,7 @@ var app = (function () {
     		};
 
     		if (road.playerIndex !== -1) {
-    			styleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
+    			styleObject.backgroundColor = $katan.playerList[road.playerIndex].color;
     		}
 
     		return toStyle(styleObject);
@@ -2173,7 +2282,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(main, "class", "board svelte-sj58u5");
+    			attr_dev(main, "class", "board svelte-8f6y7b");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
     			add_location(main, file$4, 17, 0, 451);
     		},
@@ -2540,30 +2649,49 @@ var app = (function () {
     function create_fragment$6(ctx) {
     	let main;
     	let table;
-    	let tr;
+    	let tr0;
     	let td0;
-    	let player0;
     	let t0;
     	let td1;
-    	let board;
-    	let t1;
-    	let td2;
-    	let player1;
-    	let t2;
-    	let td3;
     	let div0;
-    	let t3_value = /*$katan*/ ctx[0].mode + "";
+    	let t1_value = /*$katan*/ ctx[0].mode + "";
+    	let t1;
+    	let t2;
+    	let div1;
+    	let t3_value = /*$katan*/ ctx[0].message + "";
     	let t3;
     	let t4;
-    	let div1;
+    	let div2;
     	let dice0;
     	let t5;
     	let dice1;
     	let t6;
     	let button;
+    	let t8;
+    	let td2;
+    	let t9;
+    	let tr1;
+    	let td3;
+    	let player0;
+    	let t10;
+    	let td4;
+    	let board;
+    	let t11;
+    	let td5;
+    	let player1;
     	let current;
     	let mounted;
     	let dispose;
+
+    	dice0 = new Dice({
+    			props: { number: /*$katan*/ ctx[0].dice[0] },
+    			$$inline: true
+    		});
+
+    	dice1 = new Dice({
+    			props: { number: /*$katan*/ ctx[0].dice[1] },
+    			$$inline: true
+    		});
 
     	player0 = new Player({
     			props: { player: /*$katan*/ ctx[0].playerList[0] },
@@ -2583,56 +2711,59 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	dice0 = new Dice({
-    			props: { number: /*$katan*/ ctx[0].dice[0] },
-    			$$inline: true
-    		});
-
-    	dice1 = new Dice({
-    			props: { number: /*$katan*/ ctx[0].dice[1] },
-    			$$inline: true
-    		});
-
     	const block = {
     		c: function create() {
     			main = element("main");
     			table = element("table");
-    			tr = element("tr");
+    			tr0 = element("tr");
     			td0 = element("td");
-    			create_component(player0.$$.fragment);
     			t0 = space();
     			td1 = element("td");
-    			create_component(board.$$.fragment);
-    			t1 = space();
-    			td2 = element("td");
-    			create_component(player1.$$.fragment);
-    			t2 = space();
-    			td3 = element("td");
     			div0 = element("div");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			div1 = element("div");
     			t3 = text(t3_value);
     			t4 = space();
-    			div1 = element("div");
+    			div2 = element("div");
     			create_component(dice0.$$.fragment);
     			t5 = space();
     			create_component(dice1.$$.fragment);
     			t6 = space();
     			button = element("button");
     			button.textContent = "주사위 굴리기";
-    			attr_dev(td0, "valign", "top");
-    			add_location(td0, file$6, 30, 12, 780);
-    			attr_dev(td1, "valign", "top");
-    			add_location(td1, file$6, 33, 12, 895);
-    			attr_dev(td2, "valign", "top");
-    			add_location(td2, file$6, 38, 12, 1090);
-    			add_location(div0, file$6, 42, 16, 1240);
+    			t8 = space();
+    			td2 = element("td");
+    			t9 = space();
+    			tr1 = element("tr");
+    			td3 = element("td");
+    			create_component(player0.$$.fragment);
+    			t10 = space();
+    			td4 = element("td");
+    			create_component(board.$$.fragment);
+    			t11 = space();
+    			td5 = element("td");
+    			create_component(player1.$$.fragment);
+    			add_location(td0, file$6, 30, 12, 813);
+    			add_location(div0, file$6, 32, 16, 858);
+    			add_location(div1, file$6, 33, 16, 900);
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 46, 16, 1444);
-    			toggle_class(div1, "hide", katanStore.isReady());
-    			add_location(div1, file$6, 43, 16, 1282);
+    			add_location(button, file$6, 37, 20, 1119);
+    			toggle_class(div2, "hide", katanStore.isReady());
+    			add_location(div2, file$6, 34, 16, 945);
+    			add_location(td1, file$6, 31, 12, 836);
+    			add_location(td2, file$6, 40, 12, 1248);
+    			add_location(tr0, file$6, 29, 8, 795);
     			attr_dev(td3, "valign", "top");
-    			add_location(td3, file$6, 41, 12, 1205);
-    			add_location(tr, file$6, 29, 8, 762);
-    			add_location(table, file$6, 28, 4, 745);
+    			add_location(td3, file$6, 43, 12, 1300);
+    			attr_dev(td4, "valign", "top");
+    			add_location(td4, file$6, 46, 12, 1415);
+    			attr_dev(td5, "valign", "top");
+    			add_location(td5, file$6, 51, 12, 1610);
+    			add_location(tr1, file$6, 42, 8, 1282);
+    			add_location(table, file$6, 28, 4, 778);
+    			set_style(main, "margin", "auto");
+    			set_style(main, "width", "80%");
     			add_location(main, file$6, 27, 0, 733);
     		},
     		l: function claim(nodes) {
@@ -2641,26 +2772,34 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
     			append_dev(main, table);
-    			append_dev(table, tr);
-    			append_dev(tr, td0);
-    			mount_component(player0, td0, null);
-    			append_dev(tr, t0);
-    			append_dev(tr, td1);
-    			mount_component(board, td1, null);
-    			append_dev(tr, t1);
-    			append_dev(tr, td2);
-    			mount_component(player1, td2, null);
-    			append_dev(tr, t2);
-    			append_dev(tr, td3);
-    			append_dev(td3, div0);
-    			append_dev(div0, t3);
-    			append_dev(td3, t4);
-    			append_dev(td3, div1);
-    			mount_component(dice0, div1, null);
-    			append_dev(div1, t5);
-    			mount_component(dice1, div1, null);
-    			append_dev(div1, t6);
-    			append_dev(div1, button);
+    			append_dev(table, tr0);
+    			append_dev(tr0, td0);
+    			append_dev(tr0, t0);
+    			append_dev(tr0, td1);
+    			append_dev(td1, div0);
+    			append_dev(div0, t1);
+    			append_dev(td1, t2);
+    			append_dev(td1, div1);
+    			append_dev(div1, t3);
+    			append_dev(td1, t4);
+    			append_dev(td1, div2);
+    			mount_component(dice0, div2, null);
+    			append_dev(div2, t5);
+    			mount_component(dice1, div2, null);
+    			append_dev(div2, t6);
+    			append_dev(div2, button);
+    			append_dev(tr0, t8);
+    			append_dev(tr0, td2);
+    			append_dev(table, t9);
+    			append_dev(table, tr1);
+    			append_dev(tr1, td3);
+    			mount_component(player0, td3, null);
+    			append_dev(tr1, t10);
+    			append_dev(tr1, td4);
+    			mount_component(board, td4, null);
+    			append_dev(tr1, t11);
+    			append_dev(tr1, td5);
+    			mount_component(player1, td5, null);
     			current = true;
 
     			if (!mounted) {
@@ -2669,6 +2808,14 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
+    			if ((!current || dirty & /*$katan*/ 1) && t1_value !== (t1_value = /*$katan*/ ctx[0].mode + "")) set_data_dev(t1, t1_value);
+    			if ((!current || dirty & /*$katan*/ 1) && t3_value !== (t3_value = /*$katan*/ ctx[0].message + "")) set_data_dev(t3, t3_value);
+    			const dice0_changes = {};
+    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
+    			dice0.$set(dice0_changes);
+    			const dice1_changes = {};
+    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
+    			dice1.$set(dice1_changes);
     			const player0_changes = {};
     			if (dirty & /*$katan*/ 1) player0_changes.player = /*$katan*/ ctx[0].playerList[0];
     			player0.$set(player0_changes);
@@ -2684,38 +2831,31 @@ var app = (function () {
     			const player1_changes = {};
     			if (dirty & /*$katan*/ 1) player1_changes.player = /*$katan*/ ctx[0].playerList[1];
     			player1.$set(player1_changes);
-    			if ((!current || dirty & /*$katan*/ 1) && t3_value !== (t3_value = /*$katan*/ ctx[0].mode + "")) set_data_dev(t3, t3_value);
-    			const dice0_changes = {};
-    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
-    			dice0.$set(dice0_changes);
-    			const dice1_changes = {};
-    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
-    			dice1.$set(dice1_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
+    			transition_in(dice0.$$.fragment, local);
+    			transition_in(dice1.$$.fragment, local);
     			transition_in(player0.$$.fragment, local);
     			transition_in(board.$$.fragment, local);
     			transition_in(player1.$$.fragment, local);
-    			transition_in(dice0.$$.fragment, local);
-    			transition_in(dice1.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
+    			transition_out(dice0.$$.fragment, local);
+    			transition_out(dice1.$$.fragment, local);
     			transition_out(player0.$$.fragment, local);
     			transition_out(board.$$.fragment, local);
     			transition_out(player1.$$.fragment, local);
-    			transition_out(dice0.$$.fragment, local);
-    			transition_out(dice1.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
+    			destroy_component(dice0);
+    			destroy_component(dice1);
     			destroy_component(player0);
     			destroy_component(board);
     			destroy_component(player1);
-    			destroy_component(dice0);
-    			destroy_component(dice1);
     			mounted = false;
     			dispose();
     		}
