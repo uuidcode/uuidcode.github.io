@@ -10,23 +10,28 @@
                 style="background-color:{player.color}">{player.name}</td>
         </tr>
         <tr>
-            <td><img src="tree_item.png"></td>
+            <td><img src="tree_item.png"
+                     class="player_{player.index}_tree"></td>
             <td class="number">{player.resource.tree}</td>
         </tr>
         <tr>
-            <td><img src="mud_item.png"></td>
+            <td><img src="mud_item.png"
+                     class="player_{player.index}_mud"></td>
             <td class="number">{player.resource.mud}</td>
         </tr>
         <tr>
-            <td><img src="wheat_item.png"></td>
+            <td><img src="wheat_item.png"
+                     class="player_{player.index}_wheat"></td>
             <td class="number">{player.resource.wheat}</td>
         </tr>
         <tr>
-            <td><img src="sheep_item.png"></td>
+            <td><img src="sheep_item.png"
+                     class="player_{player.index}_item"></td>
             <td class="number">{player.resource.sheep}</td>
         </tr>
         <tr>
-            <td><img src="iron_item.png"></td>
+            <td><img src="iron_item.png"
+                     class="player_{player.index}_tree"></td>
             <td class="number">{player.resource.iron}</td>
         </tr>
     </table>

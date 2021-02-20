@@ -594,6 +594,7 @@ var app = (function () {
     	let td1;
     	let img0;
     	let img0_src_value;
+    	let img0_class_value;
     	let t2;
     	let td2;
     	let t3_value = /*player*/ ctx[0].resource.tree + "";
@@ -603,6 +604,7 @@ var app = (function () {
     	let td3;
     	let img1;
     	let img1_src_value;
+    	let img1_class_value;
     	let t5;
     	let td4;
     	let t6_value = /*player*/ ctx[0].resource.mud + "";
@@ -612,6 +614,7 @@ var app = (function () {
     	let td5;
     	let img2;
     	let img2_src_value;
+    	let img2_class_value;
     	let t8;
     	let td6;
     	let t9_value = /*player*/ ctx[0].resource.wheat + "";
@@ -621,6 +624,7 @@ var app = (function () {
     	let td7;
     	let img3;
     	let img3_src_value;
+    	let img3_class_value;
     	let t11;
     	let td8;
     	let t12_value = /*player*/ ctx[0].resource.sheep + "";
@@ -630,6 +634,7 @@ var app = (function () {
     	let td9;
     	let img4;
     	let img4_src_value;
+    	let img4_class_value;
     	let t14;
     	let td10;
     	let t15_value = /*player*/ ctx[0].resource.iron + "";
@@ -683,45 +688,45 @@ var app = (function () {
     			add_location(td0, file, 7, 12, 129);
     			add_location(tr0, file, 6, 8, 112);
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
-    			attr_dev(img0, "class", "svelte-1dmco9w");
+    			attr_dev(img0, "class", img0_class_value = "player_" + /*player*/ ctx[0].index + "_tree" + " svelte-1dmco9w");
     			add_location(img0, file, 12, 16, 292);
     			attr_dev(td1, "class", "svelte-1dmco9w");
     			add_location(td1, file, 12, 12, 288);
     			attr_dev(td2, "class", "number svelte-1dmco9w");
-    			add_location(td2, file, 13, 12, 335);
+    			add_location(td2, file, 14, 12, 391);
     			add_location(tr1, file, 11, 8, 271);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
-    			attr_dev(img1, "class", "svelte-1dmco9w");
-    			add_location(img1, file, 16, 16, 425);
+    			attr_dev(img1, "class", img1_class_value = "player_" + /*player*/ ctx[0].index + "_mud" + " svelte-1dmco9w");
+    			add_location(img1, file, 17, 16, 481);
     			attr_dev(td3, "class", "svelte-1dmco9w");
-    			add_location(td3, file, 16, 12, 421);
+    			add_location(td3, file, 17, 12, 477);
     			attr_dev(td4, "class", "number svelte-1dmco9w");
-    			add_location(td4, file, 17, 12, 467);
-    			add_location(tr2, file, 15, 8, 404);
+    			add_location(td4, file, 19, 12, 578);
+    			add_location(tr2, file, 16, 8, 460);
     			if (img2.src !== (img2_src_value = "wheat_item.png")) attr_dev(img2, "src", img2_src_value);
-    			attr_dev(img2, "class", "svelte-1dmco9w");
-    			add_location(img2, file, 20, 16, 556);
+    			attr_dev(img2, "class", img2_class_value = "player_" + /*player*/ ctx[0].index + "_wheat" + " svelte-1dmco9w");
+    			add_location(img2, file, 22, 16, 667);
     			attr_dev(td5, "class", "svelte-1dmco9w");
-    			add_location(td5, file, 20, 12, 552);
+    			add_location(td5, file, 22, 12, 663);
     			attr_dev(td6, "class", "number svelte-1dmco9w");
-    			add_location(td6, file, 21, 12, 600);
-    			add_location(tr3, file, 19, 8, 535);
+    			add_location(td6, file, 24, 12, 768);
+    			add_location(tr3, file, 21, 8, 646);
     			if (img3.src !== (img3_src_value = "sheep_item.png")) attr_dev(img3, "src", img3_src_value);
-    			attr_dev(img3, "class", "svelte-1dmco9w");
-    			add_location(img3, file, 24, 16, 691);
+    			attr_dev(img3, "class", img3_class_value = "player_" + /*player*/ ctx[0].index + "_item" + " svelte-1dmco9w");
+    			add_location(img3, file, 27, 16, 859);
     			attr_dev(td7, "class", "svelte-1dmco9w");
-    			add_location(td7, file, 24, 12, 687);
+    			add_location(td7, file, 27, 12, 855);
     			attr_dev(td8, "class", "number svelte-1dmco9w");
-    			add_location(td8, file, 25, 12, 735);
-    			add_location(tr4, file, 23, 8, 670);
+    			add_location(td8, file, 29, 12, 959);
+    			add_location(tr4, file, 26, 8, 838);
     			if (img4.src !== (img4_src_value = "iron_item.png")) attr_dev(img4, "src", img4_src_value);
-    			attr_dev(img4, "class", "svelte-1dmco9w");
-    			add_location(img4, file, 28, 16, 826);
+    			attr_dev(img4, "class", img4_class_value = "player_" + /*player*/ ctx[0].index + "_tree" + " svelte-1dmco9w");
+    			add_location(img4, file, 32, 16, 1050);
     			attr_dev(td9, "class", "svelte-1dmco9w");
-    			add_location(td9, file, 28, 12, 822);
+    			add_location(td9, file, 32, 12, 1046);
     			attr_dev(td10, "class", "number svelte-1dmco9w");
-    			add_location(td10, file, 29, 12, 869);
-    			add_location(tr5, file, 27, 8, 805);
+    			add_location(td10, file, 34, 12, 1149);
+    			add_location(tr5, file, 31, 8, 1029);
     			attr_dev(table, "class", "resource svelte-1dmco9w");
     			toggle_class(table, "turn", /*player*/ ctx[0].turn);
     			add_location(table, file, 5, 4, 54);
@@ -779,10 +784,34 @@ var app = (function () {
     				set_style(td0, "background-color", /*player*/ ctx[0].color);
     			}
 
+    			if (dirty & /*player*/ 1 && img0_class_value !== (img0_class_value = "player_" + /*player*/ ctx[0].index + "_tree" + " svelte-1dmco9w")) {
+    				attr_dev(img0, "class", img0_class_value);
+    			}
+
     			if (dirty & /*player*/ 1 && t3_value !== (t3_value = /*player*/ ctx[0].resource.tree + "")) set_data_dev(t3, t3_value);
+
+    			if (dirty & /*player*/ 1 && img1_class_value !== (img1_class_value = "player_" + /*player*/ ctx[0].index + "_mud" + " svelte-1dmco9w")) {
+    				attr_dev(img1, "class", img1_class_value);
+    			}
+
     			if (dirty & /*player*/ 1 && t6_value !== (t6_value = /*player*/ ctx[0].resource.mud + "")) set_data_dev(t6, t6_value);
+
+    			if (dirty & /*player*/ 1 && img2_class_value !== (img2_class_value = "player_" + /*player*/ ctx[0].index + "_wheat" + " svelte-1dmco9w")) {
+    				attr_dev(img2, "class", img2_class_value);
+    			}
+
     			if (dirty & /*player*/ 1 && t9_value !== (t9_value = /*player*/ ctx[0].resource.wheat + "")) set_data_dev(t9, t9_value);
+
+    			if (dirty & /*player*/ 1 && img3_class_value !== (img3_class_value = "player_" + /*player*/ ctx[0].index + "_item" + " svelte-1dmco9w")) {
+    				attr_dev(img3, "class", img3_class_value);
+    			}
+
     			if (dirty & /*player*/ 1 && t12_value !== (t12_value = /*player*/ ctx[0].resource.sheep + "")) set_data_dev(t12, t12_value);
+
+    			if (dirty & /*player*/ 1 && img4_class_value !== (img4_class_value = "player_" + /*player*/ ctx[0].index + "_tree" + " svelte-1dmco9w")) {
+    				attr_dev(img4, "class", img4_class_value);
+    			}
+
     			if (dirty & /*player*/ 1 && t15_value !== (t15_value = /*player*/ ctx[0].resource.iron + "")) set_data_dev(t15, t15_value);
 
     			if (dirty & /*player*/ 1) {
@@ -1779,7 +1808,7 @@ var app = (function () {
     /* src\Cell.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Cell.svelte";
 
-    // (61:12) {#if config.debug}
+    // (62:12) {#if config.debug}
     function create_if_block_1(ctx) {
     	let t0;
     	let t1_value = /*resource*/ ctx[0].index + "";
@@ -1807,14 +1836,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(61:12) {#if config.debug}",
+    		source: "(62:12) {#if config.debug}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (67:0) {#if resource.show}
+    // (68:0) {#if resource.show}
     function create_if_block(ctx) {
     	let img;
     	let img_src_value;
@@ -1827,7 +1856,7 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[7]);
     			attr_dev(img, "class", "resource ripple svelte-1wfkb6i");
-    			add_location(img, file$1, 67, 4, 2090);
+    			add_location(img, file$1, 68, 4, 2103);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -1853,7 +1882,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(67:0) {#if resource.show}",
+    		source: "(68:0) {#if resource.show}",
     		ctx
     	});
 
@@ -1895,7 +1924,7 @@ var app = (function () {
     			add_location(img, file$1, 58, 8, 1833);
     			attr_dev(div0, "class", "number svelte-1wfkb6i");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[4]);
-    			add_location(div0, file$1, 59, 8, 1896);
+    			add_location(div0, file$1, 60, 8, 1909);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[2]);
     			add_location(div1, file$1, 57, 4, 1777);

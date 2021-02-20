@@ -56,7 +56,8 @@
 
 <div class="cell" style={cellStyle}>
     <div class="inner-cell" style={innerCellStyle}>
-        <img src={imageSrc} style={imageStyle} alt={imageSrc}>
+        <img src={imageSrc}
+             style={imageStyle} alt={imageSrc}>
         <div class="number" style={numberStyle}>{resource.number}
             {#if config.debug}
             ,{resource.index}
