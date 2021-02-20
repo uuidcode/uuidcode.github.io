@@ -87,7 +87,6 @@
     .road {
         position: absolute;
         text-align: center;
-        border: 1px solid greenyellow;
         background-color: yellow;
         font-weight: bolder;
         font-size: 12px;

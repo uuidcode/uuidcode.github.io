@@ -1686,7 +1686,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			if (if_block) if_block.c();
-    			attr_dev(div, "class", "castle svelte-k5k0y7");
+    			attr_dev(div, "class", "castle svelte-q8xa7h");
     			attr_dev(div, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*castle*/ ctx[0].ripple);
     			toggle_class(div, "hide", /*castle*/ ctx[0].hide);
@@ -1777,7 +1777,7 @@ var app = (function () {
     			t4 = text(t4_value);
     			add_location(div0, file$2, 60, 4, 1635);
     			add_location(div1, file$2, 61, 4, 1673);
-    			attr_dev(div2, "class", "castle svelte-k5k0y7");
+    			attr_dev(div2, "class", "castle svelte-q8xa7h");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
     			add_location(div2, file$2, 59, 4, 1589);
     		},
@@ -2030,7 +2030,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			if (if_block) if_block.c();
-    			attr_dev(div, "class", "road svelte-175ndjm");
+    			attr_dev(div, "class", "road svelte-2zhhd2");
     			attr_dev(div, "style", /*roadStyle*/ ctx[1]);
     			toggle_class(div, "ripple", /*road*/ ctx[0].ripple);
     			toggle_class(div, "pick", /*road*/ ctx[0].ripple);
@@ -2126,7 +2126,7 @@ var app = (function () {
     			t4 = text(t4_value);
     			add_location(div0, file$3, 68, 8, 1682);
     			add_location(div1, file$3, 69, 8, 1719);
-    			attr_dev(div2, "class", "road svelte-175ndjm");
+    			attr_dev(div2, "class", "road svelte-2zhhd2");
     			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
     			add_location(div2, file$3, 67, 4, 1637);
     		},
