@@ -1,10 +1,13 @@
 
 (function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
-var app = (function () {
+var app = (function (jQuery) {
     'use strict';
 
+    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+    var jQuery__default = /*#__PURE__*/_interopDefaultLegacy(jQuery);
+
     function noop() { }
-    const identity = x => x;
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -42,41 +45,6 @@ var app = (function () {
     }
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
-    }
-
-    const is_client = typeof window !== 'undefined';
-    let now = is_client
-        ? () => window.performance.now()
-        : () => Date.now();
-    let raf = is_client ? cb => requestAnimationFrame(cb) : noop;
-
-    const tasks = new Set();
-    function run_tasks(now) {
-        tasks.forEach(task => {
-            if (!task.c(now)) {
-                tasks.delete(task);
-                task.f();
-            }
-        });
-        if (tasks.size !== 0)
-            raf(run_tasks);
-    }
-    /**
-     * Creates a new task that runs on each raf frame
-     * until it returns a falsy value or is aborted
-     */
-    function loop(callback) {
-        let task;
-        if (tasks.size === 0)
-            raf(run_tasks);
-        return {
-            promise: new Promise(fulfill => {
-                tasks.add(task = { c: callback, f: fulfill });
-            }),
-            abort() {
-                tasks.delete(task);
-            }
-        };
     }
 
     function append(target, node) {
@@ -129,67 +97,6 @@ var app = (function () {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
         return e;
-    }
-
-    const active_docs = new Set();
-    let active = 0;
-    // https://github.com/darkskyapp/string-hash/blob/master/index.js
-    function hash(str) {
-        let hash = 5381;
-        let i = str.length;
-        while (i--)
-            hash = ((hash << 5) - hash) ^ str.charCodeAt(i);
-        return hash >>> 0;
-    }
-    function create_rule(node, a, b, duration, delay, ease, fn, uid = 0) {
-        const step = 16.666 / duration;
-        let keyframes = '{\n';
-        for (let p = 0; p <= 1; p += step) {
-            const t = a + (b - a) * ease(p);
-            keyframes += p * 100 + `%{${fn(t, 1 - t)}}\n`;
-        }
-        const rule = keyframes + `100% {${fn(b, 1 - b)}}\n}`;
-        const name = `__svelte_${hash(rule)}_${uid}`;
-        const doc = node.ownerDocument;
-        active_docs.add(doc);
-        const stylesheet = doc.__svelte_stylesheet || (doc.__svelte_stylesheet = doc.head.appendChild(element('style')).sheet);
-        const current_rules = doc.__svelte_rules || (doc.__svelte_rules = {});
-        if (!current_rules[name]) {
-            current_rules[name] = true;
-            stylesheet.insertRule(`@keyframes ${name} ${rule}`, stylesheet.cssRules.length);
-        }
-        const animation = node.style.animation || '';
-        node.style.animation = `${animation ? `${animation}, ` : ''}${name} ${duration}ms linear ${delay}ms 1 both`;
-        active += 1;
-        return name;
-    }
-    function delete_rule(node, name) {
-        const previous = (node.style.animation || '').split(', ');
-        const next = previous.filter(name
-            ? anim => anim.indexOf(name) < 0 // remove specific animation
-            : anim => anim.indexOf('__svelte') === -1 // remove all Svelte animations
-        );
-        const deleted = previous.length - next.length;
-        if (deleted) {
-            node.style.animation = next.join(', ');
-            active -= deleted;
-            if (!active)
-                clear_rules();
-        }
-    }
-    function clear_rules() {
-        raf(() => {
-            if (active)
-                return;
-            active_docs.forEach(doc => {
-                const stylesheet = doc.__svelte_stylesheet;
-                let i = stylesheet.cssRules.length;
-                while (i--)
-                    stylesheet.deleteRule(i);
-                doc.__svelte_rules = {};
-            });
-            active_docs.clear();
-        });
     }
 
     let current_component;
@@ -268,20 +175,6 @@ var app = (function () {
             $$.after_update.forEach(add_render_callback);
         }
     }
-
-    let promise;
-    function wait() {
-        if (!promise) {
-            promise = Promise.resolve();
-            promise.then(() => {
-                promise = null;
-            });
-        }
-        return promise;
-    }
-    function dispatch(node, direction, kind) {
-        node.dispatchEvent(custom_event(`${direction ? 'intro' : 'outro'}${kind}`));
-    }
     const outroing = new Set();
     let outros;
     function group_outros() {
@@ -318,63 +211,6 @@ var app = (function () {
             });
             block.o(local);
         }
-    }
-    const null_transition = { duration: 0 };
-    function create_out_transition(node, fn, params) {
-        let config = fn(node, params);
-        let running = true;
-        let animation_name;
-        const group = outros;
-        group.r += 1;
-        function go() {
-            const { delay = 0, duration = 300, easing = identity, tick = noop, css } = config || null_transition;
-            if (css)
-                animation_name = create_rule(node, 1, 0, duration, delay, easing, css);
-            const start_time = now() + delay;
-            const end_time = start_time + duration;
-            add_render_callback(() => dispatch(node, false, 'start'));
-            loop(now => {
-                if (running) {
-                    if (now >= end_time) {
-                        tick(0, 1);
-                        dispatch(node, false, 'end');
-                        if (!--group.r) {
-                            // this will result in `end()` being called,
-                            // so we don't need to clean up here
-                            run_all(group.c);
-                        }
-                        return false;
-                    }
-                    if (now >= start_time) {
-                        const t = easing((now - start_time) / duration);
-                        tick(1 - t, t);
-                    }
-                }
-                return running;
-            });
-        }
-        if (is_function(config)) {
-            wait().then(() => {
-                // @ts-ignore
-                config = config();
-                go();
-            });
-        }
-        else {
-            go();
-        }
-        return {
-            end(reset) {
-                if (reset && config.tick) {
-                    config.tick(1, 0);
-                }
-                if (running) {
-                    if (animation_name)
-                        delete_rule(node, animation_name);
-                    running = false;
-                }
-            }
-        };
     }
     function create_component(block) {
         block && block.c();
@@ -712,21 +548,21 @@ var app = (function () {
     			add_location(td6, file, 24, 12, 768);
     			add_location(tr3, file, 21, 8, 646);
     			if (img3.src !== (img3_src_value = "sheep_item.png")) attr_dev(img3, "src", img3_src_value);
-    			attr_dev(img3, "class", img3_class_value = "player_" + /*player*/ ctx[0].index + "_item" + " svelte-1dmco9w");
+    			attr_dev(img3, "class", img3_class_value = "player_" + /*player*/ ctx[0].index + "_sheep" + " svelte-1dmco9w");
     			add_location(img3, file, 27, 16, 859);
     			attr_dev(td7, "class", "svelte-1dmco9w");
     			add_location(td7, file, 27, 12, 855);
     			attr_dev(td8, "class", "number svelte-1dmco9w");
-    			add_location(td8, file, 29, 12, 959);
+    			add_location(td8, file, 29, 12, 960);
     			add_location(tr4, file, 26, 8, 838);
     			if (img4.src !== (img4_src_value = "iron_item.png")) attr_dev(img4, "src", img4_src_value);
-    			attr_dev(img4, "class", img4_class_value = "player_" + /*player*/ ctx[0].index + "_tree" + " svelte-1dmco9w");
-    			add_location(img4, file, 32, 16, 1050);
+    			attr_dev(img4, "class", img4_class_value = "player_" + /*player*/ ctx[0].index + "_iron" + " svelte-1dmco9w");
+    			add_location(img4, file, 32, 16, 1051);
     			attr_dev(td9, "class", "svelte-1dmco9w");
-    			add_location(td9, file, 32, 12, 1046);
+    			add_location(td9, file, 32, 12, 1047);
     			attr_dev(td10, "class", "number svelte-1dmco9w");
-    			add_location(td10, file, 34, 12, 1149);
-    			add_location(tr5, file, 31, 8, 1029);
+    			add_location(td10, file, 34, 12, 1150);
+    			add_location(tr5, file, 31, 8, 1030);
     			attr_dev(table, "class", "resource svelte-1dmco9w");
     			toggle_class(table, "turn", /*player*/ ctx[0].turn);
     			add_location(table, file, 5, 4, 54);
@@ -802,13 +638,13 @@ var app = (function () {
 
     			if (dirty & /*player*/ 1 && t9_value !== (t9_value = /*player*/ ctx[0].resource.wheat + "")) set_data_dev(t9, t9_value);
 
-    			if (dirty & /*player*/ 1 && img3_class_value !== (img3_class_value = "player_" + /*player*/ ctx[0].index + "_item" + " svelte-1dmco9w")) {
+    			if (dirty & /*player*/ 1 && img3_class_value !== (img3_class_value = "player_" + /*player*/ ctx[0].index + "_sheep" + " svelte-1dmco9w")) {
     				attr_dev(img3, "class", img3_class_value);
     			}
 
     			if (dirty & /*player*/ 1 && t12_value !== (t12_value = /*player*/ ctx[0].resource.sheep + "")) set_data_dev(t12, t12_value);
 
-    			if (dirty & /*player*/ 1 && img4_class_value !== (img4_class_value = "player_" + /*player*/ ctx[0].index + "_tree" + " svelte-1dmco9w")) {
+    			if (dirty & /*player*/ 1 && img4_class_value !== (img4_class_value = "player_" + /*player*/ ctx[0].index + "_iron" + " svelte-1dmco9w")) {
     				attr_dev(img4, "class", img4_class_value);
     			}
 
@@ -1603,9 +1439,32 @@ var app = (function () {
                             if (playerIndex !== -1) {
                                 resource.show = true;
 
-                                setTimeout(() => {
-                                    katanStore.transition(resource, playerIndex);
-                                }, 2000);
+                                const selector = `.player_${playerIndex}_${resource.type}`;
+                                const targetOffset = jQuery__default['default'](selector).offset();
+
+                                const resourceItem = jQuery__default['default'](`.resource_${resource.index}`).show();
+                                const offset = resourceItem.offset();
+
+                                const body = jQuery__default['default']('body');
+                                const newResourceItem = resourceItem.clone();
+
+                                newResourceItem.appendTo(body)
+                                    .css({
+                                    left: offset.left + 'px',
+                                    top: offset.top + 'px'
+                                });
+
+                                resourceItem.remove();
+
+                                newResourceItem.addClass('ripple')
+                                    .animate({
+                                        left: targetOffset.left + 'px',
+                                        top: targetOffset.top + 'px'
+                                    }, 2000, () => {
+                                        newResourceItem.offset(offset);
+                                        newResourceItem.hide();
+                                        katan.playerList[playerIndex].resource[resource.type]++;
+                                    });
                             }
                         });
                 });
@@ -1809,9 +1668,9 @@ var app = (function () {
     const file$1 = "src\\Cell.svelte";
 
     // (62:12) {#if config.debug}
-    function create_if_block_1(ctx) {
+    function create_if_block(ctx) {
     	let t0;
-    	let t1_value = /*resource*/ ctx[0].index + "";
+    	let t1_value = /*resource*/ ctx[1].index + "";
     	let t1;
 
     	const block = {
@@ -1824,7 +1683,7 @@ var app = (function () {
     			insert_dev(target, t1, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resource*/ 1 && t1_value !== (t1_value = /*resource*/ ctx[0].index + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*resource*/ 2 && t1_value !== (t1_value = /*resource*/ ctx[1].index + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(t0);
@@ -1834,55 +1693,9 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1.name,
-    		type: "if",
-    		source: "(62:12) {#if config.debug}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (68:0) {#if resource.show}
-    function create_if_block(ctx) {
-    	let img;
-    	let img_src_value;
-    	let img_outro;
-    	let current;
-
-    	const block = {
-    		c: function create() {
-    			img = element("img");
-    			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "style", /*resourceImageStyle*/ ctx[7]);
-    			attr_dev(img, "class", "resource ripple svelte-1wfkb6i");
-    			add_location(img, file$1, 68, 4, 2103);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, img, anchor);
-    			current = true;
-    		},
-    		p: noop,
-    		i: function intro(local) {
-    			if (current) return;
-    			if (img_outro) img_outro.end(1);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			img_outro = create_out_transition(img, fly, { x: 1000, duration: 3000 });
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(img);
-    			if (detaching && img_outro) img_outro.end();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(68:0) {#if resource.show}",
+    		source: "(62:12) {#if config.debug}",
     		ctx
     	});
 
@@ -1892,45 +1705,48 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let div2;
     	let div1;
-    	let img;
-    	let img_src_value;
+    	let img0;
+    	let img0_src_value;
     	let t0;
     	let div0;
-    	let t1_value = /*resource*/ ctx[0].number + "";
+    	let t1_value = /*resource*/ ctx[1].number + "";
     	let t1;
     	let t2;
     	let t3;
-    	let if_block1_anchor;
-    	let current;
-    	let if_block0 = config.debug && create_if_block_1(ctx);
-    	let if_block1 = /*resource*/ ctx[0].show && create_if_block(ctx);
+    	let img1;
+    	let img1_src_value;
+    	let img1_class_value;
+    	let if_block = config.debug && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
     			div2 = element("div");
     			div1 = element("div");
-    			img = element("img");
+    			img0 = element("img");
     			t0 = space();
     			div0 = element("div");
     			t1 = text(t1_value);
     			t2 = space();
-    			if (if_block0) if_block0.c();
+    			if (if_block) if_block.c();
     			t3 = space();
-    			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
-    			if (img.src !== (img_src_value = /*imageSrc*/ ctx[5])) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "style", /*imageStyle*/ ctx[3]);
-    			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
-    			add_location(img, file$1, 58, 8, 1833);
+    			img1 = element("img");
+    			if (img0.src !== (img0_src_value = /*imageSrc*/ ctx[6])) attr_dev(img0, "src", img0_src_value);
+    			attr_dev(img0, "style", /*imageStyle*/ ctx[4]);
+    			attr_dev(img0, "alt", /*imageSrc*/ ctx[6]);
+    			add_location(img0, file$1, 58, 8, 1833);
     			attr_dev(div0, "class", "number svelte-1wfkb6i");
-    			attr_dev(div0, "style", /*numberStyle*/ ctx[4]);
+    			attr_dev(div0, "style", /*numberStyle*/ ctx[5]);
     			add_location(div0, file$1, 60, 8, 1909);
     			attr_dev(div1, "class", "inner-cell");
-    			attr_dev(div1, "style", /*innerCellStyle*/ ctx[2]);
+    			attr_dev(div1, "style", /*innerCellStyle*/ ctx[3]);
     			add_location(div1, file$1, 57, 4, 1777);
     			attr_dev(div2, "class", "cell svelte-1wfkb6i");
-    			attr_dev(div2, "style", /*cellStyle*/ ctx[1]);
+    			attr_dev(div2, "style", /*cellStyle*/ ctx[2]);
     			add_location(div2, file$1, 56, 0, 1736);
+    			if (img1.src !== (img1_src_value = /*resourceImage*/ ctx[7])) attr_dev(img1, "src", img1_src_value);
+    			attr_dev(img1, "style", /*resourceImageStyle*/ ctx[8]);
+    			attr_dev(img1, "class", img1_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-1wfkb6i");
+    			add_location(img1, file$1, 67, 0, 2079);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1938,59 +1754,30 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
     			append_dev(div2, div1);
-    			append_dev(div1, img);
+    			append_dev(div1, img0);
     			append_dev(div1, t0);
     			append_dev(div1, div0);
     			append_dev(div0, t1);
     			append_dev(div0, t2);
-    			if (if_block0) if_block0.m(div0, null);
+    			if (if_block) if_block.m(div0, null);
     			insert_dev(target, t3, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert_dev(target, if_block1_anchor, anchor);
-    			current = true;
+    			insert_dev(target, img1, anchor);
     		},
     		p: function update(ctx, [dirty]) {
-    			if ((!current || dirty & /*resource*/ 1) && t1_value !== (t1_value = /*resource*/ ctx[0].number + "")) set_data_dev(t1, t1_value);
-    			if (config.debug) if_block0.p(ctx, dirty);
+    			if (dirty & /*resource*/ 2 && t1_value !== (t1_value = /*resource*/ ctx[1].number + "")) set_data_dev(t1, t1_value);
+    			if (config.debug) if_block.p(ctx, dirty);
 
-    			if (/*resource*/ ctx[0].show) {
-    				if (if_block1) {
-    					if_block1.p(ctx, dirty);
-
-    					if (dirty & /*resource*/ 1) {
-    						transition_in(if_block1, 1);
-    					}
-    				} else {
-    					if_block1 = create_if_block(ctx);
-    					if_block1.c();
-    					transition_in(if_block1, 1);
-    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
-    				}
-    			} else if (if_block1) {
-    				group_outros();
-
-    				transition_out(if_block1, 1, 1, () => {
-    					if_block1 = null;
-    				});
-
-    				check_outros();
+    			if (dirty & /*resourceIndex*/ 1 && img1_class_value !== (img1_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-1wfkb6i")) {
+    				attr_dev(img1, "class", img1_class_value);
     			}
     		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(if_block1);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(if_block1);
-    			current = false;
-    		},
+    		i: noop,
+    		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div2);
-    			if (if_block0) if_block0.d();
+    			if (if_block) if_block.d();
     			if (detaching) detach_dev(t3);
-    			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach_dev(if_block1_anchor);
+    			if (detaching) detach_dev(img1);
     		}
     	};
 
@@ -2053,7 +1840,7 @@ var app = (function () {
     	});
 
     	const unsubscribe = katanStore.subscribe(currentKatan => {
-    		$$invalidate(0, resource = currentKatan.resourceList[resourceIndex]);
+    		$$invalidate(1, resource = currentKatan.resourceList[resourceIndex]);
     	});
 
     	onDestroy(unsubscribe);
@@ -2064,7 +1851,7 @@ var app = (function () {
     	});
 
     	$$self.$$set = $$props => {
-    		if ("resourceIndex" in $$props) $$invalidate(8, resourceIndex = $$props.resourceIndex);
+    		if ("resourceIndex" in $$props) $$invalidate(0, resourceIndex = $$props.resourceIndex);
     	};
 
     	$$self.$capture_state = () => ({
@@ -2089,15 +1876,15 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("resourceIndex" in $$props) $$invalidate(8, resourceIndex = $$props.resourceIndex);
-    		if ("resource" in $$props) $$invalidate(0, resource = $$props.resource);
-    		if ("cellStyle" in $$props) $$invalidate(1, cellStyle = $$props.cellStyle);
-    		if ("innerCellStyle" in $$props) $$invalidate(2, innerCellStyle = $$props.innerCellStyle);
-    		if ("imageStyle" in $$props) $$invalidate(3, imageStyle = $$props.imageStyle);
-    		if ("numberStyle" in $$props) $$invalidate(4, numberStyle = $$props.numberStyle);
-    		if ("imageSrc" in $$props) $$invalidate(5, imageSrc = $$props.imageSrc);
-    		if ("resourceImage" in $$props) $$invalidate(6, resourceImage = $$props.resourceImage);
-    		if ("resourceImageStyle" in $$props) $$invalidate(7, resourceImageStyle = $$props.resourceImageStyle);
+    		if ("resourceIndex" in $$props) $$invalidate(0, resourceIndex = $$props.resourceIndex);
+    		if ("resource" in $$props) $$invalidate(1, resource = $$props.resource);
+    		if ("cellStyle" in $$props) $$invalidate(2, cellStyle = $$props.cellStyle);
+    		if ("innerCellStyle" in $$props) $$invalidate(3, innerCellStyle = $$props.innerCellStyle);
+    		if ("imageStyle" in $$props) $$invalidate(4, imageStyle = $$props.imageStyle);
+    		if ("numberStyle" in $$props) $$invalidate(5, numberStyle = $$props.numberStyle);
+    		if ("imageSrc" in $$props) $$invalidate(6, imageSrc = $$props.imageSrc);
+    		if ("resourceImage" in $$props) $$invalidate(7, resourceImage = $$props.resourceImage);
+    		if ("resourceImageStyle" in $$props) $$invalidate(8, resourceImageStyle = $$props.resourceImageStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -2105,6 +1892,7 @@ var app = (function () {
     	}
 
     	return [
+    		resourceIndex,
     		resource,
     		cellStyle,
     		innerCellStyle,
@@ -2112,15 +1900,14 @@ var app = (function () {
     		numberStyle,
     		imageSrc,
     		resourceImage,
-    		resourceImageStyle,
-    		resourceIndex
+    		resourceImageStyle
     	];
     }
 
     class Cell extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { resourceIndex: 8 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { resourceIndex: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -2132,7 +1919,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*resourceIndex*/ ctx[8] === undefined && !("resourceIndex" in props)) {
+    		if (/*resourceIndex*/ ctx[0] === undefined && !("resourceIndex" in props)) {
     			console.warn("<Cell> was created without expected prop 'resourceIndex'");
     		}
     	}
@@ -3628,5 +3415,5 @@ var app = (function () {
 
     return app;
 
-}());
+}(jQuery));
 //# sourceMappingURL=bundle.js.map

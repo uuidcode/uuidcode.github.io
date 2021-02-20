@@ -26,12 +26,12 @@
         </tr>
         <tr>
             <td><img src="sheep_item.png"
-                     class="player_{player.index}_item"></td>
+                     class="player_{player.index}_sheep"></td>
             <td class="number">{player.resource.sheep}</td>
         </tr>
         <tr>
             <td><img src="iron_item.png"
-                     class="player_{player.index}_tree"></td>
+                     class="player_{player.index}_iron"></td>
             <td class="number">{player.resource.iron}</td>
         </tr>
     </table>

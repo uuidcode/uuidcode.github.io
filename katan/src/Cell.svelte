@@ -65,12 +65,9 @@
         </div>
     </div>
 </div>
-{#if resource.show}
-    <img src={resourceImage}
-         out:fly="{{ x: 1000, duration: 3000 }}"
-         style={resourceImageStyle}
-         class="resource ripple">
-{/if}
+<img src={resourceImage}
+     style={resourceImageStyle}
+     class="resource_{resourceIndex} resource hide">
 <style>
     .cell {
         position: absolute;
