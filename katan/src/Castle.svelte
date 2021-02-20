@@ -9,18 +9,17 @@
     let castleStyle;
 
     const pick = () => {
+        if (!castle.ripple) {
+            return;
+        }
+
         const player = katan.getActivePlayer();
 
-        if (player.pickCastle === true) {
-            player.pickRoad = true;
-            katan.setCastle(castleIndex, player.index);
+        katan.setCastle(castleIndex, player.index);
 
-            katan.setHideCastle();
-            katan.setCastleRippleDisabled();
-            katan.setPickRoadMode();
-
-            katan.setRoadRippleEnabled();
-        }
+        katan.setHideCastle();
+        katan.setCastleRippleDisabled();
+        katan.setRoadRippleEnabled(castleIndex);
     };
 
     const createStyle = () => {
@@ -30,7 +29,8 @@
             width: config.castle.width + 'px',
             height: config.castle.height + 'px',
             lineHeight: config.castle.height + 'px',
-            borderRadius: config.castle.height + 'px'
+            borderRadius: config.castle.height + 'px',
+            color: 'white'
         };
 
         if (config.debug) {
@@ -65,7 +65,6 @@
     <div class="castle"
          on:click={() => pick()}
     class:ripple={castle.ripple}
-    class:pick={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
     style={castleStyle}>
@@ -81,10 +80,9 @@
         text-align: center;
         border: 1px solid greenyellow;
         background-color: yellow;
-        /*opacity: 0.6;*/
         font-weight: bolder;
         font-size: 12px;
-        /*color: white;*/
+        opacity: 0.6;
     }
 
     .pick {

@@ -69,24 +69,10 @@ button:focus {
 
 @keyframes ripple {
     0% {
-        box-shadow: 0 0 0 10px rgba(255,20,147, 0.4);
+        box-shadow: 0 0 0 10px rgba(255,20,147, 0.9);
     }
     100% {
         box-shadow: 0 0 0 30px rgba(255,20,147, 0);
-    }
-}
-
-.road-ripple {
-    animation: road-ripple 3s linear infinite;
-    z-index: 100;
-}
-
-@keyframes road-ripple {
-    0% {
-        box-shadow: 0 0 0 10px rgba(205,231,239, 0.4);
-    }
-    100% {
-        box-shadow: 0 0 0 30px rgba(205,231,239, 0);
     }
 }
 

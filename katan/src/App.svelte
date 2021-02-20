@@ -58,6 +58,10 @@
 
 <style>
     .player {
-        width: 120px;
+        width: 200px;
+    }
+
+    td {
+        border: 1px;
     }
 </style>

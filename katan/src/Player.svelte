@@ -45,7 +45,7 @@
     }
 
     table.resource.turn {
-        border: 2px solid darkblue;
+        border: 20px solid blueviolet;
     }
 
     .resource img {

@@ -11,19 +11,22 @@
     let roadStyle;
 
     const pick = () => {
+        if (!road.ripple) {
+            return;
+        }
+
         let player = katan.getActivePlayer();
 
-        if (player.pickRoad === true) {
-            katan.setRoad(roadIndex, player.index);
-            katan.setHideRoad();
-            katan.setRoadRippleDisabled();
-            katan.setShowCastle();
-            katan.setCastleRippleEnabled();
+        katan.setRoad(roadIndex, player.index);
+        katan.setHideRoad();
+        katan.setRoadRippleDisabled();
+        katan.setShowCastle();
+        katan.setCastleRippleEnabled();
 
-            katan.turn();
+        katan.turn();
 
-            player = katan.getActivePlayer();
-            player.pickCastle = true;
+        if (katan.isStartable()) {
+            katan.start();
         }
     };
 
@@ -33,7 +36,8 @@
             top: road.top + 'px',
             width: config.load.width + 'px',
             height: config.load.height + 'px',
-            lineHeight: config.castle.height + 'px'
+            lineHeight: config.castle.height + 'px',
+            color: 'white'
         };
 
         if (config.debug) {
@@ -85,10 +89,10 @@
         text-align: center;
         border: 1px solid greenyellow;
         background-color: yellow;
-        /*opacity: 0.6;*/
         font-weight: bolder;
         font-size: 12px;
         color: white;
+        opacity: 0.6;
     }
 
     .pick {
