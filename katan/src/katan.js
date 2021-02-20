@@ -6,6 +6,8 @@ let katan = {
     message: '마을을 만들곳을 클릭하세요',
     dice: [6, 6],
     mode: 'ready',
+    isReady: true,
+    isStart: false,
     playerList: [
         {
             color: 'blue',
@@ -523,6 +525,17 @@ katan.resourceList = katan.resourceList
 
         resource.left = left;
         resource.top = top;
+        resource.index = index;
+
+        if (resource.index === 0) {
+            resource.castleIndexList = [0, 1, 2, 8, 9, 10];
+        } else if (resource.index === 1) {
+            resource.castleIndexList = [2, 3, 4, 10, 11, 12];
+        } else if (resource.index === 2) {
+            resource.castleIndexList = [4, 5, 6, 12, 13, 14];
+        } else if (resource.index === 3) {
+            resource.castleIndexList = [7, 8, 9, 17, 18, 19];
+        }
 
         return resource;
     });
@@ -532,14 +545,14 @@ const { subscribe, set, update } = writable(katan);
 const katanStore = {
     subscribe,
 
-    isReady: () => katan.mode === 'ready',
-
-    isStart: () => katan.mode === 'start',
-
     start: () => update(katan => {
         katan.mode = 'start';
+        katan.isStart = true;
+        katan.isReady = false;
+
         katanStore.setCastleRippleDisabled();
         katanStore.setRoadRippleDisabled();
+
         katan.castleList = katan.castleList
             .map(castle => {
                 if (castle.playerIndex === -1) {
@@ -552,21 +565,39 @@ const katanStore = {
         return katan;
     }),
 
+    play: () => update(katan => {
+        const a = Math.floor(Math.random() * 6) + 1;
+        const b = Math.floor(Math.random() * 6) + 1;
+
+        katanStore.roll(a, b);
+
+        const number = a + b;
+
+        katan.resourceList
+            .filter(resouce => resouce.number === number)
+            .forEach(resouce => {
+                const player = katan.playerList
+                    .find(play => play.turn);
+
+                player.resource[resouce.type]++;
+            });
+
+        katan.turn();
+    }),
+
     roll: (a, b) => update(katna => {
         katna.dice[0] = a;
         katna.dice[1] = b;
         return katan;
     }),
 
-    getNumber: () => katna.dice[0] =  + katna.dice[1],
+    getNumber: () => katan.dice[0] =  + katan.dice[1],
 
     isStartable: () => {
         let pickCompletePlayerLength = katan.playerList
             .filter(player => player.pickCastle === 2)
             .filter(player => player.pickRoad === 2)
             .length;
-
-        debugger;
 
         return pickCompletePlayerLength === katan.playerList.length;
     },

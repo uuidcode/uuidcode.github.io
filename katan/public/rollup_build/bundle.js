@@ -510,51 +510,51 @@ var app = (function () {
     			td10 = element("td");
     			t15 = text(t15_value);
     			attr_dev(td0, "colspan", "2");
-    			attr_dev(td0, "class", "name svelte-1yq5kr");
+    			attr_dev(td0, "class", "name svelte-1dmco9w");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
     			add_location(td0, file, 7, 12, 129);
     			add_location(tr0, file, 6, 8, 112);
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
-    			attr_dev(img0, "class", "svelte-1yq5kr");
+    			attr_dev(img0, "class", "svelte-1dmco9w");
     			add_location(img0, file, 12, 16, 292);
-    			attr_dev(td1, "class", "svelte-1yq5kr");
+    			attr_dev(td1, "class", "svelte-1dmco9w");
     			add_location(td1, file, 12, 12, 288);
-    			attr_dev(td2, "class", "number svelte-1yq5kr");
+    			attr_dev(td2, "class", "number svelte-1dmco9w");
     			add_location(td2, file, 13, 12, 335);
     			add_location(tr1, file, 11, 8, 271);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
-    			attr_dev(img1, "class", "svelte-1yq5kr");
+    			attr_dev(img1, "class", "svelte-1dmco9w");
     			add_location(img1, file, 16, 16, 425);
-    			attr_dev(td3, "class", "svelte-1yq5kr");
+    			attr_dev(td3, "class", "svelte-1dmco9w");
     			add_location(td3, file, 16, 12, 421);
-    			attr_dev(td4, "class", "number svelte-1yq5kr");
+    			attr_dev(td4, "class", "number svelte-1dmco9w");
     			add_location(td4, file, 17, 12, 467);
     			add_location(tr2, file, 15, 8, 404);
     			if (img2.src !== (img2_src_value = "wheat_item.png")) attr_dev(img2, "src", img2_src_value);
-    			attr_dev(img2, "class", "svelte-1yq5kr");
+    			attr_dev(img2, "class", "svelte-1dmco9w");
     			add_location(img2, file, 20, 16, 556);
-    			attr_dev(td5, "class", "svelte-1yq5kr");
+    			attr_dev(td5, "class", "svelte-1dmco9w");
     			add_location(td5, file, 20, 12, 552);
-    			attr_dev(td6, "class", "number svelte-1yq5kr");
+    			attr_dev(td6, "class", "number svelte-1dmco9w");
     			add_location(td6, file, 21, 12, 600);
     			add_location(tr3, file, 19, 8, 535);
     			if (img3.src !== (img3_src_value = "sheep_item.png")) attr_dev(img3, "src", img3_src_value);
-    			attr_dev(img3, "class", "svelte-1yq5kr");
+    			attr_dev(img3, "class", "svelte-1dmco9w");
     			add_location(img3, file, 24, 16, 691);
-    			attr_dev(td7, "class", "svelte-1yq5kr");
+    			attr_dev(td7, "class", "svelte-1dmco9w");
     			add_location(td7, file, 24, 12, 687);
-    			attr_dev(td8, "class", "number svelte-1yq5kr");
+    			attr_dev(td8, "class", "number svelte-1dmco9w");
     			add_location(td8, file, 25, 12, 735);
     			add_location(tr4, file, 23, 8, 670);
     			if (img4.src !== (img4_src_value = "iron_item.png")) attr_dev(img4, "src", img4_src_value);
-    			attr_dev(img4, "class", "svelte-1yq5kr");
+    			attr_dev(img4, "class", "svelte-1dmco9w");
     			add_location(img4, file, 28, 16, 826);
-    			attr_dev(td9, "class", "svelte-1yq5kr");
+    			attr_dev(td9, "class", "svelte-1dmco9w");
     			add_location(td9, file, 28, 12, 822);
-    			attr_dev(td10, "class", "number svelte-1yq5kr");
+    			attr_dev(td10, "class", "number svelte-1dmco9w");
     			add_location(td10, file, 29, 12, 869);
     			add_location(tr5, file, 27, 8, 805);
-    			attr_dev(table, "class", "resource svelte-1yq5kr");
+    			attr_dev(table, "class", "resource svelte-1dmco9w");
     			toggle_class(table, "turn", /*player*/ ctx[0].turn);
     			add_location(table, file, 5, 4, 54);
     			add_location(main, file, 4, 0, 43);
@@ -696,7 +696,7 @@ var app = (function () {
     }
 
     const config = {
-        debug: false,
+        debug: true,
         cell: {
             width: 180,
             height: 200,
@@ -742,6 +742,9 @@ var app = (function () {
     	let div0;
     	let t1_value = /*resource*/ ctx[0].number + "";
     	let t1;
+    	let t2;
+    	let t3_value = /*resource*/ ctx[0].index + "";
+    	let t3;
 
     	const block = {
     		c: function create() {
@@ -751,6 +754,8 @@ var app = (function () {
     			t0 = space();
     			div0 = element("div");
     			t1 = text(t1_value);
+    			t2 = text(",");
+    			t3 = text(t3_value);
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[5])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[3]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
@@ -775,9 +780,12 @@ var app = (function () {
     			append_dev(div1, t0);
     			append_dev(div1, div0);
     			append_dev(div0, t1);
+    			append_dev(div0, t2);
+    			append_dev(div0, t3);
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*resource*/ 1 && t1_value !== (t1_value = /*resource*/ ctx[0].number + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*resource*/ 1 && t3_value !== (t3_value = /*resource*/ ctx[0].index + "")) set_data_dev(t3, t3_value);
     		},
     		i: noop,
     		o: noop,
@@ -955,6 +963,8 @@ var app = (function () {
         message: '마을을 만들곳을 클릭하세요',
         dice: [6, 6],
         mode: 'ready',
+        isReady: true,
+        isStart: false,
         playerList: [
             {
                 color: 'blue',
@@ -1472,6 +1482,17 @@ var app = (function () {
 
             resource.left = left;
             resource.top = top;
+            resource.index = index;
+
+            if (resource.index === 0) {
+                resource.castleIndexList = [0, 1, 2, 8, 9, 10];
+            } else if (resource.index === 1) {
+                resource.castleIndexList = [2, 3, 4, 10, 11, 12];
+            } else if (resource.index === 2) {
+                resource.castleIndexList = [4, 5, 6, 12, 13, 14];
+            } else if (resource.index === 3) {
+                resource.castleIndexList = [7, 8, 9, 17, 18, 19];
+            }
 
             return resource;
         });
@@ -1481,14 +1502,14 @@ var app = (function () {
     const katanStore = {
         subscribe: subscribe$1,
 
-        isReady: () => katan.mode === 'ready',
-
-        isStart: () => katan.mode === 'start',
-
         start: () => update$1(katan => {
             katan.mode = 'start';
+            katan.isStart = true;
+            katan.isReady = false;
+
             katanStore.setCastleRippleDisabled();
             katanStore.setRoadRippleDisabled();
+
             katan.castleList = katan.castleList
                 .map(castle => {
                     if (castle.playerIndex === -1) {
@@ -1501,21 +1522,39 @@ var app = (function () {
             return katan;
         }),
 
+        play: () => update$1(katan => {
+            const a = Math.floor(Math.random() * 6) + 1;
+            const b = Math.floor(Math.random() * 6) + 1;
+
+            katanStore.roll(a, b);
+
+            const number = a + b;
+
+            katan.resourceList
+                .filter(resouce => resouce.number === number)
+                .forEach(resouce => {
+                    const player = katan.playerList
+                        .find(play => play.turn);
+
+                    player.resource[resouce.type]++;
+                });
+
+            katan.turn();
+        }),
+
         roll: (a, b) => update$1(katna => {
             katna.dice[0] = a;
             katna.dice[1] = b;
             return katan;
         }),
 
-        getNumber: () => katna.dice[0] =  + katna.dice[1],
+        getNumber: () => katan.dice[0] =  + katan.dice[1],
 
         isStartable: () => {
             let pickCompletePlayerLength = katan.playerList
                 .filter(player => player.pickCastle === 2)
                 .filter(player => player.pickRoad === 2)
                 .length;
-
-            debugger;
 
             return pickCompletePlayerLength === katan.playerList.length;
         },
@@ -3058,32 +3097,33 @@ var app = (function () {
     			td5 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "class", "svelte-fd1w91");
-    			add_location(td0, file$6, 30, 12, 813);
-    			add_location(div0, file$6, 32, 16, 858);
-    			add_location(div1, file$6, 33, 16, 900);
+    			add_location(td0, file$6, 30, 12, 789);
+    			add_location(div0, file$6, 32, 16, 834);
+    			add_location(div1, file$6, 33, 16, 876);
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 37, 20, 1119);
-    			toggle_class(div2, "hide", katanStore.isReady());
-    			add_location(div2, file$6, 34, 16, 945);
+    			add_location(button, file$6, 38, 20, 1144);
+    			toggle_class(div2, "hide", /*$katan*/ ctx[0].isReady);
+    			toggle_class(div2, "show", /*$katan*/ ctx[0].isStart);
+    			add_location(div2, file$6, 34, 16, 921);
     			attr_dev(td1, "class", "svelte-fd1w91");
-    			add_location(td1, file$6, 31, 12, 836);
+    			add_location(td1, file$6, 31, 12, 812);
     			attr_dev(td2, "class", "svelte-fd1w91");
-    			add_location(td2, file$6, 40, 12, 1248);
-    			add_location(tr0, file$6, 29, 8, 795);
+    			add_location(td2, file$6, 41, 12, 1273);
+    			add_location(tr0, file$6, 29, 8, 771);
     			attr_dev(td3, "valign", "top");
     			attr_dev(td3, "class", "player svelte-fd1w91");
-    			add_location(td3, file$6, 43, 12, 1300);
+    			add_location(td3, file$6, 44, 12, 1325);
     			attr_dev(td4, "valign", "top");
     			attr_dev(td4, "class", "svelte-fd1w91");
-    			add_location(td4, file$6, 46, 12, 1430);
+    			add_location(td4, file$6, 47, 12, 1455);
     			attr_dev(td5, "valign", "top");
     			attr_dev(td5, "class", "player svelte-fd1w91");
-    			add_location(td5, file$6, 51, 12, 1625);
-    			add_location(tr1, file$6, 42, 8, 1282);
-    			add_location(table, file$6, 28, 4, 778);
+    			add_location(td5, file$6, 52, 12, 1650);
+    			add_location(tr1, file$6, 43, 8, 1307);
+    			add_location(table, file$6, 28, 4, 754);
     			set_style(main, "margin", "auto");
     			set_style(main, "width", "80%");
-    			add_location(main, file$6, 27, 0, 733);
+    			add_location(main, file$6, 27, 0, 709);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3135,6 +3175,15 @@ var app = (function () {
     			const dice1_changes = {};
     			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
     			dice1.$set(dice1_changes);
+
+    			if (dirty & /*$katan*/ 1) {
+    				toggle_class(div2, "hide", /*$katan*/ ctx[0].isReady);
+    			}
+
+    			if (dirty & /*$katan*/ 1) {
+    				toggle_class(div2, "show", /*$katan*/ ctx[0].isStart);
+    			}
+
     			const player0_changes = {};
     			if (dirty & /*$katan*/ 1) player0_changes.player = /*$katan*/ ctx[0].playerList[0];
     			player0.$set(player0_changes);

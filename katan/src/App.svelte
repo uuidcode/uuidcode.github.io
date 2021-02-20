@@ -13,13 +13,13 @@
         const number = katan.getNumber();
 
         $katan.resourceList
-                .filter(resouce => resouce.number === number)
-                .forEach(resouce => {
-                    const player = $katan.playerList
-                        .find(play => play.turn);
+            .filter(resouce => resouce.number === number)
+            .forEach(resouce => {
+                const player = $katan.playerList
+                    .find(play => play.turn);
 
-                    player.resource[resouce.type]++;
-                });
+                player.resource[resouce.type]++;
+            });
 
         katan.turn();
     }
@@ -32,7 +32,8 @@
             <td>
                 <div>{$katan.mode}</div>
                 <div>{$katan.message}</div>
-                <div class:hide={katan.isReady()}>
+                <div class:hide={$katan.isReady}
+                     class:show={$katan.isStart}>
                     <Dice number={$katan.dice[0]}></Dice>
                     <Dice number={$katan.dice[1]}></Dice>
                     <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>

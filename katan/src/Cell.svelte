@@ -38,7 +38,7 @@
 <div class="cell" style={cellStyle}>
     <div class="inner-cell" style={innerCellStyle}>
         <img src={imageSrc} style={imageStyle} alt={imageSrc}>
-        <div class="number" style={numberStyle}>{resource.number}</div>
+        <div class="number" style={numberStyle}>{resource.number},{resource.index}</div>
     </div>
 </div>
 
