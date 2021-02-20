@@ -16,8 +16,8 @@
 </script>
 
 <main class="board" style={boardStyle}>
-    {#each resourceList as resource}
-        <Cell resource={resource}></Cell>
+    {#each resourceList as resource, i}
+        <Cell resourceIndex={i}></Cell>
     {/each}
     {#each castleList as castle, i}
         <Castle castleIndex={i}></Castle>

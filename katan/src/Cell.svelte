@@ -1,7 +1,12 @@
 <script>
+    import { onDestroy } from 'svelte';
     import config from './config.js'
     import { toStyle } from './util.js'
-    export let resource;
+    import katan from './katan';
+    import { fly } from 'svelte/transition';
+
+    export let resourceIndex;
+    let resource = $katan.resourceList[resourceIndex];
 
     const margin = config.cell.margin;
     const offset = 100 - config.cell.margin;
@@ -33,15 +38,38 @@
     });
 
     let imageSrc = `${resource.type}.png`;
+    let resourceImage = `${resource.type}_item.png`;
+
+    let resourceImageStyle = toStyle({
+        left: resource.left + 50 + 'px',
+        top: resource.top + 50 + 'px',
+        width: '100px',
+        height: '100px'
+    });
+
+    const unsubscribe = katan.subscribe(currentKatan => {
+        resource = currentKatan.resourceList[resourceIndex];
+    });
+
+    onDestroy(unsubscribe);
 </script>
 
 <div class="cell" style={cellStyle}>
     <div class="inner-cell" style={innerCellStyle}>
         <img src={imageSrc} style={imageStyle} alt={imageSrc}>
-        <div class="number" style={numberStyle}>{resource.number},{resource.index}</div>
+        <div class="number" style={numberStyle}>{resource.number}
+            {#if config.debug}
+            ,{resource.index}
+            {/if}
+        </div>
     </div>
 </div>
-
+{#if resource.show}
+    <img src={resourceImage}
+         out:fly="{{ x: 1000, duration: 3000 }}"
+         style={resourceImageStyle}
+         class="resource ripple">
+{/if}
 <style>
     .cell {
         position: absolute;
@@ -58,5 +86,10 @@
         opacity: 0.6;
         font-weight: bolder;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+    }
+
+    .resource {
+        position: absolute;
+        z-index: 100;
     }
 </style>

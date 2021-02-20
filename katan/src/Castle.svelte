@@ -40,7 +40,7 @@
 
         if (castle.playerIndex !== -1) {
             styleObject.backgroundColor =
-                $katan.playerList[castle.playerIndex].color;
+                    $katan.playerList[castle.playerIndex].color;
         }
 
         return toStyle(styleObject);
@@ -58,20 +58,18 @@
 
 {#if config.debug}
     <div class="castle" style={castleStyle}>
-    <div>{castle.i},{castle.j}</div>
-    <div>{castle.index}</div>
-</div>
+        <div>{castle.i},{castle.j}</div>
+        <div>{castle.index}</div>
+    </div>
 {:else}
     <div class="castle"
-         on:click={() => pick()}
+         on:click={()=>pick()}
     class:ripple={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
     style={castleStyle}>
-    {#if castle.title !== undefined}
-        <div>{castle.title}</div>
-    {/if}
-</div>
+    <div>{castle.title}</div>
+    </div>
 {/if}
 
 <style>

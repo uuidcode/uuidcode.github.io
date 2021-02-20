@@ -19,3 +19,8 @@ export function toStyle (styleObject) {
 
     return style;
 }
+
+export const sleep = second => {
+    let now = new Date().getTime();
+    while(new Date().getTime() < now + second * 1000) {}
+};

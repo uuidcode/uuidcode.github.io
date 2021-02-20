@@ -71,15 +71,13 @@
     </div>
 {:else}
     <div class="road"
-         on:click={() => pick()}
+         on:click={()=>pick()}
          class:ripple={road.ripple}
          class:pick={road.ripple}
          class:hide={road.hide}
          class:show={road.show}
          style={roadStyle}>
-    {#if road.title !== undefined}
         <div>{road.title}</div>
-    {/if}
     </div>
 {/if}
 

@@ -3,26 +3,6 @@
     import Board from './Board.svelte'
     import Dice from './Dice.svelte'
     import katan from './katan.js'
-
-    function play() {
-        const a = Math.floor(Math.random() * 6) + 1;
-        const b = Math.floor(Math.random() * 6) + 1;
-
-        katan.roll(a, b);
-
-        const number = katan.getNumber();
-
-        $katan.resourceList
-            .filter(resouce => resouce.number === number)
-            .forEach(resouce => {
-                const player = $katan.playerList
-                    .find(play => play.turn);
-
-                player.resource[resouce.type]++;
-            });
-
-        katan.turn();
-    }
 </script>
 
 <main style="margin: auto; width: 80%">
@@ -36,7 +16,7 @@
                      class:show={$katan.isStart}>
                     <Dice number={$katan.dice[0]}></Dice>
                     <Dice number={$katan.dice[1]}></Dice>
-                    <button class="btn btn-primary" on:click={() => play()}>주사위 굴리기</button>
+                    <button class="btn btn-primary" on:click={() => katan.play()}>주사위 굴리기</button>
                 </div>
             </td>
             <td></td>
