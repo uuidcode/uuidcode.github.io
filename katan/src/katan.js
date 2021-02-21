@@ -486,6 +486,7 @@ for (let i = 0; i < 3; i++) {
 resourceList.forEach(resource => {
     resource.hide = true;
     resource.show = false;
+    resource.numberRipple = false;
 });
 
 console.log('>>> resourceList', resourceList);
@@ -625,45 +626,50 @@ const katanStore = {
 
         const number = a + b;
 
-        katan.resourceList
-            .filter(resource => resource.number === number)
-            .forEach(resource => {
-                resource.castleIndexList
-                    .forEach(castleIndex => {
-                        let playerIndex = katan.castleList[castleIndex].playerIndex;
+        if (number > 0) {
+            katanStore.setNumberRippleEnabled();
+        } else {
+            katan.resourceList
+                .filter(resource => resource.number === number)
+                .forEach(resource => {
+                    resource.castleIndexList
+                        .forEach(castleIndex => {
+                            let playerIndex = katan.castleList[castleIndex].playerIndex;
 
-                        if (playerIndex !== -1) {
-                            resource.show = true;
+                            if (playerIndex !== -1) {
+                                resource.show = true;
 
-                            const selector = `.player_${playerIndex}_${resource.type}`;
-                            const targetOffset = jQuery(selector).offset();
+                                const selector = `.player_${playerIndex}_${resource.type}`;
+                                const targetOffset = jQuery(selector).offset();
 
-                            const resourceItem = jQuery(`.resource_${resource.index}`).show();
-                            const offset = resourceItem.offset();
+                                const resourceItem = jQuery(`.resource_${resource.index}`).show();
+                                const offset = resourceItem.offset();
 
-                            const body = jQuery('body');
-                            const newResourceItem = resourceItem.clone();
+                                const body = jQuery('body');
+                                const newResourceItem = resourceItem.clone();
 
-                            newResourceItem.appendTo(body)
-                                .css({
-                                left: offset.left + 'px',
-                                top: offset.top + 'px'
-                            });
+                                newResourceItem.appendTo(body)
+                                    .css({
+                                        left: offset.left + 'px',
+                                        top: offset.top + 'px'
+                                    });
 
-                            resourceItem.remove();
+                                resourceItem.remove();
 
-                            newResourceItem.addClass('ripple')
-                                .animate({
-                                    left: targetOffset.left + 'px',
-                                    top: targetOffset.top + 'px'
-                                }, 2000, () => {
-                                    newResourceItem.offset(offset);
-                                    newResourceItem.hide();
-                                    katan.playerList[playerIndex].resource[resource.type]++;
-                                });
-                        }
-                    });
-            });
+                                newResourceItem.addClass('ripple')
+                                    .animate({
+                                        left: targetOffset.left + 'px',
+                                        top: targetOffset.top + 'px'
+                                    }, 2000, () => {
+                                        newResourceItem.offset(offset);
+                                        newResourceItem.hide();
+                                        katan.playerList[playerIndex].resource[resource.type]++;
+                                    });
+                            }
+                        });
+                });
+
+        }
 
         katan.turn();
 
@@ -792,6 +798,17 @@ const katanStore = {
             }
 
             return castle;
+        });
+
+        return katan;
+    }),
+
+    setNumberRippleEnabled: () => update(katan => {
+        katan.castleList = katan.resourceList
+            .filter(resource => !resource.buglar)
+            .map(resource => {
+                resource.numberRipple = true;
+            return resource;
         });
 
         return katan;

@@ -371,6 +371,10 @@ var app = (function (jQuery) {
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
     }
+    function prop_dev(node, property, value) {
+        node[property] = value;
+        dispatch_dev('SvelteDOMSetProperty', { node, property, value });
+    }
     function set_data_dev(text, data) {
         data = '' + data;
         if (text.wholeText === data)
@@ -1302,6 +1306,7 @@ var app = (function (jQuery) {
     resourceList.forEach(resource => {
         resource.hide = true;
         resource.show = false;
+        resource.numberRipple = false;
     });
 
     console.log('>>> resourceList', resourceList);
@@ -1441,45 +1446,50 @@ var app = (function (jQuery) {
 
             const number = a + b;
 
-            katan.resourceList
-                .filter(resource => resource.number === number)
-                .forEach(resource => {
-                    resource.castleIndexList
-                        .forEach(castleIndex => {
-                            let playerIndex = katan.castleList[castleIndex].playerIndex;
+            if (number > 0) {
+                katanStore.setNumberRippleEnabled();
+            } else {
+                katan.resourceList
+                    .filter(resource => resource.number === number)
+                    .forEach(resource => {
+                        resource.castleIndexList
+                            .forEach(castleIndex => {
+                                let playerIndex = katan.castleList[castleIndex].playerIndex;
 
-                            if (playerIndex !== -1) {
-                                resource.show = true;
+                                if (playerIndex !== -1) {
+                                    resource.show = true;
 
-                                const selector = `.player_${playerIndex}_${resource.type}`;
-                                const targetOffset = jQuery__default['default'](selector).offset();
+                                    const selector = `.player_${playerIndex}_${resource.type}`;
+                                    const targetOffset = jQuery__default['default'](selector).offset();
 
-                                const resourceItem = jQuery__default['default'](`.resource_${resource.index}`).show();
-                                const offset = resourceItem.offset();
+                                    const resourceItem = jQuery__default['default'](`.resource_${resource.index}`).show();
+                                    const offset = resourceItem.offset();
 
-                                const body = jQuery__default['default']('body');
-                                const newResourceItem = resourceItem.clone();
+                                    const body = jQuery__default['default']('body');
+                                    const newResourceItem = resourceItem.clone();
 
-                                newResourceItem.appendTo(body)
-                                    .css({
-                                    left: offset.left + 'px',
-                                    top: offset.top + 'px'
-                                });
+                                    newResourceItem.appendTo(body)
+                                        .css({
+                                            left: offset.left + 'px',
+                                            top: offset.top + 'px'
+                                        });
 
-                                resourceItem.remove();
+                                    resourceItem.remove();
 
-                                newResourceItem.addClass('ripple')
-                                    .animate({
-                                        left: targetOffset.left + 'px',
-                                        top: targetOffset.top + 'px'
-                                    }, 2000, () => {
-                                        newResourceItem.offset(offset);
-                                        newResourceItem.hide();
-                                        katan.playerList[playerIndex].resource[resource.type]++;
-                                    });
-                            }
-                        });
-                });
+                                    newResourceItem.addClass('ripple')
+                                        .animate({
+                                            left: targetOffset.left + 'px',
+                                            top: targetOffset.top + 'px'
+                                        }, 2000, () => {
+                                            newResourceItem.offset(offset);
+                                            newResourceItem.hide();
+                                            katan.playerList[playerIndex].resource[resource.type]++;
+                                        });
+                                }
+                            });
+                    });
+
+            }
 
             katan.turn();
 
@@ -1613,6 +1623,17 @@ var app = (function (jQuery) {
             return katan;
         }),
 
+        setNumberRippleEnabled: () => update$1(katan => {
+            katan.castleList = katan.resourceList
+                .filter(resource => !resource.buglar)
+                .map(resource => {
+                    resource.numberRipple = true;
+                return resource;
+            });
+
+            return katan;
+        }),
+
         setHideCastle: () => update$1(katan => {
             katan.castleList =  katan.castleList
                 .map(castle => {
@@ -1679,7 +1700,7 @@ var app = (function (jQuery) {
     /* src\Cell.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Cell.svelte";
 
-    // (75:12) {#if resource.buglar}
+    // (74:12) {#if resource.buglar}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -1699,14 +1720,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(75:12) {#if resource.buglar}",
+    		source: "(74:12) {#if resource.buglar}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (79:12) {#if config.debug}
+    // (78:12) {#if config.debug}
     function create_if_block_1(ctx) {
     	let t0;
     	let t1_value = /*resource*/ ctx[1].index + "";
@@ -1734,14 +1755,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(79:12) {#if config.debug}",
+    		source: "(78:12) {#if config.debug}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (85:0) {#if resource.buglar===false}
+    // (84:0) {#if resource.buglar===false}
     function create_if_block(ctx) {
     	let img;
     	let img_src_value;
@@ -1753,7 +1774,7 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[8]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-1t3jwt9");
-    			add_location(img, file$1, 85, 4, 2506);
+    			add_location(img, file$1, 84, 4, 2554);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -1772,7 +1793,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(85:0) {#if resource.buglar===false}",
+    		source: "(84:0) {#if resource.buglar===false}",
     		ctx
     	});
 
@@ -1814,17 +1835,18 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[5]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
-    			add_location(img, file$1, 68, 8, 2082);
+    			add_location(img, file$1, 66, 8, 2080);
     			attr_dev(div0, "class", "number svelte-1t3jwt9");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
+    			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "buglar", /*resource*/ ctx[1].buglar);
-    			add_location(div0, file$1, 70, 8, 2158);
+    			add_location(div0, file$1, 68, 8, 2156);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[4]);
-    			add_location(div1, file$1, 67, 4, 2026);
+    			add_location(div1, file$1, 65, 4, 2024);
     			attr_dev(div2, "class", "cell svelte-1t3jwt9");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file$1, 66, 0, 1985);
+    			add_location(div2, file$1, 64, 0, 1983);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1862,6 +1884,10 @@ var app = (function (jQuery) {
 
     			if (dirty & /*numberStyle*/ 4) {
     				attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
+    			}
+
+    			if (dirty & /*resource*/ 2) {
+    				toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			}
 
     			if (dirty & /*resource*/ 2) {
@@ -3256,36 +3282,40 @@ var app = (function (jQuery) {
 
     function create_fragment$6(ctx) {
     	let main;
-    	let table;
-    	let tr0;
+    	let table1;
+    	let tr1;
     	let td0;
     	let t0;
+    	let td4;
+    	let table0;
+    	let tr0;
     	let td1;
-    	let div0;
     	let t1_value = /*$katan*/ ctx[0].mode + "";
     	let t1;
     	let t2;
-    	let div1;
+    	let td2;
     	let t3_value = /*$katan*/ ctx[0].message + "";
     	let t3;
     	let t4;
-    	let div2;
+    	let td3;
     	let dice0;
     	let t5;
     	let dice1;
     	let t6;
     	let button;
+    	let t7;
+    	let button_disabled_value;
     	let t8;
-    	let td2;
+    	let td5;
     	let t9;
-    	let tr1;
-    	let td3;
+    	let tr2;
+    	let td6;
     	let player0;
     	let t10;
-    	let td4;
+    	let td7;
     	let board;
     	let t11;
-    	let td5;
+    	let td8;
     	let player1;
     	let current;
     	let mounted;
@@ -3322,61 +3352,67 @@ var app = (function (jQuery) {
     	const block = {
     		c: function create() {
     			main = element("main");
-    			table = element("table");
-    			tr0 = element("tr");
+    			table1 = element("table");
+    			tr1 = element("tr");
     			td0 = element("td");
     			t0 = space();
+    			td4 = element("td");
+    			table0 = element("table");
+    			tr0 = element("tr");
     			td1 = element("td");
-    			div0 = element("div");
     			t1 = text(t1_value);
     			t2 = space();
-    			div1 = element("div");
+    			td2 = element("td");
     			t3 = text(t3_value);
     			t4 = space();
-    			div2 = element("div");
+    			td3 = element("td");
     			create_component(dice0.$$.fragment);
     			t5 = space();
     			create_component(dice1.$$.fragment);
     			t6 = space();
     			button = element("button");
-    			button.textContent = "주사위 굴리기";
+    			t7 = text("주사위 굴리기");
     			t8 = space();
-    			td2 = element("td");
+    			td5 = element("td");
     			t9 = space();
-    			tr1 = element("tr");
-    			td3 = element("td");
+    			tr2 = element("tr");
+    			td6 = element("td");
     			create_component(player0.$$.fragment);
     			t10 = space();
-    			td4 = element("td");
+    			td7 = element("td");
     			create_component(board.$$.fragment);
     			t11 = space();
-    			td5 = element("td");
+    			td8 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "class", "svelte-fd1w91");
     			add_location(td0, file$6, 10, 12, 259);
-    			add_location(div0, file$6, 12, 16, 304);
-    			add_location(div1, file$6, 13, 16, 346);
-    			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 18, 20, 614);
-    			toggle_class(div2, "hide", /*$katan*/ ctx[0].isReady);
-    			toggle_class(div2, "show", /*$katan*/ ctx[0].isStart);
-    			add_location(div2, file$6, 14, 16, 391);
     			attr_dev(td1, "class", "svelte-fd1w91");
-    			add_location(td1, file$6, 11, 12, 282);
+    			add_location(td1, file$6, 14, 24, 363);
     			attr_dev(td2, "class", "svelte-fd1w91");
-    			add_location(td2, file$6, 21, 12, 749);
-    			add_location(tr0, file$6, 9, 8, 241);
-    			attr_dev(td3, "valign", "top");
-    			attr_dev(td3, "class", "player svelte-fd1w91");
-    			add_location(td3, file$6, 24, 12, 801);
-    			attr_dev(td4, "valign", "top");
+    			add_location(td2, file$6, 15, 24, 411);
+    			attr_dev(button, "class", "btn btn-primary");
+    			button.disabled = button_disabled_value = /*$katan*/ ctx[0].isReady;
+    			add_location(button, file$6, 18, 28, 602);
+    			attr_dev(td3, "class", "svelte-fd1w91");
+    			add_location(td3, file$6, 16, 24, 462);
+    			add_location(tr0, file$6, 13, 20, 333);
+    			add_location(table0, file$6, 12, 16, 304);
     			attr_dev(td4, "class", "svelte-fd1w91");
-    			add_location(td4, file$6, 27, 12, 931);
-    			attr_dev(td5, "valign", "top");
-    			attr_dev(td5, "class", "player svelte-fd1w91");
-    			add_location(td5, file$6, 32, 12, 1126);
-    			add_location(tr1, file$6, 23, 8, 783);
-    			add_location(table, file$6, 8, 4, 224);
+    			add_location(td4, file$6, 11, 12, 282);
+    			attr_dev(td5, "class", "svelte-fd1w91");
+    			add_location(td5, file$6, 24, 12, 869);
+    			add_location(tr1, file$6, 9, 8, 241);
+    			attr_dev(td6, "valign", "top");
+    			attr_dev(td6, "class", "player svelte-fd1w91");
+    			add_location(td6, file$6, 27, 12, 921);
+    			attr_dev(td7, "valign", "top");
+    			attr_dev(td7, "class", "svelte-fd1w91");
+    			add_location(td7, file$6, 30, 12, 1051);
+    			attr_dev(td8, "valign", "top");
+    			attr_dev(td8, "class", "player svelte-fd1w91");
+    			add_location(td8, file$6, 35, 12, 1246);
+    			add_location(tr2, file$6, 26, 8, 903);
+    			add_location(table1, file$6, 8, 4, 224);
     			set_style(main, "margin", "auto");
     			set_style(main, "width", "80%");
     			add_location(main, file$6, 7, 0, 179);
@@ -3386,35 +3422,38 @@ var app = (function (jQuery) {
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, table);
-    			append_dev(table, tr0);
-    			append_dev(tr0, td0);
-    			append_dev(tr0, t0);
-    			append_dev(tr0, td1);
-    			append_dev(td1, div0);
-    			append_dev(div0, t1);
-    			append_dev(td1, t2);
-    			append_dev(td1, div1);
-    			append_dev(div1, t3);
-    			append_dev(td1, t4);
-    			append_dev(td1, div2);
-    			mount_component(dice0, div2, null);
-    			append_dev(div2, t5);
-    			mount_component(dice1, div2, null);
-    			append_dev(div2, t6);
-    			append_dev(div2, button);
-    			append_dev(tr0, t8);
-    			append_dev(tr0, td2);
-    			append_dev(table, t9);
-    			append_dev(table, tr1);
-    			append_dev(tr1, td3);
-    			mount_component(player0, td3, null);
-    			append_dev(tr1, t10);
+    			append_dev(main, table1);
+    			append_dev(table1, tr1);
+    			append_dev(tr1, td0);
+    			append_dev(tr1, t0);
     			append_dev(tr1, td4);
-    			mount_component(board, td4, null);
-    			append_dev(tr1, t11);
+    			append_dev(td4, table0);
+    			append_dev(table0, tr0);
+    			append_dev(tr0, td1);
+    			append_dev(td1, t1);
+    			append_dev(tr0, t2);
+    			append_dev(tr0, td2);
+    			append_dev(td2, t3);
+    			append_dev(tr0, t4);
+    			append_dev(tr0, td3);
+    			mount_component(dice0, td3, null);
+    			append_dev(td3, t5);
+    			mount_component(dice1, td3, null);
+    			append_dev(td3, t6);
+    			append_dev(td3, button);
+    			append_dev(button, t7);
+    			append_dev(tr1, t8);
     			append_dev(tr1, td5);
-    			mount_component(player1, td5, null);
+    			append_dev(table1, t9);
+    			append_dev(table1, tr2);
+    			append_dev(tr2, td6);
+    			mount_component(player0, td6, null);
+    			append_dev(tr2, t10);
+    			append_dev(tr2, td7);
+    			mount_component(board, td7, null);
+    			append_dev(tr2, t11);
+    			append_dev(tr2, td8);
+    			mount_component(player1, td8, null);
     			current = true;
 
     			if (!mounted) {
@@ -3432,12 +3471,8 @@ var app = (function (jQuery) {
     			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
     			dice1.$set(dice1_changes);
 
-    			if (dirty & /*$katan*/ 1) {
-    				toggle_class(div2, "hide", /*$katan*/ ctx[0].isReady);
-    			}
-
-    			if (dirty & /*$katan*/ 1) {
-    				toggle_class(div2, "show", /*$katan*/ ctx[0].isStart);
+    			if (!current || dirty & /*$katan*/ 1 && button_disabled_value !== (button_disabled_value = /*$katan*/ ctx[0].isReady)) {
+    				prop_dev(button, "disabled", button_disabled_value);
     			}
 
     			const player0_changes = {};

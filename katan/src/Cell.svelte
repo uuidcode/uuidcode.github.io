@@ -67,6 +67,7 @@
         <img src={imageSrc}
              style={imageStyle} alt={imageSrc}>
         <div class="number"
+             class:ripple={resource.numberRipple}
              class:buglar={resource.buglar}
              style={numberStyle}>
             {resource.number}

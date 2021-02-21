@@ -10,14 +10,17 @@
         <tr>
             <td></td>
             <td>
-                <div>{$katan.mode}</div>
-                <div>{$katan.message}</div>
-                <div class:hide={$katan.isReady}
-                     class:show={$katan.isStart}>
-                    <Dice number={$katan.dice[0]}></Dice>
-                    <Dice number={$katan.dice[1]}></Dice>
-                    <button class="btn btn-primary" on:click={() => katan.play()}>주사위 굴리기</button>
-                </div>
+                <table>
+                    <tr>
+                        <td>{$katan.mode}</td>
+                        <td>{$katan.message}</td>
+                        <td>  <Dice number={$katan.dice[0]}></Dice>
+                            <Dice number={$katan.dice[1]}></Dice>
+                            <button class="btn btn-primary"
+                                    disabled={$katan.isReady}
+                                    on:click={()=>katan.play()}>주사위 굴리기</button></td>
+                    </tr>
+                </table>
             </td>
             <td></td>
         </tr>
