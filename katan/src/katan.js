@@ -623,6 +623,29 @@ const katanStore = {
         katanStore.setNumberRippleEnabled();
     },
 
+    moveBuglar: (resourceIndex) => update(katna => {
+        katan.resourceList = katan.resourceList
+            .map(resource => {
+                if (resource.buglar) {
+                    resource.buglar = false;
+                }
+
+                return resource;
+            });
+
+        katan.resourceList = katan.resourceList
+            .map(resource => {
+                if (resource.index === resourceIndex) {
+                    resource.buglar = true;
+                }
+
+                return resource;
+            });
+
+        katanStore.setNumberRippleDisabled();
+        return katan;
+    }),
+
     play: () => update(katan => {
         const a = Math.floor(Math.random() * 6) + 1;
         const b = Math.floor(Math.random() * 6) + 1;
@@ -681,7 +704,7 @@ const katanStore = {
                                     }, 2000, () => {
                                         newResourceItem.offset(offset);
                                         newResourceItem.hide();
-                                        katan.playerList[playerIndex].resource[resource.type]++;
+                                        katanStore.updateResource(playerIndex, resource);
                                     });
                             }
                         });
@@ -691,6 +714,11 @@ const katanStore = {
 
         katan.turn();
 
+        return katan;
+    }),
+
+    updateResource: (playerIndex, resource) => update(katan => {
+        katan.playerList[playerIndex].resource[resource.type]++;
         return katan;
     }),
 
@@ -828,6 +856,16 @@ const katanStore = {
                 resource.numberRipple = true;
             return resource;
         });
+
+        return katan;
+    }),
+
+    setNumberRippleDisabled: () => update(katan => {
+        katan.castleList = katan.resourceList
+            .map(resource => {
+                resource.numberRipple = false;
+                return resource;
+            });
 
         return katan;
     }),

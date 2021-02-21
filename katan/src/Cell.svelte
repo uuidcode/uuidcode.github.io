@@ -67,6 +67,8 @@
         <img src={imageSrc}
              style={imageStyle} alt={imageSrc}>
         <div class="number"
+             on:click={()=>katan.moveBuglar(resource.index)}
+             class:pick={resource.numberRipple}
              class:ripple={resource.numberRipple}
              class:buglar={resource.buglar}
              style={numberStyle}>
@@ -103,6 +105,10 @@
         opacity: 0.6;
         font-weight: bolder;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+    }
+
+    .pick {
+        cursor: pointer;
     }
 
     .buglar {
