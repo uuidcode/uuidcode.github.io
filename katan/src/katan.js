@@ -6,6 +6,7 @@ import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
     message: '마을을 만들곳을 클릭하세요',
+    diceDisabled: true,
     dice: [6, 6],
     mode: 'ready',
     isReady: true,
@@ -490,8 +491,6 @@ resourceList.forEach(resource => {
     resource.numberRipple = false;
 });
 
-console.log('>>> resourceList', resourceList);
-
 katan.resourceList = resourceList;
 
 katan.turn = () => {
@@ -646,7 +645,19 @@ const katanStore = {
         return katan;
     }),
 
+    setDiceDisabled: () => update(katan => {
+        katan.diceDisabled = true;
+        return katan;
+    }),
+
+    setDiceEnabled: () => update(katan => {
+        katan.diceDisabled = false;
+        return katan;
+    }),
+
     play: () => update(katan => {
+        katanStore.setDiceDisabled();
+
         const a = Math.floor(Math.random() * 6) + 1;
         const b = Math.floor(Math.random() * 6) + 1;
 
@@ -668,6 +679,7 @@ const katanStore = {
             setTimeout(() => {
                 modal.hide();
                 katanStore.setNumberRippleEnabled();
+                katanStore.setDiceEnabled();
             }, 2000);
         } else {
             katan.resourceList
@@ -705,6 +717,7 @@ const katanStore = {
                                         newResourceItem.offset(offset);
                                         newResourceItem.hide();
                                         katanStore.updateResource(playerIndex, resource);
+                                        katanStore.setDiceEnabled();
                                     });
                             }
                         });
