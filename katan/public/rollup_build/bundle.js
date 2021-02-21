@@ -1509,43 +1509,51 @@ var app = (function (jQuery) {
                 .filter(resource => resource.number === number)
                 .filter(resource => !resource.buglar)
                 .forEach(resource => {
-                    resource.castleIndexList
-                        .forEach(castleIndex => {
-                            let playerIndex = katan.castleList[castleIndex].playerIndex;
+                    console.log('>>> resource.castleIndexList', resource.castleIndexList);
 
-                            if (playerIndex !== -1) {
-                                matchResourceCount++;
-                                resource.show = true;
+                    resource.castleIndexList.forEach(castleIndex => {
+                        const playerIndex = katan.castleList[castleIndex].playerIndex;
 
-                                const selector = `.player_${playerIndex}_${resource.type}`;
-                                const targetOffset = jQuery__default['default'](selector).offset();
+                        if (playerIndex !== -1) {
+                            matchResourceCount++;
+                            console.log('>>> matchResourceCount', matchResourceCount);
 
-                                const resourceItem = jQuery__default['default'](`.resource_${resource.index}`).show();
-                                const offset = resourceItem.offset();
+                            resource.show = true;
 
-                                const body = jQuery__default['default']('body');
-                                const newResourceItem = resourceItem.clone();
+                            const selector = `.player_${playerIndex}_${resource.type}`;
+                            const targetOffset = jQuery__default['default'](selector).offset();
 
-                                newResourceItem.appendTo(body)
-                                    .css({
-                                        left: offset.left + 'px',
-                                        top: offset.top + 'px'
-                                    });
+                            const resoucreSelector = `.resource_${resource.index}`;
+                            const resourceItem = jQuery__default['default'](resoucreSelector).show();
+                            const offset = resourceItem.offset();
 
-                                resourceItem.remove();
+                            const body = jQuery__default['default']('body');
+                            const newResourceItem = resourceItem.clone()
+                                .removeClass(resoucreSelector);
 
-                                newResourceItem.addClass('ripple')
-                                    .animate({
-                                        left: targetOffset.left + 'px',
-                                        top: targetOffset.top + 'px'
-                                    }, 1000, () => {
-                                        moveResourceCount++;
-                                        newResourceItem.offset(offset);
-                                        newResourceItem.hide();
-                                        katanStore.updateResource(playerIndex, resource);
-                                    });
-                            }
-                        });
+                            newResourceItem.appendTo(body)
+                                .css({
+                                    left: offset.left + 'px',
+                                    top: offset.top + 'px'
+                                });
+
+                            resourceItem.hide();
+
+                            const complete = (newResourceItem, playerIndex, resource) => () => {
+                                moveResourceCount++;
+                                console.log('>>> moveResourceCount', moveResourceCount);
+
+                                newResourceItem.remove();
+                                katanStore.updateResource(playerIndex, resource);
+                            };
+
+                            newResourceItem.addClass('ripple')
+                                .animate({
+                                    left: targetOffset.left + 'px',
+                                    top: targetOffset.top + 'px'
+                                }, 1000, complete(newResourceItem, playerIndex, resource));
+                        }
+                    });
                 });
 
             if (matchResourceCount > 0) {
