@@ -752,8 +752,8 @@ var app = (function (jQuery) {
             height: 80,
         },
         buglar: {
-            width: 120,
-            height: 120,
+            width: 150,
+            height: 150,
         }
     };
 
@@ -1446,6 +1446,10 @@ var app = (function (jQuery) {
 
                     return castle;
                 });
+
+
+            katanStore.setDiceEnabled();
+
             return katan;
         }),
 
@@ -1462,18 +1466,12 @@ var app = (function (jQuery) {
         moveBuglar: (resourceIndex) => update$1(katna => {
             katan.resourceList = katan.resourceList
                 .map(resource => {
-                    if (resource.buglar) {
+                    if (resource.index === resourceIndex) {
+                        resource.buglar = true;
+                    } else {
                         resource.buglar = false;
                     }
 
-                    return resource;
-                });
-
-            katan.resourceList = katan.resourceList
-                .map(resource => {
-                    if (resource.index === resourceIndex) {
-                        resource.buglar = true;
-                    }
 
                     return resource;
                 });
@@ -1489,8 +1487,71 @@ var app = (function (jQuery) {
 
         setDiceEnabled: () => update$1(katan => {
             katan.diceDisabled = false;
+
+            console.log('>>> katan', katan);
+
             return katan;
         }),
+
+        moveResource: (number) => {
+            let matchResourceCount = 0;
+            let moveResourceCount = 0;
+
+            katan.resourceList
+                .filter(resource => resource.number === number)
+                .forEach(resource => {
+                    resource.castleIndexList
+                        .forEach(castleIndex => {
+                            let playerIndex = katan.castleList[castleIndex].playerIndex;
+
+                            if (playerIndex !== -1) {
+                                matchResourceCount++;
+                                resource.show = true;
+
+                                const selector = `.player_${playerIndex}_${resource.type}`;
+                                const targetOffset = jQuery__default['default'](selector).offset();
+
+                                const resourceItem = jQuery__default['default'](`.resource_${resource.index}`).show();
+                                const offset = resourceItem.offset();
+
+                                const body = jQuery__default['default']('body');
+                                const newResourceItem = resourceItem.clone();
+
+                                newResourceItem.appendTo(body)
+                                    .css({
+                                        left: offset.left + 'px',
+                                        top: offset.top + 'px'
+                                    });
+
+                                resourceItem.remove();
+
+                                newResourceItem.addClass('ripple')
+                                    .animate({
+                                        left: targetOffset.left + 'px',
+                                        top: targetOffset.top + 'px'
+                                    }, 2000, () => {
+                                        moveResourceCount++;
+                                        newResourceItem.offset(offset);
+                                        newResourceItem.hide();
+                                        katanStore.updateResource(playerIndex, resource);
+                                    });
+                            }
+                        });
+                });
+
+            if (matchResourceCount > 0) {
+                const interval = setInterval(() => {
+                    if (moveResourceCount === matchResourceCount) {
+                        clearInterval(interval);
+                        katanStore.setDiceEnabled();
+                    } else {
+                        console.log('>>> interval');
+                    }
+                }, 1000);
+            } else {
+                katanStore.setDiceEnabled();
+            }
+        },
 
         play: () => update$1(katan => {
             katanStore.setDiceDisabled();
@@ -1519,50 +1580,14 @@ var app = (function (jQuery) {
                     katanStore.setDiceEnabled();
                 }, 2000);
             } else {
-                katan.resourceList
-                    .filter(resource => resource.number === number)
-                    .forEach(resource => {
-                        resource.castleIndexList
-                            .forEach(castleIndex => {
-                                let playerIndex = katan.castleList[castleIndex].playerIndex;
+                katanStore.setSelectedNumberRippleEnabled(number);
 
-                                if (playerIndex !== -1) {
-                                    resource.show = true;
-
-                                    const selector = `.player_${playerIndex}_${resource.type}`;
-                                    const targetOffset = jQuery__default['default'](selector).offset();
-
-                                    const resourceItem = jQuery__default['default'](`.resource_${resource.index}`).show();
-                                    const offset = resourceItem.offset();
-
-                                    const body = jQuery__default['default']('body');
-                                    const newResourceItem = resourceItem.clone();
-
-                                    newResourceItem.appendTo(body)
-                                        .css({
-                                            left: offset.left + 'px',
-                                            top: offset.top + 'px'
-                                        });
-
-                                    resourceItem.remove();
-
-                                    newResourceItem.addClass('ripple')
-                                        .animate({
-                                            left: targetOffset.left + 'px',
-                                            top: targetOffset.top + 'px'
-                                        }, 2000, () => {
-                                            newResourceItem.offset(offset);
-                                            newResourceItem.hide();
-                                            katanStore.updateResource(playerIndex, resource);
-                                            katanStore.setDiceEnabled();
-                                        });
-                                }
-                            });
-                    });
-
+                setTimeout(() => {
+                    katanStore.setNumberRippleDisabled(number);
+                    katanStore.moveResource(number);
+                    katan.turn();
+                }, 2000);
             }
-
-            katan.turn();
 
             return katan;
         }),
@@ -1699,11 +1724,25 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        setNumberRippleEnabled: () => update$1(katan => {
-            katan.castleList = katan.resourceList
-                .filter(resource => !resource.buglar)
+        setSelectedNumberRippleEnabled: (number) => update$1(katan => {
+            katan.resourceList = katan.resourceList
                 .map(resource => {
-                    resource.numberRipple = true;
+                    if (resource.number === number) {
+                        resource.numberRipple = true;
+                    }
+
+                    return resource;
+                });
+
+            return katan;
+        }),
+
+        setNumberRippleEnabled: () => update$1(katan => {
+            katan.resourceList = katan.resourceList
+                .map(resource => {
+                    if (!resource.buglar) {
+                        resource.numberRipple = true;
+                    }
                 return resource;
             });
 
@@ -1711,7 +1750,7 @@ var app = (function (jQuery) {
         }),
 
         setNumberRippleDisabled: () => update$1(katan => {
-            katan.castleList = katan.resourceList
+            katan.resourceList = katan.resourceList
                 .map(resource => {
                     resource.numberRipple = false;
                     return resource;
@@ -1786,7 +1825,7 @@ var app = (function (jQuery) {
     /* src\Cell.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Cell.svelte";
 
-    // (76:12) {#if resource.buglar}
+    // (80:12) {#if resource.buglar}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -1806,14 +1845,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(76:12) {#if resource.buglar}",
+    		source: "(80:12) {#if resource.buglar}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:12) {#if config.debug}
+    // (84:12) {#if config.debug}
     function create_if_block_1(ctx) {
     	let t0;
     	let t1_value = /*resource*/ ctx[1].index + "";
@@ -1841,14 +1880,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(80:12) {#if config.debug}",
+    		source: "(84:12) {#if config.debug}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (86:0) {#if resource.buglar===false}
+    // (90:0) {#if resource.buglar===false}
     function create_if_block(ctx) {
     	let img;
     	let img_src_value;
@@ -1860,7 +1899,7 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[8]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-nug0lc");
-    			add_location(img, file$1, 86, 4, 2663);
+    			add_location(img, file$1, 90, 4, 2813);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, img, anchor);
@@ -1879,7 +1918,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(86:0) {#if resource.buglar===false}",
+    		source: "(90:0) {#if resource.buglar===false}",
     		ctx
     	});
 
@@ -1923,19 +1962,19 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[5]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
-    			add_location(img, file$1, 66, 8, 2080);
+    			add_location(img, file$1, 70, 8, 2230);
     			attr_dev(div0, "class", "number svelte-nug0lc");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "buglar", /*resource*/ ctx[1].buglar);
-    			add_location(div0, file$1, 68, 8, 2156);
+    			add_location(div0, file$1, 72, 8, 2306);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[4]);
-    			add_location(div1, file$1, 65, 4, 2024);
+    			add_location(div1, file$1, 69, 4, 2174);
     			attr_dev(div2, "class", "cell svelte-nug0lc");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file$1, 64, 0, 1983);
+    			add_location(div2, file$1, 68, 0, 2133);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2069,12 +2108,15 @@ var app = (function (jQuery) {
     		});
     	};
 
-    	let numberStyle = getNumberStyle(config.number.width, config.number.height);
+    	const getNumberStyleByResource = () => {
+    		if (resource.buglar) {
+    			return getNumberStyle(config.buglar.width, config.buglar.height);
+    		}
 
-    	if (resource.buglar) {
-    		numberStyle = getNumberStyle(config.buglar.width, config.buglar.height);
-    	}
+    		return getNumberStyle(config.number.width, config.number.height);
+    	};
 
+    	let numberStyle = getNumberStyleByResource();
     	let imageSrc = `${resource.type}.png`;
     	let resourceImage = `${resource.type}_item.png`;
 
@@ -2087,6 +2129,7 @@ var app = (function (jQuery) {
 
     	const unsubscribe = katanStore.subscribe(currentKatan => {
     		$$invalidate(1, resource = currentKatan.resourceList[resourceIndex]);
+    		$$invalidate(2, numberStyle = getNumberStyleByResource());
     	});
 
     	onDestroy(unsubscribe);
@@ -2116,6 +2159,7 @@ var app = (function (jQuery) {
     		innerCellStyle,
     		imageStyle,
     		getNumberStyle,
+    		getNumberStyleByResource,
     		numberStyle,
     		imageSrc,
     		resourceImage,

@@ -18,8 +18,8 @@ const config = {
         height: 80,
     },
     buglar: {
-        width: 120,
-        height: 120,
+        width: 150,
+        height: 150,
     }
 };
 

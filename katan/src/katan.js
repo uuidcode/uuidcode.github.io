@@ -609,6 +609,10 @@ const katanStore = {
 
                 return castle;
             });
+
+
+        katanStore.setDiceEnabled();
+
         return katan;
     }),
 
@@ -625,18 +629,12 @@ const katanStore = {
     moveBuglar: (resourceIndex) => update(katna => {
         katan.resourceList = katan.resourceList
             .map(resource => {
-                if (resource.buglar) {
+                if (resource.index === resourceIndex) {
+                    resource.buglar = true;
+                } else {
                     resource.buglar = false;
                 }
 
-                return resource;
-            });
-
-        katan.resourceList = katan.resourceList
-            .map(resource => {
-                if (resource.index === resourceIndex) {
-                    resource.buglar = true;
-                }
 
                 return resource;
             });
@@ -652,8 +650,71 @@ const katanStore = {
 
     setDiceEnabled: () => update(katan => {
         katan.diceDisabled = false;
+
+        console.log('>>> katan', katan);
+
         return katan;
     }),
+
+    moveResource: (number) => {
+        let matchResourceCount = 0;
+        let moveResourceCount = 0;
+
+        katan.resourceList
+            .filter(resource => resource.number === number)
+            .forEach(resource => {
+                resource.castleIndexList
+                    .forEach(castleIndex => {
+                        let playerIndex = katan.castleList[castleIndex].playerIndex;
+
+                        if (playerIndex !== -1) {
+                            matchResourceCount++;
+                            resource.show = true;
+
+                            const selector = `.player_${playerIndex}_${resource.type}`;
+                            const targetOffset = jQuery(selector).offset();
+
+                            const resourceItem = jQuery(`.resource_${resource.index}`).show();
+                            const offset = resourceItem.offset();
+
+                            const body = jQuery('body');
+                            const newResourceItem = resourceItem.clone();
+
+                            newResourceItem.appendTo(body)
+                                .css({
+                                    left: offset.left + 'px',
+                                    top: offset.top + 'px'
+                                });
+
+                            resourceItem.remove();
+
+                            newResourceItem.addClass('ripple')
+                                .animate({
+                                    left: targetOffset.left + 'px',
+                                    top: targetOffset.top + 'px'
+                                }, 2000, () => {
+                                    moveResourceCount++;
+                                    newResourceItem.offset(offset);
+                                    newResourceItem.hide();
+                                    katanStore.updateResource(playerIndex, resource);
+                                });
+                        }
+                    });
+            });
+
+        if (matchResourceCount > 0) {
+            const interval = setInterval(() => {
+                if (moveResourceCount === matchResourceCount) {
+                    clearInterval(interval);
+                    katanStore.setDiceEnabled();
+                } else {
+                    console.log('>>> interval');
+                }
+            }, 1000);
+        } else {
+            katanStore.setDiceEnabled();
+        }
+    },
 
     play: () => update(katan => {
         katanStore.setDiceDisabled();
@@ -682,50 +743,14 @@ const katanStore = {
                 katanStore.setDiceEnabled();
             }, 2000);
         } else {
-            katan.resourceList
-                .filter(resource => resource.number === number)
-                .forEach(resource => {
-                    resource.castleIndexList
-                        .forEach(castleIndex => {
-                            let playerIndex = katan.castleList[castleIndex].playerIndex;
+            katanStore.setSelectedNumberRippleEnabled(number)
 
-                            if (playerIndex !== -1) {
-                                resource.show = true;
-
-                                const selector = `.player_${playerIndex}_${resource.type}`;
-                                const targetOffset = jQuery(selector).offset();
-
-                                const resourceItem = jQuery(`.resource_${resource.index}`).show();
-                                const offset = resourceItem.offset();
-
-                                const body = jQuery('body');
-                                const newResourceItem = resourceItem.clone();
-
-                                newResourceItem.appendTo(body)
-                                    .css({
-                                        left: offset.left + 'px',
-                                        top: offset.top + 'px'
-                                    });
-
-                                resourceItem.remove();
-
-                                newResourceItem.addClass('ripple')
-                                    .animate({
-                                        left: targetOffset.left + 'px',
-                                        top: targetOffset.top + 'px'
-                                    }, 2000, () => {
-                                        newResourceItem.offset(offset);
-                                        newResourceItem.hide();
-                                        katanStore.updateResource(playerIndex, resource);
-                                        katanStore.setDiceEnabled();
-                                    });
-                            }
-                        });
-                });
-
+            setTimeout(() => {
+                katanStore.setNumberRippleDisabled(number);
+                katanStore.moveResource(number);
+                katan.turn();
+            }, 2000);
         }
-
-        katan.turn();
 
         return katan;
     }),
@@ -862,11 +887,25 @@ const katanStore = {
         return katan;
     }),
 
-    setNumberRippleEnabled: () => update(katan => {
-        katan.castleList = katan.resourceList
-            .filter(resource => !resource.buglar)
+    setSelectedNumberRippleEnabled: (number) => update(katan => {
+        katan.resourceList = katan.resourceList
             .map(resource => {
-                resource.numberRipple = true;
+                if (resource.number === number) {
+                    resource.numberRipple = true;
+                }
+
+                return resource;
+            });
+
+        return katan;
+    }),
+
+    setNumberRippleEnabled: () => update(katan => {
+        katan.resourceList = katan.resourceList
+            .map(resource => {
+                if (!resource.buglar) {
+                    resource.numberRipple = true;
+                }
             return resource;
         });
 
@@ -874,7 +913,7 @@ const katanStore = {
     }),
 
     setNumberRippleDisabled: () => update(katan => {
-        katan.castleList = katan.resourceList
+        katan.resourceList = katan.resourceList
             .map(resource => {
                 resource.numberRipple = false;
                 return resource;

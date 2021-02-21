@@ -39,12 +39,15 @@
         });
     };
 
-    let numberStyle = getNumberStyle(config.number.width, config.number.height);
+    const getNumberStyleByResource = () => {
+        if (resource.buglar) {
+            return getNumberStyle(config.buglar.width, config.buglar.height);
+        }
 
-    if (resource.buglar) {
-        numberStyle = getNumberStyle(config.buglar.width, config.buglar.height);
-    }
+        return getNumberStyle(config.number.width, config.number.height);
+    };
 
+    let numberStyle = getNumberStyleByResource();
     let imageSrc = `${resource.type}.png`;
     let resourceImage = `${resource.type}_item.png`;
 
@@ -57,6 +60,7 @@
 
     const unsubscribe = katan.subscribe(currentKatan => {
         resource = currentKatan.resourceList[resourceIndex];
+        numberStyle = getNumberStyleByResource();
     });
 
     onDestroy(unsubscribe);
