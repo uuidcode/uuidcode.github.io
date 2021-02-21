@@ -39,7 +39,24 @@
         </tr>
     </table>
 </main>
+<div class="modal fade" id="katanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {$katan.bodyMessage}
+            </div>
 
+            {#if $katan.buttonMessage!==''}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" on:click={()=>katan.clickMessage()}>{$katan.buttonMessage}</button>
+                </div>
+            {/if}
+        </div>
+    </div>
+</div>
 <style>
     .player {
         width: 200px;

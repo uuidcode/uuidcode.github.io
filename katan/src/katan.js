@@ -2,6 +2,7 @@ import {writable} from "svelte/store";
 import config from './config.js'
 import { getDisplay, sleep } from './util.js'
 import jQuery from 'jquery';
+import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
     message: '마을을 만들곳을 클릭하세요',
@@ -618,6 +619,10 @@ const katanStore = {
         return katan;
     }),
 
+    clickMessage: () => {
+        katanStore.setNumberRippleEnabled();
+    },
+
     play: () => update(katan => {
         const a = Math.floor(Math.random() * 6) + 1;
         const b = Math.floor(Math.random() * 6) + 1;
@@ -626,8 +631,21 @@ const katanStore = {
 
         const number = a + b;
 
-        if (number > 0) {
-            katanStore.setNumberRippleEnabled();
+        const buglar = katan.resourceList
+            .filter(resource => resource.number === number)
+            .find(resource => resource.buglar);
+
+        if (buglar) {
+            katan.mode = 'moveBuglar';
+            katan.bodyMessage = '도둑의 위치를 선택하세요.';
+            katan.buttonMessage = '';
+            const modal = new Modal(document.getElementById('katanModal'), {});
+            modal.show();
+
+            setTimeout(() => {
+                modal.hide();
+                katanStore.setNumberRippleEnabled();
+            }, 2000);
         } else {
             katan.resourceList
                 .filter(resource => resource.number === number)
