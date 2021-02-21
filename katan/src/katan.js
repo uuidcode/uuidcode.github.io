@@ -488,6 +488,8 @@ resourceList.forEach(resource => {
     resource.show = false;
 });
 
+console.log('>>> resourceList', resourceList);
+
 katan.resourceList = resourceList;
 
 katan.turn = () => {
@@ -506,6 +508,12 @@ katan.resourceList = katan.resourceList
             resource.number = 7;
         } else {
             resource.number = numberList.pop();
+        }
+
+        resource.buglar = false;
+
+        if (resource.number === 7) {
+            resource.buglar = true;
         }
 
         return resource;

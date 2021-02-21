@@ -16,6 +16,10 @@ const config = {
     number: {
         width: 80,
         height: 80,
+    },
+    buglar: {
+        width: 120,
+        height: 120,
     }
 };
 

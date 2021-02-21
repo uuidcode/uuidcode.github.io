@@ -27,25 +27,35 @@
         height: config.cell.height + 'px',
     });
 
-    let numberStyle = toStyle({
-        left: (config.cell.width - config.number.width) / 2 + 'px',
-        top: (config.cell.height - config.number.height) / 2 + 'px',
-        width: config.number.width + 'px',
-        height: config.number.height + 'px',
-        "line-height": config.number.height + 'px',
-        "border-radius": config.number.height / 2 + 'px',
-        "font-size": 2 * config.number.height / 5 + 'px'
-    });
+    const getNumberStyle = (width, height) => {
+        return toStyle({
+            left: (config.cell.width - width) / 2 + 'px',
+            top: (config.cell.height - height) / 2 + 'px',
+            width: width + 'px',
+            height: height + 'px',
+            "line-height": height + 'px',
+            "border-radius": height / 2 + 'px',
+            "font-size": '30px'
+        });
+    };
+
+    let numberStyle = getNumberStyle(config.number.width, config.number.height);
+
+    if (resource.buglar) {
+        numberStyle = getNumberStyle(config.buglar.width, config.buglar.height);
+    }
 
     let imageSrc = `${resource.type}.png`;
     let resourceImage = `${resource.type}_item.png`;
 
     let resourceImageStyle = toStyle({
-        left: resource.left + 50 + 'px',
-        top: resource.top + 50 + 'px',
-        width: '100px',
-        height: '100px'
+        left: resource.left + config.number.width / 2 + 'px',
+        top: resource.top + config.number.height / 2 + 'px',
+        width: `${config.number.width}px`,
+        height: `${config.number.height}px`,
     });
+
+
 
     const unsubscribe = katan.subscribe(currentKatan => {
         resource = currentKatan.resourceList[resourceIndex];
@@ -58,16 +68,26 @@
     <div class="inner-cell" style={innerCellStyle}>
         <img src={imageSrc}
              style={imageStyle} alt={imageSrc}>
-        <div class="number" style={numberStyle}>{resource.number}
+        <div class="number"
+             class:buglar={resource.buglar}
+             style={numberStyle}>
+            {resource.number}
+            {#if resource.buglar}
+                (도둑)
+            {/if}
+
             {#if config.debug}
             ,{resource.index}
             {/if}
         </div>
     </div>
 </div>
-<img src={resourceImage}
-     style={resourceImageStyle}
-     class="resource_{resourceIndex} resource hide">
+{#if resource.buglar===false}
+    <img src={resourceImage}
+         style={resourceImageStyle}
+         class="resource_{resourceIndex} resource hide">
+{/if}
+
 <style>
     .cell {
         position: absolute;
@@ -84,6 +104,10 @@
         opacity: 0.6;
         font-weight: bolder;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+    }
+
+    .buglar {
+        background-color: red;
     }
 
     .resource {
