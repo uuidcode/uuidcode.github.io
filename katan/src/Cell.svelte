@@ -55,8 +55,6 @@
         height: `${config.number.height}px`,
     });
 
-
-
     const unsubscribe = katan.subscribe(currentKatan => {
         resource = currentKatan.resourceList[resourceIndex];
     });
