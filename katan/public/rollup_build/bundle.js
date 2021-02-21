@@ -752,9 +752,10 @@ var app = (function (jQuery) {
             height: 80,
         },
         buglar: {
-            width: 150,
-            height: 150,
-        }
+            width: 130,
+            height: 130,
+        },
+        selectedColor: 'blueviolet'
     };
 
     const camelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
@@ -1463,22 +1464,29 @@ var app = (function (jQuery) {
             katanStore.setNumberRippleEnabled();
         },
 
-        moveBuglar: (resourceIndex) => update$1(katna => {
-            katan.resourceList = katan.resourceList
-                .map(resource => {
-                    if (resource.index === resourceIndex) {
-                        resource.buglar = true;
-                    } else {
-                        resource.buglar = false;
-                    }
+        moveBuglar: (resourceIndex) => {
+            if (katan.mode !== 'moveBuglar') {
+                return;
+            }
 
+            if (katan.resourceList[resourceIndex].buglar) {
+                return;
+            }
 
-                    return resource;
-                });
+            return update$1(katna => {
+                    katan.resourceList = katan.resourceList
+                        .map(resource => {
+                            resource.buglar = resource.index === resourceIndex;
+                            return resource;
+                        });
 
-            katanStore.setNumberRippleDisabled();
-            return katan;
-        }),
+                    katanStore.setNumberRippleDisabled();
+                    katanStore.setDiceEnabled();
+                    katan.mode = 'start';
+
+                return katan;
+            });
+        },
 
         setDiceDisabled: () => update$1(katan => {
             katan.diceDisabled = true;
@@ -1499,6 +1507,7 @@ var app = (function (jQuery) {
 
             katan.resourceList
                 .filter(resource => resource.number === number)
+                .filter(resource => !resource.buglar)
                 .forEach(resource => {
                     resource.castleIndexList
                         .forEach(castleIndex => {
@@ -1529,7 +1538,7 @@ var app = (function (jQuery) {
                                     .animate({
                                         left: targetOffset.left + 'px',
                                         top: targetOffset.top + 'px'
-                                    }, 2000, () => {
+                                    }, 1000, () => {
                                         moveResourceCount++;
                                         newResourceItem.offset(offset);
                                         newResourceItem.hide();
@@ -1547,7 +1556,7 @@ var app = (function (jQuery) {
                     } else {
                         console.log('>>> interval');
                     }
-                }, 1000);
+                }, 100);
             } else {
                 katanStore.setDiceEnabled();
             }
@@ -1563,11 +1572,7 @@ var app = (function (jQuery) {
 
             const number = a + b;
 
-            const buglar = katan.resourceList
-                .filter(resource => resource.number === number)
-                .find(resource => resource.buglar);
-
-            if (buglar) {
+            if (number === 7) {
                 katan.mode = 'moveBuglar';
                 katan.bodyMessage = '도둑의 위치를 선택하세요.';
                 katan.buttonMessage = '';
@@ -1577,8 +1582,7 @@ var app = (function (jQuery) {
                 setTimeout(() => {
                     modal.hide();
                     katanStore.setNumberRippleEnabled();
-                    katanStore.setDiceEnabled();
-                }, 2000);
+                }, 1000);
             } else {
                 katanStore.setSelectedNumberRippleEnabled(number);
 
@@ -1586,7 +1590,7 @@ var app = (function (jQuery) {
                     katanStore.setNumberRippleDisabled(number);
                     katanStore.moveResource(number);
                     katan.turn();
-                }, 2000);
+                }, 1000);
             }
 
             return katan;
@@ -1887,22 +1891,26 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    // (90:0) {#if resource.buglar===false}
+    // (91:0) {#if resource.buglar===false}
     function create_if_block(ctx) {
+    	let div;
     	let img;
     	let img_src_value;
     	let img_class_value;
 
     	const block = {
     		c: function create() {
+    			div = element("div");
     			img = element("img");
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[8]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-nug0lc");
-    			add_location(img, file$1, 90, 4, 2813);
+    			add_location(img, file$1, 92, 4, 2824);
+    			add_location(div, file$1, 91, 4, 2814);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, img, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, img);
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*resourceIndex*/ 1 && img_class_value !== (img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-nug0lc")) {
@@ -1910,7 +1918,7 @@ var app = (function (jQuery) {
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(img);
+    			if (detaching) detach_dev(div);
     		}
     	};
 
@@ -1918,7 +1926,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(90:0) {#if resource.buglar===false}",
+    		source: "(91:0) {#if resource.buglar===false}",
     		ctx
     	});
 

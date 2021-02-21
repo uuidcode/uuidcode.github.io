@@ -18,9 +18,10 @@ const config = {
         height: 80,
     },
     buglar: {
-        width: 150,
-        height: 150,
-    }
+        width: 130,
+        height: 130,
+    },
+    selectedColor: 'blueviolet'
 };
 
 export default config;

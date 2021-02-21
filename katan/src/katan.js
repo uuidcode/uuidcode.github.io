@@ -626,22 +626,29 @@ const katanStore = {
         katanStore.setNumberRippleEnabled();
     },
 
-    moveBuglar: (resourceIndex) => update(katna => {
-        katan.resourceList = katan.resourceList
-            .map(resource => {
-                if (resource.index === resourceIndex) {
-                    resource.buglar = true;
-                } else {
-                    resource.buglar = false;
-                }
+    moveBuglar: (resourceIndex) => {
+        if (katan.mode !== 'moveBuglar') {
+            return;
+        }
 
+        if (katan.resourceList[resourceIndex].buglar) {
+            return;
+        }
 
-                return resource;
-            });
+        return update(katna => {
+                katan.resourceList = katan.resourceList
+                    .map(resource => {
+                        resource.buglar = resource.index === resourceIndex;
+                        return resource;
+                    });
 
-        katanStore.setNumberRippleDisabled();
-        return katan;
-    }),
+                katanStore.setNumberRippleDisabled();
+                katanStore.setDiceEnabled();
+                katan.mode = 'start';
+
+            return katan;
+        });
+    },
 
     setDiceDisabled: () => update(katan => {
         katan.diceDisabled = true;
@@ -662,6 +669,7 @@ const katanStore = {
 
         katan.resourceList
             .filter(resource => resource.number === number)
+            .filter(resource => !resource.buglar)
             .forEach(resource => {
                 resource.castleIndexList
                     .forEach(castleIndex => {
@@ -692,7 +700,7 @@ const katanStore = {
                                 .animate({
                                     left: targetOffset.left + 'px',
                                     top: targetOffset.top + 'px'
-                                }, 2000, () => {
+                                }, 1000, () => {
                                     moveResourceCount++;
                                     newResourceItem.offset(offset);
                                     newResourceItem.hide();
@@ -710,7 +718,7 @@ const katanStore = {
                 } else {
                     console.log('>>> interval');
                 }
-            }, 1000);
+            }, 100);
         } else {
             katanStore.setDiceEnabled();
         }
@@ -726,11 +734,7 @@ const katanStore = {
 
         const number = a + b;
 
-        const buglar = katan.resourceList
-            .filter(resource => resource.number === number)
-            .find(resource => resource.buglar);
-
-        if (buglar) {
+        if (number === 7) {
             katan.mode = 'moveBuglar';
             katan.bodyMessage = '도둑의 위치를 선택하세요.';
             katan.buttonMessage = '';
@@ -740,8 +744,7 @@ const katanStore = {
             setTimeout(() => {
                 modal.hide();
                 katanStore.setNumberRippleEnabled();
-                katanStore.setDiceEnabled();
-            }, 2000);
+            }, 1000);
         } else {
             katanStore.setSelectedNumberRippleEnabled(number)
 
@@ -749,7 +752,7 @@ const katanStore = {
                 katanStore.setNumberRippleDisabled(number);
                 katanStore.moveResource(number);
                 katan.turn();
-            }, 2000);
+            }, 1000);
         }
 
         return katan;

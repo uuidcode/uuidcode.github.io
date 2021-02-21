@@ -87,10 +87,13 @@
         </div>
     </div>
 </div>
+
 {#if resource.buglar===false}
-    <img src={resourceImage}
-         style={resourceImageStyle}
+    <div>
+    <img src="{resourceImage}"
+         style="{resourceImageStyle}"
          class="resource_{resourceIndex} resource hide">
+    </div>
 {/if}
 
 <style>
