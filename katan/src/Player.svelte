@@ -1,46 +1,76 @@
 <script>
-    export let player;
+    import katan from './katan'
+    import { onDestroy } from 'svelte';
+
+    export let playerIndex;
+    export let type = 'player';
+
+    console.log('>>> playerIndex', playerIndex);
+    console.log('>>> $katan.playerList[playerIndex];', $katan.playerList[playerIndex]);
+
+    let player = $katan.playerList[playerIndex];
+    let turnClassEnabled = player.turn && type === 'player';
+    let modalMode = type === 'modal';
+    let colspan = modalMode ? 3 : 2;
+
+    const getResourceList = () => {
+        return [
+            {
+                'type': 'tree',
+                'count': player.resource.tree
+            },
+            {
+                'type': 'mud',
+                'count': player.resource.mud
+            },
+            {
+                'type': 'wheat',
+                'count': player.resource.wheat
+            },
+            {
+                'type': 'sheep',
+                'count': player.resource.sheep
+            },
+            {
+                'type': 'iron',
+                'count': player.resource.iron
+            }
+        ];
+    };
+
+    let resourceList = getResourceList();
+
+    const unsubscribe = katan.subscribe(currentKatan => {
+        player = currentKatan.playerList[playerIndex];
+        resourceList = getResourceList();
+        turnClassEnabled = player.turn && type === 'player';
+    });
+
+    onDestroy(unsubscribe);
 </script>
 
 <main>
-    <table class="resource" class:turn={player.turn}>
+    <table class="resource" class:turn={turnClassEnabled}>
         <tr>
-            <td colspan="2"
+            <td colspan="{colspan}"
                 class="name"
                 style="background-color:{player.color}">{player.name}</td>
         </tr>
-        <tr>
-            <td><img src="tree_item.png"
-                     class="player_{player.index}_tree"></td>
-            <td class="number">{player.resource.tree}</td>
-        </tr>
-        <tr>
-            <td><img src="mud_item.png"
-                     class="player_{player.index}_mud"></td>
-            <td class="number">{player.resource.mud}</td>
-        </tr>
-        <tr>
-            <td><img src="wheat_item.png"
-                     class="player_{player.index}_wheat"></td>
-            <td class="number">{player.resource.wheat}</td>
-        </tr>
-        <tr>
-            <td><img src="sheep_item.png"
-                     class="player_{player.index}_sheep"></td>
-            <td class="number">{player.resource.sheep}</td>
-        </tr>
-        <tr>
-            <td><img src="iron_item.png"
-                     class="player_{player.index}_iron"></td>
-            <td class="number">{player.resource.iron}</td>
-        </tr>
+        {#each resourceList as resource}
+            <tr>
+                <td><img src="{resource.type}_item.png"
+                         class="player_{player.index}_{resource.type}"></td>
+                <td class="number">{resource.count}</td>
+                {#if modalMode}
+                    <td><button class="btn btn-primary">교환</button></td>
+                {/if}
+            </tr>
+        {/each}
     </table>
 </main>
 
 <style>
     .resource td {
-        height: 50px;
-        width: 50px;
         text-align: center;
         border: 1px solid white;
     }

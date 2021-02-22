@@ -735,12 +735,7 @@ const katanStore = {
                     setTimeout(() => {
                         const modal = new Modal(document.getElementById('resourceModal'), {});
                         modal.show();
-
-                        katanStore.setDiceEnabled();
-                        katan.turn();
                     }, 500);
-                } else {
-                    console.log('>>> interval');
                 }
             }, 100);
         } else {
@@ -754,6 +749,8 @@ const katanStore = {
         modal.hide();
 
         katanStore.hideResourceModal();
+        katanStore.setDiceEnabled();
+        katan.turn();
     },
 
     showResourceModal: () => update(katan => {

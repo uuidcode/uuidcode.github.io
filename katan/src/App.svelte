@@ -26,7 +26,7 @@
         </tr>
         <tr>
             <td valign="top" class="player">
-                <Player player={$katan.playerList[0]}></Player>
+                <Player playerIndex={0}></Player>
             </td>
             <td valign="top">
                 <Board resourceList="{$katan.resourceList}"
@@ -34,7 +34,7 @@
                 </Board>
             </td>
             <td valign="top" class="player">
-                <Player player={$katan.playerList[1]}></Player>
+                <Player playerIndex={1}></Player>
             </td>
         </tr>
     </table>
@@ -66,7 +66,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <Player player={$katan.playerList[$katan.playerIndex]}></Player>
+                <Player type="modal"
+                        playerIndex={$katan.playerIndex}></Player>
             </div>
 
             <div class="modal-footer">
