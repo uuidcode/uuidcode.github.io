@@ -11,6 +11,8 @@ let katan = {
     mode: 'ready',
     isReady: true,
     isStart: false,
+    playerIndex: 0,
+    showResourceModal: false,
     playerList: [
         {
             color: 'blue',
@@ -495,8 +497,12 @@ katan.resourceList = resourceList;
 
 katan.turn = () => {
     katan.playerList
-        .forEach(player => {
-            player.turn = !player.turn
+        .forEach((player, i) => {
+            player.turn = !player.turn;
+
+            if (player.turn === true) {
+                katan.playerIndex = i;
+            }
         });
 };
 
@@ -701,17 +707,20 @@ const katanStore = {
 
                         resourceItem.hide();
 
-                        newResourceItem.addClass('ripple')
-                            .animate({
-                                left: targetOffset.left + 'px',
-                                top: targetOffset.top + 'px'
-                            }, 1000, () => {
-                                moveResourceCount++;
+                        setTimeout(() => {
+                            newResourceItem.addClass('ripple')
+                                .animate({
+                                    left: targetOffset.left + 'px',
+                                    top: targetOffset.top + 'px'
+                                }, 1000, () => {
+                                    moveResourceCount++;
 
-                                newResourceItem.offset(offset);
-                                newResourceItem.remove();
-                                katanStore.updateResource(playerIndex, resource);
-                            });
+                                    newResourceItem.offset(offset);
+                                    newResourceItem.remove();
+                                    katanStore.updateResource(playerIndex, resource);
+                                });
+                        }, matchResourceCount * 1000)
+
                     }
                 });
             });
@@ -720,8 +729,16 @@ const katanStore = {
             const interval = setInterval(() => {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
-                    katanStore.setDiceEnabled();
-                    katan.turn();
+
+                    katanStore.showResourceModal();
+
+                    setTimeout(() => {
+                        const modal = new Modal(document.getElementById('resourceModal'), {});
+                        modal.show();
+
+                        katanStore.setDiceEnabled();
+                        katan.turn();
+                    }, 500);
                 } else {
                     console.log('>>> interval');
                 }
@@ -731,6 +748,23 @@ const katanStore = {
             katan.turn();
         }
     },
+
+    closeResourceModal: () => {
+        const modal = Modal.getInstance(document.getElementById('resourceModal'));
+        modal.hide();
+
+        katanStore.hideResourceModal();
+    },
+
+    showResourceModal: () => update(katan => {
+        katan.showResourceModal = true;
+       return katan;
+    }),
+
+    hideResourceModal: () => update(katan => {
+        katan.showResourceModal = false;
+        return katan;
+    }),
 
     play: () => update(katan => {
         katanStore.setDiceDisabled();

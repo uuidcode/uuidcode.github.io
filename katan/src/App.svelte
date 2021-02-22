@@ -1,7 +1,7 @@
 <script>
-    import Player from './Player.svelte'
     import Board from './Board.svelte'
     import Dice from './Dice.svelte'
+    import Player from './Player.svelte'
     import katan from './katan.js'
 </script>
 
@@ -57,6 +57,28 @@
         </div>
     </div>
 </div>
+
+{#if $katan.showResourceModal}
+<div class="modal fade" id="resourceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <Player player={$katan.playerList[$katan.playerIndex]}></Player>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        on:click={()=>katan.closeResourceModal()}
+                        class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{/if}
+
 <style>
     .player {
         width: 200px;
