@@ -671,27 +671,27 @@ const katanStore = {
             .filter(resource => resource.number === number)
             .filter(resource => !resource.buglar)
             .forEach(resource => {
-                console.log('>>> resource.castleIndexList', resource.castleIndexList);
 
                 resource.castleIndexList.forEach(castleIndex => {
                     const playerIndex = katan.castleList[castleIndex].playerIndex;
 
                     if (playerIndex !== -1) {
                         matchResourceCount++;
-                        console.log('>>> matchResourceCount', matchResourceCount);
 
                         resource.show = true;
 
                         const selector = `.player_${playerIndex}_${resource.type}`;
                         const targetOffset = jQuery(selector).offset();
 
-                        const resoucreSelector = `.resource_${resource.index}`;
-                        const resourceItem = jQuery(resoucreSelector).show();
+                        const resourceClass = `resource_${resource.index}`;
+                        const resourceSelector = '.' + resourceClass;
+
+                        const resourceItem = jQuery(resourceSelector).show();
                         const offset = resourceItem.offset();
 
                         const body = jQuery('body');
                         const newResourceItem = resourceItem.clone()
-                            .removeClass(resoucreSelector);
+                            .removeClass(resourceClass);
 
                         newResourceItem.appendTo(body)
                             .css({
@@ -701,19 +701,17 @@ const katanStore = {
 
                         resourceItem.hide();
 
-                        const complete = (newResourceItem, playerIndex, resource) => () => {
-                            moveResourceCount++;
-                            console.log('>>> moveResourceCount', moveResourceCount);
-
-                            newResourceItem.remove();
-                            katanStore.updateResource(playerIndex, resource);
-                        };
-
                         newResourceItem.addClass('ripple')
                             .animate({
                                 left: targetOffset.left + 'px',
                                 top: targetOffset.top + 'px'
-                            }, 1000, complete(newResourceItem, playerIndex, resource));
+                            }, 1000, () => {
+                                moveResourceCount++;
+
+                                newResourceItem.offset(offset);
+                                newResourceItem.remove();
+                                katanStore.updateResource(playerIndex, resource);
+                            });
                     }
                 });
             });
@@ -723,12 +721,14 @@ const katanStore = {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
                     katanStore.setDiceEnabled();
+                    katan.turn();
                 } else {
                     console.log('>>> interval');
                 }
             }, 100);
         } else {
             katanStore.setDiceEnabled();
+            katan.turn();
         }
     },
 
@@ -740,7 +740,11 @@ const katanStore = {
 
         katanStore.roll(a, b);
 
-        const number = a + b;
+        let number = a + b;
+
+        if (window.targetNumber || -1 !== -1) {
+            number = window.targetNumber;
+        }
 
         if (number === 7) {
             katan.mode = 'moveBuglar';
@@ -759,7 +763,6 @@ const katanStore = {
             setTimeout(() => {
                 katanStore.setNumberRippleDisabled(number);
                 katanStore.moveResource(number);
-                katan.turn();
             }, 1000);
         }
 

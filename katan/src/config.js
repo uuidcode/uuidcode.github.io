@@ -17,6 +17,10 @@ const config = {
         width: 80,
         height: 80,
     },
+    resource: {
+        width: 100,
+        height: 100,
+    },
     buglar: {
         width: 130,
         height: 130,

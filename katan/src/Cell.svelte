@@ -52,10 +52,10 @@
     let resourceImage = `${resource.type}_item.png`;
 
     let resourceImageStyle = toStyle({
-        left: resource.left + config.number.width / 2 + 'px',
-        top: resource.top + config.number.height / 2 + 'px',
-        width: `${config.number.width}px`,
-        height: `${config.number.height}px`,
+        left: resource.left + config.cell.width / 2 - config.resource.width / 2 + 'px',
+        top: resource.top + config.cell.height / 2 - config.resource.height / 2 + 'px',
+        width: `${config.resource.width}px`,
+        height: `${config.resource.height}px`,
     });
 
     const unsubscribe = katan.subscribe(currentKatan => {

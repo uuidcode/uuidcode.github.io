@@ -751,6 +751,10 @@ var app = (function (jQuery) {
             width: 80,
             height: 80,
         },
+        resource: {
+            width: 100,
+            height: 100,
+        },
         buglar: {
             width: 130,
             height: 130,
@@ -1509,27 +1513,27 @@ var app = (function (jQuery) {
                 .filter(resource => resource.number === number)
                 .filter(resource => !resource.buglar)
                 .forEach(resource => {
-                    console.log('>>> resource.castleIndexList', resource.castleIndexList);
 
                     resource.castleIndexList.forEach(castleIndex => {
                         const playerIndex = katan.castleList[castleIndex].playerIndex;
 
                         if (playerIndex !== -1) {
                             matchResourceCount++;
-                            console.log('>>> matchResourceCount', matchResourceCount);
 
                             resource.show = true;
 
                             const selector = `.player_${playerIndex}_${resource.type}`;
                             const targetOffset = jQuery__default['default'](selector).offset();
 
-                            const resoucreSelector = `.resource_${resource.index}`;
-                            const resourceItem = jQuery__default['default'](resoucreSelector).show();
+                            const resourceClass = `resource_${resource.index}`;
+                            const resourceSelector = '.' + resourceClass;
+
+                            const resourceItem = jQuery__default['default'](resourceSelector).show();
                             const offset = resourceItem.offset();
 
                             const body = jQuery__default['default']('body');
                             const newResourceItem = resourceItem.clone()
-                                .removeClass(resoucreSelector);
+                                .removeClass(resourceClass);
 
                             newResourceItem.appendTo(body)
                                 .css({
@@ -1539,19 +1543,17 @@ var app = (function (jQuery) {
 
                             resourceItem.hide();
 
-                            const complete = (newResourceItem, playerIndex, resource) => () => {
-                                moveResourceCount++;
-                                console.log('>>> moveResourceCount', moveResourceCount);
-
-                                newResourceItem.remove();
-                                katanStore.updateResource(playerIndex, resource);
-                            };
-
                             newResourceItem.addClass('ripple')
                                 .animate({
                                     left: targetOffset.left + 'px',
                                     top: targetOffset.top + 'px'
-                                }, 1000, complete(newResourceItem, playerIndex, resource));
+                                }, 1000, () => {
+                                    moveResourceCount++;
+
+                                    newResourceItem.offset(offset);
+                                    newResourceItem.remove();
+                                    katanStore.updateResource(playerIndex, resource);
+                                });
                         }
                     });
                 });
@@ -1561,12 +1563,14 @@ var app = (function (jQuery) {
                     if (moveResourceCount === matchResourceCount) {
                         clearInterval(interval);
                         katanStore.setDiceEnabled();
+                        katan.turn();
                     } else {
                         console.log('>>> interval');
                     }
                 }, 100);
             } else {
                 katanStore.setDiceEnabled();
+                katan.turn();
             }
         },
 
@@ -1578,7 +1582,11 @@ var app = (function (jQuery) {
 
             katanStore.roll(a, b);
 
-            const number = a + b;
+            let number = a + b;
+
+            if (window.targetNumber || -1 !== -1) {
+                number = window.targetNumber;
+            }
 
             if (number === 7) {
                 katan.mode = 'moveBuglar';
@@ -1597,7 +1605,6 @@ var app = (function (jQuery) {
                 setTimeout(() => {
                     katanStore.setNumberRippleDisabled(number);
                     katanStore.moveResource(number);
-                    katan.turn();
                 }, 1000);
             }
 
@@ -1913,8 +1920,8 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[8]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-nug0lc");
-    			add_location(img, file$1, 92, 4, 2824);
-    			add_location(div, file$1, 91, 4, 2814);
+    			add_location(img, file$1, 92, 4, 2881);
+    			add_location(div, file$1, 91, 4, 2871);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1978,19 +1985,19 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[5]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
-    			add_location(img, file$1, 70, 8, 2230);
+    			add_location(img, file$1, 70, 8, 2287);
     			attr_dev(div0, "class", "number svelte-nug0lc");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "buglar", /*resource*/ ctx[1].buglar);
-    			add_location(div0, file$1, 72, 8, 2306);
+    			add_location(div0, file$1, 72, 8, 2363);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[4]);
-    			add_location(div1, file$1, 69, 4, 2174);
+    			add_location(div1, file$1, 69, 4, 2231);
     			attr_dev(div2, "class", "cell svelte-nug0lc");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file$1, 68, 0, 2133);
+    			add_location(div2, file$1, 68, 0, 2190);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2137,10 +2144,10 @@ var app = (function (jQuery) {
     	let resourceImage = `${resource.type}_item.png`;
 
     	let resourceImageStyle = toStyle({
-    		left: resource.left + config.number.width / 2 + "px",
-    		top: resource.top + config.number.height / 2 + "px",
-    		width: `${config.number.width}px`,
-    		height: `${config.number.height}px`
+    		left: resource.left + config.cell.width / 2 - config.resource.width / 2 + "px",
+    		top: resource.top + config.cell.height / 2 - config.resource.height / 2 + "px",
+    		width: `${config.resource.width}px`,
+    		height: `${config.resource.height}px`
     	});
 
     	const unsubscribe = katanStore.subscribe(currentKatan => {
