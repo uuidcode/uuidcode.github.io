@@ -13,6 +13,6 @@
         text-align: center;
         line-height: 100px;
         font-weight: bolder;
-        font-size: 20px;
+        font-size: 50px;
     }
 </style>

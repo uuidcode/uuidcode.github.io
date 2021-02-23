@@ -5,9 +5,6 @@
     export let playerIndex;
     export let type = 'player';
 
-    console.log('>>> playerIndex', playerIndex);
-    console.log('>>> $katan.playerList[playerIndex];', $katan.playerList[playerIndex]);
-
     let player = $katan.playerList[playerIndex];
     let turnClassEnabled = player.turn && type === 'player';
     let modalMode = type === 'modal';
@@ -62,7 +59,33 @@
                          class="player_{player.index}_{resource.type}"></td>
                 <td class="number">{resource.count}</td>
                 {#if modalMode}
-                    <td><button class="btn btn-primary">교환</button></td>
+                    <td>
+                        {#if resource.count>=4}
+                        <table>
+                            <tr>
+                                {#each resourceList as tradeResource}
+                                    {#if resource.type!==tradeResource.type}
+                                        <td><img src="{tradeResource.type}_item.png"></td>
+                                    {/if}
+                                {/each}
+                            </tr>
+                            <tr>
+                                {#each resourceList as tradeResource}
+                                    {#if resource.type!==tradeResource.type}
+                                        <td>{resource.count/4}</td>
+                                    {/if}
+                                {/each}
+                            </tr>
+                            <tr>
+                                {#each resourceList as tradeResource}
+                                    {#if resource.type!==tradeResource.type}
+                                        <td><button class="btn btn-primary">교환</button></td>
+                                    {/if}
+                                {/each}
+                            </tr>
+                        </table>
+                        {/if}
+                    </td>
                 {/if}
             </tr>
         {/each}
