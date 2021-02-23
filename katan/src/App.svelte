@@ -8,27 +8,18 @@
 <main style="margin: auto; width: 80%">
     <table>
         <tr>
-            <td></td>
-            <td>
-                <table>
-                    <tr>
-                        <td>{$katan.mode}</td>
-                        <td>{$katan.message}</td>
-                        <td>  <Dice number={$katan.dice[0]}></Dice>
-                            <Dice number={$katan.dice[1]}></Dice>
-                            <button class="btn btn-primary"
-                                    disabled={$katan.diceDisabled}
-                                    on:click={()=>katan.play()}>주사위 굴리기</button></td>
-                    </tr>
-                </table>
-            </td>
-            <td></td>
-        </tr>
-        <tr>
             <td valign="top" class="player">
                 <Player playerIndex={0}></Player>
             </td>
-            <td valign="top">
+            <td valign="top" class="text-center">
+                <div class="dice-container">
+                    <Dice number={$katan.dice[0]}></Dice>
+                    <Dice number={$katan.dice[1]}></Dice>
+                    <button class="btn btn-primary"
+                            disabled={$katan.diceDisabled}
+                            on:click={()=>katan.play()}>주사위 굴리기</button>
+                </div>
+
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">
                 </Board>
@@ -81,6 +72,15 @@
 {/if}
 
 <style>
+    .dice-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .dice-container * {
+        margin: 5px;
+    }
+
     .player {
         width: 200px;
     }

@@ -6,13 +6,14 @@
 
 <style>
     .dice {
-        width: 100px;
-        height: 100px;
+        width: 50px;
+        height: 50px;
         border: 1px solid blue;
         display: inline-block;
         text-align: center;
-        line-height: 100px;
+        line-height: 50px;
         font-weight: bolder;
-        font-size: 50px;
+        font-size: 30px;
+        margin: 5px;
     }
 </style>

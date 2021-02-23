@@ -45,6 +45,15 @@ katan.playerList.forEach((player, i) => {
         iron: 0
     };
 
+    player.point = {
+        knight: 0,
+        road: 0,
+        point: 0,
+        castle: 0,
+        city: 0,
+        sum: 0
+    };
+
     player.trade = {
         tree: 4,
         mud: 4,
@@ -853,8 +862,14 @@ const katanStore = {
         castle.playerIndex = playerIndex;
         castle.pick = false;
         castle.title = '마을';
-        katan.playerList[playerIndex].pickCastle += 1;
+
+        const player = katan.playerList[playerIndex];
+        player.pickCastle += 1;
         katan.time = new Date().getTime();
+
+        player.point.castle += 1;
+        player.point.sum += 1;
+
         return katan;
     }),
 

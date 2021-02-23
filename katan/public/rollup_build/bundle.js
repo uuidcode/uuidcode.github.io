@@ -573,6 +573,15 @@ var app = (function (jQuery) {
             iron: 0
         };
 
+        player.point = {
+            knight: 0,
+            road: 0,
+            point: 0,
+            castle: 0,
+            city: 0,
+            sum: 0
+        };
+
         player.trade = {
             tree: 4,
             mud: 4,
@@ -1381,8 +1390,14 @@ var app = (function (jQuery) {
             castle.playerIndex = playerIndex;
             castle.pick = false;
             castle.title = '마을';
-            katan.playerList[playerIndex].pickCastle += 1;
+
+            const player = katan.playerList[playerIndex];
+            player.pickCastle += 1;
             katan.time = new Date().getTime();
+
+            player.point.castle += 1;
+            player.point.sum += 1;
+
             return katan;
         }),
 
@@ -2815,7 +2830,7 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(main, "class", "board svelte-8f6y7b");
+    			attr_dev(main, "class", "board svelte-116fgyq");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
     			add_location(main, file$3, 17, 0, 451);
     		},
@@ -3089,7 +3104,7 @@ var app = (function (jQuery) {
     		c: function create() {
     			div = element("div");
     			t = text(/*number*/ ctx[0]);
-    			attr_dev(div, "class", "dice svelte-6zr22d");
+    			attr_dev(div, "class", "dice svelte-1rtrnw9");
     			add_location(div, file$4, 4, 0, 43);
     		},
     		l: function claim(nodes) {
@@ -3197,7 +3212,168 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (61:16) {#if modalMode}
+    // (57:8) {#if !modalMode}
+    function create_if_block_4(ctx) {
+    	let tr0;
+    	let td0;
+    	let t1;
+    	let td1;
+    	let t2_value = /*player*/ ctx[0].point.castle + "";
+    	let t2;
+    	let t3;
+    	let tr1;
+    	let td2;
+    	let t5;
+    	let td3;
+    	let t6_value = /*player*/ ctx[0].point.city + "";
+    	let t6;
+    	let t7;
+    	let tr2;
+    	let td4;
+    	let t9;
+    	let td5;
+    	let t10_value = /*player*/ ctx[0].point.road + "";
+    	let t10;
+    	let t11;
+    	let tr3;
+    	let td6;
+    	let t13;
+    	let td7;
+    	let t14_value = /*player*/ ctx[0].point.knight + "";
+    	let t14;
+    	let t15;
+    	let tr4;
+    	let td8;
+    	let t17;
+    	let td9;
+    	let t18_value = /*player*/ ctx[0].point.sum + "";
+    	let t18;
+
+    	const block = {
+    		c: function create() {
+    			tr0 = element("tr");
+    			td0 = element("td");
+    			td0.textContent = "마을";
+    			t1 = space();
+    			td1 = element("td");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			tr1 = element("tr");
+    			td2 = element("td");
+    			td2.textContent = "도시";
+    			t5 = space();
+    			td3 = element("td");
+    			t6 = text(t6_value);
+    			t7 = space();
+    			tr2 = element("tr");
+    			td4 = element("td");
+    			td4.textContent = "최장 교역로";
+    			t9 = space();
+    			td5 = element("td");
+    			t10 = text(t10_value);
+    			t11 = space();
+    			tr3 = element("tr");
+    			td6 = element("td");
+    			td6.textContent = "최강 기사단";
+    			t13 = space();
+    			td7 = element("td");
+    			t14 = text(t14_value);
+    			t15 = space();
+    			tr4 = element("tr");
+    			td8 = element("td");
+    			td8.textContent = "현재 점수";
+    			t17 = space();
+    			td9 = element("td");
+    			t18 = text(t18_value);
+    			attr_dev(td0, "class", "svelte-10bi08a");
+    			add_location(td0, file$5, 58, 16, 1536);
+    			attr_dev(td1, "class", "svelte-10bi08a");
+    			add_location(td1, file$5, 59, 16, 1564);
+    			add_location(tr0, file$5, 57, 12, 1515);
+    			attr_dev(td2, "class", "svelte-10bi08a");
+    			add_location(td2, file$5, 62, 16, 1646);
+    			attr_dev(td3, "class", "svelte-10bi08a");
+    			add_location(td3, file$5, 63, 16, 1674);
+    			add_location(tr1, file$5, 61, 12, 1625);
+    			attr_dev(td4, "class", "svelte-10bi08a");
+    			add_location(td4, file$5, 66, 16, 1754);
+    			attr_dev(td5, "class", "svelte-10bi08a");
+    			add_location(td5, file$5, 67, 16, 1786);
+    			add_location(tr2, file$5, 65, 12, 1733);
+    			attr_dev(td6, "class", "svelte-10bi08a");
+    			add_location(td6, file$5, 70, 16, 1866);
+    			attr_dev(td7, "class", "svelte-10bi08a");
+    			add_location(td7, file$5, 71, 16, 1898);
+    			add_location(tr3, file$5, 69, 12, 1845);
+    			attr_dev(td8, "class", "svelte-10bi08a");
+    			add_location(td8, file$5, 74, 16, 1980);
+    			attr_dev(td9, "class", "svelte-10bi08a");
+    			add_location(td9, file$5, 75, 16, 2011);
+    			add_location(tr4, file$5, 73, 12, 1959);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, tr0, anchor);
+    			append_dev(tr0, td0);
+    			append_dev(tr0, t1);
+    			append_dev(tr0, td1);
+    			append_dev(td1, t2);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, tr1, anchor);
+    			append_dev(tr1, td2);
+    			append_dev(tr1, t5);
+    			append_dev(tr1, td3);
+    			append_dev(td3, t6);
+    			insert_dev(target, t7, anchor);
+    			insert_dev(target, tr2, anchor);
+    			append_dev(tr2, td4);
+    			append_dev(tr2, t9);
+    			append_dev(tr2, td5);
+    			append_dev(td5, t10);
+    			insert_dev(target, t11, anchor);
+    			insert_dev(target, tr3, anchor);
+    			append_dev(tr3, td6);
+    			append_dev(tr3, t13);
+    			append_dev(tr3, td7);
+    			append_dev(td7, t14);
+    			insert_dev(target, t15, anchor);
+    			insert_dev(target, tr4, anchor);
+    			append_dev(tr4, td8);
+    			append_dev(tr4, t17);
+    			append_dev(tr4, td9);
+    			append_dev(td9, t18);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*player*/ 1 && t2_value !== (t2_value = /*player*/ ctx[0].point.castle + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*player*/ 1 && t6_value !== (t6_value = /*player*/ ctx[0].point.city + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*player*/ 1 && t10_value !== (t10_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t10, t10_value);
+    			if (dirty & /*player*/ 1 && t14_value !== (t14_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t14, t14_value);
+    			if (dirty & /*player*/ 1 && t18_value !== (t18_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t18, t18_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(tr0);
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(tr1);
+    			if (detaching) detach_dev(t7);
+    			if (detaching) detach_dev(tr2);
+    			if (detaching) detach_dev(t11);
+    			if (detaching) detach_dev(tr3);
+    			if (detaching) detach_dev(t15);
+    			if (detaching) detach_dev(tr4);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_4.name,
+    		type: "if",
+    		source: "(57:8) {#if !modalMode}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (87:16) {#if modalMode}
     function create_if_block$3(ctx) {
     	let td;
     	let if_block = /*resource*/ ctx[11].count >= 4 && create_if_block_1$1(ctx);
@@ -3207,7 +3383,7 @@ var app = (function (jQuery) {
     			td = element("td");
     			if (if_block) if_block.c();
     			attr_dev(td, "class", "svelte-10bi08a");
-    			add_location(td, file$5, 61, 20, 1777);
+    			add_location(td, file$5, 87, 20, 2410);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -3237,14 +3413,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(61:16) {#if modalMode}",
+    		source: "(87:16) {#if modalMode}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (63:24) {#if resource.count>=4}
+    // (89:24) {#if resource.count>=4}
     function create_if_block_1$1(ctx) {
     	let table;
     	let tr0;
@@ -3282,10 +3458,10 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr0, file$5, 64, 28, 1913);
-    			add_location(tr1, file$5, 71, 28, 2323);
+    			add_location(tr0, file$5, 90, 28, 2546);
+    			add_location(tr1, file$5, 97, 28, 2956);
     			attr_dev(table, "class", "trade-resource svelte-10bi08a");
-    			add_location(table, file$5, 63, 24, 1854);
+    			add_location(table, file$5, 89, 24, 2487);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -3362,14 +3538,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(63:24) {#if resource.count>=4}",
+    		source: "(89:24) {#if resource.count>=4}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (67:36) {#if resource.type!==tradeResource.type}
+    // (93:36) {#if resource.type!==tradeResource.type}
     function create_if_block_3(ctx) {
     	let td;
     	let img;
@@ -3381,9 +3557,9 @@ var app = (function (jQuery) {
     			img = element("img");
     			attr_dev(img, "class", "trade-resource svelte-10bi08a");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$5, 67, 44, 2109);
+    			add_location(img, file$5, 93, 44, 2742);
     			attr_dev(td, "class", "svelte-10bi08a");
-    			add_location(td, file$5, 67, 40, 2105);
+    			add_location(td, file$5, 93, 40, 2738);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -3403,14 +3579,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(67:36) {#if resource.type!==tradeResource.type}",
+    		source: "(93:36) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (66:32) {#each resourceList as tradeResource}
+    // (92:32) {#each resourceList as tradeResource}
     function create_each_block_2$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_3(ctx);
@@ -3448,14 +3624,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_2$1.name,
     		type: "each",
-    		source: "(66:32) {#each resourceList as tradeResource}",
+    		source: "(92:32) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (74:36) {#if resource.type!==tradeResource.type}
+    // (100:36) {#if resource.type!==tradeResource.type}
     function create_if_block_2$1(ctx) {
     	let td;
     	let button;
@@ -3472,9 +3648,9 @@ var app = (function (jQuery) {
     			button = element("button");
     			button.textContent = "4:1 교환";
     			attr_dev(button, "class", "btn btn-primary btn-sm");
-    			add_location(button, file$5, 74, 44, 2519);
+    			add_location(button, file$5, 100, 44, 3152);
     			attr_dev(td, "class", "svelte-10bi08a");
-    			add_location(td, file$5, 74, 40, 2515);
+    			add_location(td, file$5, 100, 40, 3148);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -3499,14 +3675,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(74:36) {#if resource.type!==tradeResource.type}",
+    		source: "(100:36) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (73:32) {#each resourceList as tradeResource}
+    // (99:32) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_2$1(ctx);
@@ -3544,14 +3720,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(73:32) {#each resourceList as tradeResource}",
+    		source: "(99:32) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (56:8) {#each resourceList as resource}
+    // (80:8) {#each resourceList as resource}
     function create_each_block$1(ctx) {
     	let tr;
     	let td0;
@@ -3579,12 +3755,12 @@ var app = (function (jQuery) {
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-10bi08a");
-    			add_location(img, file$5, 57, 20, 1555);
+    			add_location(img, file$5, 82, 20, 2171);
     			attr_dev(td0, "class", "svelte-10bi08a");
-    			add_location(td0, file$5, 57, 16, 1551);
+    			add_location(td0, file$5, 81, 16, 2146);
     			attr_dev(td1, "class", "number svelte-10bi08a");
-    			add_location(td1, file$5, 59, 16, 1684);
-    			add_location(tr, file$5, 56, 12, 1530);
+    			add_location(td1, file$5, 85, 16, 2317);
+    			add_location(tr, file$5, 80, 12, 2125);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -3619,7 +3795,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(56:8) {#each resourceList as resource}",
+    		source: "(80:8) {#each resourceList as resource}",
     		ctx
     	});
 
@@ -3634,6 +3810,8 @@ var app = (function (jQuery) {
     	let t0_value = /*player*/ ctx[0].name + "";
     	let t0;
     	let t1;
+    	let t2;
+    	let if_block = !/*modalMode*/ ctx[3] && create_if_block_4(ctx);
     	let each_value = /*resourceList*/ ctx[2];
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -3650,6 +3828,8 @@ var app = (function (jQuery) {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
+    			if (if_block) if_block.c();
+    			t2 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
@@ -3675,6 +3855,8 @@ var app = (function (jQuery) {
     			append_dev(tr, td);
     			append_dev(td, t0);
     			append_dev(table, t1);
+    			if (if_block) if_block.m(table, null);
+    			append_dev(table, t2);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(table, null);
@@ -3686,6 +3868,8 @@ var app = (function (jQuery) {
     			if (dirty & /*player*/ 1) {
     				set_style(td, "background-color", /*player*/ ctx[0].color);
     			}
+
+    			if (!/*modalMode*/ ctx[3]) if_block.p(ctx, dirty);
 
     			if (dirty & /*resourceList, katan, player, modalMode*/ 13) {
     				each_value = /*resourceList*/ ctx[2];
@@ -3719,6 +3903,7 @@ var app = (function (jQuery) {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
+    			if (if_block) if_block.d();
     			destroy_each(each_blocks, detaching);
     		}
     	};
@@ -3875,7 +4060,7 @@ var app = (function (jQuery) {
     /* src\App.svelte generated by Svelte v3.32.3 */
     const file$6 = "src\\App.svelte";
 
-    // (52:12) {#if $katan.buttonMessage!==''}
+    // (43:12) {#if $katan.buttonMessage!==''}
     function create_if_block_1$2(ctx) {
     	let div;
     	let button;
@@ -3891,9 +4076,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 53, 20, 1936);
+    			add_location(button, file$6, 44, 20, 1666);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$6, 52, 16, 1888);
+    			add_location(div, file$6, 43, 16, 1618);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3919,14 +4104,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(52:12) {#if $katan.buttonMessage!==''}",
+    		source: "(43:12) {#if $katan.buttonMessage!==''}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (61:0) {#if $katan.showResourceModal}
+    // (52:0) {#if $katan.showResourceModal}
     function create_if_block$4(ctx) {
     	let div5;
     	let div4;
@@ -3969,28 +4154,28 @@ var app = (function (jQuery) {
     			attr_dev(button0, "class", "btn-close");
     			attr_dev(button0, "data-bs-dismiss", "modal");
     			attr_dev(button0, "aria-label", "Close");
-    			add_location(button0, file$6, 65, 16, 2427);
+    			add_location(button0, file$6, 56, 16, 2157);
     			attr_dev(div0, "class", "modal-header");
-    			add_location(div0, file$6, 64, 12, 2383);
+    			add_location(div0, file$6, 55, 12, 2113);
     			attr_dev(div1, "class", "modal-body");
-    			add_location(div1, file$6, 67, 12, 2553);
+    			add_location(div1, file$6, 58, 12, 2283);
     			attr_dev(button1, "type", "button");
     			attr_dev(button1, "class", "btn btn-secondary");
     			attr_dev(button1, "data-bs-dismiss", "modal");
-    			add_location(button1, file$6, 73, 16, 2763);
+    			add_location(button1, file$6, 64, 16, 2493);
     			attr_dev(div2, "class", "modal-footer");
-    			add_location(div2, file$6, 72, 12, 2719);
+    			add_location(div2, file$6, 63, 12, 2449);
     			attr_dev(div3, "class", "modal-content");
-    			add_location(div3, file$6, 63, 8, 2342);
+    			add_location(div3, file$6, 54, 8, 2072);
     			attr_dev(div4, "class", "modal-dialog");
     			set_style(div4, "max-width", "800px");
-    			add_location(div4, file$6, 62, 4, 2282);
+    			add_location(div4, file$6, 53, 4, 2012);
     			attr_dev(div5, "class", "modal fade");
     			attr_dev(div5, "id", "resourceModal");
     			attr_dev(div5, "tabindex", "-1");
     			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div5, "aria-hidden", "true");
-    			add_location(div5, file$6, 61, 0, 2164);
+    			add_location(div5, file$6, 52, 0, 1894);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div5, anchor);
@@ -4037,7 +4222,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(61:0) {#if $katan.showResourceModal}",
+    		source: "(52:0) {#if $katan.showResourceModal}",
     		ctx
     	});
 
@@ -4046,57 +4231,46 @@ var app = (function (jQuery) {
 
     function create_fragment$6(ctx) {
     	let main;
-    	let table1;
-    	let tr1;
+    	let table;
+    	let tr;
     	let td0;
-    	let t0;
-    	let td4;
-    	let table0;
-    	let tr0;
-    	let td1;
-    	let t1_value = /*$katan*/ ctx[0].mode + "";
-    	let t1;
-    	let t2;
-    	let td2;
-    	let t3_value = /*$katan*/ ctx[0].message + "";
-    	let t3;
-    	let t4;
-    	let td3;
-    	let dice0;
-    	let t5;
-    	let dice1;
-    	let t6;
-    	let button0;
-    	let t7;
-    	let button0_disabled_value;
-    	let t8;
-    	let td5;
-    	let t9;
-    	let tr2;
-    	let td6;
     	let player0;
-    	let t10;
-    	let td7;
+    	let t0;
+    	let td1;
+    	let div0;
+    	let dice0;
+    	let t1;
+    	let dice1;
+    	let t2;
+    	let button0;
+    	let t3;
+    	let button0_disabled_value;
+    	let t4;
     	let board;
-    	let t11;
-    	let td8;
+    	let t5;
+    	let td2;
     	let player1;
-    	let t12;
+    	let t6;
+    	let div5;
     	let div4;
     	let div3;
-    	let div2;
-    	let div0;
-    	let button1;
-    	let t13;
     	let div1;
-    	let t14_value = /*$katan*/ ctx[0].bodyMessage + "";
-    	let t14;
-    	let t15;
-    	let t16;
+    	let button1;
+    	let t7;
+    	let div2;
+    	let t8_value = /*$katan*/ ctx[0].bodyMessage + "";
+    	let t8;
+    	let t9;
+    	let t10;
     	let if_block1_anchor;
     	let current;
     	let mounted;
     	let dispose;
+
+    	player0 = new Player({
+    			props: { playerIndex: 0 },
+    			$$inline: true
+    		});
 
     	dice0 = new Dice({
     			props: { number: /*$katan*/ ctx[0].dice[0] },
@@ -4105,11 +4279,6 @@ var app = (function (jQuery) {
 
     	dice1 = new Dice({
     			props: { number: /*$katan*/ ctx[0].dice[1] },
-    			$$inline: true
-    		});
-
-    	player0 = new Player({
-    			props: { playerIndex: 0 },
     			$$inline: true
     		});
 
@@ -4132,81 +4301,54 @@ var app = (function (jQuery) {
     	const block = {
     		c: function create() {
     			main = element("main");
-    			table1 = element("table");
-    			tr1 = element("tr");
+    			table = element("table");
+    			tr = element("tr");
     			td0 = element("td");
-    			t0 = space();
-    			td4 = element("td");
-    			table0 = element("table");
-    			tr0 = element("tr");
-    			td1 = element("td");
-    			t1 = text(t1_value);
-    			t2 = space();
-    			td2 = element("td");
-    			t3 = text(t3_value);
-    			t4 = space();
-    			td3 = element("td");
-    			create_component(dice0.$$.fragment);
-    			t5 = space();
-    			create_component(dice1.$$.fragment);
-    			t6 = space();
-    			button0 = element("button");
-    			t7 = text("주사위 굴리기");
-    			t8 = space();
-    			td5 = element("td");
-    			t9 = space();
-    			tr2 = element("tr");
-    			td6 = element("td");
     			create_component(player0.$$.fragment);
-    			t10 = space();
-    			td7 = element("td");
+    			t0 = space();
+    			td1 = element("td");
+    			div0 = element("div");
+    			create_component(dice0.$$.fragment);
+    			t1 = space();
+    			create_component(dice1.$$.fragment);
+    			t2 = space();
+    			button0 = element("button");
+    			t3 = text("주사위 굴리기");
+    			t4 = space();
     			create_component(board.$$.fragment);
-    			t11 = space();
-    			td8 = element("td");
+    			t5 = space();
+    			td2 = element("td");
     			create_component(player1.$$.fragment);
-    			t12 = space();
+    			t6 = space();
+    			div5 = element("div");
     			div4 = element("div");
     			div3 = element("div");
-    			div2 = element("div");
-    			div0 = element("div");
-    			button1 = element("button");
-    			t13 = space();
     			div1 = element("div");
-    			t14 = text(t14_value);
-    			t15 = space();
+    			button1 = element("button");
+    			t7 = space();
+    			div2 = element("div");
+    			t8 = text(t8_value);
+    			t9 = space();
     			if (if_block0) if_block0.c();
-    			t16 = space();
+    			t10 = space();
     			if (if_block1) if_block1.c();
     			if_block1_anchor = empty();
-    			attr_dev(td0, "class", "svelte-fd1w91");
+    			attr_dev(td0, "valign", "top");
+    			attr_dev(td0, "class", "player svelte-wvsy7b");
     			add_location(td0, file$6, 10, 12, 259);
-    			attr_dev(td1, "class", "svelte-fd1w91");
-    			add_location(td1, file$6, 14, 24, 363);
-    			attr_dev(td2, "class", "svelte-fd1w91");
-    			add_location(td2, file$6, 15, 24, 411);
-    			attr_dev(button0, "class", "btn btn-primary");
+    			attr_dev(button0, "class", "btn btn-primary svelte-wvsy7b");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$6, 18, 28, 602);
-    			attr_dev(td3, "class", "svelte-fd1w91");
-    			add_location(td3, file$6, 16, 24, 462);
-    			add_location(tr0, file$6, 13, 20, 333);
-    			add_location(table0, file$6, 12, 16, 304);
-    			attr_dev(td4, "class", "svelte-fd1w91");
-    			add_location(td4, file$6, 11, 12, 282);
-    			attr_dev(td5, "class", "svelte-fd1w91");
-    			add_location(td5, file$6, 24, 12, 874);
-    			add_location(tr1, file$6, 9, 8, 241);
-    			attr_dev(td6, "valign", "top");
-    			attr_dev(td6, "class", "player svelte-fd1w91");
-    			add_location(td6, file$6, 27, 12, 926);
-    			attr_dev(td7, "valign", "top");
-    			attr_dev(td7, "class", "svelte-fd1w91");
-    			add_location(td7, file$6, 30, 12, 1042);
-    			attr_dev(td8, "valign", "top");
-    			attr_dev(td8, "class", "player svelte-fd1w91");
-    			add_location(td8, file$6, 35, 12, 1237);
-    			add_location(tr2, file$6, 26, 8, 908);
-    			add_location(table1, file$6, 8, 4, 224);
+    			add_location(button0, file$6, 17, 20, 598);
+    			attr_dev(div0, "class", "dice-container svelte-wvsy7b");
+    			add_location(div0, file$6, 14, 16, 430);
+    			attr_dev(td1, "valign", "top");
+    			attr_dev(td1, "class", "text-center svelte-wvsy7b");
+    			add_location(td1, file$6, 13, 12, 375);
+    			attr_dev(td2, "valign", "top");
+    			attr_dev(td2, "class", "player svelte-wvsy7b");
+    			add_location(td2, file$6, 26, 12, 967);
+    			add_location(tr, file$6, 9, 8, 241);
+    			add_location(table, file$6, 8, 4, 224);
     			set_style(main, "margin", "auto");
     			set_style(main, "width", "80%");
     			add_location(main, file$6, 7, 0, 179);
@@ -4214,71 +4356,57 @@ var app = (function (jQuery) {
     			attr_dev(button1, "class", "btn-close");
     			attr_dev(button1, "data-bs-dismiss", "modal");
     			attr_dev(button1, "aria-label", "Close");
-    			add_location(button1, file$6, 45, 16, 1615);
-    			attr_dev(div0, "class", "modal-header");
-    			add_location(div0, file$6, 44, 12, 1571);
-    			attr_dev(div1, "class", "modal-body");
-    			add_location(div1, file$6, 47, 12, 1741);
-    			attr_dev(div2, "class", "modal-content");
-    			add_location(div2, file$6, 43, 8, 1530);
-    			attr_dev(div3, "class", "modal-dialog");
-    			add_location(div3, file$6, 42, 4, 1494);
-    			attr_dev(div4, "class", "modal fade");
-    			attr_dev(div4, "id", "katanModal");
-    			attr_dev(div4, "tabindex", "-1");
-    			attr_dev(div4, "aria-labelledby", "exampleModalLabel");
-    			attr_dev(div4, "aria-hidden", "true");
-    			add_location(div4, file$6, 41, 0, 1379);
+    			add_location(button1, file$6, 36, 16, 1345);
+    			attr_dev(div1, "class", "modal-header");
+    			add_location(div1, file$6, 35, 12, 1301);
+    			attr_dev(div2, "class", "modal-body");
+    			add_location(div2, file$6, 38, 12, 1471);
+    			attr_dev(div3, "class", "modal-content");
+    			add_location(div3, file$6, 34, 8, 1260);
+    			attr_dev(div4, "class", "modal-dialog");
+    			add_location(div4, file$6, 33, 4, 1224);
+    			attr_dev(div5, "class", "modal fade");
+    			attr_dev(div5, "id", "katanModal");
+    			attr_dev(div5, "tabindex", "-1");
+    			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
+    			attr_dev(div5, "aria-hidden", "true");
+    			add_location(div5, file$6, 32, 0, 1109);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, table1);
-    			append_dev(table1, tr1);
-    			append_dev(tr1, td0);
-    			append_dev(tr1, t0);
-    			append_dev(tr1, td4);
-    			append_dev(td4, table0);
-    			append_dev(table0, tr0);
-    			append_dev(tr0, td1);
-    			append_dev(td1, t1);
-    			append_dev(tr0, t2);
-    			append_dev(tr0, td2);
-    			append_dev(td2, t3);
-    			append_dev(tr0, t4);
-    			append_dev(tr0, td3);
-    			mount_component(dice0, td3, null);
-    			append_dev(td3, t5);
-    			mount_component(dice1, td3, null);
-    			append_dev(td3, t6);
-    			append_dev(td3, button0);
-    			append_dev(button0, t7);
-    			append_dev(tr1, t8);
-    			append_dev(tr1, td5);
-    			append_dev(table1, t9);
-    			append_dev(table1, tr2);
-    			append_dev(tr2, td6);
-    			mount_component(player0, td6, null);
-    			append_dev(tr2, t10);
-    			append_dev(tr2, td7);
-    			mount_component(board, td7, null);
-    			append_dev(tr2, t11);
-    			append_dev(tr2, td8);
-    			mount_component(player1, td8, null);
-    			insert_dev(target, t12, anchor);
-    			insert_dev(target, div4, anchor);
+    			append_dev(main, table);
+    			append_dev(table, tr);
+    			append_dev(tr, td0);
+    			mount_component(player0, td0, null);
+    			append_dev(tr, t0);
+    			append_dev(tr, td1);
+    			append_dev(td1, div0);
+    			mount_component(dice0, div0, null);
+    			append_dev(div0, t1);
+    			mount_component(dice1, div0, null);
+    			append_dev(div0, t2);
+    			append_dev(div0, button0);
+    			append_dev(button0, t3);
+    			append_dev(td1, t4);
+    			mount_component(board, td1, null);
+    			append_dev(tr, t5);
+    			append_dev(tr, td2);
+    			mount_component(player1, td2, null);
+    			insert_dev(target, t6, anchor);
+    			insert_dev(target, div5, anchor);
+    			append_dev(div5, div4);
     			append_dev(div4, div3);
+    			append_dev(div3, div1);
+    			append_dev(div1, button1);
+    			append_dev(div3, t7);
     			append_dev(div3, div2);
-    			append_dev(div2, div0);
-    			append_dev(div0, button1);
-    			append_dev(div2, t13);
-    			append_dev(div2, div1);
-    			append_dev(div1, t14);
-    			append_dev(div2, t15);
-    			if (if_block0) if_block0.m(div2, null);
-    			insert_dev(target, t16, anchor);
+    			append_dev(div2, t8);
+    			append_dev(div3, t9);
+    			if (if_block0) if_block0.m(div3, null);
+    			insert_dev(target, t10, anchor);
     			if (if_block1) if_block1.m(target, anchor);
     			insert_dev(target, if_block1_anchor, anchor);
     			current = true;
@@ -4289,8 +4417,6 @@ var app = (function (jQuery) {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if ((!current || dirty & /*$katan*/ 1) && t1_value !== (t1_value = /*$katan*/ ctx[0].mode + "")) set_data_dev(t1, t1_value);
-    			if ((!current || dirty & /*$katan*/ 1) && t3_value !== (t3_value = /*$katan*/ ctx[0].message + "")) set_data_dev(t3, t3_value);
     			const dice0_changes = {};
     			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
     			dice0.$set(dice0_changes);
@@ -4311,7 +4437,7 @@ var app = (function (jQuery) {
     			}
 
     			board.$set(board_changes);
-    			if ((!current || dirty & /*$katan*/ 1) && t14_value !== (t14_value = /*$katan*/ ctx[0].bodyMessage + "")) set_data_dev(t14, t14_value);
+    			if ((!current || dirty & /*$katan*/ 1) && t8_value !== (t8_value = /*$katan*/ ctx[0].bodyMessage + "")) set_data_dev(t8, t8_value);
 
     			if (/*$katan*/ ctx[0].buttonMessage !== "") {
     				if (if_block0) {
@@ -4319,7 +4445,7 @@ var app = (function (jQuery) {
     				} else {
     					if_block0 = create_if_block_1$2(ctx);
     					if_block0.c();
-    					if_block0.m(div2, null);
+    					if_block0.m(div3, null);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -4351,18 +4477,18 @@ var app = (function (jQuery) {
     		},
     		i: function intro(local) {
     			if (current) return;
+    			transition_in(player0.$$.fragment, local);
     			transition_in(dice0.$$.fragment, local);
     			transition_in(dice1.$$.fragment, local);
-    			transition_in(player0.$$.fragment, local);
     			transition_in(board.$$.fragment, local);
     			transition_in(player1.$$.fragment, local);
     			transition_in(if_block1);
     			current = true;
     		},
     		o: function outro(local) {
+    			transition_out(player0.$$.fragment, local);
     			transition_out(dice0.$$.fragment, local);
     			transition_out(dice1.$$.fragment, local);
-    			transition_out(player0.$$.fragment, local);
     			transition_out(board.$$.fragment, local);
     			transition_out(player1.$$.fragment, local);
     			transition_out(if_block1);
@@ -4370,15 +4496,15 @@ var app = (function (jQuery) {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
+    			destroy_component(player0);
     			destroy_component(dice0);
     			destroy_component(dice1);
-    			destroy_component(player0);
     			destroy_component(board);
     			destroy_component(player1);
-    			if (detaching) detach_dev(t12);
-    			if (detaching) detach_dev(div4);
+    			if (detaching) detach_dev(t6);
+    			if (detaching) detach_dev(div5);
     			if (if_block0) if_block0.d();
-    			if (detaching) detach_dev(t16);
+    			if (detaching) detach_dev(t10);
     			if (if_block1) if_block1.d(detaching);
     			if (detaching) detach_dev(if_block1_anchor);
     			mounted = false;

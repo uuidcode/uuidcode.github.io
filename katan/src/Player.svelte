@@ -53,10 +53,36 @@
                 class="name"
                 style="background-color:{player.color}">{player.name}</td>
         </tr>
+
+        {#if !modalMode}
+            <tr>
+                <td>마을</td>
+                <td>{player.point.castle}</td>
+            </tr>
+            <tr>
+                <td>도시</td>
+                <td>{player.point.city}</td>
+            </tr>
+            <tr>
+                <td>최장 교역로</td>
+                <td>{player.point.road}</td>
+            </tr>
+            <tr>
+                <td>최강 기사단</td>
+                <td>{player.point.knight}</td>
+            </tr>
+            <tr>
+                <td>현재 점수</td>
+                <td>{player.point.sum}</td>
+            </tr>
+        {/if}
+
         {#each resourceList as resource}
             <tr>
-                <td><img src="{resource.type}_item.png"
-                         class="player_{player.index}_{resource.type}"></td>
+                <td>
+                    <img src="{resource.type}_item.png"
+                         class="player_{player.index}_{resource.type}">
+                </td>
                 <td class="number">{resource.count}</td>
                 {#if modalMode}
                     <td>
