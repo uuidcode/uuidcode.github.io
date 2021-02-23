@@ -19,34 +19,40 @@ let katan = {
             name: '다은',
             turn: true,
             pickCastle: 0,
-            pickRoad: 0,
-            resource: {
-                tree: 0,
-                mud: 0,
-                wheat: 0,
-                sheep: 0,
-                iron: 0
-            },
-            index: 0
+            pickRoad: 0
         },
         {
             color: 'red',
             name: '아빠',
             turn: false,
             pickCastle: 0,
-            pickRoad: 0,
-            resource: {
-                tree: 0,
-                mud: 0,
-                wheat: 0,
-                sheep: 0,
-                iron: 0
-            },
-            index: 1
+            pickRoad: 0
         }
     ]
 };
 
+katan.playerList.forEach((player, i) => {
+    player.index = i;
+
+    player.pickCastle =  0;
+    player.pickRoad = 0;
+
+    player.resource = {
+        tree: 0,
+        mud: 0,
+        wheat: 0,
+        sheep: 0,
+        iron: 0
+    };
+
+    player.trade = {
+        tree: 4,
+        mud: 4,
+        wheat: 4,
+        sheep: 4,
+        iron: 4
+    }
+});
 
 function random() {
     return () => Math.random() - 0.5;
@@ -1006,6 +1012,12 @@ const katanStore = {
                 return castle;
             });
 
+        return katan;
+    }),
+
+    exchange: (player, resourceType, targetResourceType) => update(katan => {
+        player.resource[targetResourceType] += 1;
+        player.resource[resourceType] -= player.trade[resourceType];
         return katan;
     })
 };

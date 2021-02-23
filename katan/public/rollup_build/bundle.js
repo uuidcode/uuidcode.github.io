@@ -547,34 +547,40 @@ var app = (function (jQuery) {
                 name: '다은',
                 turn: true,
                 pickCastle: 0,
-                pickRoad: 0,
-                resource: {
-                    tree: 0,
-                    mud: 0,
-                    wheat: 0,
-                    sheep: 0,
-                    iron: 0
-                },
-                index: 0
+                pickRoad: 0
             },
             {
                 color: 'red',
                 name: '아빠',
                 turn: false,
                 pickCastle: 0,
-                pickRoad: 0,
-                resource: {
-                    tree: 0,
-                    mud: 0,
-                    wheat: 0,
-                    sheep: 0,
-                    iron: 0
-                },
-                index: 1
+                pickRoad: 0
             }
         ]
     };
 
+    katan.playerList.forEach((player, i) => {
+        player.index = i;
+
+        player.pickCastle =  0;
+        player.pickRoad = 0;
+
+        player.resource = {
+            tree: 0,
+            mud: 0,
+            wheat: 0,
+            sheep: 0,
+            iron: 0
+        };
+
+        player.trade = {
+            tree: 4,
+            mud: 4,
+            wheat: 4,
+            sheep: 4,
+            iron: 4
+        };
+    });
 
     function random() {
         return () => Math.random() - 0.5;
@@ -1534,6 +1540,12 @@ var app = (function (jQuery) {
                     return castle;
                 });
 
+            return katan;
+        }),
+
+        exchange: (player, resourceType, targetResourceType) => update$1(katan => {
+            player.resource[targetResourceType] += 1;
+            player.resource[resourceType] -= player.trade[resourceType];
             return katan;
         })
     };
@@ -3169,38 +3181,32 @@ var app = (function (jQuery) {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
+    	child_ctx[11] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[14] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_2$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
-    	return child_ctx;
-    }
-
-    function get_each_context_3(ctx, list, i) {
-    	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[14] = list[i];
     	return child_ctx;
     }
 
     // (61:16) {#if modalMode}
     function create_if_block$3(ctx) {
     	let td;
-    	let if_block = /*resource*/ ctx[10].count >= 4 && create_if_block_1$1(ctx);
+    	let if_block = /*resource*/ ctx[11].count >= 4 && create_if_block_1$1(ctx);
 
     	const block = {
     		c: function create() {
     			td = element("td");
     			if (if_block) if_block.c();
-    			attr_dev(td, "class", "svelte-zsphv7");
+    			attr_dev(td, "class", "svelte-10bi08a");
     			add_location(td, file$5, 61, 20, 1777);
     		},
     		m: function mount(target, anchor) {
@@ -3208,7 +3214,7 @@ var app = (function (jQuery) {
     			if (if_block) if_block.m(td, null);
     		},
     		p: function update(ctx, dirty) {
-    			if (/*resource*/ ctx[10].count >= 4) {
+    			if (/*resource*/ ctx[11].count >= 4) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -3242,18 +3248,8 @@ var app = (function (jQuery) {
     function create_if_block_1$1(ctx) {
     	let table;
     	let tr0;
-    	let t0;
+    	let t;
     	let tr1;
-    	let t1;
-    	let tr2;
-    	let each_value_3 = /*resourceList*/ ctx[2];
-    	validate_each_argument(each_value_3);
-    	let each_blocks_2 = [];
-
-    	for (let i = 0; i < each_value_3.length; i += 1) {
-    		each_blocks_2[i] = create_each_block_3(get_each_context_3(ctx, each_value_3, i));
-    	}
-
     	let each_value_2 = /*resourceList*/ ctx[2];
     	validate_each_argument(each_value_2);
     	let each_blocks_1 = [];
@@ -3275,76 +3271,38 @@ var app = (function (jQuery) {
     			table = element("table");
     			tr0 = element("tr");
 
-    			for (let i = 0; i < each_blocks_2.length; i += 1) {
-    				each_blocks_2[i].c();
-    			}
-
-    			t0 = space();
-    			tr1 = element("tr");
-
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t1 = space();
-    			tr2 = element("tr");
+    			t = space();
+    			tr1 = element("tr");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr0, file$5, 64, 28, 1890);
-    			add_location(tr1, file$5, 71, 28, 2277);
-    			add_location(tr2, file$5, 78, 28, 2641);
+    			add_location(tr0, file$5, 64, 28, 1913);
+    			add_location(tr1, file$5, 71, 28, 2323);
+    			attr_dev(table, "class", "trade-resource svelte-10bi08a");
     			add_location(table, file$5, 63, 24, 1854);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
     			append_dev(table, tr0);
 
-    			for (let i = 0; i < each_blocks_2.length; i += 1) {
-    				each_blocks_2[i].m(tr0, null);
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].m(tr0, null);
     			}
 
-    			append_dev(table, t0);
+    			append_dev(table, t);
     			append_dev(table, tr1);
 
-    			for (let i = 0; i < each_blocks_1.length; i += 1) {
-    				each_blocks_1[i].m(tr1, null);
-    			}
-
-    			append_dev(table, t1);
-    			append_dev(table, tr2);
-
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(tr2, null);
+    				each_blocks[i].m(tr1, null);
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 4) {
-    				each_value_3 = /*resourceList*/ ctx[2];
-    				validate_each_argument(each_value_3);
-    				let i;
-
-    				for (i = 0; i < each_value_3.length; i += 1) {
-    					const child_ctx = get_each_context_3(ctx, each_value_3, i);
-
-    					if (each_blocks_2[i]) {
-    						each_blocks_2[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks_2[i] = create_each_block_3(child_ctx);
-    						each_blocks_2[i].c();
-    						each_blocks_2[i].m(tr0, null);
-    					}
-    				}
-
-    				for (; i < each_blocks_2.length; i += 1) {
-    					each_blocks_2[i].d(1);
-    				}
-
-    				each_blocks_2.length = each_value_3.length;
-    			}
-
     			if (dirty & /*resourceList*/ 4) {
     				each_value_2 = /*resourceList*/ ctx[2];
     				validate_each_argument(each_value_2);
@@ -3358,7 +3316,7 @@ var app = (function (jQuery) {
     					} else {
     						each_blocks_1[i] = create_each_block_2$1(child_ctx);
     						each_blocks_1[i].c();
-    						each_blocks_1[i].m(tr1, null);
+    						each_blocks_1[i].m(tr0, null);
     					}
     				}
 
@@ -3369,7 +3327,7 @@ var app = (function (jQuery) {
     				each_blocks_1.length = each_value_2.length;
     			}
 
-    			if (dirty & /*resourceList*/ 4) {
+    			if (dirty & /*katan, player, resourceList*/ 5) {
     				each_value_1 = /*resourceList*/ ctx[2];
     				validate_each_argument(each_value_1);
     				let i;
@@ -3382,7 +3340,7 @@ var app = (function (jQuery) {
     					} else {
     						each_blocks[i] = create_each_block_1$1(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(tr2, null);
+    						each_blocks[i].m(tr1, null);
     					}
     				}
 
@@ -3395,7 +3353,6 @@ var app = (function (jQuery) {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(table);
-    			destroy_each(each_blocks_2, detaching);
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
     		}
@@ -3413,7 +3370,7 @@ var app = (function (jQuery) {
     }
 
     // (67:36) {#if resource.type!==tradeResource.type}
-    function create_if_block_4(ctx) {
+    function create_if_block_3(ctx) {
     	let td;
     	let img;
     	let img_src_value;
@@ -3422,18 +3379,18 @@ var app = (function (jQuery) {
     		c: function create() {
     			td = element("td");
     			img = element("img");
-    			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[13].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", "svelte-zsphv7");
-    			add_location(img, file$5, 67, 44, 2086);
-    			attr_dev(td, "class", "svelte-zsphv7");
-    			add_location(td, file$5, 67, 40, 2082);
+    			attr_dev(img, "class", "trade-resource svelte-10bi08a");
+    			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
+    			add_location(img, file$5, 67, 44, 2109);
+    			attr_dev(td, "class", "svelte-10bi08a");
+    			add_location(td, file$5, 67, 40, 2105);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
     			append_dev(td, img);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[13].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
     		},
@@ -3444,7 +3401,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_4.name,
+    		id: create_if_block_3.name,
     		type: "if",
     		source: "(67:36) {#if resource.type!==tradeResource.type}",
     		ctx
@@ -3454,90 +3411,9 @@ var app = (function (jQuery) {
     }
 
     // (66:32) {#each resourceList as tradeResource}
-    function create_each_block_3(ctx) {
-    	let if_block_anchor;
-    	let if_block = /*resource*/ ctx[10].type !== /*tradeResource*/ ctx[13].type && create_if_block_4(ctx);
-
-    	const block = {
-    		c: function create() {
-    			if (if_block) if_block.c();
-    			if_block_anchor = empty();
-    		},
-    		m: function mount(target, anchor) {
-    			if (if_block) if_block.m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (/*resource*/ ctx[10].type !== /*tradeResource*/ ctx[13].type) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block_4(ctx);
-    					if_block.c();
-    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-    				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (if_block) if_block.d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block_3.name,
-    		type: "each",
-    		source: "(66:32) {#each resourceList as tradeResource}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (74:36) {#if resource.type!==tradeResource.type}
-    function create_if_block_3(ctx) {
-    	let td;
-    	let t_value = /*resource*/ ctx[10].count / 4 + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			td = element("td");
-    			t = text(t_value);
-    			attr_dev(td, "class", "svelte-zsphv7");
-    			add_location(td, file$5, 74, 40, 2469);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, td, anchor);
-    			append_dev(td, t);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 4 && t_value !== (t_value = /*resource*/ ctx[10].count / 4 + "")) set_data_dev(t, t_value);
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(td);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_3.name,
-    		type: "if",
-    		source: "(74:36) {#if resource.type!==tradeResource.type}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (73:32) {#each resourceList as tradeResource}
     function create_each_block_2$1(ctx) {
     	let if_block_anchor;
-    	let if_block = /*resource*/ ctx[10].type !== /*tradeResource*/ ctx[13].type && create_if_block_3(ctx);
+    	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_3(ctx);
 
     	const block = {
     		c: function create() {
@@ -3549,7 +3425,7 @@ var app = (function (jQuery) {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (/*resource*/ ctx[10].type !== /*tradeResource*/ ctx[13].type) {
+    			if (/*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -3572,34 +3448,50 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_2$1.name,
     		type: "each",
-    		source: "(73:32) {#each resourceList as tradeResource}",
+    		source: "(66:32) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (81:36) {#if resource.type!==tradeResource.type}
+    // (74:36) {#if resource.type!==tradeResource.type}
     function create_if_block_2$1(ctx) {
     	let td;
     	let button;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[7](/*resource*/ ctx[11], /*tradeResource*/ ctx[14]);
+    	}
 
     	const block = {
     		c: function create() {
     			td = element("td");
     			button = element("button");
-    			button.textContent = "교환";
-    			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$5, 81, 44, 2837);
-    			attr_dev(td, "class", "svelte-zsphv7");
-    			add_location(td, file$5, 81, 40, 2833);
+    			button.textContent = "4:1 교환";
+    			attr_dev(button, "class", "btn btn-primary btn-sm");
+    			add_location(button, file$5, 74, 44, 2519);
+    			attr_dev(td, "class", "svelte-10bi08a");
+    			add_location(td, file$5, 74, 40, 2515);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
     			append_dev(td, button);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -3607,17 +3499,17 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(81:36) {#if resource.type!==tradeResource.type}",
+    		source: "(74:36) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:32) {#each resourceList as tradeResource}
+    // (73:32) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
-    	let if_block = /*resource*/ ctx[10].type !== /*tradeResource*/ ctx[13].type && create_if_block_2$1(ctx);
+    	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_2$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -3629,8 +3521,10 @@ var app = (function (jQuery) {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (/*resource*/ ctx[10].type !== /*tradeResource*/ ctx[13].type) {
-    				if (if_block) ; else {
+    			if (/*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
     					if_block = create_if_block_2$1(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
@@ -3650,7 +3544,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(80:32) {#each resourceList as tradeResource}",
+    		source: "(73:32) {#each resourceList as tradeResource}",
     		ctx
     	});
 
@@ -3666,7 +3560,7 @@ var app = (function (jQuery) {
     	let img_class_value;
     	let t0;
     	let td1;
-    	let t1_value = /*resource*/ ctx[10].count + "";
+    	let t1_value = /*resource*/ ctx[11].count + "";
     	let t1;
     	let t2;
     	let t3;
@@ -3683,12 +3577,12 @@ var app = (function (jQuery) {
     			t2 = space();
     			if (if_block) if_block.c();
     			t3 = space();
-    			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[10].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[10].type + " svelte-zsphv7");
+    			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-10bi08a");
     			add_location(img, file$5, 57, 20, 1555);
-    			attr_dev(td0, "class", "svelte-zsphv7");
+    			attr_dev(td0, "class", "svelte-10bi08a");
     			add_location(td0, file$5, 57, 16, 1551);
-    			attr_dev(td1, "class", "number svelte-zsphv7");
+    			attr_dev(td1, "class", "number svelte-10bi08a");
     			add_location(td1, file$5, 59, 16, 1684);
     			add_location(tr, file$5, 56, 12, 1530);
     		},
@@ -3704,15 +3598,15 @@ var app = (function (jQuery) {
     			append_dev(tr, t3);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*resource*/ ctx[10].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[10].type + " svelte-zsphv7")) {
+    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-10bi08a")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
-    			if (dirty & /*resourceList*/ 4 && t1_value !== (t1_value = /*resource*/ ctx[10].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*resourceList*/ 4 && t1_value !== (t1_value = /*resource*/ ctx[11].count + "")) set_data_dev(t1, t1_value);
     			if (/*modalMode*/ ctx[3]) if_block.p(ctx, dirty);
     		},
     		d: function destroy(detaching) {
@@ -3762,11 +3656,11 @@ var app = (function (jQuery) {
     			}
 
     			attr_dev(td, "colspan", /*colspan*/ ctx[4]);
-    			attr_dev(td, "class", "name svelte-zsphv7");
+    			attr_dev(td, "class", "name svelte-10bi08a");
     			set_style(td, "background-color", /*player*/ ctx[0].color);
     			add_location(td, file$5, 51, 12, 1335);
     			add_location(tr, file$5, 50, 8, 1318);
-    			attr_dev(table, "class", "resource svelte-zsphv7");
+    			attr_dev(table, "class", "resource svelte-10bi08a");
     			toggle_class(table, "turn", /*turnClassEnabled*/ ctx[1]);
     			add_location(table, file$5, 49, 4, 1255);
     			add_location(main, file$5, 48, 0, 1244);
@@ -3793,7 +3687,7 @@ var app = (function (jQuery) {
     				set_style(td, "background-color", /*player*/ ctx[0].color);
     			}
 
-    			if (dirty & /*resourceList, modalMode, player*/ 13) {
+    			if (dirty & /*resourceList, katan, player, modalMode*/ 13) {
     				each_value = /*resourceList*/ ctx[2];
     				validate_each_argument(each_value);
     				let i;
@@ -3843,7 +3737,7 @@ var app = (function (jQuery) {
     function instance$5($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(7, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(8, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Player", slots, []);
     	let { playerIndex } = $$props;
@@ -3893,6 +3787,8 @@ var app = (function (jQuery) {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Player> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = (resource, tradeResource) => katanStore.exchange(player, resource.type, tradeResource.type);
+
     	$$self.$$set = $$props => {
     		if ("playerIndex" in $$props) $$invalidate(5, playerIndex = $$props.playerIndex);
     		if ("type" in $$props) $$invalidate(6, type = $$props.type);
@@ -3927,7 +3823,16 @@ var app = (function (jQuery) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [player, turnClassEnabled, resourceList, modalMode, colspan, playerIndex, type];
+    	return [
+    		player,
+    		turnClassEnabled,
+    		resourceList,
+    		modalMode,
+    		colspan,
+    		playerIndex,
+    		type,
+    		click_handler
+    	];
     }
 
     class Player extends SvelteComponentDev {

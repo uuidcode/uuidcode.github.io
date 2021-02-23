@@ -61,25 +61,19 @@
                 {#if modalMode}
                     <td>
                         {#if resource.count>=4}
-                        <table>
+                        <table class="trade-resource">
                             <tr>
                                 {#each resourceList as tradeResource}
                                     {#if resource.type!==tradeResource.type}
-                                        <td><img src="{tradeResource.type}_item.png"></td>
+                                        <td><img class="trade-resource" src="{tradeResource.type}_item.png"></td>
                                     {/if}
                                 {/each}
                             </tr>
                             <tr>
                                 {#each resourceList as tradeResource}
                                     {#if resource.type!==tradeResource.type}
-                                        <td>{resource.count/4}</td>
-                                    {/if}
-                                {/each}
-                            </tr>
-                            <tr>
-                                {#each resourceList as tradeResource}
-                                    {#if resource.type!==tradeResource.type}
-                                        <td><button class="btn btn-primary">교환</button></td>
+                                        <td><button class="btn btn-primary btn-sm"
+                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button></td>
                                     {/if}
                                 {/each}
                             </tr>
@@ -113,6 +107,12 @@
         margin: 4px;
     }
 
+    .trade-resource  img {
+        width: 60px;
+        height: 60px;
+        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+        margin: 4px;
+    }
     .number {
         line-height: 100px;
         font-size: 60px;
