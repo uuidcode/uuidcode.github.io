@@ -23,7 +23,9 @@
                 <img src="mud_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm" disabled={!player.make.road}>도로 만들기</button>
+                <button class="btn btn-primary btn-sm"
+                        on:click={()=>katan.setNewRoadRippleEnabled()}
+                        disabled={!player.make.road}>도로 만들기</button>
             </td>
         </tr>
         <tr>

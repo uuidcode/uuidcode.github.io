@@ -3,11 +3,11 @@
     import Dice from './Dice.svelte'
     import Player from './Player.svelte'
     import katan from './katan.js'
-
-    setTimeout(() => {
-        katan.setShowResourceModal();
-        setTimeout(katan.showResourceModal, 1000);
-    }, 1000);
+    //
+    // setTimeout(() => {
+    //     katan.setShowResourceModal();
+    //     setTimeout(katan.showResourceModal, 1000);
+    // }, 1000);
 
 </script>
 

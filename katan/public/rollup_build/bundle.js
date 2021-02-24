@@ -1447,6 +1447,17 @@ var app = (function (jQuery) {
             return katan;
         }),
 
+        setNewRoadRippleEnabled: () => update$1(katan => {
+            katan.castleList
+                .filter(castle => castle.playerIndex === katan.playerIndex)
+                .forEach(castle => {
+                    katanStore.closeResourceModal();
+                    katanStore.setRoadRippleEnabled(castle.index);
+                });
+
+            return katan;
+        }),
+
         setRoadRippleEnabled: (castleIndex) => update$1(katan => {
             katan.message = '길을 만들곳을 선택하세요.';
 
@@ -3328,6 +3339,8 @@ var app = (function (jQuery) {
     	let button3;
     	let t22;
     	let button3_disabled_value;
+    	let mounted;
+    	let dispose;
 
     	const block = {
     		c: function create() {
@@ -3408,64 +3421,64 @@ var app = (function (jQuery) {
     			add_location(tr1, file$5, 19, 8, 409);
     			if (img2.src !== (img2_src_value = "tree_item.png")) attr_dev(img2, "src", img2_src_value);
     			attr_dev(img2, "class", "svelte-ao27gk");
-    			add_location(img2, file$5, 30, 16, 727);
+    			add_location(img2, file$5, 32, 16, 822);
     			if (img3.src !== (img3_src_value = "mud_item.png")) attr_dev(img3, "src", img3_src_value);
     			attr_dev(img3, "class", "svelte-ao27gk");
-    			add_location(img3, file$5, 31, 16, 769);
+    			add_location(img3, file$5, 33, 16, 864);
     			if (img4.src !== (img4_src_value = "wheat_item.png")) attr_dev(img4, "src", img4_src_value);
     			attr_dev(img4, "class", "svelte-ao27gk");
-    			add_location(img4, file$5, 32, 16, 810);
+    			add_location(img4, file$5, 34, 16, 905);
     			if (img5.src !== (img5_src_value = "sheep_item.png")) attr_dev(img5, "src", img5_src_value);
     			attr_dev(img5, "class", "svelte-ao27gk");
-    			add_location(img5, file$5, 33, 16, 853);
+    			add_location(img5, file$5, 35, 16, 948);
     			attr_dev(td3, "class", "svelte-ao27gk");
-    			add_location(td3, file$5, 29, 12, 706);
+    			add_location(td3, file$5, 31, 12, 801);
     			attr_dev(button1, "class", "btn btn-primary btn-sm");
     			button1.disabled = button1_disabled_value = !/*player*/ ctx[0].make.castle;
-    			add_location(button1, file$5, 36, 16, 931);
+    			add_location(button1, file$5, 38, 16, 1026);
     			attr_dev(td4, "class", "svelte-ao27gk");
-    			add_location(td4, file$5, 35, 12, 910);
-    			add_location(tr2, file$5, 28, 8, 689);
+    			add_location(td4, file$5, 37, 12, 1005);
+    			add_location(tr2, file$5, 30, 8, 784);
     			if (img6.src !== (img6_src_value = "wheat_item.png")) attr_dev(img6, "src", img6_src_value);
     			attr_dev(img6, "class", "svelte-ao27gk");
-    			add_location(img6, file$5, 41, 16, 1095);
+    			add_location(img6, file$5, 43, 16, 1190);
     			if (img7.src !== (img7_src_value = "wheat_item.png")) attr_dev(img7, "src", img7_src_value);
     			attr_dev(img7, "class", "svelte-ao27gk");
-    			add_location(img7, file$5, 42, 16, 1138);
+    			add_location(img7, file$5, 44, 16, 1233);
     			if (img8.src !== (img8_src_value = "iron_item.png")) attr_dev(img8, "src", img8_src_value);
     			attr_dev(img8, "class", "svelte-ao27gk");
-    			add_location(img8, file$5, 43, 16, 1181);
+    			add_location(img8, file$5, 45, 16, 1276);
     			if (img9.src !== (img9_src_value = "iron_item.png")) attr_dev(img9, "src", img9_src_value);
     			attr_dev(img9, "class", "svelte-ao27gk");
-    			add_location(img9, file$5, 44, 16, 1223);
+    			add_location(img9, file$5, 46, 16, 1318);
     			if (img10.src !== (img10_src_value = "iron_item.png")) attr_dev(img10, "src", img10_src_value);
     			attr_dev(img10, "class", "svelte-ao27gk");
-    			add_location(img10, file$5, 45, 16, 1265);
+    			add_location(img10, file$5, 47, 16, 1360);
     			attr_dev(td5, "class", "svelte-ao27gk");
-    			add_location(td5, file$5, 40, 12, 1074);
+    			add_location(td5, file$5, 42, 12, 1169);
     			attr_dev(button2, "class", "btn btn-primary btn-sm");
     			button2.disabled = button2_disabled_value = !/*player*/ ctx[0].make.city;
-    			add_location(button2, file$5, 48, 16, 1342);
+    			add_location(button2, file$5, 50, 16, 1437);
     			attr_dev(td6, "class", "svelte-ao27gk");
-    			add_location(td6, file$5, 47, 12, 1321);
-    			add_location(tr3, file$5, 39, 8, 1057);
+    			add_location(td6, file$5, 49, 12, 1416);
+    			add_location(tr3, file$5, 41, 8, 1152);
     			if (img11.src !== (img11_src_value = "wheat_item.png")) attr_dev(img11, "src", img11_src_value);
     			attr_dev(img11, "class", "svelte-ao27gk");
-    			add_location(img11, file$5, 53, 16, 1504);
+    			add_location(img11, file$5, 55, 16, 1599);
     			if (img12.src !== (img12_src_value = "sheep_item.png")) attr_dev(img12, "src", img12_src_value);
     			attr_dev(img12, "class", "svelte-ao27gk");
-    			add_location(img12, file$5, 54, 16, 1547);
+    			add_location(img12, file$5, 56, 16, 1642);
     			if (img13.src !== (img13_src_value = "iron_item.png")) attr_dev(img13, "src", img13_src_value);
     			attr_dev(img13, "class", "svelte-ao27gk");
-    			add_location(img13, file$5, 55, 16, 1590);
+    			add_location(img13, file$5, 57, 16, 1685);
     			attr_dev(td7, "class", "svelte-ao27gk");
-    			add_location(td7, file$5, 52, 12, 1483);
+    			add_location(td7, file$5, 54, 12, 1578);
     			attr_dev(button3, "class", "btn btn-primary btn-sm");
     			button3.disabled = button3_disabled_value = !/*player*/ ctx[0].make.dev;
-    			add_location(button3, file$5, 58, 16, 1667);
+    			add_location(button3, file$5, 60, 16, 1762);
     			attr_dev(td8, "class", "svelte-ao27gk");
-    			add_location(td8, file$5, 57, 12, 1646);
-    			add_location(tr4, file$5, 51, 8, 1466);
+    			add_location(td8, file$5, 59, 12, 1741);
+    			add_location(tr4, file$5, 53, 8, 1561);
     			attr_dev(table, "class", "construction-resource svelte-ao27gk");
     			add_location(table, file$5, 15, 4, 285);
     			add_location(main, file$5, 14, 0, 274);
@@ -3530,6 +3543,11 @@ var app = (function (jQuery) {
     			append_dev(tr4, td8);
     			append_dev(td8, button3);
     			append_dev(button3, t22);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button0, "click", /*click_handler*/ ctx[1], false, false, false);
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*player*/ 1 && button0_disabled_value !== (button0_disabled_value = !/*player*/ ctx[0].make.road)) {
@@ -3552,6 +3570,8 @@ var app = (function (jQuery) {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -3582,6 +3602,7 @@ var app = (function (jQuery) {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Construction> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = () => katanStore.setNewRoadRippleEnabled();
     	$$self.$capture_state = () => ({ katan: katanStore, onDestroy, player, unsubscribe });
 
     	$$self.$inject_state = $$props => {
@@ -3592,7 +3613,7 @@ var app = (function (jQuery) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [player];
+    	return [player, click_handler];
     }
 
     class Construction extends SvelteComponentDev {
@@ -4596,9 +4617,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$7, 50, 20, 1803);
+    			add_location(button, file$7, 50, 20, 1821);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$7, 49, 16, 1755);
+    			add_location(div, file$7, 49, 16, 1773);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4665,24 +4686,24 @@ var app = (function (jQuery) {
     			button = element("button");
     			button.textContent = "닫기";
     			attr_dev(div0, "class", "modal-body");
-    			add_location(div0, file$7, 61, 12, 2250);
+    			add_location(div0, file$7, 61, 12, 2268);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-secondary");
     			attr_dev(button, "data-bs-dismiss", "modal");
-    			add_location(button, file$7, 67, 16, 2460);
+    			add_location(button, file$7, 67, 16, 2478);
     			attr_dev(div1, "class", "modal-footer");
-    			add_location(div1, file$7, 66, 12, 2416);
+    			add_location(div1, file$7, 66, 12, 2434);
     			attr_dev(div2, "class", "modal-content");
-    			add_location(div2, file$7, 60, 8, 2209);
+    			add_location(div2, file$7, 60, 8, 2227);
     			attr_dev(div3, "class", "modal-dialog");
     			set_style(div3, "max-width", "800px");
-    			add_location(div3, file$7, 59, 4, 2149);
+    			add_location(div3, file$7, 59, 4, 2167);
     			attr_dev(div4, "class", "modal fade");
     			attr_dev(div4, "id", "resourceModal");
     			attr_dev(div4, "tabindex", "-1");
     			attr_dev(div4, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div4, "aria-hidden", "true");
-    			add_location(div4, file$7, 58, 0, 2031);
+    			add_location(div4, file$7, 58, 0, 2049);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div4, anchor);
@@ -4839,42 +4860,42 @@ var app = (function (jQuery) {
     			if_block1_anchor = empty();
     			attr_dev(td0, "valign", "top");
     			attr_dev(td0, "class", "player svelte-o98rhe");
-    			add_location(td0, file$7, 16, 12, 396);
+    			add_location(td0, file$7, 16, 12, 414);
     			attr_dev(button0, "class", "btn btn-primary svelte-o98rhe");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$7, 23, 20, 735);
+    			add_location(button0, file$7, 23, 20, 753);
     			attr_dev(div0, "class", "dice-container svelte-o98rhe");
-    			add_location(div0, file$7, 20, 16, 567);
+    			add_location(div0, file$7, 20, 16, 585);
     			attr_dev(td1, "valign", "top");
     			attr_dev(td1, "class", "text-center svelte-o98rhe");
-    			add_location(td1, file$7, 19, 12, 512);
+    			add_location(td1, file$7, 19, 12, 530);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-o98rhe");
-    			add_location(td2, file$7, 32, 12, 1104);
-    			add_location(tr, file$7, 15, 8, 378);
-    			add_location(table, file$7, 14, 4, 361);
+    			add_location(td2, file$7, 32, 12, 1122);
+    			add_location(tr, file$7, 15, 8, 396);
+    			add_location(table, file$7, 14, 4, 379);
     			set_style(main, "margin", "auto");
     			set_style(main, "width", "1300px");
-    			add_location(main, file$7, 13, 0, 313);
+    			add_location(main, file$7, 13, 0, 331);
     			attr_dev(button1, "type", "button");
     			attr_dev(button1, "class", "btn-close");
     			attr_dev(button1, "data-bs-dismiss", "modal");
     			attr_dev(button1, "aria-label", "Close");
-    			add_location(button1, file$7, 42, 16, 1482);
+    			add_location(button1, file$7, 42, 16, 1500);
     			attr_dev(div1, "class", "modal-header");
-    			add_location(div1, file$7, 41, 12, 1438);
+    			add_location(div1, file$7, 41, 12, 1456);
     			attr_dev(div2, "class", "modal-body");
-    			add_location(div2, file$7, 44, 12, 1608);
+    			add_location(div2, file$7, 44, 12, 1626);
     			attr_dev(div3, "class", "modal-content");
-    			add_location(div3, file$7, 40, 8, 1397);
+    			add_location(div3, file$7, 40, 8, 1415);
     			attr_dev(div4, "class", "modal-dialog");
-    			add_location(div4, file$7, 39, 4, 1361);
+    			add_location(div4, file$7, 39, 4, 1379);
     			attr_dev(div5, "class", "modal fade");
     			attr_dev(div5, "id", "katanModal");
     			attr_dev(div5, "tabindex", "-1");
     			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div5, "aria-hidden", "true");
-    			add_location(div5, file$7, 38, 0, 1246);
+    			add_location(div5, file$7, 38, 0, 1264);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5033,15 +5054,6 @@ var app = (function (jQuery) {
     	component_subscribe($$self, katanStore, $$value => $$invalidate(0, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
-
-    	setTimeout(
-    		() => {
-    			katanStore.setShowResourceModal();
-    			setTimeout(katanStore.showResourceModal, 1000);
-    		},
-    		1000
-    	);
-
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {

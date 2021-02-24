@@ -916,6 +916,17 @@ const katanStore = {
         return katan;
     }),
 
+    setNewRoadRippleEnabled: () => update(katan => {
+        katan.castleList
+            .filter(castle => castle.playerIndex === katan.playerIndex)
+            .forEach(castle => {
+                katanStore.closeResourceModal();
+                katanStore.setRoadRippleEnabled(castle.index);
+            });
+
+        return katan;
+    }),
+
     setRoadRippleEnabled: (castleIndex) => update(katan => {
         katan.message = '길을 만들곳을 선택하세요.';
 
