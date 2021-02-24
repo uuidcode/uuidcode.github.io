@@ -1403,6 +1403,7 @@ var app = (function (jQuery) {
 
             player.point.castle += 1;
             player.point.sum += 1;
+            player.construction.castle -= 1;
 
             return katan;
         }),
@@ -1412,7 +1413,11 @@ var app = (function (jQuery) {
             road.playerIndex = playerIndex;
             road.pick = false;
             road.title = '길';
-            katan.playerList[playerIndex].pickRoad += 1;
+
+            const player = katan.playerList[playerIndex];
+            player.pickRoad += 1;
+            player.construction.road -= 1;
+
             return katan;
         }),
 

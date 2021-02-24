@@ -875,6 +875,7 @@ const katanStore = {
 
         player.point.castle += 1;
         player.point.sum += 1;
+        player.construction.castle -= 1;
 
         return katan;
     }),
@@ -884,7 +885,11 @@ const katanStore = {
         road.playerIndex = playerIndex;
         road.pick = false;
         road.title = '길';
-        katan.playerList[playerIndex].pickRoad += 1;
+
+        const player = katan.playerList[playerIndex];
+        player.pickRoad += 1;
+        player.construction.road -= 1;
+
         return katan;
     }),
 
