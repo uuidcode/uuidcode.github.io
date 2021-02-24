@@ -5,6 +5,9 @@ import jQuery from 'jquery';
 import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
+    makeRoad: false,
+    makeCastle: false,
+    makeCity: false,
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
     dice: [6, 6],

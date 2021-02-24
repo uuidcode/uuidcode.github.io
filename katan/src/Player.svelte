@@ -36,18 +36,23 @@
     };
 
     let resourceList = getResourceList();
+    let resourceClassName = 'resource';
 
     const unsubscribe = katan.subscribe(currentKatan => {
         player = currentKatan.playerList[playerIndex];
         resourceList = getResourceList();
         turnClassEnabled = player.turn && type === 'player';
+
+        if (type === 'modal') {
+            resourceClassName = 'trade-resource';
+        }
     });
 
     onDestroy(unsubscribe);
 </script>
 
 <main>
-    <table class="resource" class:turn={turnClassEnabled}>
+    <table class="{resourceClassName}" class:turn={turnClassEnabled}>
         <tr>
             <td>
                 <table class="inner-resource">
@@ -100,11 +105,11 @@
                                 </table>
                             </td>
                         </tr>
-                    {/if}
 
-                    <tr>
-                        <td colspan="2" class="header">자원</td>
-                    </tr>
+                        <tr>
+                            <td colspan="2" class="header">자원</td>
+                        </tr>
+                    {/if}
 
                     {#each resourceList as resource}
                         <tr>
@@ -116,7 +121,7 @@
                             {#if modalMode}
                                 <td>
                                     {#if resource.count>=4}
-                                        <table class="trade-resource">
+                                        <table class="trade-target-resource">
                                             <tr>
                                                 {#each resourceList as tradeResource}
                                                     {#if resource.type!==tradeResource.type}
@@ -164,9 +169,16 @@
         margin: 4px;
     }
 
-    .trade-resource  img {
+    .trade-resource img {
         width: 60px;
         height: 60px;
+        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+        margin: 4px;
+    }
+
+    .trade-target-resource  img {
+        width: 40px;
+        height: 40px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
         margin: 4px;
     }

@@ -62,17 +62,23 @@
             </div>
 
             <div class="modal-footer">
+                {#if $katan.makeRoad}
                 <button type="button"
                         on:click={()=>katan.closeResourceModal()}
                     class="btn btn-primary">도로 만들기</button>
+                {/if}
 
+                {#if $katan.makeCastle}
                 <button type="button"
                         on:click={()=>katan.closeResourceModal()}
                     class="btn btn-primary">마을 만들기</button>
+                {/if}
 
+                {#if $katan.makeCity}
                 <button type="button"
                         on:click={()=>katan.closeResourceModal()}
                     class="btn btn-primary">도시 만들기</button>
+                {/if}
 
                 <button type="button"
                         on:click={()=>katan.closeResourceModal()}
