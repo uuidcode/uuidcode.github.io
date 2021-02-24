@@ -2841,7 +2841,7 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(main, "class", "board svelte-116fgyq");
+    			attr_dev(main, "class", "board svelte-8f6y7b");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
     			add_location(main, file$3, 17, 0, 451);
     		},
@@ -4288,6 +4288,12 @@ var app = (function (jQuery) {
     	let t1;
     	let div2;
     	let button1;
+    	let t3;
+    	let button2;
+    	let t5;
+    	let button3;
+    	let t7;
+    	let button4;
     	let current;
     	let mounted;
     	let dispose;
@@ -4313,7 +4319,16 @@ var app = (function (jQuery) {
     			t1 = space();
     			div2 = element("div");
     			button1 = element("button");
-    			button1.textContent = "Close";
+    			button1.textContent = "도로 만들기";
+    			t3 = space();
+    			button2 = element("button");
+    			button2.textContent = "마을 만들기";
+    			t5 = space();
+    			button3 = element("button");
+    			button3.textContent = "도시 만들기";
+    			t7 = space();
+    			button4 = element("button");
+    			button4.textContent = "닫기";
     			attr_dev(button0, "type", "button");
     			attr_dev(button0, "class", "btn-close");
     			attr_dev(button0, "data-bs-dismiss", "modal");
@@ -4324,9 +4339,18 @@ var app = (function (jQuery) {
     			attr_dev(div1, "class", "modal-body");
     			add_location(div1, file$6, 58, 12, 2286);
     			attr_dev(button1, "type", "button");
-    			attr_dev(button1, "class", "btn btn-secondary");
-    			attr_dev(button1, "data-bs-dismiss", "modal");
+    			attr_dev(button1, "class", "btn btn-primary");
     			add_location(button1, file$6, 64, 16, 2496);
+    			attr_dev(button2, "type", "button");
+    			attr_dev(button2, "class", "btn btn-primary");
+    			add_location(button2, file$6, 68, 16, 2665);
+    			attr_dev(button3, "type", "button");
+    			attr_dev(button3, "class", "btn btn-primary");
+    			add_location(button3, file$6, 72, 16, 2834);
+    			attr_dev(button4, "type", "button");
+    			attr_dev(button4, "class", "btn btn-secondary");
+    			attr_dev(button4, "data-bs-dismiss", "modal");
+    			add_location(button4, file$6, 76, 16, 3003);
     			attr_dev(div2, "class", "modal-footer");
     			add_location(div2, file$6, 63, 12, 2452);
     			attr_dev(div3, "class", "modal-content");
@@ -4353,10 +4377,22 @@ var app = (function (jQuery) {
     			append_dev(div3, t1);
     			append_dev(div3, div2);
     			append_dev(div2, button1);
+    			append_dev(div2, t3);
+    			append_dev(div2, button2);
+    			append_dev(div2, t5);
+    			append_dev(div2, button3);
+    			append_dev(div2, t7);
+    			append_dev(div2, button4);
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(button1, "click", /*click_handler_2*/ ctx[3], false, false, false);
+    				dispose = [
+    					listen_dev(button1, "click", /*click_handler_2*/ ctx[3], false, false, false),
+    					listen_dev(button2, "click", /*click_handler_3*/ ctx[4], false, false, false),
+    					listen_dev(button3, "click", /*click_handler_4*/ ctx[5], false, false, false),
+    					listen_dev(button4, "click", /*click_handler_5*/ ctx[6], false, false, false)
+    				];
+
     				mounted = true;
     			}
     		},
@@ -4378,7 +4414,7 @@ var app = (function (jQuery) {
     			if (detaching) detach_dev(div5);
     			destroy_component(player);
     			mounted = false;
-    			dispose();
+    			run_all(dispose);
     		}
     	};
 
@@ -4596,7 +4632,7 @@ var app = (function (jQuery) {
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 16) {
+    			if (dirty & /*$$scope*/ 128) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -4702,8 +4738,20 @@ var app = (function (jQuery) {
     	const click_handler = () => katanStore.play();
     	const click_handler_1 = () => katanStore.clickMessage();
     	const click_handler_2 = () => katanStore.closeResourceModal();
+    	const click_handler_3 = () => katanStore.closeResourceModal();
+    	const click_handler_4 = () => katanStore.closeResourceModal();
+    	const click_handler_5 = () => katanStore.closeResourceModal();
     	$$self.$capture_state = () => ({ Board, Dice, Player, katan: katanStore, $katan });
-    	return [$katan, click_handler, click_handler_1, click_handler_2];
+
+    	return [
+    		$katan,
+    		click_handler,
+    		click_handler_1,
+    		click_handler_2,
+    		click_handler_3,
+    		click_handler_4,
+    		click_handler_5
+    	];
     }
 
     class App extends SvelteComponentDev {

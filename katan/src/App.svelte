@@ -64,7 +64,19 @@
             <div class="modal-footer">
                 <button type="button"
                         on:click={()=>katan.closeResourceModal()}
-                        class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    class="btn btn-primary">도로 만들기</button>
+
+                <button type="button"
+                        on:click={()=>katan.closeResourceModal()}
+                    class="btn btn-primary">마을 만들기</button>
+
+                <button type="button"
+                        on:click={()=>katan.closeResourceModal()}
+                    class="btn btn-primary">도시 만들기</button>
+
+                <button type="button"
+                        on:click={()=>katan.closeResourceModal()}
+                        class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
             </div>
         </div>
     </div>
