@@ -130,15 +130,11 @@
                                             <tr>
                                                 {#each resourceList as tradeResource}
                                                     {#if resource.type!==tradeResource.type}
-                                                        <td><img class="trade-resource" src="{tradeResource.type}_item.png"></td>
-                                                    {/if}
-                                                {/each}
-                                            </tr>
-                                            <tr>
-                                                {#each resourceList as tradeResource}
-                                                    {#if resource.type!==tradeResource.type}
-                                                        <td><button class="btn btn-primary btn-sm"
-                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button></td>
+                                                        <td>
+                                                            <img class="trade-resource" src="{tradeResource.type}_item.png">
+                                                            <button class="btn btn-primary btn-sm"
+                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button>
+                                                        </td>
                                                     {/if}
                                                 {/each}
                                             </tr>
@@ -184,13 +180,6 @@
         margin: 4px;
     }
 
-    .trade-target-resource img {
-        width: 40px;
-        height: 40px;
-        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
-        margin: 4px;
-    }
-
     .number {
         line-height: 100px;
         font-size: 60px;
@@ -199,8 +188,8 @@
     }
 
     .trade-resource .number {
-        line-height: 60px;
-        font-size: 60px;
+        line-height: 40px;
+        font-size: 40px;
         font-weight: 600;
         width: 80px;
         text-align: center;
@@ -222,10 +211,6 @@
 
     td {
         border: 1px solid lightskyblue;
-    }
-
-    .construction-resource {
-        margin-top: 10px;
     }
 
     .construction-resource img {
