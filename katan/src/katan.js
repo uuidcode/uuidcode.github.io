@@ -60,6 +60,12 @@ katan.playerList.forEach((player, i) => {
         wheat: 4,
         sheep: 4,
         iron: 4
+    };
+
+    player.construction = {
+        castle: 5,
+        city: 4,
+        road: 15
     }
 });
 

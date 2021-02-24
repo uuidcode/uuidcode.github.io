@@ -421,8 +421,8 @@ var app = (function (jQuery) {
     const config = {
         debug: false,
         cell: {
-            width: 180,
-            height: 200,
+            width: 150,
+            height: 180,
             margin: 5
         },
         castle: {
@@ -442,8 +442,8 @@ var app = (function (jQuery) {
             height: 100,
         },
         buglar: {
-            width: 130,
-            height: 130,
+            width: 120,
+            height: 120,
         },
         selectedColor: 'blueviolet'
     };
@@ -588,6 +588,12 @@ var app = (function (jQuery) {
             wheat: 4,
             sheep: 4,
             iron: 4
+        };
+
+        player.construction = {
+            castle: 5,
+            city: 4,
+            road: 15
         };
     });
 
@@ -3212,153 +3218,278 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (57:8) {#if !modalMode}
+    // (60:20) {#if !modalMode}
     function create_if_block_4(ctx) {
     	let tr0;
     	let td0;
     	let t1;
-    	let td1;
-    	let t2_value = /*player*/ ctx[0].point.castle + "";
-    	let t2;
-    	let t3;
     	let tr1;
+    	let td1;
+    	let t3;
     	let td2;
+    	let t4_value = /*player*/ ctx[0].point.castle + "";
+    	let t4;
     	let t5;
-    	let td3;
-    	let t6_value = /*player*/ ctx[0].point.city + "";
-    	let t6;
-    	let t7;
     	let tr2;
+    	let td3;
+    	let t7;
     	let td4;
+    	let t8_value = /*player*/ ctx[0].point.city + "";
+    	let t8;
     	let t9;
-    	let td5;
-    	let t10_value = /*player*/ ctx[0].point.road + "";
-    	let t10;
-    	let t11;
     	let tr3;
+    	let td5;
+    	let t11;
     	let td6;
+    	let t12_value = /*player*/ ctx[0].point.road + "";
+    	let t12;
     	let t13;
-    	let td7;
-    	let t14_value = /*player*/ ctx[0].point.knight + "";
-    	let t14;
-    	let t15;
     	let tr4;
+    	let td7;
+    	let t15;
     	let td8;
+    	let t16_value = /*player*/ ctx[0].point.knight + "";
+    	let t16;
     	let t17;
+    	let tr5;
     	let td9;
-    	let t18_value = /*player*/ ctx[0].point.sum + "";
-    	let t18;
+    	let t19;
+    	let td10;
+    	let t20_value = /*player*/ ctx[0].point.sum + "";
+    	let t20;
+    	let t21;
+    	let tr6;
+    	let td11;
+    	let t23;
+    	let tr9;
+    	let td18;
+    	let table;
+    	let tr7;
+    	let td12;
+    	let t25;
+    	let td13;
+    	let t27;
+    	let td14;
+    	let t29;
+    	let tr8;
+    	let td15;
+    	let t30_value = /*player*/ ctx[0].construction.castle + "";
+    	let t30;
+    	let t31;
+    	let td16;
+    	let t32_value = /*player*/ ctx[0].construction.city + "";
+    	let t32;
+    	let t33;
+    	let td17;
+    	let t34_value = /*player*/ ctx[0].construction.road + "";
+    	let t34;
 
     	const block = {
     		c: function create() {
     			tr0 = element("tr");
     			td0 = element("td");
-    			td0.textContent = "마을";
+    			td0.textContent = "점수";
     			t1 = space();
-    			td1 = element("td");
-    			t2 = text(t2_value);
-    			t3 = space();
     			tr1 = element("tr");
+    			td1 = element("td");
+    			td1.textContent = "마을";
+    			t3 = space();
     			td2 = element("td");
-    			td2.textContent = "도시";
+    			t4 = text(t4_value);
     			t5 = space();
-    			td3 = element("td");
-    			t6 = text(t6_value);
-    			t7 = space();
     			tr2 = element("tr");
+    			td3 = element("td");
+    			td3.textContent = "도시";
+    			t7 = space();
     			td4 = element("td");
-    			td4.textContent = "최장 교역로";
+    			t8 = text(t8_value);
     			t9 = space();
-    			td5 = element("td");
-    			t10 = text(t10_value);
-    			t11 = space();
     			tr3 = element("tr");
+    			td5 = element("td");
+    			td5.textContent = "최장 교역로";
+    			t11 = space();
     			td6 = element("td");
-    			td6.textContent = "최강 기사단";
+    			t12 = text(t12_value);
     			t13 = space();
-    			td7 = element("td");
-    			t14 = text(t14_value);
-    			t15 = space();
     			tr4 = element("tr");
+    			td7 = element("td");
+    			td7.textContent = "최강 기사단";
+    			t15 = space();
     			td8 = element("td");
-    			td8.textContent = "현재 점수";
+    			t16 = text(t16_value);
     			t17 = space();
+    			tr5 = element("tr");
     			td9 = element("td");
-    			t18 = text(t18_value);
-    			attr_dev(td0, "class", "svelte-10bi08a");
-    			add_location(td0, file$5, 58, 16, 1536);
-    			attr_dev(td1, "class", "svelte-10bi08a");
-    			add_location(td1, file$5, 59, 16, 1564);
-    			add_location(tr0, file$5, 57, 12, 1515);
-    			attr_dev(td2, "class", "svelte-10bi08a");
-    			add_location(td2, file$5, 62, 16, 1646);
-    			attr_dev(td3, "class", "svelte-10bi08a");
-    			add_location(td3, file$5, 63, 16, 1674);
-    			add_location(tr1, file$5, 61, 12, 1625);
-    			attr_dev(td4, "class", "svelte-10bi08a");
-    			add_location(td4, file$5, 66, 16, 1754);
-    			attr_dev(td5, "class", "svelte-10bi08a");
-    			add_location(td5, file$5, 67, 16, 1786);
-    			add_location(tr2, file$5, 65, 12, 1733);
-    			attr_dev(td6, "class", "svelte-10bi08a");
-    			add_location(td6, file$5, 70, 16, 1866);
-    			attr_dev(td7, "class", "svelte-10bi08a");
-    			add_location(td7, file$5, 71, 16, 1898);
-    			add_location(tr3, file$5, 69, 12, 1845);
-    			attr_dev(td8, "class", "svelte-10bi08a");
-    			add_location(td8, file$5, 74, 16, 1980);
-    			attr_dev(td9, "class", "svelte-10bi08a");
-    			add_location(td9, file$5, 75, 16, 2011);
-    			add_location(tr4, file$5, 73, 12, 1959);
+    			td9.textContent = "현재 점수";
+    			t19 = space();
+    			td10 = element("td");
+    			t20 = text(t20_value);
+    			t21 = space();
+    			tr6 = element("tr");
+    			td11 = element("td");
+    			td11.textContent = "건설";
+    			t23 = space();
+    			tr9 = element("tr");
+    			td18 = element("td");
+    			table = element("table");
+    			tr7 = element("tr");
+    			td12 = element("td");
+    			td12.textContent = "마을";
+    			t25 = space();
+    			td13 = element("td");
+    			td13.textContent = "도시";
+    			t27 = space();
+    			td14 = element("td");
+    			td14.textContent = "도로";
+    			t29 = space();
+    			tr8 = element("tr");
+    			td15 = element("td");
+    			t30 = text(t30_value);
+    			t31 = space();
+    			td16 = element("td");
+    			t32 = text(t32_value);
+    			t33 = space();
+    			td17 = element("td");
+    			t34 = text(t34_value);
+    			attr_dev(td0, "colspan", "2");
+    			attr_dev(td0, "class", "header svelte-7ov2g7");
+    			add_location(td0, file$5, 61, 28, 1709);
+    			add_location(tr0, file$5, 60, 24, 1676);
+    			attr_dev(td1, "class", "svelte-7ov2g7");
+    			add_location(td1, file$5, 64, 28, 1849);
+    			attr_dev(td2, "class", "svelte-7ov2g7");
+    			add_location(td2, file$5, 65, 28, 1889);
+    			attr_dev(tr1, "class", "point");
+    			add_location(tr1, file$5, 63, 24, 1802);
+    			attr_dev(td3, "class", "svelte-7ov2g7");
+    			add_location(td3, file$5, 68, 28, 2007);
+    			attr_dev(td4, "class", "svelte-7ov2g7");
+    			add_location(td4, file$5, 69, 28, 2047);
+    			add_location(tr2, file$5, 67, 24, 1974);
+    			attr_dev(td5, "class", "svelte-7ov2g7");
+    			add_location(td5, file$5, 72, 28, 2163);
+    			attr_dev(td6, "class", "svelte-7ov2g7");
+    			add_location(td6, file$5, 73, 28, 2207);
+    			add_location(tr3, file$5, 71, 24, 2130);
+    			attr_dev(td7, "class", "svelte-7ov2g7");
+    			add_location(td7, file$5, 76, 28, 2323);
+    			attr_dev(td8, "class", "svelte-7ov2g7");
+    			add_location(td8, file$5, 77, 28, 2367);
+    			add_location(tr4, file$5, 75, 24, 2290);
+    			attr_dev(td9, "class", "svelte-7ov2g7");
+    			add_location(td9, file$5, 80, 28, 2485);
+    			attr_dev(td10, "class", "svelte-7ov2g7");
+    			add_location(td10, file$5, 81, 28, 2528);
+    			add_location(tr5, file$5, 79, 24, 2452);
+    			attr_dev(td11, "colspan", "2");
+    			attr_dev(td11, "class", "header svelte-7ov2g7");
+    			add_location(td11, file$5, 84, 28, 2643);
+    			add_location(tr6, file$5, 83, 24, 2610);
+    			attr_dev(td12, "class", "svelte-7ov2g7");
+    			add_location(td12, file$5, 90, 40, 2941);
+    			attr_dev(td13, "class", "svelte-7ov2g7");
+    			add_location(td13, file$5, 91, 40, 2993);
+    			attr_dev(td14, "class", "svelte-7ov2g7");
+    			add_location(td14, file$5, 92, 40, 3045);
+    			add_location(tr7, file$5, 89, 36, 2896);
+    			attr_dev(td15, "class", "svelte-7ov2g7");
+    			add_location(td15, file$5, 95, 40, 3180);
+    			attr_dev(td16, "class", "svelte-7ov2g7");
+    			add_location(td16, file$5, 96, 40, 3258);
+    			attr_dev(td17, "class", "svelte-7ov2g7");
+    			add_location(td17, file$5, 97, 40, 3334);
+    			add_location(tr8, file$5, 94, 36, 3135);
+    			attr_dev(table, "class", "construction svelte-7ov2g7");
+    			attr_dev(table, "width", "100%");
+    			add_location(table, file$5, 88, 32, 2818);
+    			attr_dev(td18, "colspan", "2");
+    			attr_dev(td18, "class", "svelte-7ov2g7");
+    			add_location(td18, file$5, 87, 28, 2769);
+    			add_location(tr9, file$5, 86, 24, 2736);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr0, anchor);
     			append_dev(tr0, td0);
-    			append_dev(tr0, t1);
-    			append_dev(tr0, td1);
-    			append_dev(td1, t2);
-    			insert_dev(target, t3, anchor);
+    			insert_dev(target, t1, anchor);
     			insert_dev(target, tr1, anchor);
+    			append_dev(tr1, td1);
+    			append_dev(tr1, t3);
     			append_dev(tr1, td2);
-    			append_dev(tr1, t5);
-    			append_dev(tr1, td3);
-    			append_dev(td3, t6);
-    			insert_dev(target, t7, anchor);
+    			append_dev(td2, t4);
+    			insert_dev(target, t5, anchor);
     			insert_dev(target, tr2, anchor);
+    			append_dev(tr2, td3);
+    			append_dev(tr2, t7);
     			append_dev(tr2, td4);
-    			append_dev(tr2, t9);
-    			append_dev(tr2, td5);
-    			append_dev(td5, t10);
-    			insert_dev(target, t11, anchor);
+    			append_dev(td4, t8);
+    			insert_dev(target, t9, anchor);
     			insert_dev(target, tr3, anchor);
+    			append_dev(tr3, td5);
+    			append_dev(tr3, t11);
     			append_dev(tr3, td6);
-    			append_dev(tr3, t13);
-    			append_dev(tr3, td7);
-    			append_dev(td7, t14);
-    			insert_dev(target, t15, anchor);
+    			append_dev(td6, t12);
+    			insert_dev(target, t13, anchor);
     			insert_dev(target, tr4, anchor);
+    			append_dev(tr4, td7);
+    			append_dev(tr4, t15);
     			append_dev(tr4, td8);
-    			append_dev(tr4, t17);
-    			append_dev(tr4, td9);
-    			append_dev(td9, t18);
+    			append_dev(td8, t16);
+    			insert_dev(target, t17, anchor);
+    			insert_dev(target, tr5, anchor);
+    			append_dev(tr5, td9);
+    			append_dev(tr5, t19);
+    			append_dev(tr5, td10);
+    			append_dev(td10, t20);
+    			insert_dev(target, t21, anchor);
+    			insert_dev(target, tr6, anchor);
+    			append_dev(tr6, td11);
+    			insert_dev(target, t23, anchor);
+    			insert_dev(target, tr9, anchor);
+    			append_dev(tr9, td18);
+    			append_dev(td18, table);
+    			append_dev(table, tr7);
+    			append_dev(tr7, td12);
+    			append_dev(tr7, t25);
+    			append_dev(tr7, td13);
+    			append_dev(tr7, t27);
+    			append_dev(tr7, td14);
+    			append_dev(table, t29);
+    			append_dev(table, tr8);
+    			append_dev(tr8, td15);
+    			append_dev(td15, t30);
+    			append_dev(tr8, t31);
+    			append_dev(tr8, td16);
+    			append_dev(td16, t32);
+    			append_dev(tr8, t33);
+    			append_dev(tr8, td17);
+    			append_dev(td17, t34);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*player*/ 1 && t2_value !== (t2_value = /*player*/ ctx[0].point.castle + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*player*/ 1 && t6_value !== (t6_value = /*player*/ ctx[0].point.city + "")) set_data_dev(t6, t6_value);
-    			if (dirty & /*player*/ 1 && t10_value !== (t10_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t10, t10_value);
-    			if (dirty & /*player*/ 1 && t14_value !== (t14_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t14, t14_value);
-    			if (dirty & /*player*/ 1 && t18_value !== (t18_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t18, t18_value);
+    			if (dirty & /*player*/ 1 && t4_value !== (t4_value = /*player*/ ctx[0].point.castle + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*player*/ 1 && t8_value !== (t8_value = /*player*/ ctx[0].point.city + "")) set_data_dev(t8, t8_value);
+    			if (dirty & /*player*/ 1 && t12_value !== (t12_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t12, t12_value);
+    			if (dirty & /*player*/ 1 && t16_value !== (t16_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t16, t16_value);
+    			if (dirty & /*player*/ 1 && t20_value !== (t20_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t20, t20_value);
+    			if (dirty & /*player*/ 1 && t30_value !== (t30_value = /*player*/ ctx[0].construction.castle + "")) set_data_dev(t30, t30_value);
+    			if (dirty & /*player*/ 1 && t32_value !== (t32_value = /*player*/ ctx[0].construction.city + "")) set_data_dev(t32, t32_value);
+    			if (dirty & /*player*/ 1 && t34_value !== (t34_value = /*player*/ ctx[0].construction.road + "")) set_data_dev(t34, t34_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(tr0);
-    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(tr1);
-    			if (detaching) detach_dev(t7);
+    			if (detaching) detach_dev(t5);
     			if (detaching) detach_dev(tr2);
-    			if (detaching) detach_dev(t11);
+    			if (detaching) detach_dev(t9);
     			if (detaching) detach_dev(tr3);
-    			if (detaching) detach_dev(t15);
+    			if (detaching) detach_dev(t13);
     			if (detaching) detach_dev(tr4);
+    			if (detaching) detach_dev(t17);
+    			if (detaching) detach_dev(tr5);
+    			if (detaching) detach_dev(t21);
+    			if (detaching) detach_dev(tr6);
+    			if (detaching) detach_dev(t23);
+    			if (detaching) detach_dev(tr9);
     		}
     	};
 
@@ -3366,14 +3497,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(57:8) {#if !modalMode}",
+    		source: "(60:20) {#if !modalMode}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (87:16) {#if modalMode}
+    // (116:28) {#if modalMode}
     function create_if_block$3(ctx) {
     	let td;
     	let if_block = /*resource*/ ctx[11].count >= 4 && create_if_block_1$1(ctx);
@@ -3382,8 +3513,8 @@ var app = (function (jQuery) {
     		c: function create() {
     			td = element("td");
     			if (if_block) if_block.c();
-    			attr_dev(td, "class", "svelte-10bi08a");
-    			add_location(td, file$5, 87, 20, 2410);
+    			attr_dev(td, "class", "svelte-7ov2g7");
+    			add_location(td, file$5, 116, 32, 4105);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -3413,14 +3544,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(87:16) {#if modalMode}",
+    		source: "(116:28) {#if modalMode}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (89:24) {#if resource.count>=4}
+    // (118:36) {#if resource.count>=4}
     function create_if_block_1$1(ctx) {
     	let table;
     	let tr0;
@@ -3458,10 +3589,10 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr0, file$5, 90, 28, 2546);
-    			add_location(tr1, file$5, 97, 28, 2956);
-    			attr_dev(table, "class", "trade-resource svelte-10bi08a");
-    			add_location(table, file$5, 89, 24, 2487);
+    			add_location(tr0, file$5, 119, 44, 4285);
+    			add_location(tr1, file$5, 126, 44, 4807);
+    			attr_dev(table, "class", "trade-resource svelte-7ov2g7");
+    			add_location(table, file$5, 118, 40, 4210);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -3538,14 +3669,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(89:24) {#if resource.count>=4}",
+    		source: "(118:36) {#if resource.count>=4}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (93:36) {#if resource.type!==tradeResource.type}
+    // (122:52) {#if resource.type!==tradeResource.type}
     function create_if_block_3(ctx) {
     	let td;
     	let img;
@@ -3555,11 +3686,11 @@ var app = (function (jQuery) {
     		c: function create() {
     			td = element("td");
     			img = element("img");
-    			attr_dev(img, "class", "trade-resource svelte-10bi08a");
+    			attr_dev(img, "class", "trade-resource svelte-7ov2g7");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$5, 93, 44, 2742);
-    			attr_dev(td, "class", "svelte-10bi08a");
-    			add_location(td, file$5, 93, 40, 2738);
+    			add_location(img, file$5, 122, 60, 4529);
+    			attr_dev(td, "class", "svelte-7ov2g7");
+    			add_location(td, file$5, 122, 56, 4525);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -3579,14 +3710,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(93:36) {#if resource.type!==tradeResource.type}",
+    		source: "(122:52) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (92:32) {#each resourceList as tradeResource}
+    // (121:48) {#each resourceList as tradeResource}
     function create_each_block_2$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_3(ctx);
@@ -3624,14 +3755,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_2$1.name,
     		type: "each",
-    		source: "(92:32) {#each resourceList as tradeResource}",
+    		source: "(121:48) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (100:36) {#if resource.type!==tradeResource.type}
+    // (129:52) {#if resource.type!==tradeResource.type}
     function create_if_block_2$1(ctx) {
     	let td;
     	let button;
@@ -3648,9 +3779,9 @@ var app = (function (jQuery) {
     			button = element("button");
     			button.textContent = "4:1 교환";
     			attr_dev(button, "class", "btn btn-primary btn-sm");
-    			add_location(button, file$5, 100, 44, 3152);
-    			attr_dev(td, "class", "svelte-10bi08a");
-    			add_location(td, file$5, 100, 40, 3148);
+    			add_location(button, file$5, 129, 60, 5051);
+    			attr_dev(td, "class", "svelte-7ov2g7");
+    			add_location(td, file$5, 129, 56, 5047);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -3675,14 +3806,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(100:36) {#if resource.type!==tradeResource.type}",
+    		source: "(129:52) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (99:32) {#each resourceList as tradeResource}
+    // (128:48) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_2$1(ctx);
@@ -3720,14 +3851,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(99:32) {#each resourceList as tradeResource}",
+    		source: "(128:48) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:8) {#each resourceList as resource}
+    // (109:20) {#each resourceList as resource}
     function create_each_block$1(ctx) {
     	let tr;
     	let td0;
@@ -3754,13 +3885,13 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-10bi08a");
-    			add_location(img, file$5, 82, 20, 2171);
-    			attr_dev(td0, "class", "svelte-10bi08a");
-    			add_location(td0, file$5, 81, 16, 2146);
-    			attr_dev(td1, "class", "number svelte-10bi08a");
-    			add_location(td1, file$5, 85, 16, 2317);
-    			add_location(tr, file$5, 80, 12, 2125);
+    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-7ov2g7");
+    			add_location(img, file$5, 111, 32, 3806);
+    			attr_dev(td0, "class", "svelte-7ov2g7");
+    			add_location(td0, file$5, 110, 28, 3769);
+    			attr_dev(td1, "class", "number svelte-7ov2g7");
+    			add_location(td1, file$5, 114, 28, 3988);
+    			add_location(tr, file$5, 109, 24, 3736);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -3778,7 +3909,7 @@ var app = (function (jQuery) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-10bi08a")) {
+    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-7ov2g7")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -3795,7 +3926,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(80:8) {#each resourceList as resource}",
+    		source: "(109:20) {#each resourceList as resource}",
     		ctx
     	});
 
@@ -3804,13 +3935,19 @@ var app = (function (jQuery) {
 
     function create_fragment$5(ctx) {
     	let main;
-    	let table;
-    	let tr;
-    	let td;
+    	let table1;
+    	let tr2;
+    	let td2;
+    	let table0;
+    	let tr0;
+    	let td0;
     	let t0_value = /*player*/ ctx[0].name + "";
     	let t0;
     	let t1;
     	let t2;
+    	let tr1;
+    	let td1;
+    	let t4;
     	let if_block = !/*modalMode*/ ctx[3] && create_if_block_4(ctx);
     	let each_value = /*resourceList*/ ctx[2];
     	validate_each_argument(each_value);
@@ -3823,26 +3960,42 @@ var app = (function (jQuery) {
     	const block = {
     		c: function create() {
     			main = element("main");
-    			table = element("table");
-    			tr = element("tr");
-    			td = element("td");
+    			table1 = element("table");
+    			tr2 = element("tr");
+    			td2 = element("td");
+    			table0 = element("table");
+    			tr0 = element("tr");
+    			td0 = element("td");
     			t0 = text(t0_value);
     			t1 = space();
     			if (if_block) if_block.c();
     			t2 = space();
+    			tr1 = element("tr");
+    			td1 = element("td");
+    			td1.textContent = "자원";
+    			t4 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(td, "colspan", /*colspan*/ ctx[4]);
-    			attr_dev(td, "class", "name svelte-10bi08a");
-    			set_style(td, "background-color", /*player*/ ctx[0].color);
-    			add_location(td, file$5, 51, 12, 1335);
-    			add_location(tr, file$5, 50, 8, 1318);
-    			attr_dev(table, "class", "resource svelte-10bi08a");
-    			toggle_class(table, "turn", /*turnClassEnabled*/ ctx[1]);
-    			add_location(table, file$5, 49, 4, 1255);
+    			attr_dev(td0, "colspan", /*colspan*/ ctx[4]);
+    			attr_dev(td0, "class", "name svelte-7ov2g7");
+    			set_style(td0, "background-color", /*player*/ ctx[0].color);
+    			add_location(td0, file$5, 54, 24, 1436);
+    			add_location(tr0, file$5, 53, 20, 1407);
+    			attr_dev(td1, "colspan", "2");
+    			attr_dev(td1, "class", "header svelte-7ov2g7");
+    			add_location(td1, file$5, 105, 24, 3593);
+    			add_location(tr1, file$5, 104, 20, 3564);
+    			attr_dev(table0, "class", "inner-resource");
+    			add_location(table0, file$5, 52, 16, 1356);
+    			attr_dev(td2, "class", "svelte-7ov2g7");
+    			add_location(td2, file$5, 51, 12, 1335);
+    			add_location(tr2, file$5, 50, 8, 1318);
+    			attr_dev(table1, "class", "resource svelte-7ov2g7");
+    			toggle_class(table1, "turn", /*turnClassEnabled*/ ctx[1]);
+    			add_location(table1, file$5, 49, 4, 1255);
     			add_location(main, file$5, 48, 0, 1244);
     		},
     		l: function claim(nodes) {
@@ -3850,23 +4003,29 @@ var app = (function (jQuery) {
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, table);
-    			append_dev(table, tr);
-    			append_dev(tr, td);
-    			append_dev(td, t0);
-    			append_dev(table, t1);
-    			if (if_block) if_block.m(table, null);
-    			append_dev(table, t2);
+    			append_dev(main, table1);
+    			append_dev(table1, tr2);
+    			append_dev(tr2, td2);
+    			append_dev(td2, table0);
+    			append_dev(table0, tr0);
+    			append_dev(tr0, td0);
+    			append_dev(td0, t0);
+    			append_dev(table0, t1);
+    			if (if_block) if_block.m(table0, null);
+    			append_dev(table0, t2);
+    			append_dev(table0, tr1);
+    			append_dev(tr1, td1);
+    			append_dev(table0, t4);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(table, null);
+    				each_blocks[i].m(table0, null);
     			}
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*player*/ 1 && t0_value !== (t0_value = /*player*/ ctx[0].name + "")) set_data_dev(t0, t0_value);
 
     			if (dirty & /*player*/ 1) {
-    				set_style(td, "background-color", /*player*/ ctx[0].color);
+    				set_style(td0, "background-color", /*player*/ ctx[0].color);
     			}
 
     			if (!/*modalMode*/ ctx[3]) if_block.p(ctx, dirty);
@@ -3884,7 +4043,7 @@ var app = (function (jQuery) {
     					} else {
     						each_blocks[i] = create_each_block$1(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(table, null);
+    						each_blocks[i].m(table0, null);
     					}
     				}
 
@@ -3896,7 +4055,7 @@ var app = (function (jQuery) {
     			}
 
     			if (dirty & /*turnClassEnabled*/ 2) {
-    				toggle_class(table, "turn", /*turnClassEnabled*/ ctx[1]);
+    				toggle_class(table1, "turn", /*turnClassEnabled*/ ctx[1]);
     			}
     		},
     		i: noop,
@@ -4076,9 +4235,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$6, 44, 20, 1666);
+    			add_location(button, file$6, 44, 20, 1669);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$6, 43, 16, 1618);
+    			add_location(div, file$6, 43, 16, 1621);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4154,28 +4313,28 @@ var app = (function (jQuery) {
     			attr_dev(button0, "class", "btn-close");
     			attr_dev(button0, "data-bs-dismiss", "modal");
     			attr_dev(button0, "aria-label", "Close");
-    			add_location(button0, file$6, 56, 16, 2157);
+    			add_location(button0, file$6, 56, 16, 2160);
     			attr_dev(div0, "class", "modal-header");
-    			add_location(div0, file$6, 55, 12, 2113);
+    			add_location(div0, file$6, 55, 12, 2116);
     			attr_dev(div1, "class", "modal-body");
-    			add_location(div1, file$6, 58, 12, 2283);
+    			add_location(div1, file$6, 58, 12, 2286);
     			attr_dev(button1, "type", "button");
     			attr_dev(button1, "class", "btn btn-secondary");
     			attr_dev(button1, "data-bs-dismiss", "modal");
-    			add_location(button1, file$6, 64, 16, 2493);
+    			add_location(button1, file$6, 64, 16, 2496);
     			attr_dev(div2, "class", "modal-footer");
-    			add_location(div2, file$6, 63, 12, 2449);
+    			add_location(div2, file$6, 63, 12, 2452);
     			attr_dev(div3, "class", "modal-content");
-    			add_location(div3, file$6, 54, 8, 2072);
+    			add_location(div3, file$6, 54, 8, 2075);
     			attr_dev(div4, "class", "modal-dialog");
     			set_style(div4, "max-width", "800px");
-    			add_location(div4, file$6, 53, 4, 2012);
+    			add_location(div4, file$6, 53, 4, 2015);
     			attr_dev(div5, "class", "modal fade");
     			attr_dev(div5, "id", "resourceModal");
     			attr_dev(div5, "tabindex", "-1");
     			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div5, "aria-hidden", "true");
-    			add_location(div5, file$6, 52, 0, 1894);
+    			add_location(div5, file$6, 52, 0, 1897);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div5, anchor);
@@ -4334,43 +4493,43 @@ var app = (function (jQuery) {
     			if (if_block1) if_block1.c();
     			if_block1_anchor = empty();
     			attr_dev(td0, "valign", "top");
-    			attr_dev(td0, "class", "player svelte-wvsy7b");
-    			add_location(td0, file$6, 10, 12, 259);
-    			attr_dev(button0, "class", "btn btn-primary svelte-wvsy7b");
+    			attr_dev(td0, "class", "player svelte-o98rhe");
+    			add_location(td0, file$6, 10, 12, 262);
+    			attr_dev(button0, "class", "btn btn-primary svelte-o98rhe");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$6, 17, 20, 598);
-    			attr_dev(div0, "class", "dice-container svelte-wvsy7b");
-    			add_location(div0, file$6, 14, 16, 430);
+    			add_location(button0, file$6, 17, 20, 601);
+    			attr_dev(div0, "class", "dice-container svelte-o98rhe");
+    			add_location(div0, file$6, 14, 16, 433);
     			attr_dev(td1, "valign", "top");
-    			attr_dev(td1, "class", "text-center svelte-wvsy7b");
-    			add_location(td1, file$6, 13, 12, 375);
+    			attr_dev(td1, "class", "text-center svelte-o98rhe");
+    			add_location(td1, file$6, 13, 12, 378);
     			attr_dev(td2, "valign", "top");
-    			attr_dev(td2, "class", "player svelte-wvsy7b");
-    			add_location(td2, file$6, 26, 12, 967);
-    			add_location(tr, file$6, 9, 8, 241);
-    			add_location(table, file$6, 8, 4, 224);
+    			attr_dev(td2, "class", "player svelte-o98rhe");
+    			add_location(td2, file$6, 26, 12, 970);
+    			add_location(tr, file$6, 9, 8, 244);
+    			add_location(table, file$6, 8, 4, 227);
     			set_style(main, "margin", "auto");
-    			set_style(main, "width", "80%");
+    			set_style(main, "width", "1300px");
     			add_location(main, file$6, 7, 0, 179);
     			attr_dev(button1, "type", "button");
     			attr_dev(button1, "class", "btn-close");
     			attr_dev(button1, "data-bs-dismiss", "modal");
     			attr_dev(button1, "aria-label", "Close");
-    			add_location(button1, file$6, 36, 16, 1345);
+    			add_location(button1, file$6, 36, 16, 1348);
     			attr_dev(div1, "class", "modal-header");
-    			add_location(div1, file$6, 35, 12, 1301);
+    			add_location(div1, file$6, 35, 12, 1304);
     			attr_dev(div2, "class", "modal-body");
-    			add_location(div2, file$6, 38, 12, 1471);
+    			add_location(div2, file$6, 38, 12, 1474);
     			attr_dev(div3, "class", "modal-content");
-    			add_location(div3, file$6, 34, 8, 1260);
+    			add_location(div3, file$6, 34, 8, 1263);
     			attr_dev(div4, "class", "modal-dialog");
-    			add_location(div4, file$6, 33, 4, 1224);
+    			add_location(div4, file$6, 33, 4, 1227);
     			attr_dev(div5, "class", "modal fade");
     			attr_dev(div5, "id", "katanModal");
     			attr_dev(div5, "tabindex", "-1");
     			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div5, "aria-hidden", "true");
-    			add_location(div5, file$6, 32, 0, 1109);
+    			add_location(div5, file$6, 32, 0, 1112);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

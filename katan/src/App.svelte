@@ -5,7 +5,7 @@
     import katan from './katan.js'
 </script>
 
-<main style="margin: auto; width: 80%">
+<main style="margin: auto; width: 1300px">
     <table>
         <tr>
             <td valign="top" class="player">
@@ -82,7 +82,7 @@
     }
 
     .player {
-        width: 200px;
+        width: 250px;
     }
 
     td {

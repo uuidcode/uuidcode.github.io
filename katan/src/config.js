@@ -1,8 +1,8 @@
 const config = {
     debug: false,
     cell: {
-        width: 180,
-        height: 200,
+        width: 150,
+        height: 180,
         margin: 5
     },
     castle: {
@@ -22,8 +22,8 @@ const config = {
         height: 100,
     },
     buglar: {
-        width: 130,
-        height: 130,
+        width: 120,
+        height: 120,
     },
     selectedColor: 'blueviolet'
 };

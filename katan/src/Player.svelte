@@ -49,73 +49,104 @@
 <main>
     <table class="resource" class:turn={turnClassEnabled}>
         <tr>
-            <td colspan="{colspan}"
-                class="name"
-                style="background-color:{player.color}">{player.name}</td>
+            <td>
+                <table class="inner-resource">
+                    <tr>
+                        <td colspan="{colspan}"
+                            class="name"
+                            style="background-color:{player.color}">{player.name}</td>
+                    </tr>
+
+                    {#if !modalMode}
+                        <tr>
+                            <td colspan="2" class="header">점수</td>
+                        </tr>
+                        <tr class="point">
+                            <td>마을</td>
+                            <td>{player.point.castle}</td>
+                        </tr>
+                        <tr>
+                            <td>도시</td>
+                            <td>{player.point.city}</td>
+                        </tr>
+                        <tr>
+                            <td>최장 교역로</td>
+                            <td>{player.point.road}</td>
+                        </tr>
+                        <tr>
+                            <td>최강 기사단</td>
+                            <td>{player.point.knight}</td>
+                        </tr>
+                        <tr>
+                            <td>현재 점수</td>
+                            <td>{player.point.sum}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="header">건설</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table class="construction" width="100%">
+                                    <tr>
+                                        <td>마을</td>
+                                        <td>도시</td>
+                                        <td>도로</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{player.construction.castle}</td>
+                                        <td>{player.construction.city}</td>
+                                        <td>{player.construction.road}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    {/if}
+
+                    <tr>
+                        <td colspan="2" class="header">자원</td>
+                    </tr>
+
+                    {#each resourceList as resource}
+                        <tr>
+                            <td>
+                                <img src="{resource.type}_item.png"
+                                     class="player_{player.index}_{resource.type}">
+                            </td>
+                            <td class="number">{resource.count}</td>
+                            {#if modalMode}
+                                <td>
+                                    {#if resource.count>=4}
+                                        <table class="trade-resource">
+                                            <tr>
+                                                {#each resourceList as tradeResource}
+                                                    {#if resource.type!==tradeResource.type}
+                                                        <td><img class="trade-resource" src="{tradeResource.type}_item.png"></td>
+                                                    {/if}
+                                                {/each}
+                                            </tr>
+                                            <tr>
+                                                {#each resourceList as tradeResource}
+                                                    {#if resource.type!==tradeResource.type}
+                                                        <td><button class="btn btn-primary btn-sm"
+                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button></td>
+                                                    {/if}
+                                                {/each}
+                                            </tr>
+                                        </table>
+                                    {/if}
+                                </td>
+                            {/if}
+                        </tr>
+                    {/each}
+                </table>
+            </td>
         </tr>
-
-        {#if !modalMode}
-            <tr>
-                <td>마을</td>
-                <td>{player.point.castle}</td>
-            </tr>
-            <tr>
-                <td>도시</td>
-                <td>{player.point.city}</td>
-            </tr>
-            <tr>
-                <td>최장 교역로</td>
-                <td>{player.point.road}</td>
-            </tr>
-            <tr>
-                <td>최강 기사단</td>
-                <td>{player.point.knight}</td>
-            </tr>
-            <tr>
-                <td>현재 점수</td>
-                <td>{player.point.sum}</td>
-            </tr>
-        {/if}
-
-        {#each resourceList as resource}
-            <tr>
-                <td>
-                    <img src="{resource.type}_item.png"
-                         class="player_{player.index}_{resource.type}">
-                </td>
-                <td class="number">{resource.count}</td>
-                {#if modalMode}
-                    <td>
-                        {#if resource.count>=4}
-                        <table class="trade-resource">
-                            <tr>
-                                {#each resourceList as tradeResource}
-                                    {#if resource.type!==tradeResource.type}
-                                        <td><img class="trade-resource" src="{tradeResource.type}_item.png"></td>
-                                    {/if}
-                                {/each}
-                            </tr>
-                            <tr>
-                                {#each resourceList as tradeResource}
-                                    {#if resource.type!==tradeResource.type}
-                                        <td><button class="btn btn-primary btn-sm"
-                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button></td>
-                                    {/if}
-                                {/each}
-                            </tr>
-                        </table>
-                        {/if}
-                    </td>
-                {/if}
-            </tr>
-        {/each}
     </table>
 </main>
 
 <style>
     .resource td {
         text-align: center;
-        border: 1px solid white;
     }
 
     table.resource {
@@ -143,12 +174,24 @@
         line-height: 100px;
         font-size: 60px;
         font-weight: 600;
-        width: 40px;
+        width: 80px;
     }
 
     .name {
         font-weight: bolder;
         font-size: 20px;
         color: white;
+    }
+
+    .header {
+        background-color: lightskyblue;
+    }
+
+    .construction, .construction td {
+        border: 1px solid lightskyblue;
+    }
+
+    td {
+        border: 1px solid lightskyblue;
     }
 </style>
