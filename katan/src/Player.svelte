@@ -149,7 +149,7 @@
         </tr>
     </table>
     {#if modalMode}
-       <Construction></Construction>
+        <Construction/>
     {/if}
 </main>
 
