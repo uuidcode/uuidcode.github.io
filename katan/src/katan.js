@@ -5,9 +5,7 @@ import jQuery from 'jquery';
 import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
-    makeRoad: false,
-    makeCastle: false,
-    makeCity: false,
+    construction: false,
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
     dice: [6, 6],
@@ -41,11 +39,11 @@ katan.playerList.forEach((player, i) => {
     player.pickRoad = 0;
 
     player.resource = {
-        tree: 0,
-        mud: 0,
-        wheat: 0,
-        sheep: 0,
-        iron: 0
+        tree: 10,
+        mud: 10,
+        wheat: 10,
+        sheep: 10,
+        iron: 10
     };
 
     player.point = {
@@ -69,6 +67,13 @@ katan.playerList.forEach((player, i) => {
         castle: 5,
         city: 4,
         road: 15
+    };
+
+    player.make = {
+        road: false,
+        castle: false,
+        city: false,
+        dev: false
     }
 });
 
@@ -754,11 +759,10 @@ const katanStore = {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
 
-                    katanStore.showResourceModal();
+                    katanStore.setShowResourceModal();
 
                     setTimeout(() => {
-                        const modal = new Modal(document.getElementById('resourceModal'), {});
-                        modal.show();
+                       katanStore.showResourceModal();
                     }, 500);
                 }
             }, 100);
@@ -777,7 +781,12 @@ const katanStore = {
         katan.turn();
     },
 
-    showResourceModal: () => update(katan => {
+    showResourceModal: () => {
+        const modal = new Modal(document.getElementById('resourceModal'), {});
+        modal.show();
+    },
+
+    setShowResourceModal: () => update(katan => {
         katan.showResourceModal = true;
        return katan;
     }),
@@ -826,6 +835,7 @@ const katanStore = {
 
     updateResource: (playerIndex, resource) => update(katan => {
         katan.playerList[playerIndex].resource[resource.type]++;
+        katanStore.recomputePlayer();
         return katan;
     }),
 
@@ -1047,6 +1057,38 @@ const katanStore = {
     exchange: (player, resourceType, targetResourceType) => update(katan => {
         player.resource[targetResourceType] += 1;
         player.resource[resourceType] -= player.trade[resourceType];
+        katanStore.recomputePlayer();
+        return katan;
+    }),
+
+    recomputePlayer: () => update((katan) => {
+        katan.playerList = katan.playerList
+            .map(player => {
+                player.make.road =
+                    player.construction.road >= 1 &&
+                    player.resource.tree >= 1 &&
+                    player.resource.mud >= 1;
+
+                player.make.castle =
+                    player.construction.castle >= 1 &&
+                    player.resource.tree >= 1 &&
+                    player.resource.mud >= 1 &&
+                    player.resource.wheat >= 1 &&
+                    player.resource.sheep >= 1;
+
+                player.make.city =
+                    player.construction.city >= 1 &&
+                    player.resource.iron >= 3 &&
+                    player.resource.wheat >= 2;
+
+                player.make.dev =
+                    player.resource.iron >= 1 &&
+                    player.resource.sheep >= 1 &&
+                    player.resource.wheat >= 1;
+
+                return player;
+            });
+
         return katan;
     })
 };

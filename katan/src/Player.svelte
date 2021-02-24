@@ -1,6 +1,7 @@
 <script>
     import katan from './katan'
     import { onDestroy } from 'svelte';
+    import Construction from './Construction.svelte'
 
     export let playerIndex;
     export let type = 'player';
@@ -49,6 +50,10 @@
     });
 
     onDestroy(unsubscribe);
+
+    if (katan.construction) {
+
+    }
 </script>
 
 <main>
@@ -147,6 +152,9 @@
             </td>
         </tr>
     </table>
+    {#if modalMode}
+       <Construction></Construction>
+    {/if}
 </main>
 
 <style>
@@ -176,17 +184,26 @@
         margin: 4px;
     }
 
-    .trade-target-resource  img {
+    .trade-target-resource img {
         width: 40px;
         height: 40px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
         margin: 4px;
     }
+
     .number {
         line-height: 100px;
         font-size: 60px;
         font-weight: 600;
         width: 80px;
+    }
+
+    .trade-resource .number {
+        line-height: 60px;
+        font-size: 60px;
+        font-weight: 600;
+        width: 80px;
+        text-align: center;
     }
 
     .name {
@@ -205,5 +222,16 @@
 
     td {
         border: 1px solid lightskyblue;
+    }
+
+    .construction-resource {
+        margin-top: 10px;
+    }
+
+    .construction-resource img {
+        width: 60px;
+        height: 60px;
+        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+        margin: 4px;
     }
 </style>
