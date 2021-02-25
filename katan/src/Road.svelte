@@ -20,13 +20,18 @@
         katan.setRoad(roadIndex, player.index);
         katan.setHideRoad();
         katan.setRoadRippleDisabled();
-        katan.setShowCastle();
-        katan.setCastleRippleEnabled();
 
-        katan.turn();
+        if ($katan.isMakeRoad) {
+            katan.endMakeRoad();
+            katan.updateAndShowResourceModal();
+        } else {
+            katan.setShowCastle();
+            katan.setCastleRippleEnabled();
+            katan.turn();
 
-        if (katan.isStartable()) {
-            katan.start();
+            if (katan.isStartable()) {
+                katan.start();
+            }
         }
     };
 

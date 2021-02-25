@@ -24,7 +24,7 @@
             </td>
             <td>
                 <button class="btn btn-primary btn-sm"
-                        on:click={()=>katan.setNewRoadRippleEnabled()}
+                        on:click={()=>katan.makeRoad()}
                         disabled={!player.make.road}>도로 만들기</button>
             </td>
         </tr>

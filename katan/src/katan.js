@@ -5,6 +5,7 @@ import jQuery from 'jquery';
 import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
+    isMakeRoad: false,
     construction: false,
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
@@ -781,6 +782,14 @@ const katanStore = {
         katan.turn();
     },
 
+    updateAndShowResourceModal: () => {
+        katanStore.setShowResourceModal();
+
+        setTimeout(() => {
+            katanStore.showResourceModal();
+        }, 500);
+    },
+
     showResourceModal: () => {
         const modal = new Modal(document.getElementById('resourceModal'), {});
         modal.show();
@@ -793,6 +802,11 @@ const katanStore = {
 
     hideResourceModal: () => update(katan => {
         katan.showResourceModal = false;
+        return katan;
+    }),
+
+    endMakeRoad: () => update(katan => {
+        katan.isMakeRoad = false;
         return katan;
     }),
 
@@ -916,7 +930,9 @@ const katanStore = {
         return katan;
     }),
 
-    setNewRoadRippleEnabled: () => update(katan => {
+    makeRoad: () => update(katan => {
+        katan.isMakeRoad = true;
+
         katan.castleList
             .filter(castle => castle.playerIndex === katan.playerIndex)
             .forEach(castle => {
