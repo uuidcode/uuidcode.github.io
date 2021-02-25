@@ -3,12 +3,7 @@
     import Dice from './Dice.svelte'
     import Player from './Player.svelte'
     import katan from './katan.js'
-    //
-    // setTimeout(() => {
-    //     katan.setShowResourceModal();
-    //     setTimeout(katan.showResourceModal, 1000);
-    // }, 1000);
-
+    import Resource from "./Resource.svelte";
 </script>
 
 <main style="margin: auto; width: 1300px">
@@ -56,22 +51,7 @@
 </div>
 
 {#if $katan.showResourceModal}
-<div class="modal fade" id="resourceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="max-width:800px">
-        <div class="modal-content">
-            <div class="modal-body">
-                <Player type="modal"
-                        playerIndex={$katan.playerIndex}></Player>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button"
-                        on:click={()=>katan.closeResourceModal()}
-                        class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <Resource/>
 {/if}
 
 <style>

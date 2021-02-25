@@ -781,6 +781,10 @@ const katanStore = {
 
         katanStore.hideResourceModal();
         katanStore.setDiceEnabled();
+    },
+
+    closeResourceModalAndTurn: () => {
+        katanStore.closeResourceModal();
         katan.turn();
     },
 
@@ -1018,27 +1022,42 @@ const katanStore = {
     }),
 
     setNewCastleRippleEnabled: () => update(katan => {
-        katan.castleList = katan.castleList.map(castle => {
-            if (castle.playerIndex === -1) {
+        katan.roadList.map(road => {
+            if (road.playerIndex === katan.playerIndex) {
+                console.log('>>> road', road);
 
-                let linkedCastleLength = castle.castleIndexList
-                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
-                    .length;
-
-                let linkedRoadLength = castle.roadIndexList
-                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === katan.playerIndex)
-                    .length;
-
-
-                if (linkedCastleLength === 0 && linkedRoadLength > 0) {
-                    castle.ripple = true;
-                }
+                road.castleIndexList
+                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
+                    .forEach(castleIndex => {
+                        katan.castleList[castleIndex].ripple = true;
+                        console.log('>>> castleIndex', castleIndex);
+                    })
             }
-
-            return castle;
         });
 
         return katan;
+
+        // katan.castleList = katan.castleList.map(castle => {
+        //     if (castle.playerIndex === -1) {
+        //
+        //         let linkedCastleLength = castle.castleIndexList
+        //             .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
+        //             .length;
+        //
+        //         let linkedRoadLength = castle.roadIndexList
+        //             .filter(roadIndex => katan.roadList[roadIndex].playerIndex === katan.playerIndex)
+        //             .length;
+        //
+        //
+        //         if (linkedCastleLength === 0 && linkedRoadLength > 0) {
+        //             castle.ripple = true;
+        //         }
+        //     }
+        //
+        //     return castle;
+        // });
+        //
+        // return katan;
     }),
 
     endMakeCastle: () => update(katan => {
