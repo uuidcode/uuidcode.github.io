@@ -1,3 +1,4 @@
+import {tick} from 'svelte'
 import {writable} from "svelte/store";
 import config from './config.js'
 import { getDisplay, sleep } from './util.js'
@@ -6,6 +7,7 @@ import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
     isMakeRoad: false,
+    isMakeCastle: false,
     construction: false,
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
@@ -782,12 +784,10 @@ const katanStore = {
         katan.turn();
     },
 
-    updateAndShowResourceModal: () => {
+    updateAndShowResourceModal: async() => {
         katanStore.setShowResourceModal();
-
-        setTimeout(() => {
-            katanStore.showResourceModal();
-        }, 500);
+        await tick();
+        katanStore.showResourceModal();
     },
 
     showResourceModal: () => {
@@ -937,13 +937,21 @@ const katanStore = {
 
     makeRoad: () => update(katan => {
         katan.isMakeRoad = true;
+        katanStore.closeResourceModal();
 
         katan.castleList
             .filter(castle => castle.playerIndex === katan.playerIndex)
             .forEach(castle => {
-                katanStore.closeResourceModal();
                 katanStore.setRoadRippleEnabled(castle.index);
             });
+
+        return katan;
+    }),
+
+    makeCastle: () => update(katan => {
+        katan.isMakeCastle = true;
+        katanStore.closeResourceModal();
+        katanStore.setNewCastleRippleEnabled();
 
         return katan;
     }),
@@ -1006,6 +1014,35 @@ const katanStore = {
             return castle;
         });
 
+        return katan;
+    }),
+
+    setNewCastleRippleEnabled: () => update(katan => {
+        katan.castleList = katan.castleList.map(castle => {
+            if (castle.playerIndex === -1) {
+
+                let linkedCastleLength = castle.castleIndexList
+                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
+                    .length;
+
+                let linkedRoadLength = castle.roadIndexList
+                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === katan.playerIndex)
+                    .length;
+
+
+                if (linkedCastleLength === 0 && linkedRoadLength > 0) {
+                    castle.ripple = true;
+                }
+            }
+
+            return castle;
+        });
+
+        return katan;
+    }),
+
+    endMakeCastle: () => update(katan => {
+        katan.isMakeCastle = false;
         return katan;
     }),
 

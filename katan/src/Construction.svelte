@@ -36,7 +36,9 @@
                 <img src="sheep_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm" disabled={!player.make.castle}>마을 만들기</button>
+                <button class="btn btn-primary btn-sm"
+                        on:click={()=>katan.makeCastle()}
+                        disabled={!player.make.castle}>마을 만들기</button>
             </td>
         </tr>
         <tr>

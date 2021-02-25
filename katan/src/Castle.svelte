@@ -19,7 +19,13 @@
 
         katan.setHideCastle();
         katan.setCastleRippleDisabled();
-        katan.setRoadRippleEnabled(castleIndex);
+
+        if ($katan.isMakeCastle) {
+            katan.endMakeCastle();
+            katan.updateAndShowResourceModal();
+        } else {
+            katan.setRoadRippleEnabled(castleIndex);
+        }
     };
 
     const createStyle = () => {
