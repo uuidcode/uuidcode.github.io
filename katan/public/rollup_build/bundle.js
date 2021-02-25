@@ -1448,6 +1448,11 @@ var app = (function (jQuery) {
             player.pickRoad += 1;
             player.construction.road -= 1;
 
+            if (katan.isMakeRoad) {
+                player.resource.tree -= 1;
+                player.resource.mud -= 1;
+            }
+
             return katan;
         }),
 
