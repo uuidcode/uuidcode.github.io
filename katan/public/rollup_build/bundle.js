@@ -1101,6 +1101,7 @@ var app = (function (jQuery) {
 
     katan.roadList[66].roadIndexList = [62, 67];
     katan.roadList[67].roadIndexList = [63, 66, 68];
+    katan.roadList[68].roadIndexList = [63, 67, 69];
     katan.roadList[69].roadIndexList = [64, 68, 70];
     katan.roadList[70].roadIndexList = [64, 69, 71];
     katan.roadList[71].roadIndexList = [65, 70];
@@ -1663,42 +1664,30 @@ var app = (function (jQuery) {
         }),
 
         setNewCastleRippleEnabled: () => update$1(katan => {
-            katan.roadList.map(road => {
-                if (road.playerIndex === katan.playerIndex) {
-                    console.log('>>> road', road);
-
-                    road.castleIndexList
+            katan.castleList = katan.castleList.map(castle => {
+                if (castle.playerIndex === -1) {
+                    const castleLength = castle.castleIndexList
                         .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
-                        .forEach(castleIndex => {
-                            katan.castleList[castleIndex].ripple = true;
-                            console.log('>>> castleIndex', castleIndex);
-                        });
+                        .length;
+
+                    if (castleLength === castle.castleIndexList.length) {
+                        castle.roadIndexList
+                            .forEach(roadIndex => {
+                                const road = katan.roadList[roadIndex];
+
+                                if (road.playerIndex === katan.playerIndex) {
+                                    castle.ripple = true;
+                                    castle.hide = false;
+                                    castle.show = true;
+                                }
+                            });
+                    }
                 }
+
+                return castle;
             });
 
             return katan;
-
-            // katan.castleList = katan.castleList.map(castle => {
-            //     if (castle.playerIndex === -1) {
-            //
-            //         let linkedCastleLength = castle.castleIndexList
-            //             .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
-            //             .length;
-            //
-            //         let linkedRoadLength = castle.roadIndexList
-            //             .filter(roadIndex => katan.roadList[roadIndex].playerIndex === katan.playerIndex)
-            //             .length;
-            //
-            //
-            //         if (linkedCastleLength === 0 && linkedRoadLength > 0) {
-            //             castle.ripple = true;
-            //         }
-            //     }
-            //
-            //     return castle;
-            // });
-            //
-            // return katan;
         }),
 
         endMakeCastle: () => update$1(katan => {
