@@ -426,7 +426,7 @@ var app = (function (jQuery) {
     }
 
     const config = {
-        debug: true,
+        debug: false,
         cell: {
             width: 170,
             height: 190,
@@ -1050,61 +1050,60 @@ var app = (function (jQuery) {
     katan.roadList[21].roadIndexList = [15, 16, 29, 30];
     katan.roadList[22].roadIndexList = [17, 31, 32];
 
-    katan.roadList[23].roadIndexList = [16, 17];
-    katan.roadList[24].roadIndexList = [17, 18];
-    katan.roadList[25].roadIndexList = [18, 19];
-    katan.roadList[26].roadIndexList = [19, 20];
-    katan.roadList[27].roadIndexList = [20, 21];
-    katan.roadList[28].roadIndexList = [21, 22];
-    katan.roadList[29].roadIndexList = [22, 23];
-    katan.roadList[30].roadIndexList = [23, 24];
-    katan.roadList[31].roadIndexList = [24, 25];
-    katan.roadList[32].roadIndexList = [25, 26];
+    katan.roadList[23].roadIndexList = [18, 24, 33];
+    katan.roadList[24].roadIndexList = [18, 23, 25, 34];
+    katan.roadList[25].roadIndexList = [19, 24, 26, 34];
+    katan.roadList[26].roadIndexList = [19, 25, 27, 35];
+    katan.roadList[27].roadIndexList = [20, 26, 28, 35];
+    katan.roadList[28].roadIndexList = [20, 27, 29, 36];
+    katan.roadList[29].roadIndexList = [21, 28, 30, 36];
+    katan.roadList[30].roadIndexList = [21, 29, 31, 37];
+    katan.roadList[31].roadIndexList = [22, 30, 32, 37];
+    katan.roadList[32].roadIndexList = [22, 31, 38];
 
-    katan.roadList[33].roadIndexList = [16, 27];
-    katan.roadList[34].roadIndexList = [18, 29];
-    katan.roadList[35].roadIndexList = [20, 31];
-    katan.roadList[36].roadIndexList = [22, 33];
-    katan.roadList[37].roadIndexList = [24, 35];
-    katan.roadList[38].roadIndexList = [26, 37];
+    katan.roadList[33].roadIndexList = [23, 39];
+    katan.roadList[34].roadIndexList = [24, 25, 40, 41];
+    katan.roadList[35].roadIndexList = [26, 27, 42, 43];
+    katan.roadList[36].roadIndexList = [28, 29, 44, 45];
+    katan.roadList[37].roadIndexList = [30, 31, 46, 47];
+    katan.roadList[38].roadIndexList = [32, 48];
 
-    katan.roadList[39].roadIndexList = [27, 28];
-    katan.roadList[40].roadIndexList = [28, 29];
-    katan.roadList[41].roadIndexList = [29, 30];
-    katan.roadList[42].roadIndexList = [30, 31];
-    katan.roadList[43].roadIndexList = [31, 32];
-    katan.roadList[44].roadIndexList = [32, 33];
-    katan.roadList[45].roadIndexList = [33, 34];
-    katan.roadList[46].roadIndexList = [34, 35];
-    katan.roadList[47].roadIndexList = [35, 36];
-    katan.roadList[48].roadIndexList = [36, 37];
+    katan.roadList[39].roadIndexList = [33, 40, 49];
+    katan.roadList[40].roadIndexList = [34, 39, 41, 49];
+    katan.roadList[41].roadIndexList = [34, 40, 42, 50];
+    katan.roadList[42].roadIndexList = [35, 41, 43, 50];
+    katan.roadList[43].roadIndexList = [35, 42, 44, 51];
+    katan.roadList[44].roadIndexList = [36, 43, 45, 51];
+    katan.roadList[45].roadIndexList = [36, 44, 46, 52];
+    katan.roadList[46].roadIndexList = [37, 45, 47, 52];
+    katan.roadList[47].roadIndexList = [37, 46, 48, 53];
+    katan.roadList[48].roadIndexList = [38, 47, 53];
 
-    katan.roadList[49].roadIndexList = [28, 38];
-    katan.roadList[50].roadIndexList = [30, 40];
-    katan.roadList[51].roadIndexList = [32, 42];
-    katan.roadList[52].roadIndexList = [34, 44];
-    katan.roadList[53].roadIndexList = [36, 46];
+    katan.roadList[49].roadIndexList = [39, 40, 54];
+    katan.roadList[50].roadIndexList = [41, 42, 55, 56];
+    katan.roadList[51].roadIndexList = [43, 44, 57, 58];
+    katan.roadList[52].roadIndexList = [45, 46, 59, 60];
+    katan.roadList[53].roadIndexList = [47, 48, 61];
 
-    katan.roadList[54].roadIndexList = [38, 39];
-    katan.roadList[55].roadIndexList = [39, 40];
-    katan.roadList[56].roadIndexList = [40, 41];
-    katan.roadList[57].roadIndexList = [41, 42];
-    katan.roadList[58].roadIndexList = [42, 43];
-    katan.roadList[59].roadIndexList = [43, 44];
-    katan.roadList[60].roadIndexList = [44, 45];
-    katan.roadList[61].roadIndexList = [45, 46];
+    katan.roadList[54].roadIndexList = [49, 55, 62];
+    katan.roadList[55].roadIndexList = [50, 54, 56, 62];
+    katan.roadList[56].roadIndexList = [50, 55, 57, 63];
+    katan.roadList[57].roadIndexList = [51, 46, 58, 63];
+    katan.roadList[58].roadIndexList = [51, 57, 59, 64];
+    katan.roadList[59].roadIndexList = [52, 58, 60, 64];
+    katan.roadList[60].roadIndexList = [52, 59, 61, 65];
+    katan.roadList[61].roadIndexList = [53, 60, 65];
 
-    katan.roadList[62].roadIndexList = [39, 47];
-    katan.roadList[63].roadIndexList = [41, 49];
-    katan.roadList[64].roadIndexList = [43, 51];
-    katan.roadList[65].roadIndexList = [45, 53];
+    katan.roadList[62].roadIndexList = [54, 55, 66];
+    katan.roadList[63].roadIndexList = [56, 57, 67, 68];
+    katan.roadList[64].roadIndexList = [58, 59, 69, 70];
+    katan.roadList[65].roadIndexList = [60, 61, 71];
 
-    katan.roadList[66].roadIndexList = [47, 48];
-    katan.roadList[67].roadIndexList = [48, 49];
-    katan.roadList[68].roadIndexList = [49, 50];
-    katan.roadList[69].roadIndexList = [50, 51];
-    katan.roadList[70].roadIndexList = [51, 52];
-    katan.roadList[71].roadIndexList = [52, 53];
+    katan.roadList[66].roadIndexList = [62, 67];
+    katan.roadList[67].roadIndexList = [63, 66, 68];
+    katan.roadList[69].roadIndexList = [64, 68, 70];
+    katan.roadList[70].roadIndexList = [64, 69, 71];
+    katan.roadList[71].roadIndexList = [65, 70];
 
     let resourceList = [];
 
@@ -1584,11 +1583,9 @@ var app = (function (jQuery) {
                             .filter(castle => castle.playerIndex === katan.playerIndex)
                             .length;
 
-
-                    } else if (road.playerIndex === katan.playerIndex) {
-                        length = road.roadIndexList
+                        length += road.roadIndexList
                             .map(roadIndex => katan.roadList[roadIndex])
-                            .filter(road => road.playerIndex === -1)
+                            .filter(road => road.playerIndex === katan.playerIndex)
                             .length;
                     }
 
