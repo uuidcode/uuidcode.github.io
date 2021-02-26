@@ -1,8 +1,12 @@
 <script>
     import katan from './katan.js'
+    import Player from './Player.svelte'
 </script>
 
-<div class="modal fade" id="resourceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade"
+     id="resourceModal"
+     tabindex="-1"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="max-width:800px">
         <div class="modal-content">
             <div class="modal-body">

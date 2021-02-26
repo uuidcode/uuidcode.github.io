@@ -1,5 +1,5 @@
 const config = {
-    debug: false,
+    debug: true,
     cell: {
         width: 170,
         height: 190,

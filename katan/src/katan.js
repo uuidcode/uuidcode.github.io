@@ -489,6 +489,89 @@ katan.roadList[69].castleIndexList = [50, 51];
 katan.roadList[70].castleIndexList = [51, 52];
 katan.roadList[71].castleIndexList = [52, 53];
 
+katan.roadList[0].roadIndexList = [1, 6];
+katan.roadList[1].roadIndexList = [0, 2, 7];
+katan.roadList[2].roadIndexList = [1, 3, 7];
+katan.roadList[3].roadIndexList = [2, 4, 8];
+katan.roadList[4].roadIndexList = [3, 5, 8];
+katan.roadList[5].roadIndexList = [4, 9];
+
+katan.roadList[6].roadIndexList = [0, 10, 11];
+katan.roadList[7].roadIndexList = [1, 2, 12 , 13];
+katan.roadList[8].roadIndexList = [3, 4, 14, 15];
+katan.roadList[9].roadIndexList = [5, 16, 17];
+
+katan.roadList[10].roadIndexList = [6, 11, 18];
+katan.roadList[11].roadIndexList = [6, 10, 12, 19];
+katan.roadList[12].roadIndexList = [7, 11, 13, 19];
+katan.roadList[13].roadIndexList = [7, 12, 14, 20];
+katan.roadList[14].roadIndexList = [8, 13, 15, 20];
+katan.roadList[15].roadIndexList = [8, 14, 16, 21];
+katan.roadList[16].roadIndexList = [9, 15, 17, 21];
+katan.roadList[17].roadIndexList = [9, 16, 22];
+
+katan.roadList[18].roadIndexList = [10, 23, 24];
+katan.roadList[19].roadIndexList = [11, 12, 25, 26];
+katan.roadList[20].roadIndexList = [13, 14, 27, 28];
+katan.roadList[21].roadIndexList = [15, 16, 29, 30];
+katan.roadList[22].roadIndexList = [17, 31, 32];
+
+katan.roadList[23].roadIndexList = [16, 17];
+katan.roadList[24].roadIndexList = [17, 18];
+katan.roadList[25].roadIndexList = [18, 19];
+katan.roadList[26].roadIndexList = [19, 20];
+katan.roadList[27].roadIndexList = [20, 21];
+katan.roadList[28].roadIndexList = [21, 22];
+katan.roadList[29].roadIndexList = [22, 23];
+katan.roadList[30].roadIndexList = [23, 24];
+katan.roadList[31].roadIndexList = [24, 25];
+katan.roadList[32].roadIndexList = [25, 26];
+
+katan.roadList[33].roadIndexList = [16, 27];
+katan.roadList[34].roadIndexList = [18, 29];
+katan.roadList[35].roadIndexList = [20, 31];
+katan.roadList[36].roadIndexList = [22, 33];
+katan.roadList[37].roadIndexList = [24, 35];
+katan.roadList[38].roadIndexList = [26, 37];
+
+katan.roadList[39].roadIndexList = [27, 28];
+katan.roadList[40].roadIndexList = [28, 29];
+katan.roadList[41].roadIndexList = [29, 30];
+katan.roadList[42].roadIndexList = [30, 31];
+katan.roadList[43].roadIndexList = [31, 32];
+katan.roadList[44].roadIndexList = [32, 33];
+katan.roadList[45].roadIndexList = [33, 34];
+katan.roadList[46].roadIndexList = [34, 35];
+katan.roadList[47].roadIndexList = [35, 36];
+katan.roadList[48].roadIndexList = [36, 37];
+
+katan.roadList[49].roadIndexList = [28, 38];
+katan.roadList[50].roadIndexList = [30, 40];
+katan.roadList[51].roadIndexList = [32, 42];
+katan.roadList[52].roadIndexList = [34, 44];
+katan.roadList[53].roadIndexList = [36, 46];
+
+katan.roadList[54].roadIndexList = [38, 39];
+katan.roadList[55].roadIndexList = [39, 40];
+katan.roadList[56].roadIndexList = [40, 41];
+katan.roadList[57].roadIndexList = [41, 42];
+katan.roadList[58].roadIndexList = [42, 43];
+katan.roadList[59].roadIndexList = [43, 44];
+katan.roadList[60].roadIndexList = [44, 45];
+katan.roadList[61].roadIndexList = [45, 46];
+
+katan.roadList[62].roadIndexList = [39, 47];
+katan.roadList[63].roadIndexList = [41, 49];
+katan.roadList[64].roadIndexList = [43, 51];
+katan.roadList[65].roadIndexList = [45, 53];
+
+katan.roadList[66].roadIndexList = [47, 48];
+katan.roadList[67].roadIndexList = [48, 49];
+katan.roadList[68].roadIndexList = [49, 50];
+katan.roadList[69].roadIndexList = [50, 51];
+katan.roadList[70].roadIndexList = [51, 52];
+katan.roadList[71].roadIndexList = [52, 53];
+
 let resourceList = [];
 
 resourceList.push({
@@ -943,11 +1026,7 @@ const katanStore = {
         katan.isMakeRoad = true;
         katanStore.closeResourceModal();
 
-        katan.castleList
-            .filter(castle => castle.playerIndex === katan.playerIndex)
-            .forEach(castle => {
-                katanStore.setRoadRippleEnabled(castle.index);
-            });
+        katanStore.setNewRoadRippleEnabled();
 
         return katan;
     }),
@@ -956,6 +1035,37 @@ const katanStore = {
         katan.isMakeCastle = true;
         katanStore.closeResourceModal();
         katanStore.setNewCastleRippleEnabled();
+
+        return katan;
+    }),
+
+    setNewRoadRippleEnabled: () => update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                let length = 0;
+
+                if (road.playerIndex === -1) {
+                    length = road.castleIndexList
+                        .map(castleIndex => katan.castleList[castleIndex])
+                        .filter(castle => castle.playerIndex === katan.playerIndex)
+                        .length;
+
+
+                } else if (road.playerIndex === katan.playerIndex) {
+                    length = road.roadIndexList
+                        .map(roadIndex => katan.roadList[roadIndex])
+                        .filter(road => road.playerIndex === -1)
+                        .length;
+                }
+
+                if (length > 0) {
+                    road.ripple = true;
+                    road.hide = false;
+                    road.show = true;
+                }
+
+                return road;
+            });
 
         return katan;
     }),
