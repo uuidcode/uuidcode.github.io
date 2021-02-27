@@ -952,9 +952,7 @@ const katanStore = {
     endMakeRoad: () => update(katan => {
         katan.isMakeRoad = false;
 
-        if (!katanStore.hasAction()) {
-            katanStore.turn();
-        }
+        katan.doActionAndTurn();
 
         return katan;
     }),
@@ -1215,9 +1213,7 @@ const katanStore = {
     endMakeCastle: () => update(katan => {
         katan.isMakeCastle = false;
 
-        if (!katanStore.hasAction()) {
-            katanStore.turn();
-        }
+        katan.doActionAndTurn();
 
         return katan;
     }),

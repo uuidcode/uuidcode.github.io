@@ -125,5 +125,6 @@
     .resource {
         position: absolute;
         z-index: 100;
+        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
     }
 </style>

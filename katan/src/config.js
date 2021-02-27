@@ -14,8 +14,8 @@ const config = {
         height: 40,
     },
     number: {
-        width: 80,
-        height: 80,
+        width: 60,
+        height: 60,
     },
     resource: {
         width: 60,

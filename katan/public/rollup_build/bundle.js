@@ -438,8 +438,8 @@ var app = (function (jQuery) {
             height: 40,
         },
         number: {
-            width: 80,
-            height: 80,
+            width: 60,
+            height: 60,
         },
         resource: {
             width: 60,
@@ -1483,9 +1483,7 @@ var app = (function (jQuery) {
         endMakeRoad: () => update$1(katan => {
             katan.isMakeRoad = false;
 
-            if (!katanStore.hasAction()) {
-                katanStore.turn();
-            }
+            katan.doActionAndTurn();
 
             return katan;
         }),
@@ -1746,9 +1744,7 @@ var app = (function (jQuery) {
         endMakeCastle: () => update$1(katan => {
             katan.isMakeCastle = false;
 
-            if (!katanStore.hasAction()) {
-                katanStore.turn();
-            }
+            katan.doActionAndTurn();
 
             return katan;
         }),
@@ -2010,7 +2006,7 @@ var app = (function (jQuery) {
     			img = element("img");
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[8]);
-    			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-nug0lc");
+    			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-7x55vz");
     			add_location(img, file, 92, 4, 2878);
     			add_location(div, file, 91, 4, 2868);
     		},
@@ -2019,7 +2015,7 @@ var app = (function (jQuery) {
     			append_dev(div, img);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceIndex*/ 1 && img_class_value !== (img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-nug0lc")) {
+    			if (dirty & /*resourceIndex*/ 1 && img_class_value !== (img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-7x55vz")) {
     				attr_dev(img, "class", img_class_value);
     			}
     		},
@@ -2077,7 +2073,7 @@ var app = (function (jQuery) {
     			attr_dev(img, "style", /*imageStyle*/ ctx[5]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
     			add_location(img, file, 70, 8, 2284);
-    			attr_dev(div0, "class", "number svelte-nug0lc");
+    			attr_dev(div0, "class", "number svelte-7x55vz");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
@@ -2086,7 +2082,7 @@ var app = (function (jQuery) {
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[4]);
     			add_location(div1, file, 69, 4, 2228);
-    			attr_dev(div2, "class", "cell svelte-nug0lc");
+    			attr_dev(div2, "class", "cell svelte-7x55vz");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
     			add_location(div2, file, 68, 0, 2187);
     		},
