@@ -537,6 +537,7 @@ var app = (function (jQuery) {
     });
 
     let katan = {
+        action: false,
         isMakeRoad: false,
         isMakeCastle: false,
         construction: false,
@@ -573,11 +574,11 @@ var app = (function (jQuery) {
         player.pickRoad = 0;
 
         player.resource = {
-            tree: 10,
-            mud: 10,
-            wheat: 10,
-            sheep: 10,
-            iron: 10
+            tree: 0,
+            mud: 0,
+            wheat: 0,
+            sheep: 0,
+            iron: 0
         };
 
         player.point = {
@@ -590,11 +591,26 @@ var app = (function (jQuery) {
         };
 
         player.trade = {
-            tree: 4,
-            mud: 4,
-            wheat: 4,
-            sheep: 4,
-            iron: 4
+            tree: {
+                enable: false,
+                count: 4
+            },
+            mud: {
+                enable: false,
+                count: 4
+            },
+            wheat: {
+                enable: false,
+                count: 4
+            },
+            sheep: {
+                enable: false,
+                count: 4
+            },
+            iron: {
+                enable: false,
+                count: 4
+            }
         };
 
         player.construction = {
@@ -609,6 +625,8 @@ var app = (function (jQuery) {
             city: false,
             dev: false
         };
+
+        player.exchange = false;
     });
 
     function random() {
@@ -1141,17 +1159,6 @@ var app = (function (jQuery) {
 
     katan.resourceList = resourceList;
 
-    katan.turn = () => {
-        katan.playerList
-            .forEach((player, i) => {
-                player.turn = !player.turn;
-
-                if (player.turn === true) {
-                    katan.playerIndex = i;
-                }
-            });
-    };
-
     let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
     numberList = shuffle(numberList);
 
@@ -1244,7 +1251,27 @@ var app = (function (jQuery) {
     const katanStore = {
         subscribe: subscribe$1,
 
+        turn: () => update$1(katan => {
+            katan.playerList = katan.playerList
+                .map((player, i) => {
+                    player.turn = !player.turn;
+
+                    if (player.turn) {
+                        katan.playerIndex = i;
+                    }
+
+                    return player;
+                });
+
+            katan.action = false;
+            katan.message = '주사위를 굴리세요.';
+
+            return katan;
+        }),
+
         start: () => update$1(katan => {
+            katan.message = '주사위를 굴리세요.';
+
             katan.mode = 'start';
             katan.isStart = true;
             katan.isReady = false;
@@ -1375,12 +1402,39 @@ var app = (function (jQuery) {
                 const interval = setInterval(() => {
                     if (moveResourceCount === matchResourceCount) {
                         clearInterval(interval);
+
+                        if (katanStore.hasAction()) {
+                            katanStore.doAction();
+                        } else {
+                            katanStore.turn();
+                        }
                     }
                 }, 100);
             } else {
                 katanStore.setDiceEnabled();
                 katan.turn();
             }
+        },
+
+        doAction: () => update$1(katan => {
+            katan.message = '자원을 교환하거나 건설하세요.';
+            katan.action = true;
+            return katan;
+        }),
+
+        hasAction: () => {
+            const player = katanStore.getActivePlayer();
+
+            return player.trade.tree.enable ||
+                player.trade.mud.enable ||
+                player.trade.wheat.enable ||
+                player.trade.sheep.enable ||
+                player.trade.iron.enable ||
+                player.make.tree ||
+                player.make.mud ||
+                player.make.wheat ||
+                player.make.sheep ||
+                player.make.iron;
         },
 
         closeResourceModalAndTurn: () => {
@@ -1429,15 +1483,8 @@ var app = (function (jQuery) {
 
             if (number === 7) {
                 katan.mode = 'moveBuglar';
-                katan.bodyMessage = '도둑의 위치를 선택하세요.';
-                katan.buttonMessage = '';
-                const modal = new bootstrap_esm_min.Modal(document.getElementById('katanModal'), {});
-                modal.show();
-
-                setTimeout(() => {
-                    modal.hide();
-                    katanStore.setNumberRippleEnabled();
-                }, 1000);
+                katan.message = '도둑의 위치를 선택하세요.';
+                katanStore.setNumberRippleEnabled();
             } else {
                 katanStore.setSelectedNumberRippleEnabled(number);
 
@@ -1481,21 +1528,6 @@ var app = (function (jQuery) {
             return katan.playerList
                 .find(player => player.turn);
         },
-
-        turn: () => update$1(katan => {
-            katan.playerList = katan.playerList
-                .map((player, i) => {
-                    player.turn = !player.turn;
-
-                    if (player.turn) {
-                        katan.playerIndex = i;
-                    }
-
-                    return player;
-                });
-
-            return katan;
-        }),
 
         setCastle: (castleIndex, playerIndex) => update$1(katan => {
             let castle = katan.castleList[castleIndex];
@@ -1768,6 +1800,22 @@ var app = (function (jQuery) {
         recomputePlayer: () => update$1((katan) => {
             katan.playerList = katan.playerList
                 .map(player => {
+
+                    player.trade.tree.enable =
+                        player.resource.tree >= player.trade.tree.count;
+
+                    player.trade.mud.enable =
+                        player.resource.mud >= player.trade.mud.count;
+
+                    player.trade.wheat.enable =
+                        player.resource.wheat >= player.trade.wheat.count;
+
+                    player.trade.sheep.enable =
+                        player.resource.sheep >= player.trade.sheep.count;
+
+                    player.trade.iron.enable =
+                        player.resource.iron >= player.trade.iron.count;
+
                     player.make.road =
                         player.construction.road >= 1 &&
                         player.resource.tree >= 1 &&
@@ -4106,7 +4154,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    // (121:32) {#if resource.count>=4}
+    // (121:32) {#if player.trade[resource.type].enable}
     function create_if_block$3(ctx) {
     	let table;
     	let tr;
@@ -4127,9 +4175,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$6, 122, 40, 4477);
+    			add_location(tr, file$6, 122, 40, 4505);
     			attr_dev(table, "class", "trade-target-resource svelte-xrfyjx");
-    			add_location(table, file$6, 121, 36, 4399);
+    			add_location(table, file$6, 121, 36, 4427);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4174,7 +4222,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(121:32) {#if resource.count>=4}",
+    		source: "(121:32) {#if player.trade[resource.type].enable}",
     		ctx
     	});
 
@@ -4189,7 +4237,10 @@ var app = (function (jQuery) {
     	let img_src_value;
     	let t0;
     	let button;
+    	let t1_value = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type] + "";
+    	let t1;
     	let t2;
+    	let t3;
     	let mounted;
     	let dispose;
 
@@ -4204,16 +4255,17 @@ var app = (function (jQuery) {
     			img = element("img");
     			t0 = space();
     			button = element("button");
-    			button.textContent = "4:1 교환";
-    			t2 = space();
+    			t1 = text(t1_value);
+    			t2 = text(":1 교환");
+    			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-xrfyjx");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$6, 127, 60, 4832);
+    			add_location(img, file$6, 127, 60, 4860);
     			attr_dev(button, "class", "btn btn-primary btn-sm svelte-xrfyjx");
-    			add_location(button, file$6, 128, 60, 4957);
-    			add_location(div, file$6, 126, 56, 4766);
+    			add_location(button, file$6, 128, 60, 4985);
+    			add_location(div, file$6, 126, 56, 4794);
     			attr_dev(td, "class", "svelte-xrfyjx");
-    			add_location(td, file$6, 125, 52, 4705);
+    			add_location(td, file$6, 125, 52, 4733);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -4221,7 +4273,9 @@ var app = (function (jQuery) {
     			append_dev(div, img);
     			append_dev(div, t0);
     			append_dev(div, button);
-    			append_dev(td, t2);
+    			append_dev(button, t1);
+    			append_dev(button, t2);
+    			append_dev(td, t3);
 
     			if (!mounted) {
     				dispose = listen_dev(button, "click", click_handler, false, false, false);
@@ -4234,6 +4288,8 @@ var app = (function (jQuery) {
     			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
+
+    			if (dirty & /*player, resourceList*/ 5 && t1_value !== (t1_value = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type] + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -4312,7 +4368,7 @@ var app = (function (jQuery) {
     	let t2;
     	let td2;
     	let t3;
-    	let if_block = /*resource*/ ctx[11].count >= 4 && create_if_block$3(ctx);
+    	let if_block = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type].enable && create_if_block$3(ctx);
 
     	const block = {
     		c: function create() {
@@ -4328,13 +4384,14 @@ var app = (function (jQuery) {
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-xrfyjx");
-    			add_location(img, file$6, 115, 32, 4051);
+    			add_location(img, file$6, 115, 32, 4062);
+    			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-xrfyjx");
     			add_location(td0, file$6, 114, 28, 4014);
     			attr_dev(td1, "class", "number svelte-xrfyjx");
-    			add_location(td1, file$6, 118, 28, 4233);
+    			add_location(td1, file$6, 118, 28, 4244);
     			attr_dev(td2, "class", "svelte-xrfyjx");
-    			add_location(td2, file$6, 119, 28, 4302);
+    			add_location(td2, file$6, 119, 28, 4313);
     			add_location(tr, file$6, 113, 24, 3981);
     		},
     		m: function mount(target, anchor) {
@@ -4360,7 +4417,7 @@ var app = (function (jQuery) {
 
     			if (dirty & /*resourceList*/ 4 && t1_value !== (t1_value = /*resource*/ ctx[11].count + "")) set_data_dev(t1, t1_value);
 
-    			if (/*resource*/ ctx[11].count >= 4) {
+    			if (/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].enable) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -4457,11 +4514,11 @@ var app = (function (jQuery) {
     			add_location(td1, file$6, 60, 12, 1572);
     			add_location(tr1, file$6, 59, 8, 1555);
     			attr_dev(td2, "class", "header svelte-xrfyjx");
-    			add_location(td2, file$6, 144, 12, 5683);
-    			add_location(tr2, file$6, 143, 8, 5666);
+    			add_location(td2, file$6, 146, 12, 5865);
+    			add_location(tr2, file$6, 145, 8, 5848);
     			attr_dev(td3, "class", "svelte-xrfyjx");
-    			add_location(td3, file$6, 147, 12, 5749);
-    			add_location(tr3, file$6, 146, 8, 5732);
+    			add_location(td3, file$6, 149, 12, 5931);
+    			add_location(tr3, file$6, 148, 8, 5914);
     			attr_dev(table1, "class", "trade-resource svelte-xrfyjx");
     			toggle_class(table1, "turn", /*turnClassEnabled*/ ctx[1]);
     			add_location(table1, file$6, 54, 4, 1355);
@@ -4841,135 +4898,22 @@ var app = (function (jQuery) {
     /* src\App.svelte generated by Svelte v3.32.3 */
     const file$8 = "src\\App.svelte";
 
-    // (18:16) {:else}
-    function create_else_block$2(ctx) {
-    	let div;
-    	let dice0;
-    	let t0;
-    	let dice1;
-    	let t1;
-    	let button;
-    	let t2;
-    	let button_disabled_value;
-    	let current;
-    	let mounted;
-    	let dispose;
-
-    	dice0 = new Dice({
-    			props: { number: /*$katan*/ ctx[0].dice[0] },
-    			$$inline: true
-    		});
-
-    	dice1 = new Dice({
-    			props: { number: /*$katan*/ ctx[0].dice[1] },
-    			$$inline: true
-    		});
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			create_component(dice0.$$.fragment);
-    			t0 = space();
-    			create_component(dice1.$$.fragment);
-    			t1 = space();
-    			button = element("button");
-    			t2 = text("주사위 굴리기");
-    			attr_dev(button, "class", "btn btn-primary svelte-o5ho3o");
-    			button.disabled = button_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button, file$8, 21, 24, 832);
-    			attr_dev(div, "class", "dice-container svelte-o5ho3o");
-    			add_location(div, file$8, 18, 20, 652);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			mount_component(dice0, div, null);
-    			append_dev(div, t0);
-    			mount_component(dice1, div, null);
-    			append_dev(div, t1);
-    			append_dev(div, button);
-    			append_dev(button, t2);
-    			current = true;
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[1], false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: function update(ctx, dirty) {
-    			const dice0_changes = {};
-    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
-    			dice0.$set(dice0_changes);
-    			const dice1_changes = {};
-    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
-    			dice1.$set(dice1_changes);
-
-    			if (!current || dirty & /*$katan*/ 1 && button_disabled_value !== (button_disabled_value = /*$katan*/ ctx[0].diceDisabled)) {
-    				prop_dev(button, "disabled", button_disabled_value);
-    			}
-    		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(dice0.$$.fragment, local);
-    			transition_in(dice1.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(dice0.$$.fragment, local);
-    			transition_out(dice1.$$.fragment, local);
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    			destroy_component(dice0);
-    			destroy_component(dice1);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_else_block$2.name,
-    		type: "else",
-    		source: "(18:16) {:else}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (16:16) {#if $katan.diceDisabled}
+    // (26:20) {#if $katan.action}
     function create_if_block_2$2(ctx) {
-    	let h1;
-    	let t0_value = /*$katan*/ ctx[0].playerList[/*$katan*/ ctx[0].playerIndex].name + "";
-    	let t0;
-    	let t1;
-    	let t2_value = /*$katan*/ ctx[0].message + "";
-    	let t2;
+    	let button;
 
     	const block = {
     		c: function create() {
-    			h1 = element("h1");
-    			t0 = text(t0_value);
-    			t1 = text("! ");
-    			t2 = text(t2_value);
-    			attr_dev(h1, "class", "message-header ripple svelte-o5ho3o");
-    			add_location(h1, file$8, 16, 20, 504);
+    			button = element("button");
+    			button.textContent = "완료";
+    			attr_dev(button, "class", "svelte-10yggwk");
+    			add_location(button, file$8, 26, 24, 1019);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, h1, anchor);
-    			append_dev(h1, t0);
-    			append_dev(h1, t1);
-    			append_dev(h1, t2);
+    			insert_dev(target, button, anchor);
     		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*$katan*/ 1 && t0_value !== (t0_value = /*$katan*/ ctx[0].playerList[/*$katan*/ ctx[0].playerIndex].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*$katan*/ 1 && t2_value !== (t2_value = /*$katan*/ ctx[0].message + "")) set_data_dev(t2, t2_value);
-    		},
-    		i: noop,
-    		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(h1);
+    			if (detaching) detach_dev(button);
     		}
     	};
 
@@ -4977,14 +4921,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2$2.name,
     		type: "if",
-    		source: "(16:16) {#if $katan.diceDisabled}",
+    		source: "(26:20) {#if $katan.action}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (49:12) {#if $katan.buttonMessage!==''}
+    // (50:12) {#if $katan.buttonMessage!==''}
     function create_if_block_1$2(ctx) {
     	let div;
     	let button;
@@ -5000,9 +4944,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$8, 50, 20, 1936);
+    			add_location(button, file$8, 51, 20, 1965);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$8, 49, 16, 1888);
+    			add_location(div, file$8, 50, 16, 1917);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5028,14 +4972,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(49:12) {#if $katan.buttonMessage!==''}",
+    		source: "(50:12) {#if $katan.buttonMessage!==''}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (58:0) {#if $katan.showResourceModal}
+    // (59:0) {#if $katan.showResourceModal}
     function create_if_block$4(ctx) {
     	let resource;
     	let current;
@@ -5067,7 +5011,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(58:0) {#if $katan.showResourceModal}",
+    		source: "(59:0) {#if $katan.showResourceModal}",
     		ctx
     	});
 
@@ -5075,50 +5019,67 @@ var app = (function (jQuery) {
     }
 
     function create_fragment$8(ctx) {
-    	let div0;
+    	let div1;
     	let table;
     	let tr;
     	let td0;
     	let player0;
     	let t0;
     	let td1;
-    	let current_block_type_index;
-    	let if_block0;
+    	let h1;
+    	let t1_value = /*$katan*/ ctx[0].playerList[/*$katan*/ ctx[0].playerIndex].name + "";
     	let t1;
-    	let board;
     	let t2;
+    	let t3_value = /*$katan*/ ctx[0].message + "";
+    	let t3;
+    	let t4;
+    	let div0;
+    	let dice0;
+    	let t5;
+    	let dice1;
+    	let t6;
+    	let button0;
+    	let t7;
+    	let button0_disabled_value;
+    	let t8;
+    	let t9;
+    	let board;
+    	let t10;
     	let td2;
     	let player1;
-    	let t3;
+    	let t11;
+    	let div6;
     	let div5;
     	let div4;
-    	let div3;
-    	let div1;
-    	let button;
-    	let t4;
     	let div2;
-    	let t5_value = /*$katan*/ ctx[0].bodyMessage + "";
-    	let t5;
-    	let t6;
-    	let t7;
+    	let button1;
+    	let t12;
+    	let div3;
+    	let t13_value = /*$katan*/ ctx[0].bodyMessage + "";
+    	let t13;
+    	let t14;
+    	let t15;
     	let if_block2_anchor;
     	let current;
+    	let mounted;
+    	let dispose;
 
     	player0 = new Player({
     			props: { playerIndex: 0 },
     			$$inline: true
     		});
 
-    	const if_block_creators = [create_if_block_2$2, create_else_block$2];
-    	const if_blocks = [];
+    	dice0 = new Dice({
+    			props: { number: /*$katan*/ ctx[0].dice[0] },
+    			$$inline: true
+    		});
 
-    	function select_block_type(ctx, dirty) {
-    		if (/*$katan*/ ctx[0].diceDisabled) return 0;
-    		return 1;
-    	}
+    	dice1 = new Dice({
+    			props: { number: /*$katan*/ ctx[0].dice[1] },
+    			$$inline: true
+    		});
 
-    	current_block_type_index = select_block_type(ctx);
-    	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    	let if_block0 = /*$katan*/ ctx[0].action && create_if_block_2$2(ctx);
 
     	board = new Board({
     			props: {
@@ -5138,136 +5099,172 @@ var app = (function (jQuery) {
 
     	const block = {
     		c: function create() {
-    			div0 = element("div");
+    			div1 = element("div");
     			table = element("table");
     			tr = element("tr");
     			td0 = element("td");
     			create_component(player0.$$.fragment);
     			t0 = space();
     			td1 = element("td");
-    			if_block0.c();
-    			t1 = space();
+    			h1 = element("h1");
+    			t1 = text(t1_value);
+    			t2 = text("! ");
+    			t3 = text(t3_value);
+    			t4 = space();
+    			div0 = element("div");
+    			create_component(dice0.$$.fragment);
+    			t5 = space();
+    			create_component(dice1.$$.fragment);
+    			t6 = space();
+    			button0 = element("button");
+    			t7 = text("주사위 굴리기");
+    			t8 = space();
+    			if (if_block0) if_block0.c();
+    			t9 = space();
     			create_component(board.$$.fragment);
-    			t2 = space();
+    			t10 = space();
     			td2 = element("td");
     			create_component(player1.$$.fragment);
-    			t3 = space();
+    			t11 = space();
+    			div6 = element("div");
     			div5 = element("div");
     			div4 = element("div");
-    			div3 = element("div");
-    			div1 = element("div");
-    			button = element("button");
-    			t4 = space();
     			div2 = element("div");
-    			t5 = text(t5_value);
-    			t6 = space();
+    			button1 = element("button");
+    			t12 = space();
+    			div3 = element("div");
+    			t13 = text(t13_value);
+    			t14 = space();
     			if (if_block1) if_block1.c();
-    			t7 = space();
+    			t15 = space();
     			if (if_block2) if_block2.c();
     			if_block2_anchor = empty();
     			attr_dev(td0, "valign", "top");
-    			attr_dev(td0, "class", "player svelte-o5ho3o");
-    			add_location(td0, file$8, 11, 12, 286);
+    			attr_dev(td0, "class", "player svelte-10yggwk");
+    			add_location(td0, file$8, 14, 12, 336);
+    			attr_dev(h1, "class", "message-header");
+    			add_location(h1, file$8, 18, 16, 507);
+    			attr_dev(button0, "class", "btn btn-primary svelte-10yggwk");
+    			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
+    			add_location(button0, file$8, 22, 20, 787);
+    			attr_dev(div0, "class", "dice-container svelte-10yggwk");
+    			add_location(div0, file$8, 19, 16, 619);
     			attr_dev(td1, "valign", "top");
-    			attr_dev(td1, "class", "text-center svelte-o5ho3o");
-    			add_location(td1, file$8, 14, 12, 402);
+    			attr_dev(td1, "class", "text-center svelte-10yggwk");
+    			add_location(td1, file$8, 17, 12, 452);
     			attr_dev(td2, "valign", "top");
-    			attr_dev(td2, "class", "player svelte-o5ho3o");
-    			add_location(td2, file$8, 32, 12, 1238);
-    			add_location(tr, file$8, 10, 8, 268);
-    			add_location(table, file$8, 9, 4, 251);
-    			attr_dev(div0, "class", "katan svelte-o5ho3o");
-    			add_location(div0, file$8, 8, 0, 226);
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn-close");
-    			attr_dev(button, "data-bs-dismiss", "modal");
-    			attr_dev(button, "aria-label", "Close");
-    			add_location(button, file$8, 42, 16, 1615);
-    			attr_dev(div1, "class", "modal-header");
-    			add_location(div1, file$8, 41, 12, 1571);
-    			attr_dev(div2, "class", "modal-body");
-    			add_location(div2, file$8, 44, 12, 1741);
-    			attr_dev(div3, "class", "modal-content");
-    			add_location(div3, file$8, 40, 8, 1530);
-    			attr_dev(div4, "class", "modal-dialog");
-    			add_location(div4, file$8, 39, 4, 1494);
-    			attr_dev(div5, "class", "modal fade");
-    			attr_dev(div5, "id", "katanModal");
-    			attr_dev(div5, "tabindex", "-1");
-    			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
-    			attr_dev(div5, "aria-hidden", "true");
-    			add_location(div5, file$8, 38, 0, 1379);
+    			attr_dev(td2, "class", "player svelte-10yggwk");
+    			add_location(td2, file$8, 33, 12, 1267);
+    			add_location(tr, file$8, 13, 8, 318);
+    			add_location(table, file$8, 12, 4, 301);
+    			attr_dev(div1, "class", "katan svelte-10yggwk");
+    			add_location(div1, file$8, 11, 0, 276);
+    			attr_dev(button1, "type", "button");
+    			attr_dev(button1, "class", "btn-close");
+    			attr_dev(button1, "data-bs-dismiss", "modal");
+    			attr_dev(button1, "aria-label", "Close");
+    			add_location(button1, file$8, 43, 16, 1644);
+    			attr_dev(div2, "class", "modal-header");
+    			add_location(div2, file$8, 42, 12, 1600);
+    			attr_dev(div3, "class", "modal-body");
+    			add_location(div3, file$8, 45, 12, 1770);
+    			attr_dev(div4, "class", "modal-content");
+    			add_location(div4, file$8, 41, 8, 1559);
+    			attr_dev(div5, "class", "modal-dialog");
+    			add_location(div5, file$8, 40, 4, 1523);
+    			attr_dev(div6, "class", "modal fade");
+    			attr_dev(div6, "id", "katanModal");
+    			attr_dev(div6, "tabindex", "-1");
+    			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
+    			attr_dev(div6, "aria-hidden", "true");
+    			add_location(div6, file$8, 39, 0, 1408);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div0, anchor);
-    			append_dev(div0, table);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, table);
     			append_dev(table, tr);
     			append_dev(tr, td0);
     			mount_component(player0, td0, null);
     			append_dev(tr, t0);
     			append_dev(tr, td1);
-    			if_blocks[current_block_type_index].m(td1, null);
-    			append_dev(td1, t1);
+    			append_dev(td1, h1);
+    			append_dev(h1, t1);
+    			append_dev(h1, t2);
+    			append_dev(h1, t3);
+    			append_dev(td1, t4);
+    			append_dev(td1, div0);
+    			mount_component(dice0, div0, null);
+    			append_dev(div0, t5);
+    			mount_component(dice1, div0, null);
+    			append_dev(div0, t6);
+    			append_dev(div0, button0);
+    			append_dev(button0, t7);
+    			append_dev(div0, t8);
+    			if (if_block0) if_block0.m(div0, null);
+    			append_dev(td1, t9);
     			mount_component(board, td1, null);
-    			append_dev(tr, t2);
+    			append_dev(tr, t10);
     			append_dev(tr, td2);
     			mount_component(player1, td2, null);
-    			insert_dev(target, t3, anchor);
-    			insert_dev(target, div5, anchor);
+    			insert_dev(target, t11, anchor);
+    			insert_dev(target, div6, anchor);
+    			append_dev(div6, div5);
     			append_dev(div5, div4);
+    			append_dev(div4, div2);
+    			append_dev(div2, button1);
+    			append_dev(div4, t12);
     			append_dev(div4, div3);
-    			append_dev(div3, div1);
-    			append_dev(div1, button);
-    			append_dev(div3, t4);
-    			append_dev(div3, div2);
-    			append_dev(div2, t5);
-    			append_dev(div3, t6);
-    			if (if_block1) if_block1.m(div3, null);
-    			insert_dev(target, t7, anchor);
+    			append_dev(div3, t13);
+    			append_dev(div4, t14);
+    			if (if_block1) if_block1.m(div4, null);
+    			insert_dev(target, t15, anchor);
     			if (if_block2) if_block2.m(target, anchor);
     			insert_dev(target, if_block2_anchor, anchor);
     			current = true;
+
+    			if (!mounted) {
+    				dispose = listen_dev(button0, "click", /*click_handler*/ ctx[1], false, false, false);
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, [dirty]) {
-    			let previous_block_index = current_block_type_index;
-    			current_block_type_index = select_block_type(ctx);
+    			if ((!current || dirty & /*$katan*/ 1) && t1_value !== (t1_value = /*$katan*/ ctx[0].playerList[/*$katan*/ ctx[0].playerIndex].name + "")) set_data_dev(t1, t1_value);
+    			if ((!current || dirty & /*$katan*/ 1) && t3_value !== (t3_value = /*$katan*/ ctx[0].message + "")) set_data_dev(t3, t3_value);
+    			const dice0_changes = {};
+    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
+    			dice0.$set(dice0_changes);
+    			const dice1_changes = {};
+    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
+    			dice1.$set(dice1_changes);
 
-    			if (current_block_type_index === previous_block_index) {
-    				if_blocks[current_block_type_index].p(ctx, dirty);
-    			} else {
-    				group_outros();
+    			if (!current || dirty & /*$katan*/ 1 && button0_disabled_value !== (button0_disabled_value = /*$katan*/ ctx[0].diceDisabled)) {
+    				prop_dev(button0, "disabled", button0_disabled_value);
+    			}
 
-    				transition_out(if_blocks[previous_block_index], 1, 1, () => {
-    					if_blocks[previous_block_index] = null;
-    				});
-
-    				check_outros();
-    				if_block0 = if_blocks[current_block_type_index];
-
-    				if (!if_block0) {
-    					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    			if (/*$katan*/ ctx[0].action) {
+    				if (if_block0) ; else {
+    					if_block0 = create_if_block_2$2(ctx);
     					if_block0.c();
-    				} else {
-    					if_block0.p(ctx, dirty);
+    					if_block0.m(div0, null);
     				}
-
-    				transition_in(if_block0, 1);
-    				if_block0.m(td1, t1);
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
     			}
 
     			const board_changes = {};
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 8) {
+    			if (dirty & /*$$scope*/ 16) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
     			board.$set(board_changes);
-    			if ((!current || dirty & /*$katan*/ 1) && t5_value !== (t5_value = /*$katan*/ ctx[0].bodyMessage + "")) set_data_dev(t5, t5_value);
+    			if ((!current || dirty & /*$katan*/ 1) && t13_value !== (t13_value = /*$katan*/ ctx[0].bodyMessage + "")) set_data_dev(t13, t13_value);
 
     			if (/*$katan*/ ctx[0].buttonMessage !== "") {
     				if (if_block1) {
@@ -5275,7 +5272,7 @@ var app = (function (jQuery) {
     				} else {
     					if_block1 = create_if_block_1$2(ctx);
     					if_block1.c();
-    					if_block1.m(div3, null);
+    					if_block1.m(div4, null);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
@@ -5306,7 +5303,8 @@ var app = (function (jQuery) {
     		i: function intro(local) {
     			if (current) return;
     			transition_in(player0.$$.fragment, local);
-    			transition_in(if_block0);
+    			transition_in(dice0.$$.fragment, local);
+    			transition_in(dice1.$$.fragment, local);
     			transition_in(board.$$.fragment, local);
     			transition_in(player1.$$.fragment, local);
     			transition_in(if_block2);
@@ -5314,24 +5312,29 @@ var app = (function (jQuery) {
     		},
     		o: function outro(local) {
     			transition_out(player0.$$.fragment, local);
-    			transition_out(if_block0);
+    			transition_out(dice0.$$.fragment, local);
+    			transition_out(dice1.$$.fragment, local);
     			transition_out(board.$$.fragment, local);
     			transition_out(player1.$$.fragment, local);
     			transition_out(if_block2);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div0);
+    			if (detaching) detach_dev(div1);
     			destroy_component(player0);
-    			if_blocks[current_block_type_index].d();
+    			destroy_component(dice0);
+    			destroy_component(dice1);
+    			if (if_block0) if_block0.d();
     			destroy_component(board);
     			destroy_component(player1);
-    			if (detaching) detach_dev(t3);
-    			if (detaching) detach_dev(div5);
+    			if (detaching) detach_dev(t11);
+    			if (detaching) detach_dev(div6);
     			if (if_block1) if_block1.d();
-    			if (detaching) detach_dev(t7);
+    			if (detaching) detach_dev(t15);
     			if (if_block2) if_block2.d(detaching);
     			if (detaching) detach_dev(if_block2_anchor);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -5352,6 +5355,7 @@ var app = (function (jQuery) {
     	component_subscribe($$self, katanStore, $$value => $$invalidate(0, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
+    	const player = $katan.getActivePlayer();
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -5367,6 +5371,7 @@ var app = (function (jQuery) {
     		Player,
     		katan: katanStore,
     		Resource,
+    		player,
     		$katan
     	});
 

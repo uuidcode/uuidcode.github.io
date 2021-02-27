@@ -6,6 +6,7 @@ import jQuery from 'jquery';
 import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
+    action: false,
     isMakeRoad: false,
     isMakeCastle: false,
     construction: false,
@@ -42,11 +43,11 @@ katan.playerList.forEach((player, i) => {
     player.pickRoad = 0;
 
     player.resource = {
-        tree: 10,
-        mud: 10,
-        wheat: 10,
-        sheep: 10,
-        iron: 10
+        tree: 0,
+        mud: 0,
+        wheat: 0,
+        sheep: 0,
+        iron: 0
     };
 
     player.point = {
@@ -59,11 +60,26 @@ katan.playerList.forEach((player, i) => {
     };
 
     player.trade = {
-        tree: 4,
-        mud: 4,
-        wheat: 4,
-        sheep: 4,
-        iron: 4
+        tree: {
+            enable: false,
+            count: 4
+        },
+        mud: {
+            enable: false,
+            count: 4
+        },
+        wheat: {
+            enable: false,
+            count: 4
+        },
+        sheep: {
+            enable: false,
+            count: 4
+        },
+        iron: {
+            enable: false,
+            count: 4
+        }
     };
 
     player.construction = {
@@ -77,7 +93,9 @@ katan.playerList.forEach((player, i) => {
         castle: false,
         city: false,
         dev: false
-    }
+    };
+
+    player.exchange = false;
 });
 
 function random() {
@@ -610,17 +628,6 @@ resourceList.forEach(resource => {
 
 katan.resourceList = resourceList;
 
-katan.turn = () => {
-    katan.playerList
-        .forEach((player, i) => {
-            player.turn = !player.turn;
-
-            if (player.turn === true) {
-                katan.playerIndex = i;
-            }
-        });
-};
-
 let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
 numberList = shuffle(numberList);
 
@@ -713,7 +720,27 @@ const { subscribe, set, update } = writable(katan);
 const katanStore = {
     subscribe,
 
+    turn: () => update(katan => {
+        katan.playerList = katan.playerList
+            .map((player, i) => {
+                player.turn = !player.turn;
+
+                if (player.turn) {
+                    katan.playerIndex = i;
+                }
+
+                return player;
+            });
+
+        katan.action = false;
+        katan.message = '주사위를 굴리세요.';
+
+        return katan;
+    }),
+
     start: () => update(katan => {
+        katan.message = '주사위를 굴리세요.';
+
         katan.mode = 'start';
         katan.isStart = true;
         katan.isReady = false;
@@ -844,12 +871,39 @@ const katanStore = {
             const interval = setInterval(() => {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
+
+                    if (katanStore.hasAction()) {
+                        katanStore.doAction();
+                    } else {
+                        katanStore.turn();
+                    }
                 }
             }, 100);
         } else {
             katanStore.setDiceEnabled();
             katan.turn();
         }
+    },
+
+    doAction: () => update(katan => {
+        katan.message = '자원을 교환하거나 건설하세요.';
+        katan.action = true;
+        return katan;
+    }),
+
+    hasAction: () => {
+        const player = katanStore.getActivePlayer();
+
+        return player.trade.tree.enable ||
+            player.trade.mud.enable ||
+            player.trade.wheat.enable ||
+            player.trade.sheep.enable ||
+            player.trade.iron.enable ||
+            player.make.tree ||
+            player.make.mud ||
+            player.make.wheat ||
+            player.make.sheep ||
+            player.make.iron;
     },
 
     closeResourceModalAndTurn: () => {
@@ -898,17 +952,10 @@ const katanStore = {
 
         if (number === 7) {
             katan.mode = 'moveBuglar';
-            katan.bodyMessage = '도둑의 위치를 선택하세요.';
-            katan.buttonMessage = '';
-            const modal = new Modal(document.getElementById('katanModal'), {});
-            modal.show();
-
-            setTimeout(() => {
-                modal.hide();
-                katanStore.setNumberRippleEnabled();
-            }, 1000);
+            katan.message = '도둑의 위치를 선택하세요.';
+            katanStore.setNumberRippleEnabled();
         } else {
-            katanStore.setSelectedNumberRippleEnabled(number)
+            katanStore.setSelectedNumberRippleEnabled(number);
 
             setTimeout(() => {
                 katanStore.setNumberRippleDisabled(number);
@@ -950,21 +997,6 @@ const katanStore = {
         return katan.playerList
             .find(player => player.turn);
     },
-
-    turn: () => update(katan => {
-        katan.playerList = katan.playerList
-            .map((player, i) => {
-                player.turn = !player.turn;
-
-                if (player.turn) {
-                    katan.playerIndex = i;
-                }
-
-                return player;
-            });
-
-        return katan;
-    }),
 
     setCastle: (castleIndex, playerIndex) => update(katan => {
         let castle = katan.castleList[castleIndex];
@@ -1237,6 +1269,22 @@ const katanStore = {
     recomputePlayer: () => update((katan) => {
         katan.playerList = katan.playerList
             .map(player => {
+
+                player.trade.tree.enable =
+                    player.resource.tree >= player.trade.tree.count;
+
+                player.trade.mud.enable =
+                    player.resource.mud >= player.trade.mud.count;
+
+                player.trade.wheat.enable =
+                    player.resource.wheat >= player.trade.wheat.count;
+
+                player.trade.sheep.enable =
+                    player.resource.sheep >= player.trade.sheep.count;
+
+                player.trade.iron.enable =
+                    player.resource.iron >= player.trade.iron.count;
+
                 player.make.road =
                     player.construction.road >= 1 &&
                     player.resource.tree >= 1 &&

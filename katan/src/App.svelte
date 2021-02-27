@@ -4,6 +4,9 @@
     import Player from './Player.svelte'
     import katan from './katan.js'
     import Resource from "./Resource.svelte";
+
+    const player = $katan.getActivePlayer();
+
 </script>
 
 <div class="katan">
@@ -13,19 +16,17 @@
                 <Player playerIndex={0}></Player>
             </td>
             <td valign="top" class="text-center">
-                {#if $katan.diceDisabled}
-                    <h1 class="message-header ripple">{$katan.playerList[$katan.playerIndex].name}! {$katan.message}</h1>
-                {:else}
-                    <div class="dice-container">
-                        <Dice number={$katan.dice[0]}></Dice>
-                        <Dice number={$katan.dice[1]}></Dice>
-                        <button class="btn btn-primary"
-                                disabled={$katan.diceDisabled}
-                                on:click={()=>katan.play()}>주사위 굴리기</button>
-                    </div>
-                {/if}
-
-
+                <h1 class="message-header">{$katan.playerList[$katan.playerIndex].name}! {$katan.message}</h1>
+                <div class="dice-container">
+                    <Dice number={$katan.dice[0]}></Dice>
+                    <Dice number={$katan.dice[1]}></Dice>
+                    <button class="btn btn-primary"
+                            disabled={$katan.diceDisabled}
+                            on:click={()=>katan.play()}>주사위 굴리기</button>
+                    {#if $katan.action}
+                        <button>완료</button>
+                    {/if}
+                </div>
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">
                 </Board>
@@ -85,7 +86,7 @@
         transform-origin: 0 0;
     }
 
-    .message-header {
-        margin: 30px;
-    }
+    /*.message-header {*/
+    /*    margin: 30px;*/
+    /*}*/
 </style>

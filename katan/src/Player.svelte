@@ -112,13 +112,13 @@
 
                     {#each resourceList as resource}
                         <tr>
-                            <td>
+                            <td width="80">
                                 <img src="{resource.type}_item.png"
                                      class="player_{player.index}_{resource.type}">
                             </td>
                             <td class="number">{resource.count}</td>
                             <td>
-                                {#if resource.count>=4}
+                                {#if player.trade[resource.type].enable}
                                     <table class="trade-target-resource">
                                         <tr>
                                             {#each resourceList as tradeResource}
@@ -127,7 +127,9 @@
                                                         <div>
                                                             <img class="trade-resource" src="{tradeResource.type}_item.png">
                                                             <button class="btn btn-primary btn-sm"
-                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button>
+                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>
+                                                                {player.trade[resource.type]}:1 교환
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 {/if}
