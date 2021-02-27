@@ -41,7 +41,7 @@
                             on:click={()=>katan.play()}>주사위 굴리기</button>
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
-                        on:click={()=>katan.play()}>완료</button>
+                        on:click={()=>katan.turn()}>완료</button>
                 </div>
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">

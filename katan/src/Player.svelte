@@ -63,9 +63,6 @@
 
     onDestroy(unsubscribe);
 
-    if (katan.construction) {
-
-    }
 </script>
 
 <main>
@@ -144,6 +141,7 @@
                                                         <div>
                                                             <img class="trade-resource" src="{tradeResource.type}_item.png">
                                                             <button class="btn btn-primary btn-sm"
+                                                                    disabled={!player.trade[resource.type].action}
                                                                     on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>
                                                                 {player.trade[resource.type].count}:1 교환
                                                             </button>

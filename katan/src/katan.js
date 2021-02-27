@@ -63,22 +63,27 @@ katan.playerList.forEach((player, i) => {
     player.trade = {
         tree: {
             enable: false,
+            action: false,
             count: 4
         },
         mud: {
             enable: false,
+            action: false,
             count: 4
         },
         wheat: {
             enable: false,
+            action: false,
             count: 4
         },
         sheep: {
             enable: false,
+            action: false,
             count: 4
         },
         iron: {
             enable: false,
+            action: false,
             count: 4
         }
     };
@@ -799,7 +804,7 @@ const katanStore = {
 
         katanStore.setNumberRippleDisabled();
         katanStore.setDiceEnabled();
-        katanStore.turn();
+        katanStore.doActionAndTurn();
 
         katan.mode = 'start';
 
@@ -863,11 +868,10 @@ const katanStore = {
                                     left: targetOffset.left + 'px',
                                     top: targetOffset.top + 'px'
                                 }, 1000, () => {
-                                    moveResourceCount++;
-
                                     newResourceItem.offset(offset);
                                     newResourceItem.remove();
                                     katanStore.updateResource(playerIndex, resource);
+                                    moveResourceCount++;
                                 });
                         }, matchResourceCount * 1000)
 
@@ -880,17 +884,21 @@ const katanStore = {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
 
-                    if (katanStore.hasAction()) {
-                        console.log('>>> hasAction');
-
-                        katanStore.doAction();
-                    } else {
-                        katanStore.turn();
-                    }
+                    katanStore.doActionAndTurn();
                 }
             }, 100);
         } else {
             katanStore.setDiceEnabled();
+            katanStore.doActionAndTurn();
+        }
+    },
+
+    doActionAndTurn: () => {
+        katanStore.recomputePlayer();
+
+        if (katanStore.hasAction()) {
+            katanStore.doAction();
+        } else {
             katanStore.turn();
         }
     },
@@ -969,17 +977,27 @@ const katanStore = {
             katan.mode = 'moveBuglar';
             katan.message = '도둑의 위치를 선택하세요.';
             katanStore.setNumberRippleEnabled();
-            katan.rollDice = true;
+            katanStore.enableRollDice();
         } else {
             katanStore.setSelectedNumberRippleEnabled(number);
 
             setTimeout(() => {
                 katanStore.setNumberRippleDisabled(number);
+                katanStore.enableRollDice();
                 katanStore.moveResource(number);
-                katan.rollDice = true;
             }, 1000);
         }
 
+        return katan;
+    }),
+
+    enableRollDice: () => update(katan => {
+        katan.rollDice = true;
+        return katan;
+    }),
+
+    disableRollDice: () => update(katan => {
+        katan.rollDice = false;
         return katan;
     }),
 
@@ -1283,7 +1301,7 @@ const katanStore = {
 
     exchange: (player, resourceType, targetResourceType) => update(katan => {
         player.resource[targetResourceType] += 1;
-        player.resource[resourceType] -= player.trade[resourceType];
+        player.resource[resourceType] -= player.trade[resourceType].count;
         katanStore.recomputePlayer();
         return katan;
     }),
@@ -1291,35 +1309,51 @@ const katanStore = {
     recomputePlayer: () => update((katan) => {
         katan.playerList = katan.playerList
             .map(player => {
+                player.trade.tree.action =
+                    katan.rollDice &&
+                    player.index === katan.playerIndex;
+
+                player.trade.mud.action =
+                    katan.rollDice &&
+                    player.index === katan.playerIndex;
+
+                player.trade.wheat.action =
+                    katan.rollDice &&
+                    player.index === katan.playerIndex;
+
+                player.trade.sheep.action =
+                    katan.rollDice &&
+                    player.index === katan.playerIndex;
+
+                player.trade.iron.action =
+                    katan.rollDice &&
+                    player.index === katan.playerIndex;
 
                 player.trade.tree.enable =
-                    katan.rollDice &&
                     player.resource.tree >= player.trade.tree.count;
 
                 player.trade.mud.enable =
-                    katan.rollDice &&
                     player.resource.mud >= player.trade.mud.count;
 
                 player.trade.wheat.enable =
-                    katan.rollDice &&
                     player.resource.wheat >= player.trade.wheat.count;
 
                 player.trade.sheep.enable =
-                    katan.rollDice &&
                     player.resource.sheep >= player.trade.sheep.count;
 
                 player.trade.iron.enable =
-                    katan.rollDice &&
                     player.resource.iron >= player.trade.iron.count;
 
                 player.make.road =
                     katan.rollDice &&
+                    player.index === katan.playerIndex &&
                     player.construction.road >= 1 &&
                     player.resource.tree >= 1 &&
                     player.resource.mud >= 1;
 
                 player.make.castle =
                     katan.rollDice &&
+                    player.index === katan.playerIndex &&
                     player.construction.castle >= 1 &&
                     player.resource.tree >= 1 &&
                     player.resource.mud >= 1 &&
@@ -1328,12 +1362,14 @@ const katanStore = {
 
                 player.make.city =
                     katan.rollDice &&
+                    player.index === katan.playerIndex &&
                     player.construction.city >= 1 &&
                     player.resource.iron >= 3 &&
                     player.resource.wheat >= 2;
 
                 player.make.dev =
                     katan.rollDice &&
+                    player.index === katan.playerIndex &&
                     player.resource.iron >= 1 &&
                     player.resource.sheep >= 1 &&
                     player.resource.wheat >= 1;
