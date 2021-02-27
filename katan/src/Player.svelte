@@ -54,14 +54,12 @@
 <main>
     <table class="trade-resource" class:turn={turnClassEnabled}>
         <tr>
+            <td class="name"
+                style="background-color:{player.color}">{player.name}</td>
+        </tr>
+        <tr>
             <td>
                 <table class="inner-resource">
-                    <tr>
-                        <td colspan="3"
-                            class="name"
-                            style="background-color:{player.color}">{player.name}</td>
-                    </tr>
-
                     {#if !modalMode}
                         <tr>
                             <td colspan="3" class="header">점수</td>
@@ -126,9 +124,11 @@
                                             {#each resourceList as tradeResource}
                                                 {#if resource.type!==tradeResource.type}
                                                     <td>
-                                                        <img class="trade-resource" src="{tradeResource.type}_item.png">
-                                                        <button class="btn btn-primary btn-sm"
-                                                                on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button>
+                                                        <div>
+                                                            <img class="trade-resource" src="{tradeResource.type}_item.png">
+                                                            <button class="btn btn-primary btn-sm"
+                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button>
+                                                        </div>
                                                     </td>
                                                 {/if}
                                             {/each}
@@ -142,10 +142,10 @@
             </td>
         </tr>
         <tr>
-            <td colspan="3" class="header">건설</td>
+            <td class="header">건설</td>
         </tr>
         <tr>
-            <td colspan="3">
+            <td>
                 <Construction/>
             </td>
         </tr>
@@ -187,7 +187,7 @@
     }
 
     .trade-resource {
-        width: 600px;
+        width:600px;
     }
     .trade-resource .number {
         line-height: 40px;
@@ -215,10 +215,21 @@
         border: 1px solid lightskyblue;
     }
 
+    .trade-target-resource td {
+        border: unset;
+    }
     .construction-resource img {
         width: 60px;
         height: 60px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
         margin: 4px;
+    }
+
+    table.inner-resource {
+        width: 100%;
+    }
+
+    button {
+        margin: 2px;
     }
 </style>

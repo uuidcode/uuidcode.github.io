@@ -1474,8 +1474,7 @@ var app = (function (jQuery) {
         },
 
         getActivePlayer: () => {
-            return katan.playerList
-                .find(player => player.turn);
+            return katan.playerList[katan.playerIndex];
         },
 
         getCurrentPlayer: (katan) => {
@@ -1485,8 +1484,13 @@ var app = (function (jQuery) {
 
         turn: () => update$1(katan => {
             katan.playerList = katan.playerList
-                .map(player => {
+                .map((player, i) => {
                     player.turn = !player.turn;
+
+                    if (player.turn) {
+                        katan.playerIndex = i;
+                    }
+
                     return player;
                 });
 
@@ -1626,6 +1630,8 @@ var app = (function (jQuery) {
         }),
 
         setCastleRippleEnabled: () => update$1(katan => {
+            katan.message = '마을을 만들곳을 클릭하세요';
+
             katan.castleList = katan.castleList.map(castle => {
                 if (castle.constructable && castle.playerIndex === -1) {
                     let linkedCastleLength = castle.castleIndexList
@@ -3562,80 +3568,80 @@ var app = (function (jQuery) {
     			button3 = element("button");
     			t20 = text("발전카드");
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
-    			attr_dev(img0, "class", "svelte-ao27gk");
+    			attr_dev(img0, "class", "svelte-qvq2cg");
     			add_location(img0, file$5, 18, 16, 369);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
-    			attr_dev(img1, "class", "svelte-ao27gk");
+    			attr_dev(img1, "class", "svelte-qvq2cg");
     			add_location(img1, file$5, 19, 16, 411);
-    			attr_dev(td0, "class", "svelte-ao27gk");
+    			attr_dev(td0, "class", "svelte-qvq2cg");
     			add_location(td0, file$5, 17, 12, 348);
-    			attr_dev(button0, "class", "btn btn-primary btn-sm");
+    			attr_dev(button0, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button0.disabled = button0_disabled_value = !/*player*/ ctx[0].make.road;
     			add_location(button0, file$5, 22, 16, 487);
-    			attr_dev(td1, "class", "svelte-ao27gk");
+    			attr_dev(td1, "class", "svelte-qvq2cg");
     			add_location(td1, file$5, 21, 12, 466);
     			add_location(tr0, file$5, 16, 8, 331);
     			if (img2.src !== (img2_src_value = "tree_item.png")) attr_dev(img2, "src", img2_src_value);
-    			attr_dev(img2, "class", "svelte-ao27gk");
+    			attr_dev(img2, "class", "svelte-qvq2cg");
     			add_location(img2, file$5, 29, 16, 729);
     			if (img3.src !== (img3_src_value = "mud_item.png")) attr_dev(img3, "src", img3_src_value);
-    			attr_dev(img3, "class", "svelte-ao27gk");
+    			attr_dev(img3, "class", "svelte-qvq2cg");
     			add_location(img3, file$5, 30, 16, 771);
     			if (img4.src !== (img4_src_value = "wheat_item.png")) attr_dev(img4, "src", img4_src_value);
-    			attr_dev(img4, "class", "svelte-ao27gk");
+    			attr_dev(img4, "class", "svelte-qvq2cg");
     			add_location(img4, file$5, 31, 16, 812);
     			if (img5.src !== (img5_src_value = "sheep_item.png")) attr_dev(img5, "src", img5_src_value);
-    			attr_dev(img5, "class", "svelte-ao27gk");
+    			attr_dev(img5, "class", "svelte-qvq2cg");
     			add_location(img5, file$5, 32, 16, 855);
-    			attr_dev(td2, "class", "svelte-ao27gk");
+    			attr_dev(td2, "class", "svelte-qvq2cg");
     			add_location(td2, file$5, 28, 12, 708);
-    			attr_dev(button1, "class", "btn btn-primary btn-sm");
+    			attr_dev(button1, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button1.disabled = button1_disabled_value = !/*player*/ ctx[0].make.castle;
     			add_location(button1, file$5, 35, 16, 933);
-    			attr_dev(td3, "class", "svelte-ao27gk");
+    			attr_dev(td3, "class", "svelte-qvq2cg");
     			add_location(td3, file$5, 34, 12, 912);
     			add_location(tr1, file$5, 27, 8, 691);
     			if (img6.src !== (img6_src_value = "wheat_item.png")) attr_dev(img6, "src", img6_src_value);
-    			attr_dev(img6, "class", "svelte-ao27gk");
+    			attr_dev(img6, "class", "svelte-qvq2cg");
     			add_location(img6, file$5, 42, 16, 1179);
     			if (img7.src !== (img7_src_value = "wheat_item.png")) attr_dev(img7, "src", img7_src_value);
-    			attr_dev(img7, "class", "svelte-ao27gk");
+    			attr_dev(img7, "class", "svelte-qvq2cg");
     			add_location(img7, file$5, 43, 16, 1222);
     			if (img8.src !== (img8_src_value = "iron_item.png")) attr_dev(img8, "src", img8_src_value);
-    			attr_dev(img8, "class", "svelte-ao27gk");
+    			attr_dev(img8, "class", "svelte-qvq2cg");
     			add_location(img8, file$5, 44, 16, 1265);
     			if (img9.src !== (img9_src_value = "iron_item.png")) attr_dev(img9, "src", img9_src_value);
-    			attr_dev(img9, "class", "svelte-ao27gk");
+    			attr_dev(img9, "class", "svelte-qvq2cg");
     			add_location(img9, file$5, 45, 16, 1307);
     			if (img10.src !== (img10_src_value = "iron_item.png")) attr_dev(img10, "src", img10_src_value);
-    			attr_dev(img10, "class", "svelte-ao27gk");
+    			attr_dev(img10, "class", "svelte-qvq2cg");
     			add_location(img10, file$5, 46, 16, 1349);
-    			attr_dev(td4, "class", "svelte-ao27gk");
+    			attr_dev(td4, "class", "svelte-qvq2cg");
     			add_location(td4, file$5, 41, 12, 1158);
-    			attr_dev(button2, "class", "btn btn-primary btn-sm");
+    			attr_dev(button2, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button2.disabled = button2_disabled_value = !/*player*/ ctx[0].make.city;
     			add_location(button2, file$5, 49, 16, 1426);
-    			attr_dev(td5, "class", "svelte-ao27gk");
+    			attr_dev(td5, "class", "svelte-qvq2cg");
     			add_location(td5, file$5, 48, 12, 1405);
     			add_location(tr2, file$5, 40, 8, 1141);
     			if (img11.src !== (img11_src_value = "wheat_item.png")) attr_dev(img11, "src", img11_src_value);
-    			attr_dev(img11, "class", "svelte-ao27gk");
+    			attr_dev(img11, "class", "svelte-qvq2cg");
     			add_location(img11, file$5, 54, 16, 1588);
     			if (img12.src !== (img12_src_value = "sheep_item.png")) attr_dev(img12, "src", img12_src_value);
-    			attr_dev(img12, "class", "svelte-ao27gk");
+    			attr_dev(img12, "class", "svelte-qvq2cg");
     			add_location(img12, file$5, 55, 16, 1631);
     			if (img13.src !== (img13_src_value = "iron_item.png")) attr_dev(img13, "src", img13_src_value);
-    			attr_dev(img13, "class", "svelte-ao27gk");
+    			attr_dev(img13, "class", "svelte-qvq2cg");
     			add_location(img13, file$5, 56, 16, 1674);
-    			attr_dev(td6, "class", "svelte-ao27gk");
+    			attr_dev(td6, "class", "svelte-qvq2cg");
     			add_location(td6, file$5, 53, 12, 1567);
-    			attr_dev(button3, "class", "btn btn-primary btn-sm");
+    			attr_dev(button3, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button3.disabled = button3_disabled_value = !/*player*/ ctx[0].make.dev;
     			add_location(button3, file$5, 59, 16, 1751);
-    			attr_dev(td7, "class", "svelte-ao27gk");
+    			attr_dev(td7, "class", "svelte-qvq2cg");
     			add_location(td7, file$5, 58, 12, 1730);
     			add_location(tr3, file$5, 52, 8, 1550);
-    			attr_dev(table, "class", "construction-resource svelte-ao27gk");
+    			attr_dev(table, "class", "construction-resource svelte-qvq2cg");
     			add_location(table, file$5, 15, 4, 285);
     			add_location(main, file$5, 14, 0, 274);
     		},
@@ -3803,7 +3809,7 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (65:20) {#if !modalMode}
+    // (63:20) {#if !modalMode}
     function create_if_block_2$1(ctx) {
     	let tr0;
     	let td0;
@@ -3944,67 +3950,67 @@ var app = (function (jQuery) {
     			td20 = element("td");
     			td20.textContent = "자원";
     			attr_dev(td0, "colspan", "3");
-    			attr_dev(td0, "class", "header svelte-14em7qz");
-    			add_location(td0, file$6, 66, 28, 1807);
-    			add_location(tr0, file$6, 65, 24, 1774);
-    			attr_dev(td1, "class", "svelte-14em7qz");
-    			add_location(td1, file$6, 72, 40, 2098);
-    			attr_dev(td2, "class", "svelte-14em7qz");
-    			add_location(td2, file$6, 73, 40, 2150);
-    			attr_dev(td3, "class", "svelte-14em7qz");
-    			add_location(td3, file$6, 74, 40, 2202);
-    			attr_dev(td4, "class", "svelte-14em7qz");
-    			add_location(td4, file$6, 75, 40, 2258);
-    			attr_dev(td5, "class", "svelte-14em7qz");
-    			add_location(td5, file$6, 76, 40, 2314);
+    			attr_dev(td0, "class", "header svelte-xrfyjx");
+    			add_location(td0, file$6, 64, 28, 1718);
+    			add_location(tr0, file$6, 63, 24, 1685);
+    			attr_dev(td1, "class", "svelte-xrfyjx");
+    			add_location(td1, file$6, 70, 40, 2009);
+    			attr_dev(td2, "class", "svelte-xrfyjx");
+    			add_location(td2, file$6, 71, 40, 2061);
+    			attr_dev(td3, "class", "svelte-xrfyjx");
+    			add_location(td3, file$6, 72, 40, 2113);
+    			attr_dev(td4, "class", "svelte-xrfyjx");
+    			add_location(td4, file$6, 73, 40, 2169);
+    			attr_dev(td5, "class", "svelte-xrfyjx");
+    			add_location(td5, file$6, 74, 40, 2225);
     			attr_dev(tr1, "class", "point");
-    			add_location(tr1, file$6, 71, 36, 2039);
-    			attr_dev(td6, "class", "svelte-14em7qz");
-    			add_location(td6, file$6, 79, 40, 2452);
-    			attr_dev(td7, "class", "svelte-14em7qz");
-    			add_location(td7, file$6, 80, 40, 2523);
-    			attr_dev(td8, "class", "svelte-14em7qz");
-    			add_location(td8, file$6, 81, 40, 2592);
-    			attr_dev(td9, "class", "svelte-14em7qz");
-    			add_location(td9, file$6, 82, 40, 2661);
-    			attr_dev(td10, "class", "svelte-14em7qz");
-    			add_location(td10, file$6, 83, 40, 2732);
-    			add_location(tr2, file$6, 78, 36, 2407);
+    			add_location(tr1, file$6, 69, 36, 1950);
+    			attr_dev(td6, "class", "svelte-xrfyjx");
+    			add_location(td6, file$6, 77, 40, 2363);
+    			attr_dev(td7, "class", "svelte-xrfyjx");
+    			add_location(td7, file$6, 78, 40, 2434);
+    			attr_dev(td8, "class", "svelte-xrfyjx");
+    			add_location(td8, file$6, 79, 40, 2503);
+    			attr_dev(td9, "class", "svelte-xrfyjx");
+    			add_location(td9, file$6, 80, 40, 2572);
+    			attr_dev(td10, "class", "svelte-xrfyjx");
+    			add_location(td10, file$6, 81, 40, 2643);
+    			add_location(tr2, file$6, 76, 36, 2318);
     			attr_dev(table0, "width", "100%");
-    			add_location(table0, file$6, 70, 32, 1982);
+    			add_location(table0, file$6, 68, 32, 1893);
     			attr_dev(td11, "colspan", "3");
-    			attr_dev(td11, "class", "svelte-14em7qz");
-    			add_location(td11, file$6, 69, 28, 1933);
-    			add_location(tr3, file$6, 68, 24, 1900);
+    			attr_dev(td11, "class", "svelte-xrfyjx");
+    			add_location(td11, file$6, 67, 28, 1844);
+    			add_location(tr3, file$6, 66, 24, 1811);
     			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "header svelte-14em7qz");
-    			add_location(td12, file$6, 90, 28, 2965);
-    			add_location(tr4, file$6, 89, 24, 2932);
-    			attr_dev(td13, "class", "svelte-14em7qz");
-    			add_location(td13, file$6, 96, 40, 3263);
-    			attr_dev(td14, "class", "svelte-14em7qz");
-    			add_location(td14, file$6, 97, 40, 3315);
-    			attr_dev(td15, "class", "svelte-14em7qz");
-    			add_location(td15, file$6, 98, 40, 3367);
-    			add_location(tr5, file$6, 95, 36, 3218);
-    			attr_dev(td16, "class", "svelte-14em7qz");
-    			add_location(td16, file$6, 101, 40, 3502);
-    			attr_dev(td17, "class", "svelte-14em7qz");
-    			add_location(td17, file$6, 102, 40, 3580);
-    			attr_dev(td18, "class", "svelte-14em7qz");
-    			add_location(td18, file$6, 103, 40, 3656);
-    			add_location(tr6, file$6, 100, 36, 3457);
-    			attr_dev(table1, "class", "construction svelte-14em7qz");
+    			attr_dev(td12, "class", "header svelte-xrfyjx");
+    			add_location(td12, file$6, 88, 28, 2876);
+    			add_location(tr4, file$6, 87, 24, 2843);
+    			attr_dev(td13, "class", "svelte-xrfyjx");
+    			add_location(td13, file$6, 94, 40, 3174);
+    			attr_dev(td14, "class", "svelte-xrfyjx");
+    			add_location(td14, file$6, 95, 40, 3226);
+    			attr_dev(td15, "class", "svelte-xrfyjx");
+    			add_location(td15, file$6, 96, 40, 3278);
+    			add_location(tr5, file$6, 93, 36, 3129);
+    			attr_dev(td16, "class", "svelte-xrfyjx");
+    			add_location(td16, file$6, 99, 40, 3413);
+    			attr_dev(td17, "class", "svelte-xrfyjx");
+    			add_location(td17, file$6, 100, 40, 3491);
+    			attr_dev(td18, "class", "svelte-xrfyjx");
+    			add_location(td18, file$6, 101, 40, 3567);
+    			add_location(tr6, file$6, 98, 36, 3368);
+    			attr_dev(table1, "class", "construction svelte-xrfyjx");
     			attr_dev(table1, "width", "100%");
-    			add_location(table1, file$6, 94, 32, 3140);
+    			add_location(table1, file$6, 92, 32, 3051);
     			attr_dev(td19, "colspan", "3");
-    			attr_dev(td19, "class", "svelte-14em7qz");
-    			add_location(td19, file$6, 93, 28, 3091);
-    			add_location(tr7, file$6, 92, 24, 3058);
+    			attr_dev(td19, "class", "svelte-xrfyjx");
+    			add_location(td19, file$6, 91, 28, 3002);
+    			add_location(tr7, file$6, 90, 24, 2969);
     			attr_dev(td20, "colspan", "3");
-    			attr_dev(td20, "class", "header svelte-14em7qz");
-    			add_location(td20, file$6, 110, 28, 3897);
-    			add_location(tr8, file$6, 109, 24, 3864);
+    			attr_dev(td20, "class", "header svelte-xrfyjx");
+    			add_location(td20, file$6, 108, 28, 3808);
+    			add_location(tr8, file$6, 107, 24, 3775);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr0, anchor);
@@ -4093,14 +4099,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(65:20) {#if !modalMode}",
+    		source: "(63:20) {#if !modalMode}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (123:32) {#if resource.count>=4}
+    // (121:32) {#if resource.count>=4}
     function create_if_block$3(ctx) {
     	let table;
     	let tr;
@@ -4121,9 +4127,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$6, 124, 40, 4566);
-    			attr_dev(table, "class", "trade-target-resource");
-    			add_location(table, file$6, 123, 36, 4488);
+    			add_location(tr, file$6, 122, 40, 4477);
+    			attr_dev(table, "class", "trade-target-resource svelte-xrfyjx");
+    			add_location(table, file$6, 121, 36, 4399);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4168,16 +4174,17 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(123:32) {#if resource.count>=4}",
+    		source: "(121:32) {#if resource.count>=4}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (127:48) {#if resource.type!==tradeResource.type}
+    // (125:48) {#if resource.type!==tradeResource.type}
     function create_if_block_1$1(ctx) {
     	let td;
+    	let div;
     	let img;
     	let img_src_value;
     	let t0;
@@ -4193,24 +4200,27 @@ var app = (function (jQuery) {
     	const block = {
     		c: function create() {
     			td = element("td");
+    			div = element("div");
     			img = element("img");
     			t0 = space();
     			button = element("button");
     			button.textContent = "4:1 교환";
     			t2 = space();
-    			attr_dev(img, "class", "trade-resource svelte-14em7qz");
+    			attr_dev(img, "class", "trade-resource svelte-xrfyjx");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$6, 128, 56, 4855);
-    			attr_dev(button, "class", "btn btn-primary btn-sm");
-    			add_location(button, file$6, 129, 56, 4976);
-    			attr_dev(td, "class", "svelte-14em7qz");
-    			add_location(td, file$6, 127, 52, 4794);
+    			add_location(img, file$6, 127, 60, 4832);
+    			attr_dev(button, "class", "btn btn-primary btn-sm svelte-xrfyjx");
+    			add_location(button, file$6, 128, 60, 4957);
+    			add_location(div, file$6, 126, 56, 4766);
+    			attr_dev(td, "class", "svelte-xrfyjx");
+    			add_location(td, file$6, 125, 52, 4705);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
-    			append_dev(td, img);
-    			append_dev(td, t0);
-    			append_dev(td, button);
+    			append_dev(td, div);
+    			append_dev(div, img);
+    			append_dev(div, t0);
+    			append_dev(div, button);
     			append_dev(td, t2);
 
     			if (!mounted) {
@@ -4236,14 +4246,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(127:48) {#if resource.type!==tradeResource.type}",
+    		source: "(125:48) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (126:44) {#each resourceList as tradeResource}
+    // (124:44) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_1$1(ctx);
@@ -4281,14 +4291,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(126:44) {#each resourceList as tradeResource}",
+    		source: "(124:44) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (115:20) {#each resourceList as resource}
+    // (113:20) {#each resourceList as resource}
     function create_each_block$1(ctx) {
     	let tr;
     	let td0;
@@ -4317,15 +4327,15 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-14em7qz");
-    			add_location(img, file$6, 117, 32, 4140);
-    			attr_dev(td0, "class", "svelte-14em7qz");
-    			add_location(td0, file$6, 116, 28, 4103);
-    			attr_dev(td1, "class", "number svelte-14em7qz");
-    			add_location(td1, file$6, 120, 28, 4322);
-    			attr_dev(td2, "class", "svelte-14em7qz");
-    			add_location(td2, file$6, 121, 28, 4391);
-    			add_location(tr, file$6, 115, 24, 4070);
+    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-xrfyjx");
+    			add_location(img, file$6, 115, 32, 4051);
+    			attr_dev(td0, "class", "svelte-xrfyjx");
+    			add_location(td0, file$6, 114, 28, 4014);
+    			attr_dev(td1, "class", "number svelte-xrfyjx");
+    			add_location(td1, file$6, 118, 28, 4233);
+    			attr_dev(td2, "class", "svelte-xrfyjx");
+    			add_location(td2, file$6, 119, 28, 4302);
+    			add_location(tr, file$6, 113, 24, 3981);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -4344,7 +4354,7 @@ var app = (function (jQuery) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-14em7qz")) {
+    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-xrfyjx")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -4373,7 +4383,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(115:20) {#each resourceList as resource}",
+    		source: "(113:20) {#each resourceList as resource}",
     		ctx
     	});
 
@@ -4383,14 +4393,14 @@ var app = (function (jQuery) {
     function create_fragment$6(ctx) {
     	let main;
     	let table1;
-    	let tr1;
-    	let td1;
-    	let table0;
     	let tr0;
     	let td0;
     	let t0_value = /*player*/ ctx[0].name + "";
     	let t0;
     	let t1;
+    	let tr1;
+    	let td1;
+    	let table0;
     	let t2;
     	let t3;
     	let tr2;
@@ -4415,13 +4425,13 @@ var app = (function (jQuery) {
     		c: function create() {
     			main = element("main");
     			table1 = element("table");
-    			tr1 = element("tr");
-    			td1 = element("td");
-    			table0 = element("table");
     			tr0 = element("tr");
     			td0 = element("td");
     			t0 = text(t0_value);
     			t1 = space();
+    			tr1 = element("tr");
+    			td1 = element("td");
+    			table0 = element("table");
     			if (if_block) if_block.c();
     			t2 = space();
 
@@ -4437,25 +4447,22 @@ var app = (function (jQuery) {
     			tr3 = element("tr");
     			td3 = element("td");
     			create_component(construction.$$.fragment);
-    			attr_dev(td0, "colspan", "3");
-    			attr_dev(td0, "class", "name svelte-14em7qz");
+    			attr_dev(td0, "class", "name svelte-xrfyjx");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
-    			add_location(td0, file$6, 59, 24, 1542);
-    			add_location(tr0, file$6, 58, 20, 1513);
-    			attr_dev(table0, "class", "inner-resource");
-    			add_location(table0, file$6, 57, 16, 1462);
-    			attr_dev(td1, "class", "svelte-14em7qz");
-    			add_location(td1, file$6, 56, 12, 1441);
-    			add_location(tr1, file$6, 55, 8, 1424);
-    			attr_dev(td2, "colspan", "3");
-    			attr_dev(td2, "class", "header svelte-14em7qz");
-    			add_location(td2, file$6, 144, 12, 5635);
-    			add_location(tr2, file$6, 143, 8, 5618);
-    			attr_dev(td3, "colspan", "3");
-    			attr_dev(td3, "class", "svelte-14em7qz");
-    			add_location(td3, file$6, 147, 12, 5713);
-    			add_location(tr3, file$6, 146, 8, 5696);
-    			attr_dev(table1, "class", "trade-resource svelte-14em7qz");
+    			add_location(td0, file$6, 56, 12, 1441);
+    			add_location(tr0, file$6, 55, 8, 1424);
+    			attr_dev(table0, "class", "inner-resource svelte-xrfyjx");
+    			add_location(table0, file$6, 61, 16, 1593);
+    			attr_dev(td1, "class", "svelte-xrfyjx");
+    			add_location(td1, file$6, 60, 12, 1572);
+    			add_location(tr1, file$6, 59, 8, 1555);
+    			attr_dev(td2, "class", "header svelte-xrfyjx");
+    			add_location(td2, file$6, 144, 12, 5683);
+    			add_location(tr2, file$6, 143, 8, 5666);
+    			attr_dev(td3, "class", "svelte-xrfyjx");
+    			add_location(td3, file$6, 147, 12, 5749);
+    			add_location(tr3, file$6, 146, 8, 5732);
+    			attr_dev(table1, "class", "trade-resource svelte-xrfyjx");
     			toggle_class(table1, "turn", /*turnClassEnabled*/ ctx[1]);
     			add_location(table1, file$6, 54, 4, 1355);
     			add_location(main, file$6, 53, 0, 1344);
@@ -4466,13 +4473,13 @@ var app = (function (jQuery) {
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
     			append_dev(main, table1);
+    			append_dev(table1, tr0);
+    			append_dev(tr0, td0);
+    			append_dev(td0, t0);
+    			append_dev(table1, t1);
     			append_dev(table1, tr1);
     			append_dev(tr1, td1);
     			append_dev(td1, table0);
-    			append_dev(table0, tr0);
-    			append_dev(tr0, td0);
-    			append_dev(td0, t0);
-    			append_dev(table0, t1);
     			if (if_block) if_block.m(table0, null);
     			append_dev(table0, t2);
 
@@ -4834,7 +4841,150 @@ var app = (function (jQuery) {
     /* src\App.svelte generated by Svelte v3.32.3 */
     const file$8 = "src\\App.svelte";
 
-    // (44:12) {#if $katan.buttonMessage!==''}
+    // (18:16) {:else}
+    function create_else_block$2(ctx) {
+    	let div;
+    	let dice0;
+    	let t0;
+    	let dice1;
+    	let t1;
+    	let button;
+    	let t2;
+    	let button_disabled_value;
+    	let current;
+    	let mounted;
+    	let dispose;
+
+    	dice0 = new Dice({
+    			props: { number: /*$katan*/ ctx[0].dice[0] },
+    			$$inline: true
+    		});
+
+    	dice1 = new Dice({
+    			props: { number: /*$katan*/ ctx[0].dice[1] },
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			create_component(dice0.$$.fragment);
+    			t0 = space();
+    			create_component(dice1.$$.fragment);
+    			t1 = space();
+    			button = element("button");
+    			t2 = text("주사위 굴리기");
+    			attr_dev(button, "class", "btn btn-primary svelte-o5ho3o");
+    			button.disabled = button_disabled_value = /*$katan*/ ctx[0].diceDisabled;
+    			add_location(button, file$8, 21, 24, 832);
+    			attr_dev(div, "class", "dice-container svelte-o5ho3o");
+    			add_location(div, file$8, 18, 20, 652);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			mount_component(dice0, div, null);
+    			append_dev(div, t0);
+    			mount_component(dice1, div, null);
+    			append_dev(div, t1);
+    			append_dev(div, button);
+    			append_dev(button, t2);
+    			current = true;
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[1], false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			const dice0_changes = {};
+    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
+    			dice0.$set(dice0_changes);
+    			const dice1_changes = {};
+    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
+    			dice1.$set(dice1_changes);
+
+    			if (!current || dirty & /*$katan*/ 1 && button_disabled_value !== (button_disabled_value = /*$katan*/ ctx[0].diceDisabled)) {
+    				prop_dev(button, "disabled", button_disabled_value);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(dice0.$$.fragment, local);
+    			transition_in(dice1.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(dice0.$$.fragment, local);
+    			transition_out(dice1.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_component(dice0);
+    			destroy_component(dice1);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$2.name,
+    		type: "else",
+    		source: "(18:16) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (16:16) {#if $katan.diceDisabled}
+    function create_if_block_2$2(ctx) {
+    	let h1;
+    	let t0_value = /*$katan*/ ctx[0].playerList[/*$katan*/ ctx[0].playerIndex].name + "";
+    	let t0;
+    	let t1;
+    	let t2_value = /*$katan*/ ctx[0].message + "";
+    	let t2;
+
+    	const block = {
+    		c: function create() {
+    			h1 = element("h1");
+    			t0 = text(t0_value);
+    			t1 = text("! ");
+    			t2 = text(t2_value);
+    			attr_dev(h1, "class", "message-header ripple svelte-o5ho3o");
+    			add_location(h1, file$8, 16, 20, 504);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h1, anchor);
+    			append_dev(h1, t0);
+    			append_dev(h1, t1);
+    			append_dev(h1, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$katan*/ 1 && t0_value !== (t0_value = /*$katan*/ ctx[0].playerList[/*$katan*/ ctx[0].playerIndex].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$katan*/ 1 && t2_value !== (t2_value = /*$katan*/ ctx[0].message + "")) set_data_dev(t2, t2_value);
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$2.name,
+    		type: "if",
+    		source: "(16:16) {#if $katan.diceDisabled}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (49:12) {#if $katan.buttonMessage!==''}
     function create_if_block_1$2(ctx) {
     	let div;
     	let button;
@@ -4850,9 +5000,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$8, 45, 20, 1692);
+    			add_location(button, file$8, 50, 20, 1936);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$8, 44, 16, 1644);
+    			add_location(div, file$8, 49, 16, 1888);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4878,14 +5028,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(44:12) {#if $katan.buttonMessage!==''}",
+    		source: "(49:12) {#if $katan.buttonMessage!==''}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (53:0) {#if $katan.showResourceModal}
+    // (58:0) {#if $katan.showResourceModal}
     function create_if_block$4(ctx) {
     	let resource;
     	let current;
@@ -4917,7 +5067,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(53:0) {#if $katan.showResourceModal}",
+    		source: "(58:0) {#if $katan.showResourceModal}",
     		ctx
     	});
 
@@ -4925,57 +5075,50 @@ var app = (function (jQuery) {
     }
 
     function create_fragment$8(ctx) {
-    	let div1;
+    	let div0;
     	let table;
     	let tr;
     	let td0;
     	let player0;
     	let t0;
     	let td1;
-    	let div0;
-    	let dice0;
+    	let current_block_type_index;
+    	let if_block0;
     	let t1;
-    	let dice1;
-    	let t2;
-    	let button0;
-    	let t3;
-    	let button0_disabled_value;
-    	let t4;
     	let board;
-    	let t5;
+    	let t2;
     	let td2;
     	let player1;
-    	let t6;
-    	let div6;
+    	let t3;
     	let div5;
     	let div4;
-    	let div2;
-    	let button1;
-    	let t7;
     	let div3;
-    	let t8_value = /*$katan*/ ctx[0].bodyMessage + "";
-    	let t8;
-    	let t9;
-    	let t10;
-    	let if_block1_anchor;
+    	let div1;
+    	let button;
+    	let t4;
+    	let div2;
+    	let t5_value = /*$katan*/ ctx[0].bodyMessage + "";
+    	let t5;
+    	let t6;
+    	let t7;
+    	let if_block2_anchor;
     	let current;
-    	let mounted;
-    	let dispose;
 
     	player0 = new Player({
     			props: { playerIndex: 0 },
     			$$inline: true
     		});
 
-    	dice0 = new Dice({
-    			props: { number: /*$katan*/ ctx[0].dice[0] },
-    			$$inline: true
-    		});
+    	const if_block_creators = [create_if_block_2$2, create_else_block$2];
+    	const if_blocks = [];
 
-    	dice1 = new Dice({
-    			props: { number: /*$katan*/ ctx[0].dice[1] },
-    			$$inline: true
-    		});
+    	function select_block_type(ctx, dirty) {
+    		if (/*$katan*/ ctx[0].diceDisabled) return 0;
+    		return 1;
+    	}
+
+    	current_block_type_index = select_block_type(ctx);
+    	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
 
     	board = new Board({
     			props: {
@@ -4990,136 +5133,129 @@ var app = (function (jQuery) {
     			$$inline: true
     		});
 
-    	let if_block0 = /*$katan*/ ctx[0].buttonMessage !== "" && create_if_block_1$2(ctx);
-    	let if_block1 = /*$katan*/ ctx[0].showResourceModal && create_if_block$4(ctx);
+    	let if_block1 = /*$katan*/ ctx[0].buttonMessage !== "" && create_if_block_1$2(ctx);
+    	let if_block2 = /*$katan*/ ctx[0].showResourceModal && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
-    			div1 = element("div");
+    			div0 = element("div");
     			table = element("table");
     			tr = element("tr");
     			td0 = element("td");
     			create_component(player0.$$.fragment);
     			t0 = space();
     			td1 = element("td");
-    			div0 = element("div");
-    			create_component(dice0.$$.fragment);
+    			if_block0.c();
     			t1 = space();
-    			create_component(dice1.$$.fragment);
-    			t2 = space();
-    			button0 = element("button");
-    			t3 = text("주사위 굴리기");
-    			t4 = space();
     			create_component(board.$$.fragment);
-    			t5 = space();
+    			t2 = space();
     			td2 = element("td");
     			create_component(player1.$$.fragment);
-    			t6 = space();
-    			div6 = element("div");
+    			t3 = space();
     			div5 = element("div");
     			div4 = element("div");
-    			div2 = element("div");
-    			button1 = element("button");
-    			t7 = space();
     			div3 = element("div");
-    			t8 = text(t8_value);
-    			t9 = space();
-    			if (if_block0) if_block0.c();
-    			t10 = space();
+    			div1 = element("div");
+    			button = element("button");
+    			t4 = space();
+    			div2 = element("div");
+    			t5 = text(t5_value);
+    			t6 = space();
     			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
+    			t7 = space();
+    			if (if_block2) if_block2.c();
+    			if_block2_anchor = empty();
     			attr_dev(td0, "valign", "top");
-    			attr_dev(td0, "class", "player svelte-6hmfr2");
+    			attr_dev(td0, "class", "player svelte-o5ho3o");
     			add_location(td0, file$8, 11, 12, 286);
-    			attr_dev(button0, "class", "btn btn-primary svelte-6hmfr2");
-    			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$8, 18, 20, 625);
-    			attr_dev(div0, "class", "dice-container svelte-6hmfr2");
-    			add_location(div0, file$8, 15, 16, 457);
     			attr_dev(td1, "valign", "top");
-    			attr_dev(td1, "class", "text-center svelte-6hmfr2");
+    			attr_dev(td1, "class", "text-center svelte-o5ho3o");
     			add_location(td1, file$8, 14, 12, 402);
     			attr_dev(td2, "valign", "top");
-    			attr_dev(td2, "class", "player svelte-6hmfr2");
-    			add_location(td2, file$8, 27, 12, 994);
+    			attr_dev(td2, "class", "player svelte-o5ho3o");
+    			add_location(td2, file$8, 32, 12, 1238);
     			add_location(tr, file$8, 10, 8, 268);
     			add_location(table, file$8, 9, 4, 251);
-    			attr_dev(div1, "class", "katan svelte-6hmfr2");
-    			add_location(div1, file$8, 8, 0, 226);
-    			attr_dev(button1, "type", "button");
-    			attr_dev(button1, "class", "btn-close");
-    			attr_dev(button1, "data-bs-dismiss", "modal");
-    			attr_dev(button1, "aria-label", "Close");
-    			add_location(button1, file$8, 37, 16, 1371);
-    			attr_dev(div2, "class", "modal-header");
-    			add_location(div2, file$8, 36, 12, 1327);
-    			attr_dev(div3, "class", "modal-body");
-    			add_location(div3, file$8, 39, 12, 1497);
-    			attr_dev(div4, "class", "modal-content");
-    			add_location(div4, file$8, 35, 8, 1286);
-    			attr_dev(div5, "class", "modal-dialog");
-    			add_location(div5, file$8, 34, 4, 1250);
-    			attr_dev(div6, "class", "modal fade");
-    			attr_dev(div6, "id", "katanModal");
-    			attr_dev(div6, "tabindex", "-1");
-    			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
-    			attr_dev(div6, "aria-hidden", "true");
-    			add_location(div6, file$8, 33, 0, 1135);
+    			attr_dev(div0, "class", "katan svelte-o5ho3o");
+    			add_location(div0, file$8, 8, 0, 226);
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "class", "btn-close");
+    			attr_dev(button, "data-bs-dismiss", "modal");
+    			attr_dev(button, "aria-label", "Close");
+    			add_location(button, file$8, 42, 16, 1615);
+    			attr_dev(div1, "class", "modal-header");
+    			add_location(div1, file$8, 41, 12, 1571);
+    			attr_dev(div2, "class", "modal-body");
+    			add_location(div2, file$8, 44, 12, 1741);
+    			attr_dev(div3, "class", "modal-content");
+    			add_location(div3, file$8, 40, 8, 1530);
+    			attr_dev(div4, "class", "modal-dialog");
+    			add_location(div4, file$8, 39, 4, 1494);
+    			attr_dev(div5, "class", "modal fade");
+    			attr_dev(div5, "id", "katanModal");
+    			attr_dev(div5, "tabindex", "-1");
+    			attr_dev(div5, "aria-labelledby", "exampleModalLabel");
+    			attr_dev(div5, "aria-hidden", "true");
+    			add_location(div5, file$8, 38, 0, 1379);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-    			append_dev(div1, table);
+    			insert_dev(target, div0, anchor);
+    			append_dev(div0, table);
     			append_dev(table, tr);
     			append_dev(tr, td0);
     			mount_component(player0, td0, null);
     			append_dev(tr, t0);
     			append_dev(tr, td1);
-    			append_dev(td1, div0);
-    			mount_component(dice0, div0, null);
-    			append_dev(div0, t1);
-    			mount_component(dice1, div0, null);
-    			append_dev(div0, t2);
-    			append_dev(div0, button0);
-    			append_dev(button0, t3);
-    			append_dev(td1, t4);
+    			if_blocks[current_block_type_index].m(td1, null);
+    			append_dev(td1, t1);
     			mount_component(board, td1, null);
-    			append_dev(tr, t5);
+    			append_dev(tr, t2);
     			append_dev(tr, td2);
     			mount_component(player1, td2, null);
-    			insert_dev(target, t6, anchor);
-    			insert_dev(target, div6, anchor);
-    			append_dev(div6, div5);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, div5, anchor);
     			append_dev(div5, div4);
-    			append_dev(div4, div2);
-    			append_dev(div2, button1);
-    			append_dev(div4, t7);
     			append_dev(div4, div3);
-    			append_dev(div3, t8);
-    			append_dev(div4, t9);
-    			if (if_block0) if_block0.m(div4, null);
-    			insert_dev(target, t10, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert_dev(target, if_block1_anchor, anchor);
+    			append_dev(div3, div1);
+    			append_dev(div1, button);
+    			append_dev(div3, t4);
+    			append_dev(div3, div2);
+    			append_dev(div2, t5);
+    			append_dev(div3, t6);
+    			if (if_block1) if_block1.m(div3, null);
+    			insert_dev(target, t7, anchor);
+    			if (if_block2) if_block2.m(target, anchor);
+    			insert_dev(target, if_block2_anchor, anchor);
     			current = true;
-
-    			if (!mounted) {
-    				dispose = listen_dev(button0, "click", /*click_handler*/ ctx[1], false, false, false);
-    				mounted = true;
-    			}
     		},
     		p: function update(ctx, [dirty]) {
-    			const dice0_changes = {};
-    			if (dirty & /*$katan*/ 1) dice0_changes.number = /*$katan*/ ctx[0].dice[0];
-    			dice0.$set(dice0_changes);
-    			const dice1_changes = {};
-    			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
-    			dice1.$set(dice1_changes);
+    			let previous_block_index = current_block_type_index;
+    			current_block_type_index = select_block_type(ctx);
 
-    			if (!current || dirty & /*$katan*/ 1 && button0_disabled_value !== (button0_disabled_value = /*$katan*/ ctx[0].diceDisabled)) {
-    				prop_dev(button0, "disabled", button0_disabled_value);
+    			if (current_block_type_index === previous_block_index) {
+    				if_blocks[current_block_type_index].p(ctx, dirty);
+    			} else {
+    				group_outros();
+
+    				transition_out(if_blocks[previous_block_index], 1, 1, () => {
+    					if_blocks[previous_block_index] = null;
+    				});
+
+    				check_outros();
+    				if_block0 = if_blocks[current_block_type_index];
+
+    				if (!if_block0) {
+    					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
+    					if_block0.c();
+    				} else {
+    					if_block0.p(ctx, dirty);
+    				}
+
+    				transition_in(if_block0, 1);
+    				if_block0.m(td1, t1);
     			}
 
     			const board_changes = {};
@@ -5131,37 +5267,37 @@ var app = (function (jQuery) {
     			}
 
     			board.$set(board_changes);
-    			if ((!current || dirty & /*$katan*/ 1) && t8_value !== (t8_value = /*$katan*/ ctx[0].bodyMessage + "")) set_data_dev(t8, t8_value);
+    			if ((!current || dirty & /*$katan*/ 1) && t5_value !== (t5_value = /*$katan*/ ctx[0].bodyMessage + "")) set_data_dev(t5, t5_value);
 
     			if (/*$katan*/ ctx[0].buttonMessage !== "") {
-    				if (if_block0) {
-    					if_block0.p(ctx, dirty);
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
     				} else {
-    					if_block0 = create_if_block_1$2(ctx);
-    					if_block0.c();
-    					if_block0.m(div4, null);
+    					if_block1 = create_if_block_1$2(ctx);
+    					if_block1.c();
+    					if_block1.m(div3, null);
     				}
-    			} else if (if_block0) {
-    				if_block0.d(1);
-    				if_block0 = null;
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			if (/*$katan*/ ctx[0].showResourceModal) {
-    				if (if_block1) {
+    				if (if_block2) {
     					if (dirty & /*$katan*/ 1) {
-    						transition_in(if_block1, 1);
+    						transition_in(if_block2, 1);
     					}
     				} else {
-    					if_block1 = create_if_block$4(ctx);
-    					if_block1.c();
-    					transition_in(if_block1, 1);
-    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    					if_block2 = create_if_block$4(ctx);
+    					if_block2.c();
+    					transition_in(if_block2, 1);
+    					if_block2.m(if_block2_anchor.parentNode, if_block2_anchor);
     				}
-    			} else if (if_block1) {
+    			} else if (if_block2) {
     				group_outros();
 
-    				transition_out(if_block1, 1, 1, () => {
-    					if_block1 = null;
+    				transition_out(if_block2, 1, 1, () => {
+    					if_block2 = null;
     				});
 
     				check_outros();
@@ -5170,37 +5306,32 @@ var app = (function (jQuery) {
     		i: function intro(local) {
     			if (current) return;
     			transition_in(player0.$$.fragment, local);
-    			transition_in(dice0.$$.fragment, local);
-    			transition_in(dice1.$$.fragment, local);
+    			transition_in(if_block0);
     			transition_in(board.$$.fragment, local);
     			transition_in(player1.$$.fragment, local);
-    			transition_in(if_block1);
+    			transition_in(if_block2);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(player0.$$.fragment, local);
-    			transition_out(dice0.$$.fragment, local);
-    			transition_out(dice1.$$.fragment, local);
+    			transition_out(if_block0);
     			transition_out(board.$$.fragment, local);
     			transition_out(player1.$$.fragment, local);
-    			transition_out(if_block1);
+    			transition_out(if_block2);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
+    			if (detaching) detach_dev(div0);
     			destroy_component(player0);
-    			destroy_component(dice0);
-    			destroy_component(dice1);
+    			if_blocks[current_block_type_index].d();
     			destroy_component(board);
     			destroy_component(player1);
-    			if (detaching) detach_dev(t6);
-    			if (detaching) detach_dev(div6);
-    			if (if_block0) if_block0.d();
-    			if (detaching) detach_dev(t10);
-    			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach_dev(if_block1_anchor);
-    			mounted = false;
-    			dispose();
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(div5);
+    			if (if_block1) if_block1.d();
+    			if (detaching) detach_dev(t7);
+    			if (if_block2) if_block2.d(detaching);
+    			if (detaching) detach_dev(if_block2_anchor);
     		}
     	};
 

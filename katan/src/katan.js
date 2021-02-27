@@ -943,8 +943,7 @@ const katanStore = {
     },
 
     getActivePlayer: () => {
-        return katan.playerList
-            .find(player => player.turn);
+        return katan.playerList[katan.playerIndex];
     },
 
     getCurrentPlayer: (katan) => {
@@ -954,8 +953,13 @@ const katanStore = {
 
     turn: () => update(katan => {
         katan.playerList = katan.playerList
-            .map(player => {
-                player.turn = !player.turn
+            .map((player, i) => {
+                player.turn = !player.turn;
+
+                if (player.turn) {
+                    katan.playerIndex = i;
+                }
+
                 return player;
             });
 
@@ -1095,6 +1099,8 @@ const katanStore = {
     }),
 
     setCastleRippleEnabled: () => update(katan => {
+        katan.message = '마을을 만들곳을 클릭하세요';
+
         katan.castleList = katan.castleList.map(castle => {
             if (castle.constructable && castle.playerIndex === -1) {
                 let linkedCastleLength = castle.castleIndexList

@@ -13,13 +13,18 @@
                 <Player playerIndex={0}></Player>
             </td>
             <td valign="top" class="text-center">
-                <div class="dice-container">
-                    <Dice number={$katan.dice[0]}></Dice>
-                    <Dice number={$katan.dice[1]}></Dice>
-                    <button class="btn btn-primary"
-                            disabled={$katan.diceDisabled}
-                            on:click={()=>katan.play()}>주사위 굴리기</button>
-                </div>
+                {#if $katan.diceDisabled}
+                    <h1 class="message-header ripple">{$katan.playerList[$katan.playerIndex].name}! {$katan.message}</h1>
+                {:else}
+                    <div class="dice-container">
+                        <Dice number={$katan.dice[0]}></Dice>
+                        <Dice number={$katan.dice[1]}></Dice>
+                        <button class="btn btn-primary"
+                                disabled={$katan.diceDisabled}
+                                on:click={()=>katan.play()}>주사위 굴리기</button>
+                    </div>
+                {/if}
+
 
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">
@@ -76,8 +81,11 @@
         margin-top: 0;
         margin-left: auto;
         margin-right: auto;
-        /*width: 1300px;*/
         transform: scale(0.8);
         transform-origin: 0 0;
+    }
+
+    .message-header {
+        margin: 30px;
     }
 </style>

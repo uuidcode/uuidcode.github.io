@@ -57,7 +57,8 @@
                 <img src="iron_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm" disabled={!player.make.dev}>발전카드</button>
+                <button class="btn btn-primary btn-sm"
+                        disabled={!player.make.dev}>발전카드</button>
             </td>
         </tr>
     </table>
@@ -73,6 +74,7 @@
     }
 
     .construction-resource {
+        width: 100%;
         margin-top: 10px;
     }
 
@@ -81,5 +83,9 @@
         height: 60px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
         margin: 4px;
+    }
+
+    button {
+        margin: 2px;
     }
 </style>
