@@ -15,9 +15,6 @@
 <main>
     <table class="construction-resource">
         <tr>
-            <td colspan="2" class="header">건설</td>
-        </tr>
-        <tr>
             <td>
                 <img src="tree_item.png">
                 <img src="mud_item.png">

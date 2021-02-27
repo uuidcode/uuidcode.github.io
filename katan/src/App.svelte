@@ -6,7 +6,7 @@
     import Resource from "./Resource.svelte";
 </script>
 
-<main style="margin: auto; width: 1300px">
+<div class="katan">
     <table>
         <tr>
             <td valign="top" class="player">
@@ -30,7 +30,7 @@
             </td>
         </tr>
     </table>
-</main>
+</div>
 <div class="modal fade" id="katanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -70,5 +70,14 @@
 
     td {
         border: 1px;
+    }
+
+    .katan {
+        margin-top: 0;
+        margin-left: auto;
+        margin-right: auto;
+        /*width: 1300px;*/
+        transform: scale(0.8);
+        transform-origin: 0 0;
     }
 </style>

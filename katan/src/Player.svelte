@@ -9,7 +9,6 @@
     let player = $katan.playerList[playerIndex];
     let turnClassEnabled = player.turn && type === 'player';
     let modalMode = type === 'modal';
-    let colspan = modalMode ? 3 : 2;
 
     const getResourceList = () => {
         return [
@@ -37,16 +36,12 @@
     };
 
     let resourceList = getResourceList();
-    let resourceClassName = 'resource';
+    let resourceClassName = 'trade-resource';
 
     const unsubscribe = katan.subscribe(currentKatan => {
         player = currentKatan.playerList[playerIndex];
         resourceList = getResourceList();
         turnClassEnabled = player.turn && type === 'player';
-
-        if (type === 'modal') {
-            resourceClassName = 'trade-resource';
-        }
     });
 
     onDestroy(unsubscribe);
@@ -57,45 +52,46 @@
 </script>
 
 <main>
-    <table class="{resourceClassName}" class:turn={turnClassEnabled}>
+    <table class="trade-resource" class:turn={turnClassEnabled}>
         <tr>
             <td>
                 <table class="inner-resource">
                     <tr>
-                        <td colspan="{colspan}"
+                        <td colspan="3"
                             class="name"
                             style="background-color:{player.color}">{player.name}</td>
                     </tr>
 
                     {#if !modalMode}
                         <tr>
-                            <td colspan="2" class="header">점수</td>
-                        </tr>
-                        <tr class="point">
-                            <td>마을</td>
-                            <td>{player.point.castle}</td>
+                            <td colspan="3" class="header">점수</td>
                         </tr>
                         <tr>
-                            <td>도시</td>
-                            <td>{player.point.city}</td>
+                            <td colspan="3">
+                                <table width="100%">
+                                    <tr class="point">
+                                        <td>마을</td>
+                                        <td>도시</td>
+                                        <td>최장 교역로</td>
+                                        <td>최강 기사단</td>
+                                        <td>현재 점수</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{player.point.castle}</td>
+                                        <td>{player.point.city}</td>
+                                        <td>{player.point.road}</td>
+                                        <td>{player.point.knight}</td>
+                                        <td>{player.point.sum}</td>
+                                    </tr>
+                                </table>
+                            </td>
+
                         </tr>
                         <tr>
-                            <td>최장 교역로</td>
-                            <td>{player.point.road}</td>
+                            <td colspan="3" class="header">건설</td>
                         </tr>
                         <tr>
-                            <td>최강 기사단</td>
-                            <td>{player.point.knight}</td>
-                        </tr>
-                        <tr>
-                            <td>현재 점수</td>
-                            <td>{player.point.sum}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="header">건설</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                                 <table class="construction" width="100%">
                                     <tr>
                                         <td>마을</td>
@@ -112,7 +108,7 @@
                         </tr>
 
                         <tr>
-                            <td colspan="2" class="header">자원</td>
+                            <td colspan="3" class="header">자원</td>
                         </tr>
                     {/if}
 
@@ -123,34 +119,37 @@
                                      class="player_{player.index}_{resource.type}">
                             </td>
                             <td class="number">{resource.count}</td>
-                            {#if modalMode}
-                                <td>
-                                    {#if resource.count>=4}
-                                        <table class="trade-target-resource">
-                                            <tr>
-                                                {#each resourceList as tradeResource}
-                                                    {#if resource.type!==tradeResource.type}
-                                                        <td>
-                                                            <img class="trade-resource" src="{tradeResource.type}_item.png">
-                                                            <button class="btn btn-primary btn-sm"
-                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button>
-                                                        </td>
-                                                    {/if}
-                                                {/each}
-                                            </tr>
-                                        </table>
-                                    {/if}
-                                </td>
-                            {/if}
+                            <td>
+                                {#if resource.count>=4}
+                                    <table class="trade-target-resource">
+                                        <tr>
+                                            {#each resourceList as tradeResource}
+                                                {#if resource.type!==tradeResource.type}
+                                                    <td>
+                                                        <img class="trade-resource" src="{tradeResource.type}_item.png">
+                                                        <button class="btn btn-primary btn-sm"
+                                                                on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>4:1 교환</button>
+                                                    </td>
+                                                {/if}
+                                            {/each}
+                                        </tr>
+                                    </table>
+                                {/if}
+                            </td>
                         </tr>
                     {/each}
                 </table>
             </td>
         </tr>
+        <tr>
+            <td colspan="3" class="header">건설</td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <Construction/>
+            </td>
+        </tr>
     </table>
-    {#if modalMode}
-        <Construction/>
-    {/if}
 </main>
 
 <style>
@@ -158,11 +157,11 @@
         text-align: center;
     }
 
-    table.resource {
+    table.trade-resource {
         border: 20px solid white;
     }
 
-    table.resource.turn {
+    table.trade-resource.turn {
         border: 20px solid blueviolet;
     }
 
@@ -187,6 +186,9 @@
         width: 80px;
     }
 
+    .trade-resource {
+        width: 600px;
+    }
     .trade-resource .number {
         line-height: 40px;
         font-size: 40px;

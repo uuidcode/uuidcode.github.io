@@ -1,8 +1,8 @@
 const config = {
     debug: false,
     cell: {
-        width: 170,
-        height: 190,
+        width: 200,
+        height: 230,
         margin: 5
     },
     castle: {
@@ -18,8 +18,8 @@ const config = {
         height: 80,
     },
     resource: {
-        width: 100,
-        height: 100,
+        width: 60,
+        height: 60,
     },
     buglar: {
         width: 120,

@@ -844,12 +844,6 @@ const katanStore = {
             const interval = setInterval(() => {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
-
-                    katanStore.setShowResourceModal();
-
-                    setTimeout(() => {
-                       katanStore.showResourceModal();
-                    }, 500);
                 }
             }, 100);
         } else {
@@ -858,16 +852,7 @@ const katanStore = {
         }
     },
 
-    closeResourceModal: () => {
-        const modal = Modal.getInstance(document.getElementById('resourceModal'));
-        modal.hide();
-
-        katanStore.hideResourceModal();
-        katanStore.setDiceEnabled();
-    },
-
     closeResourceModalAndTurn: () => {
-        katanStore.closeResourceModal();
         katan.turn();
     },
 
@@ -1024,7 +1009,6 @@ const katanStore = {
 
     makeRoad: () => update(katan => {
         katan.isMakeRoad = true;
-        katanStore.closeResourceModal();
 
         katanStore.setNewRoadRippleEnabled();
 
@@ -1033,7 +1017,6 @@ const katanStore = {
 
     makeCastle: () => update(katan => {
         katan.isMakeCastle = true;
-        katanStore.closeResourceModal();
         katanStore.setNewCastleRippleEnabled();
 
         return katan;

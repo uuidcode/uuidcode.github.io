@@ -23,7 +23,6 @@
 
         if ($katan.isMakeRoad) {
             katan.endMakeRoad();
-            katan.updateAndShowResourceModal();
         } else {
             katan.setShowCastle();
             katan.setCastleRippleEnabled();
