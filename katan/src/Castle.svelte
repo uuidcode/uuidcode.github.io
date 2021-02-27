@@ -84,7 +84,7 @@
         text-align: center;
         background-color: yellow;
         font-weight: bolder;
-        font-size: 12px;
+        font-size: 14px;
         opacity: 0.6;
     }
 

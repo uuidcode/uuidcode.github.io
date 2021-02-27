@@ -91,7 +91,7 @@
         text-align: center;
         background-color: yellow;
         font-weight: bolder;
-        font-size: 12px;
+        font-size: 14px;
         color: white;
         opacity: 0.6;
     }

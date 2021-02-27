@@ -6,6 +6,7 @@ import jQuery from 'jquery';
 import { Modal } from './bootstrap.esm.min.js'
 
 let katan = {
+    rollDice: false,
     action: false,
     isMakeRoad: false,
     isMakeCastle: false,
@@ -721,6 +722,9 @@ const katanStore = {
     subscribe,
 
     turn: () => update(katan => {
+        katan.rollDice = false;
+        katanStore.recomputePlayer();
+
         katan.playerList = katan.playerList
             .map((player, i) => {
                 player.turn = !player.turn;
@@ -733,7 +737,11 @@ const katanStore = {
             });
 
         katan.action = false;
-        katan.message = '주사위를 굴리세요.';
+
+        if (katan.isStart) {
+            katan.message = '주사위를 굴리세요.';
+            katan.diceDisabled = false;
+        }
 
         return katan;
     }),
@@ -774,29 +782,29 @@ const katanStore = {
         katanStore.setNumberRippleEnabled();
     },
 
-    moveBuglar: (resourceIndex) => {
+    moveBuglar: (resourceIndex) => update(katan => {
         if (katan.mode !== 'moveBuglar') {
-            return;
+            return katan;
         }
 
         if (katan.resourceList[resourceIndex].buglar) {
-            return;
+            return katan;
         }
 
-        return update(katna => {
-                katan.resourceList = katan.resourceList
-                    .map(resource => {
-                        resource.buglar = resource.index === resourceIndex;
-                        return resource;
-                    });
+        katan.resourceList = katan.resourceList
+            .map(resource => {
+                resource.buglar = resource.index === resourceIndex;
+                return resource;
+            });
 
-                katanStore.setNumberRippleDisabled();
-                katanStore.setDiceEnabled();
-                katan.mode = 'start';
+        katanStore.setNumberRippleDisabled();
+        katanStore.setDiceEnabled();
+        katanStore.turn();
 
-            return katan;
-        });
-    },
+        katan.mode = 'start';
+
+        return katan;
+    }),
 
     setDiceDisabled: () => update(katan => {
         katan.diceDisabled = true;
@@ -873,6 +881,8 @@ const katanStore = {
                     clearInterval(interval);
 
                     if (katanStore.hasAction()) {
+                        console.log('>>> hasAction');
+
                         katanStore.doAction();
                     } else {
                         katanStore.turn();
@@ -881,7 +891,7 @@ const katanStore = {
             }, 100);
         } else {
             katanStore.setDiceEnabled();
-            katan.turn();
+            katanStore.turn();
         }
     },
 
@@ -933,6 +943,11 @@ const katanStore = {
 
     endMakeRoad: () => update(katan => {
         katan.isMakeRoad = false;
+
+        if (!katanStore.hasAction()) {
+            katanStore.turn();
+        }
+
         return katan;
     }),
 
@@ -954,12 +969,14 @@ const katanStore = {
             katan.mode = 'moveBuglar';
             katan.message = '도둑의 위치를 선택하세요.';
             katanStore.setNumberRippleEnabled();
+            katan.rollDice = true;
         } else {
             katanStore.setSelectedNumberRippleEnabled(number);
 
             setTimeout(() => {
                 katanStore.setNumberRippleDisabled(number);
                 katanStore.moveResource(number);
+                katan.rollDice = true;
             }, 1000);
         }
 
@@ -1179,6 +1196,11 @@ const katanStore = {
 
     endMakeCastle: () => update(katan => {
         katan.isMakeCastle = false;
+
+        if (!katanStore.hasAction()) {
+            katanStore.turn();
+        }
+
         return katan;
     }),
 
@@ -1271,26 +1293,33 @@ const katanStore = {
             .map(player => {
 
                 player.trade.tree.enable =
+                    katan.rollDice &&
                     player.resource.tree >= player.trade.tree.count;
 
                 player.trade.mud.enable =
+                    katan.rollDice &&
                     player.resource.mud >= player.trade.mud.count;
 
                 player.trade.wheat.enable =
+                    katan.rollDice &&
                     player.resource.wheat >= player.trade.wheat.count;
 
                 player.trade.sheep.enable =
+                    katan.rollDice &&
                     player.resource.sheep >= player.trade.sheep.count;
 
                 player.trade.iron.enable =
+                    katan.rollDice &&
                     player.resource.iron >= player.trade.iron.count;
 
                 player.make.road =
+                    katan.rollDice &&
                     player.construction.road >= 1 &&
                     player.resource.tree >= 1 &&
                     player.resource.mud >= 1;
 
                 player.make.castle =
+                    katan.rollDice &&
                     player.construction.castle >= 1 &&
                     player.resource.tree >= 1 &&
                     player.resource.mud >= 1 &&
@@ -1298,11 +1327,13 @@ const katanStore = {
                     player.resource.sheep >= 1;
 
                 player.make.city =
+                    katan.rollDice &&
                     player.construction.city >= 1 &&
                     player.resource.iron >= 3 &&
                     player.resource.wheat >= 2;
 
                 player.make.dev =
+                    katan.rollDice &&
                     player.resource.iron >= 1 &&
                     player.resource.sheep >= 1 &&
                     player.resource.wheat >= 1;

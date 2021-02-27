@@ -2,6 +2,7 @@
     import katan from './katan'
     import { onDestroy } from 'svelte';
     import Construction from './Construction.svelte'
+    import { toStyle } from './util.js'
 
     export let playerIndex;
     export let type = 'player';
@@ -35,11 +36,27 @@
         ];
     };
 
+    const getPlayerColor = () => {
+        if (player.turn) {
+            return player.color;
+        }
+
+        return 'white';
+    };
+
+    const getPlayerStyle = () => {
+        return toStyle({
+            border: '20px solid ' + getPlayerColor()
+        });
+    };
+
+    let playerStyle = getPlayerStyle();
     let resourceList = getResourceList();
     let resourceClassName = 'trade-resource';
 
     const unsubscribe = katan.subscribe(currentKatan => {
         player = currentKatan.playerList[playerIndex];
+        playerStyle = getPlayerStyle();
         resourceList = getResourceList();
         turnClassEnabled = player.turn && type === 'player';
     });
@@ -52,7 +69,7 @@
 </script>
 
 <main>
-    <table class="trade-resource" class:turn={turnClassEnabled}>
+    <table class="trade-resource" style={playerStyle}>
         <tr>
             <td class="name"
                 style="background-color:{player.color}">{player.name}</td>
@@ -128,7 +145,7 @@
                                                             <img class="trade-resource" src="{tradeResource.type}_item.png">
                                                             <button class="btn btn-primary btn-sm"
                                                                     on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>
-                                                                {player.trade[resource.type]}:1 교환
+                                                                {player.trade[resource.type].count}:1 교환
                                                             </button>
                                                         </div>
                                                     </td>
@@ -157,14 +174,6 @@
 <style>
     .resource td {
         text-align: center;
-    }
-
-    table.trade-resource {
-        border: 20px solid white;
-    }
-
-    table.trade-resource.turn {
-        border: 20px solid blueviolet;
     }
 
     .resource img {
