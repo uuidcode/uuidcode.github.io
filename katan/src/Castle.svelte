@@ -70,7 +70,7 @@
 {:else}
     <div class="castle"
          on:click={()=>pick()}
-    class:ripple={castle.ripple}
+    class:ripple1={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
     style={castleStyle}>
@@ -86,6 +86,7 @@
         font-weight: bolder;
         font-size: 14px;
         opacity: 0.6;
+        cursor: pointer;
     }
 
     .pick {

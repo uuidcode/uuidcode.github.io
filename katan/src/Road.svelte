@@ -76,7 +76,7 @@
 {:else}
     <div class="road"
          on:click={()=>pick()}
-         class:ripple={road.ripple}
+         class:ripple1={road.ripple}
          class:pick={road.ripple}
          class:hide={road.hide}
          class:show={road.show}
@@ -94,6 +94,7 @@
         font-size: 14px;
         color: white;
         opacity: 0.6;
+        cursor: pointer;
     }
 
     .pick {

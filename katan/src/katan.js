@@ -863,7 +863,8 @@ const katanStore = {
                         resourceItem.hide();
 
                         setTimeout(() => {
-                            newResourceItem.addClass('ripple')
+                            newResourceItem
+                                // .addClass('ripple')
                                 .animate({
                                     left: targetOffset.left + 'px',
                                     top: targetOffset.top + 'px'
@@ -952,7 +953,7 @@ const katanStore = {
     endMakeRoad: () => update(katan => {
         katan.isMakeRoad = false;
 
-        katan.doActionAndTurn();
+        katanStore.doActionAndTurn();
 
         return katan;
     }),
@@ -983,7 +984,7 @@ const katanStore = {
                 katanStore.setNumberRippleDisabled(number);
                 katanStore.enableRollDice();
                 katanStore.moveResource(number);
-            }, 1000);
+            }, 2000);
         }
 
         return katan;

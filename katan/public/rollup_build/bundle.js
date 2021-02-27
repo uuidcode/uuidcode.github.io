@@ -430,12 +430,12 @@ var app = (function (jQuery) {
             margin: 5
         },
         castle: {
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
         },
         load: {
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
         },
         number: {
             width: 60,
@@ -1394,7 +1394,8 @@ var app = (function (jQuery) {
                             resourceItem.hide();
 
                             setTimeout(() => {
-                                newResourceItem.addClass('ripple')
+                                newResourceItem
+                                    // .addClass('ripple')
                                     .animate({
                                         left: targetOffset.left + 'px',
                                         top: targetOffset.top + 'px'
@@ -1483,7 +1484,7 @@ var app = (function (jQuery) {
         endMakeRoad: () => update$1(katan => {
             katan.isMakeRoad = false;
 
-            katan.doActionAndTurn();
+            katanStore.doActionAndTurn();
 
             return katan;
         }),
@@ -1514,7 +1515,7 @@ var app = (function (jQuery) {
                     katanStore.setNumberRippleDisabled(number);
                     katanStore.enableRollDice();
                     katanStore.moveResource(number);
-                }, 1000);
+                }, 2000);
             }
 
             return katan;
@@ -2354,10 +2355,10 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 76, 4, 2070);
-    			attr_dev(div1, "class", "castle svelte-1408h5j");
+    			add_location(div0, file$1, 76, 4, 2071);
+    			attr_dev(div1, "class", "castle svelte-1wt48tx");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
-    			toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
+    			toggle_class(div1, "ripple1", /*castle*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div1, "show", /*castle*/ ctx[0].show);
     			add_location(div1, file$1, 70, 4, 1893);
@@ -2380,7 +2381,7 @@ var app = (function (jQuery) {
     			}
 
     			if (dirty & /*castle*/ 1) {
-    				toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
+    				toggle_class(div1, "ripple1", /*castle*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*castle*/ 1) {
@@ -2435,7 +2436,7 @@ var app = (function (jQuery) {
     			t4 = text(t4_value);
     			add_location(div0, file$1, 66, 8, 1799);
     			add_location(div1, file$1, 67, 8, 1841);
-    			attr_dev(div2, "class", "castle svelte-1408h5j");
+    			attr_dev(div2, "class", "castle svelte-1wt48tx");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
     			add_location(div2, file$1, 65, 4, 1749);
     		},
@@ -2662,10 +2663,10 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$2, 83, 8, 2102);
-    			attr_dev(div1, "class", "road svelte-15xqpk8");
+    			add_location(div0, file$2, 83, 8, 2103);
+    			attr_dev(div1, "class", "road svelte-t7ilhy");
     			attr_dev(div1, "style", /*roadStyle*/ ctx[1]);
-    			toggle_class(div1, "ripple", /*road*/ ctx[0].ripple);
+    			toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "pick", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*road*/ ctx[0].hide);
     			toggle_class(div1, "show", /*road*/ ctx[0].show);
@@ -2689,7 +2690,7 @@ var app = (function (jQuery) {
     			}
 
     			if (dirty & /*road*/ 1) {
-    				toggle_class(div1, "ripple", /*road*/ ctx[0].ripple);
+    				toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
     			}
 
     			if (dirty & /*road*/ 1) {
@@ -2748,7 +2749,7 @@ var app = (function (jQuery) {
     			t4 = text(t4_value);
     			add_location(div0, file$2, 72, 8, 1799);
     			add_location(div1, file$2, 73, 8, 1836);
-    			attr_dev(div2, "class", "road svelte-15xqpk8");
+    			attr_dev(div2, "class", "road svelte-t7ilhy");
     			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
     			add_location(div2, file$2, 71, 4, 1754);
     		},
