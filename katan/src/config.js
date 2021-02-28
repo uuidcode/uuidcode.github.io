@@ -22,8 +22,8 @@ const config = {
         height: 60,
     },
     buglar: {
-        width: 120,
-        height: 120,
+        width: 140,
+        height: 140,
     },
     selectedColor: 'blueviolet'
 };

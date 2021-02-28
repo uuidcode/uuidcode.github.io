@@ -451,8 +451,8 @@ var app = (function (jQuery) {
             height: 60,
         },
         buglar: {
-            width: 120,
-            height: 120,
+            width: 140,
+            height: 140,
         },
         selectedColor: 'blueviolet'
     };
@@ -720,6 +720,61 @@ var app = (function (jQuery) {
             }
         }
     }
+
+    katanObject.castleList[0].port = true;
+    katanObject.castleList[1].port = true;
+    katanObject.castleList[2].port = true;
+    katanObject.castleList[3].port = true;
+    katanObject.castleList[4].port = true;
+    katanObject.castleList[5].port = true;
+    katanObject.castleList[6].port = true;
+    katanObject.castleList[7].port = true;
+    katanObject.castleList[8].port = true;
+    katanObject.castleList[9].port = false;
+    katanObject.castleList[10].port = false;
+    katanObject.castleList[11].port = false;
+    katanObject.castleList[12].port = false;
+    katanObject.castleList[13].port = false;
+    katanObject.castleList[14].port = true;
+    katanObject.castleList[15].port = true;
+    katanObject.castleList[16].port = true;
+    katanObject.castleList[17].port = true;
+    katanObject.castleList[18].port = false;
+    katanObject.castleList[19].port = false;
+    katanObject.castleList[20].port = false;
+    katanObject.castleList[21].port = false;
+    katanObject.castleList[22].port = false;
+    katanObject.castleList[23].port = false;
+    katanObject.castleList[24].port = false;
+    katanObject.castleList[25].port = true;
+    katanObject.castleList[26].port = true;
+    katanObject.castleList[27].port = true;
+    katanObject.castleList[28].port = true;
+    katanObject.castleList[29].port = false;
+    katanObject.castleList[30].port = false;
+    katanObject.castleList[31].port = false;
+    katanObject.castleList[32].port = false;
+    katanObject.castleList[33].port = false;
+    katanObject.castleList[34].port = false;
+    katanObject.castleList[35].port = false;
+    katanObject.castleList[36].port = true;
+    katanObject.castleList[37].port = true;
+    katanObject.castleList[38].port = true;
+    katanObject.castleList[39].port = true;
+    katanObject.castleList[40].port = false;
+    katanObject.castleList[41].port = false;
+    katanObject.castleList[42].port = false;
+    katanObject.castleList[43].port = false;
+    katanObject.castleList[44].port = false;
+    katanObject.castleList[45].port = true;
+    katanObject.castleList[46].port = true;
+    katanObject.castleList[47].port = true;
+    katanObject.castleList[48].port = true;
+    katanObject.castleList[49].port = true;
+    katanObject.castleList[50].port = true;
+    katanObject.castleList[51].port = true;
+    katanObject.castleList[52].port = true;
+    katanObject.castleList[53].port = true;
 
     katanObject.castleList.forEach((castle, index) => castle.index = index);
     katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
