@@ -3,7 +3,6 @@
     import Dice from './Dice.svelte'
     import Player from './Player.svelte'
     import katan from './katan.js'
-    import Resource from "./Resource.svelte";
     import { onDestroy } from 'svelte';
     import { toStyle } from './util.js'
 
@@ -71,10 +70,6 @@
         </div>
     </div>
 </div>
-
-{#if $katan.showResourceModal}
-    <Resource/>
-{/if}
 
 <style>
     .dice-container {

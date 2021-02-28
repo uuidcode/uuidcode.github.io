@@ -9,10 +9,6 @@
     let castleStyle;
 
     const pick = () => {
-        if (!castle.ripple) {
-            return;
-        }
-
         const player = katan.getActivePlayer();
 
         katan.setCastle(castleIndex, player.index);
@@ -82,7 +78,7 @@
     .castle {
         position: absolute;
         text-align: center;
-        background-color: yellow;
+        background-color: blueviolet;
         font-weight: bolder;
         font-size: 14px;
         opacity: 0.6;

@@ -43,6 +43,11 @@ var app = (function (jQuery) {
         const unsub = store.subscribe(...callbacks);
         return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
     }
+    function get_store_value(store) {
+        let value;
+        subscribe(store, _ => value = _)();
+        return value;
+    }
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
     }
@@ -425,7 +430,7 @@ var app = (function (jQuery) {
     const config = {
         debug: false,
         cell: {
-            width: 200,
+            width: 230,
             height: 230,
             margin: 5
         },
@@ -536,7 +541,7 @@ var app = (function (jQuery) {
 
     });
 
-    let katan = {
+    let katanObject = {
         rollDice: false,
         action: false,
         isMakeRoad: false,
@@ -568,7 +573,7 @@ var app = (function (jQuery) {
         ]
     };
 
-    katan.playerList.forEach((player, i) => {
+    katanObject.playerList.forEach((player, i) => {
         player.index = i;
 
         player.pickCastle =  0;
@@ -643,7 +648,7 @@ var app = (function (jQuery) {
         return list.sort(random());
     }
 
-    katan.castleList = [];
+    katanObject.castleList = [];
 
     for (let i = 0; i < 6; i++) {
         for (let j = 0; j < 11; j++) {
@@ -659,7 +664,7 @@ var app = (function (jQuery) {
                         top += config.cell.height / 4;
                     }
 
-                    katan.castleList.push({
+                    katanObject.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
                         top: top - config.castle.height / 2,
                         ripple: false,
@@ -682,7 +687,7 @@ var app = (function (jQuery) {
 
                     const ripple = j >= 3 && j <= 7;
 
-                    katan.castleList.push({
+                    katanObject.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
                         top: top - config.castle.height / 2,
                         ripple: ripple,
@@ -704,7 +709,7 @@ var app = (function (jQuery) {
 
                 const ripple = j >= 2 && j <= 8;
 
-                katan.castleList.push({
+                katanObject.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
                     ripple: ripple,
@@ -716,134 +721,134 @@ var app = (function (jQuery) {
         }
     }
 
-    katan.castleList.forEach((castle, index) => castle.index = index);
-    katan.castleList.forEach((castle) => castle.playerIndex = -1);
-    katan.castleList.forEach(castle => castle.hide = !castle.ripple);
-    katan.castleList.forEach(castle => castle.show = castle.ripple);
-    katan.castleList.forEach(castle => castle.constructable = castle.ripple);
-    katan.castleList.forEach(castle => castle.title = '');
+    katanObject.castleList.forEach((castle, index) => castle.index = index);
+    katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
+    katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
+    katanObject.castleList.forEach(castle => castle.show = castle.ripple);
+    katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
+    katanObject.castleList.forEach(castle => castle.title = '');
 
-    katan.castleList[0].roadIndexList = [0, 6];
-    katan.castleList[1].roadIndexList = [0, 1];
-    katan.castleList[2].roadIndexList = [1, 2, 7];
-    katan.castleList[3].roadIndexList = [2, 3];
-    katan.castleList[4].roadIndexList = [3, 4, 8];
-    katan.castleList[5].roadIndexList = [4, 5];
-    katan.castleList[6].roadIndexList = [5, 9];
+    katanObject.castleList[0].roadIndexList = [0, 6];
+    katanObject.castleList[1].roadIndexList = [0, 1];
+    katanObject.castleList[2].roadIndexList = [1, 2, 7];
+    katanObject.castleList[3].roadIndexList = [2, 3];
+    katanObject.castleList[4].roadIndexList = [3, 4, 8];
+    katanObject.castleList[5].roadIndexList = [4, 5];
+    katanObject.castleList[6].roadIndexList = [5, 9];
 
-    katan.castleList[7].roadIndexList = [18, 10];
-    katan.castleList[8].roadIndexList = [6, 10, 11];
-    katan.castleList[9].roadIndexList = [11, 12, 19];
-    katan.castleList[10].roadIndexList = [7, 12, 13];
-    katan.castleList[11].roadIndexList = [13, 14, 20];
-    katan.castleList[12].roadIndexList = [8, 14, 15];
-    katan.castleList[13].roadIndexList = [15, 16, 21];
-    katan.castleList[14].roadIndexList = [9, 16, 17];
-    katan.castleList[15].roadIndexList = [17, 22];
+    katanObject.castleList[7].roadIndexList = [18, 10];
+    katanObject.castleList[8].roadIndexList = [6, 10, 11];
+    katanObject.castleList[9].roadIndexList = [11, 12, 19];
+    katanObject.castleList[10].roadIndexList = [7, 12, 13];
+    katanObject.castleList[11].roadIndexList = [13, 14, 20];
+    katanObject.castleList[12].roadIndexList = [8, 14, 15];
+    katanObject.castleList[13].roadIndexList = [15, 16, 21];
+    katanObject.castleList[14].roadIndexList = [9, 16, 17];
+    katanObject.castleList[15].roadIndexList = [17, 22];
 
-    katan.castleList[16].roadIndexList = [23, 33];
-    katan.castleList[17].roadIndexList = [18, 23, 24];
-    katan.castleList[18].roadIndexList = [24, 25, 34];
-    katan.castleList[19].roadIndexList = [19, 25, 26];
-    katan.castleList[20].roadIndexList = [26, 27, 35];
-    katan.castleList[21].roadIndexList = [20, 27, 28];
-    katan.castleList[22].roadIndexList = [28, 29, 36];
-    katan.castleList[23].roadIndexList = [21, 29, 30];
-    katan.castleList[24].roadIndexList = [30, 31, 37];
-    katan.castleList[25].roadIndexList = [22, 31, 32];
-    katan.castleList[26].roadIndexList = [32, 38];
+    katanObject.castleList[16].roadIndexList = [23, 33];
+    katanObject.castleList[17].roadIndexList = [18, 23, 24];
+    katanObject.castleList[18].roadIndexList = [24, 25, 34];
+    katanObject.castleList[19].roadIndexList = [19, 25, 26];
+    katanObject.castleList[20].roadIndexList = [26, 27, 35];
+    katanObject.castleList[21].roadIndexList = [20, 27, 28];
+    katanObject.castleList[22].roadIndexList = [28, 29, 36];
+    katanObject.castleList[23].roadIndexList = [21, 29, 30];
+    katanObject.castleList[24].roadIndexList = [30, 31, 37];
+    katanObject.castleList[25].roadIndexList = [22, 31, 32];
+    katanObject.castleList[26].roadIndexList = [32, 38];
 
-    katan.castleList[27].roadIndexList = [33, 39];
-    katan.castleList[28].roadIndexList = [39, 40, 49];
-    katan.castleList[29].roadIndexList = [34, 40, 41];
-    katan.castleList[30].roadIndexList = [41, 42, 50];
-    katan.castleList[31].roadIndexList = [35, 42, 43];
-    katan.castleList[32].roadIndexList = [43, 44, 51];
-    katan.castleList[33].roadIndexList = [36, 44, 45];
-    katan.castleList[34].roadIndexList = [45, 46, 52];
-    katan.castleList[35].roadIndexList = [37, 46, 47];
-    katan.castleList[36].roadIndexList = [47, 48, 53];
-    katan.castleList[37].roadIndexList = [38, 48];
+    katanObject.castleList[27].roadIndexList = [33, 39];
+    katanObject.castleList[28].roadIndexList = [39, 40, 49];
+    katanObject.castleList[29].roadIndexList = [34, 40, 41];
+    katanObject.castleList[30].roadIndexList = [41, 42, 50];
+    katanObject.castleList[31].roadIndexList = [35, 42, 43];
+    katanObject.castleList[32].roadIndexList = [43, 44, 51];
+    katanObject.castleList[33].roadIndexList = [36, 44, 45];
+    katanObject.castleList[34].roadIndexList = [45, 46, 52];
+    katanObject.castleList[35].roadIndexList = [37, 46, 47];
+    katanObject.castleList[36].roadIndexList = [47, 48, 53];
+    katanObject.castleList[37].roadIndexList = [38, 48];
 
-    katan.castleList[38].roadIndexList = [49, 54];
-    katan.castleList[39].roadIndexList = [54, 55, 62];
-    katan.castleList[40].roadIndexList = [50, 55, 56];
-    katan.castleList[41].roadIndexList = [56, 57, 63];
-    katan.castleList[42].roadIndexList = [51, 57, 58];
-    katan.castleList[43].roadIndexList = [58, 59, 64];
-    katan.castleList[44].roadIndexList = [52, 59, 60];
-    katan.castleList[45].roadIndexList = [60, 61, 65];
-    katan.castleList[46].roadIndexList = [53, 61];
+    katanObject.castleList[38].roadIndexList = [49, 54];
+    katanObject.castleList[39].roadIndexList = [54, 55, 62];
+    katanObject.castleList[40].roadIndexList = [50, 55, 56];
+    katanObject.castleList[41].roadIndexList = [56, 57, 63];
+    katanObject.castleList[42].roadIndexList = [51, 57, 58];
+    katanObject.castleList[43].roadIndexList = [58, 59, 64];
+    katanObject.castleList[44].roadIndexList = [52, 59, 60];
+    katanObject.castleList[45].roadIndexList = [60, 61, 65];
+    katanObject.castleList[46].roadIndexList = [53, 61];
 
-    katan.castleList[47].roadIndexList = [62, 66];
-    katan.castleList[48].roadIndexList = [66, 67];
-    katan.castleList[49].roadIndexList = [63, 67, 68];
-    katan.castleList[50].roadIndexList = [68, 69];
-    katan.castleList[51].roadIndexList = [64, 69, 70];
-    katan.castleList[52].roadIndexList = [70, 71];
-    katan.castleList[53].roadIndexList = [65, 71];
+    katanObject.castleList[47].roadIndexList = [62, 66];
+    katanObject.castleList[48].roadIndexList = [66, 67];
+    katanObject.castleList[49].roadIndexList = [63, 67, 68];
+    katanObject.castleList[50].roadIndexList = [68, 69];
+    katanObject.castleList[51].roadIndexList = [64, 69, 70];
+    katanObject.castleList[52].roadIndexList = [70, 71];
+    katanObject.castleList[53].roadIndexList = [65, 71];
 
-    katan.castleList[0].castleIndexList = [1, 8];
-    katan.castleList[1].castleIndexList = [0, 2];
-    katan.castleList[2].castleIndexList = [1, 3, 10];
-    katan.castleList[3].castleIndexList = [2, 4];
-    katan.castleList[4].castleIndexList = [3, 5, 12];
-    katan.castleList[5].castleIndexList = [4, 6];
-    katan.castleList[6].castleIndexList = [5, 14];
+    katanObject.castleList[0].castleIndexList = [1, 8];
+    katanObject.castleList[1].castleIndexList = [0, 2];
+    katanObject.castleList[2].castleIndexList = [1, 3, 10];
+    katanObject.castleList[3].castleIndexList = [2, 4];
+    katanObject.castleList[4].castleIndexList = [3, 5, 12];
+    katanObject.castleList[5].castleIndexList = [4, 6];
+    katanObject.castleList[6].castleIndexList = [5, 14];
 
-    katan.castleList[7].castleIndexList = [8, 17];
-    katan.castleList[8].castleIndexList = [7, 9];
-    katan.castleList[9].castleIndexList = [8, 10, 19];
-    katan.castleList[10].castleIndexList = [2, 9, 11];
-    katan.castleList[11].castleIndexList = [10, 12, 21];
-    katan.castleList[12].castleIndexList = [4, 11 ,13];
-    katan.castleList[13].castleIndexList = [12, 14, 23];
-    katan.castleList[14].castleIndexList = [6, 13, 15];
-    katan.castleList[15].castleIndexList = [14, 25];
+    katanObject.castleList[7].castleIndexList = [8, 17];
+    katanObject.castleList[8].castleIndexList = [7, 9];
+    katanObject.castleList[9].castleIndexList = [8, 10, 19];
+    katanObject.castleList[10].castleIndexList = [2, 9, 11];
+    katanObject.castleList[11].castleIndexList = [10, 12, 21];
+    katanObject.castleList[12].castleIndexList = [4, 11 ,13];
+    katanObject.castleList[13].castleIndexList = [12, 14, 23];
+    katanObject.castleList[14].castleIndexList = [6, 13, 15];
+    katanObject.castleList[15].castleIndexList = [14, 25];
 
-    katan.castleList[16].castleIndexList = [17, 27];
-    katan.castleList[17].castleIndexList = [7, 16, 18];
-    katan.castleList[18].castleIndexList = [17, 19, 29];
-    katan.castleList[19].castleIndexList = [9, 18, 20];
-    katan.castleList[20].castleIndexList = [19, 21, 31];
-    katan.castleList[21].castleIndexList = [11, 20, 22];
-    katan.castleList[22].castleIndexList = [21, 23, 33];
-    katan.castleList[23].castleIndexList = [13, 22, 24];
-    katan.castleList[24].castleIndexList = [23, 25, 35];
-    katan.castleList[25].castleIndexList = [15, 24, 26];
-    katan.castleList[26].castleIndexList = [25, 37];
+    katanObject.castleList[16].castleIndexList = [17, 27];
+    katanObject.castleList[17].castleIndexList = [7, 16, 18];
+    katanObject.castleList[18].castleIndexList = [17, 19, 29];
+    katanObject.castleList[19].castleIndexList = [9, 18, 20];
+    katanObject.castleList[20].castleIndexList = [19, 21, 31];
+    katanObject.castleList[21].castleIndexList = [11, 20, 22];
+    katanObject.castleList[22].castleIndexList = [21, 23, 33];
+    katanObject.castleList[23].castleIndexList = [13, 22, 24];
+    katanObject.castleList[24].castleIndexList = [23, 25, 35];
+    katanObject.castleList[25].castleIndexList = [15, 24, 26];
+    katanObject.castleList[26].castleIndexList = [25, 37];
 
-    katan.castleList[27].castleIndexList = [16, 28];
-    katan.castleList[28].castleIndexList = [27, 29, 38];
-    katan.castleList[29].castleIndexList = [18, 28, 30];
-    katan.castleList[30].castleIndexList = [29, 31, 40];
-    katan.castleList[31].castleIndexList = [20, 30, 30];
-    katan.castleList[32].castleIndexList = [31, 33, 42];
-    katan.castleList[33].castleIndexList = [22, 32, 34];
-    katan.castleList[34].castleIndexList = [33, 35, 44];
-    katan.castleList[35].castleIndexList = [24, 34, 36];
-    katan.castleList[36].castleIndexList = [35, 37, 46];
-    katan.castleList[37].castleIndexList = [26, 36];
+    katanObject.castleList[27].castleIndexList = [16, 28];
+    katanObject.castleList[28].castleIndexList = [27, 29, 38];
+    katanObject.castleList[29].castleIndexList = [18, 28, 30];
+    katanObject.castleList[30].castleIndexList = [29, 31, 40];
+    katanObject.castleList[31].castleIndexList = [20, 30, 30];
+    katanObject.castleList[32].castleIndexList = [31, 33, 42];
+    katanObject.castleList[33].castleIndexList = [22, 32, 34];
+    katanObject.castleList[34].castleIndexList = [33, 35, 44];
+    katanObject.castleList[35].castleIndexList = [24, 34, 36];
+    katanObject.castleList[36].castleIndexList = [35, 37, 46];
+    katanObject.castleList[37].castleIndexList = [26, 36];
 
-    katan.castleList[38].castleIndexList = [28, 39];
-    katan.castleList[39].castleIndexList = [38, 40, 47];
-    katan.castleList[40].castleIndexList = [30, 39, 41];
-    katan.castleList[41].castleIndexList = [40, 42, 49];
-    katan.castleList[42].castleIndexList = [32, 41, 43];
-    katan.castleList[43].castleIndexList = [42, 44, 51];
-    katan.castleList[44].castleIndexList = [34, 43, 45];
-    katan.castleList[45].castleIndexList = [44, 46, 53];
-    katan.castleList[46].castleIndexList = [36, 45];
+    katanObject.castleList[38].castleIndexList = [28, 39];
+    katanObject.castleList[39].castleIndexList = [38, 40, 47];
+    katanObject.castleList[40].castleIndexList = [30, 39, 41];
+    katanObject.castleList[41].castleIndexList = [40, 42, 49];
+    katanObject.castleList[42].castleIndexList = [32, 41, 43];
+    katanObject.castleList[43].castleIndexList = [42, 44, 51];
+    katanObject.castleList[44].castleIndexList = [34, 43, 45];
+    katanObject.castleList[45].castleIndexList = [44, 46, 53];
+    katanObject.castleList[46].castleIndexList = [36, 45];
 
-    katan.castleList[47].castleIndexList = [39, 48];
-    katan.castleList[48].castleIndexList = [47, 49];
-    katan.castleList[49].castleIndexList = [41, 48, 50];
-    katan.castleList[50].castleIndexList = [49, 51];
-    katan.castleList[51].castleIndexList = [43, 50, 52];
-    katan.castleList[52].castleIndexList = [51, 53];
-    katan.castleList[53].castleIndexList = [45, 52];
+    katanObject.castleList[47].castleIndexList = [39, 48];
+    katanObject.castleList[48].castleIndexList = [47, 49];
+    katanObject.castleList[49].castleIndexList = [41, 48, 50];
+    katanObject.castleList[50].castleIndexList = [49, 51];
+    katanObject.castleList[51].castleIndexList = [43, 50, 52];
+    katanObject.castleList[52].castleIndexList = [51, 53];
+    katanObject.castleList[53].castleIndexList = [45, 52];
 
-    katan.roadList = [];
+    katanObject.roadList = [];
 
     const getLoadTopBySingle = (multiple) => {
         return multiple * config.cell.height / 8 - config.load.width / 2 ;
@@ -865,7 +870,7 @@ var app = (function (jQuery) {
                 if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
                     let top = getLoadTop(i, 11, 1, 31);
 
-                    katan.roadList.push({
+                    katanObject.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
                         roadRipple: false,
@@ -879,7 +884,7 @@ var app = (function (jQuery) {
                 if (j === 4 || j === 8 || j === 12 || j === 16) {
                     let top = getLoadTop(i, 10, 4, 28);
 
-                    katan.roadList.push({
+                    katanObject.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
                         roadRipple: false,
@@ -895,7 +900,7 @@ var app = (function (jQuery) {
                     j === 11 || j === 13 || j === 15 || j === 17) {
                     let top = getLoadTop(i, 9, 7, 25);
 
-                    katan.roadList.push({
+                    katanObject.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
                         roadRipple: false,
@@ -910,7 +915,7 @@ var app = (function (jQuery) {
 
                     let top = getLoadTop(i, 8, 10, 22);
 
-                    katan.roadList.push({
+                    katanObject.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
                         roadRipple: false,
@@ -926,7 +931,7 @@ var app = (function (jQuery) {
 
                     let top = getLoadTop(i, 7, 13, 19);
 
-                    katan.roadList.push({
+                    katanObject.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
                         roadRipple: false,
@@ -940,7 +945,7 @@ var app = (function (jQuery) {
                 if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
                     let top = getLoadTopBySingle(16);
 
-                    katan.roadList.push({
+                    katanObject.roadList.push({
                         left: j * (config.cell.width / 4) - config.load.width / 2,
                         top: top,
                         roadRipple: false,
@@ -954,178 +959,178 @@ var app = (function (jQuery) {
         }
     }
 
-    katan.roadList.forEach((road, index) => road.index = index);
-    katan.roadList.forEach(road => road.hide = true);
-    katan.roadList.forEach(road => road.show = false);
-    katan.roadList.forEach(road => road.ripple = false);
-    katan.roadList.forEach(road => road.playerIndex = -1);
-    katan.roadList.forEach(road => road.title = '');
+    katanObject.roadList.forEach((road, index) => road.index = index);
+    katanObject.roadList.forEach(road => road.hide = true);
+    katanObject.roadList.forEach(road => road.show = false);
+    katanObject.roadList.forEach(road => road.ripple = false);
+    katanObject.roadList.forEach(road => road.playerIndex = -1);
+    katanObject.roadList.forEach(road => road.title = '');
 
-    katan.roadList[0].castleIndexList = [0, 1];
-    katan.roadList[1].castleIndexList = [1, 2];
-    katan.roadList[2].castleIndexList = [2, 3];
-    katan.roadList[3].castleIndexList = [3, 4];
-    katan.roadList[4].castleIndexList = [4, 5];
-    katan.roadList[5].castleIndexList = [5, 6];
+    katanObject.roadList[0].castleIndexList = [0, 1];
+    katanObject.roadList[1].castleIndexList = [1, 2];
+    katanObject.roadList[2].castleIndexList = [2, 3];
+    katanObject.roadList[3].castleIndexList = [3, 4];
+    katanObject.roadList[4].castleIndexList = [4, 5];
+    katanObject.roadList[5].castleIndexList = [5, 6];
 
-    katan.roadList[6].castleIndexList = [0, 8];
-    katan.roadList[7].castleIndexList = [2, 10];
-    katan.roadList[8].castleIndexList = [4, 12];
-    katan.roadList[9].castleIndexList = [6, 14];
+    katanObject.roadList[6].castleIndexList = [0, 8];
+    katanObject.roadList[7].castleIndexList = [2, 10];
+    katanObject.roadList[8].castleIndexList = [4, 12];
+    katanObject.roadList[9].castleIndexList = [6, 14];
 
-    katan.roadList[10].castleIndexList = [7, 8];
-    katan.roadList[11].castleIndexList = [8, 9];
-    katan.roadList[12].castleIndexList = [9, 10];
-    katan.roadList[13].castleIndexList = [10, 11];
-    katan.roadList[14].castleIndexList = [11, 12];
-    katan.roadList[15].castleIndexList = [12, 13];
-    katan.roadList[16].castleIndexList = [13, 14];
-    katan.roadList[17].castleIndexList = [14, 15];
+    katanObject.roadList[10].castleIndexList = [7, 8];
+    katanObject.roadList[11].castleIndexList = [8, 9];
+    katanObject.roadList[12].castleIndexList = [9, 10];
+    katanObject.roadList[13].castleIndexList = [10, 11];
+    katanObject.roadList[14].castleIndexList = [11, 12];
+    katanObject.roadList[15].castleIndexList = [12, 13];
+    katanObject.roadList[16].castleIndexList = [13, 14];
+    katanObject.roadList[17].castleIndexList = [14, 15];
 
-    katan.roadList[18].castleIndexList = [7, 17];
-    katan.roadList[19].castleIndexList = [9, 19];
-    katan.roadList[20].castleIndexList = [11, 21];
-    katan.roadList[21].castleIndexList = [13, 23];
-    katan.roadList[22].castleIndexList = [15, 25];
+    katanObject.roadList[18].castleIndexList = [7, 17];
+    katanObject.roadList[19].castleIndexList = [9, 19];
+    katanObject.roadList[20].castleIndexList = [11, 21];
+    katanObject.roadList[21].castleIndexList = [13, 23];
+    katanObject.roadList[22].castleIndexList = [15, 25];
 
-    katan.roadList[23].castleIndexList = [16, 17];
-    katan.roadList[24].castleIndexList = [17, 18];
-    katan.roadList[25].castleIndexList = [18, 19];
-    katan.roadList[26].castleIndexList = [19, 20];
-    katan.roadList[27].castleIndexList = [20, 21];
-    katan.roadList[28].castleIndexList = [21, 22];
-    katan.roadList[29].castleIndexList = [22, 23];
-    katan.roadList[30].castleIndexList = [23, 24];
-    katan.roadList[31].castleIndexList = [24, 25];
-    katan.roadList[32].castleIndexList = [25, 26];
+    katanObject.roadList[23].castleIndexList = [16, 17];
+    katanObject.roadList[24].castleIndexList = [17, 18];
+    katanObject.roadList[25].castleIndexList = [18, 19];
+    katanObject.roadList[26].castleIndexList = [19, 20];
+    katanObject.roadList[27].castleIndexList = [20, 21];
+    katanObject.roadList[28].castleIndexList = [21, 22];
+    katanObject.roadList[29].castleIndexList = [22, 23];
+    katanObject.roadList[30].castleIndexList = [23, 24];
+    katanObject.roadList[31].castleIndexList = [24, 25];
+    katanObject.roadList[32].castleIndexList = [25, 26];
 
-    katan.roadList[33].castleIndexList = [16, 27];
-    katan.roadList[34].castleIndexList = [18, 29];
-    katan.roadList[35].castleIndexList = [20, 31];
-    katan.roadList[36].castleIndexList = [22, 33];
-    katan.roadList[37].castleIndexList = [24, 35];
-    katan.roadList[38].castleIndexList = [26, 37];
+    katanObject.roadList[33].castleIndexList = [16, 27];
+    katanObject.roadList[34].castleIndexList = [18, 29];
+    katanObject.roadList[35].castleIndexList = [20, 31];
+    katanObject.roadList[36].castleIndexList = [22, 33];
+    katanObject.roadList[37].castleIndexList = [24, 35];
+    katanObject.roadList[38].castleIndexList = [26, 37];
 
-    katan.roadList[39].castleIndexList = [27, 28];
-    katan.roadList[40].castleIndexList = [28, 29];
-    katan.roadList[41].castleIndexList = [29, 30];
-    katan.roadList[42].castleIndexList = [30, 31];
-    katan.roadList[43].castleIndexList = [31, 32];
-    katan.roadList[44].castleIndexList = [32, 33];
-    katan.roadList[45].castleIndexList = [33, 34];
-    katan.roadList[46].castleIndexList = [34, 35];
-    katan.roadList[47].castleIndexList = [35, 36];
-    katan.roadList[48].castleIndexList = [36, 37];
+    katanObject.roadList[39].castleIndexList = [27, 28];
+    katanObject.roadList[40].castleIndexList = [28, 29];
+    katanObject.roadList[41].castleIndexList = [29, 30];
+    katanObject.roadList[42].castleIndexList = [30, 31];
+    katanObject.roadList[43].castleIndexList = [31, 32];
+    katanObject.roadList[44].castleIndexList = [32, 33];
+    katanObject.roadList[45].castleIndexList = [33, 34];
+    katanObject.roadList[46].castleIndexList = [34, 35];
+    katanObject.roadList[47].castleIndexList = [35, 36];
+    katanObject.roadList[48].castleIndexList = [36, 37];
 
-    katan.roadList[49].castleIndexList = [28, 38];
-    katan.roadList[50].castleIndexList = [30, 40];
-    katan.roadList[51].castleIndexList = [32, 42];
-    katan.roadList[52].castleIndexList = [34, 44];
-    katan.roadList[53].castleIndexList = [36, 46];
+    katanObject.roadList[49].castleIndexList = [28, 38];
+    katanObject.roadList[50].castleIndexList = [30, 40];
+    katanObject.roadList[51].castleIndexList = [32, 42];
+    katanObject.roadList[52].castleIndexList = [34, 44];
+    katanObject.roadList[53].castleIndexList = [36, 46];
 
-    katan.roadList[54].castleIndexList = [38, 39];
-    katan.roadList[55].castleIndexList = [39, 40];
-    katan.roadList[56].castleIndexList = [40, 41];
-    katan.roadList[57].castleIndexList = [41, 42];
-    katan.roadList[58].castleIndexList = [42, 43];
-    katan.roadList[59].castleIndexList = [43, 44];
-    katan.roadList[60].castleIndexList = [44, 45];
-    katan.roadList[61].castleIndexList = [45, 46];
+    katanObject.roadList[54].castleIndexList = [38, 39];
+    katanObject.roadList[55].castleIndexList = [39, 40];
+    katanObject.roadList[56].castleIndexList = [40, 41];
+    katanObject.roadList[57].castleIndexList = [41, 42];
+    katanObject.roadList[58].castleIndexList = [42, 43];
+    katanObject.roadList[59].castleIndexList = [43, 44];
+    katanObject.roadList[60].castleIndexList = [44, 45];
+    katanObject.roadList[61].castleIndexList = [45, 46];
 
-    katan.roadList[62].castleIndexList = [39, 47];
-    katan.roadList[63].castleIndexList = [41, 49];
-    katan.roadList[64].castleIndexList = [43, 51];
-    katan.roadList[65].castleIndexList = [45, 53];
+    katanObject.roadList[62].castleIndexList = [39, 47];
+    katanObject.roadList[63].castleIndexList = [41, 49];
+    katanObject.roadList[64].castleIndexList = [43, 51];
+    katanObject.roadList[65].castleIndexList = [45, 53];
 
-    katan.roadList[66].castleIndexList = [47, 48];
-    katan.roadList[67].castleIndexList = [48, 49];
-    katan.roadList[68].castleIndexList = [49, 50];
-    katan.roadList[69].castleIndexList = [50, 51];
-    katan.roadList[70].castleIndexList = [51, 52];
-    katan.roadList[71].castleIndexList = [52, 53];
+    katanObject.roadList[66].castleIndexList = [47, 48];
+    katanObject.roadList[67].castleIndexList = [48, 49];
+    katanObject.roadList[68].castleIndexList = [49, 50];
+    katanObject.roadList[69].castleIndexList = [50, 51];
+    katanObject.roadList[70].castleIndexList = [51, 52];
+    katanObject.roadList[71].castleIndexList = [52, 53];
 
-    katan.roadList[0].roadIndexList = [1, 6];
-    katan.roadList[1].roadIndexList = [0, 2, 7];
-    katan.roadList[2].roadIndexList = [1, 3, 7];
-    katan.roadList[3].roadIndexList = [2, 4, 8];
-    katan.roadList[4].roadIndexList = [3, 5, 8];
-    katan.roadList[5].roadIndexList = [4, 9];
+    katanObject.roadList[0].roadIndexList = [1, 6];
+    katanObject.roadList[1].roadIndexList = [0, 2, 7];
+    katanObject.roadList[2].roadIndexList = [1, 3, 7];
+    katanObject.roadList[3].roadIndexList = [2, 4, 8];
+    katanObject.roadList[4].roadIndexList = [3, 5, 8];
+    katanObject.roadList[5].roadIndexList = [4, 9];
 
-    katan.roadList[6].roadIndexList = [0, 10, 11];
-    katan.roadList[7].roadIndexList = [1, 2, 12 , 13];
-    katan.roadList[8].roadIndexList = [3, 4, 14, 15];
-    katan.roadList[9].roadIndexList = [5, 16, 17];
+    katanObject.roadList[6].roadIndexList = [0, 10, 11];
+    katanObject.roadList[7].roadIndexList = [1, 2, 12 , 13];
+    katanObject.roadList[8].roadIndexList = [3, 4, 14, 15];
+    katanObject.roadList[9].roadIndexList = [5, 16, 17];
 
-    katan.roadList[10].roadIndexList = [6, 11, 18];
-    katan.roadList[11].roadIndexList = [6, 10, 12, 19];
-    katan.roadList[12].roadIndexList = [7, 11, 13, 19];
-    katan.roadList[13].roadIndexList = [7, 12, 14, 20];
-    katan.roadList[14].roadIndexList = [8, 13, 15, 20];
-    katan.roadList[15].roadIndexList = [8, 14, 16, 21];
-    katan.roadList[16].roadIndexList = [9, 15, 17, 21];
-    katan.roadList[17].roadIndexList = [9, 16, 22];
+    katanObject.roadList[10].roadIndexList = [6, 11, 18];
+    katanObject.roadList[11].roadIndexList = [6, 10, 12, 19];
+    katanObject.roadList[12].roadIndexList = [7, 11, 13, 19];
+    katanObject.roadList[13].roadIndexList = [7, 12, 14, 20];
+    katanObject.roadList[14].roadIndexList = [8, 13, 15, 20];
+    katanObject.roadList[15].roadIndexList = [8, 14, 16, 21];
+    katanObject.roadList[16].roadIndexList = [9, 15, 17, 21];
+    katanObject.roadList[17].roadIndexList = [9, 16, 22];
 
-    katan.roadList[18].roadIndexList = [10, 23, 24];
-    katan.roadList[19].roadIndexList = [11, 12, 25, 26];
-    katan.roadList[20].roadIndexList = [13, 14, 27, 28];
-    katan.roadList[21].roadIndexList = [15, 16, 29, 30];
-    katan.roadList[22].roadIndexList = [17, 31, 32];
+    katanObject.roadList[18].roadIndexList = [10, 23, 24];
+    katanObject.roadList[19].roadIndexList = [11, 12, 25, 26];
+    katanObject.roadList[20].roadIndexList = [13, 14, 27, 28];
+    katanObject.roadList[21].roadIndexList = [15, 16, 29, 30];
+    katanObject.roadList[22].roadIndexList = [17, 31, 32];
 
-    katan.roadList[23].roadIndexList = [18, 24, 33];
-    katan.roadList[24].roadIndexList = [18, 23, 25, 34];
-    katan.roadList[25].roadIndexList = [19, 24, 26, 34];
-    katan.roadList[26].roadIndexList = [19, 25, 27, 35];
-    katan.roadList[27].roadIndexList = [20, 26, 28, 35];
-    katan.roadList[28].roadIndexList = [20, 27, 29, 36];
-    katan.roadList[29].roadIndexList = [21, 28, 30, 36];
-    katan.roadList[30].roadIndexList = [21, 29, 31, 37];
-    katan.roadList[31].roadIndexList = [22, 30, 32, 37];
-    katan.roadList[32].roadIndexList = [22, 31, 38];
+    katanObject.roadList[23].roadIndexList = [18, 24, 33];
+    katanObject.roadList[24].roadIndexList = [18, 23, 25, 34];
+    katanObject.roadList[25].roadIndexList = [19, 24, 26, 34];
+    katanObject.roadList[26].roadIndexList = [19, 25, 27, 35];
+    katanObject.roadList[27].roadIndexList = [20, 26, 28, 35];
+    katanObject.roadList[28].roadIndexList = [20, 27, 29, 36];
+    katanObject.roadList[29].roadIndexList = [21, 28, 30, 36];
+    katanObject.roadList[30].roadIndexList = [21, 29, 31, 37];
+    katanObject.roadList[31].roadIndexList = [22, 30, 32, 37];
+    katanObject.roadList[32].roadIndexList = [22, 31, 38];
 
-    katan.roadList[33].roadIndexList = [23, 39];
-    katan.roadList[34].roadIndexList = [24, 25, 40, 41];
-    katan.roadList[35].roadIndexList = [26, 27, 42, 43];
-    katan.roadList[36].roadIndexList = [28, 29, 44, 45];
-    katan.roadList[37].roadIndexList = [30, 31, 46, 47];
-    katan.roadList[38].roadIndexList = [32, 48];
+    katanObject.roadList[33].roadIndexList = [23, 39];
+    katanObject.roadList[34].roadIndexList = [24, 25, 40, 41];
+    katanObject.roadList[35].roadIndexList = [26, 27, 42, 43];
+    katanObject.roadList[36].roadIndexList = [28, 29, 44, 45];
+    katanObject.roadList[37].roadIndexList = [30, 31, 46, 47];
+    katanObject.roadList[38].roadIndexList = [32, 48];
 
-    katan.roadList[39].roadIndexList = [33, 40, 49];
-    katan.roadList[40].roadIndexList = [34, 39, 41, 49];
-    katan.roadList[41].roadIndexList = [34, 40, 42, 50];
-    katan.roadList[42].roadIndexList = [35, 41, 43, 50];
-    katan.roadList[43].roadIndexList = [35, 42, 44, 51];
-    katan.roadList[44].roadIndexList = [36, 43, 45, 51];
-    katan.roadList[45].roadIndexList = [36, 44, 46, 52];
-    katan.roadList[46].roadIndexList = [37, 45, 47, 52];
-    katan.roadList[47].roadIndexList = [37, 46, 48, 53];
-    katan.roadList[48].roadIndexList = [38, 47, 53];
+    katanObject.roadList[39].roadIndexList = [33, 40, 49];
+    katanObject.roadList[40].roadIndexList = [34, 39, 41, 49];
+    katanObject.roadList[41].roadIndexList = [34, 40, 42, 50];
+    katanObject.roadList[42].roadIndexList = [35, 41, 43, 50];
+    katanObject.roadList[43].roadIndexList = [35, 42, 44, 51];
+    katanObject.roadList[44].roadIndexList = [36, 43, 45, 51];
+    katanObject.roadList[45].roadIndexList = [36, 44, 46, 52];
+    katanObject.roadList[46].roadIndexList = [37, 45, 47, 52];
+    katanObject.roadList[47].roadIndexList = [37, 46, 48, 53];
+    katanObject.roadList[48].roadIndexList = [38, 47, 53];
 
-    katan.roadList[49].roadIndexList = [39, 40, 54];
-    katan.roadList[50].roadIndexList = [41, 42, 55, 56];
-    katan.roadList[51].roadIndexList = [43, 44, 57, 58];
-    katan.roadList[52].roadIndexList = [45, 46, 59, 60];
-    katan.roadList[53].roadIndexList = [47, 48, 61];
+    katanObject.roadList[49].roadIndexList = [39, 40, 54];
+    katanObject.roadList[50].roadIndexList = [41, 42, 55, 56];
+    katanObject.roadList[51].roadIndexList = [43, 44, 57, 58];
+    katanObject.roadList[52].roadIndexList = [45, 46, 59, 60];
+    katanObject.roadList[53].roadIndexList = [47, 48, 61];
 
-    katan.roadList[54].roadIndexList = [49, 55, 62];
-    katan.roadList[55].roadIndexList = [50, 54, 56, 62];
-    katan.roadList[56].roadIndexList = [50, 55, 57, 63];
-    katan.roadList[57].roadIndexList = [51, 46, 58, 63];
-    katan.roadList[58].roadIndexList = [51, 57, 59, 64];
-    katan.roadList[59].roadIndexList = [52, 58, 60, 64];
-    katan.roadList[60].roadIndexList = [52, 59, 61, 65];
-    katan.roadList[61].roadIndexList = [53, 60, 65];
+    katanObject.roadList[54].roadIndexList = [49, 55, 62];
+    katanObject.roadList[55].roadIndexList = [50, 54, 56, 62];
+    katanObject.roadList[56].roadIndexList = [50, 55, 57, 63];
+    katanObject.roadList[57].roadIndexList = [51, 46, 58, 63];
+    katanObject.roadList[58].roadIndexList = [51, 57, 59, 64];
+    katanObject.roadList[59].roadIndexList = [52, 58, 60, 64];
+    katanObject.roadList[60].roadIndexList = [52, 59, 61, 65];
+    katanObject.roadList[61].roadIndexList = [53, 60, 65];
 
-    katan.roadList[62].roadIndexList = [54, 55, 66];
-    katan.roadList[63].roadIndexList = [56, 57, 67, 68];
-    katan.roadList[64].roadIndexList = [58, 59, 69, 70];
-    katan.roadList[65].roadIndexList = [60, 61, 71];
+    katanObject.roadList[62].roadIndexList = [54, 55, 66];
+    katanObject.roadList[63].roadIndexList = [56, 57, 67, 68];
+    katanObject.roadList[64].roadIndexList = [58, 59, 69, 70];
+    katanObject.roadList[65].roadIndexList = [60, 61, 71];
 
-    katan.roadList[66].roadIndexList = [62, 67];
-    katan.roadList[67].roadIndexList = [63, 66, 68];
-    katan.roadList[68].roadIndexList = [63, 67, 69];
-    katan.roadList[69].roadIndexList = [64, 68, 70];
-    katan.roadList[70].roadIndexList = [64, 69, 71];
-    katan.roadList[71].roadIndexList = [65, 70];
+    katanObject.roadList[66].roadIndexList = [62, 67];
+    katanObject.roadList[67].roadIndexList = [63, 66, 68];
+    katanObject.roadList[68].roadIndexList = [63, 67, 69];
+    katanObject.roadList[69].roadIndexList = [64, 68, 70];
+    katanObject.roadList[70].roadIndexList = [64, 69, 71];
+    katanObject.roadList[71].roadIndexList = [65, 70];
 
     let resourceList = [];
 
@@ -1163,12 +1168,12 @@ var app = (function (jQuery) {
         resource.numberRipple = false;
     });
 
-    katan.resourceList = resourceList;
+    katanObject.resourceList = resourceList;
 
     let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
     numberList = shuffle(numberList);
 
-    katan.resourceList = katan.resourceList
+    katanObject.resourceList = katanObject.resourceList
         .map((resource, index) => {
             if (resource.type === 'dessert') {
                 resource.number = 7;
@@ -1252,13 +1257,14 @@ var app = (function (jQuery) {
             return resource;
         });
 
-    const { subscribe: subscribe$1, set, update: update$1 } = writable(katan);
+    const { subscribe: subscribe$1, set, update: update$1 } = writable(katanObject);
 
     const katanStore = {
         subscribe: subscribe$1,
 
         turn: () => update$1(katan => {
-            katan.rollDice = false;
+            katanStore.unsetRollDice();
+
             katanStore.recomputePlayer();
 
             katan.playerList = katan.playerList
@@ -1334,7 +1340,6 @@ var app = (function (jQuery) {
                 });
 
             katanStore.setNumberRippleDisabled();
-            katanStore.setDiceEnabled();
             katanStore.doActionAndTurn();
 
             katan.mode = 'start';
@@ -1349,13 +1354,10 @@ var app = (function (jQuery) {
 
         setDiceEnabled: () => update$1(katan => {
             katan.diceDisabled = false;
-
-            console.log('>>> katan', katan);
-
             return katan;
         }),
 
-        moveResource: (number) => {
+        moveResource: (number) => update$1(katan => {
             let matchResourceCount = 0;
             let moveResourceCount = 0;
 
@@ -1363,7 +1365,6 @@ var app = (function (jQuery) {
                 .filter(resource => resource.number === number)
                 .filter(resource => !resource.buglar)
                 .forEach(resource => {
-
                     resource.castleIndexList.forEach(castleIndex => {
                         const playerIndex = katan.castleList[castleIndex].playerIndex;
 
@@ -1395,7 +1396,6 @@ var app = (function (jQuery) {
 
                             setTimeout(() => {
                                 newResourceItem
-                                    // .addClass('ripple')
                                     .animate({
                                         left: targetOffset.left + 'px',
                                         top: targetOffset.top + 'px'
@@ -1416,14 +1416,20 @@ var app = (function (jQuery) {
                     if (moveResourceCount === matchResourceCount) {
                         clearInterval(interval);
 
+                        console.log('>>> moveResourceEnd1');
+
                         katanStore.doActionAndTurn();
                     }
                 }, 100);
             } else {
+                console.log('>>> moveResourceEnd2');
+
                 katanStore.setDiceEnabled();
                 katanStore.doActionAndTurn();
             }
-        },
+
+            return katan;
+        }),
 
         doActionAndTurn: () => {
             katanStore.recomputePlayer();
@@ -1456,10 +1462,6 @@ var app = (function (jQuery) {
                 player.make.iron;
         },
 
-        closeResourceModalAndTurn: () => {
-            katan.turn();
-        },
-
         updateAndShowResourceModal: async() => {
             katanStore.setShowResourceModal();
             await tick();
@@ -1489,6 +1491,16 @@ var app = (function (jQuery) {
             return katan;
         }),
 
+        setRollDice: () => update$1(katan => {
+            katan.rollDice = true;
+            return katan;
+        }),
+
+        unsetRollDice: () => update$1(katan => {
+            katan.rollDice = false;
+            return katan;
+        }),
+
         play: () => update$1(katan => {
             katanStore.setDiceDisabled();
 
@@ -1503,31 +1515,23 @@ var app = (function (jQuery) {
                 number = window.targetNumber;
             }
 
+            katanStore.setRollDice();
+
+            console.log('>>> katan.rollDice', katan.rollDice);
+
             if (number === 7) {
                 katan.mode = 'moveBuglar';
                 katan.message = '도둑의 위치를 선택하세요.';
                 katanStore.setNumberRippleEnabled();
-                katanStore.enableRollDice();
             } else {
                 katanStore.setSelectedNumberRippleEnabled(number);
 
                 setTimeout(() => {
                     katanStore.setNumberRippleDisabled(number);
-                    katanStore.enableRollDice();
                     katanStore.moveResource(number);
                 }, 2000);
             }
 
-            return katan;
-        }),
-
-        enableRollDice: () => update$1(katan => {
-            katan.rollDice = true;
-            return katan;
-        }),
-
-        disableRollDice: () => update$1(katan => {
-            katan.rollDice = false;
             return katan;
         }),
 
@@ -1537,15 +1541,17 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        roll: (a, b) => update$1(katna => {
-            katna.dice[0] = a;
-            katna.dice[1] = b;
+        roll: (a, b) => update$1(katan => {
+            katan.dice[0] = a;
+            katan.dice[1] = b;
             return katan;
         }),
 
         getNumber: () => katan.dice[0] =  + katan.dice[1],
 
         isStartable: () => {
+            const katan = get_store_value(katanStore);
+
             let pickCompletePlayerLength = katan.playerList
                 .filter(player => player.pickCastle === 2)
                 .filter(player => player.pickRoad === 2)
@@ -1555,6 +1561,7 @@ var app = (function (jQuery) {
         },
 
         getActivePlayer: () => {
+            const katan = get_store_value(katanStore);
             return katan.playerList[katan.playerIndex];
         },
 
@@ -1695,7 +1702,7 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        setCastleRippleEnabled: () => update$1(katan => {
+        showConstructableCastle: () => update$1(katan => {
             katan.message = '마을을 만들곳을 클릭하세요';
 
             katan.castleList = katan.castleList.map(castle => {
@@ -1705,7 +1712,8 @@ var app = (function (jQuery) {
                         .length;
 
                     if (linkedCastleLength === 0) {
-                        castle.ripple = true;
+                        castle.show = true;
+                        castle.hide = false;
                     }
                 }
 
@@ -1769,8 +1777,9 @@ var app = (function (jQuery) {
                     if (!resource.buglar) {
                         resource.numberRipple = true;
                     }
-                return resource;
-            });
+
+                    return resource;
+                });
 
             return katan;
         }),
@@ -1808,20 +1817,6 @@ var app = (function (jQuery) {
                     }
 
                     return road;
-                });
-
-            return katan;
-        }),
-
-        setShowCastle: () => update$1(katan => {
-            katan.castleList =  katan.castleList
-                .map(castle => {
-                    if (castle.constructable && castle.playerIndex === -1) {
-                        castle.show = true;
-                        castle.hide = false;
-                    }
-
-                    return castle;
                 });
 
             return katan;
@@ -1904,6 +1899,8 @@ var app = (function (jQuery) {
 
                     return player;
                 });
+
+            console.log('>>> katan', katan);
 
             return katan;
         })
@@ -2341,7 +2338,7 @@ var app = (function (jQuery) {
     /* src\Castle.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Castle.svelte";
 
-    // (70:0) {:else}
+    // (66:0) {:else}
     function create_else_block(ctx) {
     	let div1;
     	let div0;
@@ -2355,13 +2352,13 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 76, 4, 2071);
-    			attr_dev(div1, "class", "castle svelte-1wt48tx");
+    			add_location(div0, file$1, 72, 4, 2006);
+    			attr_dev(div1, "class", "castle svelte-rpvmq4");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div1, "ripple1", /*castle*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div1, "show", /*castle*/ ctx[0].show);
-    			add_location(div1, file$1, 70, 4, 1893);
+    			add_location(div1, file$1, 66, 4, 1828);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -2403,14 +2400,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(70:0) {:else}",
+    		source: "(66:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (65:0) {#if config.debug}
+    // (61:0) {#if config.debug}
     function create_if_block$1(ctx) {
     	let div2;
     	let div0;
@@ -2434,11 +2431,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 66, 8, 1799);
-    			add_location(div1, file$1, 67, 8, 1841);
-    			attr_dev(div2, "class", "castle svelte-1wt48tx");
+    			add_location(div0, file$1, 62, 8, 1734);
+    			add_location(div1, file$1, 63, 8, 1776);
+    			attr_dev(div2, "class", "castle svelte-rpvmq4");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
-    			add_location(div2, file$1, 65, 4, 1749);
+    			add_location(div2, file$1, 61, 4, 1684);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -2468,7 +2465,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(65:0) {#if config.debug}",
+    		source: "(61:0) {#if config.debug}",
     		ctx
     	});
 
@@ -2531,10 +2528,6 @@ var app = (function (jQuery) {
     	let castleStyle;
 
     	const pick = () => {
-    		if (!castle.ripple) {
-    			return;
-    		}
-
     		const player = katanStore.getActivePlayer();
     		katanStore.setCastle(castleIndex, player.index);
     		katanStore.setHideCastle();
@@ -2649,7 +2642,7 @@ var app = (function (jQuery) {
     /* src\Road.svelte generated by Svelte v3.32.3 */
     const file$2 = "src\\Road.svelte";
 
-    // (76:0) {:else}
+    // (75:0) {:else}
     function create_else_block$1(ctx) {
     	let div1;
     	let div0;
@@ -2663,14 +2656,14 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$2, 83, 8, 2103);
-    			attr_dev(div1, "class", "road svelte-t7ilhy");
+    			add_location(div0, file$2, 82, 8, 2069);
+    			attr_dev(div1, "class", "road svelte-d329jv");
     			attr_dev(div1, "style", /*roadStyle*/ ctx[1]);
     			toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "pick", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*road*/ ctx[0].hide);
     			toggle_class(div1, "show", /*road*/ ctx[0].show);
-    			add_location(div1, file$2, 76, 4, 1883);
+    			add_location(div1, file$2, 75, 4, 1849);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -2716,14 +2709,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(76:0) {:else}",
+    		source: "(75:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (71:0) {#if config.debug}
+    // (70:0) {#if config.debug}
     function create_if_block$2(ctx) {
     	let div2;
     	let div0;
@@ -2747,11 +2740,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$2, 72, 8, 1799);
-    			add_location(div1, file$2, 73, 8, 1836);
-    			attr_dev(div2, "class", "road svelte-t7ilhy");
+    			add_location(div0, file$2, 71, 8, 1765);
+    			add_location(div1, file$2, 72, 8, 1802);
+    			attr_dev(div2, "class", "road svelte-d329jv");
     			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
-    			add_location(div2, file$2, 71, 4, 1754);
+    			add_location(div2, file$2, 70, 4, 1720);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -2781,7 +2774,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(71:0) {#if config.debug}",
+    		source: "(70:0) {#if config.debug}",
     		ctx
     	});
 
@@ -2857,8 +2850,7 @@ var app = (function (jQuery) {
     		if ($katan.isMakeRoad) {
     			katanStore.endMakeRoad();
     		} else {
-    			katanStore.setShowCastle();
-    			katanStore.setCastleRippleEnabled();
+    			katanStore.showConstructableCastle();
     			katanStore.turn();
 
     			if (katanStore.isStartable()) {
@@ -3666,7 +3658,7 @@ var app = (function (jQuery) {
     			t14 = space();
     			td5 = element("td");
     			button2 = element("button");
-    			t15 = text("마을 만들기");
+    			t15 = text("도시 만들기");
     			t16 = space();
     			tr3 = element("tr");
     			td6 = element("td");
@@ -4062,65 +4054,65 @@ var app = (function (jQuery) {
     			td20 = element("td");
     			td20.textContent = "자원";
     			attr_dev(td0, "colspan", "3");
-    			attr_dev(td0, "class", "header svelte-1o5i1ca");
+    			attr_dev(td0, "class", "header svelte-1v4aggu");
     			add_location(td0, file$6, 78, 28, 2062);
     			add_location(tr0, file$6, 77, 24, 2029);
-    			attr_dev(td1, "class", "svelte-1o5i1ca");
+    			attr_dev(td1, "class", "svelte-1v4aggu");
     			add_location(td1, file$6, 84, 40, 2353);
-    			attr_dev(td2, "class", "svelte-1o5i1ca");
+    			attr_dev(td2, "class", "svelte-1v4aggu");
     			add_location(td2, file$6, 85, 40, 2405);
-    			attr_dev(td3, "class", "svelte-1o5i1ca");
+    			attr_dev(td3, "class", "svelte-1v4aggu");
     			add_location(td3, file$6, 86, 40, 2457);
-    			attr_dev(td4, "class", "svelte-1o5i1ca");
+    			attr_dev(td4, "class", "svelte-1v4aggu");
     			add_location(td4, file$6, 87, 40, 2513);
-    			attr_dev(td5, "class", "svelte-1o5i1ca");
+    			attr_dev(td5, "class", "svelte-1v4aggu");
     			add_location(td5, file$6, 88, 40, 2569);
     			attr_dev(tr1, "class", "point");
     			add_location(tr1, file$6, 83, 36, 2294);
-    			attr_dev(td6, "class", "svelte-1o5i1ca");
+    			attr_dev(td6, "class", "svelte-1v4aggu");
     			add_location(td6, file$6, 91, 40, 2707);
-    			attr_dev(td7, "class", "svelte-1o5i1ca");
+    			attr_dev(td7, "class", "svelte-1v4aggu");
     			add_location(td7, file$6, 92, 40, 2778);
-    			attr_dev(td8, "class", "svelte-1o5i1ca");
+    			attr_dev(td8, "class", "svelte-1v4aggu");
     			add_location(td8, file$6, 93, 40, 2847);
-    			attr_dev(td9, "class", "svelte-1o5i1ca");
+    			attr_dev(td9, "class", "svelte-1v4aggu");
     			add_location(td9, file$6, 94, 40, 2916);
-    			attr_dev(td10, "class", "svelte-1o5i1ca");
+    			attr_dev(td10, "class", "svelte-1v4aggu");
     			add_location(td10, file$6, 95, 40, 2987);
     			add_location(tr2, file$6, 90, 36, 2662);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$6, 82, 32, 2237);
     			attr_dev(td11, "colspan", "3");
-    			attr_dev(td11, "class", "svelte-1o5i1ca");
+    			attr_dev(td11, "class", "svelte-1v4aggu");
     			add_location(td11, file$6, 81, 28, 2188);
     			add_location(tr3, file$6, 80, 24, 2155);
     			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "header svelte-1o5i1ca");
+    			attr_dev(td12, "class", "header svelte-1v4aggu");
     			add_location(td12, file$6, 102, 28, 3220);
     			add_location(tr4, file$6, 101, 24, 3187);
-    			attr_dev(td13, "class", "svelte-1o5i1ca");
+    			attr_dev(td13, "class", "svelte-1v4aggu");
     			add_location(td13, file$6, 108, 40, 3518);
-    			attr_dev(td14, "class", "svelte-1o5i1ca");
+    			attr_dev(td14, "class", "svelte-1v4aggu");
     			add_location(td14, file$6, 109, 40, 3570);
-    			attr_dev(td15, "class", "svelte-1o5i1ca");
+    			attr_dev(td15, "class", "svelte-1v4aggu");
     			add_location(td15, file$6, 110, 40, 3622);
     			add_location(tr5, file$6, 107, 36, 3473);
-    			attr_dev(td16, "class", "svelte-1o5i1ca");
+    			attr_dev(td16, "class", "svelte-1v4aggu");
     			add_location(td16, file$6, 113, 40, 3757);
-    			attr_dev(td17, "class", "svelte-1o5i1ca");
+    			attr_dev(td17, "class", "svelte-1v4aggu");
     			add_location(td17, file$6, 114, 40, 3835);
-    			attr_dev(td18, "class", "svelte-1o5i1ca");
+    			attr_dev(td18, "class", "svelte-1v4aggu");
     			add_location(td18, file$6, 115, 40, 3911);
     			add_location(tr6, file$6, 112, 36, 3712);
-    			attr_dev(table1, "class", "construction svelte-1o5i1ca");
+    			attr_dev(table1, "class", "construction svelte-1v4aggu");
     			attr_dev(table1, "width", "100%");
     			add_location(table1, file$6, 106, 32, 3395);
     			attr_dev(td19, "colspan", "3");
-    			attr_dev(td19, "class", "svelte-1o5i1ca");
+    			attr_dev(td19, "class", "svelte-1v4aggu");
     			add_location(td19, file$6, 105, 28, 3346);
     			add_location(tr7, file$6, 104, 24, 3313);
     			attr_dev(td20, "colspan", "3");
-    			attr_dev(td20, "class", "header svelte-1o5i1ca");
+    			attr_dev(td20, "class", "header svelte-1v4aggu");
     			add_location(td20, file$6, 122, 28, 4152);
     			add_location(tr8, file$6, 121, 24, 4119);
     		},
@@ -4240,7 +4232,7 @@ var app = (function (jQuery) {
     			}
 
     			add_location(tr, file$6, 136, 40, 4849);
-    			attr_dev(table, "class", "trade-target-resource svelte-1o5i1ca");
+    			attr_dev(table, "class", "trade-target-resource svelte-1v4aggu");
     			add_location(table, file$6, 135, 36, 4771);
     		},
     		m: function mount(target, anchor) {
@@ -4323,14 +4315,14 @@ var app = (function (jQuery) {
     			t1 = text(t1_value);
     			t2 = text(":1 교환");
     			t3 = space();
-    			attr_dev(img, "class", "trade-resource svelte-1o5i1ca");
+    			attr_dev(img, "class", "trade-resource svelte-1v4aggu");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[17].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			add_location(img, file$6, 141, 60, 5204);
-    			attr_dev(button, "class", "btn btn-primary btn-sm svelte-1o5i1ca");
+    			attr_dev(button, "class", "btn btn-primary btn-sm svelte-1v4aggu");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[14].type].action;
     			add_location(button, file$6, 142, 60, 5329);
     			add_location(div, file$6, 140, 56, 5138);
-    			attr_dev(td, "class", "svelte-1o5i1ca");
+    			attr_dev(td, "class", "svelte-1v4aggu");
     			add_location(td, file$6, 139, 52, 5077);
     		},
     		m: function mount(target, anchor) {
@@ -4453,14 +4445,14 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[14].type + " svelte-1o5i1ca");
+    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[14].type + " svelte-1v4aggu");
     			add_location(img, file$6, 129, 32, 4406);
     			attr_dev(td0, "width", "80");
-    			attr_dev(td0, "class", "svelte-1o5i1ca");
+    			attr_dev(td0, "class", "svelte-1v4aggu");
     			add_location(td0, file$6, 128, 28, 4358);
-    			attr_dev(td1, "class", "number svelte-1o5i1ca");
+    			attr_dev(td1, "class", "number svelte-1v4aggu");
     			add_location(td1, file$6, 132, 28, 4588);
-    			attr_dev(td2, "class", "svelte-1o5i1ca");
+    			attr_dev(td2, "class", "svelte-1v4aggu");
     			add_location(td2, file$6, 133, 28, 4657);
     			add_location(tr, file$6, 127, 24, 4325);
     		},
@@ -4481,7 +4473,7 @@ var app = (function (jQuery) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[14].type + " svelte-1o5i1ca")) {
+    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[14].type + " svelte-1v4aggu")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -4574,22 +4566,22 @@ var app = (function (jQuery) {
     			tr3 = element("tr");
     			td3 = element("td");
     			create_component(construction.$$.fragment);
-    			attr_dev(td0, "class", "name svelte-1o5i1ca");
+    			attr_dev(td0, "class", "name svelte-1v4aggu");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
     			add_location(td0, file$6, 70, 12, 1785);
     			add_location(tr0, file$6, 69, 8, 1768);
-    			attr_dev(table0, "class", "inner-resource svelte-1o5i1ca");
+    			attr_dev(table0, "class", "inner-resource svelte-1v4aggu");
     			add_location(table0, file$6, 75, 16, 1937);
-    			attr_dev(td1, "class", "svelte-1o5i1ca");
+    			attr_dev(td1, "class", "svelte-1v4aggu");
     			add_location(td1, file$6, 74, 12, 1916);
     			add_location(tr1, file$6, 73, 8, 1899);
-    			attr_dev(td2, "class", "header svelte-1o5i1ca");
+    			attr_dev(td2, "class", "header svelte-1v4aggu");
     			add_location(td2, file$6, 161, 12, 6330);
     			add_location(tr2, file$6, 160, 8, 6313);
-    			attr_dev(td3, "class", "svelte-1o5i1ca");
+    			attr_dev(td3, "class", "svelte-1v4aggu");
     			add_location(td3, file$6, 164, 12, 6396);
     			add_location(tr3, file$6, 163, 8, 6379);
-    			attr_dev(table1, "class", "trade-resource svelte-1o5i1ca");
+    			attr_dev(table1, "class", "trade-resource svelte-1v4aggu");
     			attr_dev(table1, "style", /*playerStyle*/ ctx[1]);
     			add_location(table1, file$6, 68, 4, 1709);
     			add_location(main, file$6, 67, 0, 1698);
@@ -4837,149 +4829,11 @@ var app = (function (jQuery) {
     	}
     }
 
-    /* src\Resource.svelte generated by Svelte v3.32.3 */
-    const file$7 = "src\\Resource.svelte";
-
-    function create_fragment$7(ctx) {
-    	let div4;
-    	let div3;
-    	let div2;
-    	let div0;
-    	let player;
-    	let t0;
-    	let div1;
-    	let button;
-    	let current;
-    	let mounted;
-    	let dispose;
-
-    	player = new Player({
-    			props: {
-    				type: "modal",
-    				playerIndex: /*$katan*/ ctx[0].playerIndex
-    			},
-    			$$inline: true
-    		});
-
-    	const block = {
-    		c: function create() {
-    			div4 = element("div");
-    			div3 = element("div");
-    			div2 = element("div");
-    			div0 = element("div");
-    			create_component(player.$$.fragment);
-    			t0 = space();
-    			div1 = element("div");
-    			button = element("button");
-    			button.textContent = "닫기";
-    			attr_dev(div0, "class", "modal-body");
-    			add_location(div0, file$7, 11, 12, 327);
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn btn-secondary");
-    			attr_dev(button, "data-bs-dismiss", "modal");
-    			add_location(button, file$7, 17, 16, 531);
-    			attr_dev(div1, "class", "modal-footer");
-    			add_location(div1, file$7, 16, 12, 488);
-    			attr_dev(div2, "class", "modal-content");
-    			add_location(div2, file$7, 10, 8, 287);
-    			attr_dev(div3, "class", "modal-dialog");
-    			set_style(div3, "max-width", "800px");
-    			add_location(div3, file$7, 9, 4, 228);
-    			attr_dev(div4, "class", "modal fade");
-    			attr_dev(div4, "id", "resourceModal");
-    			attr_dev(div4, "tabindex", "-1");
-    			attr_dev(div4, "aria-labelledby", "exampleModalLabel");
-    			attr_dev(div4, "aria-hidden", "true");
-    			add_location(div4, file$7, 5, 0, 96);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div4, anchor);
-    			append_dev(div4, div3);
-    			append_dev(div3, div2);
-    			append_dev(div2, div0);
-    			mount_component(player, div0, null);
-    			append_dev(div2, t0);
-    			append_dev(div2, div1);
-    			append_dev(div1, button);
-    			current = true;
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[1], false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: function update(ctx, [dirty]) {
-    			const player_changes = {};
-    			if (dirty & /*$katan*/ 1) player_changes.playerIndex = /*$katan*/ ctx[0].playerIndex;
-    			player.$set(player_changes);
-    		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(player.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(player.$$.fragment, local);
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div4);
-    			destroy_component(player);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_fragment$7.name,
-    		type: "component",
-    		source: "",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function instance$7($$self, $$props, $$invalidate) {
-    	let $katan;
-    	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(0, $katan = $$value));
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots("Resource", slots, []);
-    	const writable_props = [];
-
-    	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Resource> was created with unknown prop '${key}'`);
-    	});
-
-    	const click_handler = () => katanStore.closeResourceModalAndTurn();
-    	$$self.$capture_state = () => ({ katan: katanStore, Player, $katan });
-    	return [$katan, click_handler];
-    }
-
-    class Resource extends SvelteComponentDev {
-    	constructor(options) {
-    		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {});
-
-    		dispatch_dev("SvelteRegisterComponent", {
-    			component: this,
-    			tagName: "Resource",
-    			options,
-    			id: create_fragment$7.name
-    		});
-    	}
-    }
-
     /* src\App.svelte generated by Svelte v3.32.3 */
-    const file$8 = "src\\App.svelte";
+    const file$7 = "src\\App.svelte";
 
-    // (66:12) {#if $katan.buttonMessage!==''}
-    function create_if_block_1$2(ctx) {
+    // (65:12) {#if $katan.buttonMessage!==''}
+    function create_if_block$4(ctx) {
     	let div;
     	let button;
     	let t_value = /*$katan*/ ctx[2].buttonMessage + "";
@@ -4994,9 +4848,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$8, 67, 20, 2487);
+    			add_location(button, file$7, 66, 20, 2440);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$8, 66, 16, 2439);
+    			add_location(div, file$7, 65, 16, 2392);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5020,55 +4874,16 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$2.name,
-    		type: "if",
-    		source: "(66:12) {#if $katan.buttonMessage!==''}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (75:0) {#if $katan.showResourceModal}
-    function create_if_block$4(ctx) {
-    	let resource;
-    	let current;
-    	resource = new Resource({ $$inline: true });
-
-    	const block = {
-    		c: function create() {
-    			create_component(resource.$$.fragment);
-    		},
-    		m: function mount(target, anchor) {
-    			mount_component(resource, target, anchor);
-    			current = true;
-    		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(resource.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(resource.$$.fragment, local);
-    			current = false;
-    		},
-    		d: function destroy(detaching) {
-    			destroy_component(resource, detaching);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(75:0) {#if $katan.showResourceModal}",
+    		source: "(65:12) {#if $katan.buttonMessage!==''}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$8(ctx) {
+    function create_fragment$7(ctx) {
     	let div1;
     	let table;
     	let tr;
@@ -5111,8 +4926,6 @@ var app = (function (jQuery) {
     	let t14_value = /*$katan*/ ctx[2].bodyMessage + "";
     	let t14;
     	let t15;
-    	let t16;
-    	let if_block1_anchor;
     	let current;
     	let mounted;
     	let dispose;
@@ -5145,8 +4958,7 @@ var app = (function (jQuery) {
     			$$inline: true
     		});
 
-    	let if_block0 = /*$katan*/ ctx[2].buttonMessage !== "" && create_if_block_1$2(ctx);
-    	let if_block1 = /*$katan*/ ctx[2].showResourceModal && create_if_block$4(ctx);
+    	let if_block = /*$katan*/ ctx[2].buttonMessage !== "" && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -5187,53 +4999,50 @@ var app = (function (jQuery) {
     			div3 = element("div");
     			t14 = text(t14_value);
     			t15 = space();
-    			if (if_block0) if_block0.c();
-    			t16 = space();
-    			if (if_block1) if_block1.c();
-    			if_block1_anchor = empty();
+    			if (if_block) if_block.c();
     			attr_dev(td0, "valign", "top");
     			attr_dev(td0, "class", "player svelte-1i7jot8");
-    			add_location(td0, file$8, 30, 12, 809);
+    			add_location(td0, file$7, 29, 12, 762);
     			attr_dev(h1, "class", "message-header svelte-1i7jot8");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[1]);
-    			add_location(h1, file$8, 34, 16, 980);
+    			add_location(h1, file$7, 33, 16, 933);
     			attr_dev(button0, "class", "btn btn-primary svelte-1i7jot8");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[2].diceDisabled;
-    			add_location(button0, file$8, 38, 20, 1249);
+    			add_location(button0, file$7, 37, 20, 1202);
     			attr_dev(button1, "class", "btn btn-primary svelte-1i7jot8");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[2].action;
-    			add_location(button1, file$8, 41, 20, 1436);
+    			add_location(button1, file$7, 40, 20, 1389);
     			attr_dev(div0, "class", "dice-container svelte-1i7jot8");
-    			add_location(div0, file$8, 35, 16, 1081);
+    			add_location(div0, file$7, 34, 16, 1034);
     			attr_dev(td1, "valign", "top");
     			attr_dev(td1, "class", "text-center svelte-1i7jot8");
-    			add_location(td1, file$8, 33, 12, 925);
+    			add_location(td1, file$7, 32, 12, 878);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-1i7jot8");
-    			add_location(td2, file$8, 49, 12, 1789);
-    			add_location(tr, file$8, 29, 8, 791);
-    			add_location(table, file$8, 28, 4, 774);
+    			add_location(td2, file$7, 48, 12, 1742);
+    			add_location(tr, file$7, 28, 8, 744);
+    			add_location(table, file$7, 27, 4, 727);
     			attr_dev(div1, "class", "katan svelte-1i7jot8");
-    			add_location(div1, file$8, 27, 0, 749);
+    			add_location(div1, file$7, 26, 0, 702);
     			attr_dev(button2, "type", "button");
     			attr_dev(button2, "class", "btn-close");
     			attr_dev(button2, "data-bs-dismiss", "modal");
     			attr_dev(button2, "aria-label", "Close");
-    			add_location(button2, file$8, 59, 16, 2166);
+    			add_location(button2, file$7, 58, 16, 2119);
     			attr_dev(div2, "class", "modal-header");
-    			add_location(div2, file$8, 58, 12, 2122);
+    			add_location(div2, file$7, 57, 12, 2075);
     			attr_dev(div3, "class", "modal-body");
-    			add_location(div3, file$8, 61, 12, 2292);
+    			add_location(div3, file$7, 60, 12, 2245);
     			attr_dev(div4, "class", "modal-content");
-    			add_location(div4, file$8, 57, 8, 2081);
+    			add_location(div4, file$7, 56, 8, 2034);
     			attr_dev(div5, "class", "modal-dialog");
-    			add_location(div5, file$8, 56, 4, 2045);
+    			add_location(div5, file$7, 55, 4, 1998);
     			attr_dev(div6, "class", "modal fade");
     			attr_dev(div6, "id", "katanModal");
     			attr_dev(div6, "tabindex", "-1");
     			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div6, "aria-hidden", "true");
-    			add_location(div6, file$8, 55, 0, 1930);
+    			add_location(div6, file$7, 54, 0, 1883);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5276,10 +5085,7 @@ var app = (function (jQuery) {
     			append_dev(div4, div3);
     			append_dev(div3, t14);
     			append_dev(div4, t15);
-    			if (if_block0) if_block0.m(div4, null);
-    			insert_dev(target, t16, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert_dev(target, if_block1_anchor, anchor);
+    			if (if_block) if_block.m(div4, null);
     			current = true;
 
     			if (!mounted) {
@@ -5326,37 +5132,16 @@ var app = (function (jQuery) {
     			if ((!current || dirty & /*$katan*/ 4) && t14_value !== (t14_value = /*$katan*/ ctx[2].bodyMessage + "")) set_data_dev(t14, t14_value);
 
     			if (/*$katan*/ ctx[2].buttonMessage !== "") {
-    				if (if_block0) {
-    					if_block0.p(ctx, dirty);
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
     				} else {
-    					if_block0 = create_if_block_1$2(ctx);
-    					if_block0.c();
-    					if_block0.m(div4, null);
+    					if_block = create_if_block$4(ctx);
+    					if_block.c();
+    					if_block.m(div4, null);
     				}
-    			} else if (if_block0) {
-    				if_block0.d(1);
-    				if_block0 = null;
-    			}
-
-    			if (/*$katan*/ ctx[2].showResourceModal) {
-    				if (if_block1) {
-    					if (dirty & /*$katan*/ 4) {
-    						transition_in(if_block1, 1);
-    					}
-    				} else {
-    					if_block1 = create_if_block$4(ctx);
-    					if_block1.c();
-    					transition_in(if_block1, 1);
-    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
-    				}
-    			} else if (if_block1) {
-    				group_outros();
-
-    				transition_out(if_block1, 1, 1, () => {
-    					if_block1 = null;
-    				});
-
-    				check_outros();
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
     			}
     		},
     		i: function intro(local) {
@@ -5366,7 +5151,6 @@ var app = (function (jQuery) {
     			transition_in(dice1.$$.fragment, local);
     			transition_in(board.$$.fragment, local);
     			transition_in(player1.$$.fragment, local);
-    			transition_in(if_block1);
     			current = true;
     		},
     		o: function outro(local) {
@@ -5375,7 +5159,6 @@ var app = (function (jQuery) {
     			transition_out(dice1.$$.fragment, local);
     			transition_out(board.$$.fragment, local);
     			transition_out(player1.$$.fragment, local);
-    			transition_out(if_block1);
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -5387,10 +5170,7 @@ var app = (function (jQuery) {
     			destroy_component(player1);
     			if (detaching) detach_dev(t12);
     			if (detaching) detach_dev(div6);
-    			if (if_block0) if_block0.d();
-    			if (detaching) detach_dev(t16);
-    			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach_dev(if_block1_anchor);
+    			if (if_block) if_block.d();
     			mounted = false;
     			run_all(dispose);
     		}
@@ -5398,7 +5178,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$8.name,
+    		id: create_fragment$7.name,
     		type: "component",
     		source: "",
     		ctx
@@ -5407,7 +5187,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$8($$self, $$props, $$invalidate) {
+    function instance$7($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
     	component_subscribe($$self, katanStore, $$value => $$invalidate(2, $katan = $$value));
@@ -5442,7 +5222,6 @@ var app = (function (jQuery) {
     		Dice,
     		Player,
     		katan: katanStore,
-    		Resource,
     		onDestroy,
     		toStyle,
     		player,
@@ -5467,13 +5246,13 @@ var app = (function (jQuery) {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {});
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$8.name
+    			id: create_fragment$7.name
     		});
     	}
     }

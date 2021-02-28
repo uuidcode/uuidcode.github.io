@@ -1,7 +1,7 @@
 const config = {
     debug: false,
     cell: {
-        width: 200,
+        width: 230,
         height: 230,
         margin: 5
     },

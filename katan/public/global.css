@@ -69,10 +69,10 @@ button:focus {
 
 @keyframes ripple {
     0% {
-        box-shadow: 0 0 0 10px rgba(138,43,226, 0.9);
+        box-shadow: 0 0 0 10px rgba(138,43,226, 1);
     }
     100% {
-        box-shadow: 0 0 0 30px rgba(138,43,226, 0);
+        box-shadow: 0 0 0 50px rgba(138,43,226, 0.3);
     }
 }
 

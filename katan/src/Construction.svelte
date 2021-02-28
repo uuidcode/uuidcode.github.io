@@ -47,7 +47,7 @@
                 <img src="iron_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm" disabled={!player.make.city}>마을 만들기</button>
+                <button class="btn btn-primary btn-sm" disabled={!player.make.city}>도시 만들기</button>
             </td>
         </tr>
         <tr>

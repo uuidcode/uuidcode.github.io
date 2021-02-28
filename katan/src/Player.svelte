@@ -196,8 +196,9 @@
     }
 
     .trade-resource {
-        width:600px;
+        width:550px;
     }
+
     .trade-resource .number {
         line-height: 40px;
         font-size: 40px;

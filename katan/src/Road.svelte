@@ -24,8 +24,7 @@
         if ($katan.isMakeRoad) {
             katan.endMakeRoad();
         } else {
-            katan.setShowCastle();
-            katan.setCastleRippleEnabled();
+            katan.showConstructableCastle();
             katan.turn();
 
             if (katan.isStartable()) {
@@ -89,7 +88,7 @@
     .road {
         position: absolute;
         text-align: center;
-        background-color: yellow;
+        background-color: blueviolet;
         font-weight: bolder;
         font-size: 14px;
         color: white;

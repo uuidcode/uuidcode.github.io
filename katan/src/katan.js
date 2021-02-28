@@ -1,11 +1,11 @@
 import {tick} from 'svelte'
-import {writable} from "svelte/store";
+import {writable, get} from "svelte/store";
 import config from './config.js'
 import { getDisplay, sleep } from './util.js'
 import jQuery from 'jquery';
 import { Modal } from './bootstrap.esm.min.js'
 
-let katan = {
+let katanObject = {
     rollDice: false,
     action: false,
     isMakeRoad: false,
@@ -37,7 +37,7 @@ let katan = {
     ]
 };
 
-katan.playerList.forEach((player, i) => {
+katanObject.playerList.forEach((player, i) => {
     player.index = i;
 
     player.pickCastle =  0;
@@ -112,7 +112,7 @@ function shuffle(list) {
     return list.sort(random());
 }
 
-katan.castleList = [];
+katanObject.castleList = [];
 
 for (let i = 0; i < 6; i++) {
     for (let j = 0; j < 11; j++) {
@@ -128,7 +128,7 @@ for (let i = 0; i < 6; i++) {
                     top += config.cell.height / 4
                 }
 
-                katan.castleList.push({
+                katanObject.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
                     ripple: false,
@@ -151,7 +151,7 @@ for (let i = 0; i < 6; i++) {
 
                 const ripple = j >= 3 && j <= 7;
 
-                katan.castleList.push({
+                katanObject.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
                     ripple: ripple,
@@ -173,7 +173,7 @@ for (let i = 0; i < 6; i++) {
 
             const ripple = j >= 2 && j <= 8;
 
-            katan.castleList.push({
+            katanObject.castleList.push({
                 left: j * (config.cell.width / 2) - config.castle.width / 2,
                 top: top - config.castle.height / 2,
                 ripple: ripple,
@@ -185,134 +185,134 @@ for (let i = 0; i < 6; i++) {
     }
 }
 
-katan.castleList.forEach((castle, index) => castle.index = index);
-katan.castleList.forEach((castle) => castle.playerIndex = -1);
-katan.castleList.forEach(castle => castle.hide = !castle.ripple);
-katan.castleList.forEach(castle => castle.show = castle.ripple);
-katan.castleList.forEach(castle => castle.constructable = castle.ripple);
-katan.castleList.forEach(castle => castle.title = '');
+katanObject.castleList.forEach((castle, index) => castle.index = index);
+katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
+katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
+katanObject.castleList.forEach(castle => castle.show = castle.ripple);
+katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
+katanObject.castleList.forEach(castle => castle.title = '');
 
-katan.castleList[0].roadIndexList = [0, 6];
-katan.castleList[1].roadIndexList = [0, 1];
-katan.castleList[2].roadIndexList = [1, 2, 7];
-katan.castleList[3].roadIndexList = [2, 3];
-katan.castleList[4].roadIndexList = [3, 4, 8];
-katan.castleList[5].roadIndexList = [4, 5];
-katan.castleList[6].roadIndexList = [5, 9];
+katanObject.castleList[0].roadIndexList = [0, 6];
+katanObject.castleList[1].roadIndexList = [0, 1];
+katanObject.castleList[2].roadIndexList = [1, 2, 7];
+katanObject.castleList[3].roadIndexList = [2, 3];
+katanObject.castleList[4].roadIndexList = [3, 4, 8];
+katanObject.castleList[5].roadIndexList = [4, 5];
+katanObject.castleList[6].roadIndexList = [5, 9];
 
-katan.castleList[7].roadIndexList = [18, 10];
-katan.castleList[8].roadIndexList = [6, 10, 11];
-katan.castleList[9].roadIndexList = [11, 12, 19];
-katan.castleList[10].roadIndexList = [7, 12, 13];
-katan.castleList[11].roadIndexList = [13, 14, 20];
-katan.castleList[12].roadIndexList = [8, 14, 15];
-katan.castleList[13].roadIndexList = [15, 16, 21];
-katan.castleList[14].roadIndexList = [9, 16, 17];
-katan.castleList[15].roadIndexList = [17, 22];
+katanObject.castleList[7].roadIndexList = [18, 10];
+katanObject.castleList[8].roadIndexList = [6, 10, 11];
+katanObject.castleList[9].roadIndexList = [11, 12, 19];
+katanObject.castleList[10].roadIndexList = [7, 12, 13];
+katanObject.castleList[11].roadIndexList = [13, 14, 20];
+katanObject.castleList[12].roadIndexList = [8, 14, 15];
+katanObject.castleList[13].roadIndexList = [15, 16, 21];
+katanObject.castleList[14].roadIndexList = [9, 16, 17];
+katanObject.castleList[15].roadIndexList = [17, 22];
 
-katan.castleList[16].roadIndexList = [23, 33];
-katan.castleList[17].roadIndexList = [18, 23, 24];
-katan.castleList[18].roadIndexList = [24, 25, 34];
-katan.castleList[19].roadIndexList = [19, 25, 26];
-katan.castleList[20].roadIndexList = [26, 27, 35];
-katan.castleList[21].roadIndexList = [20, 27, 28];
-katan.castleList[22].roadIndexList = [28, 29, 36];
-katan.castleList[23].roadIndexList = [21, 29, 30];
-katan.castleList[24].roadIndexList = [30, 31, 37];
-katan.castleList[25].roadIndexList = [22, 31, 32];
-katan.castleList[26].roadIndexList = [32, 38];
+katanObject.castleList[16].roadIndexList = [23, 33];
+katanObject.castleList[17].roadIndexList = [18, 23, 24];
+katanObject.castleList[18].roadIndexList = [24, 25, 34];
+katanObject.castleList[19].roadIndexList = [19, 25, 26];
+katanObject.castleList[20].roadIndexList = [26, 27, 35];
+katanObject.castleList[21].roadIndexList = [20, 27, 28];
+katanObject.castleList[22].roadIndexList = [28, 29, 36];
+katanObject.castleList[23].roadIndexList = [21, 29, 30];
+katanObject.castleList[24].roadIndexList = [30, 31, 37];
+katanObject.castleList[25].roadIndexList = [22, 31, 32];
+katanObject.castleList[26].roadIndexList = [32, 38];
 
-katan.castleList[27].roadIndexList = [33, 39];
-katan.castleList[28].roadIndexList = [39, 40, 49];
-katan.castleList[29].roadIndexList = [34, 40, 41];
-katan.castleList[30].roadIndexList = [41, 42, 50];
-katan.castleList[31].roadIndexList = [35, 42, 43];
-katan.castleList[32].roadIndexList = [43, 44, 51];
-katan.castleList[33].roadIndexList = [36, 44, 45];
-katan.castleList[34].roadIndexList = [45, 46, 52];
-katan.castleList[35].roadIndexList = [37, 46, 47];
-katan.castleList[36].roadIndexList = [47, 48, 53];
-katan.castleList[37].roadIndexList = [38, 48];
+katanObject.castleList[27].roadIndexList = [33, 39];
+katanObject.castleList[28].roadIndexList = [39, 40, 49];
+katanObject.castleList[29].roadIndexList = [34, 40, 41];
+katanObject.castleList[30].roadIndexList = [41, 42, 50];
+katanObject.castleList[31].roadIndexList = [35, 42, 43];
+katanObject.castleList[32].roadIndexList = [43, 44, 51];
+katanObject.castleList[33].roadIndexList = [36, 44, 45];
+katanObject.castleList[34].roadIndexList = [45, 46, 52];
+katanObject.castleList[35].roadIndexList = [37, 46, 47];
+katanObject.castleList[36].roadIndexList = [47, 48, 53];
+katanObject.castleList[37].roadIndexList = [38, 48];
 
-katan.castleList[38].roadIndexList = [49, 54];
-katan.castleList[39].roadIndexList = [54, 55, 62];
-katan.castleList[40].roadIndexList = [50, 55, 56];
-katan.castleList[41].roadIndexList = [56, 57, 63];
-katan.castleList[42].roadIndexList = [51, 57, 58];
-katan.castleList[43].roadIndexList = [58, 59, 64];
-katan.castleList[44].roadIndexList = [52, 59, 60];
-katan.castleList[45].roadIndexList = [60, 61, 65];
-katan.castleList[46].roadIndexList = [53, 61];
+katanObject.castleList[38].roadIndexList = [49, 54];
+katanObject.castleList[39].roadIndexList = [54, 55, 62];
+katanObject.castleList[40].roadIndexList = [50, 55, 56];
+katanObject.castleList[41].roadIndexList = [56, 57, 63];
+katanObject.castleList[42].roadIndexList = [51, 57, 58];
+katanObject.castleList[43].roadIndexList = [58, 59, 64];
+katanObject.castleList[44].roadIndexList = [52, 59, 60];
+katanObject.castleList[45].roadIndexList = [60, 61, 65];
+katanObject.castleList[46].roadIndexList = [53, 61];
 
-katan.castleList[47].roadIndexList = [62, 66];
-katan.castleList[48].roadIndexList = [66, 67];
-katan.castleList[49].roadIndexList = [63, 67, 68];
-katan.castleList[50].roadIndexList = [68, 69];
-katan.castleList[51].roadIndexList = [64, 69, 70];
-katan.castleList[52].roadIndexList = [70, 71];
-katan.castleList[53].roadIndexList = [65, 71];
+katanObject.castleList[47].roadIndexList = [62, 66];
+katanObject.castleList[48].roadIndexList = [66, 67];
+katanObject.castleList[49].roadIndexList = [63, 67, 68];
+katanObject.castleList[50].roadIndexList = [68, 69];
+katanObject.castleList[51].roadIndexList = [64, 69, 70];
+katanObject.castleList[52].roadIndexList = [70, 71];
+katanObject.castleList[53].roadIndexList = [65, 71];
 
-katan.castleList[0].castleIndexList = [1, 8];
-katan.castleList[1].castleIndexList = [0, 2];
-katan.castleList[2].castleIndexList = [1, 3, 10];
-katan.castleList[3].castleIndexList = [2, 4];
-katan.castleList[4].castleIndexList = [3, 5, 12];
-katan.castleList[5].castleIndexList = [4, 6];
-katan.castleList[6].castleIndexList = [5, 14];
+katanObject.castleList[0].castleIndexList = [1, 8];
+katanObject.castleList[1].castleIndexList = [0, 2];
+katanObject.castleList[2].castleIndexList = [1, 3, 10];
+katanObject.castleList[3].castleIndexList = [2, 4];
+katanObject.castleList[4].castleIndexList = [3, 5, 12];
+katanObject.castleList[5].castleIndexList = [4, 6];
+katanObject.castleList[6].castleIndexList = [5, 14];
 
-katan.castleList[7].castleIndexList = [8, 17];
-katan.castleList[8].castleIndexList = [7, 9];
-katan.castleList[9].castleIndexList = [8, 10, 19];
-katan.castleList[10].castleIndexList = [2, 9, 11];
-katan.castleList[11].castleIndexList = [10, 12, 21];
-katan.castleList[12].castleIndexList = [4, 11 ,13];
-katan.castleList[13].castleIndexList = [12, 14, 23];
-katan.castleList[14].castleIndexList = [6, 13, 15];
-katan.castleList[15].castleIndexList = [14, 25];
+katanObject.castleList[7].castleIndexList = [8, 17];
+katanObject.castleList[8].castleIndexList = [7, 9];
+katanObject.castleList[9].castleIndexList = [8, 10, 19];
+katanObject.castleList[10].castleIndexList = [2, 9, 11];
+katanObject.castleList[11].castleIndexList = [10, 12, 21];
+katanObject.castleList[12].castleIndexList = [4, 11 ,13];
+katanObject.castleList[13].castleIndexList = [12, 14, 23];
+katanObject.castleList[14].castleIndexList = [6, 13, 15];
+katanObject.castleList[15].castleIndexList = [14, 25];
 
-katan.castleList[16].castleIndexList = [17, 27];
-katan.castleList[17].castleIndexList = [7, 16, 18];
-katan.castleList[18].castleIndexList = [17, 19, 29];
-katan.castleList[19].castleIndexList = [9, 18, 20];
-katan.castleList[20].castleIndexList = [19, 21, 31];
-katan.castleList[21].castleIndexList = [11, 20, 22];
-katan.castleList[22].castleIndexList = [21, 23, 33];
-katan.castleList[23].castleIndexList = [13, 22, 24];
-katan.castleList[24].castleIndexList = [23, 25, 35];
-katan.castleList[25].castleIndexList = [15, 24, 26];
-katan.castleList[26].castleIndexList = [25, 37];
+katanObject.castleList[16].castleIndexList = [17, 27];
+katanObject.castleList[17].castleIndexList = [7, 16, 18];
+katanObject.castleList[18].castleIndexList = [17, 19, 29];
+katanObject.castleList[19].castleIndexList = [9, 18, 20];
+katanObject.castleList[20].castleIndexList = [19, 21, 31];
+katanObject.castleList[21].castleIndexList = [11, 20, 22];
+katanObject.castleList[22].castleIndexList = [21, 23, 33];
+katanObject.castleList[23].castleIndexList = [13, 22, 24];
+katanObject.castleList[24].castleIndexList = [23, 25, 35];
+katanObject.castleList[25].castleIndexList = [15, 24, 26];
+katanObject.castleList[26].castleIndexList = [25, 37];
 
-katan.castleList[27].castleIndexList = [16, 28];
-katan.castleList[28].castleIndexList = [27, 29, 38];
-katan.castleList[29].castleIndexList = [18, 28, 30];
-katan.castleList[30].castleIndexList = [29, 31, 40];
-katan.castleList[31].castleIndexList = [20, 30, 30];
-katan.castleList[32].castleIndexList = [31, 33, 42];
-katan.castleList[33].castleIndexList = [22, 32, 34];
-katan.castleList[34].castleIndexList = [33, 35, 44];
-katan.castleList[35].castleIndexList = [24, 34, 36];
-katan.castleList[36].castleIndexList = [35, 37, 46];
-katan.castleList[37].castleIndexList = [26, 36];
+katanObject.castleList[27].castleIndexList = [16, 28];
+katanObject.castleList[28].castleIndexList = [27, 29, 38];
+katanObject.castleList[29].castleIndexList = [18, 28, 30];
+katanObject.castleList[30].castleIndexList = [29, 31, 40];
+katanObject.castleList[31].castleIndexList = [20, 30, 30];
+katanObject.castleList[32].castleIndexList = [31, 33, 42];
+katanObject.castleList[33].castleIndexList = [22, 32, 34];
+katanObject.castleList[34].castleIndexList = [33, 35, 44];
+katanObject.castleList[35].castleIndexList = [24, 34, 36];
+katanObject.castleList[36].castleIndexList = [35, 37, 46];
+katanObject.castleList[37].castleIndexList = [26, 36];
 
-katan.castleList[38].castleIndexList = [28, 39];
-katan.castleList[39].castleIndexList = [38, 40, 47];
-katan.castleList[40].castleIndexList = [30, 39, 41];
-katan.castleList[41].castleIndexList = [40, 42, 49];
-katan.castleList[42].castleIndexList = [32, 41, 43];
-katan.castleList[43].castleIndexList = [42, 44, 51];
-katan.castleList[44].castleIndexList = [34, 43, 45];
-katan.castleList[45].castleIndexList = [44, 46, 53];
-katan.castleList[46].castleIndexList = [36, 45];
+katanObject.castleList[38].castleIndexList = [28, 39];
+katanObject.castleList[39].castleIndexList = [38, 40, 47];
+katanObject.castleList[40].castleIndexList = [30, 39, 41];
+katanObject.castleList[41].castleIndexList = [40, 42, 49];
+katanObject.castleList[42].castleIndexList = [32, 41, 43];
+katanObject.castleList[43].castleIndexList = [42, 44, 51];
+katanObject.castleList[44].castleIndexList = [34, 43, 45];
+katanObject.castleList[45].castleIndexList = [44, 46, 53];
+katanObject.castleList[46].castleIndexList = [36, 45];
 
-katan.castleList[47].castleIndexList = [39, 48];
-katan.castleList[48].castleIndexList = [47, 49];
-katan.castleList[49].castleIndexList = [41, 48, 50];
-katan.castleList[50].castleIndexList = [49, 51];
-katan.castleList[51].castleIndexList = [43, 50, 52];
-katan.castleList[52].castleIndexList = [51, 53];
-katan.castleList[53].castleIndexList = [45, 52];
+katanObject.castleList[47].castleIndexList = [39, 48];
+katanObject.castleList[48].castleIndexList = [47, 49];
+katanObject.castleList[49].castleIndexList = [41, 48, 50];
+katanObject.castleList[50].castleIndexList = [49, 51];
+katanObject.castleList[51].castleIndexList = [43, 50, 52];
+katanObject.castleList[52].castleIndexList = [51, 53];
+katanObject.castleList[53].castleIndexList = [45, 52];
 
-katan.roadList = [];
+katanObject.roadList = [];
 
 const getLoadTopBySingle = (multiple) => {
     return multiple * config.cell.height / 8 - config.load.width / 2 ;
@@ -334,7 +334,7 @@ for (let i = 0; i <= 11; i++) {
             if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
                 let top = getLoadTop(i, 11, 1, 31);
 
-                katan.roadList.push({
+                katanObject.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
                     roadRipple: false,
@@ -348,7 +348,7 @@ for (let i = 0; i <= 11; i++) {
             if (j === 4 || j === 8 || j === 12 || j === 16) {
                 let top = getLoadTop(i, 10, 4, 28);
 
-                katan.roadList.push({
+                katanObject.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
                     roadRipple: false,
@@ -364,7 +364,7 @@ for (let i = 0; i <= 11; i++) {
                 j === 11 || j === 13 || j === 15 || j === 17) {
                 let top = getLoadTop(i, 9, 7, 25);
 
-                katan.roadList.push({
+                katanObject.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
                     roadRipple: false,
@@ -379,7 +379,7 @@ for (let i = 0; i <= 11; i++) {
 
                 let top = getLoadTop(i, 8, 10, 22);
 
-                katan.roadList.push({
+                katanObject.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
                     roadRipple: false,
@@ -395,7 +395,7 @@ for (let i = 0; i <= 11; i++) {
 
                 let top = getLoadTop(i, 7, 13, 19);
 
-                katan.roadList.push({
+                katanObject.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
                     roadRipple: false,
@@ -409,7 +409,7 @@ for (let i = 0; i <= 11; i++) {
             if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
                 let top = getLoadTopBySingle(16);
 
-                katan.roadList.push({
+                katanObject.roadList.push({
                     left: j * (config.cell.width / 4) - config.load.width / 2,
                     top: top,
                     roadRipple: false,
@@ -423,178 +423,178 @@ for (let i = 0; i <= 11; i++) {
     }
 }
 
-katan.roadList.forEach((road, index) => road.index = index);
-katan.roadList.forEach(road => road.hide = true);
-katan.roadList.forEach(road => road.show = false);
-katan.roadList.forEach(road => road.ripple = false);
-katan.roadList.forEach(road => road.playerIndex = -1);
-katan.roadList.forEach(road => road.title = '');
+katanObject.roadList.forEach((road, index) => road.index = index);
+katanObject.roadList.forEach(road => road.hide = true);
+katanObject.roadList.forEach(road => road.show = false);
+katanObject.roadList.forEach(road => road.ripple = false);
+katanObject.roadList.forEach(road => road.playerIndex = -1);
+katanObject.roadList.forEach(road => road.title = '');
 
-katan.roadList[0].castleIndexList = [0, 1];
-katan.roadList[1].castleIndexList = [1, 2];
-katan.roadList[2].castleIndexList = [2, 3];
-katan.roadList[3].castleIndexList = [3, 4];
-katan.roadList[4].castleIndexList = [4, 5];
-katan.roadList[5].castleIndexList = [5, 6];
+katanObject.roadList[0].castleIndexList = [0, 1];
+katanObject.roadList[1].castleIndexList = [1, 2];
+katanObject.roadList[2].castleIndexList = [2, 3];
+katanObject.roadList[3].castleIndexList = [3, 4];
+katanObject.roadList[4].castleIndexList = [4, 5];
+katanObject.roadList[5].castleIndexList = [5, 6];
 
-katan.roadList[6].castleIndexList = [0, 8];
-katan.roadList[7].castleIndexList = [2, 10];
-katan.roadList[8].castleIndexList = [4, 12];
-katan.roadList[9].castleIndexList = [6, 14];
+katanObject.roadList[6].castleIndexList = [0, 8];
+katanObject.roadList[7].castleIndexList = [2, 10];
+katanObject.roadList[8].castleIndexList = [4, 12];
+katanObject.roadList[9].castleIndexList = [6, 14];
 
-katan.roadList[10].castleIndexList = [7, 8];
-katan.roadList[11].castleIndexList = [8, 9];
-katan.roadList[12].castleIndexList = [9, 10];
-katan.roadList[13].castleIndexList = [10, 11];
-katan.roadList[14].castleIndexList = [11, 12];
-katan.roadList[15].castleIndexList = [12, 13];
-katan.roadList[16].castleIndexList = [13, 14];
-katan.roadList[17].castleIndexList = [14, 15];
+katanObject.roadList[10].castleIndexList = [7, 8];
+katanObject.roadList[11].castleIndexList = [8, 9];
+katanObject.roadList[12].castleIndexList = [9, 10];
+katanObject.roadList[13].castleIndexList = [10, 11];
+katanObject.roadList[14].castleIndexList = [11, 12];
+katanObject.roadList[15].castleIndexList = [12, 13];
+katanObject.roadList[16].castleIndexList = [13, 14];
+katanObject.roadList[17].castleIndexList = [14, 15];
 
-katan.roadList[18].castleIndexList = [7, 17];
-katan.roadList[19].castleIndexList = [9, 19];
-katan.roadList[20].castleIndexList = [11, 21];
-katan.roadList[21].castleIndexList = [13, 23];
-katan.roadList[22].castleIndexList = [15, 25];
+katanObject.roadList[18].castleIndexList = [7, 17];
+katanObject.roadList[19].castleIndexList = [9, 19];
+katanObject.roadList[20].castleIndexList = [11, 21];
+katanObject.roadList[21].castleIndexList = [13, 23];
+katanObject.roadList[22].castleIndexList = [15, 25];
 
-katan.roadList[23].castleIndexList = [16, 17];
-katan.roadList[24].castleIndexList = [17, 18];
-katan.roadList[25].castleIndexList = [18, 19];
-katan.roadList[26].castleIndexList = [19, 20];
-katan.roadList[27].castleIndexList = [20, 21];
-katan.roadList[28].castleIndexList = [21, 22];
-katan.roadList[29].castleIndexList = [22, 23];
-katan.roadList[30].castleIndexList = [23, 24];
-katan.roadList[31].castleIndexList = [24, 25];
-katan.roadList[32].castleIndexList = [25, 26];
+katanObject.roadList[23].castleIndexList = [16, 17];
+katanObject.roadList[24].castleIndexList = [17, 18];
+katanObject.roadList[25].castleIndexList = [18, 19];
+katanObject.roadList[26].castleIndexList = [19, 20];
+katanObject.roadList[27].castleIndexList = [20, 21];
+katanObject.roadList[28].castleIndexList = [21, 22];
+katanObject.roadList[29].castleIndexList = [22, 23];
+katanObject.roadList[30].castleIndexList = [23, 24];
+katanObject.roadList[31].castleIndexList = [24, 25];
+katanObject.roadList[32].castleIndexList = [25, 26];
 
-katan.roadList[33].castleIndexList = [16, 27];
-katan.roadList[34].castleIndexList = [18, 29];
-katan.roadList[35].castleIndexList = [20, 31];
-katan.roadList[36].castleIndexList = [22, 33];
-katan.roadList[37].castleIndexList = [24, 35];
-katan.roadList[38].castleIndexList = [26, 37];
+katanObject.roadList[33].castleIndexList = [16, 27];
+katanObject.roadList[34].castleIndexList = [18, 29];
+katanObject.roadList[35].castleIndexList = [20, 31];
+katanObject.roadList[36].castleIndexList = [22, 33];
+katanObject.roadList[37].castleIndexList = [24, 35];
+katanObject.roadList[38].castleIndexList = [26, 37];
 
-katan.roadList[39].castleIndexList = [27, 28];
-katan.roadList[40].castleIndexList = [28, 29];
-katan.roadList[41].castleIndexList = [29, 30];
-katan.roadList[42].castleIndexList = [30, 31];
-katan.roadList[43].castleIndexList = [31, 32];
-katan.roadList[44].castleIndexList = [32, 33];
-katan.roadList[45].castleIndexList = [33, 34];
-katan.roadList[46].castleIndexList = [34, 35];
-katan.roadList[47].castleIndexList = [35, 36];
-katan.roadList[48].castleIndexList = [36, 37];
+katanObject.roadList[39].castleIndexList = [27, 28];
+katanObject.roadList[40].castleIndexList = [28, 29];
+katanObject.roadList[41].castleIndexList = [29, 30];
+katanObject.roadList[42].castleIndexList = [30, 31];
+katanObject.roadList[43].castleIndexList = [31, 32];
+katanObject.roadList[44].castleIndexList = [32, 33];
+katanObject.roadList[45].castleIndexList = [33, 34];
+katanObject.roadList[46].castleIndexList = [34, 35];
+katanObject.roadList[47].castleIndexList = [35, 36];
+katanObject.roadList[48].castleIndexList = [36, 37];
 
-katan.roadList[49].castleIndexList = [28, 38];
-katan.roadList[50].castleIndexList = [30, 40];
-katan.roadList[51].castleIndexList = [32, 42];
-katan.roadList[52].castleIndexList = [34, 44];
-katan.roadList[53].castleIndexList = [36, 46];
+katanObject.roadList[49].castleIndexList = [28, 38];
+katanObject.roadList[50].castleIndexList = [30, 40];
+katanObject.roadList[51].castleIndexList = [32, 42];
+katanObject.roadList[52].castleIndexList = [34, 44];
+katanObject.roadList[53].castleIndexList = [36, 46];
 
-katan.roadList[54].castleIndexList = [38, 39];
-katan.roadList[55].castleIndexList = [39, 40];
-katan.roadList[56].castleIndexList = [40, 41];
-katan.roadList[57].castleIndexList = [41, 42];
-katan.roadList[58].castleIndexList = [42, 43];
-katan.roadList[59].castleIndexList = [43, 44];
-katan.roadList[60].castleIndexList = [44, 45];
-katan.roadList[61].castleIndexList = [45, 46];
+katanObject.roadList[54].castleIndexList = [38, 39];
+katanObject.roadList[55].castleIndexList = [39, 40];
+katanObject.roadList[56].castleIndexList = [40, 41];
+katanObject.roadList[57].castleIndexList = [41, 42];
+katanObject.roadList[58].castleIndexList = [42, 43];
+katanObject.roadList[59].castleIndexList = [43, 44];
+katanObject.roadList[60].castleIndexList = [44, 45];
+katanObject.roadList[61].castleIndexList = [45, 46];
 
-katan.roadList[62].castleIndexList = [39, 47];
-katan.roadList[63].castleIndexList = [41, 49];
-katan.roadList[64].castleIndexList = [43, 51];
-katan.roadList[65].castleIndexList = [45, 53];
+katanObject.roadList[62].castleIndexList = [39, 47];
+katanObject.roadList[63].castleIndexList = [41, 49];
+katanObject.roadList[64].castleIndexList = [43, 51];
+katanObject.roadList[65].castleIndexList = [45, 53];
 
-katan.roadList[66].castleIndexList = [47, 48];
-katan.roadList[67].castleIndexList = [48, 49];
-katan.roadList[68].castleIndexList = [49, 50];
-katan.roadList[69].castleIndexList = [50, 51];
-katan.roadList[70].castleIndexList = [51, 52];
-katan.roadList[71].castleIndexList = [52, 53];
+katanObject.roadList[66].castleIndexList = [47, 48];
+katanObject.roadList[67].castleIndexList = [48, 49];
+katanObject.roadList[68].castleIndexList = [49, 50];
+katanObject.roadList[69].castleIndexList = [50, 51];
+katanObject.roadList[70].castleIndexList = [51, 52];
+katanObject.roadList[71].castleIndexList = [52, 53];
 
-katan.roadList[0].roadIndexList = [1, 6];
-katan.roadList[1].roadIndexList = [0, 2, 7];
-katan.roadList[2].roadIndexList = [1, 3, 7];
-katan.roadList[3].roadIndexList = [2, 4, 8];
-katan.roadList[4].roadIndexList = [3, 5, 8];
-katan.roadList[5].roadIndexList = [4, 9];
+katanObject.roadList[0].roadIndexList = [1, 6];
+katanObject.roadList[1].roadIndexList = [0, 2, 7];
+katanObject.roadList[2].roadIndexList = [1, 3, 7];
+katanObject.roadList[3].roadIndexList = [2, 4, 8];
+katanObject.roadList[4].roadIndexList = [3, 5, 8];
+katanObject.roadList[5].roadIndexList = [4, 9];
 
-katan.roadList[6].roadIndexList = [0, 10, 11];
-katan.roadList[7].roadIndexList = [1, 2, 12 , 13];
-katan.roadList[8].roadIndexList = [3, 4, 14, 15];
-katan.roadList[9].roadIndexList = [5, 16, 17];
+katanObject.roadList[6].roadIndexList = [0, 10, 11];
+katanObject.roadList[7].roadIndexList = [1, 2, 12 , 13];
+katanObject.roadList[8].roadIndexList = [3, 4, 14, 15];
+katanObject.roadList[9].roadIndexList = [5, 16, 17];
 
-katan.roadList[10].roadIndexList = [6, 11, 18];
-katan.roadList[11].roadIndexList = [6, 10, 12, 19];
-katan.roadList[12].roadIndexList = [7, 11, 13, 19];
-katan.roadList[13].roadIndexList = [7, 12, 14, 20];
-katan.roadList[14].roadIndexList = [8, 13, 15, 20];
-katan.roadList[15].roadIndexList = [8, 14, 16, 21];
-katan.roadList[16].roadIndexList = [9, 15, 17, 21];
-katan.roadList[17].roadIndexList = [9, 16, 22];
+katanObject.roadList[10].roadIndexList = [6, 11, 18];
+katanObject.roadList[11].roadIndexList = [6, 10, 12, 19];
+katanObject.roadList[12].roadIndexList = [7, 11, 13, 19];
+katanObject.roadList[13].roadIndexList = [7, 12, 14, 20];
+katanObject.roadList[14].roadIndexList = [8, 13, 15, 20];
+katanObject.roadList[15].roadIndexList = [8, 14, 16, 21];
+katanObject.roadList[16].roadIndexList = [9, 15, 17, 21];
+katanObject.roadList[17].roadIndexList = [9, 16, 22];
 
-katan.roadList[18].roadIndexList = [10, 23, 24];
-katan.roadList[19].roadIndexList = [11, 12, 25, 26];
-katan.roadList[20].roadIndexList = [13, 14, 27, 28];
-katan.roadList[21].roadIndexList = [15, 16, 29, 30];
-katan.roadList[22].roadIndexList = [17, 31, 32];
+katanObject.roadList[18].roadIndexList = [10, 23, 24];
+katanObject.roadList[19].roadIndexList = [11, 12, 25, 26];
+katanObject.roadList[20].roadIndexList = [13, 14, 27, 28];
+katanObject.roadList[21].roadIndexList = [15, 16, 29, 30];
+katanObject.roadList[22].roadIndexList = [17, 31, 32];
 
-katan.roadList[23].roadIndexList = [18, 24, 33];
-katan.roadList[24].roadIndexList = [18, 23, 25, 34];
-katan.roadList[25].roadIndexList = [19, 24, 26, 34];
-katan.roadList[26].roadIndexList = [19, 25, 27, 35];
-katan.roadList[27].roadIndexList = [20, 26, 28, 35];
-katan.roadList[28].roadIndexList = [20, 27, 29, 36];
-katan.roadList[29].roadIndexList = [21, 28, 30, 36];
-katan.roadList[30].roadIndexList = [21, 29, 31, 37];
-katan.roadList[31].roadIndexList = [22, 30, 32, 37];
-katan.roadList[32].roadIndexList = [22, 31, 38];
+katanObject.roadList[23].roadIndexList = [18, 24, 33];
+katanObject.roadList[24].roadIndexList = [18, 23, 25, 34];
+katanObject.roadList[25].roadIndexList = [19, 24, 26, 34];
+katanObject.roadList[26].roadIndexList = [19, 25, 27, 35];
+katanObject.roadList[27].roadIndexList = [20, 26, 28, 35];
+katanObject.roadList[28].roadIndexList = [20, 27, 29, 36];
+katanObject.roadList[29].roadIndexList = [21, 28, 30, 36];
+katanObject.roadList[30].roadIndexList = [21, 29, 31, 37];
+katanObject.roadList[31].roadIndexList = [22, 30, 32, 37];
+katanObject.roadList[32].roadIndexList = [22, 31, 38];
 
-katan.roadList[33].roadIndexList = [23, 39];
-katan.roadList[34].roadIndexList = [24, 25, 40, 41];
-katan.roadList[35].roadIndexList = [26, 27, 42, 43];
-katan.roadList[36].roadIndexList = [28, 29, 44, 45];
-katan.roadList[37].roadIndexList = [30, 31, 46, 47];
-katan.roadList[38].roadIndexList = [32, 48];
+katanObject.roadList[33].roadIndexList = [23, 39];
+katanObject.roadList[34].roadIndexList = [24, 25, 40, 41];
+katanObject.roadList[35].roadIndexList = [26, 27, 42, 43];
+katanObject.roadList[36].roadIndexList = [28, 29, 44, 45];
+katanObject.roadList[37].roadIndexList = [30, 31, 46, 47];
+katanObject.roadList[38].roadIndexList = [32, 48];
 
-katan.roadList[39].roadIndexList = [33, 40, 49];
-katan.roadList[40].roadIndexList = [34, 39, 41, 49];
-katan.roadList[41].roadIndexList = [34, 40, 42, 50];
-katan.roadList[42].roadIndexList = [35, 41, 43, 50];
-katan.roadList[43].roadIndexList = [35, 42, 44, 51];
-katan.roadList[44].roadIndexList = [36, 43, 45, 51];
-katan.roadList[45].roadIndexList = [36, 44, 46, 52];
-katan.roadList[46].roadIndexList = [37, 45, 47, 52];
-katan.roadList[47].roadIndexList = [37, 46, 48, 53];
-katan.roadList[48].roadIndexList = [38, 47, 53];
+katanObject.roadList[39].roadIndexList = [33, 40, 49];
+katanObject.roadList[40].roadIndexList = [34, 39, 41, 49];
+katanObject.roadList[41].roadIndexList = [34, 40, 42, 50];
+katanObject.roadList[42].roadIndexList = [35, 41, 43, 50];
+katanObject.roadList[43].roadIndexList = [35, 42, 44, 51];
+katanObject.roadList[44].roadIndexList = [36, 43, 45, 51];
+katanObject.roadList[45].roadIndexList = [36, 44, 46, 52];
+katanObject.roadList[46].roadIndexList = [37, 45, 47, 52];
+katanObject.roadList[47].roadIndexList = [37, 46, 48, 53];
+katanObject.roadList[48].roadIndexList = [38, 47, 53];
 
-katan.roadList[49].roadIndexList = [39, 40, 54];
-katan.roadList[50].roadIndexList = [41, 42, 55, 56];
-katan.roadList[51].roadIndexList = [43, 44, 57, 58];
-katan.roadList[52].roadIndexList = [45, 46, 59, 60];
-katan.roadList[53].roadIndexList = [47, 48, 61];
+katanObject.roadList[49].roadIndexList = [39, 40, 54];
+katanObject.roadList[50].roadIndexList = [41, 42, 55, 56];
+katanObject.roadList[51].roadIndexList = [43, 44, 57, 58];
+katanObject.roadList[52].roadIndexList = [45, 46, 59, 60];
+katanObject.roadList[53].roadIndexList = [47, 48, 61];
 
-katan.roadList[54].roadIndexList = [49, 55, 62];
-katan.roadList[55].roadIndexList = [50, 54, 56, 62];
-katan.roadList[56].roadIndexList = [50, 55, 57, 63];
-katan.roadList[57].roadIndexList = [51, 46, 58, 63];
-katan.roadList[58].roadIndexList = [51, 57, 59, 64];
-katan.roadList[59].roadIndexList = [52, 58, 60, 64];
-katan.roadList[60].roadIndexList = [52, 59, 61, 65];
-katan.roadList[61].roadIndexList = [53, 60, 65];
+katanObject.roadList[54].roadIndexList = [49, 55, 62];
+katanObject.roadList[55].roadIndexList = [50, 54, 56, 62];
+katanObject.roadList[56].roadIndexList = [50, 55, 57, 63];
+katanObject.roadList[57].roadIndexList = [51, 46, 58, 63];
+katanObject.roadList[58].roadIndexList = [51, 57, 59, 64];
+katanObject.roadList[59].roadIndexList = [52, 58, 60, 64];
+katanObject.roadList[60].roadIndexList = [52, 59, 61, 65];
+katanObject.roadList[61].roadIndexList = [53, 60, 65];
 
-katan.roadList[62].roadIndexList = [54, 55, 66];
-katan.roadList[63].roadIndexList = [56, 57, 67, 68];
-katan.roadList[64].roadIndexList = [58, 59, 69, 70];
-katan.roadList[65].roadIndexList = [60, 61, 71];
+katanObject.roadList[62].roadIndexList = [54, 55, 66];
+katanObject.roadList[63].roadIndexList = [56, 57, 67, 68];
+katanObject.roadList[64].roadIndexList = [58, 59, 69, 70];
+katanObject.roadList[65].roadIndexList = [60, 61, 71];
 
-katan.roadList[66].roadIndexList = [62, 67];
-katan.roadList[67].roadIndexList = [63, 66, 68];
-katan.roadList[68].roadIndexList = [63, 67, 69];
-katan.roadList[69].roadIndexList = [64, 68, 70];
-katan.roadList[70].roadIndexList = [64, 69, 71];
-katan.roadList[71].roadIndexList = [65, 70];
+katanObject.roadList[66].roadIndexList = [62, 67];
+katanObject.roadList[67].roadIndexList = [63, 66, 68];
+katanObject.roadList[68].roadIndexList = [63, 67, 69];
+katanObject.roadList[69].roadIndexList = [64, 68, 70];
+katanObject.roadList[70].roadIndexList = [64, 69, 71];
+katanObject.roadList[71].roadIndexList = [65, 70];
 
 let resourceList = [];
 
@@ -632,12 +632,12 @@ resourceList.forEach(resource => {
     resource.numberRipple = false;
 });
 
-katan.resourceList = resourceList;
+katanObject.resourceList = resourceList;
 
 let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
 numberList = shuffle(numberList);
 
-katan.resourceList = katan.resourceList
+katanObject.resourceList = katanObject.resourceList
     .map((resource, index) => {
         if (resource.type === 'dessert') {
             resource.number = 7;
@@ -721,13 +721,14 @@ katan.resourceList = katan.resourceList
         return resource;
     });
 
-const { subscribe, set, update } = writable(katan);
+const { subscribe, set, update } = writable(katanObject);
 
 const katanStore = {
     subscribe,
 
     turn: () => update(katan => {
-        katan.rollDice = false;
+        katanStore.unsetRollDice();
+
         katanStore.recomputePlayer();
 
         katan.playerList = katan.playerList
@@ -803,7 +804,6 @@ const katanStore = {
             });
 
         katanStore.setNumberRippleDisabled();
-        katanStore.setDiceEnabled();
         katanStore.doActionAndTurn();
 
         katan.mode = 'start';
@@ -818,13 +818,10 @@ const katanStore = {
 
     setDiceEnabled: () => update(katan => {
         katan.diceDisabled = false;
-
-        console.log('>>> katan', katan);
-
         return katan;
     }),
 
-    moveResource: (number) => {
+    moveResource: (number) => update(katan => {
         let matchResourceCount = 0;
         let moveResourceCount = 0;
 
@@ -832,7 +829,6 @@ const katanStore = {
             .filter(resource => resource.number === number)
             .filter(resource => !resource.buglar)
             .forEach(resource => {
-
                 resource.castleIndexList.forEach(castleIndex => {
                     const playerIndex = katan.castleList[castleIndex].playerIndex;
 
@@ -864,7 +860,6 @@ const katanStore = {
 
                         setTimeout(() => {
                             newResourceItem
-                                // .addClass('ripple')
                                 .animate({
                                     left: targetOffset.left + 'px',
                                     top: targetOffset.top + 'px'
@@ -885,14 +880,20 @@ const katanStore = {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
 
+                    console.log('>>> moveResourceEnd1');
+
                     katanStore.doActionAndTurn();
                 }
             }, 100);
         } else {
+            console.log('>>> moveResourceEnd2');
+
             katanStore.setDiceEnabled();
             katanStore.doActionAndTurn();
         }
-    },
+
+        return katan;
+    }),
 
     doActionAndTurn: () => {
         katanStore.recomputePlayer();
@@ -925,10 +926,6 @@ const katanStore = {
             player.make.iron;
     },
 
-    closeResourceModalAndTurn: () => {
-        katan.turn();
-    },
-
     updateAndShowResourceModal: async() => {
         katanStore.setShowResourceModal();
         await tick();
@@ -958,6 +955,16 @@ const katanStore = {
         return katan;
     }),
 
+    setRollDice: () => update(katan => {
+        katan.rollDice = true;
+        return katan;
+    }),
+
+    unsetRollDice: () => update(katan => {
+        katan.rollDice = false;
+        return katan;
+    }),
+
     play: () => update(katan => {
         katanStore.setDiceDisabled();
 
@@ -972,31 +979,23 @@ const katanStore = {
             number = window.targetNumber;
         }
 
+        katanStore.setRollDice();
+
+        console.log('>>> katan.rollDice', katan.rollDice);
+
         if (number === 7) {
             katan.mode = 'moveBuglar';
             katan.message = '도둑의 위치를 선택하세요.';
             katanStore.setNumberRippleEnabled();
-            katanStore.enableRollDice();
         } else {
             katanStore.setSelectedNumberRippleEnabled(number);
 
             setTimeout(() => {
                 katanStore.setNumberRippleDisabled(number);
-                katanStore.enableRollDice();
                 katanStore.moveResource(number);
             }, 2000);
         }
 
-        return katan;
-    }),
-
-    enableRollDice: () => update(katan => {
-        katan.rollDice = true;
-        return katan;
-    }),
-
-    disableRollDice: () => update(katan => {
-        katan.rollDice = false;
         return katan;
     }),
 
@@ -1006,15 +1005,17 @@ const katanStore = {
         return katan;
     }),
 
-    roll: (a, b) => update(katna => {
-        katna.dice[0] = a;
-        katna.dice[1] = b;
+    roll: (a, b) => update(katan => {
+        katan.dice[0] = a;
+        katan.dice[1] = b;
         return katan;
     }),
 
     getNumber: () => katan.dice[0] =  + katan.dice[1],
 
     isStartable: () => {
+        const katan = get(katanStore);
+
         let pickCompletePlayerLength = katan.playerList
             .filter(player => player.pickCastle === 2)
             .filter(player => player.pickRoad === 2)
@@ -1024,6 +1025,7 @@ const katanStore = {
     },
 
     getActivePlayer: () => {
+        const katan = get(katanStore);
         return katan.playerList[katan.playerIndex];
     },
 
@@ -1164,7 +1166,7 @@ const katanStore = {
         return katan;
     }),
 
-    setCastleRippleEnabled: () => update(katan => {
+    showConstructableCastle: () => update(katan => {
         katan.message = '마을을 만들곳을 클릭하세요';
 
         katan.castleList = katan.castleList.map(castle => {
@@ -1174,7 +1176,8 @@ const katanStore = {
                     .length;
 
                 if (linkedCastleLength === 0) {
-                    castle.ripple = true;
+                    castle.show = true;
+                    castle.hide = false;
                 }
             }
 
@@ -1238,8 +1241,9 @@ const katanStore = {
                 if (!resource.buglar) {
                     resource.numberRipple = true;
                 }
-            return resource;
-        });
+
+                return resource;
+            });
 
         return katan;
     }),
@@ -1277,20 +1281,6 @@ const katanStore = {
                 }
 
                 return road;
-            });
-
-        return katan;
-    }),
-
-    setShowCastle: () => update(katan => {
-        katan.castleList =  katan.castleList
-            .map(castle => {
-                if (castle.constructable && castle.playerIndex === -1) {
-                    castle.show = true;
-                    castle.hide = false;
-                }
-
-                return castle;
             });
 
         return katan;
@@ -1373,6 +1363,8 @@ const katanStore = {
 
                 return player;
             });
+
+        console.log('>>> katan', katan);
 
         return katan;
     })
