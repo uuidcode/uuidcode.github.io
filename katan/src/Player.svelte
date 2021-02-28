@@ -1,15 +1,10 @@
 <script>
     import katan from './katan'
-    import { onDestroy } from 'svelte';
     import Construction from './Construction.svelte'
     import { toStyle } from './util.js'
 
     export let playerIndex;
     export let type = 'player';
-
-    let player = $katan.playerList[playerIndex];
-    let turnClassEnabled = player.turn && type === 'player';
-    let modalMode = type === 'modal';
 
     const getResourceList = () => {
         return [
@@ -50,19 +45,18 @@
         });
     };
 
-    let playerStyle = getPlayerStyle();
-    let resourceList = getResourceList();
-    let resourceClassName = 'trade-resource';
+    let player;
+    let playerList;
+    let playerStyle;
+    let resourceList;
 
-    const unsubscribe = katan.subscribe(currentKatan => {
-        player = currentKatan.playerList[playerIndex];
+    $: {
+        playerList = $katan.playerList;
+        player = playerList[playerIndex];
         playerStyle = getPlayerStyle();
         resourceList = getResourceList();
-        turnClassEnabled = player.turn && type === 'player';
-    });
-
-    onDestroy(unsubscribe);
-
+        console.log('>>> player', player);
+    }
 </script>
 
 <main>
@@ -74,55 +68,53 @@
         <tr>
             <td>
                 <table class="inner-resource">
-                    {#if !modalMode}
-                        <tr>
-                            <td colspan="3" class="header">점수</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <table width="100%">
-                                    <tr class="point">
-                                        <td>마을</td>
-                                        <td>도시</td>
-                                        <td>최장 교역로</td>
-                                        <td>최강 기사단</td>
-                                        <td>현재 점수</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{player.point.castle}</td>
-                                        <td>{player.point.city}</td>
-                                        <td>{player.point.road}</td>
-                                        <td>{player.point.knight}</td>
-                                        <td>{player.point.sum}</td>
-                                    </tr>
-                                </table>
-                            </td>
+                    <tr>
+                        <td colspan="3" class="header">점수</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table width="100%">
+                                <tr class="point">
+                                    <td>마을</td>
+                                    <td>도시</td>
+                                    <td>최장 교역로</td>
+                                    <td>최강 기사단</td>
+                                    <td>현재 점수</td>
+                                </tr>
+                                <tr>
+                                    <td>{player.point.castle}</td>
+                                    <td>{player.point.city}</td>
+                                    <td>{player.point.road}</td>
+                                    <td>{player.point.knight}</td>
+                                    <td>{player.point.sum}</td>
+                                </tr>
+                            </table>
+                        </td>
 
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="header">건설</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <table class="construction" width="100%">
-                                    <tr>
-                                        <td>마을</td>
-                                        <td>도시</td>
-                                        <td>도로</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{player.construction.castle}</td>
-                                        <td>{player.construction.city}</td>
-                                        <td>{player.construction.road}</td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
+                    </tr>
+                    <tr>
+                        <td colspan="3" class="header">건설</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table class="construction" width="100%">
+                                <tr>
+                                    <td>마을</td>
+                                    <td>도시</td>
+                                    <td>도로</td>
+                                </tr>
+                                <tr>
+                                    <td>{player.construction.castle}</td>
+                                    <td>{player.construction.city}</td>
+                                    <td>{player.construction.road}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td colspan="3" class="header">자원</td>
-                        </tr>
-                    {/if}
+                    <tr>
+                        <td colspan="3" class="header">자원</td>
+                    </tr>
 
                     {#each resourceList as resource}
                         <tr>
