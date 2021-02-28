@@ -1,12 +1,9 @@
 <script>
+    import katan from './katan.js'
     import Board from './Board.svelte'
     import Dice from './Dice.svelte'
     import Player from './Player.svelte'
-    import katan from './katan.js'
-    import { onDestroy } from 'svelte';
     import { toStyle } from './util.js'
-
-    let player = $katan.playerList[$katan.playerIndex];
 
     const getHeaderStyle = () => {
         return toStyle({
@@ -14,14 +11,15 @@
         });
     };
 
-    let headerStyle = getHeaderStyle();
+    let player;
+    let playerList;
+    let headerStyle;
 
-    const unsubscribe = katan.subscribe(currentKatan => {
-        player = currentKatan.playerList[currentKatan.playerIndex];
+    $: {
+        playerList = $katan.playerList;
+        player = playerList[$katan.playerIndex];
         headerStyle = getHeaderStyle();
-    });
-
-    onDestroy(unsubscribe);
+    }
 </script>
 
 <div class="katan">
