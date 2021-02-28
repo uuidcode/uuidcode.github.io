@@ -55,7 +55,6 @@
         player = playerList[playerIndex];
         playerStyle = getPlayerStyle();
         resourceList = getResourceList();
-        console.log('>>> player', player);
     }
 </script>
 

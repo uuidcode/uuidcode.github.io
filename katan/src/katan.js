@@ -925,7 +925,6 @@ const katanStore = {
                                     moveResourceCount++;
                                 });
                         }, matchResourceCount * 1000)
-
                     }
                 });
             });
@@ -934,9 +933,6 @@ const katanStore = {
             const interval = setInterval(() => {
                 if (moveResourceCount === matchResourceCount) {
                     clearInterval(interval);
-
-                    console.log('>>> moveResourceEnd1');
-
                     katanStore.doActionAndTurn();
                 }
             }, 100);
@@ -1012,11 +1008,14 @@ const katanStore = {
 
     setRollDice: () => update(katan => {
         katan.rollDice = true;
+        console.log('>>> setRollDice katan.rollDice', katan.rollDice);
+
         return katan;
     }),
 
     unsetRollDice: () => update(katan => {
         katan.rollDice = false;
+        console.log('>>> unsetRollDice katan.rollDice', katan.rollDice);
         return katan;
     }),
 
@@ -1348,7 +1347,7 @@ const katanStore = {
         return katan;
     }),
 
-    recomputePlayer: () => update((katan) => {
+    recomputePlayer: () => update(katan => {
         katan.playerList = katan.playerList
             .map(player => {
                 player.trade.tree.action =
