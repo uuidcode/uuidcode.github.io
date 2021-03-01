@@ -4,6 +4,8 @@
     import Dice from './Dice.svelte'
     import Player from './Player.svelte'
     import { toStyle } from './util.js'
+    import { Tooltip } from './bootstrap.esm.min.js'
+    import jQuery from 'jquery';
 
     const getHeaderStyle = () => {
         return toStyle({
@@ -20,6 +22,22 @@
         player = playerList[$katan.playerIndex];
         headerStyle = getHeaderStyle();
     }
+
+    jQuery(() => {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+
+            const trade = tooltipTriggerEl.getAttribute('trade') || '';
+            const tooltip = new Tooltip(tooltipTriggerEl, {
+                html: true,
+                placement: tooltipTriggerEl.getAttribute('placement') || 'top',
+                trigger: 'manual',
+                title: `<strong>${trade}:1</strong><img class="port-resource" src="tree_item.png">`
+            });
+            tooltip.show();
+            return tooltip
+        })
+    });
 </script>
 
 <div class="katan">
@@ -28,7 +46,7 @@
             <td valign="top" class="player">
                 <Player playerIndex={0}></Player>
             </td>
-            <td valign="top" class="text-center">
+            <td valign="top" class="text-center" width="1200px">
                 <h1 class="message-header" style={headerStyle}>{player.name}! {$katan.message}</h1>
                 <div class="dice-container">
                     <Dice number={$katan.dice[0]}></Dice>
@@ -80,7 +98,7 @@
     }
 
     .player {
-        width: 250px;
+        width: 230px;
     }
 
     td {
@@ -91,7 +109,7 @@
         margin-top: 0;
         margin-left: auto;
         margin-right: auto;
-        transform: scale(0.8);
+        transform: scale(0.7);
         transform-origin: 0 0;
     }
 

@@ -83,3 +83,8 @@ button:focus {
 .hide {
     display: none;
 }
+
+.port-resource {
+    width: 40px;
+    height: 40px;
+}

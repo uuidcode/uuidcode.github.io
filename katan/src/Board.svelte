@@ -40,6 +40,6 @@
 
     .board {
         position: relative;
-        margin: 30px;
+        margin: 120px;
     }
 </style>
