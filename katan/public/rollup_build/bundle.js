@@ -495,8 +495,8 @@ var app = (function (jQuery) {
             height: 50,
         },
         number: {
-            width: 60,
-            height: 60,
+            width: 100,
+            height: 100,
         },
         resource: {
             width: 60,
@@ -721,67 +721,198 @@ var app = (function (jQuery) {
         }
     }
 
-    katanObject.castleList[0].port = true;
-    katanObject.castleList[1].port = true;
-    katanObject.castleList[2].port = true;
-    katanObject.castleList[3].port = true;
-    katanObject.castleList[4].port = true;
-    katanObject.castleList[5].port = true;
-    katanObject.castleList[6].port = true;
-    katanObject.castleList[7].port = true;
-    katanObject.castleList[8].port = true;
-    katanObject.castleList[9].port = false;
-    katanObject.castleList[10].port = false;
-    katanObject.castleList[11].port = false;
-    katanObject.castleList[12].port = false;
-    katanObject.castleList[13].port = false;
-    katanObject.castleList[14].port = true;
-    katanObject.castleList[15].port = true;
-    katanObject.castleList[16].port = true;
-    katanObject.castleList[17].port = true;
-    katanObject.castleList[18].port = false;
-    katanObject.castleList[19].port = false;
-    katanObject.castleList[20].port = false;
-    katanObject.castleList[21].port = false;
-    katanObject.castleList[22].port = false;
-    katanObject.castleList[23].port = false;
-    katanObject.castleList[24].port = false;
-    katanObject.castleList[25].port = true;
-    katanObject.castleList[26].port = true;
-    katanObject.castleList[27].port = true;
-    katanObject.castleList[28].port = true;
-    katanObject.castleList[29].port = false;
-    katanObject.castleList[30].port = false;
-    katanObject.castleList[31].port = false;
-    katanObject.castleList[32].port = false;
-    katanObject.castleList[33].port = false;
-    katanObject.castleList[34].port = false;
-    katanObject.castleList[35].port = false;
-    katanObject.castleList[36].port = true;
-    katanObject.castleList[37].port = true;
-    katanObject.castleList[38].port = true;
-    katanObject.castleList[39].port = true;
-    katanObject.castleList[40].port = false;
-    katanObject.castleList[41].port = false;
-    katanObject.castleList[42].port = false;
-    katanObject.castleList[43].port = false;
-    katanObject.castleList[44].port = false;
-    katanObject.castleList[45].port = true;
-    katanObject.castleList[46].port = true;
-    katanObject.castleList[47].port = true;
-    katanObject.castleList[48].port = true;
-    katanObject.castleList[49].port = true;
-    katanObject.castleList[50].port = true;
-    katanObject.castleList[51].port = true;
-    katanObject.castleList[52].port = true;
-    katanObject.castleList[53].port = true;
-
     katanObject.castleList.forEach((castle, index) => castle.index = index);
     katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
     katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
     katanObject.castleList.forEach(castle => castle.show = castle.ripple);
     katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
     katanObject.castleList.forEach(castle => castle.title = '');
+
+    katanObject.castleList[0].port = {
+        enabled: true,
+    };
+
+    katanObject.castleList[1].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[2].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[3].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[4].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[5].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[6].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[7].port = {
+        enabled: true
+    };
+
+    katanObject.castleList[8].port = {
+        enabled: true
+    };
+    katanObject.castleList[9].port = {
+        enabled: false
+    };
+    katanObject.castleList[10].port = {
+        enabled: false
+    };
+    katanObject.castleList[11].port = {
+        enabled: false
+    };
+    katanObject.castleList[12].port = {
+        enabled: false
+    };
+    katanObject.castleList[13].port = {
+        enabled: false
+    };
+    katanObject.castleList[14].port = {
+        enabled: true
+    };
+    katanObject.castleList[15].port = {
+        enabled: true
+    };
+    katanObject.castleList[16].port = {
+        enabled: true
+    };
+    katanObject.castleList[17].port = {
+        enabled: true
+    };
+    katanObject.castleList[18].port = {
+        enabled: false
+    };
+    katanObject.castleList[19].port = {
+        enabled: false
+    };
+    katanObject.castleList[20].port = {
+        enabled: false
+    };
+    katanObject.castleList[21].port = {
+        enabled: false
+    };
+    katanObject.castleList[22].port = {
+        enabled: false
+    };
+    katanObject.castleList[23].port = {
+        enabled: false
+    };
+    katanObject.castleList[24].port = {
+        enabled: false
+    };
+    katanObject.castleList[25].port = {
+        enabled: true
+    };
+    katanObject.castleList[26].port = {
+        enabled: true
+    };
+    katanObject.castleList[27].port = {
+        enabled: true
+    };
+    katanObject.castleList[28].port = {
+        enabled: true
+    };
+    katanObject.castleList[29].port = {
+        enabled: false
+    };
+    katanObject.castleList[30].port = {
+        enabled: false
+    };
+    katanObject.castleList[31].port = {
+        enabled: false
+    };
+    katanObject.castleList[32].port = {
+        enabled: false
+    };
+    katanObject.castleList[33].port = {
+        enabled: false
+    };
+    katanObject.castleList[34].port = {
+        enabled: false
+    };
+    katanObject.castleList[35].port = {
+        enabled: false
+    };
+    katanObject.castleList[36].port = {
+        enabled: true
+    };
+    katanObject.castleList[37].port = {
+        enabled: true
+    };
+    katanObject.castleList[38].port = {
+        enabled: true
+    };
+    katanObject.castleList[39].port = {
+        enabled: true
+    };
+    katanObject.castleList[40].port = {
+        enabled: false
+    };
+    katanObject.castleList[41].port = {
+        enabled: false
+    };
+    katanObject.castleList[42].port = {
+        enabled: false
+    };
+    katanObject.castleList[43].port = {
+        enabled: false
+    };
+    katanObject.castleList[44].port = {
+        enabled: false
+    };
+    katanObject.castleList[45].port = {
+        enabled: true
+    };
+    katanObject.castleList[46].port = {
+        enabled: true
+    };
+    katanObject.castleList[47].port = {
+        enabled: true
+    };
+    katanObject.castleList[48].port = {
+        enabled: true
+    };
+    katanObject.castleList[49].port = {
+        enabled: true
+    };
+    katanObject.castleList[50].port = {
+        enabled: true
+    };
+    katanObject.castleList[51].port = {
+        enabled: true
+    };
+    katanObject.castleList[52].port = {
+        enabled: true
+    };
+    katanObject.castleList[53].port = {
+        enabled: true
+    };
+
+    katanObject.castleList
+        .filter(castle => castle.port.enabled)
+        .map(castle => castle.index)
+        .sort(random())
+        .slice(0, 8)
+        .forEach(i => {
+            katanObject.castleList[i].port = {
+                ...katanObject.castleList[i].port,
+                trade: 3,
+                type: 'all'
+            };
+        });
+
+    console.log('>>> katanObject.castleList', katanObject.castleList);
 
     katanObject.castleList[0].roadIndexList = [0, 6];
     katanObject.castleList[1].roadIndexList = [0, 1];
@@ -2414,7 +2545,7 @@ var app = (function (jQuery) {
     			div0 = element("div");
     			t = text(t_value);
     			add_location(div0, file$1, 72, 4, 2006);
-    			attr_dev(div1, "class", "castle svelte-rpvmq4");
+    			attr_dev(div1, "class", "castle svelte-6z5a9c");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div1, "ripple1", /*castle*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
@@ -2494,7 +2625,7 @@ var app = (function (jQuery) {
     			t4 = text(t4_value);
     			add_location(div0, file$1, 62, 8, 1734);
     			add_location(div1, file$1, 63, 8, 1776);
-    			attr_dev(div2, "class", "castle svelte-rpvmq4");
+    			attr_dev(div2, "class", "castle svelte-6z5a9c");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
     			add_location(div2, file$1, 61, 4, 1684);
     		},
@@ -2700,8 +2831,220 @@ var app = (function (jQuery) {
     	}
     }
 
+    /* src\Port.svelte generated by Svelte v3.32.3 */
+    const file$2 = "src\\Port.svelte";
+
+    // (48:0) {#if name!==''}
+    function create_if_block$2(ctx) {
+    	let div1;
+    	let div0;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			div1 = element("div");
+    			div0 = element("div");
+    			t = text(/*name*/ ctx[1]);
+    			add_location(div0, file$2, 50, 4, 1296);
+    			attr_dev(div1, "class", "port svelte-8tuom0");
+    			attr_dev(div1, "style", /*castleStyle*/ ctx[0]);
+    			add_location(div1, file$2, 48, 0, 1247);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
+    			append_dev(div0, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*name*/ 2) set_data_dev(t, /*name*/ ctx[1]);
+
+    			if (dirty & /*castleStyle*/ 1) {
+    				attr_dev(div1, "style", /*castleStyle*/ ctx[0]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$2.name,
+    		type: "if",
+    		source: "(48:0) {#if name!==''}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*name*/ ctx[1] !== "" && create_if_block$2(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (/*name*/ ctx[1] !== "") {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$2(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$2.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	let $katan;
+    	validate_store(katanStore, "katan");
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(5, $katan = $$value));
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots("Port", slots, []);
+    	let { castleIndex } = $$props;
+
+    	const createStyle = () => {
+    		let styleObject = {
+    			left: castle.left + "px",
+    			top: castle.top + "px",
+    			width: config.castle.width + "px",
+    			height: config.castle.height + "px",
+    			lineHeight: config.castle.height + "px",
+    			borderRadius: config.castle.height + "px"
+    		};
+
+    		return toStyle(styleObject);
+    	};
+
+    	let castleList;
+    	let castle;
+    	let castleStyle;
+    	let name = "";
+    	const writable_props = ["castleIndex"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Port> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$$set = $$props => {
+    		if ("castleIndex" in $$props) $$invalidate(2, castleIndex = $$props.castleIndex);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		katan: katanStore,
+    		config,
+    		toStyle,
+    		castleIndex,
+    		createStyle,
+    		castleList,
+    		castle,
+    		castleStyle,
+    		name,
+    		$katan
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ("castleIndex" in $$props) $$invalidate(2, castleIndex = $$props.castleIndex);
+    		if ("castleList" in $$props) $$invalidate(3, castleList = $$props.castleList);
+    		if ("castle" in $$props) $$invalidate(4, castle = $$props.castle);
+    		if ("castleStyle" in $$props) $$invalidate(0, castleStyle = $$props.castleStyle);
+    		if ("name" in $$props) $$invalidate(1, name = $$props.name);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$katan, castleList, castleIndex, castle*/ 60) {
+    			{
+    				$$invalidate(3, castleList = $katan.castleList);
+    				$$invalidate(4, castle = castleList[castleIndex]);
+    				$$invalidate(0, castleStyle = createStyle());
+
+    				if (castle.port.enabled) {
+    					if (castle.port.type !== undefined) {
+    						if (castle.port.type === "all") {
+    							$$invalidate(1, name = `${castle.port.trade}:1`);
+    						} else {
+    							$$invalidate(1, name = `${castle.port.type}(${castle.port.trade}:1)`);
+    						}
+    					} else {
+    						$$invalidate(1, name = "");
+    					}
+    				} else {
+    					$$invalidate(1, name = "");
+    				}
+    			}
+    		}
+    	};
+
+    	return [castleStyle, name, castleIndex, castleList, castle, $katan];
+    }
+
+    class Port extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castleIndex: 2 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "Port",
+    			options,
+    			id: create_fragment$2.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*castleIndex*/ ctx[2] === undefined && !("castleIndex" in props)) {
+    			console.warn("<Port> was created without expected prop 'castleIndex'");
+    		}
+    	}
+
+    	get castleIndex() {
+    		throw new Error("<Port>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set castleIndex(value) {
+    		throw new Error("<Port>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
     /* src\Road.svelte generated by Svelte v3.32.3 */
-    const file$2 = "src\\Road.svelte";
+    const file$3 = "src\\Road.svelte";
 
     // (75:0) {:else}
     function create_else_block$1(ctx) {
@@ -2717,14 +3060,14 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$2, 82, 8, 2069);
+    			add_location(div0, file$3, 82, 8, 2069);
     			attr_dev(div1, "class", "road svelte-d329jv");
     			attr_dev(div1, "style", /*roadStyle*/ ctx[1]);
     			toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "pick", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*road*/ ctx[0].hide);
     			toggle_class(div1, "show", /*road*/ ctx[0].show);
-    			add_location(div1, file$2, 75, 4, 1849);
+    			add_location(div1, file$3, 75, 4, 1849);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -2778,7 +3121,7 @@ var app = (function (jQuery) {
     }
 
     // (70:0) {#if config.debug}
-    function create_if_block$2(ctx) {
+    function create_if_block$3(ctx) {
     	let div2;
     	let div0;
     	let t0_value = /*road*/ ctx[0].i + "";
@@ -2801,11 +3144,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$2, 71, 8, 1765);
-    			add_location(div1, file$2, 72, 8, 1802);
+    			add_location(div0, file$3, 71, 8, 1765);
+    			add_location(div1, file$3, 72, 8, 1802);
     			attr_dev(div2, "class", "road svelte-d329jv");
     			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
-    			add_location(div2, file$2, 70, 4, 1720);
+    			add_location(div2, file$3, 70, 4, 1720);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -2833,7 +3176,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$2.name,
+    		id: create_if_block$3.name,
     		type: "if",
     		source: "(70:0) {#if config.debug}",
     		ctx
@@ -2842,11 +3185,11 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function create_fragment$2(ctx) {
+    function create_fragment$3(ctx) {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (config.debug) return create_if_block$2;
+    		if (config.debug) return create_if_block$3;
     		return create_else_block$1;
     	}
 
@@ -2878,7 +3221,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$2.name,
+    		id: create_fragment$3.name,
     		type: "component",
     		source: "",
     		ctx
@@ -2887,7 +3230,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$2($$self, $$props, $$invalidate) {
+    function instance$3($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
     	component_subscribe($$self, katanStore, $$value => $$invalidate(5, $katan = $$value));
@@ -2995,13 +3338,13 @@ var app = (function (jQuery) {
     class Road extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { roadIndex: 3 });
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { roadIndex: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Road",
     			options,
-    			id: create_fragment$2.name
+    			id: create_fragment$3.name
     		});
 
     		const { ctx } = this.$$;
@@ -3022,7 +3365,7 @@ var app = (function (jQuery) {
     }
 
     /* src\Board.svelte generated by Svelte v3.32.3 */
-    const file$3 = "src\\Board.svelte";
+    const file$4 = "src\\Board.svelte";
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -3045,7 +3388,7 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (19:4) {#each resourceList as resource, i}
+    // (20:4) {#each resourceList as resource, i}
     function create_each_block_2(ctx) {
     	let cell;
     	let current;
@@ -3082,16 +3425,18 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(19:4) {#each resourceList as resource, i}",
+    		source: "(20:4) {#each resourceList as resource, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (22:4) {#each castleList as castle, i}
+    // (23:4) {#each castleList as castle, i}
     function create_each_block_1(ctx) {
     	let castle;
+    	let t;
+    	let port;
     	let current;
 
     	castle = new Castle({
@@ -3099,26 +3444,39 @@ var app = (function (jQuery) {
     			$$inline: true
     		});
 
+    	port = new Port({
+    			props: { castleIndex: /*i*/ ctx[6] },
+    			$$inline: true
+    		});
+
     	const block = {
     		c: function create() {
     			create_component(castle.$$.fragment);
+    			t = space();
+    			create_component(port.$$.fragment);
     		},
     		m: function mount(target, anchor) {
     			mount_component(castle, target, anchor);
+    			insert_dev(target, t, anchor);
+    			mount_component(port, target, anchor);
     			current = true;
     		},
     		p: noop,
     		i: function intro(local) {
     			if (current) return;
     			transition_in(castle.$$.fragment, local);
+    			transition_in(port.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(castle.$$.fragment, local);
+    			transition_out(port.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			destroy_component(castle, detaching);
+    			if (detaching) detach_dev(t);
+    			destroy_component(port, detaching);
     		}
     	};
 
@@ -3126,14 +3484,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(22:4) {#each castleList as castle, i}",
+    		source: "(23:4) {#each castleList as castle, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (25:4) {#each $katan.roadList as road, i}
+    // (27:4) {#each $katan.roadList as road, i}
     function create_each_block(ctx) {
     	let road;
     	let current;
@@ -3170,14 +3528,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(25:4) {#each $katan.roadList as road, i}",
+    		source: "(27:4) {#each $katan.roadList as road, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$3(ctx) {
+    function create_fragment$4(ctx) {
     	let main;
     	let t0;
     	let t1;
@@ -3240,7 +3598,7 @@ var app = (function (jQuery) {
 
     			attr_dev(main, "class", "board svelte-8f6y7b");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
-    			add_location(main, file$3, 17, 0, 451);
+    			add_location(main, file$4, 18, 0, 489);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3399,7 +3757,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$3.name,
+    		id: create_fragment$4.name,
     		type: "component",
     		source: "",
     		ctx
@@ -3408,7 +3766,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$3($$self, $$props, $$invalidate) {
+    function instance$4($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
     	component_subscribe($$self, katanStore, $$value => $$invalidate(2, $katan = $$value));
@@ -3438,6 +3796,7 @@ var app = (function (jQuery) {
     		toStyle,
     		Cell,
     		Castle,
+    		Port,
     		Road,
     		katan: katanStore,
     		resourceList,
@@ -3462,13 +3821,13 @@ var app = (function (jQuery) {
     class Board extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { resourceList: 0, castleList: 1 });
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { resourceList: 0, castleList: 1 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Board",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$4.name
     		});
 
     		const { ctx } = this.$$;
@@ -3502,9 +3861,9 @@ var app = (function (jQuery) {
 
     /* src\Dice.svelte generated by Svelte v3.32.3 */
 
-    const file$4 = "src\\Dice.svelte";
+    const file$5 = "src\\Dice.svelte";
 
-    function create_fragment$4(ctx) {
+    function create_fragment$5(ctx) {
     	let div;
     	let t;
 
@@ -3513,7 +3872,7 @@ var app = (function (jQuery) {
     			div = element("div");
     			t = text(/*number*/ ctx[0]);
     			attr_dev(div, "class", "dice svelte-1rtrnw9");
-    			add_location(div, file$4, 4, 0, 43);
+    			add_location(div, file$5, 4, 0, 43);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3534,7 +3893,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$4.name,
+    		id: create_fragment$5.name,
     		type: "component",
     		source: "",
     		ctx
@@ -3543,7 +3902,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$4($$self, $$props, $$invalidate) {
+    function instance$5($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Dice", slots, []);
     	let { number } = $$props;
@@ -3573,13 +3932,13 @@ var app = (function (jQuery) {
     class Dice extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { number: 0 });
+    		init(this, options, instance$5, create_fragment$5, safe_not_equal, { number: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Dice",
     			options,
-    			id: create_fragment$4.name
+    			id: create_fragment$5.name
     		});
 
     		const { ctx } = this.$$;
@@ -3600,9 +3959,9 @@ var app = (function (jQuery) {
     }
 
     /* src\Construction.svelte generated by Svelte v3.32.3 */
-    const file$5 = "src\\Construction.svelte";
+    const file$6 = "src\\Construction.svelte";
 
-    function create_fragment$5(ctx) {
+    function create_fragment$6(ctx) {
     	let main;
     	let table;
     	let tr0;
@@ -3734,81 +4093,81 @@ var app = (function (jQuery) {
     			t20 = text("발전카드");
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "class", "svelte-qvq2cg");
-    			add_location(img0, file$5, 18, 16, 369);
+    			add_location(img0, file$6, 18, 16, 369);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "class", "svelte-qvq2cg");
-    			add_location(img1, file$5, 19, 16, 411);
+    			add_location(img1, file$6, 19, 16, 411);
     			attr_dev(td0, "class", "svelte-qvq2cg");
-    			add_location(td0, file$5, 17, 12, 348);
+    			add_location(td0, file$6, 17, 12, 348);
     			attr_dev(button0, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button0.disabled = button0_disabled_value = !/*player*/ ctx[0].make.road;
-    			add_location(button0, file$5, 22, 16, 487);
+    			add_location(button0, file$6, 22, 16, 487);
     			attr_dev(td1, "class", "svelte-qvq2cg");
-    			add_location(td1, file$5, 21, 12, 466);
-    			add_location(tr0, file$5, 16, 8, 331);
+    			add_location(td1, file$6, 21, 12, 466);
+    			add_location(tr0, file$6, 16, 8, 331);
     			if (img2.src !== (img2_src_value = "tree_item.png")) attr_dev(img2, "src", img2_src_value);
     			attr_dev(img2, "class", "svelte-qvq2cg");
-    			add_location(img2, file$5, 29, 16, 729);
+    			add_location(img2, file$6, 29, 16, 729);
     			if (img3.src !== (img3_src_value = "mud_item.png")) attr_dev(img3, "src", img3_src_value);
     			attr_dev(img3, "class", "svelte-qvq2cg");
-    			add_location(img3, file$5, 30, 16, 771);
+    			add_location(img3, file$6, 30, 16, 771);
     			if (img4.src !== (img4_src_value = "wheat_item.png")) attr_dev(img4, "src", img4_src_value);
     			attr_dev(img4, "class", "svelte-qvq2cg");
-    			add_location(img4, file$5, 31, 16, 812);
+    			add_location(img4, file$6, 31, 16, 812);
     			if (img5.src !== (img5_src_value = "sheep_item.png")) attr_dev(img5, "src", img5_src_value);
     			attr_dev(img5, "class", "svelte-qvq2cg");
-    			add_location(img5, file$5, 32, 16, 855);
+    			add_location(img5, file$6, 32, 16, 855);
     			attr_dev(td2, "class", "svelte-qvq2cg");
-    			add_location(td2, file$5, 28, 12, 708);
+    			add_location(td2, file$6, 28, 12, 708);
     			attr_dev(button1, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button1.disabled = button1_disabled_value = !/*player*/ ctx[0].make.castle;
-    			add_location(button1, file$5, 35, 16, 933);
+    			add_location(button1, file$6, 35, 16, 933);
     			attr_dev(td3, "class", "svelte-qvq2cg");
-    			add_location(td3, file$5, 34, 12, 912);
-    			add_location(tr1, file$5, 27, 8, 691);
+    			add_location(td3, file$6, 34, 12, 912);
+    			add_location(tr1, file$6, 27, 8, 691);
     			if (img6.src !== (img6_src_value = "wheat_item.png")) attr_dev(img6, "src", img6_src_value);
     			attr_dev(img6, "class", "svelte-qvq2cg");
-    			add_location(img6, file$5, 42, 16, 1179);
+    			add_location(img6, file$6, 42, 16, 1179);
     			if (img7.src !== (img7_src_value = "wheat_item.png")) attr_dev(img7, "src", img7_src_value);
     			attr_dev(img7, "class", "svelte-qvq2cg");
-    			add_location(img7, file$5, 43, 16, 1222);
+    			add_location(img7, file$6, 43, 16, 1222);
     			if (img8.src !== (img8_src_value = "iron_item.png")) attr_dev(img8, "src", img8_src_value);
     			attr_dev(img8, "class", "svelte-qvq2cg");
-    			add_location(img8, file$5, 44, 16, 1265);
+    			add_location(img8, file$6, 44, 16, 1265);
     			if (img9.src !== (img9_src_value = "iron_item.png")) attr_dev(img9, "src", img9_src_value);
     			attr_dev(img9, "class", "svelte-qvq2cg");
-    			add_location(img9, file$5, 45, 16, 1307);
+    			add_location(img9, file$6, 45, 16, 1307);
     			if (img10.src !== (img10_src_value = "iron_item.png")) attr_dev(img10, "src", img10_src_value);
     			attr_dev(img10, "class", "svelte-qvq2cg");
-    			add_location(img10, file$5, 46, 16, 1349);
+    			add_location(img10, file$6, 46, 16, 1349);
     			attr_dev(td4, "class", "svelte-qvq2cg");
-    			add_location(td4, file$5, 41, 12, 1158);
+    			add_location(td4, file$6, 41, 12, 1158);
     			attr_dev(button2, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button2.disabled = button2_disabled_value = !/*player*/ ctx[0].make.city;
-    			add_location(button2, file$5, 49, 16, 1426);
+    			add_location(button2, file$6, 49, 16, 1426);
     			attr_dev(td5, "class", "svelte-qvq2cg");
-    			add_location(td5, file$5, 48, 12, 1405);
-    			add_location(tr2, file$5, 40, 8, 1141);
+    			add_location(td5, file$6, 48, 12, 1405);
+    			add_location(tr2, file$6, 40, 8, 1141);
     			if (img11.src !== (img11_src_value = "wheat_item.png")) attr_dev(img11, "src", img11_src_value);
     			attr_dev(img11, "class", "svelte-qvq2cg");
-    			add_location(img11, file$5, 54, 16, 1588);
+    			add_location(img11, file$6, 54, 16, 1588);
     			if (img12.src !== (img12_src_value = "sheep_item.png")) attr_dev(img12, "src", img12_src_value);
     			attr_dev(img12, "class", "svelte-qvq2cg");
-    			add_location(img12, file$5, 55, 16, 1631);
+    			add_location(img12, file$6, 55, 16, 1631);
     			if (img13.src !== (img13_src_value = "iron_item.png")) attr_dev(img13, "src", img13_src_value);
     			attr_dev(img13, "class", "svelte-qvq2cg");
-    			add_location(img13, file$5, 56, 16, 1674);
+    			add_location(img13, file$6, 56, 16, 1674);
     			attr_dev(td6, "class", "svelte-qvq2cg");
-    			add_location(td6, file$5, 53, 12, 1567);
+    			add_location(td6, file$6, 53, 12, 1567);
     			attr_dev(button3, "class", "btn btn-primary btn-sm svelte-qvq2cg");
     			button3.disabled = button3_disabled_value = !/*player*/ ctx[0].make.dev;
-    			add_location(button3, file$5, 59, 16, 1751);
+    			add_location(button3, file$6, 59, 16, 1751);
     			attr_dev(td7, "class", "svelte-qvq2cg");
-    			add_location(td7, file$5, 58, 12, 1730);
-    			add_location(tr3, file$5, 52, 8, 1550);
+    			add_location(td7, file$6, 58, 12, 1730);
+    			add_location(tr3, file$6, 52, 8, 1550);
     			attr_dev(table, "class", "construction-resource svelte-qvq2cg");
-    			add_location(table, file$5, 15, 4, 285);
-    			add_location(main, file$5, 14, 0, 274);
+    			add_location(table, file$6, 15, 4, 285);
+    			add_location(main, file$6, 14, 0, 274);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3905,7 +4264,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$5.name,
+    		id: create_fragment$6.name,
     		type: "component",
     		source: "",
     		ctx
@@ -3914,7 +4273,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$5($$self, $$props, $$invalidate) {
+    function instance$6($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Construction", slots, []);
     	let player = katanStore.getActivePlayer();
@@ -3948,19 +4307,19 @@ var app = (function (jQuery) {
     class Construction extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$5, create_fragment$5, safe_not_equal, {});
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Construction",
     			options,
-    			id: create_fragment$5.name
+    			id: create_fragment$6.name
     		});
     	}
     }
 
     /* src\Player.svelte generated by Svelte v3.32.3 */
-    const file$6 = "src\\Player.svelte";
+    const file$7 = "src\\Player.svelte";
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
@@ -3975,7 +4334,7 @@ var app = (function (jQuery) {
     }
 
     // (126:32) {#if player.trade[resource.type].enable}
-    function create_if_block$3(ctx) {
+    function create_if_block$4(ctx) {
     	let table;
     	let tr;
     	let each_value_1 = /*resourceList*/ ctx[2];
@@ -3995,9 +4354,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$6, 127, 40, 4253);
+    			add_location(tr, file$7, 127, 40, 4253);
     			attr_dev(table, "class", "trade-target-resource svelte-1v4aggu");
-    			add_location(table, file$6, 126, 36, 4175);
+    			add_location(table, file$7, 126, 36, 4175);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4040,7 +4399,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$3.name,
+    		id: create_if_block$4.name,
     		type: "if",
     		source: "(126:32) {#if player.trade[resource.type].enable}",
     		ctx
@@ -4081,13 +4440,13 @@ var app = (function (jQuery) {
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-1v4aggu");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$6, 132, 60, 4608);
+    			add_location(img, file$7, 132, 60, 4608);
     			attr_dev(button, "class", "btn btn-primary btn-sm svelte-1v4aggu");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$6, 133, 60, 4733);
-    			add_location(div, file$6, 131, 56, 4542);
+    			add_location(button, file$7, 133, 60, 4733);
+    			add_location(div, file$7, 131, 56, 4542);
     			attr_dev(td, "class", "svelte-1v4aggu");
-    			add_location(td, file$6, 130, 52, 4481);
+    			add_location(td, file$7, 130, 52, 4481);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -4194,7 +4553,7 @@ var app = (function (jQuery) {
     	let t2;
     	let td2;
     	let t3;
-    	let if_block = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type].enable && create_if_block$3(ctx);
+    	let if_block = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type].enable && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -4210,15 +4569,15 @@ var app = (function (jQuery) {
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1v4aggu");
-    			add_location(img, file$6, 120, 32, 3810);
+    			add_location(img, file$7, 120, 32, 3810);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-1v4aggu");
-    			add_location(td0, file$6, 119, 28, 3762);
+    			add_location(td0, file$7, 119, 28, 3762);
     			attr_dev(td1, "class", "number svelte-1v4aggu");
-    			add_location(td1, file$6, 123, 28, 3992);
+    			add_location(td1, file$7, 123, 28, 3992);
     			attr_dev(td2, "class", "svelte-1v4aggu");
-    			add_location(td2, file$6, 124, 28, 4061);
-    			add_location(tr, file$6, 118, 24, 3729);
+    			add_location(td2, file$7, 124, 28, 4061);
+    			add_location(tr, file$7, 118, 24, 3729);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -4247,7 +4606,7 @@ var app = (function (jQuery) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$3(ctx);
+    					if_block = create_if_block$4(ctx);
     					if_block.c();
     					if_block.m(td2, null);
     				}
@@ -4273,7 +4632,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function create_fragment$6(ctx) {
+    function create_fragment$7(ctx) {
     	let main;
     	let table3;
     	let tr0;
@@ -4465,85 +4824,85 @@ var app = (function (jQuery) {
     			create_component(construction.$$.fragment);
     			attr_dev(td0, "class", "name svelte-1v4aggu");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
-    			add_location(td0, file$6, 63, 12, 1432);
-    			add_location(tr0, file$6, 62, 8, 1415);
+    			add_location(td0, file$7, 63, 12, 1432);
+    			add_location(tr0, file$7, 62, 8, 1415);
     			attr_dev(td1, "colspan", "3");
     			attr_dev(td1, "class", "header svelte-1v4aggu");
-    			add_location(td1, file$6, 70, 24, 1664);
-    			add_location(tr1, file$6, 69, 20, 1635);
+    			add_location(td1, file$7, 70, 24, 1664);
+    			add_location(tr1, file$7, 69, 20, 1635);
     			attr_dev(td2, "class", "svelte-1v4aggu");
-    			add_location(td2, file$6, 76, 36, 1931);
+    			add_location(td2, file$7, 76, 36, 1931);
     			attr_dev(td3, "class", "svelte-1v4aggu");
-    			add_location(td3, file$6, 77, 36, 1979);
+    			add_location(td3, file$7, 77, 36, 1979);
     			attr_dev(td4, "class", "svelte-1v4aggu");
-    			add_location(td4, file$6, 78, 36, 2027);
+    			add_location(td4, file$7, 78, 36, 2027);
     			attr_dev(td5, "class", "svelte-1v4aggu");
-    			add_location(td5, file$6, 79, 36, 2079);
+    			add_location(td5, file$7, 79, 36, 2079);
     			attr_dev(td6, "class", "svelte-1v4aggu");
-    			add_location(td6, file$6, 80, 36, 2131);
+    			add_location(td6, file$7, 80, 36, 2131);
     			attr_dev(tr2, "class", "point");
-    			add_location(tr2, file$6, 75, 32, 1876);
+    			add_location(tr2, file$7, 75, 32, 1876);
     			attr_dev(td7, "class", "svelte-1v4aggu");
-    			add_location(td7, file$6, 83, 36, 2257);
+    			add_location(td7, file$7, 83, 36, 2257);
     			attr_dev(td8, "class", "svelte-1v4aggu");
-    			add_location(td8, file$6, 84, 36, 2324);
+    			add_location(td8, file$7, 84, 36, 2324);
     			attr_dev(td9, "class", "svelte-1v4aggu");
-    			add_location(td9, file$6, 85, 36, 2389);
+    			add_location(td9, file$7, 85, 36, 2389);
     			attr_dev(td10, "class", "svelte-1v4aggu");
-    			add_location(td10, file$6, 86, 36, 2454);
+    			add_location(td10, file$7, 86, 36, 2454);
     			attr_dev(td11, "class", "svelte-1v4aggu");
-    			add_location(td11, file$6, 87, 36, 2521);
-    			add_location(tr3, file$6, 82, 32, 2216);
+    			add_location(td11, file$7, 87, 36, 2521);
+    			add_location(tr3, file$7, 82, 32, 2216);
     			attr_dev(table0, "width", "100%");
-    			add_location(table0, file$6, 74, 28, 1823);
+    			add_location(table0, file$7, 74, 28, 1823);
     			attr_dev(td12, "colspan", "3");
     			attr_dev(td12, "class", "svelte-1v4aggu");
-    			add_location(td12, file$6, 73, 24, 1778);
-    			add_location(tr4, file$6, 72, 20, 1749);
+    			add_location(td12, file$7, 73, 24, 1778);
+    			add_location(tr4, file$7, 72, 20, 1749);
     			attr_dev(td13, "colspan", "3");
     			attr_dev(td13, "class", "header svelte-1v4aggu");
-    			add_location(td13, file$6, 94, 24, 2730);
-    			add_location(tr5, file$6, 93, 20, 2701);
+    			add_location(td13, file$7, 94, 24, 2730);
+    			add_location(tr5, file$7, 93, 20, 2701);
     			attr_dev(td14, "class", "svelte-1v4aggu");
-    			add_location(td14, file$6, 100, 36, 3004);
+    			add_location(td14, file$7, 100, 36, 3004);
     			attr_dev(td15, "class", "svelte-1v4aggu");
-    			add_location(td15, file$6, 101, 36, 3052);
+    			add_location(td15, file$7, 101, 36, 3052);
     			attr_dev(td16, "class", "svelte-1v4aggu");
-    			add_location(td16, file$6, 102, 36, 3100);
-    			add_location(tr6, file$6, 99, 32, 2963);
+    			add_location(td16, file$7, 102, 36, 3100);
+    			add_location(tr6, file$7, 99, 32, 2963);
     			attr_dev(td17, "class", "svelte-1v4aggu");
-    			add_location(td17, file$6, 105, 36, 3223);
+    			add_location(td17, file$7, 105, 36, 3223);
     			attr_dev(td18, "class", "svelte-1v4aggu");
-    			add_location(td18, file$6, 106, 36, 3297);
+    			add_location(td18, file$7, 106, 36, 3297);
     			attr_dev(td19, "class", "svelte-1v4aggu");
-    			add_location(td19, file$6, 107, 36, 3369);
-    			add_location(tr7, file$6, 104, 32, 3182);
+    			add_location(td19, file$7, 107, 36, 3369);
+    			add_location(tr7, file$7, 104, 32, 3182);
     			attr_dev(table1, "class", "construction svelte-1v4aggu");
     			attr_dev(table1, "width", "100%");
-    			add_location(table1, file$6, 98, 28, 2889);
+    			add_location(table1, file$7, 98, 28, 2889);
     			attr_dev(td20, "colspan", "3");
     			attr_dev(td20, "class", "svelte-1v4aggu");
-    			add_location(td20, file$6, 97, 24, 2844);
-    			add_location(tr8, file$6, 96, 20, 2815);
+    			add_location(td20, file$7, 97, 24, 2844);
+    			add_location(tr8, file$7, 96, 20, 2815);
     			attr_dev(td21, "colspan", "3");
     			attr_dev(td21, "class", "header svelte-1v4aggu");
-    			add_location(td21, file$6, 114, 24, 3586);
-    			add_location(tr9, file$6, 113, 20, 3557);
+    			add_location(td21, file$7, 114, 24, 3586);
+    			add_location(tr9, file$7, 113, 20, 3557);
     			attr_dev(table2, "class", "inner-resource svelte-1v4aggu");
-    			add_location(table2, file$6, 68, 16, 1584);
+    			add_location(table2, file$7, 68, 16, 1584);
     			attr_dev(td22, "class", "svelte-1v4aggu");
-    			add_location(td22, file$6, 67, 12, 1563);
-    			add_location(tr10, file$6, 66, 8, 1546);
+    			add_location(td22, file$7, 67, 12, 1563);
+    			add_location(tr10, file$7, 66, 8, 1546);
     			attr_dev(td23, "class", "header svelte-1v4aggu");
-    			add_location(td23, file$6, 152, 12, 5734);
-    			add_location(tr11, file$6, 151, 8, 5717);
+    			add_location(td23, file$7, 152, 12, 5734);
+    			add_location(tr11, file$7, 151, 8, 5717);
     			attr_dev(td24, "class", "svelte-1v4aggu");
-    			add_location(td24, file$6, 155, 12, 5800);
-    			add_location(tr12, file$6, 154, 8, 5783);
+    			add_location(td24, file$7, 155, 12, 5800);
+    			add_location(tr12, file$7, 154, 8, 5783);
     			attr_dev(table3, "class", "trade-resource svelte-1v4aggu");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
-    			add_location(table3, file$6, 61, 4, 1356);
-    			add_location(main, file$6, 60, 0, 1345);
+    			add_location(table3, file$7, 61, 4, 1356);
+    			add_location(main, file$7, 60, 0, 1345);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4693,7 +5052,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$6.name,
+    		id: create_fragment$7.name,
     		type: "component",
     		source: "",
     		ctx
@@ -4702,7 +5061,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$6($$self, $$props, $$invalidate) {
+    function instance$7($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
     	component_subscribe($$self, katanStore, $$value => $$invalidate(6, $katan = $$value));
@@ -4820,13 +5179,13 @@ var app = (function (jQuery) {
     class Player extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$6, create_fragment$6, safe_not_equal, { playerIndex: 3, type: 4 });
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { playerIndex: 3, type: 4 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Player",
     			options,
-    			id: create_fragment$6.name
+    			id: create_fragment$7.name
     		});
 
     		const { ctx } = this.$$;
@@ -4855,10 +5214,10 @@ var app = (function (jQuery) {
     }
 
     /* src\App.svelte generated by Svelte v3.32.3 */
-    const file$7 = "src\\App.svelte";
+    const file$8 = "src\\App.svelte";
 
     // (63:12) {#if $katan.buttonMessage!==''}
-    function create_if_block$4(ctx) {
+    function create_if_block$5(ctx) {
     	let div;
     	let button;
     	let t_value = /*$katan*/ ctx[0].buttonMessage + "";
@@ -4873,9 +5232,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$7, 64, 20, 2299);
+    			add_location(button, file$8, 64, 20, 2299);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$7, 63, 16, 2251);
+    			add_location(div, file$8, 63, 16, 2251);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -4899,7 +5258,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$4.name,
+    		id: create_if_block$5.name,
     		type: "if",
     		source: "(63:12) {#if $katan.buttonMessage!==''}",
     		ctx
@@ -4908,7 +5267,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function create_fragment$7(ctx) {
+    function create_fragment$8(ctx) {
     	let div1;
     	let table;
     	let tr;
@@ -4983,7 +5342,7 @@ var app = (function (jQuery) {
     			$$inline: true
     		});
 
-    	let if_block = /*$katan*/ ctx[0].buttonMessage !== "" && create_if_block$4(ctx);
+    	let if_block = /*$katan*/ ctx[0].buttonMessage !== "" && create_if_block$5(ctx);
 
     	const block = {
     		c: function create() {
@@ -5027,47 +5386,47 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			attr_dev(td0, "valign", "top");
     			attr_dev(td0, "class", "player svelte-1i7jot8");
-    			add_location(td0, file$7, 27, 12, 621);
+    			add_location(td0, file$8, 27, 12, 621);
     			attr_dev(h1, "class", "message-header svelte-1i7jot8");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
-    			add_location(h1, file$7, 31, 16, 792);
+    			add_location(h1, file$8, 31, 16, 792);
     			attr_dev(button0, "class", "btn btn-primary svelte-1i7jot8");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$7, 35, 20, 1061);
+    			add_location(button0, file$8, 35, 20, 1061);
     			attr_dev(button1, "class", "btn btn-primary svelte-1i7jot8");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$7, 38, 20, 1248);
+    			add_location(button1, file$8, 38, 20, 1248);
     			attr_dev(div0, "class", "dice-container svelte-1i7jot8");
-    			add_location(div0, file$7, 32, 16, 893);
+    			add_location(div0, file$8, 32, 16, 893);
     			attr_dev(td1, "valign", "top");
     			attr_dev(td1, "class", "text-center svelte-1i7jot8");
-    			add_location(td1, file$7, 30, 12, 737);
+    			add_location(td1, file$8, 30, 12, 737);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-1i7jot8");
-    			add_location(td2, file$7, 46, 12, 1601);
-    			add_location(tr, file$7, 26, 8, 603);
-    			add_location(table, file$7, 25, 4, 586);
+    			add_location(td2, file$8, 46, 12, 1601);
+    			add_location(tr, file$8, 26, 8, 603);
+    			add_location(table, file$8, 25, 4, 586);
     			attr_dev(div1, "class", "katan svelte-1i7jot8");
-    			add_location(div1, file$7, 24, 0, 561);
+    			add_location(div1, file$8, 24, 0, 561);
     			attr_dev(button2, "type", "button");
     			attr_dev(button2, "class", "btn-close");
     			attr_dev(button2, "data-bs-dismiss", "modal");
     			attr_dev(button2, "aria-label", "Close");
-    			add_location(button2, file$7, 56, 16, 1978);
+    			add_location(button2, file$8, 56, 16, 1978);
     			attr_dev(div2, "class", "modal-header");
-    			add_location(div2, file$7, 55, 12, 1934);
+    			add_location(div2, file$8, 55, 12, 1934);
     			attr_dev(div3, "class", "modal-body");
-    			add_location(div3, file$7, 58, 12, 2104);
+    			add_location(div3, file$8, 58, 12, 2104);
     			attr_dev(div4, "class", "modal-content");
-    			add_location(div4, file$7, 54, 8, 1893);
+    			add_location(div4, file$8, 54, 8, 1893);
     			attr_dev(div5, "class", "modal-dialog");
-    			add_location(div5, file$7, 53, 4, 1857);
+    			add_location(div5, file$8, 53, 4, 1857);
     			attr_dev(div6, "class", "modal fade");
     			attr_dev(div6, "id", "katanModal");
     			attr_dev(div6, "tabindex", "-1");
     			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div6, "aria-hidden", "true");
-    			add_location(div6, file$7, 52, 0, 1742);
+    			add_location(div6, file$8, 52, 0, 1742);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5160,7 +5519,7 @@ var app = (function (jQuery) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$4(ctx);
+    					if_block = create_if_block$5(ctx);
     					if_block.c();
     					if_block.m(div4, null);
     				}
@@ -5203,7 +5562,7 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$7.name,
+    		id: create_fragment$8.name,
     		type: "component",
     		source: "",
     		ctx
@@ -5212,7 +5571,7 @@ var app = (function (jQuery) {
     	return block;
     }
 
-    function instance$7($$self, $$props, $$invalidate) {
+    function instance$8($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
     	component_subscribe($$self, katanStore, $$value => $$invalidate(0, $katan = $$value));
@@ -5283,13 +5642,13 @@ var app = (function (jQuery) {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {});
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$7.name
+    			id: create_fragment$8.name
     		});
     	}
     }

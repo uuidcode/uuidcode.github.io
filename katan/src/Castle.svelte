@@ -83,6 +83,7 @@
         font-size: 14px;
         opacity: 0.6;
         cursor: pointer;
+        z-index: 20;
     }
 
     .pick {

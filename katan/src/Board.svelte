@@ -3,6 +3,7 @@
     import { toStyle } from './util.js'
     import Cell from './Cell.svelte'
     import Castle from './Castle.svelte'
+    import Port from './Port.svelte'
     import Road from './Road.svelte'
     import katan from './katan.js'
 
@@ -21,6 +22,7 @@
     {/each}
     {#each castleList as castle, i}
         <Castle castleIndex={i}></Castle>
+        <Port castleIndex={i}></Port>
     {/each}
     {#each $katan.roadList as road, i}
         <Road roadIndex={i}></Road>
