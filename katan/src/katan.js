@@ -1266,7 +1266,7 @@ const katanStore = {
 
     setShowResourceModal: () => katanStore.updateKatan(katan => {
         katan.showResourceModal = true;
-       return katan;
+        return katan;
     }),
 
     hideResourceModal: () => katanStore.updateKatan(katan => {
@@ -1428,15 +1428,33 @@ const katanStore = {
 
         if (card.type === 'point') {
             katan.message = '1점 획득하였습니다.';
-            player.point += 1;
-            player.sum += 1;
+            player.point.point += 1;
+            player.point.sum += 1;
         } else if (card.type === 'knight') {
             katanStore.readyMoveBuglar();
             player.construction.knight += 1;
 
             if (player.construction.knight >= 3) {
-                player.knight += 2;
-                player.sum += 2;
+
+                let playerIndex = katan.playerIndex;
+
+                if (playerIndex === 0) {
+                    playerIndex = 1;
+                } else {
+                    playerIndex = 0;
+                }
+
+                const other = katan.playerList[playerIndex];
+
+                if (player.construction.knight > other.construction.knight) {
+                    if (other.point.knight === 2) {
+                        other.point.knight -= 2;
+                        other.point.sum -= 2;
+                    } else {
+                        player.point.knight += 2;
+                        player.point.sum += 2;
+                    }
+                }
             }
         }
 
@@ -1501,7 +1519,7 @@ const katanStore = {
         katan.message = '길을 만들곳을 선택하세요.';
 
         let roadIndexList = katan.castleList[castleIndex].roadIndexList;
-        
+
         katan.roadList = katan.roadList
             .map(road => {
 
