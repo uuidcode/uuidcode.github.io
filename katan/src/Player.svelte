@@ -101,11 +101,12 @@
                                     <td>마을</td>
                                     <td>도시</td>
                                     <td>도로</td>
+                                    <td>기사</td>
                                 </tr>
                                 <tr>
                                     <td>{player.construction.castle}</td>
                                     <td>{player.construction.city}</td>
-                                    <td>{player.construction.road}</td>
+                                    <td>{player.construction.knight}</td>
                                 </tr>
                             </table>
                         </td>

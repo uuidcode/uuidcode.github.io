@@ -58,6 +58,7 @@
             </td>
             <td>
                 <button class="btn btn-primary"
+                        on:click={()=>katan.makeDev()}
                         disabled={!player.make.dev}>발전카드</button>
             </td>
         </tr>

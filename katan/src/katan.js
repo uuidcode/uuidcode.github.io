@@ -53,6 +53,22 @@ let katanObject = {
     ]
 };
 
+katanObject.cardList = [];
+
+for (let i = 0; i < 5; i++) {
+    katanObject.cardList.push({
+        type: 'point'
+    })
+}
+
+for (let i = 0; i < 15; i++) {
+    katanObject.cardList.push({
+        type: 'knight'
+    })
+}
+
+katanObject.cardList = shuffle(katanObject.cardList);
+
 katanObject.playerList.forEach((player, i) => {
     player.index = i;
 
@@ -107,7 +123,8 @@ katanObject.playerList.forEach((player, i) => {
     player.construction = {
         castle: 5,
         city: 4,
-        road: 15
+        road: 15,
+        knight: 0
     };
 
     player.make = {
@@ -1296,9 +1313,7 @@ const katanStore = {
         console.log('>>> katan.rollDice', katan.rollDice);
 
         if (number === 7) {
-            katan.mode = 'moveBuglar';
-            katan.message = '도둑의 위치를 선택하세요.';
-            katanStore.setNumberRippleEnabled();
+            katanStore.readyMoveBuglar();
         } else {
             katanStore.setSelectedNumberRippleEnabled(number);
 
@@ -1308,6 +1323,13 @@ const katanStore = {
             }, 2000);
         }
 
+        return katan;
+    }),
+
+    readyMoveBuglar: () => katanStore.updateKatan(katan => {
+        katan.mode = 'moveBuglar';
+        katan.message = '도둑의 위치를 선택하세요.';
+        katanStore.setNumberRippleEnabled();
         return katan;
     }),
 
@@ -1395,6 +1417,23 @@ const katanStore = {
         katan.isMakeRoad = true;
 
         katanStore.setNewRoadRippleEnabled();
+
+        return katan;
+    }),
+
+    makeDev: () => katanStore.updateKatan(katan => {
+        const card = katan.cardList.pop();
+
+        const player = katanStore.getActivePlayer();
+
+        if (card.type === 'point') {
+            katan.message = '1점 획득하였습니다.';
+            player.point += 1;
+            player.sum += 1;
+        } else if (card.type === 'knight') {
+            katanStore.readyMoveBuglar();
+            player.construction.knight += 1;
+        }
 
         return katan;
     }),

@@ -578,6 +578,22 @@ var app = (function (jQuery) {
         ]
     };
 
+    katanObject.cardList = [];
+
+    for (let i = 0; i < 5; i++) {
+        katanObject.cardList.push({
+            type: 'point'
+        });
+    }
+
+    for (let i = 0; i < 15; i++) {
+        katanObject.cardList.push({
+            type: 'knight'
+        });
+    }
+
+    katanObject.cardList = shuffle(katanObject.cardList);
+
     katanObject.playerList.forEach((player, i) => {
         player.index = i;
 
@@ -632,7 +648,8 @@ var app = (function (jQuery) {
         player.construction = {
             castle: 5,
             city: 4,
-            road: 15
+            road: 15,
+            knight: 0
         };
 
         player.make = {
@@ -1742,7 +1759,7 @@ var app = (function (jQuery) {
 
         doAction: () => katanStore.updateKatan(katan => {
             katan.message = '자원을 교환하거나 건설하세요.';
-            katan.setDiceDisabled();
+            katanStore.setDiceDisabled();
             katan.action = true;
             return katan;
         }),
@@ -1821,9 +1838,7 @@ var app = (function (jQuery) {
             console.log('>>> katan.rollDice', katan.rollDice);
 
             if (number === 7) {
-                katan.mode = 'moveBuglar';
-                katan.message = '도둑의 위치를 선택하세요.';
-                katanStore.setNumberRippleEnabled();
+                katanStore.readyMoveBuglar();
             } else {
                 katanStore.setSelectedNumberRippleEnabled(number);
 
@@ -1833,6 +1848,13 @@ var app = (function (jQuery) {
                 }, 2000);
             }
 
+            return katan;
+        }),
+
+        readyMoveBuglar: () => katanStore.updateKatan(katan => {
+            katan.mode = 'moveBuglar';
+            katan.message = '도둑의 위치를 선택하세요.';
+            katanStore.setNumberRippleEnabled();
             return katan;
         }),
 
@@ -1920,6 +1942,23 @@ var app = (function (jQuery) {
             katan.isMakeRoad = true;
 
             katanStore.setNewRoadRippleEnabled();
+
+            return katan;
+        }),
+
+        makeDev: () => katanStore.updateKatan(katan => {
+            const card = katan.cardList.pop();
+
+            const player = katanStore.getActivePlayer();
+
+            if (card.type === 'point') {
+                katan.message = '1점 획득하였습니다.';
+                player.point += 1;
+                player.sum += 1;
+            } else if (card.type === 'knight') {
+                katanStore.readyMoveBuglar();
+                player.construction.knight += 1;
+            }
 
             return katan;
         }),
@@ -4369,7 +4408,8 @@ var app = (function (jQuery) {
     			if (!mounted) {
     				dispose = [
     					listen_dev(button0, "click", /*click_handler*/ ctx[1], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[2], false, false, false)
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[2], false, false, false),
+    					listen_dev(button3, "click", /*click_handler_2*/ ctx[3], false, false, false)
     				];
 
     				mounted = true;
@@ -4430,6 +4470,7 @@ var app = (function (jQuery) {
 
     	const click_handler = () => katanStore.makeRoad();
     	const click_handler_1 = () => katanStore.makeCastle();
+    	const click_handler_2 = () => katanStore.makeDev();
     	$$self.$capture_state = () => ({ katan: katanStore, onDestroy, player, unsubscribe });
 
     	$$self.$inject_state = $$props => {
@@ -4440,7 +4481,7 @@ var app = (function (jQuery) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [player, click_handler, click_handler_1];
+    	return [player, click_handler, click_handler_1, click_handler_2];
     }
 
     class Construction extends SvelteComponentDev {
@@ -4472,7 +4513,7 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (126:32) {#if player.trade[resource.type].enable}
+    // (127:32) {#if player.trade[resource.type].enable}
     function create_if_block$4(ctx) {
     	let table;
     	let tr;
@@ -4493,9 +4534,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 127, 40, 4253);
+    			add_location(tr, file$7, 128, 40, 4303);
     			attr_dev(table, "class", "trade-target-resource svelte-ch2t7h");
-    			add_location(table, file$7, 126, 36, 4175);
+    			add_location(table, file$7, 127, 36, 4225);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4540,14 +4581,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(126:32) {#if player.trade[resource.type].enable}",
+    		source: "(127:32) {#if player.trade[resource.type].enable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (130:48) {#if resource.type!==tradeResource.type}
+    // (131:48) {#if resource.type!==tradeResource.type}
     function create_if_block_1$1(ctx) {
     	let td;
     	let div;
@@ -4579,13 +4620,13 @@ var app = (function (jQuery) {
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-ch2t7h");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 132, 60, 4608);
+    			add_location(img, file$7, 133, 60, 4658);
     			attr_dev(button, "class", "btn btn-primary btn-sm svelte-ch2t7h");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 133, 60, 4733);
-    			add_location(div, file$7, 131, 56, 4542);
+    			add_location(button, file$7, 134, 60, 4783);
+    			add_location(div, file$7, 132, 56, 4592);
     			attr_dev(td, "class", "svelte-ch2t7h");
-    			add_location(td, file$7, 130, 52, 4481);
+    			add_location(td, file$7, 131, 52, 4531);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -4626,14 +4667,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(130:48) {#if resource.type!==tradeResource.type}",
+    		source: "(131:48) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (129:44) {#each resourceList as tradeResource}
+    // (130:44) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_1$1(ctx);
@@ -4671,14 +4712,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(129:44) {#each resourceList as tradeResource}",
+    		source: "(130:44) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (118:20) {#each resourceList as resource}
+    // (119:20) {#each resourceList as resource}
     function create_each_block$1(ctx) {
     	let tr;
     	let td0;
@@ -4708,15 +4749,15 @@ var app = (function (jQuery) {
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-ch2t7h");
-    			add_location(img, file$7, 120, 32, 3810);
+    			add_location(img, file$7, 121, 32, 3860);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-ch2t7h");
-    			add_location(td0, file$7, 119, 28, 3762);
+    			add_location(td0, file$7, 120, 28, 3812);
     			attr_dev(td1, "class", "number svelte-ch2t7h");
-    			add_location(td1, file$7, 123, 28, 3992);
+    			add_location(td1, file$7, 124, 28, 4042);
     			attr_dev(td2, "class", "svelte-ch2t7h");
-    			add_location(td2, file$7, 124, 28, 4061);
-    			add_location(tr, file$7, 118, 24, 3729);
+    			add_location(td2, file$7, 125, 28, 4111);
+    			add_location(tr, file$7, 119, 24, 3779);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -4764,7 +4805,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(118:20) {#each resourceList as resource}",
+    		source: "(119:20) {#each resourceList as resource}",
     		ctx
     	});
 
@@ -4780,7 +4821,7 @@ var app = (function (jQuery) {
     	let t0;
     	let t1;
     	let tr10;
-    	let td22;
+    	let td23;
     	let table2;
     	let tr1;
     	let td1;
@@ -4824,7 +4865,7 @@ var app = (function (jQuery) {
     	let td13;
     	let t25;
     	let tr8;
-    	let td20;
+    	let td21;
     	let table1;
     	let tr6;
     	let td14;
@@ -4833,28 +4874,30 @@ var app = (function (jQuery) {
     	let t29;
     	let td16;
     	let t31;
-    	let tr7;
     	let td17;
-    	let t32_value = /*player*/ ctx[0].construction.castle + "";
-    	let t32;
     	let t33;
+    	let tr7;
     	let td18;
-    	let t34_value = /*player*/ ctx[0].construction.city + "";
+    	let t34_value = /*player*/ ctx[0].construction.castle + "";
     	let t34;
     	let t35;
     	let td19;
-    	let t36_value = /*player*/ ctx[0].construction.road + "";
+    	let t36_value = /*player*/ ctx[0].construction.city + "";
     	let t36;
     	let t37;
-    	let tr9;
-    	let td21;
+    	let td20;
+    	let t38_value = /*player*/ ctx[0].construction.knight + "";
+    	let t38;
     	let t39;
-    	let t40;
-    	let tr11;
-    	let td23;
+    	let tr9;
+    	let td22;
+    	let t41;
     	let t42;
-    	let tr12;
+    	let tr11;
     	let td24;
+    	let t44;
+    	let tr12;
+    	let td25;
     	let construction;
     	let current;
     	let each_value = /*resourceList*/ ctx[2];
@@ -4876,7 +4919,7 @@ var app = (function (jQuery) {
     			t0 = text(t0_value);
     			t1 = space();
     			tr10 = element("tr");
-    			td22 = element("td");
+    			td23 = element("td");
     			table2 = element("table");
     			tr1 = element("tr");
     			td1 = element("td");
@@ -4922,7 +4965,7 @@ var app = (function (jQuery) {
     			td13.textContent = "건설";
     			t25 = space();
     			tr8 = element("tr");
-    			td20 = element("td");
+    			td21 = element("td");
     			table1 = element("table");
     			tr6 = element("tr");
     			td14 = element("td");
@@ -4934,32 +4977,35 @@ var app = (function (jQuery) {
     			td16 = element("td");
     			td16.textContent = "도로";
     			t31 = space();
-    			tr7 = element("tr");
     			td17 = element("td");
-    			t32 = text(t32_value);
+    			td17.textContent = "기사";
     			t33 = space();
+    			tr7 = element("tr");
     			td18 = element("td");
     			t34 = text(t34_value);
     			t35 = space();
     			td19 = element("td");
     			t36 = text(t36_value);
     			t37 = space();
-    			tr9 = element("tr");
-    			td21 = element("td");
-    			td21.textContent = "자원";
+    			td20 = element("td");
+    			t38 = text(t38_value);
     			t39 = space();
+    			tr9 = element("tr");
+    			td22 = element("td");
+    			td22.textContent = "자원";
+    			t41 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t40 = space();
-    			tr11 = element("tr");
-    			td23 = element("td");
-    			td23.textContent = "건설";
     			t42 = space();
-    			tr12 = element("tr");
+    			tr11 = element("tr");
     			td24 = element("td");
+    			td24.textContent = "건설";
+    			t44 = space();
+    			tr12 = element("tr");
+    			td25 = element("td");
     			create_component(construction.$$.fragment);
     			attr_dev(td0, "class", "name svelte-ch2t7h");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
@@ -5008,36 +5054,38 @@ var app = (function (jQuery) {
     			add_location(td15, file$7, 101, 36, 3052);
     			attr_dev(td16, "class", "svelte-ch2t7h");
     			add_location(td16, file$7, 102, 36, 3100);
-    			add_location(tr6, file$7, 99, 32, 2963);
     			attr_dev(td17, "class", "svelte-ch2t7h");
-    			add_location(td17, file$7, 105, 36, 3223);
+    			add_location(td17, file$7, 103, 36, 3148);
+    			add_location(tr6, file$7, 99, 32, 2963);
     			attr_dev(td18, "class", "svelte-ch2t7h");
-    			add_location(td18, file$7, 106, 36, 3297);
+    			add_location(td18, file$7, 106, 36, 3271);
     			attr_dev(td19, "class", "svelte-ch2t7h");
-    			add_location(td19, file$7, 107, 36, 3369);
-    			add_location(tr7, file$7, 104, 32, 3182);
+    			add_location(td19, file$7, 107, 36, 3345);
+    			attr_dev(td20, "class", "svelte-ch2t7h");
+    			add_location(td20, file$7, 108, 36, 3417);
+    			add_location(tr7, file$7, 105, 32, 3230);
     			attr_dev(table1, "class", "construction svelte-ch2t7h");
     			attr_dev(table1, "width", "100%");
     			add_location(table1, file$7, 98, 28, 2889);
-    			attr_dev(td20, "colspan", "3");
-    			attr_dev(td20, "class", "svelte-ch2t7h");
-    			add_location(td20, file$7, 97, 24, 2844);
-    			add_location(tr8, file$7, 96, 20, 2815);
     			attr_dev(td21, "colspan", "3");
-    			attr_dev(td21, "class", "header svelte-ch2t7h");
-    			add_location(td21, file$7, 114, 24, 3586);
-    			add_location(tr9, file$7, 113, 20, 3557);
+    			attr_dev(td21, "class", "svelte-ch2t7h");
+    			add_location(td21, file$7, 97, 24, 2844);
+    			add_location(tr8, file$7, 96, 20, 2815);
+    			attr_dev(td22, "colspan", "3");
+    			attr_dev(td22, "class", "header svelte-ch2t7h");
+    			add_location(td22, file$7, 115, 24, 3636);
+    			add_location(tr9, file$7, 114, 20, 3607);
     			attr_dev(table2, "class", "inner-resource svelte-ch2t7h");
     			add_location(table2, file$7, 68, 16, 1584);
-    			attr_dev(td22, "class", "svelte-ch2t7h");
-    			add_location(td22, file$7, 67, 12, 1563);
+    			attr_dev(td23, "class", "svelte-ch2t7h");
+    			add_location(td23, file$7, 67, 12, 1563);
     			add_location(tr10, file$7, 66, 8, 1546);
-    			attr_dev(td23, "class", "header svelte-ch2t7h");
-    			add_location(td23, file$7, 152, 12, 5734);
-    			add_location(tr11, file$7, 151, 8, 5717);
-    			attr_dev(td24, "class", "svelte-ch2t7h");
-    			add_location(td24, file$7, 155, 12, 5800);
-    			add_location(tr12, file$7, 154, 8, 5783);
+    			attr_dev(td24, "class", "header svelte-ch2t7h");
+    			add_location(td24, file$7, 153, 12, 5784);
+    			add_location(tr11, file$7, 152, 8, 5767);
+    			attr_dev(td25, "class", "svelte-ch2t7h");
+    			add_location(td25, file$7, 156, 12, 5850);
+    			add_location(tr12, file$7, 155, 8, 5833);
     			attr_dev(table3, "class", "trade-resource svelte-ch2t7h");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
     			add_location(table3, file$7, 61, 4, 1356);
@@ -5054,8 +5102,8 @@ var app = (function (jQuery) {
     			append_dev(td0, t0);
     			append_dev(table3, t1);
     			append_dev(table3, tr10);
-    			append_dev(tr10, td22);
-    			append_dev(td22, table2);
+    			append_dev(tr10, td23);
+    			append_dev(td23, table2);
     			append_dev(table2, tr1);
     			append_dev(tr1, td1);
     			append_dev(table2, t3);
@@ -5093,40 +5141,42 @@ var app = (function (jQuery) {
     			append_dev(tr5, td13);
     			append_dev(table2, t25);
     			append_dev(table2, tr8);
-    			append_dev(tr8, td20);
-    			append_dev(td20, table1);
+    			append_dev(tr8, td21);
+    			append_dev(td21, table1);
     			append_dev(table1, tr6);
     			append_dev(tr6, td14);
     			append_dev(tr6, t27);
     			append_dev(tr6, td15);
     			append_dev(tr6, t29);
     			append_dev(tr6, td16);
-    			append_dev(table1, t31);
+    			append_dev(tr6, t31);
+    			append_dev(tr6, td17);
+    			append_dev(table1, t33);
     			append_dev(table1, tr7);
-    			append_dev(tr7, td17);
-    			append_dev(td17, t32);
-    			append_dev(tr7, t33);
     			append_dev(tr7, td18);
     			append_dev(td18, t34);
     			append_dev(tr7, t35);
     			append_dev(tr7, td19);
     			append_dev(td19, t36);
-    			append_dev(table2, t37);
-    			append_dev(table2, tr9);
-    			append_dev(tr9, td21);
+    			append_dev(tr7, t37);
+    			append_dev(tr7, td20);
+    			append_dev(td20, t38);
     			append_dev(table2, t39);
+    			append_dev(table2, tr9);
+    			append_dev(tr9, td22);
+    			append_dev(table2, t41);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(table2, null);
     			}
 
-    			append_dev(table3, t40);
-    			append_dev(table3, tr11);
-    			append_dev(tr11, td23);
     			append_dev(table3, t42);
+    			append_dev(table3, tr11);
+    			append_dev(tr11, td24);
+    			append_dev(table3, t44);
     			append_dev(table3, tr12);
-    			append_dev(tr12, td24);
-    			mount_component(construction, td24, null);
+    			append_dev(tr12, td25);
+    			mount_component(construction, td25, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -5141,9 +5191,9 @@ var app = (function (jQuery) {
     			if ((!current || dirty & /*player*/ 1) && t18_value !== (t18_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t18, t18_value);
     			if ((!current || dirty & /*player*/ 1) && t20_value !== (t20_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t20, t20_value);
     			if ((!current || dirty & /*player*/ 1) && t22_value !== (t22_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t22, t22_value);
-    			if ((!current || dirty & /*player*/ 1) && t32_value !== (t32_value = /*player*/ ctx[0].construction.castle + "")) set_data_dev(t32, t32_value);
-    			if ((!current || dirty & /*player*/ 1) && t34_value !== (t34_value = /*player*/ ctx[0].construction.city + "")) set_data_dev(t34, t34_value);
-    			if ((!current || dirty & /*player*/ 1) && t36_value !== (t36_value = /*player*/ ctx[0].construction.road + "")) set_data_dev(t36, t36_value);
+    			if ((!current || dirty & /*player*/ 1) && t34_value !== (t34_value = /*player*/ ctx[0].construction.castle + "")) set_data_dev(t34, t34_value);
+    			if ((!current || dirty & /*player*/ 1) && t36_value !== (t36_value = /*player*/ ctx[0].construction.city + "")) set_data_dev(t36, t36_value);
+    			if ((!current || dirty & /*player*/ 1) && t38_value !== (t38_value = /*player*/ ctx[0].construction.knight + "")) set_data_dev(t38, t38_value);
 
     			if (dirty & /*resourceList, player, katan*/ 5) {
     				each_value = /*resourceList*/ ctx[2];
