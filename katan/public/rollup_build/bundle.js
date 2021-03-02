@@ -1958,6 +1958,11 @@ var app = (function (jQuery) {
             } else if (card.type === 'knight') {
                 katanStore.readyMoveBuglar();
                 player.construction.knight += 1;
+
+                if (player.construction.knight >= 3) {
+                    player.knight += 2;
+                    player.sum += 2;
+                }
             }
 
             return katan;
