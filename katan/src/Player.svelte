@@ -106,6 +106,7 @@
                                 <tr>
                                     <td>{player.construction.castle}</td>
                                     <td>{player.construction.city}</td>
+                                    <td>{player.construction.road}</td>
                                     <td>{player.construction.knight}</td>
                                 </tr>
                             </table>
