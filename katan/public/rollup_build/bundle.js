@@ -221,6 +221,12 @@ var app = (function (jQuery) {
             block.o(local);
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -524,6 +530,7 @@ var app = (function (jQuery) {
     }
 
     let katanObject = {
+        debugMessageList: [],
         resourceTypeList: [
             {
                 type: 'tree'
@@ -1654,6 +1661,8 @@ var app = (function (jQuery) {
         }),
 
         moveResource: (number) => katanStore.updateKatan(katan => {
+            katanStore.dir('>>> moveResource katan');
+
             let matchResourceCount = 0;
             let moveResourceCount = 0;
 
@@ -1706,17 +1715,18 @@ var app = (function (jQuery) {
                     });
                 });
 
+            katanStore.log(`matchResourceCount ${matchResourceCount}`);
+
             if (matchResourceCount > 0) {
                 const interval = setInterval(() => {
                     if (moveResourceCount === matchResourceCount) {
                         clearInterval(interval);
+                        katanStore.log(`move resource animation is complete.`);
                         katanStore.doActionAndTurn();
                     }
                 }, 100);
             } else {
-                console.log('>>> moveResourceEnd2');
-
-                katanStore.setDiceEnabled();
+                katanStore.log(`move resource animation is none.`);
                 katanStore.doActionAndTurn();
             }
 
@@ -1785,50 +1795,61 @@ var app = (function (jQuery) {
 
         setRollDice: () => katanStore.updateKatan(katan => {
             katan.rollDice = true;
-            console.log('>>> setRollDice katan.rollDice', katan.rollDice);
-
+            katanStore.dir('setRollDice katan.rollDice', katan.rollDice);
             return katan;
         }),
 
         unsetRollDice: () => katanStore.updateKatan(katan => {
             katan.rollDice = false;
-            console.log('>>> unsetRollDice katan.rollDice', katan.rollDice);
+            katanStore.dir('unsetRollDice katan.rollDice', katan.rollDice);
             return katan;
         }),
 
-        play: () => katanStore.updateKatan(katan => {
-            katanStore.setDiceDisabled();
+        play: () => {
+            console.log(0);
+            katanStore.dir('play1', get_store_value(katanStore));
+            console.log(1);
+            katanStore.setRollDice();
+            console.log(2);
 
-            const a = Math.floor(Math.random() * 6) + 1;
-            const b = Math.floor(Math.random() * 6) + 1;
+            /*
+            return katanStore.updateKatan(katan => {
+                katanStore.dir('play2', katan);
+                // katanStore.setDiceDisabled();
+                //
+                // const a = Math.floor(Math.random() * 6) + 1;
+                // const b = Math.floor(Math.random() * 6) + 1;
+                //
+                // katanStore.roll(a, b);
+                //
+                // let number = a + b;
+                //
+                // if (window.targetNumber || -1 !== -1) {
+                //     number = window.targetNumber;
+                // }
 
-            katanStore.roll(a, b);
+                katanStore.setRollDice();
 
-            let number = a + b;
+                // katanStore.dir('number', number);
+                //
+                // if (number === 7) {
+                //     katan.mode = 'moveBuglar';
+                //     katan.message = '도둑의 위치를 선택하세요.';
+                //     katanStore.setNumberRippleEnabled();
+                // } else {
+                //     katanStore.setSelectedNumberRippleEnabled(number);
+                //
+                //     setTimeout(() => {
+                //         katanStore.log('move resource');
+                //         katanStore.setNumberRippleDisabled(number);
+                //         katanStore.moveResource(number);
+                //     }, 2000);
+                // }
 
-            if (window.targetNumber || -1 !== -1) {
-                number = window.targetNumber;
-            }
-
-            katan.rollDice = true;
-
-            console.log('>>> katan.rollDice', katan.rollDice);
-
-            if (number === 7) {
-                katan.mode = 'moveBuglar';
-                katan.message = '도둑의 위치를 선택하세요.';
-                katanStore.setNumberRippleEnabled();
-            } else {
-                katanStore.setSelectedNumberRippleEnabled(number);
-
-                setTimeout(() => {
-                    katanStore.setNumberRippleDisabled(number);
-                    katanStore.moveResource(number);
-                }, 2000);
-            }
-
-            return katan;
-        }),
+                return katan;
+            });
+             */
+        },
 
         updateResource: (playerIndex, resource) => katanStore.updateKatan(katan => {
             katan.playerList[playerIndex].resource[resource.type]++;
@@ -1955,10 +1976,21 @@ var app = (function (jQuery) {
         }),
 
         updateKatan: (updateFunction) => {
-            const name = new Error().stack;
-            const date = new Date();
-            console.log(`>>> ${date.toLocaleTimeString()} ${name}`);
-            return update$1(updateFunction);
+            const errorStack = new Error().stack;
+
+            return update$1(katan => {
+                console.log("=========================");
+                console.trace();
+
+                const date = new Date();            katan.debugMessage = errorStack;
+                katan.debugMessageList.push(`${date.toISOString()} ${errorStack}`);
+                katanStore.dir('update before', katan);
+
+                const resultKatan = updateFunction(katan);
+                katanStore.dir('update after', katan);
+
+                return resultKatan;
+            });
         },
 
         setRoadRippleEnabled: (castleIndex) => katanStore.updateKatan(katan => {
@@ -2131,7 +2163,20 @@ var app = (function (jQuery) {
             return katan;
         }),
 
+        log: (message) => {
+            const date = new Date();
+            console.log(`>>> ${date.toISOString()} ${message}`);
+        },
+
+        dir: (message, object) => {
+            const date = new Date();
+            console.log(`>>> ${date.toISOString()} ${message}`);
+            console.dir(object);
+        },
+
         recomputePlayer: () => katanStore.updateKatan(katan => {
+            katanStore.dir('recomputePlayer before', katan);
+
             katan.playerList = katan.playerList
                 .map(player => {
                     player.trade.tree.action =
@@ -2202,7 +2247,7 @@ var app = (function (jQuery) {
                     return player;
                 });
 
-            console.log('>>> katan', katan);
+            katanStore.dir('recomputePlayer after', katan);
 
             return katan;
         })
@@ -5342,9 +5387,11 @@ var app = (function (jQuery) {
     });
 
     /* src\App.svelte generated by Svelte v3.32.3 */
+
+    const { console: console_1 } = globals;
     const file$8 = "src\\App.svelte";
 
-    // (94:12) {#if $katan.buttonMessage!==''}
+    // (96:12) {#if $katan.buttonMessage!==''}
     function create_if_block$5(ctx) {
     	let div;
     	let button;
@@ -5360,9 +5407,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$8, 95, 20, 3393);
+    			add_location(button, file$8, 97, 20, 3435);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$8, 94, 16, 3345);
+    			add_location(div, file$8, 96, 16, 3387);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5388,7 +5435,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$5.name,
     		type: "if",
-    		source: "(94:12) {#if $katan.buttonMessage!==''}",
+    		source: "(96:12) {#if $katan.buttonMessage!==''}",
     		ctx
     	});
 
@@ -5417,7 +5464,7 @@ var app = (function (jQuery) {
     	let t6;
     	let button0;
     	let t7;
-    	let button0_disabled_value;
+    	let button0_disabled__value;
     	let t8;
     	let button1;
     	let t9;
@@ -5514,48 +5561,48 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			attr_dev(td0, "valign", "top");
     			attr_dev(td0, "class", "player svelte-4e8og3");
-    			add_location(td0, file$8, 58, 12, 1700);
+    			add_location(td0, file$8, 60, 12, 1741);
     			attr_dev(h1, "class", "message-header svelte-4e8og3");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
-    			add_location(h1, file$8, 62, 16, 1886);
+    			add_location(h1, file$8, 64, 16, 1927);
     			attr_dev(button0, "class", "btn btn-primary svelte-4e8og3");
-    			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$8, 66, 20, 2155);
+    			attr_dev(button0, "disabled1", button0_disabled__value = /*$katan*/ ctx[0].diceDisabled);
+    			add_location(button0, file$8, 68, 20, 2196);
     			attr_dev(button1, "class", "btn btn-primary svelte-4e8og3");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 69, 20, 2342);
+    			add_location(button1, file$8, 71, 20, 2384);
     			attr_dev(div0, "class", "dice-container svelte-4e8og3");
-    			add_location(div0, file$8, 63, 16, 1987);
+    			add_location(div0, file$8, 65, 16, 2028);
     			attr_dev(td1, "valign", "top");
     			attr_dev(td1, "class", "text-center svelte-4e8og3");
     			attr_dev(td1, "width", "1200px");
-    			add_location(td1, file$8, 61, 12, 1816);
+    			add_location(td1, file$8, 63, 12, 1857);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-4e8og3");
-    			add_location(td2, file$8, 77, 12, 2695);
-    			add_location(tr, file$8, 57, 8, 1682);
-    			add_location(table, file$8, 56, 4, 1665);
+    			add_location(td2, file$8, 79, 12, 2737);
+    			add_location(tr, file$8, 59, 8, 1723);
+    			add_location(table, file$8, 58, 4, 1706);
     			attr_dev(div1, "class", "katan svelte-4e8og3");
-    			add_location(div1, file$8, 55, 0, 1640);
+    			add_location(div1, file$8, 57, 0, 1681);
     			attr_dev(button2, "type", "button");
     			attr_dev(button2, "class", "btn-close");
     			attr_dev(button2, "data-bs-dismiss", "modal");
     			attr_dev(button2, "aria-label", "Close");
-    			add_location(button2, file$8, 87, 16, 3072);
+    			add_location(button2, file$8, 89, 16, 3114);
     			attr_dev(div2, "class", "modal-header");
-    			add_location(div2, file$8, 86, 12, 3028);
+    			add_location(div2, file$8, 88, 12, 3070);
     			attr_dev(div3, "class", "modal-body");
-    			add_location(div3, file$8, 89, 12, 3198);
+    			add_location(div3, file$8, 91, 12, 3240);
     			attr_dev(div4, "class", "modal-content");
-    			add_location(div4, file$8, 85, 8, 2987);
+    			add_location(div4, file$8, 87, 8, 3029);
     			attr_dev(div5, "class", "modal-dialog");
-    			add_location(div5, file$8, 84, 4, 2951);
+    			add_location(div5, file$8, 86, 4, 2993);
     			attr_dev(div6, "class", "modal fade");
     			attr_dev(div6, "id", "katanModal");
     			attr_dev(div6, "tabindex", "-1");
     			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div6, "aria-hidden", "true");
-    			add_location(div6, file$8, 83, 0, 2836);
+    			add_location(div6, file$8, 85, 0, 2878);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5625,8 +5672,8 @@ var app = (function (jQuery) {
     			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
     			dice1.$set(dice1_changes);
 
-    			if (!current || dirty & /*$katan*/ 1 && button0_disabled_value !== (button0_disabled_value = /*$katan*/ ctx[0].diceDisabled)) {
-    				prop_dev(button0, "disabled", button0_disabled_value);
+    			if (!current || dirty & /*$katan*/ 1 && button0_disabled__value !== (button0_disabled__value = /*$katan*/ ctx[0].diceDisabled)) {
+    				attr_dev(button0, "disabled1", button0_disabled__value);
     			}
 
     			if (!current || dirty & /*$katan*/ 1 && button1_disabled_value !== (button1_disabled_value = !/*$katan*/ ctx[0].action)) {
@@ -5706,6 +5753,7 @@ var app = (function (jQuery) {
     	component_subscribe($$self, katanStore, $$value => $$invalidate(0, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
+    	console.log(">>> katan", $katan);
 
     	const getHeaderStyle = () => {
     		return toStyle({ backgroundColor: player.color });
@@ -5746,7 +5794,7 @@ var app = (function (jQuery) {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => katanStore.play();
