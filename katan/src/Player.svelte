@@ -187,7 +187,7 @@
     }
 
     .trade-resource {
-        width:550px;
+        width:600px;
     }
 
     .trade-resource .number {
@@ -214,6 +214,11 @@
 
     td {
         border: 1px solid lightskyblue;
+        font-size: 20px;
+    }
+
+    button {
+        font-size: 20px !important;
     }
 
     .trade-target-resource td {

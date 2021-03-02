@@ -85,6 +85,13 @@ button:focus {
 }
 
 .port-resource {
+    display: inline-block;
     width: 40px;
     height: 40px;
+    background-color: darkgray;
+    color: black;
+    line-height: 40px;
+    font-weight: bolder;
+    filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
+    margin-left: 2px;
 }

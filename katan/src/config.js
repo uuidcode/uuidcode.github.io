@@ -3,7 +3,7 @@ const config = {
     cell: {
         width: 230,
         height: 230,
-        margin: 5
+        margin: 2
     },
     castle: {
         width: 50,

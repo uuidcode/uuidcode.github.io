@@ -27,14 +27,27 @@
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
 
-            const trade = tooltipTriggerEl.getAttribute('trade') || '';
+            const trade = tooltipTriggerEl.getAttribute('trade');
+            const type = tooltipTriggerEl.getAttribute('type');
+            const placement = tooltipTriggerEl.getAttribute('placement');
+            let title = `<strong>${trade}:1</strong> `;
+
+            if (type !== 'all') {
+                title += `<img class="port-resource" src="${type}_item.png">`;
+            } else {
+                title += `<div class="port-resource">ALL</div>`;
+            }
+
+
             const tooltip = new Tooltip(tooltipTriggerEl, {
                 html: true,
-                placement: tooltipTriggerEl.getAttribute('placement') || 'top',
+                placement: placement,
                 trigger: 'manual',
-                title: `<strong>${trade}:1</strong><img class="port-resource" src="tree_item.png">`
+                title: title
             });
+
             tooltip.show();
+
             return tooltip
         })
     });
@@ -98,7 +111,7 @@
     }
 
     .player {
-        width: 230px;
+        width: 250px;
     }
 
     td {

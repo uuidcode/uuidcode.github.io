@@ -52,8 +52,8 @@
     let resourceImage = `${resource.type}_item.png`;
 
     let resourceImageStyle = toStyle({
-        left: resource.left + (config.cell.width  - config.resource.width) / 2 + 'px',
-        top: resource.top + (config.cell.height - config.resource.height) / 2 + 'px',
+        left: resource.left + (config.cell.width  - config.resource.width - 30) / 2 + 'px',
+        top: resource.top + (config.cell.height - config.resource.height - 30) / 2 + 'px',
         width: `${config.resource.width}px`,
         height: `${config.resource.height}px`,
     });

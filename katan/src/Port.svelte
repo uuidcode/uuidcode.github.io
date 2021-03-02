@@ -20,9 +20,6 @@
     let castleList;
     let castle;
     let castleStyle;
-    let name = '';
-    let resourceHtml;
-    let placement;
     let port;
 
     $: {
@@ -30,34 +27,17 @@
         castle = castleList[castleIndex];
         castleStyle = createStyle();
         port = castle.port;
-
-        if (castle.port.enabled) {
-            if (castle.port.type !== undefined) {
-                placement = castle.port.tooltip;
-
-                if (castle.port.type === 'all') {
-                    name = `${castle.port.trade}:1`;
-                } else {
-                    name = `${castle.port.trade}:1`;
-                    resourceHtml = `<img class="port-resource" src="tree_item.png">`;
-                }
-            } else {
-                name = '';
-            }
-        } else {
-            name = '';
-        }
-
     }
 </script>
 
-{#if name!==''}
+{#if port.tradable}
 <div class="port"
     data-bs-toggle="tooltip"
-    placement={placement}
+    placement={port.placement}
     trade={port.trade}
+    type={port.type}
     style={castleStyle}>
-    <div >{name}</div>
+    <div></div>
 </div>
 {/if}
 

@@ -484,7 +484,7 @@ var app = (function (jQuery) {
         cell: {
             width: 230,
             height: 230,
-            margin: 5
+            margin: 2
         },
         castle: {
             width: 50,
@@ -524,6 +524,23 @@ var app = (function (jQuery) {
     }
 
     let katanObject = {
+        resourceTypeList: [
+            {
+                type: 'tree'
+            },
+            {
+                type: 'mud'
+            },
+            {
+                type: 'wheat'
+            },
+            {
+                type: 'sheep'
+            },
+            {
+                type: 'iron'
+            }
+        ],
         rollDice: false,
         action: false,
         isMakeRoad: false,
@@ -709,50 +726,51 @@ var app = (function (jQuery) {
     katanObject.castleList.forEach(castle => castle.show = castle.ripple);
     katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
     katanObject.castleList.forEach(castle => castle.title = '');
+    katanObject.castleList.forEach(castle => castle.tradable = false);
 
     katanObject.castleList[0].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[1].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[2].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[3].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[4].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[5].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[6].port = {
         enabled: true,
-        tooltip: 'top'
+        placement: 'top'
     };
 
     katanObject.castleList[7].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
 
     katanObject.castleList[8].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
     katanObject.castleList[9].port = {
         enabled: false
@@ -763,153 +781,194 @@ var app = (function (jQuery) {
     katanObject.castleList[11].port = {
         enabled: false
     };
+
     katanObject.castleList[12].port = {
         enabled: false
     };
+
     katanObject.castleList[13].port = {
         enabled: false
     };
+
     katanObject.castleList[14].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[15].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[16].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
+
     katanObject.castleList[17].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
+
     katanObject.castleList[18].port = {
         enabled: false
     };
+
     katanObject.castleList[19].port = {
         enabled: false
     };
+
     katanObject.castleList[20].port = {
         enabled: false
     };
+
     katanObject.castleList[21].port = {
         enabled: false
     };
+
     katanObject.castleList[22].port = {
         enabled: false
     };
+
     katanObject.castleList[23].port = {
         enabled: false
     };
+
     katanObject.castleList[24].port = {
         enabled: false
     };
+
     katanObject.castleList[25].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[26].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[27].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
+
     katanObject.castleList[28].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
+
     katanObject.castleList[29].port = {
         enabled: false
     };
+
     katanObject.castleList[30].port = {
         enabled: false
     };
+
     katanObject.castleList[31].port = {
         enabled: false
     };
+
     katanObject.castleList[32].port = {
         enabled: false
     };
+
     katanObject.castleList[33].port = {
         enabled: false
     };
+
     katanObject.castleList[34].port = {
         enabled: false
     };
+
     katanObject.castleList[35].port = {
         enabled: false
     };
+
     katanObject.castleList[36].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
 
     };
+
     katanObject.castleList[37].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[38].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
+
     katanObject.castleList[39].port = {
         enabled: true,
-        tooltip: 'left'
+        placement: 'left'
     };
+
     katanObject.castleList[40].port = {
         enabled: false
     };
+
     katanObject.castleList[41].port = {
         enabled: false
     };
+
     katanObject.castleList[42].port = {
         enabled: false
     };
+
     katanObject.castleList[43].port = {
         enabled: false
     };
+
     katanObject.castleList[44].port = {
         enabled: false
     };
+
     katanObject.castleList[45].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[46].port = {
         enabled: true,
-        tooltip: 'right'
+        placement: 'right'
     };
+
     katanObject.castleList[47].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
+
     katanObject.castleList[48].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
+
     katanObject.castleList[49].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
+
     katanObject.castleList[50].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
+
     katanObject.castleList[51].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
+
     katanObject.castleList[52].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
     katanObject.castleList[53].port = {
         enabled: true,
-        tooltip: 'bottom'
+        placement: 'bottom'
     };
 
     const portList = [];
@@ -924,27 +983,27 @@ var app = (function (jQuery) {
     for (let i = 0; i < 2; i++) {
         portList.push({
             trade: 2,
-            type: '나무'
+            type: 'tree'
         });
 
         portList.push({
             trade: 2,
-            type: '진흙'
+            type: 'mud'
         });
 
         portList.push({
             trade: 2,
-            type: '양'
+            type: 'wheat'
         });
 
         portList.push({
             trade: 2,
-            type: '쇠'
+            type: 'sheep'
         });
 
         portList.push({
             trade: 2,
-            type: '밀'
+            type: 'iron'
         });
     }
 
@@ -955,24 +1014,12 @@ var app = (function (jQuery) {
         .slice(0, portList.length)
         .forEach(i => {
             const port = portList.pop();
+
             katanObject.castleList[i].port = {
                 ...katanObject.castleList[i].port,
                 trade: port.trade,
-                type: port.type
-            };
-        });
-
-    katanObject.castleList
-        .filter(castle => castle.port.enabled)
-        .filter(castle => castle.port.type === undefined)
-        .map(castle => castle.index)
-        .sort(random())
-        .slice(0, 2)
-        .forEach(i => {
-            katanObject.castleList[i].port = {
-                ...katanObject.castleList[i].port,
-                trade: 2,
-                type: '나무'
+                type: port.type,
+                tradable: true
             };
         });
 
@@ -1511,6 +1558,7 @@ var app = (function (jQuery) {
         subscribe: subscribe$1,
 
         turn: () => katanStore.updateKatan(katan => {
+            katanStore.setDiceEnabled();
             katanStore.unsetRollDice();
 
             katanStore.recomputePlayer();
@@ -1762,7 +1810,7 @@ var app = (function (jQuery) {
                 number = window.targetNumber;
             }
 
-            katanStore.setRollDice();
+            katan.rollDice = true;
 
             console.log('>>> katan.rollDice', katan.rollDice);
 
@@ -2259,8 +2307,8 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[8]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-7x55vz");
-    			add_location(img, file, 92, 4, 2878);
-    			add_location(div, file, 91, 4, 2868);
+    			add_location(img, file, 92, 4, 2888);
+    			add_location(div, file, 91, 4, 2878);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2324,19 +2372,19 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[5]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
-    			add_location(img, file, 70, 8, 2284);
+    			add_location(img, file, 70, 8, 2294);
     			attr_dev(div0, "class", "number svelte-7x55vz");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "buglar", /*resource*/ ctx[1].buglar);
-    			add_location(div0, file, 72, 8, 2360);
+    			add_location(div0, file, 72, 8, 2370);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[4]);
-    			add_location(div1, file, 69, 4, 2228);
+    			add_location(div1, file, 69, 4, 2238);
     			attr_dev(div2, "class", "cell svelte-7x55vz");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file, 68, 0, 2187);
+    			add_location(div2, file, 68, 0, 2197);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2483,8 +2531,8 @@ var app = (function (jQuery) {
     	let resourceImage = `${resource.type}_item.png`;
 
     	let resourceImageStyle = toStyle({
-    		left: resource.left + (config.cell.width - config.resource.width) / 2 + "px",
-    		top: resource.top + (config.cell.height - config.resource.height) / 2 + "px",
+    		left: resource.left + (config.cell.width - config.resource.width - 30) / 2 + "px",
+    		top: resource.top + (config.cell.height - config.resource.height - 30) / 2 + "px",
     		width: `${config.resource.width}px`,
     		height: `${config.resource.height}px`
     	});
@@ -2896,40 +2944,42 @@ var app = (function (jQuery) {
     /* src\Port.svelte generated by Svelte v3.32.3 */
     const file$2 = "src\\Port.svelte";
 
-    // (54:0) {#if name!==''}
+    // (33:0) {#if port.tradable}
     function create_if_block$2(ctx) {
     	let div1;
     	let div0;
-    	let t;
+    	let div1_placement_value;
     	let div1_trade_value;
+    	let div1_type_value;
 
     	const block = {
     		c: function create() {
     			div1 = element("div");
     			div0 = element("div");
-    			t = text(/*name*/ ctx[1]);
-    			add_location(div0, file$2, 59, 4, 1528);
+    			add_location(div0, file$2, 39, 4, 944);
     			attr_dev(div1, "class", "port svelte-1xm25pn");
     			attr_dev(div1, "data-bs-toggle", "tooltip");
-    			attr_dev(div1, "placement", /*placement*/ ctx[2]);
-    			attr_dev(div1, "trade", div1_trade_value = /*port*/ ctx[3].trade);
+    			attr_dev(div1, "placement", div1_placement_value = /*port*/ ctx[1].placement);
+    			attr_dev(div1, "trade", div1_trade_value = /*port*/ ctx[1].trade);
+    			attr_dev(div1, "type", div1_type_value = /*port*/ ctx[1].type);
     			attr_dev(div1, "style", /*castleStyle*/ ctx[0]);
-    			add_location(div1, file$2, 54, 0, 1398);
+    			add_location(div1, file$2, 33, 0, 787);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
     			append_dev(div1, div0);
-    			append_dev(div0, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*name*/ 2) set_data_dev(t, /*name*/ ctx[1]);
-
-    			if (dirty & /*placement*/ 4) {
-    				attr_dev(div1, "placement", /*placement*/ ctx[2]);
+    			if (dirty & /*port*/ 2 && div1_placement_value !== (div1_placement_value = /*port*/ ctx[1].placement)) {
+    				attr_dev(div1, "placement", div1_placement_value);
     			}
 
-    			if (dirty & /*port*/ 8 && div1_trade_value !== (div1_trade_value = /*port*/ ctx[3].trade)) {
+    			if (dirty & /*port*/ 2 && div1_trade_value !== (div1_trade_value = /*port*/ ctx[1].trade)) {
     				attr_dev(div1, "trade", div1_trade_value);
+    			}
+
+    			if (dirty & /*port*/ 2 && div1_type_value !== (div1_type_value = /*port*/ ctx[1].type)) {
+    				attr_dev(div1, "type", div1_type_value);
     			}
 
     			if (dirty & /*castleStyle*/ 1) {
@@ -2945,7 +2995,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(54:0) {#if name!==''}",
+    		source: "(33:0) {#if port.tradable}",
     		ctx
     	});
 
@@ -2954,7 +3004,7 @@ var app = (function (jQuery) {
 
     function create_fragment$2(ctx) {
     	let if_block_anchor;
-    	let if_block = /*name*/ ctx[1] !== "" && create_if_block$2(ctx);
+    	let if_block = /*port*/ ctx[1].tradable && create_if_block$2(ctx);
 
     	const block = {
     		c: function create() {
@@ -2969,7 +3019,7 @@ var app = (function (jQuery) {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, [dirty]) {
-    			if (/*name*/ ctx[1] !== "") {
+    			if (/*port*/ ctx[1].tradable) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -3004,7 +3054,7 @@ var app = (function (jQuery) {
     function instance$2($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(7, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(5, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Port", slots, []);
     	let { castleIndex } = $$props;
@@ -3024,9 +3074,6 @@ var app = (function (jQuery) {
     	let castleList;
     	let castle;
     	let castleStyle;
-    	let name = "";
-    	let resourceHtml;
-    	let placement;
     	let port;
     	const writable_props = ["castleIndex"];
 
@@ -3035,7 +3082,7 @@ var app = (function (jQuery) {
     	});
 
     	$$self.$$set = $$props => {
-    		if ("castleIndex" in $$props) $$invalidate(4, castleIndex = $$props.castleIndex);
+    		if ("castleIndex" in $$props) $$invalidate(2, castleIndex = $$props.castleIndex);
     	};
 
     	$$self.$capture_state = () => ({
@@ -3047,22 +3094,16 @@ var app = (function (jQuery) {
     		castleList,
     		castle,
     		castleStyle,
-    		name,
-    		resourceHtml,
-    		placement,
     		port,
     		$katan
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("castleIndex" in $$props) $$invalidate(4, castleIndex = $$props.castleIndex);
-    		if ("castleList" in $$props) $$invalidate(5, castleList = $$props.castleList);
-    		if ("castle" in $$props) $$invalidate(6, castle = $$props.castle);
+    		if ("castleIndex" in $$props) $$invalidate(2, castleIndex = $$props.castleIndex);
+    		if ("castleList" in $$props) $$invalidate(3, castleList = $$props.castleList);
+    		if ("castle" in $$props) $$invalidate(4, castle = $$props.castle);
     		if ("castleStyle" in $$props) $$invalidate(0, castleStyle = $$props.castleStyle);
-    		if ("name" in $$props) $$invalidate(1, name = $$props.name);
-    		if ("resourceHtml" in $$props) resourceHtml = $$props.resourceHtml;
-    		if ("placement" in $$props) $$invalidate(2, placement = $$props.placement);
-    		if ("port" in $$props) $$invalidate(3, port = $$props.port);
+    		if ("port" in $$props) $$invalidate(1, port = $$props.port);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3070,40 +3111,23 @@ var app = (function (jQuery) {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, castleList, castleIndex, castle*/ 240) {
+    		if ($$self.$$.dirty & /*$katan, castleList, castleIndex, castle*/ 60) {
     			{
-    				$$invalidate(5, castleList = $katan.castleList);
-    				$$invalidate(6, castle = castleList[castleIndex]);
+    				$$invalidate(3, castleList = $katan.castleList);
+    				$$invalidate(4, castle = castleList[castleIndex]);
     				$$invalidate(0, castleStyle = createStyle());
-    				$$invalidate(3, port = castle.port);
-
-    				if (castle.port.enabled) {
-    					if (castle.port.type !== undefined) {
-    						$$invalidate(2, placement = castle.port.tooltip);
-
-    						if (castle.port.type === "all") {
-    							$$invalidate(1, name = `${castle.port.trade}:1`);
-    						} else {
-    							$$invalidate(1, name = `${castle.port.trade}:1`);
-    							resourceHtml = `<img class="port-resource" src="tree_item.png">`;
-    						}
-    					} else {
-    						$$invalidate(1, name = "");
-    					}
-    				} else {
-    					$$invalidate(1, name = "");
-    				}
+    				$$invalidate(1, port = castle.port);
     			}
     		}
     	};
 
-    	return [castleStyle, name, placement, port, castleIndex, castleList, castle, $katan];
+    	return [castleStyle, port, castleIndex, castleList, castle, $katan];
     }
 
     class Port extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castleIndex: 4 });
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, { castleIndex: 2 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3115,7 +3139,7 @@ var app = (function (jQuery) {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*castleIndex*/ ctx[4] === undefined && !("castleIndex" in props)) {
+    		if (/*castleIndex*/ ctx[2] === undefined && !("castleIndex" in props)) {
     			console.warn("<Port> was created without expected prop 'castleIndex'");
     		}
     	}
@@ -3682,7 +3706,7 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(main, "class", "board svelte-1rhjao5");
+    			attr_dev(main, "class", "board svelte-ur6jdm");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
     			add_location(main, file$4, 18, 0, 489);
     		},
@@ -4185,7 +4209,7 @@ var app = (function (jQuery) {
     			add_location(img1, file$6, 19, 16, 411);
     			attr_dev(td0, "class", "svelte-qvq2cg");
     			add_location(td0, file$6, 17, 12, 348);
-    			attr_dev(button0, "class", "btn btn-primary btn-sm svelte-qvq2cg");
+    			attr_dev(button0, "class", "btn btn-primary svelte-qvq2cg");
     			button0.disabled = button0_disabled_value = !/*player*/ ctx[0].make.road;
     			add_location(button0, file$6, 22, 16, 487);
     			attr_dev(td1, "class", "svelte-qvq2cg");
@@ -4193,64 +4217,64 @@ var app = (function (jQuery) {
     			add_location(tr0, file$6, 16, 8, 331);
     			if (img2.src !== (img2_src_value = "tree_item.png")) attr_dev(img2, "src", img2_src_value);
     			attr_dev(img2, "class", "svelte-qvq2cg");
-    			add_location(img2, file$6, 29, 16, 729);
+    			add_location(img2, file$6, 29, 16, 722);
     			if (img3.src !== (img3_src_value = "mud_item.png")) attr_dev(img3, "src", img3_src_value);
     			attr_dev(img3, "class", "svelte-qvq2cg");
-    			add_location(img3, file$6, 30, 16, 771);
+    			add_location(img3, file$6, 30, 16, 764);
     			if (img4.src !== (img4_src_value = "wheat_item.png")) attr_dev(img4, "src", img4_src_value);
     			attr_dev(img4, "class", "svelte-qvq2cg");
-    			add_location(img4, file$6, 31, 16, 812);
+    			add_location(img4, file$6, 31, 16, 805);
     			if (img5.src !== (img5_src_value = "sheep_item.png")) attr_dev(img5, "src", img5_src_value);
     			attr_dev(img5, "class", "svelte-qvq2cg");
-    			add_location(img5, file$6, 32, 16, 855);
+    			add_location(img5, file$6, 32, 16, 848);
     			attr_dev(td2, "class", "svelte-qvq2cg");
-    			add_location(td2, file$6, 28, 12, 708);
-    			attr_dev(button1, "class", "btn btn-primary btn-sm svelte-qvq2cg");
+    			add_location(td2, file$6, 28, 12, 701);
+    			attr_dev(button1, "class", "btn btn-primary svelte-qvq2cg");
     			button1.disabled = button1_disabled_value = !/*player*/ ctx[0].make.castle;
-    			add_location(button1, file$6, 35, 16, 933);
+    			add_location(button1, file$6, 35, 16, 926);
     			attr_dev(td3, "class", "svelte-qvq2cg");
-    			add_location(td3, file$6, 34, 12, 912);
-    			add_location(tr1, file$6, 27, 8, 691);
+    			add_location(td3, file$6, 34, 12, 905);
+    			add_location(tr1, file$6, 27, 8, 684);
     			if (img6.src !== (img6_src_value = "wheat_item.png")) attr_dev(img6, "src", img6_src_value);
     			attr_dev(img6, "class", "svelte-qvq2cg");
-    			add_location(img6, file$6, 42, 16, 1179);
+    			add_location(img6, file$6, 42, 16, 1165);
     			if (img7.src !== (img7_src_value = "wheat_item.png")) attr_dev(img7, "src", img7_src_value);
     			attr_dev(img7, "class", "svelte-qvq2cg");
-    			add_location(img7, file$6, 43, 16, 1222);
+    			add_location(img7, file$6, 43, 16, 1208);
     			if (img8.src !== (img8_src_value = "iron_item.png")) attr_dev(img8, "src", img8_src_value);
     			attr_dev(img8, "class", "svelte-qvq2cg");
-    			add_location(img8, file$6, 44, 16, 1265);
+    			add_location(img8, file$6, 44, 16, 1251);
     			if (img9.src !== (img9_src_value = "iron_item.png")) attr_dev(img9, "src", img9_src_value);
     			attr_dev(img9, "class", "svelte-qvq2cg");
-    			add_location(img9, file$6, 45, 16, 1307);
+    			add_location(img9, file$6, 45, 16, 1293);
     			if (img10.src !== (img10_src_value = "iron_item.png")) attr_dev(img10, "src", img10_src_value);
     			attr_dev(img10, "class", "svelte-qvq2cg");
-    			add_location(img10, file$6, 46, 16, 1349);
+    			add_location(img10, file$6, 46, 16, 1335);
     			attr_dev(td4, "class", "svelte-qvq2cg");
-    			add_location(td4, file$6, 41, 12, 1158);
-    			attr_dev(button2, "class", "btn btn-primary btn-sm svelte-qvq2cg");
+    			add_location(td4, file$6, 41, 12, 1144);
+    			attr_dev(button2, "class", "btn btn-primary svelte-qvq2cg");
     			button2.disabled = button2_disabled_value = !/*player*/ ctx[0].make.city;
-    			add_location(button2, file$6, 49, 16, 1426);
+    			add_location(button2, file$6, 49, 16, 1412);
     			attr_dev(td5, "class", "svelte-qvq2cg");
-    			add_location(td5, file$6, 48, 12, 1405);
-    			add_location(tr2, file$6, 40, 8, 1141);
+    			add_location(td5, file$6, 48, 12, 1391);
+    			add_location(tr2, file$6, 40, 8, 1127);
     			if (img11.src !== (img11_src_value = "wheat_item.png")) attr_dev(img11, "src", img11_src_value);
     			attr_dev(img11, "class", "svelte-qvq2cg");
-    			add_location(img11, file$6, 54, 16, 1588);
+    			add_location(img11, file$6, 54, 16, 1567);
     			if (img12.src !== (img12_src_value = "sheep_item.png")) attr_dev(img12, "src", img12_src_value);
     			attr_dev(img12, "class", "svelte-qvq2cg");
-    			add_location(img12, file$6, 55, 16, 1631);
+    			add_location(img12, file$6, 55, 16, 1610);
     			if (img13.src !== (img13_src_value = "iron_item.png")) attr_dev(img13, "src", img13_src_value);
     			attr_dev(img13, "class", "svelte-qvq2cg");
-    			add_location(img13, file$6, 56, 16, 1674);
+    			add_location(img13, file$6, 56, 16, 1653);
     			attr_dev(td6, "class", "svelte-qvq2cg");
-    			add_location(td6, file$6, 53, 12, 1567);
-    			attr_dev(button3, "class", "btn btn-primary btn-sm svelte-qvq2cg");
+    			add_location(td6, file$6, 53, 12, 1546);
+    			attr_dev(button3, "class", "btn btn-primary svelte-qvq2cg");
     			button3.disabled = button3_disabled_value = !/*player*/ ctx[0].make.dev;
-    			add_location(button3, file$6, 59, 16, 1751);
+    			add_location(button3, file$6, 59, 16, 1730);
     			attr_dev(td7, "class", "svelte-qvq2cg");
-    			add_location(td7, file$6, 58, 12, 1730);
-    			add_location(tr3, file$6, 52, 8, 1550);
+    			add_location(td7, file$6, 58, 12, 1709);
+    			add_location(tr3, file$6, 52, 8, 1529);
     			attr_dev(table, "class", "construction-resource svelte-qvq2cg");
     			add_location(table, file$6, 15, 4, 285);
     			add_location(main, file$6, 14, 0, 274);
@@ -4441,7 +4465,7 @@ var app = (function (jQuery) {
     			}
 
     			add_location(tr, file$7, 127, 40, 4253);
-    			attr_dev(table, "class", "trade-target-resource svelte-1v4aggu");
+    			attr_dev(table, "class", "trade-target-resource svelte-ch2t7h");
     			add_location(table, file$7, 126, 36, 4175);
     		},
     		m: function mount(target, anchor) {
@@ -4524,14 +4548,14 @@ var app = (function (jQuery) {
     			t1 = text(t1_value);
     			t2 = text(":1 교환");
     			t3 = space();
-    			attr_dev(img, "class", "trade-resource svelte-1v4aggu");
+    			attr_dev(img, "class", "trade-resource svelte-ch2t7h");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			add_location(img, file$7, 132, 60, 4608);
-    			attr_dev(button, "class", "btn btn-primary btn-sm svelte-1v4aggu");
+    			attr_dev(button, "class", "btn btn-primary btn-sm svelte-ch2t7h");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
     			add_location(button, file$7, 133, 60, 4733);
     			add_location(div, file$7, 131, 56, 4542);
-    			attr_dev(td, "class", "svelte-1v4aggu");
+    			attr_dev(td, "class", "svelte-ch2t7h");
     			add_location(td, file$7, 130, 52, 4481);
     		},
     		m: function mount(target, anchor) {
@@ -4654,14 +4678,14 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1v4aggu");
+    			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-ch2t7h");
     			add_location(img, file$7, 120, 32, 3810);
     			attr_dev(td0, "width", "80");
-    			attr_dev(td0, "class", "svelte-1v4aggu");
+    			attr_dev(td0, "class", "svelte-ch2t7h");
     			add_location(td0, file$7, 119, 28, 3762);
-    			attr_dev(td1, "class", "number svelte-1v4aggu");
+    			attr_dev(td1, "class", "number svelte-ch2t7h");
     			add_location(td1, file$7, 123, 28, 3992);
-    			attr_dev(td2, "class", "svelte-1v4aggu");
+    			attr_dev(td2, "class", "svelte-ch2t7h");
     			add_location(td2, file$7, 124, 28, 4061);
     			add_location(tr, file$7, 118, 24, 3729);
     		},
@@ -4682,7 +4706,7 @@ var app = (function (jQuery) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1v4aggu")) {
+    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-ch2t7h")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -4908,84 +4932,84 @@ var app = (function (jQuery) {
     			tr12 = element("tr");
     			td24 = element("td");
     			create_component(construction.$$.fragment);
-    			attr_dev(td0, "class", "name svelte-1v4aggu");
+    			attr_dev(td0, "class", "name svelte-ch2t7h");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
     			add_location(td0, file$7, 63, 12, 1432);
     			add_location(tr0, file$7, 62, 8, 1415);
     			attr_dev(td1, "colspan", "3");
-    			attr_dev(td1, "class", "header svelte-1v4aggu");
+    			attr_dev(td1, "class", "header svelte-ch2t7h");
     			add_location(td1, file$7, 70, 24, 1664);
     			add_location(tr1, file$7, 69, 20, 1635);
-    			attr_dev(td2, "class", "svelte-1v4aggu");
+    			attr_dev(td2, "class", "svelte-ch2t7h");
     			add_location(td2, file$7, 76, 36, 1931);
-    			attr_dev(td3, "class", "svelte-1v4aggu");
+    			attr_dev(td3, "class", "svelte-ch2t7h");
     			add_location(td3, file$7, 77, 36, 1979);
-    			attr_dev(td4, "class", "svelte-1v4aggu");
+    			attr_dev(td4, "class", "svelte-ch2t7h");
     			add_location(td4, file$7, 78, 36, 2027);
-    			attr_dev(td5, "class", "svelte-1v4aggu");
+    			attr_dev(td5, "class", "svelte-ch2t7h");
     			add_location(td5, file$7, 79, 36, 2079);
-    			attr_dev(td6, "class", "svelte-1v4aggu");
+    			attr_dev(td6, "class", "svelte-ch2t7h");
     			add_location(td6, file$7, 80, 36, 2131);
     			attr_dev(tr2, "class", "point");
     			add_location(tr2, file$7, 75, 32, 1876);
-    			attr_dev(td7, "class", "svelte-1v4aggu");
+    			attr_dev(td7, "class", "svelte-ch2t7h");
     			add_location(td7, file$7, 83, 36, 2257);
-    			attr_dev(td8, "class", "svelte-1v4aggu");
+    			attr_dev(td8, "class", "svelte-ch2t7h");
     			add_location(td8, file$7, 84, 36, 2324);
-    			attr_dev(td9, "class", "svelte-1v4aggu");
+    			attr_dev(td9, "class", "svelte-ch2t7h");
     			add_location(td9, file$7, 85, 36, 2389);
-    			attr_dev(td10, "class", "svelte-1v4aggu");
+    			attr_dev(td10, "class", "svelte-ch2t7h");
     			add_location(td10, file$7, 86, 36, 2454);
-    			attr_dev(td11, "class", "svelte-1v4aggu");
+    			attr_dev(td11, "class", "svelte-ch2t7h");
     			add_location(td11, file$7, 87, 36, 2521);
     			add_location(tr3, file$7, 82, 32, 2216);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$7, 74, 28, 1823);
     			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "svelte-1v4aggu");
+    			attr_dev(td12, "class", "svelte-ch2t7h");
     			add_location(td12, file$7, 73, 24, 1778);
     			add_location(tr4, file$7, 72, 20, 1749);
     			attr_dev(td13, "colspan", "3");
-    			attr_dev(td13, "class", "header svelte-1v4aggu");
+    			attr_dev(td13, "class", "header svelte-ch2t7h");
     			add_location(td13, file$7, 94, 24, 2730);
     			add_location(tr5, file$7, 93, 20, 2701);
-    			attr_dev(td14, "class", "svelte-1v4aggu");
+    			attr_dev(td14, "class", "svelte-ch2t7h");
     			add_location(td14, file$7, 100, 36, 3004);
-    			attr_dev(td15, "class", "svelte-1v4aggu");
+    			attr_dev(td15, "class", "svelte-ch2t7h");
     			add_location(td15, file$7, 101, 36, 3052);
-    			attr_dev(td16, "class", "svelte-1v4aggu");
+    			attr_dev(td16, "class", "svelte-ch2t7h");
     			add_location(td16, file$7, 102, 36, 3100);
     			add_location(tr6, file$7, 99, 32, 2963);
-    			attr_dev(td17, "class", "svelte-1v4aggu");
+    			attr_dev(td17, "class", "svelte-ch2t7h");
     			add_location(td17, file$7, 105, 36, 3223);
-    			attr_dev(td18, "class", "svelte-1v4aggu");
+    			attr_dev(td18, "class", "svelte-ch2t7h");
     			add_location(td18, file$7, 106, 36, 3297);
-    			attr_dev(td19, "class", "svelte-1v4aggu");
+    			attr_dev(td19, "class", "svelte-ch2t7h");
     			add_location(td19, file$7, 107, 36, 3369);
     			add_location(tr7, file$7, 104, 32, 3182);
-    			attr_dev(table1, "class", "construction svelte-1v4aggu");
+    			attr_dev(table1, "class", "construction svelte-ch2t7h");
     			attr_dev(table1, "width", "100%");
     			add_location(table1, file$7, 98, 28, 2889);
     			attr_dev(td20, "colspan", "3");
-    			attr_dev(td20, "class", "svelte-1v4aggu");
+    			attr_dev(td20, "class", "svelte-ch2t7h");
     			add_location(td20, file$7, 97, 24, 2844);
     			add_location(tr8, file$7, 96, 20, 2815);
     			attr_dev(td21, "colspan", "3");
-    			attr_dev(td21, "class", "header svelte-1v4aggu");
+    			attr_dev(td21, "class", "header svelte-ch2t7h");
     			add_location(td21, file$7, 114, 24, 3586);
     			add_location(tr9, file$7, 113, 20, 3557);
-    			attr_dev(table2, "class", "inner-resource svelte-1v4aggu");
+    			attr_dev(table2, "class", "inner-resource svelte-ch2t7h");
     			add_location(table2, file$7, 68, 16, 1584);
-    			attr_dev(td22, "class", "svelte-1v4aggu");
+    			attr_dev(td22, "class", "svelte-ch2t7h");
     			add_location(td22, file$7, 67, 12, 1563);
     			add_location(tr10, file$7, 66, 8, 1546);
-    			attr_dev(td23, "class", "header svelte-1v4aggu");
+    			attr_dev(td23, "class", "header svelte-ch2t7h");
     			add_location(td23, file$7, 152, 12, 5734);
     			add_location(tr11, file$7, 151, 8, 5717);
-    			attr_dev(td24, "class", "svelte-1v4aggu");
+    			attr_dev(td24, "class", "svelte-ch2t7h");
     			add_location(td24, file$7, 155, 12, 5800);
     			add_location(tr12, file$7, 154, 8, 5783);
-    			attr_dev(table3, "class", "trade-resource svelte-1v4aggu");
+    			attr_dev(table3, "class", "trade-resource svelte-ch2t7h");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
     			add_location(table3, file$7, 61, 4, 1356);
     			add_location(main, file$7, 60, 0, 1345);
@@ -5320,7 +5344,7 @@ var app = (function (jQuery) {
     /* src\App.svelte generated by Svelte v3.32.3 */
     const file$8 = "src\\App.svelte";
 
-    // (81:12) {#if $katan.buttonMessage!==''}
+    // (94:12) {#if $katan.buttonMessage!==''}
     function create_if_block$5(ctx) {
     	let div;
     	let button;
@@ -5336,9 +5360,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$8, 82, 20, 3087);
+    			add_location(button, file$8, 95, 20, 3393);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$8, 81, 16, 3039);
+    			add_location(div, file$8, 94, 16, 3345);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5364,7 +5388,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$5.name,
     		type: "if",
-    		source: "(81:12) {#if $katan.buttonMessage!==''}",
+    		source: "(94:12) {#if $katan.buttonMessage!==''}",
     		ctx
     	});
 
@@ -5489,49 +5513,49 @@ var app = (function (jQuery) {
     			t15 = space();
     			if (if_block) if_block.c();
     			attr_dev(td0, "valign", "top");
-    			attr_dev(td0, "class", "player svelte-4shjut");
-    			add_location(td0, file$8, 45, 12, 1394);
-    			attr_dev(h1, "class", "message-header svelte-4shjut");
+    			attr_dev(td0, "class", "player svelte-4e8og3");
+    			add_location(td0, file$8, 58, 12, 1700);
+    			attr_dev(h1, "class", "message-header svelte-4e8og3");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
-    			add_location(h1, file$8, 49, 16, 1580);
-    			attr_dev(button0, "class", "btn btn-primary svelte-4shjut");
+    			add_location(h1, file$8, 62, 16, 1886);
+    			attr_dev(button0, "class", "btn btn-primary svelte-4e8og3");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$8, 53, 20, 1849);
-    			attr_dev(button1, "class", "btn btn-primary svelte-4shjut");
+    			add_location(button0, file$8, 66, 20, 2155);
+    			attr_dev(button1, "class", "btn btn-primary svelte-4e8og3");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 56, 20, 2036);
-    			attr_dev(div0, "class", "dice-container svelte-4shjut");
-    			add_location(div0, file$8, 50, 16, 1681);
+    			add_location(button1, file$8, 69, 20, 2342);
+    			attr_dev(div0, "class", "dice-container svelte-4e8og3");
+    			add_location(div0, file$8, 63, 16, 1987);
     			attr_dev(td1, "valign", "top");
-    			attr_dev(td1, "class", "text-center svelte-4shjut");
+    			attr_dev(td1, "class", "text-center svelte-4e8og3");
     			attr_dev(td1, "width", "1200px");
-    			add_location(td1, file$8, 48, 12, 1510);
+    			add_location(td1, file$8, 61, 12, 1816);
     			attr_dev(td2, "valign", "top");
-    			attr_dev(td2, "class", "player svelte-4shjut");
-    			add_location(td2, file$8, 64, 12, 2389);
-    			add_location(tr, file$8, 44, 8, 1376);
-    			add_location(table, file$8, 43, 4, 1359);
-    			attr_dev(div1, "class", "katan svelte-4shjut");
-    			add_location(div1, file$8, 42, 0, 1334);
+    			attr_dev(td2, "class", "player svelte-4e8og3");
+    			add_location(td2, file$8, 77, 12, 2695);
+    			add_location(tr, file$8, 57, 8, 1682);
+    			add_location(table, file$8, 56, 4, 1665);
+    			attr_dev(div1, "class", "katan svelte-4e8og3");
+    			add_location(div1, file$8, 55, 0, 1640);
     			attr_dev(button2, "type", "button");
     			attr_dev(button2, "class", "btn-close");
     			attr_dev(button2, "data-bs-dismiss", "modal");
     			attr_dev(button2, "aria-label", "Close");
-    			add_location(button2, file$8, 74, 16, 2766);
+    			add_location(button2, file$8, 87, 16, 3072);
     			attr_dev(div2, "class", "modal-header");
-    			add_location(div2, file$8, 73, 12, 2722);
+    			add_location(div2, file$8, 86, 12, 3028);
     			attr_dev(div3, "class", "modal-body");
-    			add_location(div3, file$8, 76, 12, 2892);
+    			add_location(div3, file$8, 89, 12, 3198);
     			attr_dev(div4, "class", "modal-content");
-    			add_location(div4, file$8, 72, 8, 2681);
+    			add_location(div4, file$8, 85, 8, 2987);
     			attr_dev(div5, "class", "modal-dialog");
-    			add_location(div5, file$8, 71, 4, 2645);
+    			add_location(div5, file$8, 84, 4, 2951);
     			attr_dev(div6, "class", "modal fade");
     			attr_dev(div6, "id", "katanModal");
     			attr_dev(div6, "tabindex", "-1");
     			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div6, "aria-hidden", "true");
-    			add_location(div6, file$8, 70, 0, 2530);
+    			add_location(div6, file$8, 83, 0, 2836);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5695,14 +5719,23 @@ var app = (function (jQuery) {
     		var tooltipTriggerList = [].slice.call(document.querySelectorAll("[data-bs-toggle=\"tooltip\"]"));
 
     		tooltipTriggerList.map(function (tooltipTriggerEl) {
-    			const trade = tooltipTriggerEl.getAttribute("trade") || "";
+    			const trade = tooltipTriggerEl.getAttribute("trade");
+    			const type = tooltipTriggerEl.getAttribute("type");
+    			const placement = tooltipTriggerEl.getAttribute("placement");
+    			let title = `<strong>${trade}:1</strong> `;
+
+    			if (type !== "all") {
+    				title += `<img class="port-resource" src="${type}_item.png">`;
+    			} else {
+    				title += `<div class="port-resource">ALL</div>`;
+    			}
 
     			const tooltip = new bootstrap_esm_min.Tooltip(tooltipTriggerEl,
     			{
     					html: true,
-    					placement: tooltipTriggerEl.getAttribute("placement") || "top",
+    					placement,
     					trigger: "manual",
-    					title: `<strong>${trade}:1</strong><img class="port-resource" src="tree_item.png">`
+    					title
     				});
 
     			tooltip.show();

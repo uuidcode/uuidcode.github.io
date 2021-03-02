@@ -20,7 +20,7 @@
                 <img src="mud_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm"
+                <button class="btn btn-primary"
                         on:click={()=>katan.makeRoad()}
                         disabled={!player.make.road}>도로 만들기</button>
             </td>
@@ -33,7 +33,7 @@
                 <img src="sheep_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm"
+                <button class="btn btn-primary"
                         on:click={()=>katan.makeCastle()}
                         disabled={!player.make.castle}>마을 만들기</button>
             </td>
@@ -47,7 +47,7 @@
                 <img src="iron_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm" disabled={!player.make.city}>도시 만들기</button>
+                <button class="btn btn-primary" disabled={!player.make.city}>도시 만들기</button>
             </td>
         </tr>
         <tr>
@@ -57,7 +57,7 @@
                 <img src="iron_item.png">
             </td>
             <td>
-                <button class="btn btn-primary btn-sm"
+                <button class="btn btn-primary"
                         disabled={!player.make.dev}>발전카드</button>
             </td>
         </tr>

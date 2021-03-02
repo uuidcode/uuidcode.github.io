@@ -5,6 +5,23 @@ import { getDisplay, sleep } from './util.js'
 import jQuery from 'jquery';
 
 let katanObject = {
+    resourceTypeList: [
+        {
+            type: 'tree'
+        },
+        {
+            type: 'mud'
+        },
+        {
+            type: 'wheat'
+        },
+        {
+            type: 'sheep'
+        },
+        {
+            type: 'iron'
+        }
+    ],
     rollDice: false,
     action: false,
     isMakeRoad: false,
@@ -190,50 +207,51 @@ katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
 katanObject.castleList.forEach(castle => castle.show = castle.ripple);
 katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
 katanObject.castleList.forEach(castle => castle.title = '');
+katanObject.castleList.forEach(castle => castle.tradable = false);
 
 katanObject.castleList[0].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[1].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[2].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[3].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[4].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[5].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[6].port = {
     enabled: true,
-    tooltip: 'top'
+    placement: 'top'
 };
 
 katanObject.castleList[7].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
 
 katanObject.castleList[8].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
 katanObject.castleList[9].port = {
     enabled: false
@@ -244,153 +262,194 @@ katanObject.castleList[10].port = {
 katanObject.castleList[11].port = {
     enabled: false
 };
+
 katanObject.castleList[12].port = {
     enabled: false
 };
+
 katanObject.castleList[13].port = {
     enabled: false
 };
+
 katanObject.castleList[14].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[15].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[16].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
+
 katanObject.castleList[17].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
+
 katanObject.castleList[18].port = {
     enabled: false
 };
+
 katanObject.castleList[19].port = {
     enabled: false
 };
+
 katanObject.castleList[20].port = {
     enabled: false
 };
+
 katanObject.castleList[21].port = {
     enabled: false
 };
+
 katanObject.castleList[22].port = {
     enabled: false
 };
+
 katanObject.castleList[23].port = {
     enabled: false
 };
+
 katanObject.castleList[24].port = {
     enabled: false
 };
+
 katanObject.castleList[25].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[26].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[27].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
+
 katanObject.castleList[28].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
+
 katanObject.castleList[29].port = {
     enabled: false
 };
+
 katanObject.castleList[30].port = {
     enabled: false
 };
+
 katanObject.castleList[31].port = {
     enabled: false
 };
+
 katanObject.castleList[32].port = {
     enabled: false
 };
+
 katanObject.castleList[33].port = {
     enabled: false
 };
+
 katanObject.castleList[34].port = {
     enabled: false
 };
+
 katanObject.castleList[35].port = {
     enabled: false
 };
+
 katanObject.castleList[36].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 
 };
+
 katanObject.castleList[37].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[38].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
+
 katanObject.castleList[39].port = {
     enabled: true,
-    tooltip: 'left'
+    placement: 'left'
 };
+
 katanObject.castleList[40].port = {
     enabled: false
 };
+
 katanObject.castleList[41].port = {
     enabled: false
 };
+
 katanObject.castleList[42].port = {
     enabled: false
 };
+
 katanObject.castleList[43].port = {
     enabled: false
 };
+
 katanObject.castleList[44].port = {
     enabled: false
 };
+
 katanObject.castleList[45].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[46].port = {
     enabled: true,
-    tooltip: 'right'
+    placement: 'right'
 };
+
 katanObject.castleList[47].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
+
 katanObject.castleList[48].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
+
 katanObject.castleList[49].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
+
 katanObject.castleList[50].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
+
 katanObject.castleList[51].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
+
 katanObject.castleList[52].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
 katanObject.castleList[53].port = {
     enabled: true,
-    tooltip: 'bottom'
+    placement: 'bottom'
 };
 
 const portList = [];
@@ -405,27 +464,27 @@ for (let i = 0; i < 8; i++) {
 for (let i = 0; i < 2; i++) {
     portList.push({
         trade: 2,
-        type: '나무'
+        type: 'tree'
     });
 
     portList.push({
         trade: 2,
-        type: '진흙'
+        type: 'mud'
     });
 
     portList.push({
         trade: 2,
-        type: '양'
+        type: 'wheat'
     });
 
     portList.push({
         trade: 2,
-        type: '쇠'
+        type: 'sheep'
     });
 
     portList.push({
         trade: 2,
-        type: '밀'
+        type: 'iron'
     });
 }
 
@@ -436,24 +495,12 @@ katanObject.castleList
     .slice(0, portList.length)
     .forEach(i => {
         const port = portList.pop();
+
         katanObject.castleList[i].port = {
             ...katanObject.castleList[i].port,
             trade: port.trade,
-            type: port.type
-        }
-    });
-
-katanObject.castleList
-    .filter(castle => castle.port.enabled)
-    .filter(castle => castle.port.type === undefined)
-    .map(castle => castle.index)
-    .sort(random())
-    .slice(0, 2)
-    .forEach(i => {
-        katanObject.castleList[i].port = {
-            ...katanObject.castleList[i].port,
-            trade: 2,
-            type: '나무'
+            type: port.type,
+            tradable: true
         }
     });
 
@@ -992,6 +1039,7 @@ const katanStore = {
     subscribe,
 
     turn: () => katanStore.updateKatan(katan => {
+        katanStore.setDiceEnabled();
         katanStore.unsetRollDice();
 
         katanStore.recomputePlayer();
@@ -1243,7 +1291,7 @@ const katanStore = {
             number = window.targetNumber;
         }
 
-        katanStore.setRollDice();
+        katan.rollDice = true;
 
         console.log('>>> katan.rollDice', katan.rollDice);
 
