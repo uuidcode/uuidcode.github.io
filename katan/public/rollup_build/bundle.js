@@ -530,7 +530,6 @@ var app = (function (jQuery) {
     }
 
     let katanObject = {
-        debugMessageList: [],
         resourceTypeList: [
             {
                 type: 'tree'
@@ -1661,8 +1660,6 @@ var app = (function (jQuery) {
         }),
 
         moveResource: (number) => katanStore.updateKatan(katan => {
-            katanStore.dir('>>> moveResource katan');
-
             let matchResourceCount = 0;
             let moveResourceCount = 0;
 
@@ -1757,11 +1754,10 @@ var app = (function (jQuery) {
                 player.trade.wheat.enable ||
                 player.trade.sheep.enable ||
                 player.trade.iron.enable ||
-                player.make.tree ||
-                player.make.mud ||
-                player.make.wheat ||
-                player.make.sheep ||
-                player.make.iron;
+                player.make.road ||
+                player.make.castle ||
+                player.make.city ||
+                player.make.dev;
         },
 
         updateAndShowResourceModal: async() => {
@@ -1805,51 +1801,39 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        play: () => {
-            console.log(0);
-            katanStore.dir('play1', get_store_value(katanStore));
-            console.log(1);
-            katanStore.setRollDice();
-            console.log(2);
+        play: () => katanStore.updateKatan(katan => {
+            katanStore.setDiceDisabled();
 
-            /*
-            return katanStore.updateKatan(katan => {
-                katanStore.dir('play2', katan);
-                // katanStore.setDiceDisabled();
-                //
-                // const a = Math.floor(Math.random() * 6) + 1;
-                // const b = Math.floor(Math.random() * 6) + 1;
-                //
-                // katanStore.roll(a, b);
-                //
-                // let number = a + b;
-                //
-                // if (window.targetNumber || -1 !== -1) {
-                //     number = window.targetNumber;
-                // }
+            const a = Math.floor(Math.random() * 6) + 1;
+            const b = Math.floor(Math.random() * 6) + 1;
 
-                katanStore.setRollDice();
+            katanStore.roll(a, b);
 
-                // katanStore.dir('number', number);
-                //
-                // if (number === 7) {
-                //     katan.mode = 'moveBuglar';
-                //     katan.message = '도둑의 위치를 선택하세요.';
-                //     katanStore.setNumberRippleEnabled();
-                // } else {
-                //     katanStore.setSelectedNumberRippleEnabled(number);
-                //
-                //     setTimeout(() => {
-                //         katanStore.log('move resource');
-                //         katanStore.setNumberRippleDisabled(number);
-                //         katanStore.moveResource(number);
-                //     }, 2000);
-                // }
+            let number = a + b;
 
-                return katan;
-            });
-             */
-        },
+            if (window.targetNumber || -1 !== -1) {
+                number = window.targetNumber;
+            }
+
+            katan.rollDice = true;
+
+            console.log('>>> katan.rollDice', katan.rollDice);
+
+            if (number === 7) {
+                katan.mode = 'moveBuglar';
+                katan.message = '도둑의 위치를 선택하세요.';
+                katanStore.setNumberRippleEnabled();
+            } else {
+                katanStore.setSelectedNumberRippleEnabled(number);
+
+                setTimeout(() => {
+                    katanStore.setNumberRippleDisabled(number);
+                    katanStore.moveResource(number);
+                }, 2000);
+            }
+
+            return katan;
+        }),
 
         updateResource: (playerIndex, resource) => katanStore.updateKatan(katan => {
             katan.playerList[playerIndex].resource[resource.type]++;
@@ -1981,9 +1965,7 @@ var app = (function (jQuery) {
             return update$1(katan => {
                 console.log("=========================");
                 console.trace();
-
-                const date = new Date();            katan.debugMessage = errorStack;
-                katan.debugMessageList.push(`${date.toISOString()} ${errorStack}`);
+                katan.debugMessage = errorStack;
                 katanStore.dir('update before', katan);
 
                 const resultKatan = updateFunction(katan);
@@ -2171,11 +2153,12 @@ var app = (function (jQuery) {
         dir: (message, object) => {
             const date = new Date();
             console.log(`>>> ${date.toISOString()} ${message}`);
-            console.dir(object);
+            console.log(object);
         },
 
         recomputePlayer: () => katanStore.updateKatan(katan => {
-            katanStore.dir('recomputePlayer before', katan);
+            katanStore.log(`katan.rollDice ${katan.rollDice}`);
+            katanStore.log(`katan.playerIndex ${katan.playerIndex}`);
 
             katan.playerList = katan.playerList
                 .map(player => {
