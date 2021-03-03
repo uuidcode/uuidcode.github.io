@@ -1759,7 +1759,7 @@ var app = (function (jQuery) {
 
         doAction: () => katanStore.updateKatan(katan => {
             katan.message = '자원을 교환하거나 건설하세요.';
-            katan.setDiceDisabled();
+            katanStore.setDiceDisabled();
             katan.action = true;
             return katan;
         }),
@@ -1906,6 +1906,32 @@ var app = (function (jQuery) {
             player.point.castle += 1;
             player.point.sum += 1;
             player.construction.castle -= 1;
+
+            if (castle.port.tradable) {
+                if (castle.port.type === 'all') {
+                    if (castle.trade.tree.count > castle.port.trade) {
+                        player.trade.tree.count = castle.port.trade;
+                    }
+
+                    if (castle.trade.mud.count > castle.port.trade) {
+                        player.trade.mud.count = castle.port.trade;
+                    }
+
+                    if (castle.trade.wheat.count > castle.port.trade) {
+                        player.trade.wheat.count = castle.port.trade;
+                    }
+
+                    if (castle.trade.sheep.count > castle.port.trade) {
+                        player.trade.sheep.count = castle.port.trade;
+                    }
+
+                    if (castle.trade.iron.count > castle.port.trade) {
+                        player.trade.iron.count = castle.port.trade;
+                    }
+                } else {
+                    player.trade[castle.port.type].count = castle.port.trade;
+                }
+            }
 
             return katan;
         }),
@@ -4536,7 +4562,7 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (128:32) {#if player.trade[resource.type].enable}
+    // (130:32) {#if player.trade[resource.type].enable}
     function create_if_block$4(ctx) {
     	let table;
     	let tr;
@@ -4557,9 +4583,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 129, 40, 4375);
+    			add_location(tr, file$7, 131, 40, 4489);
     			attr_dev(table, "class", "trade-target-resource svelte-ch2t7h");
-    			add_location(table, file$7, 128, 36, 4297);
+    			add_location(table, file$7, 130, 36, 4411);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4604,14 +4630,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(128:32) {#if player.trade[resource.type].enable}",
+    		source: "(130:32) {#if player.trade[resource.type].enable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (132:48) {#if resource.type!==tradeResource.type}
+    // (134:48) {#if resource.type!==tradeResource.type}
     function create_if_block_1$1(ctx) {
     	let td;
     	let div;
@@ -4643,13 +4669,13 @@ var app = (function (jQuery) {
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-ch2t7h");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 134, 60, 4730);
+    			add_location(img, file$7, 136, 60, 4844);
     			attr_dev(button, "class", "btn btn-primary btn-sm svelte-ch2t7h");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 135, 60, 4855);
-    			add_location(div, file$7, 133, 56, 4664);
+    			add_location(button, file$7, 137, 60, 4969);
+    			add_location(div, file$7, 135, 56, 4778);
     			attr_dev(td, "class", "svelte-ch2t7h");
-    			add_location(td, file$7, 132, 52, 4603);
+    			add_location(td, file$7, 134, 52, 4717);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -4690,14 +4716,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(132:48) {#if resource.type!==tradeResource.type}",
+    		source: "(134:48) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (131:44) {#each resourceList as tradeResource}
+    // (133:44) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_1$1(ctx);
@@ -4735,14 +4761,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(131:44) {#each resourceList as tradeResource}",
+    		source: "(133:44) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (120:20) {#each resourceList as resource}
+    // (122:20) {#each resourceList as resource}
     function create_each_block$1(ctx) {
     	let tr;
     	let td0;
@@ -4772,15 +4798,15 @@ var app = (function (jQuery) {
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-ch2t7h");
-    			add_location(img, file$7, 122, 32, 3932);
+    			add_location(img, file$7, 124, 32, 4046);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-ch2t7h");
-    			add_location(td0, file$7, 121, 28, 3884);
+    			add_location(td0, file$7, 123, 28, 3998);
     			attr_dev(td1, "class", "number svelte-ch2t7h");
-    			add_location(td1, file$7, 125, 28, 4114);
+    			add_location(td1, file$7, 127, 28, 4228);
     			attr_dev(td2, "class", "svelte-ch2t7h");
-    			add_location(td2, file$7, 126, 28, 4183);
-    			add_location(tr, file$7, 120, 24, 3851);
+    			add_location(td2, file$7, 128, 28, 4297);
+    			add_location(tr, file$7, 122, 24, 3965);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -4828,7 +4854,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(120:20) {#each resourceList as resource}",
+    		source: "(122:20) {#each resourceList as resource}",
     		ctx
     	});
 
@@ -4844,13 +4870,13 @@ var app = (function (jQuery) {
     	let t0;
     	let t1;
     	let tr10;
-    	let td24;
+    	let td26;
     	let table2;
     	let tr1;
     	let td1;
     	let t3;
     	let tr4;
-    	let td12;
+    	let td14;
     	let table0;
     	let tr2;
     	let td2;
@@ -4863,68 +4889,74 @@ var app = (function (jQuery) {
     	let t11;
     	let td6;
     	let t13;
-    	let tr3;
     	let td7;
-    	let t14_value = /*player*/ ctx[0].point.castle + "";
-    	let t14;
     	let t15;
+    	let tr3;
     	let td8;
-    	let t16_value = /*player*/ ctx[0].point.city + "";
+    	let t16_value = /*player*/ ctx[0].point.castle + "";
     	let t16;
     	let t17;
     	let td9;
-    	let t18_value = /*player*/ ctx[0].point.road + "";
+    	let t18_value = /*player*/ ctx[0].point.city + "";
     	let t18;
     	let t19;
     	let td10;
-    	let t20_value = /*player*/ ctx[0].point.knight + "";
+    	let t20_value = /*player*/ ctx[0].point.point + "";
     	let t20;
     	let t21;
     	let td11;
-    	let t22_value = /*player*/ ctx[0].point.sum + "";
+    	let t22_value = /*player*/ ctx[0].point.road + "";
     	let t22;
     	let t23;
-    	let tr5;
-    	let td13;
+    	let td12;
+    	let t24_value = /*player*/ ctx[0].point.knight + "";
+    	let t24;
     	let t25;
-    	let tr8;
-    	let td22;
-    	let table1;
-    	let tr6;
-    	let td14;
+    	let td13;
+    	let t26_value = /*player*/ ctx[0].point.sum + "";
+    	let t26;
     	let t27;
+    	let tr5;
     	let td15;
     	let t29;
+    	let tr8;
+    	let td24;
+    	let table1;
+    	let tr6;
     	let td16;
     	let t31;
     	let td17;
     	let t33;
-    	let tr7;
     	let td18;
-    	let t34_value = /*player*/ ctx[0].construction.castle + "";
-    	let t34;
     	let t35;
     	let td19;
-    	let t36_value = /*player*/ ctx[0].construction.city + "";
-    	let t36;
     	let t37;
+    	let tr7;
     	let td20;
-    	let t38_value = /*player*/ ctx[0].construction.road + "";
+    	let t38_value = /*player*/ ctx[0].construction.castle + "";
     	let t38;
     	let t39;
     	let td21;
-    	let t40_value = /*player*/ ctx[0].construction.knight + "";
+    	let t40_value = /*player*/ ctx[0].construction.city + "";
     	let t40;
     	let t41;
-    	let tr9;
-    	let td23;
+    	let td22;
+    	let t42_value = /*player*/ ctx[0].construction.road + "";
+    	let t42;
     	let t43;
+    	let td23;
+    	let t44_value = /*player*/ ctx[0].construction.knight + "";
     	let t44;
-    	let tr11;
+    	let t45;
+    	let tr9;
     	let td25;
-    	let t46;
+    	let t47;
+    	let t48;
+    	let tr11;
+    	let td27;
+    	let t50;
     	let tr12;
-    	let td26;
+    	let td28;
     	let construction;
     	let current;
     	let each_value = /*resourceList*/ ctx[2];
@@ -4946,14 +4978,14 @@ var app = (function (jQuery) {
     			t0 = text(t0_value);
     			t1 = space();
     			tr10 = element("tr");
-    			td24 = element("td");
+    			td26 = element("td");
     			table2 = element("table");
     			tr1 = element("tr");
     			td1 = element("td");
     			td1.textContent = "점수";
     			t3 = space();
     			tr4 = element("tr");
-    			td12 = element("td");
+    			td14 = element("td");
     			table0 = element("table");
     			tr2 = element("tr");
     			td2 = element("td");
@@ -4963,18 +4995,18 @@ var app = (function (jQuery) {
     			td3.textContent = "도시";
     			t7 = space();
     			td4 = element("td");
-    			td4.textContent = "최장 교역로";
+    			td4.textContent = "발전";
     			t9 = space();
     			td5 = element("td");
-    			td5.textContent = "최강 기사단";
+    			td5.textContent = "최장 교역로";
     			t11 = space();
     			td6 = element("td");
-    			td6.textContent = "현재 점수";
+    			td6.textContent = "최강 기사단";
     			t13 = space();
-    			tr3 = element("tr");
     			td7 = element("td");
-    			t14 = text(t14_value);
+    			td7.textContent = "현재 점수";
     			t15 = space();
+    			tr3 = element("tr");
     			td8 = element("td");
     			t16 = text(t16_value);
     			t17 = space();
@@ -4987,55 +5019,61 @@ var app = (function (jQuery) {
     			td11 = element("td");
     			t22 = text(t22_value);
     			t23 = space();
-    			tr5 = element("tr");
-    			td13 = element("td");
-    			td13.textContent = "건설";
+    			td12 = element("td");
+    			t24 = text(t24_value);
     			t25 = space();
+    			td13 = element("td");
+    			t26 = text(t26_value);
+    			t27 = space();
+    			tr5 = element("tr");
+    			td15 = element("td");
+    			td15.textContent = "건설";
+    			t29 = space();
     			tr8 = element("tr");
-    			td22 = element("td");
+    			td24 = element("td");
     			table1 = element("table");
     			tr6 = element("tr");
-    			td14 = element("td");
-    			td14.textContent = "마을";
-    			t27 = space();
-    			td15 = element("td");
-    			td15.textContent = "도시";
-    			t29 = space();
     			td16 = element("td");
-    			td16.textContent = "도로";
+    			td16.textContent = "마을";
     			t31 = space();
     			td17 = element("td");
-    			td17.textContent = "기사";
+    			td17.textContent = "도시";
     			t33 = space();
-    			tr7 = element("tr");
     			td18 = element("td");
-    			t34 = text(t34_value);
+    			td18.textContent = "도로";
     			t35 = space();
     			td19 = element("td");
-    			t36 = text(t36_value);
+    			td19.textContent = "기사";
     			t37 = space();
+    			tr7 = element("tr");
     			td20 = element("td");
     			t38 = text(t38_value);
     			t39 = space();
     			td21 = element("td");
     			t40 = text(t40_value);
     			t41 = space();
-    			tr9 = element("tr");
-    			td23 = element("td");
-    			td23.textContent = "자원";
+    			td22 = element("td");
+    			t42 = text(t42_value);
     			t43 = space();
+    			td23 = element("td");
+    			t44 = text(t44_value);
+    			t45 = space();
+    			tr9 = element("tr");
+    			td25 = element("td");
+    			td25.textContent = "자원";
+    			t47 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t44 = space();
+    			t48 = space();
     			tr11 = element("tr");
-    			td25 = element("td");
-    			td25.textContent = "건설";
-    			t46 = space();
+    			td27 = element("td");
+    			td27.textContent = "건설";
+    			t50 = space();
     			tr12 = element("tr");
-    			td26 = element("td");
+    			td28 = element("td");
     			create_component(construction.$$.fragment);
     			attr_dev(td0, "class", "name svelte-ch2t7h");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
@@ -5052,72 +5090,76 @@ var app = (function (jQuery) {
     			attr_dev(td4, "class", "svelte-ch2t7h");
     			add_location(td4, file$7, 78, 36, 2027);
     			attr_dev(td5, "class", "svelte-ch2t7h");
-    			add_location(td5, file$7, 79, 36, 2079);
+    			add_location(td5, file$7, 79, 36, 2075);
     			attr_dev(td6, "class", "svelte-ch2t7h");
-    			add_location(td6, file$7, 80, 36, 2131);
+    			add_location(td6, file$7, 80, 36, 2127);
+    			attr_dev(td7, "class", "svelte-ch2t7h");
+    			add_location(td7, file$7, 81, 36, 2179);
     			attr_dev(tr2, "class", "point");
     			add_location(tr2, file$7, 75, 32, 1876);
-    			attr_dev(td7, "class", "svelte-ch2t7h");
-    			add_location(td7, file$7, 83, 36, 2257);
     			attr_dev(td8, "class", "svelte-ch2t7h");
-    			add_location(td8, file$7, 84, 36, 2324);
+    			add_location(td8, file$7, 84, 36, 2305);
     			attr_dev(td9, "class", "svelte-ch2t7h");
-    			add_location(td9, file$7, 85, 36, 2389);
+    			add_location(td9, file$7, 85, 36, 2372);
     			attr_dev(td10, "class", "svelte-ch2t7h");
-    			add_location(td10, file$7, 86, 36, 2454);
+    			add_location(td10, file$7, 86, 36, 2437);
     			attr_dev(td11, "class", "svelte-ch2t7h");
-    			add_location(td11, file$7, 87, 36, 2521);
-    			add_location(tr3, file$7, 82, 32, 2216);
+    			add_location(td11, file$7, 87, 36, 2503);
+    			attr_dev(td12, "class", "svelte-ch2t7h");
+    			add_location(td12, file$7, 88, 36, 2568);
+    			attr_dev(td13, "class", "svelte-ch2t7h");
+    			add_location(td13, file$7, 89, 36, 2635);
+    			add_location(tr3, file$7, 83, 32, 2264);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$7, 74, 28, 1823);
-    			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "svelte-ch2t7h");
-    			add_location(td12, file$7, 73, 24, 1778);
-    			add_location(tr4, file$7, 72, 20, 1749);
-    			attr_dev(td13, "colspan", "3");
-    			attr_dev(td13, "class", "header svelte-ch2t7h");
-    			add_location(td13, file$7, 94, 24, 2730);
-    			add_location(tr5, file$7, 93, 20, 2701);
+    			attr_dev(td14, "colspan", "3");
     			attr_dev(td14, "class", "svelte-ch2t7h");
-    			add_location(td14, file$7, 100, 36, 3004);
-    			attr_dev(td15, "class", "svelte-ch2t7h");
-    			add_location(td15, file$7, 101, 36, 3052);
+    			add_location(td14, file$7, 73, 24, 1778);
+    			add_location(tr4, file$7, 72, 20, 1749);
+    			attr_dev(td15, "colspan", "3");
+    			attr_dev(td15, "class", "header svelte-ch2t7h");
+    			add_location(td15, file$7, 96, 24, 2844);
+    			add_location(tr5, file$7, 95, 20, 2815);
     			attr_dev(td16, "class", "svelte-ch2t7h");
-    			add_location(td16, file$7, 102, 36, 3100);
+    			add_location(td16, file$7, 102, 36, 3118);
     			attr_dev(td17, "class", "svelte-ch2t7h");
-    			add_location(td17, file$7, 103, 36, 3148);
-    			add_location(tr6, file$7, 99, 32, 2963);
+    			add_location(td17, file$7, 103, 36, 3166);
     			attr_dev(td18, "class", "svelte-ch2t7h");
-    			add_location(td18, file$7, 106, 36, 3271);
+    			add_location(td18, file$7, 104, 36, 3214);
     			attr_dev(td19, "class", "svelte-ch2t7h");
-    			add_location(td19, file$7, 107, 36, 3345);
+    			add_location(td19, file$7, 105, 36, 3262);
+    			add_location(tr6, file$7, 101, 32, 3077);
     			attr_dev(td20, "class", "svelte-ch2t7h");
-    			add_location(td20, file$7, 108, 36, 3417);
+    			add_location(td20, file$7, 108, 36, 3385);
     			attr_dev(td21, "class", "svelte-ch2t7h");
-    			add_location(td21, file$7, 109, 36, 3489);
-    			add_location(tr7, file$7, 105, 32, 3230);
+    			add_location(td21, file$7, 109, 36, 3459);
+    			attr_dev(td22, "class", "svelte-ch2t7h");
+    			add_location(td22, file$7, 110, 36, 3531);
+    			attr_dev(td23, "class", "svelte-ch2t7h");
+    			add_location(td23, file$7, 111, 36, 3603);
+    			add_location(tr7, file$7, 107, 32, 3344);
     			attr_dev(table1, "class", "construction svelte-ch2t7h");
     			attr_dev(table1, "width", "100%");
-    			add_location(table1, file$7, 98, 28, 2889);
-    			attr_dev(td22, "colspan", "3");
-    			attr_dev(td22, "class", "svelte-ch2t7h");
-    			add_location(td22, file$7, 97, 24, 2844);
-    			add_location(tr8, file$7, 96, 20, 2815);
-    			attr_dev(td23, "colspan", "3");
-    			attr_dev(td23, "class", "header svelte-ch2t7h");
-    			add_location(td23, file$7, 116, 24, 3708);
-    			add_location(tr9, file$7, 115, 20, 3679);
+    			add_location(table1, file$7, 100, 28, 3003);
+    			attr_dev(td24, "colspan", "3");
+    			attr_dev(td24, "class", "svelte-ch2t7h");
+    			add_location(td24, file$7, 99, 24, 2958);
+    			add_location(tr8, file$7, 98, 20, 2929);
+    			attr_dev(td25, "colspan", "3");
+    			attr_dev(td25, "class", "header svelte-ch2t7h");
+    			add_location(td25, file$7, 118, 24, 3822);
+    			add_location(tr9, file$7, 117, 20, 3793);
     			attr_dev(table2, "class", "inner-resource svelte-ch2t7h");
     			add_location(table2, file$7, 68, 16, 1584);
-    			attr_dev(td24, "class", "svelte-ch2t7h");
-    			add_location(td24, file$7, 67, 12, 1563);
-    			add_location(tr10, file$7, 66, 8, 1546);
-    			attr_dev(td25, "class", "header svelte-ch2t7h");
-    			add_location(td25, file$7, 154, 12, 5856);
-    			add_location(tr11, file$7, 153, 8, 5839);
     			attr_dev(td26, "class", "svelte-ch2t7h");
-    			add_location(td26, file$7, 157, 12, 5922);
-    			add_location(tr12, file$7, 156, 8, 5905);
+    			add_location(td26, file$7, 67, 12, 1563);
+    			add_location(tr10, file$7, 66, 8, 1546);
+    			attr_dev(td27, "class", "header svelte-ch2t7h");
+    			add_location(td27, file$7, 156, 12, 5970);
+    			add_location(tr11, file$7, 155, 8, 5953);
+    			attr_dev(td28, "class", "svelte-ch2t7h");
+    			add_location(td28, file$7, 159, 12, 6036);
+    			add_location(tr12, file$7, 158, 8, 6019);
     			attr_dev(table3, "class", "trade-resource svelte-ch2t7h");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
     			add_location(table3, file$7, 61, 4, 1356);
@@ -5134,14 +5176,14 @@ var app = (function (jQuery) {
     			append_dev(td0, t0);
     			append_dev(table3, t1);
     			append_dev(table3, tr10);
-    			append_dev(tr10, td24);
-    			append_dev(td24, table2);
+    			append_dev(tr10, td26);
+    			append_dev(td26, table2);
     			append_dev(table2, tr1);
     			append_dev(tr1, td1);
     			append_dev(table2, t3);
     			append_dev(table2, tr4);
-    			append_dev(tr4, td12);
-    			append_dev(td12, table0);
+    			append_dev(tr4, td14);
+    			append_dev(td14, table0);
     			append_dev(table0, tr2);
     			append_dev(tr2, td2);
     			append_dev(tr2, t5);
@@ -5152,11 +5194,10 @@ var app = (function (jQuery) {
     			append_dev(tr2, td5);
     			append_dev(tr2, t11);
     			append_dev(tr2, td6);
-    			append_dev(table0, t13);
+    			append_dev(tr2, t13);
+    			append_dev(tr2, td7);
+    			append_dev(table0, t15);
     			append_dev(table0, tr3);
-    			append_dev(tr3, td7);
-    			append_dev(td7, t14);
-    			append_dev(tr3, t15);
     			append_dev(tr3, td8);
     			append_dev(td8, t16);
     			append_dev(tr3, t17);
@@ -5168,50 +5209,56 @@ var app = (function (jQuery) {
     			append_dev(tr3, t21);
     			append_dev(tr3, td11);
     			append_dev(td11, t22);
-    			append_dev(table2, t23);
+    			append_dev(tr3, t23);
+    			append_dev(tr3, td12);
+    			append_dev(td12, t24);
+    			append_dev(tr3, t25);
+    			append_dev(tr3, td13);
+    			append_dev(td13, t26);
+    			append_dev(table2, t27);
     			append_dev(table2, tr5);
-    			append_dev(tr5, td13);
-    			append_dev(table2, t25);
+    			append_dev(tr5, td15);
+    			append_dev(table2, t29);
     			append_dev(table2, tr8);
-    			append_dev(tr8, td22);
-    			append_dev(td22, table1);
+    			append_dev(tr8, td24);
+    			append_dev(td24, table1);
     			append_dev(table1, tr6);
-    			append_dev(tr6, td14);
-    			append_dev(tr6, t27);
-    			append_dev(tr6, td15);
-    			append_dev(tr6, t29);
     			append_dev(tr6, td16);
     			append_dev(tr6, t31);
     			append_dev(tr6, td17);
-    			append_dev(table1, t33);
+    			append_dev(tr6, t33);
+    			append_dev(tr6, td18);
+    			append_dev(tr6, t35);
+    			append_dev(tr6, td19);
+    			append_dev(table1, t37);
     			append_dev(table1, tr7);
-    			append_dev(tr7, td18);
-    			append_dev(td18, t34);
-    			append_dev(tr7, t35);
-    			append_dev(tr7, td19);
-    			append_dev(td19, t36);
-    			append_dev(tr7, t37);
     			append_dev(tr7, td20);
     			append_dev(td20, t38);
     			append_dev(tr7, t39);
     			append_dev(tr7, td21);
     			append_dev(td21, t40);
-    			append_dev(table2, t41);
+    			append_dev(tr7, t41);
+    			append_dev(tr7, td22);
+    			append_dev(td22, t42);
+    			append_dev(tr7, t43);
+    			append_dev(tr7, td23);
+    			append_dev(td23, t44);
+    			append_dev(table2, t45);
     			append_dev(table2, tr9);
-    			append_dev(tr9, td23);
-    			append_dev(table2, t43);
+    			append_dev(tr9, td25);
+    			append_dev(table2, t47);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(table2, null);
     			}
 
-    			append_dev(table3, t44);
+    			append_dev(table3, t48);
     			append_dev(table3, tr11);
-    			append_dev(tr11, td25);
-    			append_dev(table3, t46);
+    			append_dev(tr11, td27);
+    			append_dev(table3, t50);
     			append_dev(table3, tr12);
-    			append_dev(tr12, td26);
-    			mount_component(construction, td26, null);
+    			append_dev(tr12, td28);
+    			mount_component(construction, td28, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -5221,15 +5268,16 @@ var app = (function (jQuery) {
     				set_style(td0, "background-color", /*player*/ ctx[0].color);
     			}
 
-    			if ((!current || dirty & /*player*/ 1) && t14_value !== (t14_value = /*player*/ ctx[0].point.castle + "")) set_data_dev(t14, t14_value);
-    			if ((!current || dirty & /*player*/ 1) && t16_value !== (t16_value = /*player*/ ctx[0].point.city + "")) set_data_dev(t16, t16_value);
-    			if ((!current || dirty & /*player*/ 1) && t18_value !== (t18_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t18, t18_value);
-    			if ((!current || dirty & /*player*/ 1) && t20_value !== (t20_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t20, t20_value);
-    			if ((!current || dirty & /*player*/ 1) && t22_value !== (t22_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t22, t22_value);
-    			if ((!current || dirty & /*player*/ 1) && t34_value !== (t34_value = /*player*/ ctx[0].construction.castle + "")) set_data_dev(t34, t34_value);
-    			if ((!current || dirty & /*player*/ 1) && t36_value !== (t36_value = /*player*/ ctx[0].construction.city + "")) set_data_dev(t36, t36_value);
-    			if ((!current || dirty & /*player*/ 1) && t38_value !== (t38_value = /*player*/ ctx[0].construction.road + "")) set_data_dev(t38, t38_value);
-    			if ((!current || dirty & /*player*/ 1) && t40_value !== (t40_value = /*player*/ ctx[0].construction.knight + "")) set_data_dev(t40, t40_value);
+    			if ((!current || dirty & /*player*/ 1) && t16_value !== (t16_value = /*player*/ ctx[0].point.castle + "")) set_data_dev(t16, t16_value);
+    			if ((!current || dirty & /*player*/ 1) && t18_value !== (t18_value = /*player*/ ctx[0].point.city + "")) set_data_dev(t18, t18_value);
+    			if ((!current || dirty & /*player*/ 1) && t20_value !== (t20_value = /*player*/ ctx[0].point.point + "")) set_data_dev(t20, t20_value);
+    			if ((!current || dirty & /*player*/ 1) && t22_value !== (t22_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t22, t22_value);
+    			if ((!current || dirty & /*player*/ 1) && t24_value !== (t24_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t24, t24_value);
+    			if ((!current || dirty & /*player*/ 1) && t26_value !== (t26_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t26, t26_value);
+    			if ((!current || dirty & /*player*/ 1) && t38_value !== (t38_value = /*player*/ ctx[0].construction.castle + "")) set_data_dev(t38, t38_value);
+    			if ((!current || dirty & /*player*/ 1) && t40_value !== (t40_value = /*player*/ ctx[0].construction.city + "")) set_data_dev(t40, t40_value);
+    			if ((!current || dirty & /*player*/ 1) && t42_value !== (t42_value = /*player*/ ctx[0].construction.road + "")) set_data_dev(t42, t42_value);
+    			if ((!current || dirty & /*player*/ 1) && t44_value !== (t44_value = /*player*/ ctx[0].construction.knight + "")) set_data_dev(t44, t44_value);
 
     			if (dirty & /*resourceList, player, katan*/ 5) {
     				each_value = /*resourceList*/ ctx[2];

@@ -76,6 +76,7 @@
                                 <tr class="point">
                                     <td>마을</td>
                                     <td>도시</td>
+                                    <td>발전</td>
                                     <td>최장 교역로</td>
                                     <td>최강 기사단</td>
                                     <td>현재 점수</td>
@@ -83,6 +84,7 @@
                                 <tr>
                                     <td>{player.point.castle}</td>
                                     <td>{player.point.city}</td>
+                                    <td>{player.point.point}</td>
                                     <td>{player.point.road}</td>
                                     <td>{player.point.knight}</td>
                                     <td>{player.point.sum}</td>

@@ -1234,7 +1234,7 @@ const katanStore = {
 
     doAction: () => katanStore.updateKatan(katan => {
         katan.message = '자원을 교환하거나 건설하세요.';
-        katan.setDiceDisabled();
+        katanStore.setDiceDisabled();
         katan.action = true;
         return katan;
     }),
