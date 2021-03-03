@@ -73,6 +73,7 @@
                     <tr>
                         <td colspan="3">
                             <table width="100%">
+
                                 <tr class="point">
                                     <td>마을</td>
                                     <td>도시</td>

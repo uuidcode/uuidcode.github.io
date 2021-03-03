@@ -4562,7 +4562,7 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (130:32) {#if player.trade[resource.type].enable}
+    // (131:32) {#if player.trade[resource.type].enable}
     function create_if_block$4(ctx) {
     	let table;
     	let tr;
@@ -4583,9 +4583,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 131, 40, 4489);
+    			add_location(tr, file$7, 132, 40, 4490);
     			attr_dev(table, "class", "trade-target-resource svelte-ch2t7h");
-    			add_location(table, file$7, 130, 36, 4411);
+    			add_location(table, file$7, 131, 36, 4412);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4630,14 +4630,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(130:32) {#if player.trade[resource.type].enable}",
+    		source: "(131:32) {#if player.trade[resource.type].enable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (134:48) {#if resource.type!==tradeResource.type}
+    // (135:48) {#if resource.type!==tradeResource.type}
     function create_if_block_1$1(ctx) {
     	let td;
     	let div;
@@ -4669,13 +4669,13 @@ var app = (function (jQuery) {
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-ch2t7h");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 136, 60, 4844);
+    			add_location(img, file$7, 137, 60, 4845);
     			attr_dev(button, "class", "btn btn-primary btn-sm svelte-ch2t7h");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 137, 60, 4969);
-    			add_location(div, file$7, 135, 56, 4778);
+    			add_location(button, file$7, 138, 60, 4970);
+    			add_location(div, file$7, 136, 56, 4779);
     			attr_dev(td, "class", "svelte-ch2t7h");
-    			add_location(td, file$7, 134, 52, 4717);
+    			add_location(td, file$7, 135, 52, 4718);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -4716,14 +4716,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(134:48) {#if resource.type!==tradeResource.type}",
+    		source: "(135:48) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (133:44) {#each resourceList as tradeResource}
+    // (134:44) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
     	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_1$1(ctx);
@@ -4761,14 +4761,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(133:44) {#each resourceList as tradeResource}",
+    		source: "(134:44) {#each resourceList as tradeResource}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (122:20) {#each resourceList as resource}
+    // (123:20) {#each resourceList as resource}
     function create_each_block$1(ctx) {
     	let tr;
     	let td0;
@@ -4798,15 +4798,15 @@ var app = (function (jQuery) {
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-ch2t7h");
-    			add_location(img, file$7, 124, 32, 4046);
+    			add_location(img, file$7, 125, 32, 4047);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-ch2t7h");
-    			add_location(td0, file$7, 123, 28, 3998);
+    			add_location(td0, file$7, 124, 28, 3999);
     			attr_dev(td1, "class", "number svelte-ch2t7h");
-    			add_location(td1, file$7, 127, 28, 4228);
+    			add_location(td1, file$7, 128, 28, 4229);
     			attr_dev(td2, "class", "svelte-ch2t7h");
-    			add_location(td2, file$7, 128, 28, 4297);
-    			add_location(tr, file$7, 122, 24, 3965);
+    			add_location(td2, file$7, 129, 28, 4298);
+    			add_location(tr, file$7, 123, 24, 3966);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -4854,7 +4854,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(122:20) {#each resourceList as resource}",
+    		source: "(123:20) {#each resourceList as resource}",
     		ctx
     	});
 
@@ -5084,32 +5084,32 @@ var app = (function (jQuery) {
     			add_location(td1, file$7, 70, 24, 1664);
     			add_location(tr1, file$7, 69, 20, 1635);
     			attr_dev(td2, "class", "svelte-ch2t7h");
-    			add_location(td2, file$7, 76, 36, 1931);
+    			add_location(td2, file$7, 77, 36, 1932);
     			attr_dev(td3, "class", "svelte-ch2t7h");
-    			add_location(td3, file$7, 77, 36, 1979);
+    			add_location(td3, file$7, 78, 36, 1980);
     			attr_dev(td4, "class", "svelte-ch2t7h");
-    			add_location(td4, file$7, 78, 36, 2027);
+    			add_location(td4, file$7, 79, 36, 2028);
     			attr_dev(td5, "class", "svelte-ch2t7h");
-    			add_location(td5, file$7, 79, 36, 2075);
+    			add_location(td5, file$7, 80, 36, 2076);
     			attr_dev(td6, "class", "svelte-ch2t7h");
-    			add_location(td6, file$7, 80, 36, 2127);
+    			add_location(td6, file$7, 81, 36, 2128);
     			attr_dev(td7, "class", "svelte-ch2t7h");
-    			add_location(td7, file$7, 81, 36, 2179);
+    			add_location(td7, file$7, 82, 36, 2180);
     			attr_dev(tr2, "class", "point");
-    			add_location(tr2, file$7, 75, 32, 1876);
+    			add_location(tr2, file$7, 76, 32, 1877);
     			attr_dev(td8, "class", "svelte-ch2t7h");
-    			add_location(td8, file$7, 84, 36, 2305);
+    			add_location(td8, file$7, 85, 36, 2306);
     			attr_dev(td9, "class", "svelte-ch2t7h");
-    			add_location(td9, file$7, 85, 36, 2372);
+    			add_location(td9, file$7, 86, 36, 2373);
     			attr_dev(td10, "class", "svelte-ch2t7h");
-    			add_location(td10, file$7, 86, 36, 2437);
+    			add_location(td10, file$7, 87, 36, 2438);
     			attr_dev(td11, "class", "svelte-ch2t7h");
-    			add_location(td11, file$7, 87, 36, 2503);
+    			add_location(td11, file$7, 88, 36, 2504);
     			attr_dev(td12, "class", "svelte-ch2t7h");
-    			add_location(td12, file$7, 88, 36, 2568);
+    			add_location(td12, file$7, 89, 36, 2569);
     			attr_dev(td13, "class", "svelte-ch2t7h");
-    			add_location(td13, file$7, 89, 36, 2635);
-    			add_location(tr3, file$7, 83, 32, 2264);
+    			add_location(td13, file$7, 90, 36, 2636);
+    			add_location(tr3, file$7, 84, 32, 2265);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$7, 74, 28, 1823);
     			attr_dev(td14, "colspan", "3");
@@ -5118,48 +5118,48 @@ var app = (function (jQuery) {
     			add_location(tr4, file$7, 72, 20, 1749);
     			attr_dev(td15, "colspan", "3");
     			attr_dev(td15, "class", "header svelte-ch2t7h");
-    			add_location(td15, file$7, 96, 24, 2844);
-    			add_location(tr5, file$7, 95, 20, 2815);
+    			add_location(td15, file$7, 97, 24, 2845);
+    			add_location(tr5, file$7, 96, 20, 2816);
     			attr_dev(td16, "class", "svelte-ch2t7h");
-    			add_location(td16, file$7, 102, 36, 3118);
+    			add_location(td16, file$7, 103, 36, 3119);
     			attr_dev(td17, "class", "svelte-ch2t7h");
-    			add_location(td17, file$7, 103, 36, 3166);
+    			add_location(td17, file$7, 104, 36, 3167);
     			attr_dev(td18, "class", "svelte-ch2t7h");
-    			add_location(td18, file$7, 104, 36, 3214);
+    			add_location(td18, file$7, 105, 36, 3215);
     			attr_dev(td19, "class", "svelte-ch2t7h");
-    			add_location(td19, file$7, 105, 36, 3262);
-    			add_location(tr6, file$7, 101, 32, 3077);
+    			add_location(td19, file$7, 106, 36, 3263);
+    			add_location(tr6, file$7, 102, 32, 3078);
     			attr_dev(td20, "class", "svelte-ch2t7h");
-    			add_location(td20, file$7, 108, 36, 3385);
+    			add_location(td20, file$7, 109, 36, 3386);
     			attr_dev(td21, "class", "svelte-ch2t7h");
-    			add_location(td21, file$7, 109, 36, 3459);
+    			add_location(td21, file$7, 110, 36, 3460);
     			attr_dev(td22, "class", "svelte-ch2t7h");
-    			add_location(td22, file$7, 110, 36, 3531);
+    			add_location(td22, file$7, 111, 36, 3532);
     			attr_dev(td23, "class", "svelte-ch2t7h");
-    			add_location(td23, file$7, 111, 36, 3603);
-    			add_location(tr7, file$7, 107, 32, 3344);
+    			add_location(td23, file$7, 112, 36, 3604);
+    			add_location(tr7, file$7, 108, 32, 3345);
     			attr_dev(table1, "class", "construction svelte-ch2t7h");
     			attr_dev(table1, "width", "100%");
-    			add_location(table1, file$7, 100, 28, 3003);
+    			add_location(table1, file$7, 101, 28, 3004);
     			attr_dev(td24, "colspan", "3");
     			attr_dev(td24, "class", "svelte-ch2t7h");
-    			add_location(td24, file$7, 99, 24, 2958);
-    			add_location(tr8, file$7, 98, 20, 2929);
+    			add_location(td24, file$7, 100, 24, 2959);
+    			add_location(tr8, file$7, 99, 20, 2930);
     			attr_dev(td25, "colspan", "3");
     			attr_dev(td25, "class", "header svelte-ch2t7h");
-    			add_location(td25, file$7, 118, 24, 3822);
-    			add_location(tr9, file$7, 117, 20, 3793);
+    			add_location(td25, file$7, 119, 24, 3823);
+    			add_location(tr9, file$7, 118, 20, 3794);
     			attr_dev(table2, "class", "inner-resource svelte-ch2t7h");
     			add_location(table2, file$7, 68, 16, 1584);
     			attr_dev(td26, "class", "svelte-ch2t7h");
     			add_location(td26, file$7, 67, 12, 1563);
     			add_location(tr10, file$7, 66, 8, 1546);
     			attr_dev(td27, "class", "header svelte-ch2t7h");
-    			add_location(td27, file$7, 156, 12, 5970);
-    			add_location(tr11, file$7, 155, 8, 5953);
+    			add_location(td27, file$7, 157, 12, 5971);
+    			add_location(tr11, file$7, 156, 8, 5954);
     			attr_dev(td28, "class", "svelte-ch2t7h");
-    			add_location(td28, file$7, 159, 12, 6036);
-    			add_location(tr12, file$7, 158, 8, 6019);
+    			add_location(td28, file$7, 160, 12, 6037);
+    			add_location(tr12, file$7, 159, 8, 6020);
     			attr_dev(table3, "class", "trade-resource svelte-ch2t7h");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
     			add_location(table3, file$7, 61, 4, 1356);
