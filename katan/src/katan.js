@@ -1382,6 +1382,32 @@ const katanStore = {
         player.point.sum += 1;
         player.construction.castle -= 1;
 
+        if (castle.port.tradable) {
+            if (castle.port.type === 'all') {
+                if (castle.trade.tree.count > castle.port.trade) {
+                    player.trade.tree.count = 3;
+                }
+
+                if (castle.trade.mud.count > castle.port.trade) {
+                    player.trade.mud.count = 3;
+                }
+
+                if (castle.trade.wheat.count > castle.port.trade) {
+                    player.trade.wheat.count = 3;
+                }
+
+                if (castle.trade.sheep.count > castle.port.trade) {
+                    player.trade.sheep.count = 3;
+                }
+
+                if (castle.trade.iron.count > castle.port.trade) {
+                    player.trade.iron.count = 3;
+                }
+            } else {
+                player.trade[castle.port.type].count = castle.port.trade;
+            }
+        }
+
         return katan;
     }),
 
