@@ -5525,9 +5525,9 @@ var app = (function (jQuery) {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$8, 97, 20, 3435);
+    			add_location(button, file$8, 97, 20, 3434);
     			attr_dev(div, "class", "modal-footer");
-    			add_location(div, file$8, 96, 16, 3387);
+    			add_location(div, file$8, 96, 16, 3386);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5582,7 +5582,7 @@ var app = (function (jQuery) {
     	let t6;
     	let button0;
     	let t7;
-    	let button0_disabled__value;
+    	let button0_disabled_value;
     	let t8;
     	let button1;
     	let t9;
@@ -5684,11 +5684,11 @@ var app = (function (jQuery) {
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
     			add_location(h1, file$8, 64, 16, 1927);
     			attr_dev(button0, "class", "btn btn-primary svelte-4e8og3");
-    			attr_dev(button0, "disabled1", button0_disabled__value = /*$katan*/ ctx[0].diceDisabled);
+    			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
     			add_location(button0, file$8, 68, 20, 2196);
     			attr_dev(button1, "class", "btn btn-primary svelte-4e8og3");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 71, 20, 2384);
+    			add_location(button1, file$8, 71, 20, 2383);
     			attr_dev(div0, "class", "dice-container svelte-4e8og3");
     			add_location(div0, file$8, 65, 16, 2028);
     			attr_dev(td1, "valign", "top");
@@ -5697,7 +5697,7 @@ var app = (function (jQuery) {
     			add_location(td1, file$8, 63, 12, 1857);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-4e8og3");
-    			add_location(td2, file$8, 79, 12, 2737);
+    			add_location(td2, file$8, 79, 12, 2736);
     			add_location(tr, file$8, 59, 8, 1723);
     			add_location(table, file$8, 58, 4, 1706);
     			attr_dev(div1, "class", "katan svelte-4e8og3");
@@ -5706,21 +5706,21 @@ var app = (function (jQuery) {
     			attr_dev(button2, "class", "btn-close");
     			attr_dev(button2, "data-bs-dismiss", "modal");
     			attr_dev(button2, "aria-label", "Close");
-    			add_location(button2, file$8, 89, 16, 3114);
+    			add_location(button2, file$8, 89, 16, 3113);
     			attr_dev(div2, "class", "modal-header");
-    			add_location(div2, file$8, 88, 12, 3070);
+    			add_location(div2, file$8, 88, 12, 3069);
     			attr_dev(div3, "class", "modal-body");
-    			add_location(div3, file$8, 91, 12, 3240);
+    			add_location(div3, file$8, 91, 12, 3239);
     			attr_dev(div4, "class", "modal-content");
-    			add_location(div4, file$8, 87, 8, 3029);
+    			add_location(div4, file$8, 87, 8, 3028);
     			attr_dev(div5, "class", "modal-dialog");
-    			add_location(div5, file$8, 86, 4, 2993);
+    			add_location(div5, file$8, 86, 4, 2992);
     			attr_dev(div6, "class", "modal fade");
     			attr_dev(div6, "id", "katanModal");
     			attr_dev(div6, "tabindex", "-1");
     			attr_dev(div6, "aria-labelledby", "exampleModalLabel");
     			attr_dev(div6, "aria-hidden", "true");
-    			add_location(div6, file$8, 85, 0, 2878);
+    			add_location(div6, file$8, 85, 0, 2877);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5790,8 +5790,8 @@ var app = (function (jQuery) {
     			if (dirty & /*$katan*/ 1) dice1_changes.number = /*$katan*/ ctx[0].dice[1];
     			dice1.$set(dice1_changes);
 
-    			if (!current || dirty & /*$katan*/ 1 && button0_disabled__value !== (button0_disabled__value = /*$katan*/ ctx[0].diceDisabled)) {
-    				attr_dev(button0, "disabled1", button0_disabled__value);
+    			if (!current || dirty & /*$katan*/ 1 && button0_disabled_value !== (button0_disabled_value = /*$katan*/ ctx[0].diceDisabled)) {
+    				prop_dev(button0, "disabled", button0_disabled_value);
     			}
 
     			if (!current || dirty & /*$katan*/ 1 && button1_disabled_value !== (button1_disabled_value = !/*$katan*/ ctx[0].action)) {

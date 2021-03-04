@@ -67,7 +67,7 @@
                     <Dice number={$katan.dice[0]}></Dice>
                     <Dice number={$katan.dice[1]}></Dice>
                     <button class="btn btn-primary"
-                            disabled1={$katan.diceDisabled}
+                            disabled={$katan.diceDisabled}
                             on:click={()=>katan.play()}>주사위 굴리기</button>
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
