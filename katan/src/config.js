@@ -1,8 +1,8 @@
 const config = {
     debug: false,
     cell: {
-        width: 230,
-        height: 230,
+        width: 210,
+        height: 210,
         margin: 2
     },
     castle: {

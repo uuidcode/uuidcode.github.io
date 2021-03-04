@@ -62,7 +62,9 @@
     <table class="trade-resource" style={playerStyle}>
         <tr>
             <td class="name"
-                style="background-color:{player.color}">{player.name}</td>
+                style="background-color:{player.color}">
+                <img src={player.image}>
+            </td>
         </tr>
         <tr>
             <td>
@@ -124,7 +126,7 @@
                         <tr>
                             <td width="80">
                                 <img src="{resource.type}_item.png"
-                                     class="player_{player.index}_{resource.type}">
+                                     class="resource player_{player.index}_{resource.type}">
                             </td>
                             <td class="number">{resource.count}</td>
                             <td>
@@ -170,14 +172,14 @@
         text-align: center;
     }
 
-    .resource img {
+    img.resource {
         width: 100px;
         height: 100px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
         margin: 4px;
     }
 
-    .trade-resource img {
+    img.trade-resource {
         width: 60px;
         height: 60px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));

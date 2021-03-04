@@ -37,18 +37,20 @@ let katanObject = {
     showResourceModal: false,
     playerList: [
         {
-            color: 'blue',
+            color: '#E4A2AE',
             name: '다은',
             turn: true,
             pickCastle: 0,
-            pickRoad: 0
+            pickRoad: 0,
+            image: 'apeach.png'
         },
         {
-            color: 'red',
+            color: '#90CDEA',
             name: '아빠',
             turn: false,
             pickCastle: 0,
-            pickRoad: 0
+            pickRoad: 0,
+            image: 'lion.png'
         }
     ]
 };

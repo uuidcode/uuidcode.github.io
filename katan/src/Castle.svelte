@@ -31,8 +31,7 @@
             width: config.castle.width + 'px',
             height: config.castle.height + 'px',
             lineHeight: config.castle.height + 'px',
-            borderRadius: config.castle.height + 'px',
-            color: 'white'
+            borderRadius: config.castle.height + 'px'
         };
 
         if (config.debug) {
@@ -80,10 +79,10 @@
         text-align: center;
         background-color: blueviolet;
         font-weight: bolder;
-        font-size: 14px;
-        opacity: 0.6;
+        font-size: 20px;
         cursor: pointer;
         z-index: 20;
+        border: 2px solid black;
     }
 
     .pick {

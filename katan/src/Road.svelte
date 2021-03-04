@@ -39,8 +39,7 @@
             top: road.top + 'px',
             width: config.load.width + 'px',
             height: config.load.height + 'px',
-            lineHeight: config.castle.height + 'px',
-            color: 'white'
+            lineHeight: config.castle.height + 'px'
         };
 
         if (config.debug) {
@@ -90,10 +89,9 @@
         text-align: center;
         background-color: blueviolet;
         font-weight: bolder;
-        font-size: 14px;
-        color: white;
-        opacity: 0.6;
+        font-size: 20px;
         cursor: pointer;
+        border: 2px solid black;
     }
 
     .pick {

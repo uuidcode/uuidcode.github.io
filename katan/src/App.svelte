@@ -26,32 +26,33 @@
     }
 
     jQuery(() => {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        setTimeout(() => {
+            const element = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipTriggerList = [].slice.call(element);
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                const trade = tooltipTriggerEl.getAttribute('trade');
+                const type = tooltipTriggerEl.getAttribute('type');
+                const placement = tooltipTriggerEl.getAttribute('placement');
+                let title = `<strong>${trade}:1</strong> `;
 
-            const trade = tooltipTriggerEl.getAttribute('trade');
-            const type = tooltipTriggerEl.getAttribute('type');
-            const placement = tooltipTriggerEl.getAttribute('placement');
-            let title = `<strong>${trade}:1</strong> `;
+                if (type !== 'all') {
+                    title += `<img class="port-resource" src="${type}_item.png">`;
+                } else {
+                    title += `<div class="port-resource">ALL</div>`;
+                }
 
-            if (type !== 'all') {
-                title += `<img class="port-resource" src="${type}_item.png">`;
-            } else {
-                title += `<div class="port-resource">ALL</div>`;
-            }
+                const tooltip = new Tooltip(tooltipTriggerEl, {
+                    html: true,
+                    placement: placement,
+                    trigger: 'manual',
+                    title: title
+                });
 
+                tooltip.show();
 
-            const tooltip = new Tooltip(tooltipTriggerEl, {
-                html: true,
-                placement: placement,
-                trigger: 'manual',
-                title: title
-            });
-
-            tooltip.show();
-
-            return tooltip
-        })
+                return tooltip
+            })
+        }, 1000);
     });
 </script>
 
@@ -62,7 +63,7 @@
                 <Player playerIndex={0}></Player>
             </td>
             <td valign="top" class="text-center" width="1200px">
-                <h1 class="message-header" style={headerStyle}>{player.name}! {$katan.message}</h1>
+                <h1 class="message-header" style={headerStyle}><img src={player.image}> {$katan.message}</h1>
                 <div class="dice-container">
                     <Dice number={$katan.dice[0]}></Dice>
                     <Dice number={$katan.dice[1]}></Dice>
