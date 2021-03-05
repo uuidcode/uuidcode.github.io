@@ -1,14 +1,11 @@
 <script>
     import katan from './katan'
-    import { onDestroy } from 'svelte';
 
-    let player = katan.getActivePlayer();
+    export let playerIndex;
 
-    const unsubscribe = katan.subscribe(currentKatan => {
-        player = katan.getActivePlayer();
-    });
-
-    onDestroy(unsubscribe);
+    $: {
+        player = $katan.playerList[playerIndex];
+    }
 </script>
 
 

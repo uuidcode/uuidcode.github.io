@@ -161,7 +161,7 @@
         </tr>
         <tr>
             <td>
-                <Construction/>
+                <Construction playerIndex={playerIndex}></Construction>
             </td>
         </tr>
     </table>
