@@ -2,6 +2,7 @@
     import katan from './katan'
 
     export let playerIndex;
+    let player;
 
     $: {
         player = $katan.playerList[playerIndex];

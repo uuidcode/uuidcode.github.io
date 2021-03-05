@@ -273,12 +273,15 @@ katanObject.castleList[8].port = {
     enabled: true,
     placement: 'left'
 };
+
 katanObject.castleList[9].port = {
     enabled: false
 };
+
 katanObject.castleList[10].port = {
     enabled: false
 };
+
 katanObject.castleList[11].port = {
     enabled: false
 };
@@ -390,7 +393,6 @@ katanObject.castleList[35].port = {
 katanObject.castleList[36].port = {
     enabled: true,
     placement: 'right'
-
 };
 
 katanObject.castleList[37].port = {
@@ -618,7 +620,7 @@ katanObject.castleList[27].castleIndexList = [16, 28];
 katanObject.castleList[28].castleIndexList = [27, 29, 38];
 katanObject.castleList[29].castleIndexList = [18, 28, 30];
 katanObject.castleList[30].castleIndexList = [29, 31, 40];
-katanObject.castleList[31].castleIndexList = [20, 30, 30];
+katanObject.castleList[31].castleIndexList = [20, 30, 32];
 katanObject.castleList[32].castleIndexList = [31, 33, 42];
 katanObject.castleList[33].castleIndexList = [22, 32, 34];
 katanObject.castleList[34].castleIndexList = [33, 35, 44];
@@ -1144,15 +1146,21 @@ const katanStore = {
         if (katan.isKnightMode) {
             const other = katanStore.getOtherPlayer(katan);
 
-            const resourceTypeList = katan.resourceTypeList
-                .map(type => {
+            let resourceTypeList = katan.resourceTypeList
+                .map(resourceType => {
                     return {
-                        type,
-                        count: other.resource[type]
+                        type: resourceType.type,
+                        count: other.resource[resourceType.type]
                     }
-                })
+                });
+
+            console.log('>>> resourceTypeList', resourceTypeList);
+
+            resourceTypeList = resourceTypeList
                 .filter(item => item.count > 0)
                 .sort(random());
+
+            console.log('>>> resourceTypeList', resourceTypeList);
 
             if (resourceTypeList.length > 0) {
                 const resource = resourceTypeList[0];
@@ -1160,23 +1168,26 @@ const katanStore = {
 
                 const playerIndex = player.index;
                 const otherPlayerIndex = other.index;
+
                 const playerResourceSelector = `.player_${playerIndex}_${resource.type}`;
                 const otherResourceSelector = `.player_${otherPlayerIndex}_${resource.type}`;
 
                 const resourceItem = jQuery(playerResourceSelector);
-                const targetOffset = jQuery(otherResourceSelector).offset();
-                const offset = resourceItem.offset();
+                const otherResourceItem = jQuery(otherResourceSelector);
+                const targetOffset = resourceItem.offset();
+                const offset = otherResourceItem.offset();
+
+                console.log('>>> offset', offset);
+                console.log('>>> targetOffset', targetOffset);
 
                 const body = jQuery('body');
-                const newResourceItem = resourceItem.clone();
+                const newResourceItem = otherResourceItem.clone();
 
                 newResourceItem.appendTo(body)
                     .css({
                         left: offset.left + 'px',
                         top: offset.top + 'px'
-                    });
-
-                newResourceItem
+                    })
                     .animate({
                         left: targetOffset.left + 'px',
                         top: targetOffset.top + 'px'
@@ -1537,7 +1548,11 @@ const katanStore = {
             alert('도둑을 옮기고 자원하나를 빼았습니다.');
             katanStore.setKnightMode();
             katanStore.readyMoveBuglar();
+
             player.construction.knight += 1;
+            player.resource.sheep -= 1;
+            player.resource.wheat -= 1;
+            player.resource.iron -= 1;
 
             if (player.construction.knight >= 3) {
                 const other = katanStore.getOtherPlayer(katan);

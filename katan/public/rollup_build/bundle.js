@@ -792,12 +792,15 @@ var app = (function (jQuery) {
         enabled: true,
         placement: 'left'
     };
+
     katanObject.castleList[9].port = {
         enabled: false
     };
+
     katanObject.castleList[10].port = {
         enabled: false
     };
+
     katanObject.castleList[11].port = {
         enabled: false
     };
@@ -909,7 +912,6 @@ var app = (function (jQuery) {
     katanObject.castleList[36].port = {
         enabled: true,
         placement: 'right'
-
     };
 
     katanObject.castleList[37].port = {
@@ -1137,7 +1139,7 @@ var app = (function (jQuery) {
     katanObject.castleList[28].castleIndexList = [27, 29, 38];
     katanObject.castleList[29].castleIndexList = [18, 28, 30];
     katanObject.castleList[30].castleIndexList = [29, 31, 40];
-    katanObject.castleList[31].castleIndexList = [20, 30, 30];
+    katanObject.castleList[31].castleIndexList = [20, 30, 32];
     katanObject.castleList[32].castleIndexList = [31, 33, 42];
     katanObject.castleList[33].castleIndexList = [22, 32, 34];
     katanObject.castleList[34].castleIndexList = [33, 35, 44];
@@ -1662,15 +1664,21 @@ var app = (function (jQuery) {
             if (katan.isKnightMode) {
                 const other = katanStore.getOtherPlayer(katan);
 
-                const resourceTypeList = katan.resourceTypeList
-                    .map(type => {
+                let resourceTypeList = katan.resourceTypeList
+                    .map(resourceType => {
                         return {
-                            type,
-                            count: other.resource[type]
+                            type: resourceType.type,
+                            count: other.resource[resourceType.type]
                         }
-                    })
+                    });
+
+                console.log('>>> resourceTypeList', resourceTypeList);
+
+                resourceTypeList = resourceTypeList
                     .filter(item => item.count > 0)
                     .sort(random());
+
+                console.log('>>> resourceTypeList', resourceTypeList);
 
                 if (resourceTypeList.length > 0) {
                     const resource = resourceTypeList[0];
@@ -1678,23 +1686,26 @@ var app = (function (jQuery) {
 
                     const playerIndex = player.index;
                     const otherPlayerIndex = other.index;
+
                     const playerResourceSelector = `.player_${playerIndex}_${resource.type}`;
                     const otherResourceSelector = `.player_${otherPlayerIndex}_${resource.type}`;
 
                     const resourceItem = jQuery__default['default'](playerResourceSelector);
-                    const targetOffset = jQuery__default['default'](otherResourceSelector).offset();
-                    const offset = resourceItem.offset();
+                    const otherResourceItem = jQuery__default['default'](otherResourceSelector);
+                    const targetOffset = resourceItem.offset();
+                    const offset = otherResourceItem.offset();
+
+                    console.log('>>> offset', offset);
+                    console.log('>>> targetOffset', targetOffset);
 
                     const body = jQuery__default['default']('body');
-                    const newResourceItem = resourceItem.clone();
+                    const newResourceItem = otherResourceItem.clone();
 
                     newResourceItem.appendTo(body)
                         .css({
                             left: offset.left + 'px',
                             top: offset.top + 'px'
-                        });
-
-                    newResourceItem
+                        })
                         .animate({
                             left: targetOffset.left + 'px',
                             top: targetOffset.top + 'px'
@@ -2055,7 +2066,11 @@ var app = (function (jQuery) {
                 alert('도둑을 옮기고 자원하나를 빼았습니다.');
                 katanStore.setKnightMode();
                 katanStore.readyMoveBuglar();
+
                 player.construction.knight += 1;
+                player.resource.sheep -= 1;
+                player.resource.wheat -= 1;
+                player.resource.iron -= 1;
 
                 if (player.construction.knight >= 3) {
                     const other = katanStore.getOtherPlayer(katan);
@@ -4405,81 +4420,81 @@ var app = (function (jQuery) {
     			t20 = text("발전카드");
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "class", "svelte-qvq2cg");
-    			add_location(img0, file$6, 18, 16, 369);
+    			add_location(img0, file$6, 16, 16, 258);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "class", "svelte-qvq2cg");
-    			add_location(img1, file$6, 19, 16, 411);
+    			add_location(img1, file$6, 17, 16, 300);
     			attr_dev(td0, "class", "svelte-qvq2cg");
-    			add_location(td0, file$6, 17, 12, 348);
+    			add_location(td0, file$6, 15, 12, 237);
     			attr_dev(button0, "class", "btn btn-primary svelte-qvq2cg");
     			button0.disabled = button0_disabled_value = !/*player*/ ctx[0].make.road;
-    			add_location(button0, file$6, 22, 16, 487);
+    			add_location(button0, file$6, 20, 16, 376);
     			attr_dev(td1, "class", "svelte-qvq2cg");
-    			add_location(td1, file$6, 21, 12, 466);
-    			add_location(tr0, file$6, 16, 8, 331);
+    			add_location(td1, file$6, 19, 12, 355);
+    			add_location(tr0, file$6, 14, 8, 220);
     			if (img2.src !== (img2_src_value = "tree_item.png")) attr_dev(img2, "src", img2_src_value);
     			attr_dev(img2, "class", "svelte-qvq2cg");
-    			add_location(img2, file$6, 29, 16, 722);
+    			add_location(img2, file$6, 27, 16, 611);
     			if (img3.src !== (img3_src_value = "mud_item.png")) attr_dev(img3, "src", img3_src_value);
     			attr_dev(img3, "class", "svelte-qvq2cg");
-    			add_location(img3, file$6, 30, 16, 764);
+    			add_location(img3, file$6, 28, 16, 653);
     			if (img4.src !== (img4_src_value = "wheat_item.png")) attr_dev(img4, "src", img4_src_value);
     			attr_dev(img4, "class", "svelte-qvq2cg");
-    			add_location(img4, file$6, 31, 16, 805);
+    			add_location(img4, file$6, 29, 16, 694);
     			if (img5.src !== (img5_src_value = "sheep_item.png")) attr_dev(img5, "src", img5_src_value);
     			attr_dev(img5, "class", "svelte-qvq2cg");
-    			add_location(img5, file$6, 32, 16, 848);
+    			add_location(img5, file$6, 30, 16, 737);
     			attr_dev(td2, "class", "svelte-qvq2cg");
-    			add_location(td2, file$6, 28, 12, 701);
+    			add_location(td2, file$6, 26, 12, 590);
     			attr_dev(button1, "class", "btn btn-primary svelte-qvq2cg");
     			button1.disabled = button1_disabled_value = !/*player*/ ctx[0].make.castle;
-    			add_location(button1, file$6, 35, 16, 926);
+    			add_location(button1, file$6, 33, 16, 815);
     			attr_dev(td3, "class", "svelte-qvq2cg");
-    			add_location(td3, file$6, 34, 12, 905);
-    			add_location(tr1, file$6, 27, 8, 684);
+    			add_location(td3, file$6, 32, 12, 794);
+    			add_location(tr1, file$6, 25, 8, 573);
     			if (img6.src !== (img6_src_value = "wheat_item.png")) attr_dev(img6, "src", img6_src_value);
     			attr_dev(img6, "class", "svelte-qvq2cg");
-    			add_location(img6, file$6, 42, 16, 1165);
+    			add_location(img6, file$6, 40, 16, 1054);
     			if (img7.src !== (img7_src_value = "wheat_item.png")) attr_dev(img7, "src", img7_src_value);
     			attr_dev(img7, "class", "svelte-qvq2cg");
-    			add_location(img7, file$6, 43, 16, 1208);
+    			add_location(img7, file$6, 41, 16, 1097);
     			if (img8.src !== (img8_src_value = "iron_item.png")) attr_dev(img8, "src", img8_src_value);
     			attr_dev(img8, "class", "svelte-qvq2cg");
-    			add_location(img8, file$6, 44, 16, 1251);
+    			add_location(img8, file$6, 42, 16, 1140);
     			if (img9.src !== (img9_src_value = "iron_item.png")) attr_dev(img9, "src", img9_src_value);
     			attr_dev(img9, "class", "svelte-qvq2cg");
-    			add_location(img9, file$6, 45, 16, 1293);
+    			add_location(img9, file$6, 43, 16, 1182);
     			if (img10.src !== (img10_src_value = "iron_item.png")) attr_dev(img10, "src", img10_src_value);
     			attr_dev(img10, "class", "svelte-qvq2cg");
-    			add_location(img10, file$6, 46, 16, 1335);
+    			add_location(img10, file$6, 44, 16, 1224);
     			attr_dev(td4, "class", "svelte-qvq2cg");
-    			add_location(td4, file$6, 41, 12, 1144);
+    			add_location(td4, file$6, 39, 12, 1033);
     			attr_dev(button2, "class", "btn btn-primary svelte-qvq2cg");
     			button2.disabled = button2_disabled_value = !/*player*/ ctx[0].make.city;
-    			add_location(button2, file$6, 49, 16, 1412);
+    			add_location(button2, file$6, 47, 16, 1301);
     			attr_dev(td5, "class", "svelte-qvq2cg");
-    			add_location(td5, file$6, 48, 12, 1391);
-    			add_location(tr2, file$6, 40, 8, 1127);
+    			add_location(td5, file$6, 46, 12, 1280);
+    			add_location(tr2, file$6, 38, 8, 1016);
     			if (img11.src !== (img11_src_value = "wheat_item.png")) attr_dev(img11, "src", img11_src_value);
     			attr_dev(img11, "class", "svelte-qvq2cg");
-    			add_location(img11, file$6, 54, 16, 1567);
+    			add_location(img11, file$6, 52, 16, 1456);
     			if (img12.src !== (img12_src_value = "sheep_item.png")) attr_dev(img12, "src", img12_src_value);
     			attr_dev(img12, "class", "svelte-qvq2cg");
-    			add_location(img12, file$6, 55, 16, 1610);
+    			add_location(img12, file$6, 53, 16, 1499);
     			if (img13.src !== (img13_src_value = "iron_item.png")) attr_dev(img13, "src", img13_src_value);
     			attr_dev(img13, "class", "svelte-qvq2cg");
-    			add_location(img13, file$6, 56, 16, 1653);
+    			add_location(img13, file$6, 54, 16, 1542);
     			attr_dev(td6, "class", "svelte-qvq2cg");
-    			add_location(td6, file$6, 53, 12, 1546);
+    			add_location(td6, file$6, 51, 12, 1435);
     			attr_dev(button3, "class", "btn btn-primary svelte-qvq2cg");
     			button3.disabled = button3_disabled_value = !/*player*/ ctx[0].make.dev;
-    			add_location(button3, file$6, 59, 16, 1730);
+    			add_location(button3, file$6, 57, 16, 1619);
     			attr_dev(td7, "class", "svelte-qvq2cg");
-    			add_location(td7, file$6, 58, 12, 1709);
-    			add_location(tr3, file$6, 52, 8, 1529);
+    			add_location(td7, file$6, 56, 12, 1598);
+    			add_location(tr3, file$6, 50, 8, 1418);
     			attr_dev(table, "class", "construction-resource svelte-qvq2cg");
-    			add_location(table, file$6, 15, 4, 285);
-    			add_location(main, file$6, 14, 0, 274);
+    			add_location(table, file$6, 13, 4, 174);
+    			add_location(main, file$6, 12, 0, 163);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4541,9 +4556,9 @@ var app = (function (jQuery) {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*click_handler*/ ctx[1], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[2], false, false, false),
-    					listen_dev(button3, "click", /*click_handler_2*/ ctx[3], false, false, false)
+    					listen_dev(button0, "click", /*click_handler*/ ctx[3], false, false, false),
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[4], false, false, false),
+    					listen_dev(button3, "click", /*click_handler_2*/ ctx[5], false, false, false)
     				];
 
     				mounted = true;
@@ -4587,16 +4602,14 @@ var app = (function (jQuery) {
     }
 
     function instance$6($$self, $$props, $$invalidate) {
+    	let $katan;
+    	validate_store(katanStore, "katan");
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(2, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Construction", slots, []);
-    	let player = katanStore.getActivePlayer();
-
-    	const unsubscribe = katanStore.subscribe(currentKatan => {
-    		$$invalidate(0, player = katanStore.getActivePlayer());
-    	});
-
-    	onDestroy(unsubscribe);
-    	const writable_props = [];
+    	let { playerIndex } = $$props;
+    	let player;
+    	const writable_props = ["playerIndex"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Construction> was created with unknown prop '${key}'`);
@@ -4605,9 +4618,15 @@ var app = (function (jQuery) {
     	const click_handler = () => katanStore.makeRoad();
     	const click_handler_1 = () => katanStore.makeCastle();
     	const click_handler_2 = () => katanStore.makeDev();
-    	$$self.$capture_state = () => ({ katan: katanStore, onDestroy, player, unsubscribe });
+
+    	$$self.$$set = $$props => {
+    		if ("playerIndex" in $$props) $$invalidate(1, playerIndex = $$props.playerIndex);
+    	};
+
+    	$$self.$capture_state = () => ({ katan: katanStore, playerIndex, player, $katan });
 
     	$$self.$inject_state = $$props => {
+    		if ("playerIndex" in $$props) $$invalidate(1, playerIndex = $$props.playerIndex);
     		if ("player" in $$props) $$invalidate(0, player = $$props.player);
     	};
 
@@ -4615,13 +4634,21 @@ var app = (function (jQuery) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [player, click_handler, click_handler_1, click_handler_2];
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$katan, playerIndex*/ 6) {
+    			{
+    				$$invalidate(0, player = $katan.playerList[playerIndex]);
+    			}
+    		}
+    	};
+
+    	return [player, playerIndex, $katan, click_handler, click_handler_1, click_handler_2];
     }
 
     class Construction extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$6, create_fragment$6, safe_not_equal, {});
+    		init(this, options, instance$6, create_fragment$6, safe_not_equal, { playerIndex: 1 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -4629,6 +4656,21 @@ var app = (function (jQuery) {
     			options,
     			id: create_fragment$6.name
     		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*playerIndex*/ ctx[1] === undefined && !("playerIndex" in props)) {
+    			console.warn("<Construction> was created without expected prop 'playerIndex'");
+    		}
+    	}
+
+    	get playerIndex() {
+    		throw new Error("<Construction>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set playerIndex(value) {
+    		throw new Error("<Construction>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
@@ -4651,7 +4693,7 @@ var app = (function (jQuery) {
     function create_if_block$4(ctx) {
     	let table;
     	let tr;
-    	let each_value_1 = /*resourceList*/ ctx[2];
+    	let each_value_1 = /*resourceList*/ ctx[3];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -4681,8 +4723,8 @@ var app = (function (jQuery) {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*player, resourceList, katan*/ 5) {
-    				each_value_1 = /*resourceList*/ ctx[2];
+    			if (dirty & /*player, resourceList, katan*/ 10) {
+    				each_value_1 = /*resourceList*/ ctx[3];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -4730,7 +4772,7 @@ var app = (function (jQuery) {
     	let img_src_value;
     	let t0;
     	let button;
-    	let t1_value = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type].count + "";
+    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "";
     	let t1;
     	let t2;
     	let button_disabled_value;
@@ -4756,7 +4798,7 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			add_location(img, file$7, 139, 60, 4895);
     			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1xd6bb5");
-    			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
+    			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action;
     			add_location(button, file$7, 140, 60, 5020);
     			add_location(div, file$7, 138, 56, 4829);
     			attr_dev(td, "class", "svelte-1xd6bb5");
@@ -4780,13 +4822,13 @@ var app = (function (jQuery) {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 8 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && t1_value !== (t1_value = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*player, resourceList*/ 10 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "")) set_data_dev(t1, t1_value);
 
-    			if (dirty & /*player, resourceList*/ 5 && button_disabled_value !== (button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action)) {
+    			if (dirty & /*player, resourceList*/ 10 && button_disabled_value !== (button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action)) {
     				prop_dev(button, "disabled", button_disabled_value);
     			}
     		},
@@ -4867,7 +4909,7 @@ var app = (function (jQuery) {
     	let t2;
     	let td2;
     	let t3;
-    	let if_block = /*player*/ ctx[0].trade[/*resource*/ ctx[11].type].enable && create_if_block$4(ctx);
+    	let if_block = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].enable && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -4882,7 +4924,7 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1xd6bb5");
+    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-1xd6bb5");
     			add_location(img, file$7, 127, 32, 4088);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-1xd6bb5");
@@ -4906,17 +4948,17 @@ var app = (function (jQuery) {
     			append_dev(tr, t3);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 4 && img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 8 && img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1xd6bb5")) {
+    			if (dirty & /*player, resourceList*/ 10 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-1xd6bb5")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
-    			if (dirty & /*resourceList*/ 4 && t1_value !== (t1_value = /*resource*/ ctx[11].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*resourceList*/ 8 && t1_value !== (t1_value = /*resource*/ ctx[11].count + "")) set_data_dev(t1, t1_value);
 
-    			if (/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].enable) {
+    			if (/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].enable) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -4978,27 +5020,27 @@ var app = (function (jQuery) {
     	let t14;
     	let tr3;
     	let td8;
-    	let t15_value = /*player*/ ctx[0].point.castle + "";
+    	let t15_value = /*player*/ ctx[1].point.castle + "";
     	let t15;
     	let t16;
     	let td9;
-    	let t17_value = /*player*/ ctx[0].point.city + "";
+    	let t17_value = /*player*/ ctx[1].point.city + "";
     	let t17;
     	let t18;
     	let td10;
-    	let t19_value = /*player*/ ctx[0].point.point + "";
+    	let t19_value = /*player*/ ctx[1].point.point + "";
     	let t19;
     	let t20;
     	let td11;
-    	let t21_value = /*player*/ ctx[0].point.road + "";
+    	let t21_value = /*player*/ ctx[1].point.road + "";
     	let t21;
     	let t22;
     	let td12;
-    	let t23_value = /*player*/ ctx[0].point.knight + "";
+    	let t23_value = /*player*/ ctx[1].point.knight + "";
     	let t23;
     	let t24;
     	let td13;
-    	let t25_value = /*player*/ ctx[0].point.sum + "";
+    	let t25_value = /*player*/ ctx[1].point.sum + "";
     	let t25;
     	let t26;
     	let tr5;
@@ -5018,19 +5060,19 @@ var app = (function (jQuery) {
     	let t36;
     	let tr7;
     	let td20;
-    	let t37_value = /*player*/ ctx[0].construction.castle + "";
+    	let t37_value = /*player*/ ctx[1].construction.castle + "";
     	let t37;
     	let t38;
     	let td21;
-    	let t39_value = /*player*/ ctx[0].construction.city + "";
+    	let t39_value = /*player*/ ctx[1].construction.city + "";
     	let t39;
     	let t40;
     	let td22;
-    	let t41_value = /*player*/ ctx[0].construction.road + "";
+    	let t41_value = /*player*/ ctx[1].construction.road + "";
     	let t41;
     	let t42;
     	let td23;
-    	let t43_value = /*player*/ ctx[0].construction.knight + "";
+    	let t43_value = /*player*/ ctx[1].construction.knight + "";
     	let t43;
     	let t44;
     	let tr9;
@@ -5044,7 +5086,7 @@ var app = (function (jQuery) {
     	let td28;
     	let construction;
     	let current;
-    	let each_value = /*resourceList*/ ctx[2];
+    	let each_value = /*resourceList*/ ctx[3];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -5052,7 +5094,10 @@ var app = (function (jQuery) {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
-    	construction = new Construction({ $$inline: true });
+    	construction = new Construction({
+    			props: { playerIndex: /*playerIndex*/ ctx[0] },
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
@@ -5160,10 +5205,10 @@ var app = (function (jQuery) {
     			tr12 = element("tr");
     			td28 = element("td");
     			create_component(construction.$$.fragment);
-    			if (img.src !== (img_src_value = /*player*/ ctx[0].image)) attr_dev(img, "src", img_src_value);
+    			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$7, 65, 16, 1522);
     			attr_dev(td0, "class", "name svelte-1xd6bb5");
-    			set_style(td0, "background-color", /*player*/ ctx[0].color);
+    			set_style(td0, "background-color", /*player*/ ctx[1].color);
     			add_location(td0, file$7, 63, 12, 1432);
     			add_location(tr0, file$7, 62, 8, 1415);
     			attr_dev(td1, "colspan", "3");
@@ -5248,7 +5293,7 @@ var app = (function (jQuery) {
     			add_location(td28, file$7, 162, 12, 6100);
     			add_location(tr12, file$7, 161, 8, 6083);
     			attr_dev(table3, "class", "trade-resource svelte-1xd6bb5");
-    			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
+    			attr_dev(table3, "style", /*playerStyle*/ ctx[2]);
     			add_location(table3, file$7, 61, 4, 1356);
     			add_location(main, file$7, 60, 0, 1345);
     		},
@@ -5349,27 +5394,27 @@ var app = (function (jQuery) {
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (!current || dirty & /*player*/ 1 && img.src !== (img_src_value = /*player*/ ctx[0].image)) {
+    			if (!current || dirty & /*player*/ 2 && img.src !== (img_src_value = /*player*/ ctx[1].image)) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (!current || dirty & /*player*/ 1) {
-    				set_style(td0, "background-color", /*player*/ ctx[0].color);
+    			if (!current || dirty & /*player*/ 2) {
+    				set_style(td0, "background-color", /*player*/ ctx[1].color);
     			}
 
-    			if ((!current || dirty & /*player*/ 1) && t15_value !== (t15_value = /*player*/ ctx[0].point.castle + "")) set_data_dev(t15, t15_value);
-    			if ((!current || dirty & /*player*/ 1) && t17_value !== (t17_value = /*player*/ ctx[0].point.city + "")) set_data_dev(t17, t17_value);
-    			if ((!current || dirty & /*player*/ 1) && t19_value !== (t19_value = /*player*/ ctx[0].point.point + "")) set_data_dev(t19, t19_value);
-    			if ((!current || dirty & /*player*/ 1) && t21_value !== (t21_value = /*player*/ ctx[0].point.road + "")) set_data_dev(t21, t21_value);
-    			if ((!current || dirty & /*player*/ 1) && t23_value !== (t23_value = /*player*/ ctx[0].point.knight + "")) set_data_dev(t23, t23_value);
-    			if ((!current || dirty & /*player*/ 1) && t25_value !== (t25_value = /*player*/ ctx[0].point.sum + "")) set_data_dev(t25, t25_value);
-    			if ((!current || dirty & /*player*/ 1) && t37_value !== (t37_value = /*player*/ ctx[0].construction.castle + "")) set_data_dev(t37, t37_value);
-    			if ((!current || dirty & /*player*/ 1) && t39_value !== (t39_value = /*player*/ ctx[0].construction.city + "")) set_data_dev(t39, t39_value);
-    			if ((!current || dirty & /*player*/ 1) && t41_value !== (t41_value = /*player*/ ctx[0].construction.road + "")) set_data_dev(t41, t41_value);
-    			if ((!current || dirty & /*player*/ 1) && t43_value !== (t43_value = /*player*/ ctx[0].construction.knight + "")) set_data_dev(t43, t43_value);
+    			if ((!current || dirty & /*player*/ 2) && t15_value !== (t15_value = /*player*/ ctx[1].point.castle + "")) set_data_dev(t15, t15_value);
+    			if ((!current || dirty & /*player*/ 2) && t17_value !== (t17_value = /*player*/ ctx[1].point.city + "")) set_data_dev(t17, t17_value);
+    			if ((!current || dirty & /*player*/ 2) && t19_value !== (t19_value = /*player*/ ctx[1].point.point + "")) set_data_dev(t19, t19_value);
+    			if ((!current || dirty & /*player*/ 2) && t21_value !== (t21_value = /*player*/ ctx[1].point.road + "")) set_data_dev(t21, t21_value);
+    			if ((!current || dirty & /*player*/ 2) && t23_value !== (t23_value = /*player*/ ctx[1].point.knight + "")) set_data_dev(t23, t23_value);
+    			if ((!current || dirty & /*player*/ 2) && t25_value !== (t25_value = /*player*/ ctx[1].point.sum + "")) set_data_dev(t25, t25_value);
+    			if ((!current || dirty & /*player*/ 2) && t37_value !== (t37_value = /*player*/ ctx[1].construction.castle + "")) set_data_dev(t37, t37_value);
+    			if ((!current || dirty & /*player*/ 2) && t39_value !== (t39_value = /*player*/ ctx[1].construction.city + "")) set_data_dev(t39, t39_value);
+    			if ((!current || dirty & /*player*/ 2) && t41_value !== (t41_value = /*player*/ ctx[1].construction.road + "")) set_data_dev(t41, t41_value);
+    			if ((!current || dirty & /*player*/ 2) && t43_value !== (t43_value = /*player*/ ctx[1].construction.knight + "")) set_data_dev(t43, t43_value);
 
-    			if (dirty & /*resourceList, player, katan*/ 5) {
-    				each_value = /*resourceList*/ ctx[2];
+    			if (dirty & /*resourceList, player, katan*/ 10) {
+    				each_value = /*resourceList*/ ctx[3];
     				validate_each_argument(each_value);
     				let i;
 
@@ -5392,8 +5437,12 @@ var app = (function (jQuery) {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (!current || dirty & /*playerStyle*/ 2) {
-    				attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
+    			const construction_changes = {};
+    			if (dirty & /*playerIndex*/ 1) construction_changes.playerIndex = /*playerIndex*/ ctx[0];
+    			construction.$set(construction_changes);
+
+    			if (!current || dirty & /*playerStyle*/ 4) {
+    				attr_dev(table3, "style", /*playerStyle*/ ctx[2]);
     			}
     		},
     		i: function intro(local) {
@@ -5482,7 +5531,7 @@ var app = (function (jQuery) {
     	const click_handler = (resource, tradeResource) => katanStore.exchange(player, resource.type, tradeResource.type);
 
     	$$self.$$set = $$props => {
-    		if ("playerIndex" in $$props) $$invalidate(3, playerIndex = $$props.playerIndex);
+    		if ("playerIndex" in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
     		if ("type" in $$props) $$invalidate(4, type = $$props.type);
     	};
 
@@ -5503,12 +5552,12 @@ var app = (function (jQuery) {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("playerIndex" in $$props) $$invalidate(3, playerIndex = $$props.playerIndex);
+    		if ("playerIndex" in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
     		if ("type" in $$props) $$invalidate(4, type = $$props.type);
-    		if ("player" in $$props) $$invalidate(0, player = $$props.player);
+    		if ("player" in $$props) $$invalidate(1, player = $$props.player);
     		if ("playerList" in $$props) $$invalidate(5, playerList = $$props.playerList);
-    		if ("playerStyle" in $$props) $$invalidate(1, playerStyle = $$props.playerStyle);
-    		if ("resourceList" in $$props) $$invalidate(2, resourceList = $$props.resourceList);
+    		if ("playerStyle" in $$props) $$invalidate(2, playerStyle = $$props.playerStyle);
+    		if ("resourceList" in $$props) $$invalidate(3, resourceList = $$props.resourceList);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -5516,21 +5565,21 @@ var app = (function (jQuery) {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, playerList, playerIndex*/ 104) {
+    		if ($$self.$$.dirty & /*$katan, playerList, playerIndex*/ 97) {
     			{
     				$$invalidate(5, playerList = $katan.playerList);
-    				$$invalidate(0, player = playerList[playerIndex]);
-    				$$invalidate(1, playerStyle = getPlayerStyle());
-    				$$invalidate(2, resourceList = getResourceList());
+    				$$invalidate(1, player = playerList[playerIndex]);
+    				$$invalidate(2, playerStyle = getPlayerStyle());
+    				$$invalidate(3, resourceList = getResourceList());
     			}
     		}
     	};
 
     	return [
+    		playerIndex,
     		player,
     		playerStyle,
     		resourceList,
-    		playerIndex,
     		type,
     		playerList,
     		$katan,
@@ -5541,7 +5590,7 @@ var app = (function (jQuery) {
     class Player extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { playerIndex: 3, type: 4 });
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { playerIndex: 0, type: 4 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -5553,7 +5602,7 @@ var app = (function (jQuery) {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*playerIndex*/ ctx[3] === undefined && !("playerIndex" in props)) {
+    		if (/*playerIndex*/ ctx[0] === undefined && !("playerIndex" in props)) {
     			console.warn("<Player> was created without expected prop 'playerIndex'");
     		}
     	}
