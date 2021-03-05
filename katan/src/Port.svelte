@@ -49,8 +49,7 @@
         border: 1px solid darkgrey;
         font-weight: bolder;
         font-size: 14px;
-        opacity: 0.6;
-        cursor: pointer;
+        opacity: 0;
         z-index: 10;
         padding: 2px;
     }

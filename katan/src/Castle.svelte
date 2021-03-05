@@ -1,14 +1,17 @@
 <script>
-    import { onDestroy } from 'svelte';
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
 
     export let castleIndex;
-    let castle = $katan.castleList[castleIndex];
-    let castleStyle;
 
     const pick = () => {
+        const castle = $katan.castleList[castleIndex];
+
+        if (castle.playerIndex !== -1) {
+            return;
+        }
+
         const player = katan.getActivePlayer();
 
         katan.setCastle(castleIndex, player.index);
@@ -34,6 +37,10 @@
             borderRadius: config.castle.height + 'px'
         };
 
+        if (castle.playerIndex !== -1) {
+            styleObject.cursor = 'default';
+        }
+
         if (config.debug) {
             delete styleObject.lineHeight;
             styleObject.color = 'black';
@@ -47,14 +54,13 @@
         return toStyle(styleObject);
     };
 
-    const unsubscribe = katan.subscribe(currentKatan => {
+    let castle;
+    let castleStyle;
+
+    $: {
+        castle = $katan.castleList[castleIndex];
         castleStyle = createStyle();
-        castle = currentKatan.castleList[castleIndex];
-    });
-
-    onDestroy(unsubscribe);
-
-    castleStyle = createStyle();
+    }
 </script>
 
 {#if config.debug}
