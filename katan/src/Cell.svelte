@@ -1,12 +1,9 @@
 <script>
-    import { onDestroy } from 'svelte';
     import config from './config.js'
     import { toStyle } from './util.js'
     import katan from './katan';
-    import { fly } from 'svelte/transition';
 
     export let resourceIndex;
-    let resource = $katan.resourceList[resourceIndex];
 
     const margin = config.cell.margin;
     const offset = 100 - config.cell.margin;
@@ -47,7 +44,6 @@
         return getNumberStyle(config.number.width, config.number.height);
     };
 
-    let numberStyle = getNumberStyleByResource();
     let imageSrc = `${resource.type}.png`;
     let resourceImage = `${resource.type}_item.png`;
 
@@ -58,12 +54,12 @@
         height: `${config.resource.height}px`,
     });
 
-    const unsubscribe = katan.subscribe(currentKatan => {
-        resource = currentKatan.resourceList[resourceIndex];
-        numberStyle = getNumberStyleByResource();
-    });
+    let resource;
 
-    onDestroy(unsubscribe);
+    $: {
+        resource = $katan.resourceList[resourceIndex];
+        numberStyle = getNumberStyleByResource();
+    }
 </script>
 
 <div class="cell" style={cellStyle}>

@@ -27,6 +27,7 @@ let katanObject = {
     isMakeRoad: false,
     isMakeCastle: false,
     construction: false,
+    isKnightMode: false,
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
     dice: [6, 6],
@@ -1121,8 +1122,12 @@ const katanStore = {
     },
 
     moveBuglar: (resourceIndex) => katanStore.updateKatan(katan => {
-        if (katan.mode !== 'moveBuglar') {
-            return katan;
+        if (katan.isKnightMode) {
+            katanStore.unsetKnightMode();
+        } else {
+            if (katan.mode !== 'moveBuglar') {
+                return katan;
+            }
         }
 
         if (katan.resourceList[resourceIndex].buglar) {
@@ -1136,6 +1141,30 @@ const katanStore = {
             });
 
         katanStore.setNumberRippleDisabled();
+
+        if (katan.isKnightMode) {
+            const other = katanStore.getOtherPlayer(katan);
+
+            const resourceTypeList = katan.resourceTypeList
+                .map(type => {
+                    return {
+                        type,
+                        count: other.resource[type]
+                    }
+                })
+                .filter(item => item.count > 0)
+                .sort(random());
+
+            if (resourceTypeList.length > 0) {
+                const resource = resourceTypeList[0];
+                const player = katanStore.getActivePlayer();
+                other.resource[resource.type] = other.resource[resource.type] - 1;
+                player.resource[resource.type] = player.resource[resource.type] + 1;
+            }
+
+            katanStore.unsetKnightMode();
+        }
+
         katanStore.doActionAndTurn();
 
         katan.mode = 'start';
@@ -1335,6 +1364,16 @@ const katanStore = {
         return katan;
     }),
 
+    setKnightMode: () => katanStore.updateKatan(katan => {
+        katan.isKnightMode = true;
+        return katan;
+    }),
+
+    unsetKnightMode: () => katanStore.updateKatan(katan => {
+        katan.isKnightMode = false;
+        return katan;
+    }),
+
     updateResource: (playerIndex, resource) => katanStore.updateKatan(katan => {
         katan.playerList[playerIndex].resource[resource.type]++;
         katanStore.recomputePlayer();
@@ -1459,20 +1498,13 @@ const katanStore = {
             player.point.point += 1;
             player.point.sum += 1;
         } else if (card.type === 'knight') {
+            alert('도둑을 옮기고 자원하나를 빼았습니다.');
+            katanStore.setKnightMode();
             katanStore.readyMoveBuglar();
             player.construction.knight += 1;
 
             if (player.construction.knight >= 3) {
-
-                let playerIndex = katan.playerIndex;
-
-                if (playerIndex === 0) {
-                    playerIndex = 1;
-                } else {
-                    playerIndex = 0;
-                }
-
-                const other = katan.playerList[playerIndex];
+                const other = katanStore.getOtherPlayer(katan);
 
                 if (player.construction.knight > other.construction.knight) {
                     if (other.point.knight === 2) {
@@ -1488,6 +1520,18 @@ const katanStore = {
 
         return katan;
     }),
+
+    getOtherPlayer: (katan) => {
+        let playerIndex = katan.playerIndex;
+
+        if (playerIndex === 0) {
+            playerIndex = 1;
+        } else {
+            playerIndex = 0;
+        }
+
+        return katan.playerList[playerIndex];
+    },
 
     makeCastle: () => katanStore.updateKatan(katan => {
         katan.isMakeCastle = true;
