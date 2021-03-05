@@ -4588,7 +4588,7 @@ var app = (function (jQuery) {
     			}
 
     			add_location(tr, file$7, 134, 40, 4540);
-    			attr_dev(table, "class", "trade-target-resource svelte-l4w2r5");
+    			attr_dev(table, "class", "trade-target-resource svelte-1xd6bb5");
     			add_location(table, file$7, 133, 36, 4462);
     		},
     		m: function mount(target, anchor) {
@@ -4671,14 +4671,14 @@ var app = (function (jQuery) {
     			t1 = text(t1_value);
     			t2 = text(":1 교환");
     			t3 = space();
-    			attr_dev(img, "class", "trade-resource svelte-l4w2r5");
+    			attr_dev(img, "class", "trade-resource svelte-1xd6bb5");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			add_location(img, file$7, 139, 60, 4895);
-    			attr_dev(button, "class", "btn btn-primary btn-sm svelte-l4w2r5");
+    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1xd6bb5");
     			button.disabled = button_disabled_value = !/*player*/ ctx[0].trade[/*resource*/ ctx[11].type].action;
     			add_location(button, file$7, 140, 60, 5020);
     			add_location(div, file$7, 138, 56, 4829);
-    			attr_dev(td, "class", "svelte-l4w2r5");
+    			attr_dev(td, "class", "svelte-1xd6bb5");
     			add_location(td, file$7, 137, 52, 4768);
     		},
     		m: function mount(target, anchor) {
@@ -4801,14 +4801,14 @@ var app = (function (jQuery) {
     			if (if_block) if_block.c();
     			t3 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-l4w2r5");
+    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1xd6bb5");
     			add_location(img, file$7, 127, 32, 4088);
     			attr_dev(td0, "width", "80");
-    			attr_dev(td0, "class", "svelte-l4w2r5");
+    			attr_dev(td0, "class", "svelte-1xd6bb5");
     			add_location(td0, file$7, 126, 28, 4040);
-    			attr_dev(td1, "class", "number svelte-l4w2r5");
+    			attr_dev(td1, "class", "number svelte-1xd6bb5");
     			add_location(td1, file$7, 130, 28, 4279);
-    			attr_dev(td2, "class", "svelte-l4w2r5");
+    			attr_dev(td2, "class", "svelte-1xd6bb5");
     			add_location(td2, file$7, 131, 28, 4348);
     			add_location(tr, file$7, 125, 24, 4007);
     		},
@@ -4829,7 +4829,7 @@ var app = (function (jQuery) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-l4w2r5")) {
+    			if (dirty & /*player, resourceList*/ 5 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[0].index + "_" + /*resource*/ ctx[11].type + " svelte-1xd6bb5")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -5081,92 +5081,92 @@ var app = (function (jQuery) {
     			create_component(construction.$$.fragment);
     			if (img.src !== (img_src_value = /*player*/ ctx[0].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$7, 65, 16, 1522);
-    			attr_dev(td0, "class", "name svelte-l4w2r5");
+    			attr_dev(td0, "class", "name svelte-1xd6bb5");
     			set_style(td0, "background-color", /*player*/ ctx[0].color);
     			add_location(td0, file$7, 63, 12, 1432);
     			add_location(tr0, file$7, 62, 8, 1415);
     			attr_dev(td1, "colspan", "3");
-    			attr_dev(td1, "class", "header svelte-l4w2r5");
+    			attr_dev(td1, "class", "header svelte-1xd6bb5");
     			add_location(td1, file$7, 72, 24, 1705);
     			add_location(tr1, file$7, 71, 20, 1676);
-    			attr_dev(td2, "class", "svelte-l4w2r5");
+    			attr_dev(td2, "class", "svelte-1xd6bb5");
     			add_location(td2, file$7, 79, 36, 1973);
-    			attr_dev(td3, "class", "svelte-l4w2r5");
+    			attr_dev(td3, "class", "svelte-1xd6bb5");
     			add_location(td3, file$7, 80, 36, 2021);
-    			attr_dev(td4, "class", "svelte-l4w2r5");
+    			attr_dev(td4, "class", "svelte-1xd6bb5");
     			add_location(td4, file$7, 81, 36, 2069);
-    			attr_dev(td5, "class", "svelte-l4w2r5");
+    			attr_dev(td5, "class", "svelte-1xd6bb5");
     			add_location(td5, file$7, 82, 36, 2117);
-    			attr_dev(td6, "class", "svelte-l4w2r5");
+    			attr_dev(td6, "class", "svelte-1xd6bb5");
     			add_location(td6, file$7, 83, 36, 2169);
-    			attr_dev(td7, "class", "svelte-l4w2r5");
+    			attr_dev(td7, "class", "svelte-1xd6bb5");
     			add_location(td7, file$7, 84, 36, 2221);
     			attr_dev(tr2, "class", "point");
     			add_location(tr2, file$7, 78, 32, 1918);
-    			attr_dev(td8, "class", "svelte-l4w2r5");
+    			attr_dev(td8, "class", "svelte-1xd6bb5");
     			add_location(td8, file$7, 87, 36, 2347);
-    			attr_dev(td9, "class", "svelte-l4w2r5");
+    			attr_dev(td9, "class", "svelte-1xd6bb5");
     			add_location(td9, file$7, 88, 36, 2414);
-    			attr_dev(td10, "class", "svelte-l4w2r5");
+    			attr_dev(td10, "class", "svelte-1xd6bb5");
     			add_location(td10, file$7, 89, 36, 2479);
-    			attr_dev(td11, "class", "svelte-l4w2r5");
+    			attr_dev(td11, "class", "svelte-1xd6bb5");
     			add_location(td11, file$7, 90, 36, 2545);
-    			attr_dev(td12, "class", "svelte-l4w2r5");
+    			attr_dev(td12, "class", "svelte-1xd6bb5");
     			add_location(td12, file$7, 91, 36, 2610);
-    			attr_dev(td13, "class", "svelte-l4w2r5");
+    			attr_dev(td13, "class", "svelte-1xd6bb5");
     			add_location(td13, file$7, 92, 36, 2677);
     			add_location(tr3, file$7, 86, 32, 2306);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$7, 76, 28, 1864);
     			attr_dev(td14, "colspan", "3");
-    			attr_dev(td14, "class", "svelte-l4w2r5");
+    			attr_dev(td14, "class", "svelte-1xd6bb5");
     			add_location(td14, file$7, 75, 24, 1819);
     			add_location(tr4, file$7, 74, 20, 1790);
     			attr_dev(td15, "colspan", "3");
-    			attr_dev(td15, "class", "header svelte-l4w2r5");
+    			attr_dev(td15, "class", "header svelte-1xd6bb5");
     			add_location(td15, file$7, 99, 24, 2886);
     			add_location(tr5, file$7, 98, 20, 2857);
-    			attr_dev(td16, "class", "svelte-l4w2r5");
+    			attr_dev(td16, "class", "svelte-1xd6bb5");
     			add_location(td16, file$7, 105, 36, 3160);
-    			attr_dev(td17, "class", "svelte-l4w2r5");
+    			attr_dev(td17, "class", "svelte-1xd6bb5");
     			add_location(td17, file$7, 106, 36, 3208);
-    			attr_dev(td18, "class", "svelte-l4w2r5");
+    			attr_dev(td18, "class", "svelte-1xd6bb5");
     			add_location(td18, file$7, 107, 36, 3256);
-    			attr_dev(td19, "class", "svelte-l4w2r5");
+    			attr_dev(td19, "class", "svelte-1xd6bb5");
     			add_location(td19, file$7, 108, 36, 3304);
     			add_location(tr6, file$7, 104, 32, 3119);
-    			attr_dev(td20, "class", "svelte-l4w2r5");
+    			attr_dev(td20, "class", "svelte-1xd6bb5");
     			add_location(td20, file$7, 111, 36, 3427);
-    			attr_dev(td21, "class", "svelte-l4w2r5");
+    			attr_dev(td21, "class", "svelte-1xd6bb5");
     			add_location(td21, file$7, 112, 36, 3501);
-    			attr_dev(td22, "class", "svelte-l4w2r5");
+    			attr_dev(td22, "class", "svelte-1xd6bb5");
     			add_location(td22, file$7, 113, 36, 3573);
-    			attr_dev(td23, "class", "svelte-l4w2r5");
+    			attr_dev(td23, "class", "svelte-1xd6bb5");
     			add_location(td23, file$7, 114, 36, 3645);
     			add_location(tr7, file$7, 110, 32, 3386);
-    			attr_dev(table1, "class", "construction svelte-l4w2r5");
+    			attr_dev(table1, "class", "construction svelte-1xd6bb5");
     			attr_dev(table1, "width", "100%");
     			add_location(table1, file$7, 103, 28, 3045);
     			attr_dev(td24, "colspan", "3");
-    			attr_dev(td24, "class", "svelte-l4w2r5");
+    			attr_dev(td24, "class", "svelte-1xd6bb5");
     			add_location(td24, file$7, 102, 24, 3000);
     			add_location(tr8, file$7, 101, 20, 2971);
     			attr_dev(td25, "colspan", "3");
-    			attr_dev(td25, "class", "header svelte-l4w2r5");
+    			attr_dev(td25, "class", "header svelte-1xd6bb5");
     			add_location(td25, file$7, 121, 24, 3864);
     			add_location(tr9, file$7, 120, 20, 3835);
-    			attr_dev(table2, "class", "inner-resource svelte-l4w2r5");
+    			attr_dev(table2, "class", "inner-resource svelte-1xd6bb5");
     			add_location(table2, file$7, 70, 16, 1625);
-    			attr_dev(td26, "class", "svelte-l4w2r5");
+    			attr_dev(td26, "class", "svelte-1xd6bb5");
     			add_location(td26, file$7, 69, 12, 1604);
     			add_location(tr10, file$7, 68, 8, 1587);
-    			attr_dev(td27, "class", "header svelte-l4w2r5");
-    			add_location(td27, file$7, 159, 12, 6021);
-    			add_location(tr11, file$7, 158, 8, 6004);
-    			attr_dev(td28, "class", "svelte-l4w2r5");
-    			add_location(td28, file$7, 162, 12, 6087);
-    			add_location(tr12, file$7, 161, 8, 6070);
-    			attr_dev(table3, "class", "trade-resource svelte-l4w2r5");
+    			attr_dev(td27, "class", "header svelte-1xd6bb5");
+    			add_location(td27, file$7, 159, 12, 6034);
+    			add_location(tr11, file$7, 158, 8, 6017);
+    			attr_dev(td28, "class", "svelte-1xd6bb5");
+    			add_location(td28, file$7, 162, 12, 6100);
+    			add_location(tr12, file$7, 161, 8, 6083);
+    			attr_dev(table3, "class", "trade-resource svelte-1xd6bb5");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[1]);
     			add_location(table3, file$7, 61, 4, 1356);
     			add_location(main, file$7, 60, 0, 1345);
