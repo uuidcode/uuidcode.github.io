@@ -114,7 +114,7 @@
     }
 
     .player {
-        width: 250px;
+        width: 270px;
     }
 
     td {
