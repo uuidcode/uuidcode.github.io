@@ -8,13 +8,6 @@
     const margin = config.cell.margin;
     const offset = 100 - config.cell.margin;
 
-    let cellStyle = toStyle({
-        left: resource.left + 'px',
-        top: resource.top + 'px',
-        width: config.cell.width + 'px',
-        height: config.cell.height + 'px'
-    });
-
     let innerCellStyle = toStyle({
         'clip-path': `polygon(50% ${margin}%, ${offset}% 25%, ${offset}% 75%, 50% ${offset}%, ${margin}% 75%, ${margin}% 25%)`
     });
@@ -44,21 +37,33 @@
         return getNumberStyle(config.number.width, config.number.height);
     };
 
-    let imageSrc = `${resource.type}.png`;
-    let resourceImage = `${resource.type}_item.png`;
-
-    let resourceImageStyle = toStyle({
-        left: resource.left + (config.cell.width  - config.resource.width - 30) / 2 + 'px',
-        top: resource.top + (config.cell.height - config.resource.height - 30) / 2 + 'px',
-        width: `${config.resource.width}px`,
-        height: `${config.resource.height}px`,
-    });
-
     let resource;
+    let numberStyle;
+    let cellStyle;
+    let resourceImageStyle;
+    let imageSrc;
+    let resourceImage;
 
     $: {
         resource = $katan.resourceList[resourceIndex];
         numberStyle = getNumberStyleByResource();
+
+        cellStyle = toStyle({
+            left: resource.left + 'px',
+            top: resource.top + 'px',
+            width: config.cell.width + 'px',
+            height: config.cell.height + 'px'
+        });
+
+        resourceImageStyle = toStyle({
+            left: resource.left + (config.cell.width  - config.resource.width - 30) / 2 + 'px',
+            top: resource.top + (config.cell.height - config.resource.height - 30) / 2 + 'px',
+            width: `${config.resource.width}px`,
+            height: `${config.resource.height}px`,
+        });
+
+        imageSrc = `${resource.type}.png`;
+        resourceImage = `${resource.type}_item.png`;
     }
 </script>
 

@@ -1123,7 +1123,6 @@ const katanStore = {
 
     moveBuglar: (resourceIndex) => katanStore.updateKatan(katan => {
         if (katan.isKnightMode) {
-            katanStore.unsetKnightMode();
         } else {
             if (katan.mode !== 'moveBuglar') {
                 return katan;
@@ -1158,16 +1157,53 @@ const katanStore = {
             if (resourceTypeList.length > 0) {
                 const resource = resourceTypeList[0];
                 const player = katanStore.getActivePlayer();
-                other.resource[resource.type] = other.resource[resource.type] - 1;
-                player.resource[resource.type] = player.resource[resource.type] + 1;
-            }
 
-            katanStore.unsetKnightMode();
+                const playerIndex = player.index;
+                const otherPlayerIndex = other.index;
+                const playerResourceSelector = `.player_${playerIndex}_${resource.type}`;
+                const otherResourceSelector = `.player_${otherPlayerIndex}_${resource.type}`;
+
+                const resourceItem = jQuery(playerResourceSelector);
+                const targetOffset = jQuery(otherResourceSelector).offset();
+                const offset = resourceItem.offset();
+
+                const body = jQuery('body');
+                const newResourceItem = resourceItem.clone();
+
+                newResourceItem.appendTo(body)
+                    .css({
+                        left: offset.left + 'px',
+                        top: offset.top + 'px'
+                    });
+
+                newResourceItem
+                    .animate({
+                        left: targetOffset.left + 'px',
+                        top: targetOffset.top + 'px'
+                    }, 1000, () => {
+                        newResourceItem.remove();
+                        katanStore.takeResource(resource);
+                        katanStore.unsetKnightMode();
+                        katanStore.doActionAndTurn();
+                    });
+            } else {
+                katanStore.doActionAndTurn();
+            }
+        } else {
+            katanStore.doActionAndTurn();
         }
 
-        katanStore.doActionAndTurn();
-
         katan.mode = 'start';
+
+        return katan;
+    }),
+
+    takeResource: (resource) => update(katan => {
+        const player = katanStore.getActivePlayer();
+        const other = katanStore.getOtherPlayer(katan);
+
+        other.resource[resource.type] = other.resource[resource.type] - 1;
+        player.resource[resource.type] = player.resource[resource.type] + 1;
 
         return katan;
     }),
@@ -1769,9 +1805,6 @@ const katanStore = {
     },
 
     recomputePlayer: () => katanStore.updateKatan(katan => {
-        katanStore.log(`katan.rollDice ${katan.rollDice}`);
-        katanStore.log(`katan.playerIndex ${katan.playerIndex}`);
-
         katan.playerList = katan.playerList
             .map(player => {
                 player.trade.tree.action =
