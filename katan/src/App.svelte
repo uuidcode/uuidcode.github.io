@@ -7,8 +7,6 @@
     import { Tooltip } from './bootstrap.esm.min.js'
     import jQuery from 'jquery';
 
-    console.log('>>> katan', $katan);
-
     const getHeaderStyle = () => {
         return toStyle({
             backgroundColor: player.color
@@ -57,7 +55,7 @@
 </script>
 
 <div class="katan">
-    <table>
+    <table class="header">
         <tr>
             <td valign="top" class="player">
                 <Player playerIndex={0}></Player>
@@ -84,26 +82,20 @@
         </tr>
     </table>
 </div>
-<div class="modal fade" id="katanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                {$katan.bodyMessage}
-            </div>
-
-            {#if $katan.buttonMessage!==''}
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" on:click={()=>katan.clickMessage()}>{$katan.buttonMessage}</button>
-                </div>
-            {/if}
-        </div>
-    </div>
-</div>
-
 <style>
+    .header {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+
+    .header td {
+        border: 1px solid black;
+    }
+
+    .header tr {
+        border: 0 solid white;
+    }
+
     .dice-container {
         display: flex;
         justify-content: center;
