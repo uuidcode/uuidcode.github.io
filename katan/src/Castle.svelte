@@ -8,8 +8,12 @@
     const pick = () => {
         const castle = $katan.castleList[castleIndex];
 
-        if (castle.playerIndex !== -1) {
-            return;
+        if ($katan.isMakeCity) {
+
+        } else {
+            if (castle.playerIndex !== -1) {
+                return;
+            }
         }
 
         const player = katan.getActivePlayer();
@@ -21,7 +25,8 @@
 
         if ($katan.isMakeCastle) {
             katan.endMakeCastle();
-            katan.updateAndShowResourceModal();
+        } else if ($katan.isMakeCity){
+            katan.endMakeCity(castleIndex);
         } else {
             katan.setRoadRippleEnabled(castleIndex);
         }
@@ -37,8 +42,12 @@
             borderRadius: config.castle.height + 'px'
         };
 
-        if (castle.playerIndex !== -1) {
-            styleObject.cursor = 'default';
+        console.log('>>> $katan.isMakeCity', $katan.isMakeCity);
+
+        if (!$katan.isMakeCity) {
+            if (castle.playerIndex !== -1) {
+                styleObject.cursor = 'default';
+            }
         }
 
         if (config.debug) {

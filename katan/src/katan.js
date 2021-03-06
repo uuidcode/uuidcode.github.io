@@ -168,7 +168,8 @@ for (let i = 0; i < 6; i++) {
                 katanObject.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: false,
+                    show: false,
+                    hide: true,
                     empty: true,
                     i,
                     j
@@ -186,12 +187,13 @@ for (let i = 0; i < 6; i++) {
                     top += config.cell.height / 4
                 }
 
-                const ripple = j >= 3 && j <= 7;
+                const show = j >= 3 && j <= 7;
 
                 katanObject.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: ripple,
+                    show,
+                    hide: !show,
                     empty: true,
                     i,
                     j
@@ -208,12 +210,13 @@ for (let i = 0; i < 6; i++) {
                 top += config.cell.height / 4
             }
 
-            const ripple = j >= 2 && j <= 8;
+            const show = j >= 2 && j <= 8;
 
             katanObject.castleList.push({
                 left: j * (config.cell.width / 2) - config.castle.width / 2,
                 top: top - config.castle.height / 2,
-                ripple: ripple,
+                show,
+                hide: !show,
                 empty: true,
                 i,
                 j
@@ -224,10 +227,8 @@ for (let i = 0; i < 6; i++) {
 
 katanObject.castleList.forEach((castle, index) => castle.index = index);
 katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
-katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
-katanObject.castleList.forEach(castle => castle.show = castle.ripple);
-katanObject.castleList.forEach(castle => castle.ripple = false);
-katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
+katanObject.castleList.forEach((castle) => castle.city = false);
+katanObject.castleList.forEach(castle => castle.constructable = castle.show);
 katanObject.castleList.forEach(castle => castle.title = '');
 katanObject.castleList.forEach(castle => castle.tradable = false);
 
@@ -1466,15 +1467,38 @@ const katanStore = {
         let castle = katan.castleList[castleIndex];
         castle.playerIndex = playerIndex;
         castle.pick = false;
-        castle.title = '마을';
+
+        if (katan.isMakeCity) {
+            castle.title = '도시';
+        } else {
+            castle.title = '마을';
+        }
+
 
         const player = katan.playerList[playerIndex];
         player.pickCastle += 1;
         katan.time = new Date().getTime();
 
-        player.point.castle += 1;
-        player.point.sum += 1;
-        player.construction.castle -= 1;
+        if (katan.isMakeCity) {
+            player.point.castle -= 1;
+            player.point.city += 2;
+            player.point.sum += 1;
+            player.construction.castle += 1;
+            player.construction.city -= 1;
+
+            katan.castleList = katan.castleList
+                .map(castle => {
+                    if (castle.index === castleIndex) {
+                        castle.city = true;
+                    }
+
+                    return castle;
+                });
+        } else {
+            player.point.castle += 1;
+            player.point.sum += 1;
+            player.construction.castle -= 1;
+        }
 
         if (castle.port.tradable) {
             if (castle.port.type === 'all') {
@@ -1586,7 +1610,7 @@ const katanStore = {
 
     makeCity: () => katanStore.updateKatan(katan => {
         katan.isMakeCity = true;
-        katanStore.setNewCastleRippleEnabled();
+        katanStore.setNewCityRippleEnabled();
 
         return katan;
     }),
@@ -1730,7 +1754,8 @@ const katanStore = {
         const player = katanStore.getActivePlayer();
 
         katan.castleList = katan.castleList.map(castle => {
-            if (castle.playerIndex === player.index) {
+            if (castle.playerIndex === player.index &&
+                castle.city === false) {
                 castle.ripple = true;
                 castle.hide = false;
                 castle.show = true;
@@ -1744,9 +1769,13 @@ const katanStore = {
 
     endMakeCastle: () => katanStore.updateKatan(katan => {
         katan.isMakeCastle = false;
+        katanStore.doActionAndTurn();
+        return katan;
+    }),
 
-        katan.doActionAndTurn();
-
+    endMakeCity: (castleIndex) => katanStore.updateKatan(katan => {
+        katan.isMakeCastle = true;
+        katanStore.doActionAndTurn();
         return katan;
     }),
 
@@ -1886,9 +1915,15 @@ const katanStore = {
                     player.resource.wheat >= 1 &&
                     player.resource.sheep >= 1;
 
+                const castleLength = katan.castleList
+                    .filter(castle => castle.playerIndex === katan.playerIndex)
+                    .filter(castle => castle.city === false)
+                    .length;
+
                 player.make.city =
                     katan.rollDice &&
                     player.index === katan.playerIndex &&
+                    castleLength > 0 &&
                     player.construction.city >= 1 &&
                     player.resource.iron >= 3 &&
                     player.resource.wheat >= 2;

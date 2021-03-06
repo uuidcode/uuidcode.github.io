@@ -50,11 +50,6 @@
 
                 return tooltip
             });
-
-            setTimeout(() => {
-                jQuery('.port').remove();
-            }, 2000);
-
         }, 1000);
     });
 </script>
@@ -77,7 +72,7 @@
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
                     <button class="btn btn-primary"
-                            on:click={()=>katan.setNewCityRippleEnabled()}>take</button>
+                            on:click={()=>katan.makeCity()}>take</button>
                 </div>
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">

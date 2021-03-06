@@ -11,7 +11,7 @@
     let roadStyle;
 
     const pick = () => {
-        if (!road.ripple) {
+        if (!road.show) {
             return;
         }
 

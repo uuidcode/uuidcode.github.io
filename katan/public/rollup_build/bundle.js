@@ -221,6 +221,12 @@ var app = (function (jQuery) {
             block.o(local);
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -687,7 +693,8 @@ var app = (function (jQuery) {
                     katanObject.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
                         top: top - config.castle.height / 2,
-                        ripple: false,
+                        show: false,
+                        hide: true,
                         empty: true,
                         i,
                         j
@@ -705,12 +712,13 @@ var app = (function (jQuery) {
                         top += config.cell.height / 4;
                     }
 
-                    const ripple = j >= 3 && j <= 7;
+                    const show = j >= 3 && j <= 7;
 
                     katanObject.castleList.push({
                         left: j * (config.cell.width / 2) - config.castle.width / 2,
                         top: top - config.castle.height / 2,
-                        ripple: ripple,
+                        show,
+                        hide: !show,
                         empty: true,
                         i,
                         j
@@ -727,12 +735,13 @@ var app = (function (jQuery) {
                     top += config.cell.height / 4;
                 }
 
-                const ripple = j >= 2 && j <= 8;
+                const show = j >= 2 && j <= 8;
 
                 katanObject.castleList.push({
                     left: j * (config.cell.width / 2) - config.castle.width / 2,
                     top: top - config.castle.height / 2,
-                    ripple: ripple,
+                    show,
+                    hide: !show,
                     empty: true,
                     i,
                     j
@@ -743,9 +752,8 @@ var app = (function (jQuery) {
 
     katanObject.castleList.forEach((castle, index) => castle.index = index);
     katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
-    katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
-    katanObject.castleList.forEach(castle => castle.show = castle.ripple);
-    katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
+    katanObject.castleList.forEach((castle) => castle.city = false);
+    katanObject.castleList.forEach(castle => castle.constructable = castle.show);
     katanObject.castleList.forEach(castle => castle.title = '');
     katanObject.castleList.forEach(castle => castle.tradable = false);
 
@@ -1983,15 +1991,38 @@ var app = (function (jQuery) {
             let castle = katan.castleList[castleIndex];
             castle.playerIndex = playerIndex;
             castle.pick = false;
-            castle.title = '마을';
+
+            if (katan.isMakeCity) {
+                castle.title = '도시';
+            } else {
+                castle.title = '마을';
+            }
+
 
             const player = katan.playerList[playerIndex];
             player.pickCastle += 1;
             katan.time = new Date().getTime();
 
-            player.point.castle += 1;
-            player.point.sum += 1;
-            player.construction.castle -= 1;
+            if (katan.isMakeCity) {
+                player.point.castle -= 1;
+                player.point.city += 2;
+                player.point.sum += 1;
+                player.construction.castle += 1;
+                player.construction.city -= 1;
+
+                katan.castleList = katan.castleList
+                    .map(castle => {
+                        if (castle.index === castleIndex) {
+                            castle.city = true;
+                        }
+
+                        return castle;
+                    });
+            } else {
+                player.point.castle += 1;
+                player.point.sum += 1;
+                player.construction.castle -= 1;
+            }
 
             if (castle.port.tradable) {
                 if (castle.port.type === 'all') {
@@ -2103,7 +2134,7 @@ var app = (function (jQuery) {
 
         makeCity: () => katanStore.updateKatan(katan => {
             katan.isMakeCity = true;
-            katanStore.setNewCastleRippleEnabled();
+            katanStore.setNewCityRippleEnabled();
 
             return katan;
         }),
@@ -2126,7 +2157,6 @@ var app = (function (jQuery) {
                     }
 
                     if (length > 0) {
-                        road.ripple = true;
                         road.hide = false;
                         road.show = true;
                     }
@@ -2166,7 +2196,6 @@ var app = (function (jQuery) {
                         .length;
 
                     if (linkLength > 0) {
-                        road.ripple = true;
                         road.hide = false;
                         road.show = true;
                     }
@@ -2230,7 +2259,6 @@ var app = (function (jQuery) {
                                 const road = katan.roadList[roadIndex];
 
                                 if (road.playerIndex === katan.playerIndex) {
-                                    castle.ripple = true;
                                     castle.hide = false;
                                     castle.show = true;
                                 }
@@ -2248,7 +2276,8 @@ var app = (function (jQuery) {
             const player = katanStore.getActivePlayer();
 
             katan.castleList = katan.castleList.map(castle => {
-                if (castle.playerIndex === player.index) {
+                if (castle.playerIndex === player.index &&
+                    castle.city === false) {
                     castle.ripple = true;
                     castle.hide = false;
                     castle.show = true;
@@ -2262,9 +2291,13 @@ var app = (function (jQuery) {
 
         endMakeCastle: () => katanStore.updateKatan(katan => {
             katan.isMakeCastle = false;
+            katanStore.doActionAndTurn();
+            return katan;
+        }),
 
-            katan.doActionAndTurn();
-
+        endMakeCity: (castleIndex) => katanStore.updateKatan(katan => {
+            katan.isMakeCastle = true;
+            katanStore.doActionAndTurn();
             return katan;
         }),
 
@@ -2404,9 +2437,15 @@ var app = (function (jQuery) {
                         player.resource.wheat >= 1 &&
                         player.resource.sheep >= 1;
 
+                    const castleLength = katan.castleList
+                        .filter(castle => castle.playerIndex === katan.playerIndex)
+                        .filter(castle => castle.city === false)
+                        .length;
+
                     player.make.city =
                         katan.rollDice &&
                         player.index === katan.playerIndex &&
+                        castleLength > 0 &&
                         player.construction.city >= 1 &&
                         player.resource.iron >= 3 &&
                         player.resource.wheat >= 2;
@@ -2862,9 +2901,11 @@ var app = (function (jQuery) {
     }
 
     /* src\Castle.svelte generated by Svelte v3.32.3 */
+
+    const { console: console_1 } = globals;
     const file$1 = "src\\Castle.svelte";
 
-    // (71:0) {:else}
+    // (80:0) {:else}
     function create_else_block(ctx) {
     	let div1;
     	let div0;
@@ -2878,13 +2919,13 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 77, 4, 2014);
+    			add_location(div0, file$1, 86, 4, 2253);
     			attr_dev(div1, "class", "castle svelte-13aw96s");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div1, "show", /*castle*/ ctx[0].show);
-    			add_location(div1, file$1, 71, 4, 1837);
+    			add_location(div1, file$1, 80, 4, 2076);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -2926,14 +2967,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(71:0) {:else}",
+    		source: "(80:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (66:0) {#if config.debug}
+    // (75:0) {#if config.debug}
     function create_if_block$1(ctx) {
     	let div2;
     	let div0;
@@ -2957,11 +2998,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 67, 8, 1743);
-    			add_location(div1, file$1, 68, 8, 1785);
+    			add_location(div0, file$1, 76, 8, 1982);
+    			add_location(div1, file$1, 77, 8, 2024);
     			attr_dev(div2, "class", "castle svelte-13aw96s");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
-    			add_location(div2, file$1, 66, 4, 1693);
+    			add_location(div2, file$1, 75, 4, 1932);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -2991,7 +3032,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(66:0) {#if config.debug}",
+    		source: "(75:0) {#if config.debug}",
     		ctx
     	});
 
@@ -3054,8 +3095,10 @@ var app = (function (jQuery) {
     	const pick = () => {
     		const castle = $katan.castleList[castleIndex];
 
-    		if (castle.playerIndex !== -1) {
-    			return;
+    		if ($katan.isMakeCity) ; else {
+    			if (castle.playerIndex !== -1) {
+    				return;
+    			}
     		}
 
     		const player = katanStore.getActivePlayer();
@@ -3065,7 +3108,8 @@ var app = (function (jQuery) {
 
     		if ($katan.isMakeCastle) {
     			katanStore.endMakeCastle();
-    			katanStore.updateAndShowResourceModal();
+    		} else if ($katan.isMakeCity) {
+    			katanStore.endMakeCity(castleIndex);
     		} else {
     			katanStore.setRoadRippleEnabled(castleIndex);
     		}
@@ -3081,8 +3125,12 @@ var app = (function (jQuery) {
     			borderRadius: config.castle.height + "px"
     		};
 
-    		if (castle.playerIndex !== -1) {
-    			styleObject.cursor = "default";
+    		console.log(">>> $katan.isMakeCity", $katan.isMakeCity);
+
+    		if (!$katan.isMakeCity) {
+    			if (castle.playerIndex !== -1) {
+    				styleObject.cursor = "default";
+    			}
     		}
 
     		if (config.debug) {
@@ -3102,7 +3150,7 @@ var app = (function (jQuery) {
     	const writable_props = ["castleIndex"];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => pick();
@@ -3161,7 +3209,7 @@ var app = (function (jQuery) {
     		const props = options.props || {};
 
     		if (/*castleIndex*/ ctx[3] === undefined && !("castleIndex" in props)) {
-    			console.warn("<Castle> was created without expected prop 'castleIndex'");
+    			console_1.warn("<Castle> was created without expected prop 'castleIndex'");
     		}
     	}
 
@@ -3399,14 +3447,14 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$3, 81, 8, 2041);
+    			add_location(div0, file$3, 81, 8, 2039);
     			attr_dev(div1, "class", "road svelte-18g88p4");
     			attr_dev(div1, "style", /*roadStyle*/ ctx[1]);
     			toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "pick", /*road*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*road*/ ctx[0].hide);
     			toggle_class(div1, "show", /*road*/ ctx[0].show);
-    			add_location(div1, file$3, 74, 4, 1821);
+    			add_location(div1, file$3, 74, 4, 1819);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -3483,11 +3531,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$3, 70, 8, 1737);
-    			add_location(div1, file$3, 71, 8, 1774);
+    			add_location(div0, file$3, 70, 8, 1735);
+    			add_location(div1, file$3, 71, 8, 1772);
     			attr_dev(div2, "class", "road svelte-18g88p4");
     			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
-    			add_location(div2, file$3, 69, 4, 1692);
+    			add_location(div2, file$3, 69, 4, 1690);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -3581,7 +3629,7 @@ var app = (function (jQuery) {
     	let roadStyle;
 
     	const pick = () => {
-    		if (!road.ripple) {
+    		if (!road.show) {
     			return;
     		}
 
@@ -5815,35 +5863,35 @@ var app = (function (jQuery) {
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
     			attr_dev(td0, "class", "player svelte-eda5fa");
-    			add_location(td0, file$8, 64, 12, 1984);
+    			add_location(td0, file$8, 59, 12, 1882);
     			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$8, 68, 63, 2217);
+    			add_location(img, file$8, 63, 63, 2115);
     			attr_dev(h1, "class", "message-header svelte-eda5fa");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
-    			add_location(h1, file$8, 68, 16, 2170);
+    			add_location(h1, file$8, 63, 16, 2068);
     			attr_dev(button0, "class", "btn btn-primary svelte-eda5fa");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$8, 72, 20, 2449);
+    			add_location(button0, file$8, 67, 20, 2347);
     			attr_dev(button1, "class", "btn btn-primary svelte-eda5fa");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 75, 20, 2636);
+    			add_location(button1, file$8, 70, 20, 2534);
     			attr_dev(button2, "class", "btn btn-primary svelte-eda5fa");
-    			add_location(button2, file$8, 78, 20, 2809);
+    			add_location(button2, file$8, 73, 20, 2707);
     			attr_dev(div0, "class", "dice-container svelte-eda5fa");
-    			add_location(div0, file$8, 69, 16, 2281);
+    			add_location(div0, file$8, 64, 16, 2179);
     			attr_dev(td1, "valign", "top");
     			attr_dev(td1, "class", "text-center svelte-eda5fa");
     			attr_dev(td1, "width", "1200px");
-    			add_location(td1, file$8, 67, 12, 2100);
+    			add_location(td1, file$8, 62, 12, 1998);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-eda5fa");
-    			add_location(td2, file$8, 85, 12, 3132);
+    			add_location(td2, file$8, 80, 12, 3015);
     			attr_dev(tr, "class", "svelte-eda5fa");
-    			add_location(tr, file$8, 63, 8, 1966);
+    			add_location(tr, file$8, 58, 8, 1864);
     			attr_dev(table, "class", "header svelte-eda5fa");
-    			add_location(table, file$8, 62, 4, 1934);
+    			add_location(table, file$8, 57, 4, 1832);
     			attr_dev(div1, "class", "katan svelte-eda5fa");
-    			add_location(div1, file$8, 61, 0, 1909);
+    			add_location(div1, file$8, 56, 0, 1807);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -6010,13 +6058,6 @@ var app = (function (jQuery) {
     					tooltip.show();
     					return tooltip;
     				});
-
-    				setTimeout(
-    					() => {
-    						jQuery__default['default'](".port").remove();
-    					},
-    					2000
-    				);
     			},
     			1000
     		);
@@ -6030,7 +6071,7 @@ var app = (function (jQuery) {
 
     	const click_handler = () => katanStore.play();
     	const click_handler_1 = () => katanStore.turn();
-    	const click_handler_2 = () => katanStore.setNewCityRippleEnabled();
+    	const click_handler_2 = () => katanStore.makeCity();
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
