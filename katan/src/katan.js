@@ -1368,7 +1368,9 @@ const katanStore = {
     endMakeRoad: () => katanStore.updateKatan(katan => {
         katan.isMakeRoad = false;
 
-        katanStore.doActionAndTurn();
+        if (katan.isStart) {
+            katanStore.doActionAndTurn();
+        }
 
         return katan;
     }),
@@ -1683,7 +1685,7 @@ const katanStore = {
 
     setRoadRippleEnabled: (castleIndex) => katanStore.updateKatan(katan => {
         katan.message = '길을 만들곳을 선택하세요.';
-
+        katan.isMakeRoad = true;
         let roadIndexList = katan.castleList[castleIndex].roadIndexList;
 
         katan.roadList = katan.roadList

@@ -11,10 +11,6 @@
     let roadStyle;
 
     const pick = () => {
-        if (!road.show) {
-            return;
-        }
-
         if (!$katan.isMakeRoad) {
            return;
         }
@@ -25,10 +21,11 @@
         katan.setHideRoad();
         katan.setRoadRippleDisabled();
 
-        if ($katan.isMakeRoad) {
+        if ($katan.isStart) {
             katan.endMakeRoad();
         } else {
             katan.showConstructableCastle();
+            katan.endMakeRoad();
             katan.turn();
 
             if (katan.isStartable()) {
@@ -46,7 +43,7 @@
             lineHeight: config.castle.height + 'px'
         };
 
-        if ($katan.isStart) {
+        if (!$katan.isMakeRoad) {
             styleObject.cursor = 'default';
         }
 
