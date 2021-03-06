@@ -24,6 +24,7 @@
             katan.updateAndShowResourceModal();
         } else {
             katan.setRoadRippleEnabled(castleIndex);
+
         }
     };
 

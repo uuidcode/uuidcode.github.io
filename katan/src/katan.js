@@ -1476,25 +1476,12 @@ const katanStore = {
 
         if (castle.port.tradable) {
             if (castle.port.type === 'all') {
-                if (castle.trade.tree.count > castle.port.trade) {
-                    player.trade.tree.count = castle.port.trade;
-                }
-
-                if (castle.trade.mud.count > castle.port.trade) {
-                    player.trade.mud.count = castle.port.trade;
-                }
-
-                if (castle.trade.wheat.count > castle.port.trade) {
-                    player.trade.wheat.count = castle.port.trade;
-                }
-
-                if (castle.trade.sheep.count > castle.port.trade) {
-                    player.trade.sheep.count = castle.port.trade;
-                }
-
-                if (castle.trade.iron.count > castle.port.trade) {
-                    player.trade.iron.count = castle.port.trade;
-                }
+                katan.resourceTypeList
+                    .forEach(resourceType => {
+                        if (player.trade[resourceType.type].count > castle.port.trade) {
+                            player.trade[resourceType.type].count = castle.port.trade;
+                        }
+                    });
             } else {
                 player.trade[castle.port.type].count = castle.port.trade;
             }
