@@ -71,6 +71,8 @@
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.take()}>take</button>
                 </div>
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">

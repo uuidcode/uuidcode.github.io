@@ -19,13 +19,13 @@
 
     let castleList;
     let castle;
-    let castleStyle;
+    let portStyle;
     let port;
 
     $: {
         castleList = $katan.castleList;
         castle = castleList[castleIndex];
-        castleStyle = createStyle();
+        portStyle = createStyle();
         port = castle.port;
     }
 </script>
@@ -36,8 +36,7 @@
     placement={port.placement}
     trade={port.trade}
     type={port.type}
-    style={castleStyle}>
-    <div></div>
+    style={portStyle}>
 </div>
 {/if}
 
@@ -56,10 +55,5 @@
 
     .pick {
         cursor: pointer;
-    }
-
-    .port-resource {
-        width: 40px;
-        height: 40px;
     }
 </style>
