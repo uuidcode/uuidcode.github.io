@@ -1615,22 +1615,36 @@ const katanStore = {
         return katan;
     }),
 
+    getPossibleRoadTotalLength: (katan) => {
+        return katan.roadList
+            .map(road => {
+                return katanStore.getPossibleRoadLength(katan, road);
+            })
+            .reduce((a, b) => a + b);
+    },
+
+    getPossibleRoadLength: (katan, road) => {
+        let length = 0;
+
+        if (road.playerIndex === -1) {
+            length = road.castleIndexList
+                .map(castleIndex => katan.castleList[castleIndex])
+                .filter(castle => castle.playerIndex === katan.playerIndex)
+                .length;
+
+            length += road.roadIndexList
+                .map(roadIndex => katan.roadList[roadIndex])
+                .filter(road => road.playerIndex === katan.playerIndex)
+                .length;
+        }
+
+        return length;
+    },
+
     setNewRoadRippleEnabled: () => katanStore.updateKatan(katan => {
         katan.roadList = katan.roadList
             .map(road => {
-                let length = 0;
-
-                if (road.playerIndex === -1) {
-                    length = road.castleIndexList
-                        .map(castleIndex => katan.castleList[castleIndex])
-                        .filter(castle => castle.playerIndex === katan.playerIndex)
-                        .length;
-
-                    length += road.roadIndexList
-                        .map(roadIndex => katan.roadList[roadIndex])
-                        .filter(road => road.playerIndex === katan.playerIndex)
-                        .length;
-                }
+                let length = katanStore.getPossibleRoadLength(katan, road);
 
                 if (length > 0) {
                     road.hide = false;
@@ -1724,24 +1738,38 @@ const katanStore = {
         return katan;
     }),
 
-    setNewCastleRippleEnabled: () => katanStore.updateKatan(katan => {
-        katan.castleList = katan.castleList.map(castle => {
-            if (castle.playerIndex === -1) {
+    getPossibleCastleIndexList: (katan) => {
+        return katan.castleList
+            .filter(castle => castle.playerIndex === -1)
+            .map(castle => {
                 const castleLength = castle.castleIndexList
                     .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
                     .length;
 
                 if (castleLength === castle.castleIndexList.length) {
-                    castle.roadIndexList
-                        .forEach(roadIndex => {
+                    const castleLength = castle.roadIndexList
+                        .filter(roadIndex => {
                             const road = katan.roadList[roadIndex];
+                            return road.playerIndex === katan.playerIndex
+                        })
+                        .length;
 
-                            if (road.playerIndex === katan.playerIndex) {
-                                castle.hide = false;
-                                castle.show = true;
-                            }
-                        });
+                    if (castleLength > 0) {
+                        return castle.index;
+                    }
                 }
+
+                return -1;
+            })
+            .filter(index => index >= 0);
+    },
+
+    setNewCastleRippleEnabled: () => katanStore.updateKatan(katan => {
+        const castleIndexList = katanStore.getPossibleCastleIndexList(katan);
+        katan.castleList = katan.castleList.map(castle => {
+            if (castleIndexList.includes(castle.index)) {
+                castle.hide = false;
+                castle.show = true;
             }
 
             return castle;
@@ -1904,7 +1932,13 @@ const katanStore = {
                     player.index === katan.playerIndex &&
                     player.construction.road >= 1 &&
                     player.resource.tree >= 1 &&
-                    player.resource.mud >= 1;
+                    player.resource.mud >= 1 &&
+                    katanStore.getPossibleRoadTotalLength(katan) > 0;
+
+                const possibleCastleIndexList =
+                    katanStore.getPossibleCastleIndexList(katan);
+
+                console.log('>>> possibleCastleIndexList', possibleCastleIndexList);
 
                 player.make.castle =
                     katan.rollDice &&
@@ -1913,7 +1947,8 @@ const katanStore = {
                     player.resource.tree >= 1 &&
                     player.resource.mud >= 1 &&
                     player.resource.wheat >= 1 &&
-                    player.resource.sheep >= 1;
+                    player.resource.sheep >= 1 &&
+                    possibleCastleIndexList.length > 0;
 
                 const castleLength = katan.castleList
                     .filter(castle => castle.playerIndex === katan.playerIndex)
