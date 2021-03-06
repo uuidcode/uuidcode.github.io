@@ -45,7 +45,9 @@
                 <img src="iron_item.png">
             </td>
             <td>
-                <button class="btn btn-primary" disabled={!player.make.city}>도시 만들기</button>
+                <button class="btn btn-primary"
+                        on:click={()=>katan.makeCity()}
+                        disabled={!player.make.city}>도시 만들기</button>
             </td>
         </tr>
         <tr>

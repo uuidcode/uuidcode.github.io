@@ -26,6 +26,7 @@ let katanObject = {
     action: false,
     isMakeRoad: false,
     isMakeCastle: false,
+    isMakeCity: false,
     construction: false,
     isKnightMode: false,
     message: '마을을 만들곳을 클릭하세요',
@@ -225,6 +226,7 @@ katanObject.castleList.forEach((castle, index) => castle.index = index);
 katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
 katanObject.castleList.forEach(castle => castle.hide = !castle.ripple);
 katanObject.castleList.forEach(castle => castle.show = castle.ripple);
+katanObject.castleList.forEach(castle => castle.ripple = false);
 katanObject.castleList.forEach(castle => castle.constructable = castle.ripple);
 katanObject.castleList.forEach(castle => castle.title = '');
 katanObject.castleList.forEach(castle => castle.tradable = false);
@@ -1582,6 +1584,13 @@ const katanStore = {
         return katan;
     }),
 
+    makeCity: () => katanStore.updateKatan(katan => {
+        katan.isMakeCity = true;
+        katanStore.setNewCastleRippleEnabled();
+
+        return katan;
+    }),
+
     setNewRoadRippleEnabled: () => katanStore.updateKatan(katan => {
         katan.roadList = katan.roadList
             .map(road => {
@@ -1600,7 +1609,6 @@ const katanStore = {
                 }
 
                 if (length > 0) {
-                    road.ripple = true;
                     road.hide = false;
                     road.show = true;
                 }
@@ -1642,7 +1650,6 @@ const katanStore = {
                     .length;
 
                 if (linkLength > 0) {
-                    road.ripple = true;
                     road.hide = false;
                     road.show = true;
                 }
@@ -1706,12 +1713,27 @@ const katanStore = {
                             const road = katan.roadList[roadIndex];
 
                             if (road.playerIndex === katan.playerIndex) {
-                                castle.ripple = true;
                                 castle.hide = false;
                                 castle.show = true;
                             }
                         });
                 }
+            }
+
+            return castle;
+        });
+
+        return katan;
+    }),
+
+    setNewCityRippleEnabled: () => katanStore.updateKatan(katan => {
+        const player = katanStore.getActivePlayer();
+
+        katan.castleList = katan.castleList.map(castle => {
+            if (castle.playerIndex === player.index) {
+                castle.ripple = true;
+                castle.hide = false;
+                castle.show = true;
             }
 
             return castle;

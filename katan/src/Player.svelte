@@ -109,9 +109,9 @@
                                     <td>최장도로</td>
                                 </tr>
                                 <tr>
-                                    <td>{5 - player.construction.castle} / {player.construction.castle}</td>
-                                    <td>{4 - player.construction.city} / {player.construction.city}</td>
-                                    <td>{15 - player.construction.road} / {player.construction.road}</td>
+                                    <td>{player.construction.castle} / 5</td>
+                                    <td>{player.construction.city} / 4</td>
+                                    <td>{player.construction.road} / 15</td>
                                     <td>{player.construction.knight}</td>
                                     <td>{player.construction.knight}</td>
                                 </tr>

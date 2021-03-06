@@ -71,7 +71,7 @@
 {:else}
     <div class="castle"
          on:click={()=>pick()}
-    class:ripple1={castle.ripple}
+    class:ripple={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
     style={castleStyle}>
