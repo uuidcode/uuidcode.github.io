@@ -5,15 +5,26 @@
 
     export let castleIndex;
 
-    const pick = () => {
+    const clickable = () => {
+        const player = katan.getActivePlayer();
         const castle = $katan.castleList[castleIndex];
 
         if ($katan.isMakeCity) {
-
+            if (castle.city || castle.playerIndex !== player.index) {
+                return false;
+            }
         } else {
             if (castle.playerIndex !== -1) {
-                return;
+                return false;
             }
+        }
+
+        return true;
+    };
+
+    const pick = () => {
+        if (!clickable()) {
+            return
         }
 
         const player = katan.getActivePlayer();
@@ -42,12 +53,8 @@
             borderRadius: config.castle.height + 'px'
         };
 
-        console.log('>>> $katan.isMakeCity', $katan.isMakeCity);
-
-        if (!$katan.isMakeCity) {
-            if (castle.playerIndex !== -1) {
-                styleObject.cursor = 'default';
-            }
+        if (!clickable()) {
+            styleObject.cursor = 'default';
         }
 
         if (config.debug) {
@@ -56,8 +63,7 @@
         }
 
         if (castle.playerIndex !== -1) {
-            styleObject.backgroundColor =
-                    $katan.playerList[castle.playerIndex].color;
+            styleObject.backgroundColor = $katan.playerList[castle.playerIndex].color;
         }
 
         return toStyle(styleObject);

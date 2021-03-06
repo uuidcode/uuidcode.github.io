@@ -1064,6 +1064,12 @@ const katanStore = {
     subscribe,
 
     turn: () => katanStore.updateKatan(katan => {
+        const player = katanStore.getActivePlayer();
+
+        if (player.point.sum === 10) {
+            alert(`${player.name} 승리`);
+        }
+
         katanStore.setDiceEnabled();
         katanStore.unsetRollDice();
 
@@ -1802,7 +1808,7 @@ const katanStore = {
     }),
 
     endMakeCity: (castleIndex) => katanStore.updateKatan(katan => {
-        katan.isMakeCastle = true;
+        katan.isMakeCity = false;
         katanStore.doActionAndTurn();
         return katan;
     }),
@@ -1938,8 +1944,6 @@ const katanStore = {
                 const possibleCastleIndexList =
                     katanStore.getPossibleCastleIndexList(katan);
 
-                console.log('>>> possibleCastleIndexList', possibleCastleIndexList);
-
                 player.make.castle =
                     katan.rollDice &&
                     player.index === katan.playerIndex &&
@@ -1972,8 +1976,6 @@ const katanStore = {
 
                 return player;
             });
-
-        katanStore.dir('recomputePlayer after', katan);
 
         return katan;
     })

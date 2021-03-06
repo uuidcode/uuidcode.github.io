@@ -15,6 +15,10 @@
             return;
         }
 
+        if (!$katan.isMakeRoad) {
+           return;
+        }
+
         let player = katan.getActivePlayer();
 
         katan.setRoad(roadIndex, player.index);
@@ -41,6 +45,10 @@
             height: config.load.height + 'px',
             lineHeight: config.castle.height + 'px'
         };
+
+        if ($katan.isStart) {
+            styleObject.cursor = 'default';
+        }
 
         if (config.debug) {
             delete styleObject.lineHeight;
