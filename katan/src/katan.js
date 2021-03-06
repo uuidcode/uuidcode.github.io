@@ -79,11 +79,11 @@ katanObject.playerList.forEach((player, i) => {
     player.pickRoad = 0;
 
     player.resource = {
-        tree: 0,
-        mud: 0,
-        wheat: 0,
-        sheep: 0,
-        iron: 0
+        tree: 10,
+        mud: 10,
+        wheat: 10,
+        sheep: 10,
+        iron: 10
     };
 
     player.point = {
@@ -1123,7 +1123,6 @@ const katanStore = {
         katanStore.setNumberRippleEnabled();
     },
 
-
     moveBuglar: (resourceIndex) => katanStore.updateKatan(katan => {
         if (katan.isKnightMode) {
         } else {
@@ -1145,7 +1144,7 @@ const katanStore = {
         katanStore.setNumberRippleDisabled();
 
         if (katan.isKnightMode) {
-            katanStore.take();
+            katanStore.takeResource();
         } else {
             katanStore.doActionAndTurn();
         }
@@ -1155,7 +1154,7 @@ const katanStore = {
         return katan;
     }),
 
-    take: () => update(katan => {
+    takeResource: () => update(katan => {
         const other = katanStore.getOtherPlayer(katan);
 
         let resourceTypeList = katan.resourceTypeList
@@ -1166,13 +1165,9 @@ const katanStore = {
                 }
             });
 
-        console.log('>>> resourceTypeList', resourceTypeList);
-
         resourceTypeList = resourceTypeList
             .filter(item => item.count > 0)
             .sort(random());
-
-        console.log('>>> resourceTypeList', resourceTypeList);
 
         if (resourceTypeList.length > 0) {
             const resource = resourceTypeList[0];
@@ -1207,7 +1202,7 @@ const katanStore = {
                     top: targetOffset.top + 'px'
                 }, 1000, () => {
                     newResourceItem.remove();
-                    katanStore.takeResource(resource);
+                    katanStore.updateTakeResource(resource);
                     katanStore.unsetKnightMode();
                     katanStore.doActionAndTurn();
                 });
@@ -1218,7 +1213,7 @@ const katanStore = {
         return katan;
     }),
 
-    takeResource: (resource) => update(katan => {
+    updateTakeResource: (resource) => update(katan => {
         const player = katanStore.getActivePlayer();
         const other = katanStore.getOtherPlayer(katan);
 
@@ -1554,7 +1549,7 @@ const katanStore = {
             player.point.point += 1;
             player.point.sum += 1;
         } else if (card.type === 'knight') {
-            alert('도둑을 옮기고 자원하나를 빼았습니다.');
+            alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
             katanStore.setKnightMode();
             katanStore.readyMoveBuglar();
 

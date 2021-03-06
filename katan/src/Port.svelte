@@ -52,8 +52,4 @@
         z-index: 10;
         padding: 2px;
     }
-
-    .pick {
-        cursor: pointer;
-    }
 </style>

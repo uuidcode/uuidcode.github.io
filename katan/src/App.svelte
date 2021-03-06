@@ -49,7 +49,12 @@
                 tooltip.show();
 
                 return tooltip
-            })
+            });
+
+            setTimeout(() => {
+                jQuery('.port').remove();
+            }, 2000);
+
         }, 1000);
     });
 </script>

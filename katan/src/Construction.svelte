@@ -74,7 +74,7 @@
 
     .construction-resource {
         width: 100%;
-        margin-top: 10px;
+        margin-top: 0px;
     }
 
     .construction-resource img {

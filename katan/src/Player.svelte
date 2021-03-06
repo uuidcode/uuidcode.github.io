@@ -63,7 +63,8 @@
         <tr>
             <td class="name"
                 style="background-color:{player.color}">
-                <img src={player.image}>
+                <div class="player-header"><img src={player.image}></div>
+                <div class="player-header player-sum">{player.point.sum}</div>
             </td>
         </tr>
         <tr>
@@ -82,7 +83,6 @@
                                     <td>발전</td>
                                     <td>최장 교역로</td>
                                     <td>최강 기사단</td>
-                                    <td>현재 점수</td>
                                 </tr>
                                 <tr>
                                     <td>{player.point.castle}</td>
@@ -90,7 +90,6 @@
                                     <td>{player.point.point}</td>
                                     <td>{player.point.road}</td>
                                     <td>{player.point.knight}</td>
-                                    <td>{player.point.sum}</td>
                                 </tr>
                             </table>
                         </td>
@@ -107,11 +106,13 @@
                                     <td>도시</td>
                                     <td>도로</td>
                                     <td>기사</td>
+                                    <td>최장도로</td>
                                 </tr>
                                 <tr>
-                                    <td>{player.construction.castle}</td>
-                                    <td>{player.construction.city}</td>
-                                    <td>{player.construction.road}</td>
+                                    <td>{5 - player.construction.castle} / {player.construction.castle}</td>
+                                    <td>{4 - player.construction.city} / {player.construction.city}</td>
+                                    <td>{15 - player.construction.road} / {player.construction.road}</td>
+                                    <td>{player.construction.knight}</td>
                                     <td>{player.construction.knight}</td>
                                 </tr>
                             </table>
@@ -125,8 +126,11 @@
                     {#each resourceList as resource}
                         <tr>
                             <td width="80">
-                                <img src="{resource.type}_item.png"
-                                     class="resource player_{player.index}_{resource.type}">
+                                <div class="resource-item">
+                                    <img src="{resource.type}_item.png"
+                                         class="resource player_{player.index}_{resource.type}">
+                                    <div class="trade-ratio">{player.trade[resource.type].count}:1</div>
+                                </div>
                             </td>
                             <td class="number">{resource.count}</td>
                             <td>
@@ -248,5 +252,36 @@
 
     button {
         margin: 2px;
+    }
+
+    .player-header {
+        display: inline-block;
+        vertical-align: top;
+        font-size:100px;
+        line-height:100px
+    }
+
+    .player-sum {
+        margin-left: 20px;
+    }
+
+    .resource-item {
+        position: relative;
+    }
+
+    .trade-ratio {
+        position: absolute;
+        bottom: 0;
+        height: 20px;
+        left: 0;
+        opacity: 0.4;
+        background-color: black;
+        color: white;
+        font-size: 20px;
+        font-weight: bolder;
+        line-height: 20px;
+        width: 90%;
+        margin: 4px;
+        text-align: center;
     }
 </style>
