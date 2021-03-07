@@ -565,7 +565,7 @@ var app = (function (jQuery) {
                 pickCastle: 0,
                 pickRoad: 0,
                 image: 'apeach.png',
-                maxRoadLength: 0
+                maxRoadLength: 1
             },
             {
                 color: '#90CDEA',
@@ -574,7 +574,7 @@ var app = (function (jQuery) {
                 pickCastle: 0,
                 pickRoad: 0,
                 image: 'lion.png',
-                maxRoadLength: 0
+                maxRoadLength: 1
             }
         ]
     };
@@ -2410,7 +2410,7 @@ var app = (function (jQuery) {
             console.log(object);
         },
 
-        getLinkedRoadList: (katan, player, road) => {
+        getLinkedRoadList: (katan, player, road, resultList) => {
             const roadIndex = road.index;
 
             return katan.roadList[roadIndex]
@@ -2419,42 +2419,45 @@ var app = (function (jQuery) {
                 .filter(road => road.playerIndex === player.index);
         },
 
-        processLinkedRoadList: (player, road, depth) => update$1(katan => {
-            if (road.playerIndex !== player.index) {
-                return katan;
+        processLinkedRoadList: (katan, player, road, resultList) => {
+            if (resultList.includes(road.index)) {
+                return;
             }
 
-            const roadList = katanStore.getLinkedRoadList(katan, player, road);
+            resultList.push(road.index);
+
+            if (road.playerIndex !== player.index) {
+                return;
+            }
+
+            const roadList = katanStore.getLinkedRoadList(katan, player, road, resultList);
+
+            console.log('>>> roadList', roadList);
+            console.log('>>> resultList', resultList);
+            console.log('>>> player.maxRoadLength', player.maxRoadLength);
 
             if (roadList.length === 0) {
-                return katan;
+                return;
             }
 
-            depth++;
-
-            console.log('>>> player.maxRoadLength', player.maxRoadLength);
-            console.log('>>> depth', depth);
-
-            if (depth > player.maxRoadLength) {
-                player.maxRoadLength = depth;
+            if (resultList.length > player.maxRoadLength) {
+                player.maxRoadLength = resultList.length;
             }
 
             roadList.forEach(currentRoad => {
-                katanStore.processLinkedRoadList(player, currentRoad, depth);
+                katanStore.processLinkedRoadList(katan, player, currentRoad, [...resultList]);
             });
-
-            return katan;
-        }),
+        },
 
         recomputeLongRoad: (katan, player) => {
-            console.log('>>> katan.roadList', katan.roadList);
+            const list = katan.roadList
+                .filter(road => road.playerIndex === player.index);
 
-            katan.roadList
-                .filter(road => road.playerIndex === player.index)
-                .forEach(road => {
-                    player.maxRoadLength = 1;
-                    katanStore.processLinkedRoadList(player, road, 1);
-                });
+            console.log('>>> recomputeLongRoad list', list);
+
+            list.forEach(road => {
+                katanStore.processLinkedRoadList(katan, player, road, []);
+            });
         },
 
         recomputePlayer: () => katanStore.updateKatan(katan => {
