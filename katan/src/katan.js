@@ -5,6 +5,7 @@ import { getDisplay, sleep } from './util.js'
 import jQuery from 'jquery';
 
 let katanObject = {
+    maxRoadLength: 0,
     resourceTypeList: [
         {
             type: 'tree'
@@ -44,7 +45,8 @@ let katanObject = {
             turn: true,
             pickCastle: 0,
             pickRoad: 0,
-            image: 'apeach.png'
+            image: 'apeach.png',
+            maxRoadLength: 0
         },
         {
             color: '#90CDEA',
@@ -52,7 +54,8 @@ let katanObject = {
             turn: false,
             pickCastle: 0,
             pickRoad: 0,
-            image: 'lion.png'
+            image: 'lion.png',
+            maxRoadLength: 0
         }
     ]
 };
@@ -1072,7 +1075,6 @@ const katanStore = {
 
         katanStore.setDiceEnabled();
         katanStore.unsetRollDice();
-
         katanStore.recomputePlayer();
 
         katan.playerList = katan.playerList
@@ -1490,7 +1492,6 @@ const katanStore = {
         if (katan.isMakeCity) {
             player.point.castle -= 1;
             player.point.city += 2;
-            player.point.sum += 1;
             player.construction.castle += 1;
             player.construction.city -= 1;
 
@@ -1504,7 +1505,6 @@ const katanStore = {
                 });
         } else {
             player.point.castle += 1;
-            player.point.sum += 1;
             player.construction.castle -= 1;
         }
 
@@ -1566,9 +1566,8 @@ const katanStore = {
         const player = katanStore.getActivePlayer();
 
         if (card.type === 'point') {
-            katan.message = '1점 획득하였습니다.';
+            alert('1점을 얻었습니다.');
             player.point.point += 1;
-            player.point.sum += 1;
         } else if (card.type === 'knight') {
             alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
             katanStore.setKnightMode();
@@ -1585,10 +1584,8 @@ const katanStore = {
                 if (player.construction.knight > other.construction.knight) {
                     if (other.point.knight === 2) {
                         other.point.knight -= 2;
-                        other.point.sum -= 2;
                     } else {
                         player.point.knight += 2;
-                        player.point.sum += 2;
                     }
                 }
             }
@@ -1897,9 +1894,67 @@ const katanStore = {
         console.log(object);
     },
 
+    getLinkedRoadList: (katan, player, road) => {
+        const roadIndex = road.index;
+
+        return katan.roadList[roadIndex]
+            .roadIndexList
+            .map(index => katan.roadList[index])
+            .filter(road => road.playerIndex === player.index);
+    },
+
+    processLinkedRoadList: (player, road, depth) => update(katan => {
+        if (road.playerIndex !== player.index) {
+            return katan;
+        }
+
+        const roadList = katanStore.getLinkedRoadList(katan, player, road);
+
+        if (roadList.length === 0) {
+            return katan;
+        }
+
+        depth++;
+
+        console.log('>>> player.maxRoadLength', player.maxRoadLength);
+        console.log('>>> depth', depth);
+
+        if (depth > player.maxRoadLength) {
+            player.maxRoadLength = depth;
+        }
+
+        roadList.forEach(currentRoad => {
+            katanStore.processLinkedRoadList(player, currentRoad, depth);
+        });
+
+        return katan;
+    }),
+
+    recomputeLongRoad: (katan, player) => {
+        console.log('>>> katan.roadList', katan.roadList);
+
+        katan.roadList
+            .filter(road => road.playerIndex === player.index)
+            .forEach(road => {
+                player.maxRoadLength = 1;
+                katanStore.processLinkedRoadList(player, road, 1);
+            });
+    },
+
     recomputePlayer: () => katanStore.updateKatan(katan => {
+        console.log('>>> recomputePlayer');
+
         katan.playerList = katan.playerList
             .map(player => {
+                katanStore.recomputeLongRoad(katan, player);
+
+                let sum = player.point.knight;
+                sum += player.point.road;
+                sum += player.point.point;
+                sum += player.point.castle;
+                sum += player.point.city;
+                player.point.sum = sum;
+
                 player.trade.tree.action =
                     katan.rollDice &&
                     player.index === katan.playerIndex;

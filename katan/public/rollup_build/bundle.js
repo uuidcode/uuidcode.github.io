@@ -524,6 +524,7 @@ var app = (function (jQuery) {
     }
 
     let katanObject = {
+        maxRoadLength: 0,
         resourceTypeList: [
             {
                 type: 'tree'
@@ -563,7 +564,8 @@ var app = (function (jQuery) {
                 turn: true,
                 pickCastle: 0,
                 pickRoad: 0,
-                image: 'apeach.png'
+                image: 'apeach.png',
+                maxRoadLength: 0
             },
             {
                 color: '#90CDEA',
@@ -571,7 +573,8 @@ var app = (function (jQuery) {
                 turn: false,
                 pickCastle: 0,
                 pickRoad: 0,
-                image: 'lion.png'
+                image: 'lion.png',
+                maxRoadLength: 0
             }
         ]
     };
@@ -1591,7 +1594,6 @@ var app = (function (jQuery) {
 
             katanStore.setDiceEnabled();
             katanStore.unsetRollDice();
-
             katanStore.recomputePlayer();
 
             katan.playerList = katan.playerList
@@ -2008,7 +2010,6 @@ var app = (function (jQuery) {
             if (katan.isMakeCity) {
                 player.point.castle -= 1;
                 player.point.city += 2;
-                player.point.sum += 1;
                 player.construction.castle += 1;
                 player.construction.city -= 1;
 
@@ -2022,7 +2023,6 @@ var app = (function (jQuery) {
                     });
             } else {
                 player.point.castle += 1;
-                player.point.sum += 1;
                 player.construction.castle -= 1;
             }
 
@@ -2084,9 +2084,8 @@ var app = (function (jQuery) {
             const player = katanStore.getActivePlayer();
 
             if (card.type === 'point') {
-                katan.message = '1점 획득하였습니다.';
+                alert('1점을 얻었습니다.');
                 player.point.point += 1;
-                player.point.sum += 1;
             } else if (card.type === 'knight') {
                 alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
                 katanStore.setKnightMode();
@@ -2103,10 +2102,8 @@ var app = (function (jQuery) {
                     if (player.construction.knight > other.construction.knight) {
                         if (other.point.knight === 2) {
                             other.point.knight -= 2;
-                            other.point.sum -= 2;
                         } else {
                             player.point.knight += 2;
-                            player.point.sum += 2;
                         }
                     }
                 }
@@ -2413,9 +2410,67 @@ var app = (function (jQuery) {
             console.log(object);
         },
 
+        getLinkedRoadList: (katan, player, road) => {
+            const roadIndex = road.index;
+
+            return katan.roadList[roadIndex]
+                .roadIndexList
+                .map(index => katan.roadList[index])
+                .filter(road => road.playerIndex === player.index);
+        },
+
+        processLinkedRoadList: (player, road, depth) => update$1(katan => {
+            if (road.playerIndex !== player.index) {
+                return katan;
+            }
+
+            const roadList = katanStore.getLinkedRoadList(katan, player, road);
+
+            if (roadList.length === 0) {
+                return katan;
+            }
+
+            depth++;
+
+            console.log('>>> player.maxRoadLength', player.maxRoadLength);
+            console.log('>>> depth', depth);
+
+            if (depth > player.maxRoadLength) {
+                player.maxRoadLength = depth;
+            }
+
+            roadList.forEach(currentRoad => {
+                katanStore.processLinkedRoadList(player, currentRoad, depth);
+            });
+
+            return katan;
+        }),
+
+        recomputeLongRoad: (katan, player) => {
+            console.log('>>> katan.roadList', katan.roadList);
+
+            katan.roadList
+                .filter(road => road.playerIndex === player.index)
+                .forEach(road => {
+                    player.maxRoadLength = 1;
+                    katanStore.processLinkedRoadList(player, road, 1);
+                });
+        },
+
         recomputePlayer: () => katanStore.updateKatan(katan => {
+            console.log('>>> recomputePlayer');
+
             katan.playerList = katan.playerList
                 .map(player => {
+                    katanStore.recomputeLongRoad(katan, player);
+
+                    let sum = player.point.knight;
+                    sum += player.point.road;
+                    sum += player.point.point;
+                    sum += player.point.castle;
+                    sum += player.point.city;
+                    player.point.sum = sum;
+
                     player.trade.tree.action =
                         katan.rollDice &&
                         player.index === katan.playerIndex;
@@ -4825,9 +4880,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 138, 40, 4886);
+    			add_location(tr, file$7, 138, 40, 4880);
     			attr_dev(table, "class", "trade-target-resource svelte-1ocvkkp");
-    			add_location(table, file$7, 137, 36, 4808);
+    			add_location(table, file$7, 137, 36, 4802);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4911,13 +4966,13 @@ var app = (function (jQuery) {
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-1ocvkkp");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 143, 60, 5241);
+    			add_location(img, file$7, 143, 60, 5235);
     			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1ocvkkp");
     			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 144, 60, 5366);
-    			add_location(div, file$7, 142, 56, 5175);
+    			add_location(button, file$7, 144, 60, 5360);
+    			add_location(div, file$7, 142, 56, 5169);
     			attr_dev(td, "class", "svelte-1ocvkkp");
-    			add_location(td, file$7, 141, 52, 5114);
+    			add_location(td, file$7, 141, 52, 5108);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -5051,19 +5106,19 @@ var app = (function (jQuery) {
     			t6 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-1ocvkkp");
-    			add_location(img, file$7, 129, 36, 4286);
+    			add_location(img, file$7, 129, 36, 4280);
     			attr_dev(div0, "class", "trade-ratio svelte-1ocvkkp");
-    			add_location(div0, file$7, 131, 36, 4455);
+    			add_location(div0, file$7, 131, 36, 4449);
     			attr_dev(div1, "class", "resource-item svelte-1ocvkkp");
-    			add_location(div1, file$7, 128, 32, 4222);
+    			add_location(div1, file$7, 128, 32, 4216);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-1ocvkkp");
-    			add_location(td0, file$7, 127, 28, 4174);
+    			add_location(td0, file$7, 127, 28, 4168);
     			attr_dev(td1, "class", "number svelte-1ocvkkp");
-    			add_location(td1, file$7, 134, 28, 4625);
+    			add_location(td1, file$7, 134, 28, 4619);
     			attr_dev(td2, "class", "svelte-1ocvkkp");
-    			add_location(td2, file$7, 135, 28, 4694);
-    			add_location(tr, file$7, 126, 24, 4141);
+    			add_location(td2, file$7, 135, 28, 4688);
+    			add_location(tr, file$7, 126, 24, 4135);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -5216,7 +5271,7 @@ var app = (function (jQuery) {
     	let t46;
     	let t47;
     	let td23;
-    	let t48_value = /*player*/ ctx[1].construction.knight + "";
+    	let t48_value = /*player*/ ctx[1].maxRoadLength + "";
     	let t48;
     	let t49;
     	let tr9;
@@ -5434,19 +5489,19 @@ var app = (function (jQuery) {
     			add_location(tr8, file$7, 100, 20, 2968);
     			attr_dev(td25, "colspan", "3");
     			attr_dev(td25, "class", "header svelte-1ocvkkp");
-    			add_location(td25, file$7, 122, 24, 3998);
-    			add_location(tr9, file$7, 121, 20, 3969);
+    			add_location(td25, file$7, 122, 24, 3992);
+    			add_location(tr9, file$7, 121, 20, 3963);
     			attr_dev(table2, "class", "inner-resource svelte-1ocvkkp");
     			add_location(table2, file$7, 71, 16, 1737);
     			attr_dev(td26, "class", "svelte-1ocvkkp");
     			add_location(td26, file$7, 70, 12, 1716);
     			add_location(tr10, file$7, 69, 8, 1699);
     			attr_dev(td27, "class", "header svelte-1ocvkkp");
-    			add_location(td27, file$7, 163, 12, 6380);
-    			add_location(tr11, file$7, 162, 8, 6363);
+    			add_location(td27, file$7, 163, 12, 6374);
+    			add_location(tr11, file$7, 162, 8, 6357);
     			attr_dev(td28, "class", "svelte-1ocvkkp");
-    			add_location(td28, file$7, 166, 12, 6446);
-    			add_location(tr12, file$7, 165, 8, 6429);
+    			add_location(td28, file$7, 166, 12, 6440);
+    			add_location(tr12, file$7, 165, 8, 6423);
     			attr_dev(table3, "class", "trade-resource svelte-1ocvkkp");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[2]);
     			add_location(table3, file$7, 61, 4, 1356);
@@ -5575,7 +5630,7 @@ var app = (function (jQuery) {
     			if ((!current || dirty & /*player*/ 2) && t40_value !== (t40_value = /*player*/ ctx[1].construction.city + "")) set_data_dev(t40, t40_value);
     			if ((!current || dirty & /*player*/ 2) && t43_value !== (t43_value = /*player*/ ctx[1].construction.road + "")) set_data_dev(t43, t43_value);
     			if ((!current || dirty & /*player*/ 2) && t46_value !== (t46_value = /*player*/ ctx[1].construction.knight + "")) set_data_dev(t46, t46_value);
-    			if ((!current || dirty & /*player*/ 2) && t48_value !== (t48_value = /*player*/ ctx[1].construction.knight + "")) set_data_dev(t48, t48_value);
+    			if ((!current || dirty & /*player*/ 2) && t48_value !== (t48_value = /*player*/ ctx[1].maxRoadLength + "")) set_data_dev(t48, t48_value);
 
     			if (dirty & /*resourceList, player, katan*/ 10) {
     				each_value = /*resourceList*/ ctx[3];

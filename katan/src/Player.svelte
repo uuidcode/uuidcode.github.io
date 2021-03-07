@@ -113,7 +113,7 @@
                                     <td>{player.construction.city} / 4</td>
                                     <td>{player.construction.road} / 15</td>
                                     <td>{player.construction.knight}</td>
-                                    <td>{player.construction.knight}</td>
+                                    <td>{player.maxRoadLength}</td>
                                 </tr>
                             </table>
                         </td>
