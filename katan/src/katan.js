@@ -1903,9 +1903,31 @@ const katanStore = {
             .filter(road => road.playerIndex === player.index);
     },
 
+    getIntersectionCastle: (katan, roadIndexA, roadIndexB) => {
+        const listA = katan.roadList[roadIndexA].castleIndexList;
+        const listB = katan.roadList[roadIndexB].castleIndexList;
+        return listA.find(index => listB.includes(index));
+    },
+
     processLinkedRoadList: (katan, player, road, resultList) => {
         if (resultList.includes(road.index)) {
             return;
+        }
+
+        const resultListLength = resultList.length;
+
+        if (resultListLength >= 2) {
+            const a = katanStore.getIntersectionCastle(katan,
+                resultList[resultListLength - 1],
+                road.index);
+
+            const b = katanStore.getIntersectionCastle(katan,
+                resultList[resultListLength - 2],
+                resultList[resultListLength - 1]);
+
+            if (a === b) {
+                return;
+            }
         }
 
         resultList.push(road.index);
