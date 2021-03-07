@@ -2100,6 +2100,7 @@ var app = (function (jQuery) {
                     const other = katanStore.getOtherPlayer(katan);
 
                     if (player.construction.knight > other.construction.knight) {
+                        alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
                         player.point.knight = 2;
 
                         if (other.point.knight === 2) {
