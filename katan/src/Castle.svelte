@@ -28,9 +28,7 @@
         }
 
         const player = katan.getActivePlayer();
-
         katan.setCastle(castleIndex, player.index);
-
         katan.setHideCastle();
         katan.setCastleRippleDisabled();
 

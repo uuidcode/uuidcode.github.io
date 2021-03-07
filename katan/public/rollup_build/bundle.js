@@ -1586,11 +1586,7 @@ var app = (function (jQuery) {
         subscribe: subscribe$1,
 
         turn: () => katanStore.updateKatan(katan => {
-            const player = katanStore.getActivePlayer();
-
-            if (player.point.sum === 10) {
-                alert(`${player.name} 승리`);
-            }
+            katanStore.getActivePlayer();
 
             katanStore.setDiceEnabled();
             katanStore.unsetRollDice();
@@ -2074,6 +2070,7 @@ var app = (function (jQuery) {
             katan.isMakeRoad = true;
 
             katanStore.setNewRoadRippleEnabled();
+            katanStore.recomputePlayer();
 
             return katan;
         }),
@@ -2200,8 +2197,8 @@ var app = (function (jQuery) {
         },
 
         setRoadRippleEnabled: (castleIndex) => katanStore.updateKatan(katan => {
-            katan.message = '길을 만들곳을 선택하세요.';
             katan.isMakeRoad = true;
+            katan.message = '길을 만들곳을 선택하세요.';
             let roadIndexList = katan.castleList[castleIndex].roadIndexList;
 
             katan.roadList = katan.roadList
@@ -2501,6 +2498,14 @@ var app = (function (jQuery) {
             return katan;
         }),
 
+        isActive: (katan) => {
+            return katan.isKnightMode === false &&
+                katan.isMakeRoad === false &&
+                katan.isMakeCastle === false &&
+                katan.isMakeCity === false &&
+                katan.rollDice;
+        },
+
         recomputePlayer: () => {
             update$1(katan => {
                 katan.playerList.forEach(player => katanStore.recomputeLongRoad(katan, player));
@@ -2520,22 +2525,23 @@ var app = (function (jQuery) {
                         player.point.sum = sum;
 
                         player.trade.tree.action =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex;
 
                         player.trade.mud.action =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex;
 
                         player.trade.wheat.action =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex;
 
                         player.trade.sheep.action =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex;
 
                         player.trade.iron.action =
+                            katanStore.isActive(katan) &&
                             katan.rollDice &&
                             player.index === katan.playerIndex;
 
@@ -2555,7 +2561,7 @@ var app = (function (jQuery) {
                             player.resource.iron >= player.trade.iron.count;
 
                         player.make.road =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex &&
                             player.construction.road >= 1 &&
                             player.resource.tree >= 1 &&
@@ -2566,7 +2572,7 @@ var app = (function (jQuery) {
                             katanStore.getPossibleCastleIndexList(katan);
 
                         player.make.castle =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex &&
                             player.construction.castle >= 1 &&
                             player.resource.tree >= 1 &&
@@ -2581,7 +2587,7 @@ var app = (function (jQuery) {
                             .length;
 
                         player.make.city =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex &&
                             castleLength > 0 &&
                             player.construction.city >= 1 &&
@@ -2589,16 +2595,19 @@ var app = (function (jQuery) {
                             player.resource.wheat >= 2;
 
                         player.make.dev =
-                            katan.rollDice &&
+                            katanStore.isActive(katan) &&
                             player.index === katan.playerIndex &&
                             player.resource.iron >= 1 &&
                             player.resource.sheep >= 1 &&
                             player.resource.wheat >= 1;
 
+                        if (player.point.sum === 10) {
+                            alert(`${player.name} 승리`);
+                        }
+
                         return player;
                     });
 
-                katanStore.recomputeRoadPoint();
                 return katan;
             });
         }
@@ -3041,7 +3050,7 @@ var app = (function (jQuery) {
     /* src\Castle.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Castle.svelte";
 
-    // (86:0) {:else}
+    // (84:0) {:else}
     function create_else_block(ctx) {
     	let div1;
     	let div0;
@@ -3055,13 +3064,13 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 92, 4, 2388);
+    			add_location(div0, file$1, 90, 4, 2384);
     			attr_dev(div1, "class", "castle svelte-13aw96s");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div1, "show", /*castle*/ ctx[0].show);
-    			add_location(div1, file$1, 86, 4, 2211);
+    			add_location(div1, file$1, 84, 4, 2207);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -3103,14 +3112,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(86:0) {:else}",
+    		source: "(84:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (81:0) {#if config.debug}
+    // (79:0) {#if config.debug}
     function create_if_block$1(ctx) {
     	let div2;
     	let div0;
@@ -3134,11 +3143,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 82, 8, 2117);
-    			add_location(div1, file$1, 83, 8, 2159);
+    			add_location(div0, file$1, 80, 8, 2113);
+    			add_location(div1, file$1, 81, 8, 2155);
     			attr_dev(div2, "class", "castle svelte-13aw96s");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
-    			add_location(div2, file$1, 81, 4, 2067);
+    			add_location(div2, file$1, 79, 4, 2063);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -3168,7 +3177,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(81:0) {#if config.debug}",
+    		source: "(79:0) {#if config.debug}",
     		ctx
     	});
 

@@ -1069,10 +1069,6 @@ const katanStore = {
     turn: () => katanStore.updateKatan(katan => {
         const player = katanStore.getActivePlayer();
 
-        if (player.point.sum === 10) {
-            alert(`${player.name} 승리`);
-        }
-
         katanStore.setDiceEnabled();
         katanStore.unsetRollDice();
         katanStore.recomputePlayer();
@@ -1556,6 +1552,7 @@ const katanStore = {
         katan.isMakeRoad = true;
 
         katanStore.setNewRoadRippleEnabled();
+        katanStore.recomputePlayer();
 
         return katan;
     }),
@@ -1684,8 +1681,8 @@ const katanStore = {
     },
 
     setRoadRippleEnabled: (castleIndex) => katanStore.updateKatan(katan => {
-        katan.message = '길을 만들곳을 선택하세요.';
         katan.isMakeRoad = true;
+        katan.message = '길을 만들곳을 선택하세요.';
         let roadIndexList = katan.castleList[castleIndex].roadIndexList;
 
         katan.roadList = katan.roadList
@@ -1985,6 +1982,14 @@ const katanStore = {
         return katan;
     }),
 
+    isActive: (katan) => {
+        return katan.isKnightMode === false &&
+            katan.isMakeRoad === false &&
+            katan.isMakeCastle === false &&
+            katan.isMakeCity === false &&
+            katan.rollDice;
+    },
+
     recomputePlayer: () => {
         update(katan => {
             katan.playerList.forEach(player => katanStore.recomputeLongRoad(katan, player));
@@ -2004,22 +2009,23 @@ const katanStore = {
                     player.point.sum = sum;
 
                     player.trade.tree.action =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex;
 
                     player.trade.mud.action =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex;
 
                     player.trade.wheat.action =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex;
 
                     player.trade.sheep.action =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex;
 
                     player.trade.iron.action =
+                        katanStore.isActive(katan) &&
                         katan.rollDice &&
                         player.index === katan.playerIndex;
 
@@ -2039,7 +2045,7 @@ const katanStore = {
                         player.resource.iron >= player.trade.iron.count;
 
                     player.make.road =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex &&
                         player.construction.road >= 1 &&
                         player.resource.tree >= 1 &&
@@ -2050,7 +2056,7 @@ const katanStore = {
                         katanStore.getPossibleCastleIndexList(katan);
 
                     player.make.castle =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex &&
                         player.construction.castle >= 1 &&
                         player.resource.tree >= 1 &&
@@ -2065,7 +2071,7 @@ const katanStore = {
                         .length;
 
                     player.make.city =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex &&
                         castleLength > 0 &&
                         player.construction.city >= 1 &&
@@ -2073,16 +2079,19 @@ const katanStore = {
                         player.resource.wheat >= 2;
 
                     player.make.dev =
-                        katan.rollDice &&
+                        katanStore.isActive(katan) &&
                         player.index === katan.playerIndex &&
                         player.resource.iron >= 1 &&
                         player.resource.sheep >= 1 &&
                         player.resource.wheat >= 1;
 
+                    if (player.point.sum === 10) {
+                        alert(`${player.name} 승리`);
+                    }
+
                     return player;
                 });
 
-            katanStore.recomputeRoadPoint();
             return katan;
         });
     }
