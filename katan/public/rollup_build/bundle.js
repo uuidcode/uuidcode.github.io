@@ -1437,14 +1437,14 @@ var app = (function (jQuery) {
     katanObject.roadList[54].roadIndexList = [49, 55, 62];
     katanObject.roadList[55].roadIndexList = [50, 54, 56, 62];
     katanObject.roadList[56].roadIndexList = [50, 55, 57, 63];
-    katanObject.roadList[57].roadIndexList = [51, 46, 58, 63];
+    katanObject.roadList[57].roadIndexList = [51, 56, 58, 63];
     katanObject.roadList[58].roadIndexList = [51, 57, 59, 64];
     katanObject.roadList[59].roadIndexList = [52, 58, 60, 64];
     katanObject.roadList[60].roadIndexList = [52, 59, 61, 65];
     katanObject.roadList[61].roadIndexList = [53, 60, 65];
 
     katanObject.roadList[62].roadIndexList = [54, 55, 66];
-    katanObject.roadList[63].roadIndexList = [56, 57, 67, 68];
+    katanObject.roadList[63].roadIndexList = [56, 57, 66, 68];
     katanObject.roadList[64].roadIndexList = [58, 59, 69, 70];
     katanObject.roadList[65].roadIndexList = [60, 61, 71];
 
@@ -2100,14 +2100,16 @@ var app = (function (jQuery) {
                     const other = katanStore.getOtherPlayer(katan);
 
                     if (player.construction.knight > other.construction.knight) {
+                        player.point.knight = 2;
+
                         if (other.point.knight === 2) {
-                            other.point.knight -= 2;
-                        } else {
-                            player.point.knight += 2;
+                            other.point.knight = 0;
                         }
                     }
                 }
             }
+
+            katanStore.recomputePlayer();
 
             return katan;
         }),
@@ -2454,10 +2456,6 @@ var app = (function (jQuery) {
 
             const roadList = katanStore.getLinkedRoadList(katan, player, road, resultList);
 
-            console.log('>>> roadList', roadList);
-            console.log('>>> resultList', resultList);
-            console.log('>>> player.maxRoadLength', player.maxRoadLength);
-
             if (roadList.length === 0) {
                 return;
             }
@@ -2475,108 +2473,134 @@ var app = (function (jQuery) {
             const list = katan.roadList
                 .filter(road => road.playerIndex === player.index);
 
-            console.log('>>> recomputeLongRoad list', list);
-
             list.forEach(road => {
                 katanStore.processLinkedRoadList(katan, player, road, []);
             });
         },
 
-        recomputePlayer: () => katanStore.updateKatan(katan => {
-            console.log('>>> recomputePlayer');
+        recomputeRoadPoint: () => update$1(katan => {
+            const player = katanStore.getActivePlayer();
+            const otherPlayer = katanStore.getOtherPlayer(katan);
 
-            katan.playerList = katan.playerList
-                .map(player => {
-                    katanStore.recomputeLongRoad(katan, player);
+            if (player.maxRoadLength >= 5) {
+                if (player.point.road === 0) {
+                    if (player.maxRoadLength > otherPlayer.maxRoadLength) {
+                        alert('최장 교역로를 달성하였습니다.\n2점을 회득합니다.');
+                        player.point.road = 2;
+                    }
+                }
 
-                    let sum = player.point.knight;
-                    sum += player.point.road;
-                    sum += player.point.point;
-                    sum += player.point.castle;
-                    sum += player.point.city;
-                    player.point.sum = sum;
-
-                    player.trade.tree.action =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.mud.action =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.wheat.action =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.sheep.action =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.iron.action =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.tree.enable =
-                        player.resource.tree >= player.trade.tree.count;
-
-                    player.trade.mud.enable =
-                        player.resource.mud >= player.trade.mud.count;
-
-                    player.trade.wheat.enable =
-                        player.resource.wheat >= player.trade.wheat.count;
-
-                    player.trade.sheep.enable =
-                        player.resource.sheep >= player.trade.sheep.count;
-
-                    player.trade.iron.enable =
-                        player.resource.iron >= player.trade.iron.count;
-
-                    player.make.road =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex &&
-                        player.construction.road >= 1 &&
-                        player.resource.tree >= 1 &&
-                        player.resource.mud >= 1 &&
-                        katanStore.getPossibleRoadTotalLength(katan) > 0;
-
-                    const possibleCastleIndexList =
-                        katanStore.getPossibleCastleIndexList(katan);
-
-                    player.make.castle =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex &&
-                        player.construction.castle >= 1 &&
-                        player.resource.tree >= 1 &&
-                        player.resource.mud >= 1 &&
-                        player.resource.wheat >= 1 &&
-                        player.resource.sheep >= 1 &&
-                        possibleCastleIndexList.length > 0;
-
-                    const castleLength = katan.castleList
-                        .filter(castle => castle.playerIndex === katan.playerIndex)
-                        .filter(castle => castle.city === false)
-                        .length;
-
-                    player.make.city =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex &&
-                        castleLength > 0 &&
-                        player.construction.city >= 1 &&
-                        player.resource.iron >= 3 &&
-                        player.resource.wheat >= 2;
-
-                    player.make.dev =
-                        katan.rollDice &&
-                        player.index === katan.playerIndex &&
-                        player.resource.iron >= 1 &&
-                        player.resource.sheep >= 1 &&
-                        player.resource.wheat >= 1;
-
-                    return player;
-                });
+                if (otherPlayer.point.road > 0) {
+                    if (player.maxRoadLength > otherPlayer.maxRoadLength) {
+                        otherPlayer.point.road = 0;
+                    }
+                }
+            }
 
             return katan;
-        })
+        }),
+
+        recomputePlayer: () => {
+            update$1(katan => {
+                katan.playerList.forEach(player => katanStore.recomputeLongRoad(katan, player));
+                return katan;
+            });
+
+            katanStore.recomputeRoadPoint();
+
+            update$1(katan => {
+                katan.playerList = katan.playerList
+                    .map(player => {
+                        let sum = player.point.knight;
+                        sum += player.point.road;
+                        sum += player.point.point;
+                        sum += player.point.castle;
+                        sum += player.point.city;
+                        player.point.sum = sum;
+
+                        player.trade.tree.action =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex;
+
+                        player.trade.mud.action =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex;
+
+                        player.trade.wheat.action =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex;
+
+                        player.trade.sheep.action =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex;
+
+                        player.trade.iron.action =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex;
+
+                        player.trade.tree.enable =
+                            player.resource.tree >= player.trade.tree.count;
+
+                        player.trade.mud.enable =
+                            player.resource.mud >= player.trade.mud.count;
+
+                        player.trade.wheat.enable =
+                            player.resource.wheat >= player.trade.wheat.count;
+
+                        player.trade.sheep.enable =
+                            player.resource.sheep >= player.trade.sheep.count;
+
+                        player.trade.iron.enable =
+                            player.resource.iron >= player.trade.iron.count;
+
+                        player.make.road =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex &&
+                            player.construction.road >= 1 &&
+                            player.resource.tree >= 1 &&
+                            player.resource.mud >= 1 &&
+                            katanStore.getPossibleRoadTotalLength(katan) > 0;
+
+                        const possibleCastleIndexList =
+                            katanStore.getPossibleCastleIndexList(katan);
+
+                        player.make.castle =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex &&
+                            player.construction.castle >= 1 &&
+                            player.resource.tree >= 1 &&
+                            player.resource.mud >= 1 &&
+                            player.resource.wheat >= 1 &&
+                            player.resource.sheep >= 1 &&
+                            possibleCastleIndexList.length > 0;
+
+                        const castleLength = katan.castleList
+                            .filter(castle => castle.playerIndex === katan.playerIndex)
+                            .filter(castle => castle.city === false)
+                            .length;
+
+                        player.make.city =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex &&
+                            castleLength > 0 &&
+                            player.construction.city >= 1 &&
+                            player.resource.iron >= 3 &&
+                            player.resource.wheat >= 2;
+
+                        player.make.dev =
+                            katan.rollDice &&
+                            player.index === katan.playerIndex &&
+                            player.resource.iron >= 1 &&
+                            player.resource.sheep >= 1 &&
+                            player.resource.wheat >= 1;
+
+                        return player;
+                    });
+
+                katanStore.recomputeRoadPoint();
+                return katan;
+            });
+        }
     };
 
     /* src\Cell.svelte generated by Svelte v3.32.3 */
