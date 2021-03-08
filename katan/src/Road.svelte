@@ -2,13 +2,8 @@
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
-    import { onDestroy } from 'svelte';
 
     export let roadIndex;
-
-    let roadList = $katan.roadList;
-    let road = roadList[roadIndex];
-    let roadStyle;
 
     const createStyle = () => {
         let styleObject = {
@@ -37,14 +32,13 @@
         return toStyle(styleObject);
     };
 
-    roadStyle = createStyle();
+    let road;
+    let roadStyle;
 
-    const unsubscribe = katan.subscribe(currentKatan => {
+    $: {
+        road = $katan.roadList[roadIndex];
         roadStyle = createStyle();
-        road = currentKatan.roadList[roadIndex];
-    });
-
-    onDestroy(unsubscribe);
+    }
 </script>
 
 {#if config.debug}

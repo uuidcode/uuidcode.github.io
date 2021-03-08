@@ -4,31 +4,13 @@
     import { toStyle } from './util.js'
 
     export let playerIndex;
-    export let type = 'player';
 
-    const getResourceList = () => {
-        return [
-            {
-                'type': 'tree',
-                'count': player.resource.tree
-            },
-            {
-                'type': 'mud',
-                'count': player.resource.mud
-            },
-            {
-                'type': 'wheat',
-                'count': player.resource.wheat
-            },
-            {
-                'type': 'sheep',
-                'count': player.resource.sheep
-            },
-            {
-                'type': 'iron',
-                'count': player.resource.iron
-            }
-        ];
+    const getResourceList = (player) => {
+        return $katan.resourceTypeList
+            .map(typeObject => ({
+                type: typeObject.type,
+                count: player.resource[typeObject.type]
+            }));
     };
 
     const getPlayerColor = () => {
@@ -54,7 +36,7 @@
         playerList = $katan.playerList;
         player = playerList[playerIndex];
         playerStyle = getPlayerStyle();
-        resourceList = getResourceList();
+        resourceList = getResourceList(player);
     }
 </script>
 
@@ -134,7 +116,7 @@
                             </td>
                             <td class="number">{resource.count}</td>
                             <td>
-                                {#if $katan.isGetReource}
+                                {#if $katan.isGetResource && $katan.playerIndex === playerIndex}
                                     <button class="get-resource-button btn btn-primary btn-sm"
                                             on:click={()=>katan.getResource(resource.type)}>
                                         받기

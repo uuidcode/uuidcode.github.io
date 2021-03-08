@@ -70,23 +70,23 @@ let katanObject = {
 
 katanObject.cardList = [];
 
-for (let i = 0; i < 5; i++) {
-    katanObject.cardList.push({
-        type: 'point'
-    })
-}
-
-for (let i = 0; i < 14; i++) {
-    katanObject.cardList.push({
-        type: 'knight'
-    })
-}
-
-for (let i = 0; i < 2; i++) {
-    katanObject.cardList.push({
-        type: 'road'
-    });
-}
+// for (let i = 0; i < 5; i++) {
+//     katanObject.cardList.push({
+//         type: 'point'
+//     })
+// }
+//
+// for (let i = 0; i < 14; i++) {
+//     katanObject.cardList.push({
+//         type: 'knight'
+//     })
+// }
+//
+// for (let i = 0; i < 2; i++) {
+//     katanObject.cardList.push({
+//         type: 'road'
+//     });
+// }
 
 for (let i = 0; i < 2; i++) {
     katanObject.cardList.push({
@@ -94,11 +94,11 @@ for (let i = 0; i < 2; i++) {
     });
 }
 
-for (let i = 0; i < 2; i++) {
-    katanObject.cardList.push({
-        type: 'get'
-    });
-}
+// for (let i = 0; i < 2; i++) {
+//     katanObject.cardList.push({
+//         type: 'get'
+//     });
+// }
 
 katanObject.cardList = shuffle(katanObject.cardList);
 
@@ -1093,7 +1093,7 @@ const katanStore = {
     subscribe,
     set,
 
-    turn: () => katanStore.updateKatan(katan => {
+    turn: () => update(katan => {
         const player = katanStore.getActivePlayer();
 
         katanStore.setDiceEnabled();
@@ -1121,7 +1121,7 @@ const katanStore = {
         return katan;
     }),
 
-    start: () => katanStore.updateKatan(katan => {
+    start: () => update(katan => {
         katan.message = '주사위를 굴리세요.';
 
         katan.mode = 'start';
@@ -1147,7 +1147,7 @@ const katanStore = {
         return katan;
     }),
 
-    transition: (resource, playerIndex) => katanStore.updateKatan(katan => {
+    transition: (resource, playerIndex) => update(katan => {
         resource.show = false;
         katan.playerList[playerIndex].resource[resource.type]++;
         return katan;
@@ -1157,7 +1157,7 @@ const katanStore = {
         katanStore.setNumberRippleEnabled();
     },
 
-    moveBuglar: (resourceIndex) => katanStore.updateKatan(katan => {
+    moveBuglar: (resourceIndex) => update(katan => {
         if (katan.isKnightMode) {
         } else {
             if (katan.mode !== 'moveBuglar') {
@@ -1258,12 +1258,12 @@ const katanStore = {
         return katan;
     }),
 
-    setDiceDisabled: () => katanStore.updateKatan(katan => {
+    setDiceDisabled: () => update(katan => {
         katan.diceDisabled = true;
         return katan;
     }),
 
-    setDiceEnabled: () => katanStore.updateKatan(katan => {
+    setDiceEnabled: () => update(katan => {
         katan.diceDisabled = false;
         return katan;
     }),
@@ -1318,7 +1318,7 @@ const katanStore = {
         }, option.count * 1000)
     },
 
-    moveResource: (number) => katanStore.updateKatan(katan => {
+    moveResource: (number) => update(katan => {
         let matchResourceCount = 0;
         let moveResourceCount = 0;
 
@@ -1374,7 +1374,7 @@ const katanStore = {
         }
     },
 
-    doAction: () => katanStore.updateKatan(katan => {
+    doAction: () => update(katan => {
         katan.message = '자원을 교환하거나 건설하세요.';
         katanStore.setDiceDisabled();
         katan.action = true;
@@ -1406,19 +1406,19 @@ const katanStore = {
         modal.show();
     },
 
-    setShowResourceModal: () => katanStore.updateKatan(katan => {
+    setShowResourceModal: () => update(katan => {
         katan.showResourceModal = true;
         return katan;
     }),
 
-    hideResourceModal: () => katanStore.updateKatan(katan => {
+    hideResourceModal: () => update(katan => {
         katan.showResourceModal = false;
         return katan;
     }),
 
     clickMakeRoad: (roadIndex) => update(katan => {
         if (!katan.isMakeRoad) {
-            return;
+            return katan;
         }
 
         const player = katanStore.getActivePlayer();
@@ -1441,16 +1441,50 @@ const katanStore = {
         return katan;
     }),
 
-    endMakeRoad: () => katanStore.updateKatan(katan => {
+    castleClickable: (katan, castleIndex) => {
+        const player = katanStore.getActivePlayer();
+        const castle = katan.castleList[castleIndex];
+
+        if (katan.isMakeCity) {
+            if (castle.city || castle.playerIndex !== player.index) {
+                return false;
+            }
+        } else {
+            if (castle.playerIndex !== -1) {
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    clickMakeCastle: (castleIndex) => update(katan => {
+        if (!katanStore.castleClickable(katan, castleIndex)) {
+            return katan;
+        }
+
+        const player = katanStore.getActivePlayer();
+        katanStore.setCastle(castleIndex, player.index);
+        katanStore.setHideCastle();
+        katanStore.setCastleRippleDisabled();
+
+        if (katan.isMakeCastle) {
+            katanStore.endMakeCastle();
+        } else if (katan.isMakeCity){
+            katanStore.endMakeCity(castleIndex);
+        } else {
+            katanStore.setRoadRippleEnabled(castleIndex);
+        }
+
+        return katan;
+    }),
+
+    endMakeRoad: () => update(katan => {
         if (katan.isMakeRoad2) {
             katan.makeRoadCount += 1;
         } else {
             katan.isMakeRoad = false;
         }
-
-        console.log('>>> katan.isStart', katan.isStart);
-        console.log('>>> katan.isMakeRoad2', katan.isMakeRoad2);
-        console.log('>>> katan.makeRoadCount', katan.makeRoadCount);
 
         if (katan.isStart) {
             if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
@@ -1465,19 +1499,19 @@ const katanStore = {
         return katan;
     }),
 
-    setRollDice: () => katanStore.updateKatan(katan => {
+    setRollDice: () => update(katan => {
         katan.rollDice = true;
         katanStore.dir('setRollDice katan.rollDice', katan.rollDice);
         return katan;
     }),
 
-    unsetRollDice: () => katanStore.updateKatan(katan => {
+    unsetRollDice: () => update(katan => {
         katan.rollDice = false;
         katanStore.dir('unsetRollDice katan.rollDice', katan.rollDice);
         return katan;
     }),
 
-    play: () => katanStore.updateKatan(katan => {
+    play: () => update(katan => {
         katanStore.setDiceDisabled();
 
         const a = Math.floor(Math.random() * 6) + 1;
@@ -1511,11 +1545,15 @@ const katanStore = {
         return katan;
     }),
 
+    sumResource: (katan, player) => {
+        return katan.resourceTypeList
+            .map(typeObject => player.resource[typeObject.type])
+            .reduce((a, b) => a + b);
+    },
+
     takeResourceByBuglar: (katan) => {
         katan.playerList.forEach(player => {
-            const resourceSum = katan.resourceTypeList
-                .map(typeObject => player.resource[typeObject.type])
-                .reduce((a, b) => a + b);
+            const resourceSum = katanStore.sumResource(katan, player);
 
             if (resourceSum >= 8) {
                 const resourceCount = Math.floor(resourceSum / 2);
@@ -1589,23 +1627,23 @@ const katanStore = {
         return katan;
     },
 
-    setKnightMode: () => katanStore.updateKatan(katan => {
+    setKnightMode: () => update(katan => {
         katan.isKnightMode = true;
         return katan;
     }),
 
-    unsetKnightMode: () => katanStore.updateKatan(katan => {
+    unsetKnightMode: () => update(katan => {
         katan.isKnightMode = false;
         return katan;
     }),
 
-    updateResource: (playerIndex, resource) => katanStore.updateKatan(katan => {
+    updateResource: (playerIndex, resource) => update(katan => {
         katan.playerList[playerIndex].resource[resource.type]++;
         katanStore.recomputePlayer();
         return katan;
     }),
 
-    roll: (a, b) => katanStore.updateKatan(katan => {
+    roll: (a, b) => update(katan => {
         katan.dice[0] = a;
         katan.dice[1] = b;
         return katan;
@@ -1634,7 +1672,7 @@ const katanStore = {
             .find(player => player.turn);
     },
 
-    setCastle: (castleIndex, playerIndex) => katanStore.updateKatan(katan => {
+    setCastle: (castleIndex, playerIndex) => update(katan => {
         let castle = katan.castleList[castleIndex];
         castle.playerIndex = playerIndex;
         castle.pick = false;
@@ -1644,7 +1682,6 @@ const katanStore = {
         } else {
             castle.title = '마을';
         }
-
 
         const player = katan.playerList[playerIndex];
         player.pickCastle += 1;
@@ -1685,7 +1722,7 @@ const katanStore = {
         return katan;
     }),
 
-    setRoad: (roadIndex, playerIndex) => katanStore.updateKatan(katan => {
+    setRoad: (roadIndex, playerIndex) => update(katan => {
         let road = katan.roadList[roadIndex];
         road.playerIndex = playerIndex;
         road.pick = false;
@@ -1703,17 +1740,17 @@ const katanStore = {
         return katan;
     }),
 
-    setPickRoadMode: () => katanStore.updateKatan(katan => {
+    setPickRoadMode: () => update(katan => {
         let player = katanStore.getCurrentPlayer(katan);
         return katan;
     }),
 
-    setPickCastleMode: () => katanStore.updateKatan(katan => {
+    setPickCastleMode: () => update(katan => {
         let player = katanStore.getCurrentPlayer(katan);
         return katan;
     }),
 
-    makeRoad: () => katanStore.updateKatan(katan => {
+    makeRoad: () => update(katan => {
         katan.isMakeRoad = true;
 
         katanStore.setNewRoadRippleEnabled();
@@ -1722,7 +1759,7 @@ const katanStore = {
         return katan;
     }),
 
-    makeDev: () => katanStore.updateKatan(katan => {
+    makeDev: () => update(katan => {
         const card = katan.cardList.pop();
 
         const player = katanStore.getActivePlayer();
@@ -1758,7 +1795,7 @@ const katanStore = {
             katan.isMakeRoad2 = true;
             katanStore.makeRoad();
         } else if (card.type === 'resource') {
-            alert('자원 2개 받으세요.');
+            alert('자원 2개를 받으세요.');
             katan.isGetResource = true;
         } else if (card.type === 'get') {
             alert('상대방의 자원 2개를 받습니다.');
@@ -1778,6 +1815,7 @@ const katanStore = {
 
         if (katan.getResourceCount >= 2) {
             katan.isGetResource = false;
+            katan.getResourceCount = 0;
         }
 
         katanStore.recomputePlayer();
@@ -1797,14 +1835,14 @@ const katanStore = {
         return katan.playerList[playerIndex];
     },
 
-    makeCastle: () => katanStore.updateKatan(katan => {
+    makeCastle: () => update(katan => {
         katan.isMakeCastle = true;
         katanStore.setNewCastleRippleEnabled();
 
         return katan;
     }),
 
-    makeCity: () => katanStore.updateKatan(katan => {
+    makeCity: () => update(katan => {
         katan.isMakeCity = true;
         katanStore.setNewCityRippleEnabled();
 
@@ -1813,9 +1851,7 @@ const katanStore = {
 
     getPossibleRoadTotalLength: (katan) => {
         return katan.roadList
-            .map(road => {
-                return katanStore.getPossibleRoadLength(katan, road);
-            })
+            .map(road => katanStore.getPossibleRoadLength(katan, road))
             .reduce((a, b) => a + b);
     },
 
@@ -1837,7 +1873,7 @@ const katanStore = {
         return length;
     },
 
-    setNewRoadRippleEnabled: () => katanStore.updateKatan(katan => {
+    setNewRoadRippleEnabled: () => update(katan => {
         katan.roadList = katan.roadList
             .map(road => {
                 let length = katanStore.getPossibleRoadLength(katan, road);
@@ -1853,25 +1889,7 @@ const katanStore = {
         return katan;
     }),
 
-    updateKatan: (updateFunction) => {
-        const errorStack = new Error().stack;
-
-        return update(katan => {
-            console.log("=========================");
-            console.trace();
-
-            const date = new Date();{}
-            katan.debugMessage = errorStack;
-            katanStore.dir('update before', katan);
-
-            const resultKatan = updateFunction(katan);
-            katanStore.dir('update after', katan);
-
-            return resultKatan;
-        });
-    },
-
-    setRoadRippleEnabled: (castleIndex) => katanStore.updateKatan(katan => {
+    setRoadRippleEnabled: (castleIndex) => update(katan => {
         katan.isMakeRoad = true;
         katan.message = '길을 만들곳을 선택하세요.';
         let roadIndexList = katan.castleList[castleIndex].roadIndexList;
@@ -1894,7 +1912,7 @@ const katanStore = {
         return katan;
     }),
 
-    setRoadRippleDisabled: () => katanStore.updateKatan(katan => {
+    setRoadRippleDisabled: () => update(katan => {
         katan.roadList = katan.roadList
             .map(road => {
                 road.ripple = false;
@@ -1904,7 +1922,7 @@ const katanStore = {
         return katan;
     }),
 
-    setCastleRippleDisabled: () => katanStore.updateKatan(katan => {
+    setCastleRippleDisabled: () => update(katan => {
         katan.castleList = katan.castleList.map(castle => {
             castle.ripple = false;
             return castle;
@@ -1913,7 +1931,7 @@ const katanStore = {
         return katan;
     }),
 
-    showConstructableCastle: () => katanStore.updateKatan(katan => {
+    showConstructableCastle: () => update(katan => {
         katan.message = '마을을 만들곳을 클릭하세요';
 
         katan.castleList = katan.castleList.map(castle => {
@@ -1960,7 +1978,7 @@ const katanStore = {
             .filter(index => index >= 0);
     },
 
-    setNewCastleRippleEnabled: () => katanStore.updateKatan(katan => {
+    setNewCastleRippleEnabled: () => update(katan => {
         const castleIndexList = katanStore.getPossibleCastleIndexList(katan);
         katan.castleList = katan.castleList.map(castle => {
             if (castleIndexList.includes(castle.index)) {
@@ -1974,7 +1992,7 @@ const katanStore = {
         return katan;
     }),
 
-    setNewCityRippleEnabled: () => katanStore.updateKatan(katan => {
+    setNewCityRippleEnabled: () => update(katan => {
         const player = katanStore.getActivePlayer();
 
         katan.castleList = katan.castleList.map(castle => {
@@ -1991,19 +2009,19 @@ const katanStore = {
         return katan;
     }),
 
-    endMakeCastle: () => katanStore.updateKatan(katan => {
+    endMakeCastle: () => update(katan => {
         katan.isMakeCastle = false;
         katanStore.doActionAndTurn();
         return katan;
     }),
 
-    endMakeCity: (castleIndex) => katanStore.updateKatan(katan => {
+    endMakeCity: (castleIndex) => update(katan => {
         katan.isMakeCity = false;
         katanStore.doActionAndTurn();
         return katan;
     }),
 
-    setSelectedNumberRippleEnabled: (number) => katanStore.updateKatan(katan => {
+    setSelectedNumberRippleEnabled: (number) => update(katan => {
         katan.resourceList = katan.resourceList
             .map(resource => {
                 if (resource.number === number) {
@@ -2016,7 +2034,7 @@ const katanStore = {
         return katan;
     }),
 
-    setNumberRippleEnabled: () => katanStore.updateKatan(katan => {
+    setNumberRippleEnabled: () => update(katan => {
         katan.resourceList = katan.resourceList
             .map(resource => {
                 if (!resource.buglar) {
@@ -2029,7 +2047,7 @@ const katanStore = {
         return katan;
     }),
 
-    setNumberRippleDisabled: () => katanStore.updateKatan(katan => {
+    setNumberRippleDisabled: () => update(katan => {
         katan.resourceList = katan.resourceList
             .map(resource => {
                 resource.numberRipple = false;
@@ -2039,7 +2057,7 @@ const katanStore = {
         return katan;
     }),
 
-    setHideCastle: () => katanStore.updateKatan(katan => {
+    setHideCastle: () => update(katan => {
         katan.castleList =  katan.castleList
             .map(castle => {
                 if (castle.playerIndex === -1) {
@@ -2067,7 +2085,7 @@ const katanStore = {
         return katan;
     }),
 
-    exchange: (player, resourceType, targetResourceType) => katanStore.updateKatan(katan => {
+    exchange: (player, resourceType, targetResourceType) => update(katan => {
         player.resource[targetResourceType] += 1;
         player.resource[resourceType] -= player.trade[resourceType].count;
         katanStore.recomputePlayer();
@@ -2199,42 +2217,17 @@ const katanStore = {
                     sum += player.point.city;
                     player.point.sum = sum;
 
-                    player.trade.tree.action =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex;
+                    katan.resourceTypeList
+                        .forEach(typeObject => {
+                            const type = typeObject.type;
+                            player.trade[type].action = 
+                                katanStore.isActive(katan) &&
+                                player.index === katan.playerIndex;
 
-                    player.trade.mud.action =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.wheat.action =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.sheep.action =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.iron.action =
-                        katanStore.isActive(katan) &&
-                        katan.rollDice &&
-                        player.index === katan.playerIndex;
-
-                    player.trade.tree.enable =
-                        player.resource.tree >= player.trade.tree.count;
-
-                    player.trade.mud.enable =
-                        player.resource.mud >= player.trade.mud.count;
-
-                    player.trade.wheat.enable =
-                        player.resource.wheat >= player.trade.wheat.count;
-
-                    player.trade.sheep.enable =
-                        player.resource.sheep >= player.trade.sheep.count;
-
-                    player.trade.iron.enable =
-                        player.resource.iron >= player.trade.iron.count;
-
+                            player.trade[type].enable =
+                                player.resource[type] >= player.trade[type].count;
+                        });
+                    
                     player.make.road =
                         katanStore.isActive(katan) &&
                         player.index === katan.playerIndex &&

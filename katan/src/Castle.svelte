@@ -5,42 +5,6 @@
 
     export let castleIndex;
 
-    const clickable = () => {
-        const player = katan.getActivePlayer();
-        const castle = $katan.castleList[castleIndex];
-
-        if ($katan.isMakeCity) {
-            if (castle.city || castle.playerIndex !== player.index) {
-                return false;
-            }
-        } else {
-            if (castle.playerIndex !== -1) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    const pick = () => {
-        if (!clickable()) {
-            return
-        }
-
-        const player = katan.getActivePlayer();
-        katan.setCastle(castleIndex, player.index);
-        katan.setHideCastle();
-        katan.setCastleRippleDisabled();
-
-        if ($katan.isMakeCastle) {
-            katan.endMakeCastle();
-        } else if ($katan.isMakeCity){
-            katan.endMakeCity(castleIndex);
-        } else {
-            katan.setRoadRippleEnabled(castleIndex);
-        }
-    };
-
     const createStyle = () => {
         let styleObject = {
             left: castle.left + 'px',
@@ -51,7 +15,7 @@
             borderRadius: config.castle.height + 'px'
         };
 
-        if (!clickable()) {
+        if (katan.castleClickable($katan, castleIndex)) {
             styleObject.cursor = 'default';
         }
 
@@ -83,7 +47,7 @@
     </div>
 {:else}
     <div class="castle"
-         on:click={()=>pick()}
+         on:click={()=>katan.clickMakeCastle(castleIndex)}
     class:ripple={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
