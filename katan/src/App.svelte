@@ -71,8 +71,9 @@
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
+                    <input type="number" class="test-dice" bind:value={$katan.testDice}>
                     <button class="btn btn-primary"
-                            on:click={()=>katan.makeCity()}>take</button>
+                            on:click={()=>katan.makeDev()}>test</button>
                 </div>
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">

@@ -5,6 +5,7 @@ import { getDisplay, sleep } from './util.js'
 import jQuery from 'jquery';
 
 let katanObject = {
+    testDice: 0,
     maxRoadLength: 0,
     resourceTypeList: [
         {
@@ -31,6 +32,8 @@ let katanObject = {
     isMakeRoad2: false,
     makeRoadCount: 0,
     getResourceCount: 0,
+    takeResourceFromBuglarCount: 0,
+    takeResourceFromBuglarCompleCount: 0,
     isMakeCastle: false,
     isMakeCity: false,
     construction: false,
@@ -106,11 +109,11 @@ katanObject.playerList.forEach((player, i) => {
     player.pickRoad = 0;
 
     player.resource = {
-        tree: 10,
-        mud: 10,
-        wheat: 10,
-        sheep: 10,
-        iron: 10
+        tree: 5,
+        mud: 5,
+        wheat: 5,
+        sheep: 5,
+        iron: 5
     };
 
     player.point = {
@@ -1088,6 +1091,7 @@ const { subscribe, set, update } = writable(katanObject);
 
 const katanStore = {
     subscribe,
+    set,
 
     turn: () => katanStore.updateKatan(katan => {
         const player = katanStore.getActivePlayer();
@@ -1206,29 +1210,14 @@ const katanStore = {
             const playerIndex = player.index;
             const otherPlayerIndex = other.index;
 
-            const playerResourceSelector = `.player_${playerIndex}_${resource.type}`;
-            const otherResourceSelector = `.player_${otherPlayerIndex}_${resource.type}`;
+            const sourceClass = `player_${otherPlayerIndex}_${resource.type}`;
+            const targetClass = `player_${playerIndex}_${resource.type}`;
 
-            const resourceItem = jQuery(playerResourceSelector);
-            const otherResourceItem = jQuery(otherResourceSelector);
-            const targetOffset = resourceItem.offset();
-            const offset = otherResourceItem.offset();
-
-            const body = jQuery('body');
-            const newResourceItem = otherResourceItem.clone();
-
-            newResourceItem.appendTo(body)
-                .css({
-                    left: offset.left + 'px',
-                    top: offset.top + 'px',
-                    zIndex: 1000,
-                    position: 'absolute'
-                })
-                .animate({
-                    left: targetOffset.left + 'px',
-                    top: targetOffset.top + 'px'
-                }, 1000, () => {
-                    newResourceItem.remove();
+            katanStore.animateMoveResource({
+                sourceClass,
+                targetClass,
+                count: 1,
+                callback: () => {
                     katanStore.updateTakeResource(resource);
                     katanStore.unsetKnightMode();
 
@@ -1245,8 +1234,14 @@ const katanStore = {
                     } else {
                         katanStore.doActionAndTurn();
                     }
-                });
+                }
+            });
         } else {
+            if (katan.isGetResourceFormOtherPlayer) {
+                katan.isGetResourceFormOtherPlayer = false;
+                katan.getResourceCount = 0;
+            }
+
             katanStore.doActionAndTurn();
         }
 
@@ -1273,6 +1268,56 @@ const katanStore = {
         return katan;
     }),
 
+    isVisible: item => {
+        return item.is(':visible')
+    },
+
+    animateMoveResource: (option) => {
+        option = Object.assign({
+            speed: 1000
+        }, option);
+
+        const sourceItem = jQuery('.' + option.sourceClass);
+        const visible = katanStore.isVisible(sourceItem);
+
+        if (!visible) {
+            sourceItem.show();
+        }
+
+        const targetItem = jQuery('.' + option.targetClass);
+
+        const sourceOffset = sourceItem.offset();
+        const targetOffset = targetItem.offset();
+
+        const body = jQuery('body');
+        const newResourceItem = sourceItem.clone()
+            .removeClass(option.sourceClass);
+
+        newResourceItem.appendTo(body)
+            .css({
+                left: sourceOffset.left + 'px',
+                top: sourceOffset.top + 'px',
+                width: '70px',
+                height: '70px',
+                zIndex: 1000,
+                position: 'absolute'
+            });
+
+        if (!visible) {
+            sourceItem.hide();
+        }
+
+        setTimeout(() => {
+            newResourceItem.animate({
+                left: targetOffset.left + 'px',
+                top: targetOffset.top + 'px'
+            }, option.speed, () => {
+                newResourceItem.remove();
+                option.callback();
+            });
+        }, option.count * 1000)
+    },
+
     moveResource: (number) => katanStore.updateKatan(katan => {
         let matchResourceCount = 0;
         let moveResourceCount = 0;
@@ -1286,42 +1331,17 @@ const katanStore = {
 
                     if (playerIndex !== -1) {
                         matchResourceCount++;
-
                         resource.show = true;
 
-                        const selector = `.player_${playerIndex}_${resource.type}`;
-                        const targetOffset = jQuery(selector).offset();
-
-                        const resourceClass = `resource_${resource.index}`;
-                        const resourceSelector = '.' + resourceClass;
-
-                        const resourceItem = jQuery(resourceSelector).show();
-                        const offset = resourceItem.offset();
-
-                        const body = jQuery('body');
-                        const newResourceItem = resourceItem.clone()
-                            .removeClass(resourceClass);
-
-                        newResourceItem.appendTo(body)
-                            .css({
-                                left: offset.left + 'px',
-                                top: offset.top + 'px'
-                            });
-
-                        resourceItem.hide();
-
-                        setTimeout(() => {
-                            newResourceItem
-                                .animate({
-                                    left: targetOffset.left + 'px',
-                                    top: targetOffset.top + 'px'
-                                }, 1000, () => {
-                                    newResourceItem.offset(offset);
-                                    newResourceItem.remove();
-                                    katanStore.updateResource(playerIndex, resource);
-                                    moveResourceCount++;
-                                });
-                        }, matchResourceCount * 1000)
+                        katanStore.animateMoveResource({
+                            sourceClass: `resource_${resource.index}`,
+                            targetClass: `player_${playerIndex}_${resource.type}`,
+                            count: matchResourceCount,
+                            callback: () => {
+                                katanStore.updateResource(playerIndex, resource);
+                                moveResourceCount++;
+                            }
+                        });
                     }
                 });
             });
@@ -1467,9 +1487,11 @@ const katanStore = {
 
         let number = a + b;
 
-        if (window.targetNumber || -1 !== -1) {
-            number = window.targetNumber;
+        if (katan.testDice !== 0) {
+            number = katan.testDice;
         }
+
+        console.log('>>> number', number);
 
         katan.rollDice = true;
 
@@ -1489,12 +1511,83 @@ const katanStore = {
         return katan;
     }),
 
-    readyMoveBuglar: () => katanStore.updateKatan(katan => {
+    takeResourceByBuglar: (katan) => {
+        katan.playerList.forEach(player => {
+            const resourceSum = katan.resourceTypeList
+                .map(typeObject => player.resource[typeObject.type])
+                .reduce((a, b) => a + b);
+
+            if (resourceSum >= 8) {
+                const resourceCount = Math.floor(resourceSum / 2);
+                let targetResourceList = [];
+
+                katan.resourceTypeList
+                    .forEach(typeObject => {
+                        const count = player.resource[typeObject.type];
+
+                        for (let i = 0; i < count; i++) {
+                            targetResourceList.push(typeObject.type);
+                        }
+                    });
+
+                targetResourceList = targetResourceList.sort(random());
+                const takeResourceFromBuglarCount = katan.takeResourceFromBuglarCount;
+                katan.takeResourceFromBuglarCount += resourceCount;
+
+                for (let i = 0; i < resourceCount; i++) {
+                    const type = targetResourceList.pop();
+                    const sourceClass = `player_${player.index}_${type}`;
+                    const targetClass = 'buglar';
+
+                    katanStore.animateMoveResource({
+                        sourceClass,
+                        targetClass,
+                        count: takeResourceFromBuglarCount + i,
+                        callback: () => {
+                            katanStore.updatePlayerResource(player.index, type);
+                        }
+                    });
+                }
+            }
+        });
+    },
+
+    updatePlayerResource: (playerIndex, type) => update(katan => {
+        katan.playerList[playerIndex].resource[type] -= 1;
+        katan.takeResourceFromBuglarCompleCount += 1;
+
+        return katan;
+    }),
+
+    readyMoveBuglar: () => update(katan => {
+        if (katan.isKnightMode) {
+            katanStore.internalReadyMoveBuglar(katan);
+        } else {
+            katanStore.takeResourceByBuglar(katan);
+
+            if (katan.takeResourceFromBuglarCount > 0) {
+                const interval = setInterval(() => {
+                    if (katan.takeResourceFromBuglarCount ===
+                        katan.takeResourceFromBuglarCompleCount ) {
+                        katan.takeResourceFromBuglarCount = 0;
+                        katan.takeResourceFromBuglarCompleCount = 0;
+                        clearInterval(interval);
+                        katanStore.internalReadyMoveBuglar(katan);
+                    }
+                }, 100);
+
+            }
+        }
+
+        return katan;
+    }),
+
+    internalReadyMoveBuglar: (katan) => {
         katan.mode = 'moveBuglar';
         katan.message = '도둑의 위치를 선택하세요.';
         katanStore.setNumberRippleEnabled();
         return katan;
-    }),
+    },
 
     setKnightMode: () => katanStore.updateKatan(katan => {
         katan.isKnightMode = true;

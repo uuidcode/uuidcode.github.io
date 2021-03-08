@@ -89,8 +89,14 @@ var app = (function (jQuery) {
         else if (node.getAttribute(attribute) !== value)
             node.setAttribute(attribute, value);
     }
+    function to_number(value) {
+        return value === '' ? null : +value;
+    }
     function children(element) {
         return Array.from(element.childNodes);
+    }
+    function set_input_value(input, value) {
+        input.value = value == null ? '' : value;
     }
     function set_style(node, key, value, important) {
         node.style.setProperty(key, value, important ? 'important' : '');
@@ -524,6 +530,7 @@ var app = (function (jQuery) {
     }
 
     let katanObject = {
+        testDice: 0,
         maxRoadLength: 0,
         resourceTypeList: [
             {
@@ -550,6 +557,8 @@ var app = (function (jQuery) {
         isMakeRoad2: false,
         makeRoadCount: 0,
         getResourceCount: 0,
+        takeResourceFromBuglarCount: 0,
+        takeResourceFromBuglarCompleCount: 0,
         isMakeCastle: false,
         isMakeCity: false,
         construction: false,
@@ -625,11 +634,11 @@ var app = (function (jQuery) {
         player.pickRoad = 0;
 
         player.resource = {
-            tree: 10,
-            mud: 10,
-            wheat: 10,
-            sheep: 10,
-            iron: 10
+            tree: 5,
+            mud: 5,
+            wheat: 5,
+            sheep: 5,
+            iron: 5
         };
 
         player.point = {
@@ -1607,6 +1616,7 @@ var app = (function (jQuery) {
 
     const katanStore = {
         subscribe: subscribe$1,
+        set,
 
         turn: () => katanStore.updateKatan(katan => {
             katanStore.getActivePlayer();
@@ -1724,29 +1734,14 @@ var app = (function (jQuery) {
                 const playerIndex = player.index;
                 const otherPlayerIndex = other.index;
 
-                const playerResourceSelector = `.player_${playerIndex}_${resource.type}`;
-                const otherResourceSelector = `.player_${otherPlayerIndex}_${resource.type}`;
+                const sourceClass = `player_${otherPlayerIndex}_${resource.type}`;
+                const targetClass = `player_${playerIndex}_${resource.type}`;
 
-                const resourceItem = jQuery__default['default'](playerResourceSelector);
-                const otherResourceItem = jQuery__default['default'](otherResourceSelector);
-                const targetOffset = resourceItem.offset();
-                const offset = otherResourceItem.offset();
-
-                const body = jQuery__default['default']('body');
-                const newResourceItem = otherResourceItem.clone();
-
-                newResourceItem.appendTo(body)
-                    .css({
-                        left: offset.left + 'px',
-                        top: offset.top + 'px',
-                        zIndex: 1000,
-                        position: 'absolute'
-                    })
-                    .animate({
-                        left: targetOffset.left + 'px',
-                        top: targetOffset.top + 'px'
-                    }, 1000, () => {
-                        newResourceItem.remove();
+                katanStore.animateMoveResource({
+                    sourceClass,
+                    targetClass,
+                    count: 1,
+                    callback: () => {
                         katanStore.updateTakeResource(resource);
                         katanStore.unsetKnightMode();
 
@@ -1763,8 +1758,14 @@ var app = (function (jQuery) {
                         } else {
                             katanStore.doActionAndTurn();
                         }
-                    });
+                    }
+                });
             } else {
+                if (katan.isGetResourceFormOtherPlayer) {
+                    katan.isGetResourceFormOtherPlayer = false;
+                    katan.getResourceCount = 0;
+                }
+
                 katanStore.doActionAndTurn();
             }
 
@@ -1791,6 +1792,56 @@ var app = (function (jQuery) {
             return katan;
         }),
 
+        isVisible: item => {
+            return item.is(':visible')
+        },
+
+        animateMoveResource: (option) => {
+            option = Object.assign({
+                speed: 1000
+            }, option);
+
+            const sourceItem = jQuery__default['default']('.' + option.sourceClass);
+            const visible = katanStore.isVisible(sourceItem);
+
+            if (!visible) {
+                sourceItem.show();
+            }
+
+            const targetItem = jQuery__default['default']('.' + option.targetClass);
+
+            const sourceOffset = sourceItem.offset();
+            const targetOffset = targetItem.offset();
+
+            const body = jQuery__default['default']('body');
+            const newResourceItem = sourceItem.clone()
+                .removeClass(option.sourceClass);
+
+            newResourceItem.appendTo(body)
+                .css({
+                    left: sourceOffset.left + 'px',
+                    top: sourceOffset.top + 'px',
+                    width: '70px',
+                    height: '70px',
+                    zIndex: 1000,
+                    position: 'absolute'
+                });
+
+            if (!visible) {
+                sourceItem.hide();
+            }
+
+            setTimeout(() => {
+                newResourceItem.animate({
+                    left: targetOffset.left + 'px',
+                    top: targetOffset.top + 'px'
+                }, option.speed, () => {
+                    newResourceItem.remove();
+                    option.callback();
+                });
+            }, option.count * 1000);
+        },
+
         moveResource: (number) => katanStore.updateKatan(katan => {
             let matchResourceCount = 0;
             let moveResourceCount = 0;
@@ -1804,42 +1855,17 @@ var app = (function (jQuery) {
 
                         if (playerIndex !== -1) {
                             matchResourceCount++;
-
                             resource.show = true;
 
-                            const selector = `.player_${playerIndex}_${resource.type}`;
-                            const targetOffset = jQuery__default['default'](selector).offset();
-
-                            const resourceClass = `resource_${resource.index}`;
-                            const resourceSelector = '.' + resourceClass;
-
-                            const resourceItem = jQuery__default['default'](resourceSelector).show();
-                            const offset = resourceItem.offset();
-
-                            const body = jQuery__default['default']('body');
-                            const newResourceItem = resourceItem.clone()
-                                .removeClass(resourceClass);
-
-                            newResourceItem.appendTo(body)
-                                .css({
-                                    left: offset.left + 'px',
-                                    top: offset.top + 'px'
-                                });
-
-                            resourceItem.hide();
-
-                            setTimeout(() => {
-                                newResourceItem
-                                    .animate({
-                                        left: targetOffset.left + 'px',
-                                        top: targetOffset.top + 'px'
-                                    }, 1000, () => {
-                                        newResourceItem.offset(offset);
-                                        newResourceItem.remove();
-                                        katanStore.updateResource(playerIndex, resource);
-                                        moveResourceCount++;
-                                    });
-                            }, matchResourceCount * 1000);
+                            katanStore.animateMoveResource({
+                                sourceClass: `resource_${resource.index}`,
+                                targetClass: `player_${playerIndex}_${resource.type}`,
+                                count: matchResourceCount,
+                                callback: () => {
+                                    katanStore.updateResource(playerIndex, resource);
+                                    moveResourceCount++;
+                                }
+                            });
                         }
                     });
                 });
@@ -1985,9 +2011,11 @@ var app = (function (jQuery) {
 
             let number = a + b;
 
-            if (window.targetNumber || -1 !== -1) {
-                number = window.targetNumber;
+            if (katan.testDice !== 0) {
+                number = katan.testDice;
             }
+
+            console.log('>>> number', number);
 
             katan.rollDice = true;
 
@@ -2007,12 +2035,83 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        readyMoveBuglar: () => katanStore.updateKatan(katan => {
+        takeResourceByBuglar: (katan) => {
+            katan.playerList.forEach(player => {
+                const resourceSum = katan.resourceTypeList
+                    .map(typeObject => player.resource[typeObject.type])
+                    .reduce((a, b) => a + b);
+
+                if (resourceSum >= 8) {
+                    const resourceCount = Math.floor(resourceSum / 2);
+                    let targetResourceList = [];
+
+                    katan.resourceTypeList
+                        .forEach(typeObject => {
+                            const count = player.resource[typeObject.type];
+
+                            for (let i = 0; i < count; i++) {
+                                targetResourceList.push(typeObject.type);
+                            }
+                        });
+
+                    targetResourceList = targetResourceList.sort(random());
+                    const takeResourceFromBuglarCount = katan.takeResourceFromBuglarCount;
+                    katan.takeResourceFromBuglarCount += resourceCount;
+
+                    for (let i = 0; i < resourceCount; i++) {
+                        const type = targetResourceList.pop();
+                        const sourceClass = `player_${player.index}_${type}`;
+                        const targetClass = 'buglar';
+
+                        katanStore.animateMoveResource({
+                            sourceClass,
+                            targetClass,
+                            count: takeResourceFromBuglarCount + i,
+                            callback: () => {
+                                katanStore.updatePlayerResource(player.index, type);
+                            }
+                        });
+                    }
+                }
+            });
+        },
+
+        updatePlayerResource: (playerIndex, type) => update$1(katan => {
+            katan.playerList[playerIndex].resource[type] -= 1;
+            katan.takeResourceFromBuglarCompleCount += 1;
+
+            return katan;
+        }),
+
+        readyMoveBuglar: () => update$1(katan => {
+            if (katan.isKnightMode) {
+                katanStore.internalReadyMoveBuglar(katan);
+            } else {
+                katanStore.takeResourceByBuglar(katan);
+
+                if (katan.takeResourceFromBuglarCount > 0) {
+                    const interval = setInterval(() => {
+                        if (katan.takeResourceFromBuglarCount ===
+                            katan.takeResourceFromBuglarCompleCount ) {
+                            katan.takeResourceFromBuglarCount = 0;
+                            katan.takeResourceFromBuglarCompleCount = 0;
+                            clearInterval(interval);
+                            katanStore.internalReadyMoveBuglar(katan);
+                        }
+                    }, 100);
+
+                }
+            }
+
+            return katan;
+        }),
+
+        internalReadyMoveBuglar: (katan) => {
             katan.mode = 'moveBuglar';
             katan.message = '도둑의 위치를 선택하세요.';
             katanStore.setNumberRippleEnabled();
             return katan;
-        }),
+        },
 
         setKnightMode: () => katanStore.updateKatan(katan => {
             katan.isKnightMode = true;
@@ -2790,8 +2889,8 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-803d69");
-    			add_location(img, file, 93, 4, 2780);
-    			add_location(div, file, 92, 4, 2770);
+    			add_location(img, file, 93, 4, 2805);
+    			add_location(div, file, 92, 4, 2795);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2837,6 +2936,7 @@ var app = (function (jQuery) {
     	let t1;
     	let t2;
     	let t3;
+    	let div0_class_value;
     	let t4;
     	let if_block2_anchor;
     	let mounted;
@@ -2864,7 +2964,7 @@ var app = (function (jQuery) {
     			attr_dev(img, "style", /*imageStyle*/ ctx[8]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
     			add_location(img, file, 71, 8, 2186);
-    			attr_dev(div0, "class", "number svelte-803d69");
+    			attr_dev(div0, "class", div0_class_value = "number number_" + /*resource*/ ctx[1].number + " svelte-803d69");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
@@ -2924,19 +3024,23 @@ var app = (function (jQuery) {
 
     			if (config.debug) if_block1.p(ctx, dirty);
 
+    			if (dirty & /*resource*/ 2 && div0_class_value !== (div0_class_value = "number number_" + /*resource*/ ctx[1].number + " svelte-803d69")) {
+    				attr_dev(div0, "class", div0_class_value);
+    			}
+
     			if (dirty & /*numberStyle*/ 4) {
     				attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			}
 
-    			if (dirty & /*resource*/ 2) {
+    			if (dirty & /*resource, resource*/ 2) {
     				toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			}
 
-    			if (dirty & /*resource*/ 2) {
+    			if (dirty & /*resource, resource*/ 2) {
     				toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			}
 
-    			if (dirty & /*resource*/ 2) {
+    			if (dirty & /*resource, resource*/ 2) {
     				toggle_class(div0, "buglar", /*resource*/ ctx[1].buglar);
     			}
 
@@ -6082,10 +6186,12 @@ var app = (function (jQuery) {
     	let t8;
     	let button1_disabled_value;
     	let t9;
+    	let input;
+    	let t10;
     	let button2;
-    	let t11;
-    	let board;
     	let t12;
+    	let board;
+    	let t13;
     	let td2;
     	let player1;
     	let current;
@@ -6145,11 +6251,13 @@ var app = (function (jQuery) {
     			button1 = element("button");
     			t8 = text("완료");
     			t9 = space();
+    			input = element("input");
+    			t10 = space();
     			button2 = element("button");
-    			button2.textContent = "take";
-    			t11 = space();
-    			create_component(board.$$.fragment);
+    			button2.textContent = "test";
     			t12 = space();
+    			create_component(board.$$.fragment);
+    			t13 = space();
     			td2 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
@@ -6166,8 +6274,11 @@ var app = (function (jQuery) {
     			attr_dev(button1, "class", "btn btn-primary svelte-eda5fa");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
     			add_location(button1, file$8, 70, 20, 2534);
+    			attr_dev(input, "type", "number");
+    			attr_dev(input, "class", "test-dice svelte-eda5fa");
+    			add_location(input, file$8, 73, 20, 2707);
     			attr_dev(button2, "class", "btn btn-primary svelte-eda5fa");
-    			add_location(button2, file$8, 73, 20, 2707);
+    			add_location(button2, file$8, 74, 20, 2797);
     			attr_dev(div0, "class", "dice-container svelte-eda5fa");
     			add_location(div0, file$8, 64, 16, 2179);
     			attr_dev(td1, "valign", "top");
@@ -6176,7 +6287,7 @@ var app = (function (jQuery) {
     			add_location(td1, file$8, 62, 12, 1998);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-eda5fa");
-    			add_location(td2, file$8, 80, 12, 3015);
+    			add_location(td2, file$8, 81, 12, 3104);
     			attr_dev(tr, "class", "svelte-eda5fa");
     			add_location(tr, file$8, 58, 8, 1864);
     			attr_dev(table, "class", "header svelte-eda5fa");
@@ -6211,10 +6322,13 @@ var app = (function (jQuery) {
     			append_dev(div0, button1);
     			append_dev(button1, t8);
     			append_dev(div0, t9);
+    			append_dev(div0, input);
+    			set_input_value(input, /*$katan*/ ctx[0].testDice);
+    			append_dev(div0, t10);
     			append_dev(div0, button2);
-    			append_dev(td1, t11);
+    			append_dev(td1, t12);
     			mount_component(board, td1, null);
-    			append_dev(tr, t12);
+    			append_dev(tr, t13);
     			append_dev(tr, td2);
     			mount_component(player1, td2, null);
     			current = true;
@@ -6223,7 +6337,8 @@ var app = (function (jQuery) {
     				dispose = [
     					listen_dev(button0, "click", /*click_handler*/ ctx[4], false, false, false),
     					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false),
-    					listen_dev(button2, "click", /*click_handler_2*/ ctx[6], false, false, false)
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[6]),
+    					listen_dev(button2, "click", /*click_handler_2*/ ctx[7], false, false, false)
     				];
 
     				mounted = true;
@@ -6255,11 +6370,15 @@ var app = (function (jQuery) {
     				prop_dev(button1, "disabled", button1_disabled_value);
     			}
 
+    			if (dirty & /*$katan*/ 1 && to_number(input.value) !== /*$katan*/ ctx[0].testDice) {
+    				set_input_value(input, /*$katan*/ ctx[0].testDice);
+    			}
+
     			const board_changes = {};
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 256) {
+    			if (dirty & /*$$scope*/ 512) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6362,7 +6481,13 @@ var app = (function (jQuery) {
 
     	const click_handler = () => katanStore.play();
     	const click_handler_1 = () => katanStore.turn();
-    	const click_handler_2 = () => katanStore.makeCity();
+
+    	function input_input_handler() {
+    		$katan.testDice = to_number(this.value);
+    		katanStore.set($katan);
+    	}
+
+    	const click_handler_2 = () => katanStore.makeDev();
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
@@ -6406,6 +6531,7 @@ var app = (function (jQuery) {
     		playerList,
     		click_handler,
     		click_handler_1,
+    		input_input_handler,
     		click_handler_2
     	];
     }

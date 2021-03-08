@@ -97,3 +97,8 @@ button:focus {
     filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
     margin-left: 2px;
 }
+
+.target-resource {
+    width: 70px;
+    height: 70px;
+}
