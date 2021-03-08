@@ -544,7 +544,12 @@ var app = (function (jQuery) {
         ],
         rollDice: false,
         action: false,
+        isGetResource: false,
+        isGetResourceFormOtherPlayer: false,
         isMakeRoad: false,
+        isMakeRoad2: false,
+        makeRoadCount: 0,
+        getResourceCount: 0,
         isMakeCastle: false,
         isMakeCity: false,
         construction: false,
@@ -587,9 +592,27 @@ var app = (function (jQuery) {
         });
     }
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 14; i++) {
         katanObject.cardList.push({
             type: 'knight'
+        });
+    }
+
+    for (let i = 0; i < 2; i++) {
+        katanObject.cardList.push({
+            type: 'road'
+        });
+    }
+
+    for (let i = 0; i < 2; i++) {
+        katanObject.cardList.push({
+            type: 'resource'
+        });
+    }
+
+    for (let i = 0; i < 2; i++) {
+        katanObject.cardList.push({
+            type: 'get'
         });
     }
 
@@ -1709,9 +1732,6 @@ var app = (function (jQuery) {
                 const targetOffset = resourceItem.offset();
                 const offset = otherResourceItem.offset();
 
-                console.log('>>> offset', offset);
-                console.log('>>> targetOffset', targetOffset);
-
                 const body = jQuery__default['default']('body');
                 const newResourceItem = otherResourceItem.clone();
 
@@ -1729,7 +1749,20 @@ var app = (function (jQuery) {
                         newResourceItem.remove();
                         katanStore.updateTakeResource(resource);
                         katanStore.unsetKnightMode();
-                        katanStore.doActionAndTurn();
+
+                        if (katan.isGetResourceFormOtherPlayer) {
+                            katan.getResourceCount += 1;
+
+                            if (katan.getResourceCount === 1) {
+                                katanStore.takeResource();
+                            } else if (katan.getResourceCount > 1) {
+                                katan.isGetResourceFormOtherPlayer = false;
+                                katan.getResourceCount = 0;
+                                katanStore.doActionAndTurn();
+                            }
+                        } else {
+                            katanStore.doActionAndTurn();
+                        }
                     });
             } else {
                 katanStore.doActionAndTurn();
@@ -1881,11 +1914,50 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        endMakeRoad: () => katanStore.updateKatan(katan => {
-            katan.isMakeRoad = false;
+        clickMakeRoad: (roadIndex) => update$1(katan => {
+            if (!katan.isMakeRoad) {
+                return;
+            }
+
+            const player = katanStore.getActivePlayer();
+            katanStore.setRoad(roadIndex, player.index);
+            katanStore.setHideRoad();
+            katanStore.setRoadRippleDisabled();
 
             if (katan.isStart) {
-                katanStore.doActionAndTurn();
+                katanStore.endMakeRoad();
+            } else {
+                katanStore.showConstructableCastle();
+                katanStore.endMakeRoad();
+                katanStore.turn();
+
+                if (katanStore.isStartable()) {
+                    katanStore.start();
+                }
+            }
+
+            return katan;
+        }),
+
+        endMakeRoad: () => katanStore.updateKatan(katan => {
+            if (katan.isMakeRoad2) {
+                katan.makeRoadCount += 1;
+            } else {
+                katan.isMakeRoad = false;
+            }
+
+            console.log('>>> katan.isStart', katan.isStart);
+            console.log('>>> katan.isMakeRoad2', katan.isMakeRoad2);
+            console.log('>>> katan.makeRoadCount', katan.makeRoadCount);
+
+            if (katan.isStart) {
+                if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
+                    katanStore.makeRoad();
+                } else {
+                    katan.isMakeRoad2 = false;
+                    katan.makeRoadCount = 0;
+                    katanStore.doActionAndTurn();
+                }
             }
 
             return katan;
@@ -2048,7 +2120,7 @@ var app = (function (jQuery) {
             player.pickRoad += 1;
             player.construction.road -= 1;
 
-            if (katan.isMakeRoad) {
+            if (katan.isStart && katan.isMakeRoad) {
                 player.resource.tree -= 1;
                 player.resource.mud -= 1;
             }
@@ -2080,6 +2152,10 @@ var app = (function (jQuery) {
 
             const player = katanStore.getActivePlayer();
 
+            player.resource.sheep -= 1;
+            player.resource.wheat -= 1;
+            player.resource.iron -= 1;
+
             if (card.type === 'point') {
                 alert('1점을 얻었습니다.');
                 player.point.point += 1;
@@ -2089,9 +2165,6 @@ var app = (function (jQuery) {
                 katanStore.readyMoveBuglar();
 
                 player.construction.knight += 1;
-                player.resource.sheep -= 1;
-                player.resource.wheat -= 1;
-                player.resource.iron -= 1;
 
                 if (player.construction.knight >= 3) {
                     const other = katanStore.getOtherPlayer(katan);
@@ -2105,6 +2178,31 @@ var app = (function (jQuery) {
                         }
                     }
                 }
+            } else if (card.type === 'road') {
+                alert('도로 2개를 만드세요.');
+                katan.isMakeRoad2 = true;
+                katanStore.makeRoad();
+            } else if (card.type === 'resource') {
+                alert('자원 2개 받으세요.');
+                katan.isGetResource = true;
+            } else if (card.type === 'get') {
+                alert('상대방의 자원 2개를 받습니다.');
+                katan.isGetResourceFormOtherPlayer = true;
+                katanStore.takeResource();
+            }
+
+            katanStore.recomputePlayer();
+
+            return katan;
+        }),
+
+        getResource: (resourceType) => update$1(katan => {
+            const player = katanStore.getActivePlayer();
+            katan.getResourceCount += 1;
+            player.resource[resourceType] += 1;
+
+            if (katan.getResourceCount >= 2) {
+                katan.isGetResource = false;
             }
 
             katanStore.recomputePlayer();
@@ -3588,11 +3686,11 @@ var app = (function (jQuery) {
     /* src\Road.svelte generated by Svelte v3.32.3 */
     const file$3 = "src\\Road.svelte";
 
-    // (79:0) {:else}
+    // (55:0) {:else}
     function create_else_block$1(ctx) {
     	let div1;
     	let div0;
-    	let t_value = /*road*/ ctx[0].title + "";
+    	let t_value = /*road*/ ctx[1].title + "";
     	let t;
     	let mounted;
     	let dispose;
@@ -3602,14 +3700,14 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$3, 86, 8, 2165);
+    			add_location(div0, file$3, 62, 8, 1649);
     			attr_dev(div1, "class", "road svelte-18g88p4");
-    			attr_dev(div1, "style", /*roadStyle*/ ctx[1]);
-    			toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
-    			toggle_class(div1, "pick", /*road*/ ctx[0].ripple);
-    			toggle_class(div1, "hide", /*road*/ ctx[0].hide);
-    			toggle_class(div1, "show", /*road*/ ctx[0].show);
-    			add_location(div1, file$3, 79, 4, 1945);
+    			attr_dev(div1, "style", /*roadStyle*/ ctx[2]);
+    			toggle_class(div1, "ripple1", /*road*/ ctx[1].ripple);
+    			toggle_class(div1, "pick", /*road*/ ctx[1].ripple);
+    			toggle_class(div1, "hide", /*road*/ ctx[1].hide);
+    			toggle_class(div1, "show", /*road*/ ctx[1].show);
+    			add_location(div1, file$3, 55, 4, 1405);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -3617,31 +3715,31 @@ var app = (function (jQuery) {
     			append_dev(div0, t);
 
     			if (!mounted) {
-    				dispose = listen_dev(div1, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div1, "click", /*click_handler*/ ctx[3], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*road*/ 1 && t_value !== (t_value = /*road*/ ctx[0].title + "")) set_data_dev(t, t_value);
+    			if (dirty & /*road*/ 2 && t_value !== (t_value = /*road*/ ctx[1].title + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*roadStyle*/ 2) {
-    				attr_dev(div1, "style", /*roadStyle*/ ctx[1]);
+    			if (dirty & /*roadStyle*/ 4) {
+    				attr_dev(div1, "style", /*roadStyle*/ ctx[2]);
     			}
 
-    			if (dirty & /*road*/ 1) {
-    				toggle_class(div1, "ripple1", /*road*/ ctx[0].ripple);
+    			if (dirty & /*road*/ 2) {
+    				toggle_class(div1, "ripple1", /*road*/ ctx[1].ripple);
     			}
 
-    			if (dirty & /*road*/ 1) {
-    				toggle_class(div1, "pick", /*road*/ ctx[0].ripple);
+    			if (dirty & /*road*/ 2) {
+    				toggle_class(div1, "pick", /*road*/ ctx[1].ripple);
     			}
 
-    			if (dirty & /*road*/ 1) {
-    				toggle_class(div1, "hide", /*road*/ ctx[0].hide);
+    			if (dirty & /*road*/ 2) {
+    				toggle_class(div1, "hide", /*road*/ ctx[1].hide);
     			}
 
-    			if (dirty & /*road*/ 1) {
-    				toggle_class(div1, "show", /*road*/ ctx[0].show);
+    			if (dirty & /*road*/ 2) {
+    				toggle_class(div1, "show", /*road*/ ctx[1].show);
     			}
     		},
     		d: function destroy(detaching) {
@@ -3655,25 +3753,25 @@ var app = (function (jQuery) {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(79:0) {:else}",
+    		source: "(55:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (74:0) {#if config.debug}
+    // (50:0) {#if config.debug}
     function create_if_block$3(ctx) {
     	let div2;
     	let div0;
-    	let t0_value = /*road*/ ctx[0].i + "";
+    	let t0_value = /*road*/ ctx[1].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*road*/ ctx[0].j + "";
+    	let t2_value = /*road*/ ctx[1].j + "";
     	let t2;
     	let t3;
     	let div1;
-    	let t4_value = /*road*/ ctx[0].index + "";
+    	let t4_value = /*road*/ ctx[1].index + "";
     	let t4;
 
     	const block = {
@@ -3686,11 +3784,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$3, 75, 8, 1861);
-    			add_location(div1, file$3, 76, 8, 1898);
+    			add_location(div0, file$3, 51, 8, 1321);
+    			add_location(div1, file$3, 52, 8, 1358);
     			attr_dev(div2, "class", "road svelte-18g88p4");
-    			attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
-    			add_location(div2, file$3, 74, 4, 1816);
+    			attr_dev(div2, "style", /*roadStyle*/ ctx[2]);
+    			add_location(div2, file$3, 50, 4, 1276);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -3703,12 +3801,12 @@ var app = (function (jQuery) {
     			append_dev(div1, t4);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*road*/ 1 && t0_value !== (t0_value = /*road*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*road*/ 1 && t2_value !== (t2_value = /*road*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*road*/ 1 && t4_value !== (t4_value = /*road*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*road*/ 2 && t0_value !== (t0_value = /*road*/ ctx[1].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*road*/ 2 && t2_value !== (t2_value = /*road*/ ctx[1].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*road*/ 2 && t4_value !== (t4_value = /*road*/ ctx[1].index + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*roadStyle*/ 2) {
-    				attr_dev(div2, "style", /*roadStyle*/ ctx[1]);
+    			if (dirty & /*roadStyle*/ 4) {
+    				attr_dev(div2, "style", /*roadStyle*/ ctx[2]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -3720,7 +3818,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(74:0) {#if config.debug}",
+    		source: "(50:0) {#if config.debug}",
     		ctx
     	});
 
@@ -3775,36 +3873,13 @@ var app = (function (jQuery) {
     function instance$3($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(5, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(4, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Road", slots, []);
     	let { roadIndex } = $$props;
     	let roadList = $katan.roadList;
     	let road = roadList[roadIndex];
     	let roadStyle;
-
-    	const pick = () => {
-    		if (!$katan.isMakeRoad) {
-    			return;
-    		}
-
-    		let player = katanStore.getActivePlayer();
-    		katanStore.setRoad(roadIndex, player.index);
-    		katanStore.setHideRoad();
-    		katanStore.setRoadRippleDisabled();
-
-    		if ($katan.isStart) {
-    			katanStore.endMakeRoad();
-    		} else {
-    			katanStore.showConstructableCastle();
-    			katanStore.endMakeRoad();
-    			katanStore.turn();
-
-    			if (katanStore.isStartable()) {
-    				katanStore.start();
-    			}
-    		}
-    	};
 
     	const createStyle = () => {
     		let styleObject = {
@@ -3835,8 +3910,8 @@ var app = (function (jQuery) {
     	roadStyle = createStyle();
 
     	const unsubscribe = katanStore.subscribe(currentKatan => {
-    		$$invalidate(1, roadStyle = createStyle());
-    		$$invalidate(0, road = currentKatan.roadList[roadIndex]);
+    		$$invalidate(2, roadStyle = createStyle());
+    		$$invalidate(1, road = currentKatan.roadList[roadIndex]);
     	});
 
     	onDestroy(unsubscribe);
@@ -3846,10 +3921,10 @@ var app = (function (jQuery) {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Road> was created with unknown prop '${key}'`);
     	});
 
-    	const click_handler = () => pick();
+    	const click_handler = () => katanStore.clickMakeRoad(roadIndex);
 
     	$$self.$$set = $$props => {
-    		if ("roadIndex" in $$props) $$invalidate(3, roadIndex = $$props.roadIndex);
+    		if ("roadIndex" in $$props) $$invalidate(0, roadIndex = $$props.roadIndex);
     	};
 
     	$$self.$capture_state = () => ({
@@ -3861,30 +3936,29 @@ var app = (function (jQuery) {
     		roadList,
     		road,
     		roadStyle,
-    		pick,
     		createStyle,
     		unsubscribe,
     		$katan
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("roadIndex" in $$props) $$invalidate(3, roadIndex = $$props.roadIndex);
+    		if ("roadIndex" in $$props) $$invalidate(0, roadIndex = $$props.roadIndex);
     		if ("roadList" in $$props) roadList = $$props.roadList;
-    		if ("road" in $$props) $$invalidate(0, road = $$props.road);
-    		if ("roadStyle" in $$props) $$invalidate(1, roadStyle = $$props.roadStyle);
+    		if ("road" in $$props) $$invalidate(1, road = $$props.road);
+    		if ("roadStyle" in $$props) $$invalidate(2, roadStyle = $$props.roadStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [road, roadStyle, pick, roadIndex, click_handler];
+    	return [roadIndex, road, roadStyle, click_handler];
     }
 
     class Road extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { roadIndex: 3 });
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { roadIndex: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3896,7 +3970,7 @@ var app = (function (jQuery) {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*roadIndex*/ ctx[3] === undefined && !("roadIndex" in props)) {
+    		if (/*roadIndex*/ ctx[0] === undefined && !("roadIndex" in props)) {
     			console.warn("<Road> was created without expected prop 'roadIndex'");
     		}
     	}
@@ -4908,21 +4982,21 @@ var app = (function (jQuery) {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[11] = list[i];
+    	child_ctx[12] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
+    	child_ctx[15] = list[i];
     	return child_ctx;
     }
 
-    // (137:32) {#if player.trade[resource.type].enable}
-    function create_if_block$4(ctx) {
+    // (143:36) {#if player.trade[resource.type].enable}
+    function create_if_block_1$1(ctx) {
     	let table;
     	let tr;
-    	let each_value_1 = /*resourceList*/ ctx[3];
+    	let each_value_1 = /*resourceList*/ ctx[4];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -4939,9 +5013,9 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 138, 40, 4880);
-    			attr_dev(table, "class", "trade-target-resource svelte-1ocvkkp");
-    			add_location(table, file$7, 137, 36, 4802);
+    			add_location(tr, file$7, 144, 44, 5267);
+    			attr_dev(table, "class", "trade-target-resource svelte-1bllvsd");
+    			add_location(table, file$7, 143, 40, 5185);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -4952,8 +5026,8 @@ var app = (function (jQuery) {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*player, resourceList, katan*/ 10) {
-    				each_value_1 = /*resourceList*/ ctx[3];
+    			if (dirty & /*player, resourceList, katan*/ 20) {
+    				each_value_1 = /*resourceList*/ ctx[4];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -4984,24 +5058,70 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$4.name,
+    		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(137:32) {#if player.trade[resource.type].enable}",
+    		source: "(143:36) {#if player.trade[resource.type].enable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (141:48) {#if resource.type!==tradeResource.type}
-    function create_if_block_1$1(ctx) {
+    // (137:32) {#if $katan.isGetReource}
+    function create_if_block$4(ctx) {
+    	let button;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[7](/*resource*/ ctx[12]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "받기";
+    			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-1bllvsd");
+    			add_location(button, file$7, 137, 36, 4787);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$4.name,
+    		type: "if",
+    		source: "(137:32) {#if $katan.isGetReource}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (147:52) {#if resource.type!==tradeResource.type}
+    function create_if_block_2$1(ctx) {
     	let td;
     	let div;
     	let img;
     	let img_src_value;
     	let t0;
     	let button;
-    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "";
+    	let t1_value = /*player*/ ctx[2].trade[/*resource*/ ctx[12].type].count + "";
     	let t1;
     	let t2;
     	let button_disabled_value;
@@ -5009,8 +5129,8 @@ var app = (function (jQuery) {
     	let mounted;
     	let dispose;
 
-    	function click_handler() {
-    		return /*click_handler*/ ctx[7](/*resource*/ ctx[11], /*tradeResource*/ ctx[14]);
+    	function click_handler_1() {
+    		return /*click_handler_1*/ ctx[8](/*resource*/ ctx[12], /*tradeResource*/ ctx[15]);
     	}
 
     	const block = {
@@ -5023,15 +5143,15 @@ var app = (function (jQuery) {
     			t1 = text(t1_value);
     			t2 = text(":1 교환");
     			t3 = space();
-    			attr_dev(img, "class", "trade-resource svelte-1ocvkkp");
-    			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 143, 60, 5235);
-    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1ocvkkp");
-    			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 144, 60, 5360);
-    			add_location(div, file$7, 142, 56, 5169);
-    			attr_dev(td, "class", "svelte-1ocvkkp");
-    			add_location(td, file$7, 141, 52, 5108);
+    			attr_dev(img, "class", "trade-resource svelte-1bllvsd");
+    			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[15].type + "_item.png"))) attr_dev(img, "src", img_src_value);
+    			add_location(img, file$7, 149, 64, 5642);
+    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1bllvsd");
+    			button.disabled = button_disabled_value = !/*player*/ ctx[2].trade[/*resource*/ ctx[12].type].action;
+    			add_location(button, file$7, 150, 64, 5771);
+    			add_location(div, file$7, 148, 60, 5572);
+    			attr_dev(td, "class", "svelte-1bllvsd");
+    			add_location(td, file$7, 147, 56, 5507);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -5044,20 +5164,20 @@ var app = (function (jQuery) {
     			append_dev(td, t3);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				dispose = listen_dev(button, "click", click_handler_1, false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*resourceList*/ 8 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 16 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[15].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 10 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*player, resourceList*/ 20 && t1_value !== (t1_value = /*player*/ ctx[2].trade[/*resource*/ ctx[12].type].count + "")) set_data_dev(t1, t1_value);
 
-    			if (dirty & /*player, resourceList*/ 10 && button_disabled_value !== (button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action)) {
+    			if (dirty & /*player, resourceList*/ 20 && button_disabled_value !== (button_disabled_value = !/*player*/ ctx[2].trade[/*resource*/ ctx[12].type].action)) {
     				prop_dev(button, "disabled", button_disabled_value);
     			}
     		},
@@ -5070,19 +5190,19 @@ var app = (function (jQuery) {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$1.name,
+    		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(141:48) {#if resource.type!==tradeResource.type}",
+    		source: "(147:52) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (140:44) {#each resourceList as tradeResource}
+    // (146:48) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
-    	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_1$1(ctx);
+    	let if_block = /*resource*/ ctx[12].type !== /*tradeResource*/ ctx[15].type && create_if_block_2$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -5094,11 +5214,11 @@ var app = (function (jQuery) {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (/*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type) {
+    			if (/*resource*/ ctx[12].type !== /*tradeResource*/ ctx[15].type) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_1$1(ctx);
+    					if_block = create_if_block_2$1(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -5117,7 +5237,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(140:44) {#each resourceList as tradeResource}",
+    		source: "(146:48) {#each resourceList as tradeResource}",
     		ctx
     	});
 
@@ -5134,17 +5254,24 @@ var app = (function (jQuery) {
     	let img_class_value;
     	let t0;
     	let div0;
-    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "";
+    	let t1_value = /*player*/ ctx[2].trade[/*resource*/ ctx[12].type].count + "";
     	let t1;
     	let t2;
     	let t3;
     	let td1;
-    	let t4_value = /*resource*/ ctx[11].count + "";
+    	let t4_value = /*resource*/ ctx[12].count + "";
     	let t4;
     	let t5;
     	let td2;
     	let t6;
-    	let if_block = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].enable && create_if_block$4(ctx);
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*$katan*/ ctx[1].isGetReource) return create_if_block$4;
+    		if (/*player*/ ctx[2].trade[/*resource*/ ctx[12].type].enable) return create_if_block_1$1;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type && current_block_type(ctx);
 
     	const block = {
     		c: function create() {
@@ -5163,19 +5290,19 @@ var app = (function (jQuery) {
     			td2 = element("td");
     			if (if_block) if_block.c();
     			t6 = space();
-    			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-1ocvkkp");
+    			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[12].type + "_item.png"))) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[2].index + "_" + /*resource*/ ctx[12].type + " svelte-1bllvsd");
     			add_location(img, file$7, 129, 36, 4280);
-    			attr_dev(div0, "class", "trade-ratio svelte-1ocvkkp");
+    			attr_dev(div0, "class", "trade-ratio svelte-1bllvsd");
     			add_location(div0, file$7, 131, 36, 4449);
-    			attr_dev(div1, "class", "resource-item svelte-1ocvkkp");
+    			attr_dev(div1, "class", "resource-item svelte-1bllvsd");
     			add_location(div1, file$7, 128, 32, 4216);
     			attr_dev(td0, "width", "80");
-    			attr_dev(td0, "class", "svelte-1ocvkkp");
+    			attr_dev(td0, "class", "svelte-1bllvsd");
     			add_location(td0, file$7, 127, 28, 4168);
-    			attr_dev(td1, "class", "number svelte-1ocvkkp");
+    			attr_dev(td1, "class", "number svelte-1bllvsd");
     			add_location(td1, file$7, 134, 28, 4619);
-    			attr_dev(td2, "class", "svelte-1ocvkkp");
+    			attr_dev(td2, "class", "svelte-1bllvsd");
     			add_location(td2, file$7, 135, 28, 4688);
     			add_location(tr, file$7, 126, 24, 4135);
     		},
@@ -5197,33 +5324,35 @@ var app = (function (jQuery) {
     			append_dev(tr, t6);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 8 && img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 16 && img.src !== (img_src_value = "" + (/*resource*/ ctx[12].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 10 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-1ocvkkp")) {
+    			if (dirty & /*player, resourceList*/ 20 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[2].index + "_" + /*resource*/ ctx[12].type + " svelte-1bllvsd")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 10 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "")) set_data_dev(t1, t1_value);
-    			if (dirty & /*resourceList*/ 8 && t4_value !== (t4_value = /*resource*/ ctx[11].count + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*player, resourceList*/ 20 && t1_value !== (t1_value = /*player*/ ctx[2].trade[/*resource*/ ctx[12].type].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*resourceList*/ 16 && t4_value !== (t4_value = /*resource*/ ctx[12].count + "")) set_data_dev(t4, t4_value);
 
-    			if (/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].enable) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if (if_block) if_block.d(1);
+    				if_block = current_block_type && current_block_type(ctx);
+
     				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block$4(ctx);
     					if_block.c();
     					if_block.m(td2, null);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
     			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(tr);
-    			if (if_block) if_block.d();
+
+    			if (if_block) {
+    				if_block.d();
+    			}
     		}
     	};
 
@@ -5248,7 +5377,7 @@ var app = (function (jQuery) {
     	let img_src_value;
     	let t0;
     	let div1;
-    	let t1_value = /*player*/ ctx[1].point.sum + "";
+    	let t1_value = /*player*/ ctx[2].point.sum + "";
     	let t1;
     	let t2;
     	let tr10;
@@ -5273,23 +5402,23 @@ var app = (function (jQuery) {
     	let t14;
     	let tr3;
     	let td7;
-    	let t15_value = /*player*/ ctx[1].point.castle + "";
+    	let t15_value = /*player*/ ctx[2].point.castle + "";
     	let t15;
     	let t16;
     	let td8;
-    	let t17_value = /*player*/ ctx[1].point.city + "";
+    	let t17_value = /*player*/ ctx[2].point.city + "";
     	let t17;
     	let t18;
     	let td9;
-    	let t19_value = /*player*/ ctx[1].point.point + "";
+    	let t19_value = /*player*/ ctx[2].point.point + "";
     	let t19;
     	let t20;
     	let td10;
-    	let t21_value = /*player*/ ctx[1].point.road + "";
+    	let t21_value = /*player*/ ctx[2].point.road + "";
     	let t21;
     	let t22;
     	let td11;
-    	let t23_value = /*player*/ ctx[1].point.knight + "";
+    	let t23_value = /*player*/ ctx[2].point.knight + "";
     	let t23;
     	let t24;
     	let tr5;
@@ -5311,26 +5440,26 @@ var app = (function (jQuery) {
     	let t36;
     	let tr7;
     	let td19;
-    	let t37_value = /*player*/ ctx[1].construction.castle + "";
+    	let t37_value = /*player*/ ctx[2].construction.castle + "";
     	let t37;
     	let t38;
     	let t39;
     	let td20;
-    	let t40_value = /*player*/ ctx[1].construction.city + "";
+    	let t40_value = /*player*/ ctx[2].construction.city + "";
     	let t40;
     	let t41;
     	let t42;
     	let td21;
-    	let t43_value = /*player*/ ctx[1].construction.road + "";
+    	let t43_value = /*player*/ ctx[2].construction.road + "";
     	let t43;
     	let t44;
     	let t45;
     	let td22;
-    	let t46_value = /*player*/ ctx[1].construction.knight + "";
+    	let t46_value = /*player*/ ctx[2].construction.knight + "";
     	let t46;
     	let t47;
     	let td23;
-    	let t48_value = /*player*/ ctx[1].maxRoadLength + "";
+    	let t48_value = /*player*/ ctx[2].maxRoadLength + "";
     	let t48;
     	let t49;
     	let tr9;
@@ -5344,7 +5473,7 @@ var app = (function (jQuery) {
     	let td28;
     	let construction;
     	let current;
-    	let each_value = /*resourceList*/ ctx[3];
+    	let each_value = /*resourceList*/ ctx[4];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -5470,99 +5599,99 @@ var app = (function (jQuery) {
     			tr12 = element("tr");
     			td28 = element("td");
     			create_component(construction.$$.fragment);
-    			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
+    			if (img.src !== (img_src_value = /*player*/ ctx[2].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$7, 65, 43, 1549);
-    			attr_dev(div0, "class", "player-header svelte-1ocvkkp");
+    			attr_dev(div0, "class", "player-header svelte-1bllvsd");
     			add_location(div0, file$7, 65, 16, 1522);
-    			attr_dev(div1, "class", "player-header player-sum svelte-1ocvkkp");
+    			attr_dev(div1, "class", "player-header player-sum svelte-1bllvsd");
     			add_location(div1, file$7, 66, 16, 1596);
-    			attr_dev(td0, "class", "name svelte-1ocvkkp");
-    			set_style(td0, "background-color", /*player*/ ctx[1].color);
+    			attr_dev(td0, "class", "name svelte-1bllvsd");
+    			set_style(td0, "background-color", /*player*/ ctx[2].color);
     			add_location(td0, file$7, 63, 12, 1432);
     			add_location(tr0, file$7, 62, 8, 1415);
     			attr_dev(td1, "colspan", "3");
-    			attr_dev(td1, "class", "header svelte-1ocvkkp");
+    			attr_dev(td1, "class", "header svelte-1bllvsd");
     			add_location(td1, file$7, 73, 24, 1817);
     			add_location(tr1, file$7, 72, 20, 1788);
-    			attr_dev(td2, "class", "svelte-1ocvkkp");
+    			attr_dev(td2, "class", "svelte-1bllvsd");
     			add_location(td2, file$7, 80, 36, 2085);
-    			attr_dev(td3, "class", "svelte-1ocvkkp");
+    			attr_dev(td3, "class", "svelte-1bllvsd");
     			add_location(td3, file$7, 81, 36, 2133);
-    			attr_dev(td4, "class", "svelte-1ocvkkp");
+    			attr_dev(td4, "class", "svelte-1bllvsd");
     			add_location(td4, file$7, 82, 36, 2181);
-    			attr_dev(td5, "class", "svelte-1ocvkkp");
+    			attr_dev(td5, "class", "svelte-1bllvsd");
     			add_location(td5, file$7, 83, 36, 2229);
-    			attr_dev(td6, "class", "svelte-1ocvkkp");
+    			attr_dev(td6, "class", "svelte-1bllvsd");
     			add_location(td6, file$7, 84, 36, 2281);
     			attr_dev(tr2, "class", "point");
     			add_location(tr2, file$7, 79, 32, 2030);
-    			attr_dev(td7, "class", "svelte-1ocvkkp");
+    			attr_dev(td7, "class", "svelte-1bllvsd");
     			add_location(td7, file$7, 87, 36, 2408);
-    			attr_dev(td8, "class", "svelte-1ocvkkp");
+    			attr_dev(td8, "class", "svelte-1bllvsd");
     			add_location(td8, file$7, 88, 36, 2475);
-    			attr_dev(td9, "class", "svelte-1ocvkkp");
+    			attr_dev(td9, "class", "svelte-1bllvsd");
     			add_location(td9, file$7, 89, 36, 2540);
-    			attr_dev(td10, "class", "svelte-1ocvkkp");
+    			attr_dev(td10, "class", "svelte-1bllvsd");
     			add_location(td10, file$7, 90, 36, 2606);
-    			attr_dev(td11, "class", "svelte-1ocvkkp");
+    			attr_dev(td11, "class", "svelte-1bllvsd");
     			add_location(td11, file$7, 91, 36, 2671);
     			add_location(tr3, file$7, 86, 32, 2367);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$7, 77, 28, 1976);
     			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "svelte-1ocvkkp");
+    			attr_dev(td12, "class", "svelte-1bllvsd");
     			add_location(td12, file$7, 76, 24, 1931);
     			add_location(tr4, file$7, 75, 20, 1902);
     			attr_dev(td13, "colspan", "3");
-    			attr_dev(td13, "class", "header svelte-1ocvkkp");
+    			attr_dev(td13, "class", "header svelte-1bllvsd");
     			add_location(td13, file$7, 98, 24, 2883);
     			add_location(tr5, file$7, 97, 20, 2854);
-    			attr_dev(td14, "class", "svelte-1ocvkkp");
+    			attr_dev(td14, "class", "svelte-1bllvsd");
     			add_location(td14, file$7, 104, 36, 3157);
-    			attr_dev(td15, "class", "svelte-1ocvkkp");
+    			attr_dev(td15, "class", "svelte-1bllvsd");
     			add_location(td15, file$7, 105, 36, 3205);
-    			attr_dev(td16, "class", "svelte-1ocvkkp");
+    			attr_dev(td16, "class", "svelte-1bllvsd");
     			add_location(td16, file$7, 106, 36, 3253);
-    			attr_dev(td17, "class", "svelte-1ocvkkp");
+    			attr_dev(td17, "class", "svelte-1bllvsd");
     			add_location(td17, file$7, 107, 36, 3301);
-    			attr_dev(td18, "class", "svelte-1ocvkkp");
+    			attr_dev(td18, "class", "svelte-1bllvsd");
     			add_location(td18, file$7, 108, 36, 3349);
     			add_location(tr6, file$7, 103, 32, 3116);
-    			attr_dev(td19, "class", "svelte-1ocvkkp");
+    			attr_dev(td19, "class", "svelte-1bllvsd");
     			add_location(td19, file$7, 111, 36, 3474);
-    			attr_dev(td20, "class", "svelte-1ocvkkp");
+    			attr_dev(td20, "class", "svelte-1bllvsd");
     			add_location(td20, file$7, 112, 36, 3552);
-    			attr_dev(td21, "class", "svelte-1ocvkkp");
+    			attr_dev(td21, "class", "svelte-1bllvsd");
     			add_location(td21, file$7, 113, 36, 3628);
-    			attr_dev(td22, "class", "svelte-1ocvkkp");
+    			attr_dev(td22, "class", "svelte-1bllvsd");
     			add_location(td22, file$7, 114, 36, 3705);
-    			attr_dev(td23, "class", "svelte-1ocvkkp");
+    			attr_dev(td23, "class", "svelte-1bllvsd");
     			add_location(td23, file$7, 115, 36, 3779);
     			add_location(tr7, file$7, 110, 32, 3433);
-    			attr_dev(table1, "class", "construction svelte-1ocvkkp");
+    			attr_dev(table1, "class", "construction svelte-1bllvsd");
     			attr_dev(table1, "width", "100%");
     			add_location(table1, file$7, 102, 28, 3042);
     			attr_dev(td24, "colspan", "3");
-    			attr_dev(td24, "class", "svelte-1ocvkkp");
+    			attr_dev(td24, "class", "svelte-1bllvsd");
     			add_location(td24, file$7, 101, 24, 2997);
     			add_location(tr8, file$7, 100, 20, 2968);
     			attr_dev(td25, "colspan", "3");
-    			attr_dev(td25, "class", "header svelte-1ocvkkp");
+    			attr_dev(td25, "class", "header svelte-1bllvsd");
     			add_location(td25, file$7, 122, 24, 3992);
     			add_location(tr9, file$7, 121, 20, 3963);
-    			attr_dev(table2, "class", "inner-resource svelte-1ocvkkp");
+    			attr_dev(table2, "class", "inner-resource svelte-1bllvsd");
     			add_location(table2, file$7, 71, 16, 1737);
-    			attr_dev(td26, "class", "svelte-1ocvkkp");
+    			attr_dev(td26, "class", "svelte-1bllvsd");
     			add_location(td26, file$7, 70, 12, 1716);
     			add_location(tr10, file$7, 69, 8, 1699);
-    			attr_dev(td27, "class", "header svelte-1ocvkkp");
-    			add_location(td27, file$7, 163, 12, 6374);
-    			add_location(tr11, file$7, 162, 8, 6357);
-    			attr_dev(td28, "class", "svelte-1ocvkkp");
-    			add_location(td28, file$7, 166, 12, 6440);
-    			add_location(tr12, file$7, 165, 8, 6423);
-    			attr_dev(table3, "class", "trade-resource svelte-1ocvkkp");
-    			attr_dev(table3, "style", /*playerStyle*/ ctx[2]);
+    			attr_dev(td27, "class", "header svelte-1bllvsd");
+    			add_location(td27, file$7, 170, 12, 6867);
+    			add_location(tr11, file$7, 169, 8, 6850);
+    			attr_dev(td28, "class", "svelte-1bllvsd");
+    			add_location(td28, file$7, 173, 12, 6933);
+    			add_location(tr12, file$7, 172, 8, 6916);
+    			attr_dev(table3, "class", "trade-resource svelte-1bllvsd");
+    			attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			add_location(table3, file$7, 61, 4, 1356);
     			add_location(main, file$7, 60, 0, 1345);
     		},
@@ -5670,29 +5799,29 @@ var app = (function (jQuery) {
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (!current || dirty & /*player*/ 2 && img.src !== (img_src_value = /*player*/ ctx[1].image)) {
+    			if (!current || dirty & /*player*/ 4 && img.src !== (img_src_value = /*player*/ ctx[2].image)) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if ((!current || dirty & /*player*/ 2) && t1_value !== (t1_value = /*player*/ ctx[1].point.sum + "")) set_data_dev(t1, t1_value);
+    			if ((!current || dirty & /*player*/ 4) && t1_value !== (t1_value = /*player*/ ctx[2].point.sum + "")) set_data_dev(t1, t1_value);
 
-    			if (!current || dirty & /*player*/ 2) {
-    				set_style(td0, "background-color", /*player*/ ctx[1].color);
+    			if (!current || dirty & /*player*/ 4) {
+    				set_style(td0, "background-color", /*player*/ ctx[2].color);
     			}
 
-    			if ((!current || dirty & /*player*/ 2) && t15_value !== (t15_value = /*player*/ ctx[1].point.castle + "")) set_data_dev(t15, t15_value);
-    			if ((!current || dirty & /*player*/ 2) && t17_value !== (t17_value = /*player*/ ctx[1].point.city + "")) set_data_dev(t17, t17_value);
-    			if ((!current || dirty & /*player*/ 2) && t19_value !== (t19_value = /*player*/ ctx[1].point.point + "")) set_data_dev(t19, t19_value);
-    			if ((!current || dirty & /*player*/ 2) && t21_value !== (t21_value = /*player*/ ctx[1].point.road + "")) set_data_dev(t21, t21_value);
-    			if ((!current || dirty & /*player*/ 2) && t23_value !== (t23_value = /*player*/ ctx[1].point.knight + "")) set_data_dev(t23, t23_value);
-    			if ((!current || dirty & /*player*/ 2) && t37_value !== (t37_value = /*player*/ ctx[1].construction.castle + "")) set_data_dev(t37, t37_value);
-    			if ((!current || dirty & /*player*/ 2) && t40_value !== (t40_value = /*player*/ ctx[1].construction.city + "")) set_data_dev(t40, t40_value);
-    			if ((!current || dirty & /*player*/ 2) && t43_value !== (t43_value = /*player*/ ctx[1].construction.road + "")) set_data_dev(t43, t43_value);
-    			if ((!current || dirty & /*player*/ 2) && t46_value !== (t46_value = /*player*/ ctx[1].construction.knight + "")) set_data_dev(t46, t46_value);
-    			if ((!current || dirty & /*player*/ 2) && t48_value !== (t48_value = /*player*/ ctx[1].maxRoadLength + "")) set_data_dev(t48, t48_value);
+    			if ((!current || dirty & /*player*/ 4) && t15_value !== (t15_value = /*player*/ ctx[2].point.castle + "")) set_data_dev(t15, t15_value);
+    			if ((!current || dirty & /*player*/ 4) && t17_value !== (t17_value = /*player*/ ctx[2].point.city + "")) set_data_dev(t17, t17_value);
+    			if ((!current || dirty & /*player*/ 4) && t19_value !== (t19_value = /*player*/ ctx[2].point.point + "")) set_data_dev(t19, t19_value);
+    			if ((!current || dirty & /*player*/ 4) && t21_value !== (t21_value = /*player*/ ctx[2].point.road + "")) set_data_dev(t21, t21_value);
+    			if ((!current || dirty & /*player*/ 4) && t23_value !== (t23_value = /*player*/ ctx[2].point.knight + "")) set_data_dev(t23, t23_value);
+    			if ((!current || dirty & /*player*/ 4) && t37_value !== (t37_value = /*player*/ ctx[2].construction.castle + "")) set_data_dev(t37, t37_value);
+    			if ((!current || dirty & /*player*/ 4) && t40_value !== (t40_value = /*player*/ ctx[2].construction.city + "")) set_data_dev(t40, t40_value);
+    			if ((!current || dirty & /*player*/ 4) && t43_value !== (t43_value = /*player*/ ctx[2].construction.road + "")) set_data_dev(t43, t43_value);
+    			if ((!current || dirty & /*player*/ 4) && t46_value !== (t46_value = /*player*/ ctx[2].construction.knight + "")) set_data_dev(t46, t46_value);
+    			if ((!current || dirty & /*player*/ 4) && t48_value !== (t48_value = /*player*/ ctx[2].maxRoadLength + "")) set_data_dev(t48, t48_value);
 
-    			if (dirty & /*resourceList, player, katan*/ 10) {
-    				each_value = /*resourceList*/ ctx[3];
+    			if (dirty & /*katan, resourceList, $katan, player*/ 22) {
+    				each_value = /*resourceList*/ ctx[4];
     				validate_each_argument(each_value);
     				let i;
 
@@ -5719,8 +5848,8 @@ var app = (function (jQuery) {
     			if (dirty & /*playerIndex*/ 1) construction_changes.playerIndex = /*playerIndex*/ ctx[0];
     			construction.$set(construction_changes);
 
-    			if (!current || dirty & /*playerStyle*/ 4) {
-    				attr_dev(table3, "style", /*playerStyle*/ ctx[2]);
+    			if (!current || dirty & /*playerStyle*/ 8) {
+    				attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			}
     		},
     		i: function intro(local) {
@@ -5753,7 +5882,7 @@ var app = (function (jQuery) {
     function instance$7($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(6, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(1, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Player", slots, []);
     	let { playerIndex } = $$props;
@@ -5806,11 +5935,12 @@ var app = (function (jQuery) {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Player> was created with unknown prop '${key}'`);
     	});
 
-    	const click_handler = (resource, tradeResource) => katanStore.exchange(player, resource.type, tradeResource.type);
+    	const click_handler = resource => katanStore.getResource(resource.type);
+    	const click_handler_1 = (resource, tradeResource) => katanStore.exchange(player, resource.type, tradeResource.type);
 
     	$$self.$$set = $$props => {
     		if ("playerIndex" in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
-    		if ("type" in $$props) $$invalidate(4, type = $$props.type);
+    		if ("type" in $$props) $$invalidate(5, type = $$props.type);
     	};
 
     	$$self.$capture_state = () => ({
@@ -5831,11 +5961,11 @@ var app = (function (jQuery) {
 
     	$$self.$inject_state = $$props => {
     		if ("playerIndex" in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
-    		if ("type" in $$props) $$invalidate(4, type = $$props.type);
-    		if ("player" in $$props) $$invalidate(1, player = $$props.player);
-    		if ("playerList" in $$props) $$invalidate(5, playerList = $$props.playerList);
-    		if ("playerStyle" in $$props) $$invalidate(2, playerStyle = $$props.playerStyle);
-    		if ("resourceList" in $$props) $$invalidate(3, resourceList = $$props.resourceList);
+    		if ("type" in $$props) $$invalidate(5, type = $$props.type);
+    		if ("player" in $$props) $$invalidate(2, player = $$props.player);
+    		if ("playerList" in $$props) $$invalidate(6, playerList = $$props.playerList);
+    		if ("playerStyle" in $$props) $$invalidate(3, playerStyle = $$props.playerStyle);
+    		if ("resourceList" in $$props) $$invalidate(4, resourceList = $$props.resourceList);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -5843,32 +5973,33 @@ var app = (function (jQuery) {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, playerList, playerIndex*/ 97) {
+    		if ($$self.$$.dirty & /*$katan, playerList, playerIndex*/ 67) {
     			{
-    				$$invalidate(5, playerList = $katan.playerList);
-    				$$invalidate(1, player = playerList[playerIndex]);
-    				$$invalidate(2, playerStyle = getPlayerStyle());
-    				$$invalidate(3, resourceList = getResourceList());
+    				$$invalidate(6, playerList = $katan.playerList);
+    				$$invalidate(2, player = playerList[playerIndex]);
+    				$$invalidate(3, playerStyle = getPlayerStyle());
+    				$$invalidate(4, resourceList = getResourceList());
     			}
     		}
     	};
 
     	return [
     		playerIndex,
+    		$katan,
     		player,
     		playerStyle,
     		resourceList,
     		type,
     		playerList,
-    		$katan,
-    		click_handler
+    		click_handler,
+    		click_handler_1
     	];
     }
 
     class Player extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { playerIndex: 0, type: 4 });
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { playerIndex: 0, type: 5 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,

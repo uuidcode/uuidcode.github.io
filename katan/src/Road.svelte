@@ -10,30 +10,6 @@
     let road = roadList[roadIndex];
     let roadStyle;
 
-    const pick = () => {
-        if (!$katan.isMakeRoad) {
-           return;
-        }
-
-        let player = katan.getActivePlayer();
-
-        katan.setRoad(roadIndex, player.index);
-        katan.setHideRoad();
-        katan.setRoadRippleDisabled();
-
-        if ($katan.isStart) {
-            katan.endMakeRoad();
-        } else {
-            katan.showConstructableCastle();
-            katan.endMakeRoad();
-            katan.turn();
-
-            if (katan.isStartable()) {
-                katan.start();
-            }
-        }
-    };
-
     const createStyle = () => {
         let styleObject = {
             left: road.left + 'px',
@@ -78,7 +54,7 @@
     </div>
 {:else}
     <div class="road"
-         on:click={()=>pick()}
+         on:click={()=>katan.clickMakeRoad(roadIndex)}
          class:ripple1={road.ripple}
          class:pick={road.ripple}
          class:hide={road.hide}

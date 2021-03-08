@@ -134,25 +134,32 @@
                             </td>
                             <td class="number">{resource.count}</td>
                             <td>
-                                {#if player.trade[resource.type].enable}
-                                    <table class="trade-target-resource">
-                                        <tr>
-                                            {#each resourceList as tradeResource}
-                                                {#if resource.type!==tradeResource.type}
-                                                    <td>
-                                                        <div>
-                                                            <img class="trade-resource" src="{tradeResource.type}_item.png">
-                                                            <button class="trade-button btn btn-primary btn-sm"
-                                                                    disabled={!player.trade[resource.type].action}
-                                                                    on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>
-                                                                {player.trade[resource.type].count}:1 교환
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                {/if}
-                                            {/each}
-                                        </tr>
-                                    </table>
+                                {#if $katan.isGetReource}
+                                    <button class="get-resource-button btn btn-primary btn-sm"
+                                            on:click={()=>katan.getResource(resource.type)}>
+                                        받기
+                                    </button>
+                                {:else}
+                                    {#if player.trade[resource.type].enable}
+                                        <table class="trade-target-resource">
+                                            <tr>
+                                                {#each resourceList as tradeResource}
+                                                    {#if resource.type!==tradeResource.type}
+                                                        <td>
+                                                            <div>
+                                                                <img class="trade-resource" src="{tradeResource.type}_item.png">
+                                                                <button class="trade-button btn btn-primary btn-sm"
+                                                                        disabled={!player.trade[resource.type].action}
+                                                                        on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>
+                                                                    {player.trade[resource.type].count}:1 교환
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    {/if}
+                                                {/each}
+                                            </tr>
+                                        </table>
+                                    {/if}
                                 {/if}
                             </td>
                         </tr>
@@ -283,5 +290,9 @@
         width: 90%;
         margin: 4px;
         text-align: center;
+    }
+
+    .get-resource-button {
+        margin: 10px;
     }
 </style>

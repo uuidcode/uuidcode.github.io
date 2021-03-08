@@ -25,7 +25,12 @@ let katanObject = {
     ],
     rollDice: false,
     action: false,
+    isGetResource: false,
+    isGetResourceFormOtherPlayer: false,
     isMakeRoad: false,
+    isMakeRoad2: false,
+    makeRoadCount: 0,
+    getResourceCount: 0,
     isMakeCastle: false,
     isMakeCity: false,
     construction: false,
@@ -68,10 +73,28 @@ for (let i = 0; i < 5; i++) {
     })
 }
 
-for (let i = 0; i < 15; i++) {
+for (let i = 0; i < 14; i++) {
     katanObject.cardList.push({
         type: 'knight'
     })
+}
+
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'road'
+    });
+}
+
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'resource'
+    });
+}
+
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'get'
+    });
 }
 
 katanObject.cardList = shuffle(katanObject.cardList);
@@ -1191,9 +1214,6 @@ const katanStore = {
             const targetOffset = resourceItem.offset();
             const offset = otherResourceItem.offset();
 
-            console.log('>>> offset', offset);
-            console.log('>>> targetOffset', targetOffset);
-
             const body = jQuery('body');
             const newResourceItem = otherResourceItem.clone();
 
@@ -1211,7 +1231,20 @@ const katanStore = {
                     newResourceItem.remove();
                     katanStore.updateTakeResource(resource);
                     katanStore.unsetKnightMode();
-                    katanStore.doActionAndTurn();
+
+                    if (katan.isGetResourceFormOtherPlayer) {
+                        katan.getResourceCount += 1;
+
+                        if (katan.getResourceCount === 1) {
+                            katanStore.takeResource();
+                        } else if (katan.getResourceCount > 1) {
+                            katan.isGetResourceFormOtherPlayer = false;
+                            katan.getResourceCount = 0;
+                            katanStore.doActionAndTurn();
+                        }
+                    } else {
+                        katanStore.doActionAndTurn();
+                    }
                 });
         } else {
             katanStore.doActionAndTurn();
@@ -1363,11 +1396,50 @@ const katanStore = {
         return katan;
     }),
 
-    endMakeRoad: () => katanStore.updateKatan(katan => {
-        katan.isMakeRoad = false;
+    clickMakeRoad: (roadIndex) => update(katan => {
+        if (!katan.isMakeRoad) {
+            return;
+        }
+
+        const player = katanStore.getActivePlayer();
+        katanStore.setRoad(roadIndex, player.index);
+        katanStore.setHideRoad();
+        katanStore.setRoadRippleDisabled();
 
         if (katan.isStart) {
-            katanStore.doActionAndTurn();
+            katanStore.endMakeRoad();
+        } else {
+            katanStore.showConstructableCastle();
+            katanStore.endMakeRoad();
+            katanStore.turn();
+
+            if (katanStore.isStartable()) {
+                katanStore.start();
+            }
+        }
+
+        return katan;
+    }),
+
+    endMakeRoad: () => katanStore.updateKatan(katan => {
+        if (katan.isMakeRoad2) {
+            katan.makeRoadCount += 1;
+        } else {
+            katan.isMakeRoad = false;
+        }
+
+        console.log('>>> katan.isStart', katan.isStart);
+        console.log('>>> katan.isMakeRoad2', katan.isMakeRoad2);
+        console.log('>>> katan.makeRoadCount', katan.makeRoadCount);
+
+        if (katan.isStart) {
+            if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
+                katanStore.makeRoad();
+            } else {
+                katan.isMakeRoad2 = false;
+                katan.makeRoadCount = 0;
+                katanStore.doActionAndTurn();
+            }
         }
 
         return katan;
@@ -1530,7 +1602,7 @@ const katanStore = {
         player.pickRoad += 1;
         player.construction.road -= 1;
 
-        if (katan.isMakeRoad) {
+        if (katan.isStart && katan.isMakeRoad) {
             player.resource.tree -= 1;
             player.resource.mud -= 1;
         }
@@ -1562,6 +1634,10 @@ const katanStore = {
 
         const player = katanStore.getActivePlayer();
 
+        player.resource.sheep -= 1;
+        player.resource.wheat -= 1;
+        player.resource.iron -= 1;
+
         if (card.type === 'point') {
             alert('1점을 얻었습니다.');
             player.point.point += 1;
@@ -1571,9 +1647,6 @@ const katanStore = {
             katanStore.readyMoveBuglar();
 
             player.construction.knight += 1;
-            player.resource.sheep -= 1;
-            player.resource.wheat -= 1;
-            player.resource.iron -= 1;
 
             if (player.construction.knight >= 3) {
                 const other = katanStore.getOtherPlayer(katan);
@@ -1587,6 +1660,31 @@ const katanStore = {
                     }
                 }
             }
+        } else if (card.type === 'road') {
+            alert('도로 2개를 만드세요.');
+            katan.isMakeRoad2 = true;
+            katanStore.makeRoad();
+        } else if (card.type === 'resource') {
+            alert('자원 2개 받으세요.');
+            katan.isGetResource = true;
+        } else if (card.type === 'get') {
+            alert('상대방의 자원 2개를 받습니다.');
+            katan.isGetResourceFormOtherPlayer = true;
+            katanStore.takeResource();
+        }
+
+        katanStore.recomputePlayer();
+
+        return katan;
+    }),
+
+    getResource: (resourceType) => update(katan => {
+        const player = katanStore.getActivePlayer();
+        katan.getResourceCount += 1;
+        player.resource[resourceType] += 1;
+
+        if (katan.getResourceCount >= 2) {
+            katan.isGetResource = false;
         }
 
         katanStore.recomputePlayer();
