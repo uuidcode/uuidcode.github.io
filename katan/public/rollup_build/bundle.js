@@ -89,14 +89,8 @@ var app = (function (jQuery) {
         else if (node.getAttribute(attribute) !== value)
             node.setAttribute(attribute, value);
     }
-    function to_number(value) {
-        return value === '' ? null : +value;
-    }
     function children(element) {
         return Array.from(element.childNodes);
-    }
-    function set_input_value(input, value) {
-        input.value = value == null ? '' : value;
     }
     function set_style(node, key, value, important) {
         node.style.setProperty(key, value, important ? 'important' : '');
@@ -558,6 +552,7 @@ var app = (function (jQuery) {
         message: '마을을 만들곳을 클릭하세요',
         diceDisabled: true,
         dice: [6, 6],
+        sumDice: 12,
         mode: 'ready',
         isReady: true,
         isStart: false,
@@ -2164,6 +2159,7 @@ var app = (function (jQuery) {
         roll: (a, b) => update$1(katan => {
             katan.dice[0] = a;
             katan.dice[1] = b;
+            katan.sumDice = a + b;
             return katan;
         }),
 
@@ -4072,7 +4068,7 @@ var app = (function (jQuery) {
     	return child_ctx;
     }
 
-    // (20:4) {#each resourceList as resource, i}
+    // (21:4) {#each resourceList as resource, i}
     function create_each_block_2(ctx) {
     	let cell;
     	let current;
@@ -4109,14 +4105,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(20:4) {#each resourceList as resource, i}",
+    		source: "(21:4) {#each resourceList as resource, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (23:4) {#each castleList as castle, i}
+    // (24:4) {#each castleList as castle, i}
     function create_each_block_1(ctx) {
     	let castle;
     	let t;
@@ -4168,14 +4164,14 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(23:4) {#each castleList as castle, i}",
+    		source: "(24:4) {#each castleList as castle, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (27:4) {#each $katan.roadList as road, i}
+    // (28:4) {#each $katan.roadList as road, i}
     function create_each_block(ctx) {
     	let road;
     	let current;
@@ -4212,7 +4208,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(27:4) {#each $katan.roadList as road, i}",
+    		source: "(28:4) {#each $katan.roadList as road, i}",
     		ctx
     	});
 
@@ -4221,8 +4217,16 @@ var app = (function (jQuery) {
 
     function create_fragment$4(ctx) {
     	let main;
+    	let div0;
+    	let t0_value = /*$katan*/ ctx[2].sumDice + "";
     	let t0;
     	let t1;
+    	let div1;
+    	let t2_value = /*$katan*/ ctx[2].sumDice + "";
+    	let t2;
+    	let t3;
+    	let t4;
+    	let t5;
     	let current;
     	let each_value_2 = /*resourceList*/ ctx[0];
     	validate_each_argument(each_value_2);
@@ -4263,44 +4267,60 @@ var app = (function (jQuery) {
     	const block = {
     		c: function create() {
     			main = element("main");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			div1 = element("div");
+    			t2 = text(t2_value);
+    			t3 = space();
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].c();
     			}
 
-    			t0 = space();
+    			t4 = space();
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t1 = space();
+    			t5 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(main, "class", "board svelte-ur6jdm");
+    			attr_dev(div0, "class", "display-dice-number dice-left svelte-1mg7mfk");
+    			add_location(div0, file$4, 18, 4, 487);
+    			attr_dev(div1, "class", "display-dice-number dice-right svelte-1mg7mfk");
+    			add_location(div1, file$4, 19, 4, 558);
+    			attr_dev(main, "class", "board svelte-1mg7mfk");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
-    			add_location(main, file$4, 18, 0, 489);
+    			add_location(main, file$4, 17, 0, 442);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
+    			append_dev(main, div0);
+    			append_dev(div0, t0);
+    			append_dev(main, t1);
+    			append_dev(main, div1);
+    			append_dev(div1, t2);
+    			append_dev(main, t3);
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].m(main, null);
     			}
 
-    			append_dev(main, t0);
+    			append_dev(main, t4);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(main, null);
     			}
 
-    			append_dev(main, t1);
+    			append_dev(main, t5);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(main, null);
@@ -4309,6 +4329,9 @@ var app = (function (jQuery) {
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
+    			if ((!current || dirty & /*$katan*/ 4) && t0_value !== (t0_value = /*$katan*/ ctx[2].sumDice + "")) set_data_dev(t0, t0_value);
+    			if ((!current || dirty & /*$katan*/ 4) && t2_value !== (t2_value = /*$katan*/ ctx[2].sumDice + "")) set_data_dev(t2, t2_value);
+
     			if (dirty & /*resourceList*/ 1) {
     				each_value_2 = /*resourceList*/ ctx[0];
     				validate_each_argument(each_value_2);
@@ -4324,7 +4347,7 @@ var app = (function (jQuery) {
     						each_blocks_2[i] = create_each_block_2(child_ctx);
     						each_blocks_2[i].c();
     						transition_in(each_blocks_2[i], 1);
-    						each_blocks_2[i].m(main, t0);
+    						each_blocks_2[i].m(main, t4);
     					}
     				}
 
@@ -4352,7 +4375,7 @@ var app = (function (jQuery) {
     						each_blocks_1[i] = create_each_block_1(child_ctx);
     						each_blocks_1[i].c();
     						transition_in(each_blocks_1[i], 1);
-    						each_blocks_1[i].m(main, t1);
+    						each_blocks_1[i].m(main, t5);
     					}
     				}
 
@@ -4458,12 +4481,7 @@ var app = (function (jQuery) {
     	validate_slots("Board", slots, []);
     	let { resourceList } = $$props;
     	let { castleList } = $$props;
-
-    	let boardStyle = toStyle({
-    		width: 5 * config.cell.width + "px",
-    		height: 5 * config.cell.width + "px"
-    	});
-
+    	let boardStyle = toStyle({ width: 5 * config.cell.width + "px" });
     	const writable_props = ["resourceList", "castleList"];
 
     	Object.keys($$props).forEach(key => {
@@ -6115,12 +6133,8 @@ var app = (function (jQuery) {
     	let t8;
     	let button1_disabled_value;
     	let t9;
-    	let input;
-    	let t10;
-    	let button2;
-    	let t12;
     	let board;
-    	let t13;
+    	let t10;
     	let td2;
     	let player1;
     	let current;
@@ -6180,13 +6194,8 @@ var app = (function (jQuery) {
     			button1 = element("button");
     			t8 = text("완료");
     			t9 = space();
-    			input = element("input");
-    			t10 = space();
-    			button2 = element("button");
-    			button2.textContent = "test";
-    			t12 = space();
     			create_component(board.$$.fragment);
-    			t13 = space();
+    			t10 = space();
     			td2 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
@@ -6203,11 +6212,6 @@ var app = (function (jQuery) {
     			attr_dev(button1, "class", "btn btn-primary svelte-eda5fa");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
     			add_location(button1, file$8, 70, 20, 2534);
-    			attr_dev(input, "type", "number");
-    			attr_dev(input, "class", "test-dice svelte-eda5fa");
-    			add_location(input, file$8, 73, 20, 2707);
-    			attr_dev(button2, "class", "btn btn-primary svelte-eda5fa");
-    			add_location(button2, file$8, 74, 20, 2797);
     			attr_dev(div0, "class", "dice-container svelte-eda5fa");
     			add_location(div0, file$8, 64, 16, 2179);
     			attr_dev(td1, "valign", "top");
@@ -6216,7 +6220,7 @@ var app = (function (jQuery) {
     			add_location(td1, file$8, 62, 12, 1998);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-eda5fa");
-    			add_location(td2, file$8, 81, 12, 3104);
+    			add_location(td2, file$8, 81, 12, 3125);
     			attr_dev(tr, "class", "svelte-eda5fa");
     			add_location(tr, file$8, 58, 8, 1864);
     			attr_dev(table, "class", "header svelte-eda5fa");
@@ -6250,14 +6254,9 @@ var app = (function (jQuery) {
     			append_dev(div0, t7);
     			append_dev(div0, button1);
     			append_dev(button1, t8);
-    			append_dev(div0, t9);
-    			append_dev(div0, input);
-    			set_input_value(input, /*$katan*/ ctx[0].testDice);
-    			append_dev(div0, t10);
-    			append_dev(div0, button2);
-    			append_dev(td1, t12);
+    			append_dev(td1, t9);
     			mount_component(board, td1, null);
-    			append_dev(tr, t13);
+    			append_dev(tr, t10);
     			append_dev(tr, td2);
     			mount_component(player1, td2, null);
     			current = true;
@@ -6265,9 +6264,7 @@ var app = (function (jQuery) {
     			if (!mounted) {
     				dispose = [
     					listen_dev(button0, "click", /*click_handler*/ ctx[4], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false),
-    					listen_dev(input, "input", /*input_input_handler*/ ctx[6]),
-    					listen_dev(button2, "click", /*click_handler_2*/ ctx[7], false, false, false)
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false)
     				];
 
     				mounted = true;
@@ -6299,15 +6296,11 @@ var app = (function (jQuery) {
     				prop_dev(button1, "disabled", button1_disabled_value);
     			}
 
-    			if (dirty & /*$katan*/ 1 && to_number(input.value) !== /*$katan*/ ctx[0].testDice) {
-    				set_input_value(input, /*$katan*/ ctx[0].testDice);
-    			}
-
     			const board_changes = {};
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 512) {
+    			if (dirty & /*$$scope*/ 128) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6411,13 +6404,6 @@ var app = (function (jQuery) {
     	const click_handler = () => katanStore.play();
     	const click_handler_1 = () => katanStore.turn();
 
-    	function input_input_handler() {
-    		$katan.testDice = to_number(this.value);
-    		katanStore.set($katan);
-    	}
-
-    	const click_handler_2 = () => katanStore.makeDev();
-
     	$$self.$capture_state = () => ({
     		katan: katanStore,
     		Board,
@@ -6453,16 +6439,7 @@ var app = (function (jQuery) {
     		}
     	};
 
-    	return [
-    		$katan,
-    		player,
-    		headerStyle,
-    		playerList,
-    		click_handler,
-    		click_handler_1,
-    		input_input_handler,
-    		click_handler_2
-    	];
+    	return [$katan, player, headerStyle, playerList, click_handler, click_handler_1];
     }
 
     class App extends SvelteComponentDev {

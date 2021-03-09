@@ -11,12 +11,13 @@
     export let castleList;
 
     let boardStyle = toStyle({
-        width: 5 * config.cell.width + 'px',
-        height: 5 * config.cell.width + 'px'
+        width: 5 * config.cell.width + 'px'
     });
 </script>
 
 <main class="board" style={boardStyle}>
+    <div class="display-dice-number dice-left">{$katan.sumDice}</div>
+    <div class="display-dice-number dice-right">{$katan.sumDice}</div>
     {#each resourceList as resource, i}
         <Cell resourceIndex={i}></Cell>
     {/each}
@@ -30,6 +31,7 @@
 </main>
 
 <style>
+
     .resource td {
         height: 160px;
         background-color: lightgray;
@@ -43,5 +45,24 @@
         margin-left: 160px;
         margin-right: 160px;
         margin-top: 120px;
+    }
+
+    .display-dice-number {
+        position: absolute;
+        top: -190px;
+        width: 250px;
+        height: 250px;
+        line-height: 250px;
+        font-size: 200px;
+        font-weight: bolder;
+        border: 1px solid black;
+    }
+
+    .dice-left {
+        left: -160px;
+    }
+
+    .dice-right {
+        right: -160px;
     }
 </style>

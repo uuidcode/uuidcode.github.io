@@ -41,6 +41,7 @@ let katanObject = {
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
     dice: [6, 6],
+    sumDice: 12,
     mode: 'ready',
     isReady: true,
     isStart: false,
@@ -1648,6 +1649,7 @@ const katanStore = {
     roll: (a, b) => update(katan => {
         katan.dice[0] = a;
         katan.dice[1] = b;
+        katan.sumDice = a + b;
         return katan;
     }),
 
