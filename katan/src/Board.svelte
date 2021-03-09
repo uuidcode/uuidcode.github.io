@@ -16,8 +16,8 @@
 </script>
 
 <main class="board" style={boardStyle}>
-    <div class="display-dice-number dice-left">{$katan.sumDice}</div>
-    <div class="display-dice-number dice-right">{$katan.sumDice}</div>
+    <div class="display-dice-number display-dice-number-1 dice-left">{$katan.sumDice}</div>
+    <div class="display-dice-number display-dice-number-2 dice-right">{$katan.sumDice}</div>
     {#each resourceList as resource, i}
         <Cell resourceIndex={i}></Cell>
     {/each}
@@ -45,24 +45,5 @@
         margin-left: 160px;
         margin-right: 160px;
         margin-top: 120px;
-    }
-
-    .display-dice-number {
-        position: absolute;
-        top: -190px;
-        width: 250px;
-        height: 250px;
-        line-height: 250px;
-        font-size: 200px;
-        font-weight: bolder;
-        border: 1px solid black;
-    }
-
-    .dice-left {
-        left: -160px;
-    }
-
-    .dice-right {
-        right: -160px;
     }
 </style>

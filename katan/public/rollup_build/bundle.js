@@ -89,8 +89,14 @@ var app = (function (jQuery) {
         else if (node.getAttribute(attribute) !== value)
             node.setAttribute(attribute, value);
     }
+    function to_number(value) {
+        return value === '' ? null : +value;
+    }
     function children(element) {
         return Array.from(element.childNodes);
+    }
+    function set_input_value(input, value) {
+        input.value = value == null ? '' : value;
     }
     function set_style(node, key, value, important) {
         node.style.setProperty(key, value, important ? 'important' : '');
@@ -566,7 +572,7 @@ var app = (function (jQuery) {
                 pickCastle: 0,
                 pickRoad: 0,
                 image: 'apeach.png',
-                maxRoadLength: 1
+                maxRoadLength: 0
             },
             {
                 color: '#90CDEA',
@@ -575,7 +581,7 @@ var app = (function (jQuery) {
                 pickCastle: 0,
                 pickRoad: 0,
                 image: 'lion.png',
-                maxRoadLength: 1
+                maxRoadLength: 0
             }
         ]
     };
@@ -1519,8 +1525,19 @@ var app = (function (jQuery) {
         .map((resource, index) => {
             if (resource.type === 'dessert') {
                 resource.number = 7;
+                resource.numberIndex = 1;
             } else {
                 resource.number = numberList.pop();
+
+                if (resource.number === 2 || resource.number === 12) {
+                    resource.numberIndex = 1;
+                } else {
+                    if (numberList.includes(resource.number)) {
+                        resource.numberIndex = 1;
+                    } else {
+                        resource.numberIndex = 2;
+                    }
+                }
             }
 
             resource.buglar = false;
@@ -1785,8 +1802,16 @@ var app = (function (jQuery) {
 
         animateMoveResource: (option) => {
             option = Object.assign({
-                speed: 1000
+                count: 1,
+                speed: 1000,
+                width: '70px',
+                height: '70px',
+                lineHeight: '70px',
+                fontSize: '50px',
+                callback: () => {}
             }, option);
+
+            console.log('>>> option', option);
 
             const sourceItem = jQuery__default['default']('.' + option.sourceClass);
             const visible = katanStore.isVisible(sourceItem);
@@ -1808,9 +1833,10 @@ var app = (function (jQuery) {
                 .css({
                     left: sourceOffset.left + 'px',
                     top: sourceOffset.top + 'px',
-                    width: '70px',
-                    height: '70px',
-                    zIndex: 1000,
+                    width: option.width,
+                    height: option.height,
+                    lineHeight: option.lineHeight,
+                    fontSize: option.fontSize,
                     position: 'absolute'
                 });
 
@@ -1819,13 +1845,17 @@ var app = (function (jQuery) {
             }
 
             setTimeout(() => {
-                newResourceItem.animate({
+                const animationCss = Object.assign({
                     left: targetOffset.left + 'px',
                     top: targetOffset.top + 'px'
-                }, option.speed, () => {
-                    newResourceItem.remove();
-                    option.callback();
-                });
+                }, option.animationCss);
+
+                newResourceItem.animate(animationCss,
+                    option.speed,
+                    () => {
+                        newResourceItem.remove();
+                        option.callback();
+                    });
             }, option.count * 1000);
         },
 
@@ -2045,16 +2075,57 @@ var app = (function (jQuery) {
             if (number === 7) {
                 katanStore.readyMoveBuglar();
             } else {
-                katanStore.setSelectedNumberRippleEnabled(number);
-
                 setTimeout(() => {
-                    katanStore.setNumberRippleDisabled(number);
-                    katanStore.moveResource(number);
-                }, 2000);
+                    let numberCount = 2;
+
+                    if (number === 2 || number === 12) {
+                        numberCount = 1;
+                    }
+
+                    for (let i = 1; i <= numberCount; i++) {
+                        let sourceClass =  `display-dice-number-${i}`;
+                        let targetClass =  `number_${number}_${i}`;
+
+                        katanStore.animateMoveResource({
+                            sourceClass,
+                            targetClass,
+                            width: '172px',
+                            height: '172px',
+                            lineHeight: '172px',
+                            fontSize: '140px',
+                            count: i,
+                            animationCss: {
+                                width: '70px',
+                                height: '70px',
+                                fontSize: '50px',
+                                lineHeight: '70px'
+                            },
+                            callback: () => {
+                                if (i === numberCount) {
+                                    katanStore.setSelectedNumberRippleEnabled(number);
+
+                                    setTimeout(() => {
+                                        katanStore.setNumberRippleDisabled(number);
+                                        katanStore.moveResource(number);
+                                    }, 2000);
+                                }
+                            }
+                        });
+                    }
+                }, 500);
             }
 
             return katan;
         }),
+
+        internalPlay: (number) => {
+            katanStore.setSelectedNumberRippleEnabled(number);
+
+            setTimeout(() => {
+                katanStore.setNumberRippleDisabled(number);
+                katanStore.moveResource(number);
+            }, 2000);
+        },
 
         sumResource: (katan, player) => {
             return katan.resourceTypeList
@@ -2156,12 +2227,14 @@ var app = (function (jQuery) {
             return katan;
         }),
 
-        roll: (a, b) => update$1(katan => {
-            katan.dice[0] = a;
-            katan.dice[1] = b;
-            katan.sumDice = a + b;
-            return katan;
-        }),
+        roll: (a, b) => {
+            update$1(katan => {
+                katan.dice[0] = a;
+                katan.dice[1] = b;
+                katan.sumDice = a + b;
+                return katan;
+            });
+        },
 
         getNumber: () => katan.dice[0] =  + katan.dice[1],
 
@@ -2220,10 +2293,12 @@ var app = (function (jQuery) {
                         return castle;
                     });
             } else {
-                player.resource.tree -= 1;
-                player.resource.mud -= 1;
-                player.resource.sheep -= 1;
-                player.resource.wheat -= 1;
+                if (katan.isStart) {
+                    player.resource.tree -= 1;
+                    player.resource.mud -= 1;
+                    player.resource.sheep -= 1;
+                    player.resource.wheat -= 1;
+                }
 
                 player.point.castle += 1;
 
@@ -2672,18 +2747,20 @@ var app = (function (jQuery) {
                 return;
             }
 
-            const roadList = katanStore.getLinkedRoadList(katan, player, road, resultList);
-
-            if (roadList.length === 0) {
-                return;
-            }
+            const roadList = katanStore
+                .getLinkedRoadList(katan, player, road, resultList);
 
             if (resultList.length > player.maxRoadLength) {
                 player.maxRoadLength = resultList.length;
             }
 
+            if (roadList.length === 0) {
+                return;
+            }
+
             roadList.forEach(currentRoad => {
-                katanStore.processLinkedRoadList(katan, player, currentRoad, [...resultList]);
+                katanStore.processLinkedRoadList(katan,
+                    player, currentRoad, [...resultList]);
             });
         },
 
@@ -2728,7 +2805,11 @@ var app = (function (jQuery) {
 
         recomputePlayer: () => {
             update$1(katan => {
-                katan.playerList.forEach(player => katanStore.recomputeLongRoad(katan, player));
+                katan.playerList
+                    .forEach(player => {
+                        return katanStore.recomputeLongRoad(katan, player);
+                    });
+
                 return katan;
             });
 
@@ -2887,8 +2968,8 @@ var app = (function (jQuery) {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-803d69");
-    			add_location(img, file, 93, 4, 2805);
-    			add_location(div, file, 92, 4, 2795);
+    			add_location(img, file, 93, 4, 2853);
+    			add_location(div, file, 92, 4, 2843);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2962,7 +3043,7 @@ var app = (function (jQuery) {
     			attr_dev(img, "style", /*imageStyle*/ ctx[8]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
     			add_location(img, file, 71, 8, 2186);
-    			attr_dev(div0, "class", div0_class_value = "number number_" + /*resource*/ ctx[1].number + " svelte-803d69");
+    			attr_dev(div0, "class", div0_class_value = "number number_" + /*resource*/ ctx[1].number + " number_" + /*resource*/ ctx[1].number + "_" + /*resource*/ ctx[1].numberIndex + " svelte-803d69");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
@@ -3022,7 +3103,7 @@ var app = (function (jQuery) {
 
     			if (config.debug) if_block1.p(ctx, dirty);
 
-    			if (dirty & /*resource*/ 2 && div0_class_value !== (div0_class_value = "number number_" + /*resource*/ ctx[1].number + " svelte-803d69")) {
+    			if (dirty & /*resource*/ 2 && div0_class_value !== (div0_class_value = "number number_" + /*resource*/ ctx[1].number + " number_" + /*resource*/ ctx[1].number + "_" + /*resource*/ ctx[1].numberIndex + " svelte-803d69")) {
     				attr_dev(div0, "class", div0_class_value);
     			}
 
@@ -4290,11 +4371,11 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "class", "display-dice-number dice-left svelte-1mg7mfk");
+    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left");
     			add_location(div0, file$4, 18, 4, 487);
-    			attr_dev(div1, "class", "display-dice-number dice-right svelte-1mg7mfk");
-    			add_location(div1, file$4, 19, 4, 558);
-    			attr_dev(main, "class", "board svelte-1mg7mfk");
+    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right");
+    			add_location(div1, file$4, 19, 4, 580);
+    			attr_dev(main, "class", "board svelte-u05z1o");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
     			add_location(main, file$4, 17, 0, 442);
     		},
@@ -6133,8 +6214,10 @@ var app = (function (jQuery) {
     	let t8;
     	let button1_disabled_value;
     	let t9;
-    	let board;
+    	let input;
     	let t10;
+    	let board;
+    	let t11;
     	let td2;
     	let player1;
     	let current;
@@ -6194,8 +6277,10 @@ var app = (function (jQuery) {
     			button1 = element("button");
     			t8 = text("완료");
     			t9 = space();
-    			create_component(board.$$.fragment);
+    			input = element("input");
     			t10 = space();
+    			create_component(board.$$.fragment);
+    			t11 = space();
     			td2 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
@@ -6212,6 +6297,9 @@ var app = (function (jQuery) {
     			attr_dev(button1, "class", "btn btn-primary svelte-eda5fa");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
     			add_location(button1, file$8, 70, 20, 2534);
+    			attr_dev(input, "type", "number");
+    			attr_dev(input, "class", "test-dice svelte-eda5fa");
+    			add_location(input, file$8, 73, 20, 2707);
     			attr_dev(div0, "class", "dice-container svelte-eda5fa");
     			add_location(div0, file$8, 64, 16, 2179);
     			attr_dev(td1, "valign", "top");
@@ -6220,7 +6308,7 @@ var app = (function (jQuery) {
     			add_location(td1, file$8, 62, 12, 1998);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-eda5fa");
-    			add_location(td2, file$8, 81, 12, 3125);
+    			add_location(td2, file$8, 81, 12, 3118);
     			attr_dev(tr, "class", "svelte-eda5fa");
     			add_location(tr, file$8, 58, 8, 1864);
     			attr_dev(table, "class", "header svelte-eda5fa");
@@ -6254,9 +6342,12 @@ var app = (function (jQuery) {
     			append_dev(div0, t7);
     			append_dev(div0, button1);
     			append_dev(button1, t8);
-    			append_dev(td1, t9);
+    			append_dev(div0, t9);
+    			append_dev(div0, input);
+    			set_input_value(input, /*$katan*/ ctx[0].testDice);
+    			append_dev(td1, t10);
     			mount_component(board, td1, null);
-    			append_dev(tr, t10);
+    			append_dev(tr, t11);
     			append_dev(tr, td2);
     			mount_component(player1, td2, null);
     			current = true;
@@ -6264,7 +6355,8 @@ var app = (function (jQuery) {
     			if (!mounted) {
     				dispose = [
     					listen_dev(button0, "click", /*click_handler*/ ctx[4], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false)
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false),
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[6])
     				];
 
     				mounted = true;
@@ -6296,11 +6388,15 @@ var app = (function (jQuery) {
     				prop_dev(button1, "disabled", button1_disabled_value);
     			}
 
+    			if (dirty & /*$katan*/ 1 && to_number(input.value) !== /*$katan*/ ctx[0].testDice) {
+    				set_input_value(input, /*$katan*/ ctx[0].testDice);
+    			}
+
     			const board_changes = {};
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 128) {
+    			if (dirty & /*$$scope*/ 256) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6404,6 +6500,11 @@ var app = (function (jQuery) {
     	const click_handler = () => katanStore.play();
     	const click_handler_1 = () => katanStore.turn();
 
+    	function input_input_handler() {
+    		$katan.testDice = to_number(this.value);
+    		katanStore.set($katan);
+    	}
+
     	$$self.$capture_state = () => ({
     		katan: katanStore,
     		Board,
@@ -6439,7 +6540,15 @@ var app = (function (jQuery) {
     		}
     	};
 
-    	return [$katan, player, headerStyle, playerList, click_handler, click_handler_1];
+    	return [
+    		$katan,
+    		player,
+    		headerStyle,
+    		playerList,
+    		click_handler,
+    		click_handler_1,
+    		input_input_handler
+    	];
     }
 
     class App extends SvelteComponentDev {

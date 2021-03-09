@@ -102,3 +102,24 @@ button:focus {
     width: 70px;
     height: 70px;
 }
+
+.display-dice-number {
+    position: absolute;
+    top: -190px;
+    width: 250px;
+    height: 250px;
+    line-height: 250px;
+    font-size: 200px;
+    font-weight: bolder;
+    border: 1px solid black;
+    background-color: white;
+    text-align: center;
+}
+
+.dice-left {
+    left: -160px;
+}
+
+.dice-right {
+    right: -160px;
+}

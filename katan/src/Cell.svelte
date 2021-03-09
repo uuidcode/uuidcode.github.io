@@ -71,7 +71,7 @@
     <div class="inner-cell" style={innerCellStyle}>
         <img src={imageSrc}
              style={imageStyle} alt={imageSrc}>
-        <div class="number number_{resource.number}"
+        <div class="number number_{resource.number} number_{resource.number}_{resource.numberIndex}"
              on:click={()=>katan.moveBuglar(resource.index)}
              class:pick={resource.numberRipple}
              class:ripple={resource.numberRipple}

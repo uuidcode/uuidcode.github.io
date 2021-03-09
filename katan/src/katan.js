@@ -55,7 +55,7 @@ let katanObject = {
             pickCastle: 0,
             pickRoad: 0,
             image: 'apeach.png',
-            maxRoadLength: 1
+            maxRoadLength: 0
         },
         {
             color: '#90CDEA',
@@ -64,7 +64,7 @@ let katanObject = {
             pickCastle: 0,
             pickRoad: 0,
             image: 'lion.png',
-            maxRoadLength: 1
+            maxRoadLength: 0
         }
     ]
 };
@@ -1008,8 +1008,19 @@ katanObject.resourceList = katanObject.resourceList
     .map((resource, index) => {
         if (resource.type === 'dessert') {
             resource.number = 7;
+            resource.numberIndex = 1;
         } else {
             resource.number = numberList.pop();
+
+            if (resource.number === 2 || resource.number === 12) {
+                resource.numberIndex = 1;
+            } else {
+                if (numberList.includes(resource.number)) {
+                    resource.numberIndex = 1;
+                } else {
+                    resource.numberIndex = 2;
+                }
+            }
         }
 
         resource.buglar = false;
@@ -1275,8 +1286,16 @@ const katanStore = {
 
     animateMoveResource: (option) => {
         option = Object.assign({
-            speed: 1000
+            count: 1,
+            speed: 1000,
+            width: '70px',
+            height: '70px',
+            lineHeight: '70px',
+            fontSize: '50px',
+            callback: () => {}
         }, option);
+
+        console.log('>>> option', option);
 
         const sourceItem = jQuery('.' + option.sourceClass);
         const visible = katanStore.isVisible(sourceItem);
@@ -1298,9 +1317,10 @@ const katanStore = {
             .css({
                 left: sourceOffset.left + 'px',
                 top: sourceOffset.top + 'px',
-                width: '70px',
-                height: '70px',
-                zIndex: 1000,
+                width: option.width,
+                height: option.height,
+                lineHeight: option.lineHeight,
+                fontSize: option.fontSize,
                 position: 'absolute'
             });
 
@@ -1309,13 +1329,17 @@ const katanStore = {
         }
 
         setTimeout(() => {
-            newResourceItem.animate({
+            const animationCss = Object.assign({
                 left: targetOffset.left + 'px',
                 top: targetOffset.top + 'px'
-            }, option.speed, () => {
-                newResourceItem.remove();
-                option.callback();
-            });
+            }, option.animationCss);
+
+            newResourceItem.animate(animationCss,
+                option.speed,
+                () => {
+                    newResourceItem.remove();
+                    option.callback();
+                });
         }, option.count * 1000)
     },
 
@@ -1535,16 +1559,62 @@ const katanStore = {
         if (number === 7) {
             katanStore.readyMoveBuglar();
         } else {
-            katanStore.setSelectedNumberRippleEnabled(number);
-
             setTimeout(() => {
-                katanStore.setNumberRippleDisabled(number);
-                katanStore.moveResource(number);
-            }, 2000);
+                let numberCount = 2;
+
+                if (number === 2 || number === 12) {
+                    numberCount = 1;
+                }
+
+                for (let i = 1; i <= numberCount; i++) {
+                    let sourceClass =  `display-dice-number-${i}`;
+                    let targetClass =  `number_${number}_${i}`;
+
+                    if (numberCount === 1) {
+                        let sourceClass =  `display-dice-number`;
+                        let targetClass =  `number_${number}`;
+                    }
+
+                    katanStore.animateMoveResource({
+                        sourceClass,
+                        targetClass,
+                        width: '172px',
+                        height: '172px',
+                        lineHeight: '172px',
+                        fontSize: '140px',
+                        count: i,
+                        animationCss: {
+                            width: '70px',
+                            height: '70px',
+                            fontSize: '50px',
+                            lineHeight: '70px'
+                        },
+                        callback: () => {
+                            if (i === numberCount) {
+                                katanStore.setSelectedNumberRippleEnabled(number);
+
+                                setTimeout(() => {
+                                    katanStore.setNumberRippleDisabled(number);
+                                    katanStore.moveResource(number);
+                                }, 2000);
+                            }
+                        }
+                    });
+                }
+            }, 500);
         }
 
         return katan;
     }),
+
+    internalPlay: (number) => {
+        katanStore.setSelectedNumberRippleEnabled(number);
+
+        setTimeout(() => {
+            katanStore.setNumberRippleDisabled(number);
+            katanStore.moveResource(number);
+        }, 2000);
+    },
 
     sumResource: (katan, player) => {
         return katan.resourceTypeList
@@ -1646,12 +1716,14 @@ const katanStore = {
         return katan;
     }),
 
-    roll: (a, b) => update(katan => {
-        katan.dice[0] = a;
-        katan.dice[1] = b;
-        katan.sumDice = a + b;
-        return katan;
-    }),
+    roll: (a, b) => {
+        update(katan => {
+            katan.dice[0] = a;
+            katan.dice[1] = b;
+            katan.sumDice = a + b;
+            return katan;
+        });
+    },
 
     getNumber: () => katan.dice[0] =  + katan.dice[1],
 
@@ -1710,10 +1782,12 @@ const katanStore = {
                     return castle;
                 });
         } else {
-            player.resource.tree -= 1;
-            player.resource.mud -= 1;
-            player.resource.sheep -= 1;
-            player.resource.wheat -= 1;
+            if (katan.isStart) {
+                player.resource.tree -= 1;
+                player.resource.mud -= 1;
+                player.resource.sheep -= 1;
+                player.resource.wheat -= 1;
+            }
 
             player.point.castle += 1;
 
@@ -2162,18 +2236,20 @@ const katanStore = {
             return;
         }
 
-        const roadList = katanStore.getLinkedRoadList(katan, player, road, resultList);
-
-        if (roadList.length === 0) {
-            return;
-        }
+        const roadList = katanStore
+            .getLinkedRoadList(katan, player, road, resultList);
 
         if (resultList.length > player.maxRoadLength) {
             player.maxRoadLength = resultList.length;
         }
 
+        if (roadList.length === 0) {
+            return;
+        }
+
         roadList.forEach(currentRoad => {
-            katanStore.processLinkedRoadList(katan, player, currentRoad, [...resultList]);
+            katanStore.processLinkedRoadList(katan,
+                player, currentRoad, [...resultList]);
         });
     },
 
@@ -2218,7 +2294,11 @@ const katanStore = {
 
     recomputePlayer: () => {
         update(katan => {
-            katan.playerList.forEach(player => katanStore.recomputeLongRoad(katan, player));
+            katan.playerList
+                .forEach(player => {
+                    return katanStore.recomputeLongRoad(katan, player);
+                });
+
             return katan;
         });
 
