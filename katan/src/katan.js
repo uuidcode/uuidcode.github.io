@@ -70,23 +70,23 @@ let katanObject = {
 
 katanObject.cardList = [];
 
-// for (let i = 0; i < 5; i++) {
-//     katanObject.cardList.push({
-//         type: 'point'
-//     })
-// }
-//
-// for (let i = 0; i < 14; i++) {
-//     katanObject.cardList.push({
-//         type: 'knight'
-//     })
-// }
-//
-// for (let i = 0; i < 2; i++) {
-//     katanObject.cardList.push({
-//         type: 'road'
-//     });
-// }
+for (let i = 0; i < 5; i++) {
+    katanObject.cardList.push({
+        type: 'point'
+    })
+}
+
+for (let i = 0; i < 14; i++) {
+    katanObject.cardList.push({
+        type: 'knight'
+    })
+}
+
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'road'
+    });
+}
 
 for (let i = 0; i < 2; i++) {
     katanObject.cardList.push({
@@ -94,11 +94,11 @@ for (let i = 0; i < 2; i++) {
     });
 }
 
-// for (let i = 0; i < 2; i++) {
-//     katanObject.cardList.push({
-//         type: 'get'
-//     });
-// }
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'get'
+    });
+}
 
 katanObject.cardList = shuffle(katanObject.cardList);
 
@@ -1583,6 +1583,7 @@ const katanStore = {
                         count: takeResourceFromBuglarCount + i,
                         callback: () => {
                             katanStore.updatePlayerResource(player.index, type);
+                            katanStore.recomputePlayer();
                         }
                     });
                 }
@@ -1613,7 +1614,8 @@ const katanStore = {
                         katanStore.internalReadyMoveBuglar(katan);
                     }
                 }, 100);
-
+            } else {
+                katanStore.internalReadyMoveBuglar(katan);
             }
         }
 
@@ -1688,8 +1690,12 @@ const katanStore = {
         katan.time = new Date().getTime();
 
         if (katan.isMakeCity) {
+            player.resource.wheat -= 2;
+            player.resource.iron -= 3;
+
             player.point.castle -= 1;
             player.point.city += 2;
+
             player.construction.castle += 1;
             player.construction.city -= 1;
 
@@ -1702,7 +1708,13 @@ const katanStore = {
                     return castle;
                 });
         } else {
+            player.resource.tree -= 1;
+            player.resource.mud -= 1;
+            player.resource.sheep -= 1;
+            player.resource.wheat -= 1;
+
             player.point.castle += 1;
+
             player.construction.castle -= 1;
         }
 
@@ -1726,7 +1738,7 @@ const katanStore = {
         let road = katan.roadList[roadIndex];
         road.playerIndex = playerIndex;
         road.pick = false;
-        road.title = '길';
+        road.title = '도로';
 
         const player = katan.playerList[playerIndex];
         player.pickRoad += 1;
@@ -1782,7 +1794,10 @@ const katanStore = {
                 const other = katanStore.getOtherPlayer(katan);
 
                 if (player.construction.knight > other.construction.knight) {
-                    alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
+                    if (player.point.knight === 0) {
+                        alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
+                    }
+
                     player.point.knight = 2;
 
                     if (other.point.knight === 2) {
@@ -1891,7 +1906,7 @@ const katanStore = {
 
     setRoadRippleEnabled: (castleIndex) => update(katan => {
         katan.isMakeRoad = true;
-        katan.message = '길을 만들곳을 선택하세요.';
+        katan.message = '도로을 만들곳을 선택하세요.';
         let roadIndexList = katan.castleList[castleIndex].roadIndexList;
 
         katan.roadList = katan.roadList
