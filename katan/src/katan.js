@@ -1566,14 +1566,15 @@ const katanStore = {
                     numberCount = 1;
                 }
 
-                for (let i = 1; i <= numberCount; i++) {
+                for (let i = 1; i <= 2; i++) {
                     let sourceClass =  `display-dice-number-${i}`;
                     let targetClass =  `number_${number}_${i}`;
 
                     if (numberCount === 1) {
-                        let sourceClass =  `display-dice-number`;
-                        let targetClass =  `number_${number}`;
+                        targetClass =  `number_${number}`;
                     }
+
+                    console.log('>>> targetClass', targetClass);
 
                     katanStore.animateMoveResource({
                         sourceClass,
@@ -1582,7 +1583,7 @@ const katanStore = {
                         height: '172px',
                         lineHeight: '172px',
                         fontSize: '140px',
-                        count: i,
+                        count: 1,
                         animationCss: {
                             width: '70px',
                             height: '70px',
@@ -1590,7 +1591,7 @@ const katanStore = {
                             lineHeight: '70px'
                         },
                         callback: () => {
-                            if (i === numberCount) {
+                            if (i === 2) {
                                 katanStore.setSelectedNumberRippleEnabled(number);
 
                                 setTimeout(() => {

@@ -2082,9 +2082,15 @@ var app = (function (jQuery) {
                         numberCount = 1;
                     }
 
-                    for (let i = 1; i <= numberCount; i++) {
+                    for (let i = 1; i <= 2; i++) {
                         let sourceClass =  `display-dice-number-${i}`;
                         let targetClass =  `number_${number}_${i}`;
+
+                        if (numberCount === 1) {
+                            targetClass =  `number_${number}`;
+                        }
+
+                        console.log('>>> targetClass', targetClass);
 
                         katanStore.animateMoveResource({
                             sourceClass,
@@ -2093,7 +2099,7 @@ var app = (function (jQuery) {
                             height: '172px',
                             lineHeight: '172px',
                             fontSize: '140px',
-                            count: i,
+                            count: 1,
                             animationCss: {
                                 width: '70px',
                                 height: '70px',
@@ -2101,7 +2107,7 @@ var app = (function (jQuery) {
                                 lineHeight: '70px'
                             },
                             callback: () => {
-                                if (i === numberCount) {
+                                if (i === 2) {
                                     katanStore.setSelectedNumberRippleEnabled(number);
 
                                     setTimeout(() => {
@@ -4371,11 +4377,11 @@ var app = (function (jQuery) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left");
+    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left svelte-153yu91");
     			add_location(div0, file$4, 18, 4, 487);
-    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right");
+    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right svelte-153yu91");
     			add_location(div1, file$4, 19, 4, 580);
-    			attr_dev(main, "class", "board svelte-u05z1o");
+    			attr_dev(main, "class", "board svelte-153yu91");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
     			add_location(main, file$4, 17, 0, 442);
     		},
