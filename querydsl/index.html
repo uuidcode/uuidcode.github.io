@@ -239,9 +239,7 @@
     public List&lt;Author&gt; listByName() {
     return
     this.queryFactory
-    <div class="select">
-        <this class="qAuthor"></this>
-    </div>
+    .select(this.qAuthor)
     .from(this.qAuthor)
     .where(this.qAuthor.name.contains("김"))
     .where(this.qAuthor.status.in(Arrays.asList(Application.Status.SERVICE.name(), Application.Status.WAITING.name())))
@@ -262,7 +260,8 @@
         author.name like '%김%'
         and author.status in (
             'SERVICE', 'WAITING'
-        )</pre>
+        )
+</pre>
     <h2>list object, exists</h2>
     <pre>작가의 상태가 서비스이고 서비스중인 프로젝트를 가지고 있는 작가&lt;Author&gt;를 조회한다</pre>
     <h3>java</h3>
@@ -309,7 +308,8 @@
                 project_author_map.project_id = project.project_id
                 and project_author_map.author_id = author.author_id
                 and project.support_status = 'SERVICE'
-        )</pre>
+        )
+</pre>
     <h2>tuple, multiple left join, order by</h2>
     <pre>회차의 발행일시 역순으로 해서 회차와 조회수, 좋아요수를 조회한다</pre>
     <h3>java</h3>
