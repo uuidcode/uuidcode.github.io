@@ -140,15 +140,14 @@
     <h3>java</h3>
 <pre class="brush: java">
     public List&lt;AdminLog&gt; list(Long adminId) {
-    return
-    this.queryFactory
-    .select(this.qAdminLog)
-    .from(this.qAdminLog)
-    .join(this.qAdmin)
-    .where(this.qAdmin.adminId.eq(adminId))
-    .where(this.qAdminLog.userId.eq(this.qAdmin.userId))
-    .limit(10)
-    .fetch();
+        return this.queryFactory
+            .select(this.qAdminLog)
+            .from(this.qAdminLog)
+            .join(this.qAdmin)
+            .where(this.qAdmin.adminId.eq(adminId))
+            .where(this.qAdminLog.userId.eq(this.qAdmin.userId))
+            .limit(10)
+            .fetch();
     }
 </pre>
     <h3>sql</h3>
@@ -173,11 +172,10 @@
 <pre class="brush: java">
     @Transactional
     public Admin add(Admin admin) {
-        long adminId =
-            this.queryFactory
-                .insert(this.qAdmin)
-                .populate(admin)
-                .executeWithKey(this.qAdmin.adminId);
+        long adminId = this.queryFactory
+            .insert(this.qAdmin)
+            .populate(admin)
+            .executeWithKey(this.qAdmin.adminId);
 
         return admin.setAdminId(adminId);
     }
