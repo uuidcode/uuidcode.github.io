@@ -70,6 +70,7 @@ let katanObject = {
 };
 
 katanObject.cardList = [];
+katanObject.afterCardList = [];
 
 for (let i = 0; i < 5; i++) {
     katanObject.cardList.push({
@@ -1288,10 +1289,6 @@ const katanStore = {
         option = Object.assign({
             count: 1,
             speed: 1000,
-            width: '70px',
-            height: '70px',
-            lineHeight: '70px',
-            fontSize: '50px',
             callback: () => {}
         }, option);
 
@@ -1317,10 +1314,6 @@ const katanStore = {
             .css({
                 left: sourceOffset.left + 'px',
                 top: sourceOffset.top + 'px',
-                width: option.width,
-                height: option.height,
-                lineHeight: option.lineHeight,
-                fontSize: option.fontSize,
                 position: 'absolute'
             });
 
@@ -1850,6 +1843,7 @@ const katanStore = {
 
     makeDev: () => update(katan => {
         const card = katan.cardList.pop();
+        katan.afterCardList = [...katan.afterCardList, card];
 
         const player = katanStore.getActivePlayer();
 

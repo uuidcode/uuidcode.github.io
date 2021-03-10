@@ -25,7 +25,7 @@
             height: height + 'px',
             "line-height": height + 'px',
             "border-radius": height / 2 + 'px',
-            "font-size": '30px'
+            "font-size": '20px'
         });
     };
 
@@ -56,8 +56,8 @@
         });
 
         resourceImageStyle = toStyle({
-            left: resource.left + (config.cell.width  - config.resource.width - 30) / 2 + 'px',
-            top: resource.top + (config.cell.height - config.resource.height - 30) / 2 + 'px',
+            left: resource.left + (config.cell.width  - config.resource.width) / 2 + 'px',
+            top: resource.top + (config.cell.height - config.resource.height) / 2 + 'px',
             width: `${config.resource.width}px`,
             height: `${config.resource.height}px`,
         });

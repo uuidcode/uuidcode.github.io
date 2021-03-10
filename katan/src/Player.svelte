@@ -23,7 +23,7 @@
 
     const getPlayerStyle = () => {
         return toStyle({
-            border: '20px solid ' + getPlayerColor()
+            border: '10px solid ' + getPlayerColor()
         });
     };
 
@@ -133,7 +133,7 @@
                                                                 <button class="trade-button btn btn-primary btn-sm"
                                                                         disabled={!player.trade[resource.type].action}
                                                                         on:click={()=>katan.exchange(player, resource.type, tradeResource.type)}>
-                                                                    {player.trade[resource.type].count}:1 교환
+                                                                    {player.trade[resource.type].count}:1교환
                                                                 </button>
                                                             </div>
                                                         </td>
@@ -166,41 +166,41 @@
     }
 
     img.resource {
-        width: 100px;
-        height: 100px;
+        width: 74px;
+        height: 74px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
-        margin: 4px;
+        margin: 2px;
     }
 
     img.trade-resource {
-        width: 60px;
-        height: 60px;
+        width: 40px;
+        height: 40px;
         filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
-        margin: 4px;
+        margin: 2px;
     }
 
     .number {
         line-height: 100px;
         font-size: 60px;
         font-weight: 600;
-        width: 80px;
+        width: 40px;
     }
 
     .trade-resource {
-        width:600px;
+        width: 420px;
     }
 
     .trade-resource .number {
         line-height: 40px;
         font-size: 40px;
         font-weight: 600;
-        width: 80px;
+        width: 40px;
         text-align: center;
     }
 
     .name {
         font-weight: bolder;
-        font-size: 20px;
+        font-size: 12px;
         color: white;
     }
 
@@ -214,7 +214,7 @@
 
     td {
         border: 1px solid lightskyblue;
-        font-size: 20px;
+        font-size: 12px;
     }
 
     button {
@@ -222,12 +222,13 @@
     }
 
     button.trade-button {
-        font-size: 17px !important;
+        font-size: 12px !important;
     }
 
     .trade-target-resource td {
         border: unset;
     }
+
     .construction-resource img {
         width: 60px;
         height: 60px;
@@ -246,8 +247,15 @@
     .player-header {
         display: inline-block;
         vertical-align: top;
-        font-size:100px;
-        line-height:100px
+        font-size: 70px;
+        line-height: 70px;
+        height: 70px;
+    }
+
+    .player-header img {
+        width: 60px;
+        height: 60px;
+        margin-top: -20px;
     }
 
     .player-sum {

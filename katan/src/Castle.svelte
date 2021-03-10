@@ -62,7 +62,7 @@
         text-align: center;
         background-color: blueviolet;
         font-weight: bolder;
-        font-size: 20px;
+        font-size: 12px;
         cursor: pointer;
         z-index: 20;
         border: 2px solid black;

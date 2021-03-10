@@ -1,29 +1,29 @@
 const config = {
     debug: false,
     cell: {
-        width: 210,
-        height: 210,
+        width: 130,
+        height: 130,
         margin: 2
     },
     castle: {
-        width: 50,
-        height: 50,
+        width: 32,
+        height: 32,
     },
     load: {
-        width: 50,
-        height: 50,
+        width: 32,
+        height: 32,
     },
     number: {
-        width: 100,
-        height: 100,
+        width: 60,
+        height: 60,
     },
     resource: {
         width: 60,
         height: 60,
     },
     buglar: {
-        width: 140,
-        height: 140,
+        width: 80,
+        height: 80,
     },
     selectedColor: 'blueviolet'
 };

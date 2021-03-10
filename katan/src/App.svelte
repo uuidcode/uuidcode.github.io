@@ -60,7 +60,7 @@
             <td valign="top" class="player">
                 <Player playerIndex={0}></Player>
             </td>
-            <td valign="top" class="text-center" width="1200px">
+            <td valign="top" class="text-center" width="1000px">
                 <h1 class="message-header" style={headerStyle}><img src={player.image}> {$katan.message}</h1>
                 <div class="dice-container">
                     <Dice number={$katan.dice[0]}></Dice>
@@ -120,12 +120,15 @@
         margin-top: 0;
         margin-left: auto;
         margin-right: auto;
-        transform: scale(0.7);
-        transform-origin: 0 0;
     }
 
     .message-header {
         color: white;
         padding: 10px;
+    }
+
+    .message-header img {
+        width: 60px;
+        height: 60px;
     }
 </style>
