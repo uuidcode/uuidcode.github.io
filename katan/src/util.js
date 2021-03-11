@@ -32,4 +32,3 @@ export const shuffle = list => {
 export const random = () => {
     return () => Math.random() - 0.5;
 };
-

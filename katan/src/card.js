@@ -1,5 +1,4 @@
 import { shuffle } from "./util";
-import { writable } from "svelte/store";
 
 let cardList = [];
 
@@ -18,10 +17,3 @@ for (let i = 0; i < 2; i++) {
 }
 
 cardList = shuffle(cardList);
-
-const { subscribe, set, update } = writable(cardList);
-
-export default {
-    subscribe,
-    set
-}
