@@ -111,11 +111,11 @@ katanObject.playerList.forEach((player, i) => {
     player.pickRoad = 0;
 
     player.resource = {
-        tree: 5,
-        mud: 5,
-        wheat: 5,
-        sheep: 5,
-        iron: 5
+        tree: 0,
+        mud: 0,
+        wheat: 0,
+        sheep: 0,
+        iron: 0
     };
 
     player.point = {

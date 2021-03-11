@@ -89,14 +89,8 @@ var app = (function (jQuery) {
         else if (node.getAttribute(attribute) !== value)
             node.setAttribute(attribute, value);
     }
-    function to_number(value) {
-        return value === '' ? null : +value;
-    }
     function children(element) {
         return Array.from(element.childNodes);
-    }
-    function set_input_value(input, value) {
-        input.value = value == null ? '' : value;
     }
     function set_style(node, key, value, important) {
         node.style.setProperty(key, value, important ? 'important' : '');
@@ -628,11 +622,11 @@ var app = (function (jQuery) {
         player.pickRoad = 0;
 
         player.resource = {
-            tree: 5,
-            mud: 5,
-            wheat: 5,
-            sheep: 5,
-            iron: 5
+            tree: 0,
+            mud: 0,
+            wheat: 0,
+            sheep: 0,
+            iron: 0
         };
 
         player.point = {
@@ -6274,10 +6268,8 @@ var app = (function (jQuery) {
     	let t8;
     	let button1_disabled_value;
     	let t9;
-    	let input;
-    	let t10;
     	let board;
-    	let t11;
+    	let t10;
     	let td2;
     	let player1;
     	let current;
@@ -6337,10 +6329,8 @@ var app = (function (jQuery) {
     			button1 = element("button");
     			t8 = text("완료");
     			t9 = space();
-    			input = element("input");
-    			t10 = space();
     			create_component(board.$$.fragment);
-    			t11 = space();
+    			t10 = space();
     			td2 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
@@ -6358,9 +6348,6 @@ var app = (function (jQuery) {
     			attr_dev(button1, "class", "btn btn-primary svelte-1ridrrg");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
     			add_location(button1, file$8, 70, 20, 2534);
-    			attr_dev(input, "type", "number");
-    			attr_dev(input, "class", "test-dice svelte-1ridrrg");
-    			add_location(input, file$8, 73, 20, 2707);
     			attr_dev(div0, "class", "dice-container svelte-1ridrrg");
     			add_location(div0, file$8, 64, 16, 2179);
     			attr_dev(td1, "valign", "top");
@@ -6369,7 +6356,7 @@ var app = (function (jQuery) {
     			add_location(td1, file$8, 62, 12, 1998);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-1ridrrg");
-    			add_location(td2, file$8, 81, 12, 3118);
+    			add_location(td2, file$8, 81, 12, 3125);
     			attr_dev(tr, "class", "svelte-1ridrrg");
     			add_location(tr, file$8, 58, 8, 1864);
     			attr_dev(table, "class", "header svelte-1ridrrg");
@@ -6403,12 +6390,9 @@ var app = (function (jQuery) {
     			append_dev(div0, t7);
     			append_dev(div0, button1);
     			append_dev(button1, t8);
-    			append_dev(div0, t9);
-    			append_dev(div0, input);
-    			set_input_value(input, /*$katan*/ ctx[0].testDice);
-    			append_dev(td1, t10);
+    			append_dev(td1, t9);
     			mount_component(board, td1, null);
-    			append_dev(tr, t11);
+    			append_dev(tr, t10);
     			append_dev(tr, td2);
     			mount_component(player1, td2, null);
     			current = true;
@@ -6416,8 +6400,7 @@ var app = (function (jQuery) {
     			if (!mounted) {
     				dispose = [
     					listen_dev(button0, "click", /*click_handler*/ ctx[4], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false),
-    					listen_dev(input, "input", /*input_input_handler*/ ctx[6])
+    					listen_dev(button1, "click", /*click_handler_1*/ ctx[5], false, false, false)
     				];
 
     				mounted = true;
@@ -6449,15 +6432,11 @@ var app = (function (jQuery) {
     				prop_dev(button1, "disabled", button1_disabled_value);
     			}
 
-    			if (dirty & /*$katan*/ 1 && to_number(input.value) !== /*$katan*/ ctx[0].testDice) {
-    				set_input_value(input, /*$katan*/ ctx[0].testDice);
-    			}
-
     			const board_changes = {};
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 256) {
+    			if (dirty & /*$$scope*/ 128) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -6561,11 +6540,6 @@ var app = (function (jQuery) {
     	const click_handler = () => katanStore.play();
     	const click_handler_1 = () => katanStore.turn();
 
-    	function input_input_handler() {
-    		$katan.testDice = to_number(this.value);
-    		katanStore.set($katan);
-    	}
-
     	$$self.$capture_state = () => ({
     		katan: katanStore,
     		Board,
@@ -6601,15 +6575,7 @@ var app = (function (jQuery) {
     		}
     	};
 
-    	return [
-    		$katan,
-    		player,
-    		headerStyle,
-    		playerList,
-    		click_handler,
-    		click_handler_1,
-    		input_input_handler
-    	];
+    	return [$katan, player, headerStyle, playerList, click_handler, click_handler_1];
     }
 
     class App extends SvelteComponentDev {
