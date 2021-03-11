@@ -70,7 +70,7 @@ export const processLinkedRoadList = (katan, player, road, resultList) => {
         return;
     }
 
-    const roadList = getLinkedRoadList(katan, player, road, resultList);
+    const roadList = getLinkedRoadList(katan, player, road);
 
     if (resultList.length > player.maxRoadLength) {
         player.maxRoadLength = resultList.length;
@@ -91,7 +91,7 @@ const getIntersectionCastle = (katan, roadIndexA, roadIndexB) => {
     return listA.find(index => listB.includes(index));
 };
 
-const getLinkedRoadList = (katan, player, road, resultList) => {
+const getLinkedRoadList = (katan, player, road) => {
     const roadIndex = road.index;
 
     return katan.roadList[roadIndex]
@@ -99,3 +99,27 @@ const getLinkedRoadList = (katan, player, road, resultList) => {
         .map(index => katan.roadList[index])
         .filter(road => road.playerIndex === player.index);
 };
+
+export const setHideRoad = () => katanStore.update( katan => {
+    katan.roadList =  katan.roadList
+        .map(road => {
+            if (road.playerIndex === -1) {
+                road.show = false;
+                road.hide = true;
+            }
+
+            return road;
+        });
+
+    return katan;
+});
+
+export const setRoadRippleDisabled = () => katanStore.update(katan => {
+    katan.roadList = katan.roadList
+        .map(road => {
+            road.ripple = false;
+            return road;
+        });
+
+    return katan;
+});
