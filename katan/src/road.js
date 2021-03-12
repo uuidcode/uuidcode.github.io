@@ -158,21 +158,28 @@ export const getPossibleRoadTotalLength = (katan) => {
 };
 
 export const getPossibleRoadLength = (katan, road) => {
-    let length = 0;
-
     if (road.playerIndex === -1) {
-        length = road.castleIndexList
-            .map(castleIndex => katan.castleList[castleIndex])
-            .filter(castle => castle.playerIndex === katan.playerIndex)
-            .length;
-
-        length += road.roadIndexList
+        return road.roadIndexList
             .map(roadIndex => katan.roadList[roadIndex])
-            .filter(road => road.playerIndex === katan.playerIndex)
+            .filter(currentRoad => {
+                const castleListA = road.castleIndexList;
+                const castleListB = currentRoad.castleIndexList;
+                const currentCastleIndex = castleListA
+                    .find(castleIndex => castleListB.includes(castleIndex));
+
+                if (currentCastleIndex) {
+                    const castle = katan.castleList[currentCastleIndex];
+
+                    return currentRoad.playerIndex === katan.playerIndex &&
+                        (castle.playerIndex === -1 || castle.playerIndex === katan.playerIndex)
+                }
+
+                return currentRoad.playerIndex === katan.playerIndex;
+            })
             .length;
     }
 
-    return length;
+    return 0;
 };
 
 export const setNewRoadRippleEnabled = () => katanStore.update(katan => {
@@ -223,7 +230,7 @@ export const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => 
     return katan;
 });
 
-const endMakeRoad =() => katanStore.update(katan => {
+const endMakeRoad = () => katanStore.update(katan => {
     if (katan.isMakeRoad2) {
         katan.makeRoadCount += 1;
     } else {

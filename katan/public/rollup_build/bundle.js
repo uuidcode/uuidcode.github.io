@@ -1,11 +1,7 @@
 
 (function(l, r) { if (l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (window.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(window.document);
-var app = (function (jQuery) {
+var app = (function () {
     'use strict';
-
-    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-    var jQuery__default = /*#__PURE__*/_interopDefaultLegacy(jQuery);
 
     function noop() { }
     function add_location(element, file, line, column, char) {
@@ -518,7 +514,7 @@ var app = (function (jQuery) {
      * Date: 2021-03-02T17:08Z
      */
 
-    createCommonjsModule(function (module) {
+    var jquery = createCommonjsModule(function (module) {
     ( function( global, factory ) {
 
     	{
@@ -11404,7 +11400,7 @@ var app = (function (jQuery) {
     const getPossibleCastleIndexList = (katan) => {
         return katan.castleList
             .filter(castle => castle.playerIndex === -1)
-            .filter(castle => {
+            .map(castle => {
                 const castleLength = castle.castleIndexList
                     .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
                     .length;
@@ -11425,12 +11421,13 @@ var app = (function (jQuery) {
                     console.log('>>> castleLength2', castleLength);
 
                     if (castleLength > 0) {
-                        return true;
+                        return castle.index;
                     }
                 }
 
-                return false;
-            });
+                return -1;
+            })
+            .filter(index => index >= 0);
     };
 
     const makeCastle = () => katanStore.update(katan => {
@@ -11746,21 +11743,28 @@ var app = (function (jQuery) {
     };
 
     const getPossibleRoadLength = (katan, road) => {
-        let length = 0;
-
         if (road.playerIndex === -1) {
-            length = road.castleIndexList
-                .map(castleIndex => katan.castleList[castleIndex])
-                .filter(castle => castle.playerIndex === katan.playerIndex)
-                .length;
-
-            length += road.roadIndexList
+            return road.roadIndexList
                 .map(roadIndex => katan.roadList[roadIndex])
-                .filter(road => road.playerIndex === katan.playerIndex)
+                .filter(currentRoad => {
+                    const castleListA = road.castleIndexList;
+                    const castleListB = currentRoad.castleIndexList;
+                    const currentCastleIndex = castleListA
+                        .find(castleIndex => castleListB.includes(castleIndex));
+
+                    if (currentCastleIndex) {
+                        const castle = katan.castleList[currentCastleIndex];
+
+                        return currentRoad.playerIndex === katan.playerIndex &&
+                            (castle.playerIndex === -1 || castle.playerIndex === katan.playerIndex)
+                    }
+
+                    return currentRoad.playerIndex === katan.playerIndex;
+                })
                 .length;
         }
 
-        return length;
+        return 0;
     };
 
     const setNewRoadRippleEnabled = () => katanStore.update(katan => {
@@ -11811,7 +11815,7 @@ var app = (function (jQuery) {
         return katan;
     });
 
-    const endMakeRoad =() => katanStore.update(katan => {
+    const endMakeRoad = () => katanStore.update(katan => {
         if (katan.isMakeRoad2) {
             katan.makeRoadCount += 1;
         } else {
@@ -12013,35 +12017,35 @@ var app = (function (jQuery) {
     katanObject.cardList = [];
     katanObject.afterCardList = [];
 
-    // for (let i = 0; i < 5; i++) {
-    //     katanObject.cardList.push({
-    //         type: 'point'
-    //     })
-    // }
-    //
-    // for (let i = 0; i < 14; i++) {
-    //     katanObject.cardList.push({
-    //         type: 'knight'
-    //     })
-    // }
+    for (let i = 0; i < 5; i++) {
+        katanObject.cardList.push({
+            type: 'point'
+        });
+    }
+
+    for (let i = 0; i < 14; i++) {
+        katanObject.cardList.push({
+            type: 'knight'
+        });
+    }
 
     for (let i = 0; i < 2; i++) {
         katanObject.cardList.push({
             type: 'road'
         });
     }
-    //
-    // for (let i = 0; i < 2; i++) {
-    //     katanObject.cardList.push({
-    //         type: 'resource'
-    //     });
-    // }
-    //
-    // for (let i = 0; i < 2; i++) {
-    //     katanObject.cardList.push({
-    //         type: 'get'
-    //     });
-    // }
+
+    for (let i = 0; i < 2; i++) {
+        katanObject.cardList.push({
+            type: 'resource'
+        });
+    }
+
+    for (let i = 0; i < 2; i++) {
+        katanObject.cardList.push({
+            type: 'get'
+        });
+    }
 
     katanObject.cardList = shuffle(katanObject.cardList);
 
@@ -12052,11 +12056,11 @@ var app = (function (jQuery) {
         player.pickRoad = 0;
 
         player.resource = {
-            tree: 5,
-            mud: 5,
-            wheat: 5,
-            sheep: 5,
-            iron: 5
+            tree: 0,
+            mud: 0,
+            wheat: 0,
+            sheep: 0,
+            iron: 0
         };
 
         player.point = {
@@ -13042,19 +13046,19 @@ var app = (function (jQuery) {
 
         console.log('>>> option', option);
 
-        const sourceItem = jQuery__default['default']('.' + option.sourceClass);
+        const sourceItem = jquery('.' + option.sourceClass);
         const visible = katanStore.isVisible(sourceItem);
 
         if (!visible) {
             sourceItem.show();
         }
 
-        const targetItem = jQuery__default['default']('.' + option.targetClass);
+        const targetItem = jquery('.' + option.targetClass);
 
         const sourceOffset = sourceItem.offset();
         const targetOffset = targetItem.offset();
 
-        const body = jQuery__default['default']('body');
+        const body = jquery('body');
         const newResourceItem = sourceItem.clone()
             .removeClass(option.sourceClass);
 
@@ -17314,7 +17318,7 @@ var app = (function (jQuery) {
     	let playerList;
     	let headerStyle;
 
-    	jQuery__default['default'](() => {
+    	jquery(() => {
     		setTimeout(
     			() => {
     				const element = document.querySelectorAll("[data-bs-toggle=\"tooltip\"]");
@@ -17364,7 +17368,7 @@ var app = (function (jQuery) {
     		Player,
     		toStyle,
     		Tooltip: bootstrap_esm_min.Tooltip,
-    		jQuery: jQuery__default['default'],
+    		jQuery: jquery,
     		getHeaderStyle,
     		player,
     		playerList,
@@ -17418,5 +17422,5 @@ var app = (function (jQuery) {
 
     return app;
 
-}(jQuery));
+}());
 //# sourceMappingURL=bundle.js.map

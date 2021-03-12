@@ -47,7 +47,7 @@ const endMakeCity = (castleIndex) => katanStore.update(katan => {
 export const getPossibleCastleIndexList = (katan) => {
     return katan.castleList
         .filter(castle => castle.playerIndex === -1)
-        .filter(castle => {
+        .map(castle => {
             const castleLength = castle.castleIndexList
                 .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
                 .length;
@@ -68,12 +68,13 @@ export const getPossibleCastleIndexList = (katan) => {
                 console.log('>>> castleLength2', castleLength);
 
                 if (castleLength > 0) {
-                    return true;
+                    return castle.index;
                 }
             }
 
-            return false;
-        });
+            return -1;
+        })
+        .filter(index => index >= 0);
 };
 
 export const makeCastle = () => katanStore.update(katan => {

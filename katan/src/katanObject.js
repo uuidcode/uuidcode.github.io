@@ -69,35 +69,35 @@ const katanObject = {
 katanObject.cardList = [];
 katanObject.afterCardList = [];
 
-// for (let i = 0; i < 5; i++) {
-//     katanObject.cardList.push({
-//         type: 'point'
-//     })
-// }
-//
-// for (let i = 0; i < 14; i++) {
-//     katanObject.cardList.push({
-//         type: 'knight'
-//     })
-// }
+for (let i = 0; i < 5; i++) {
+    katanObject.cardList.push({
+        type: 'point'
+    })
+}
+
+for (let i = 0; i < 14; i++) {
+    katanObject.cardList.push({
+        type: 'knight'
+    })
+}
 
 for (let i = 0; i < 2; i++) {
     katanObject.cardList.push({
         type: 'road'
     });
 }
-//
-// for (let i = 0; i < 2; i++) {
-//     katanObject.cardList.push({
-//         type: 'resource'
-//     });
-// }
-//
-// for (let i = 0; i < 2; i++) {
-//     katanObject.cardList.push({
-//         type: 'get'
-//     });
-// }
+
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'resource'
+    });
+}
+
+for (let i = 0; i < 2; i++) {
+    katanObject.cardList.push({
+        type: 'get'
+    });
+}
 
 katanObject.cardList = shuffle(katanObject.cardList);
 
@@ -108,11 +108,11 @@ katanObject.playerList.forEach((player, i) => {
     player.pickRoad = 0;
 
     player.resource = {
-        tree: 5,
-        mud: 5,
-        wheat: 5,
-        sheep: 5,
-        iron: 5
+        tree: 0,
+        mud: 0,
+        wheat: 0,
+        sheep: 0,
+        iron: 0
     };
 
     player.point = {
