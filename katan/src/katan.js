@@ -457,4 +457,6 @@ const katanStore = {
     }
 };
 
+recomputePlayer();
+
 export default katanStore;

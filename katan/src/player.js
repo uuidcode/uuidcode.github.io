@@ -15,6 +15,7 @@ export const recomputePlayer = () => {
                 sum += player.point.castle;
                 sum += player.point.city;
                 player.point.sum = sum;
+                player.resourceSum = katanStore.sumResource(katan, player);
 
                 katan.resourceTypeList
                     .forEach(typeObject => {

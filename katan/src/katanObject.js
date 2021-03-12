@@ -52,7 +52,8 @@ const katanObject = {
             pickCastle: 0,
             pickRoad: 0,
             image: 'apeach.png',
-            maxRoadLength: 0
+            maxRoadLength: 0,
+            resourceSum: 0
         },
         {
             color: '#90CDEA',
@@ -61,7 +62,8 @@ const katanObject = {
             pickCastle: 0,
             pickRoad: 0,
             image: 'lion.png',
-            maxRoadLength: 0
+            maxRoadLength: 0,
+            resourceSum: 0
         }
     ]
 };

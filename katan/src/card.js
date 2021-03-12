@@ -3,15 +3,21 @@ import {recomputePlayer} from "./player";
 import {takeResource} from "./resource";
 import {getPossibleCastleIndexList, setNewCityRippleEnabled} from "./castle";
 
+const processResource = () => katanStore.update(katan => {
+    const player = katanStore.getActivePlayer();
+    player.resource.sheep -= 1;
+    player.resource.wheat -= 1;
+    player.resource.iron -= 1;
+    return katan;
+});
+
 export const makeDev = () => katanStore.update(katan => {
     const card = katan.cardList.pop();
     katan.afterCardList = [...katan.afterCardList, card];
 
-    const player = katanStore.getActivePlayer();
+    processResource();
 
-    player.resource.sheep -= 1;
-    player.resource.wheat -= 1;
-    player.resource.iron -= 1;
+    const player = katanStore.getActivePlayer();
 
     if (card.type === 'point') {
         alert('1점을 얻었습니다.');

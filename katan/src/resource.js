@@ -143,7 +143,7 @@ export const takeResource = () => katanStore.update(katan => {
                     katan.getResourceCount += 1;
 
                     if (katan.getResourceCount === 1) {
-                        katanStore.takeResource();
+                        takeResource();
                     } else if (katan.getResourceCount > 1) {
                         katan.isGetResourceFormOtherPlayer = false;
                         katan.getResourceCount = 0;
