@@ -55,17 +55,3 @@ export const makeDev = () => katanStore.update(katan => {
 
     return katan;
 });
-
-export const setNewCastleRippleEnabled = () => update(katan => {
-    const castleIndexList = getPossibleCastleIndexList(katan);
-    katan.castleList = katan.castleList.map(castle => {
-        if (castleIndexList.includes(castle.index)) {
-            castle.hide = false;
-            castle.show = true;
-        }
-
-        return castle;
-    });
-
-    return katan;
-});

@@ -102,7 +102,7 @@ const getLinkedRoadList = (katan, player, road) => {
         .filter(road => road.playerIndex === player.index);
 };
 
-export const setHideRoad = () => katanStore.update( katan => {
+export const setHideRoad = () => katanStore.update(katan => {
     katan.roadList =  katan.roadList
         .map(road => {
             if (road.playerIndex === -1) {
@@ -254,7 +254,7 @@ export const setRoad = (roadIndex, playerIndex) => katanStore.update(katan => {
     player.pickRoad += 1;
     player.construction.road -= 1;
 
-    if (katan.isStart && katan.isMakeRoad) {
+    if (katan.isStart && katan.isMakeRoad && katan.isMakeRoad2 === false) {
         player.resource.tree -= 1;
         player.resource.mud -= 1;
     }

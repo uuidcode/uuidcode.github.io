@@ -1,5 +1,4 @@
 import katanStore from './katan.js'
-import {setNewCastleRippleEnabled} from "./card";
 import {setRoadRippleEnabled} from "./road";
 
 const setHideCastle = () => katanStore.update(katan => {
@@ -48,10 +47,15 @@ const endMakeCity = (castleIndex) => katanStore.update(katan => {
 export const getPossibleCastleIndexList = (katan) => {
     return katan.castleList
         .filter(castle => castle.playerIndex === -1)
-        .map(castle => {
+        .filter(castle => {
             const castleLength = castle.castleIndexList
                 .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
                 .length;
+
+            console.log('>>> castleLength1', castle.i,
+                castle.j, castle.index, castleLength);
+
+            console.log('>>> castle.castleIndexList', castle.castleIndexList);
 
             if (castleLength === castle.castleIndexList.length) {
                 const castleLength = castle.roadIndexList
@@ -61,26 +65,26 @@ export const getPossibleCastleIndexList = (katan) => {
                     })
                     .length;
 
+                console.log('>>> castleLength2', castleLength);
+
                 if (castleLength > 0) {
-                    return castle.index;
+                    return true;
                 }
             }
 
-            return -1;
-        })
-        .filter(index => index >= 0);
+            return false;
+        });
 };
 
 export const makeCastle = () => katanStore.update(katan => {
-        katan.isMakeCastle = true;
-        setNewCastleRippleEnabled();
-        return katan;
+    katan.isMakeCastle = true;
+    setNewCastleRippleEnabled();
+    return katan;
 });
 
 export const makeCity = () => katanStore.update(katan => {
     katan.isMakeCity = true;
     setNewCityRippleEnabled();
-
     return katan;
 });
 
@@ -206,6 +210,21 @@ export const showConstructableCastle = () => katanStore.update(katan => {
                 castle.show = true;
                 castle.hide = false;
             }
+        }
+
+        return castle;
+    });
+
+    return katan;
+});
+
+const setNewCastleRippleEnabled = () => katanStore.update(katan => {
+    const castleIndexList = getPossibleCastleIndexList(katan);
+
+    katan.castleList = katan.castleList.map(castle => {
+        if (castleIndexList.includes(castle.index)) {
+            castle.hide = false;
+            castle.show = true;
         }
 
         return castle;

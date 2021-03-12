@@ -55,6 +55,7 @@
     class:show={castle.show}
     style={castleStyle}>
     <div>{castle.title}</div>
+<!--        <div>{castle.i},{castle.j},{castle.playerIndex},{castle.index}</div>-->
     </div>
 {/if}
 
@@ -68,6 +69,7 @@
         cursor: pointer;
         z-index: 20;
         border: 2px solid black;
+        opacity: 0.9;
     }
 
     .pick {

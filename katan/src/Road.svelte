@@ -55,6 +55,7 @@
          class:show={road.show}
          style={roadStyle}>
         <div>{road.title}</div>
+<!--        <div>{road.i},{road.j},{road.playerIndex},{road.index}</div>-->
     </div>
 {/if}
 
@@ -67,6 +68,7 @@
         font-size: 12px;
         cursor: pointer;
         border: 2px solid black;
+        opacity: 0.9;
     }
 
     .pick {

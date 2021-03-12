@@ -7,7 +7,7 @@ import katanObject from "./katanObject"
 import {random} from "./util";
 import {makeDev} from "./card";
 import {makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
-import {setCastleRippleDisabled, makeCastle, makeCity} from "./castle";
+import {setCastleRippleDisabled, makeCastle, makeCity, clickMakeCastle} from "./castle";
 import {animateMoveResource, takeResource, moveResource} from "./resource";
 
 const { subscribe, set, update } = writable(katanObject);

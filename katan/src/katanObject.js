@@ -69,35 +69,35 @@ const katanObject = {
 katanObject.cardList = [];
 katanObject.afterCardList = [];
 
-for (let i = 0; i < 5; i++) {
-    katanObject.cardList.push({
-        type: 'point'
-    })
-}
-
-for (let i = 0; i < 14; i++) {
-    katanObject.cardList.push({
-        type: 'knight'
-    })
-}
+// for (let i = 0; i < 5; i++) {
+//     katanObject.cardList.push({
+//         type: 'point'
+//     })
+// }
+//
+// for (let i = 0; i < 14; i++) {
+//     katanObject.cardList.push({
+//         type: 'knight'
+//     })
+// }
 
 for (let i = 0; i < 2; i++) {
     katanObject.cardList.push({
         type: 'road'
     });
 }
-
-for (let i = 0; i < 2; i++) {
-    katanObject.cardList.push({
-        type: 'resource'
-    });
-}
-
-for (let i = 0; i < 2; i++) {
-    katanObject.cardList.push({
-        type: 'get'
-    });
-}
+//
+// for (let i = 0; i < 2; i++) {
+//     katanObject.cardList.push({
+//         type: 'resource'
+//     });
+// }
+//
+// for (let i = 0; i < 2; i++) {
+//     katanObject.cardList.push({
+//         type: 'get'
+//     });
+// }
 
 katanObject.cardList = shuffle(katanObject.cardList);
 
@@ -618,7 +618,7 @@ katanObject.castleList[5].castleIndexList = [4, 6];
 katanObject.castleList[6].castleIndexList = [5, 14];
 
 katanObject.castleList[7].castleIndexList = [8, 17];
-katanObject.castleList[8].castleIndexList = [7, 9];
+katanObject.castleList[8].castleIndexList = [0, 7, 9];
 katanObject.castleList[9].castleIndexList = [8, 10, 19];
 katanObject.castleList[10].castleIndexList = [2, 9, 11];
 katanObject.castleList[11].castleIndexList = [10, 12, 21];

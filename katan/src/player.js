@@ -35,9 +35,6 @@ export const recomputePlayer = () => {
                     player.resource.mud >= 1 &&
                     getPossibleRoadTotalLength(katan) > 0;
 
-                const possibleCastleIndexList =
-                    getPossibleCastleIndexList(katan);
-
                 player.make.castle =
                     katanStore.isActive(katan) &&
                     player.index === katan.playerIndex &&
@@ -46,7 +43,7 @@ export const recomputePlayer = () => {
                     player.resource.mud >= 1 &&
                     player.resource.wheat >= 1 &&
                     player.resource.sheep >= 1 &&
-                    possibleCastleIndexList.length > 0;
+                    getPossibleCastleIndexList(katan).length > 0;
 
                 const castleLength = katan.castleList
                     .filter(castle => castle.playerIndex === katan.playerIndex)
