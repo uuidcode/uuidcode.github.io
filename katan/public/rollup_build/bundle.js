@@ -121,10 +121,6 @@ var app = (function (jQuery) {
             resolved_promise.then(flush);
         }
     }
-    function tick() {
-        schedule_update();
-        return resolved_promise;
-    }
     function add_render_callback(fn) {
         render_callbacks.push(fn);
     }
@@ -501,227 +497,6 @@ var app = (function (jQuery) {
         selectedColor: 'blueviolet'
     };
 
-    const recomputeRoad = () =>  {
-        recomputeLongRoad();
-        recomputeRoadPoint();
-    };
-
-    const recomputeRoadPoint = () => katanStore.update(katan => {
-        const player = katanStore.getActivePlayer();
-        const otherPlayer = katanStore.getOtherPlayer(katan);
-
-        if (player.maxRoadLength >= 5) {
-            if (player.point.road === 0) {
-                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
-                    alert('최장 교역로를 달성하였습니다.\n2점을 회득합니다.');
-                    player.point.road = 2;
-                }
-            }
-
-            if (otherPlayer.point.road > 0) {
-                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
-                    otherPlayer.point.road = 0;
-                }
-            }
-        }
-
-        return katan;
-    });
-
-    const recomputeLongRoad = () => {
-        katanStore.update(katan => {
-            katan.playerList
-                .forEach(player => {
-                    const list = katan.roadList
-                        .filter(road => road.playerIndex === player.index);
-
-                    list.forEach(road => {
-                        processLinkedRoadList(katan, player, road, []);
-                    });
-                });
-
-            return katan;
-        });
-    };
-
-    const processLinkedRoadList = (katan, player, road, resultList) => {
-        if (resultList.includes(road.index)) {
-            return;
-        }
-
-        const resultListLength = resultList.length;
-
-        if (resultListLength >= 2) {
-            const a = getIntersectionCastle(katan,
-                resultList[resultListLength - 1],
-                road.index);
-
-            const b = getIntersectionCastle(katan,
-                resultList[resultListLength - 2],
-                resultList[resultListLength - 1]);
-
-            if (a === b) {
-                return;
-            }
-        }
-
-        resultList.push(road.index);
-
-        if (road.playerIndex !== player.index) {
-            return;
-        }
-
-        const roadList = getLinkedRoadList(katan, player, road);
-
-        if (resultList.length > player.maxRoadLength) {
-            player.maxRoadLength = resultList.length;
-        }
-
-        if (roadList.length === 0) {
-            return;
-        }
-
-        roadList.forEach(currentRoad => {
-            processLinkedRoadList(katan, player, currentRoad, [...resultList]);
-        });
-    };
-
-    const getIntersectionCastle = (katan, roadIndexA, roadIndexB) => {
-        const listA = katan.roadList[roadIndexA].castleIndexList;
-        const listB = katan.roadList[roadIndexB].castleIndexList;
-        return listA.find(index => listB.includes(index));
-    };
-
-    const getLinkedRoadList = (katan, player, road) => {
-        const roadIndex = road.index;
-
-        return katan.roadList[roadIndex]
-            .roadIndexList
-            .map(index => katan.roadList[index])
-            .filter(road => road.playerIndex === player.index);
-    };
-
-    const setHideRoad = () => katanStore.update( katan => {
-        katan.roadList =  katan.roadList
-            .map(road => {
-                if (road.playerIndex === -1) {
-                    road.show = false;
-                    road.hide = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    });
-
-    const setRoadRippleDisabled = () => katanStore.update(katan => {
-        katan.roadList = katan.roadList
-            .map(road => {
-                road.ripple = false;
-                return road;
-            });
-
-        return katan;
-    });
-
-    const clickMakeRoad = (roadIndex) => katanStore.update(katan => {
-        if (!katan.isMakeRoad) {
-            return katan;
-        }
-
-        const player = katanStore.getActivePlayer();
-        katanStore.setRoad(roadIndex, player.index);
-        setHideRoad();
-        setRoadRippleDisabled();
-
-        if (katan.isStart) {
-            katanStore.endMakeRoad();
-        } else {
-            katanStore.showConstructableCastle();
-            katanStore.endMakeRoad();
-            katanStore.turn();
-
-            if (katanStore.isStartable()) {
-                katanStore.start();
-            }
-        }
-
-        return katan;
-    });
-
-    const getPossibleRoadTotalLength = (katan) => {
-        return katan.roadList
-            .map(road => getPossibleRoadLength(katan, road))
-            .reduce((a, b) => a + b);
-    };
-
-    const getPossibleRoadLength = (katan, road) => {
-        let length = 0;
-
-        if (road.playerIndex === -1) {
-            length = road.castleIndexList
-                .map(castleIndex => katan.castleList[castleIndex])
-                .filter(castle => castle.playerIndex === katan.playerIndex)
-                .length;
-
-            length += road.roadIndexList
-                .map(roadIndex => katan.roadList[roadIndex])
-                .filter(road => road.playerIndex === katan.playerIndex)
-                .length;
-        }
-
-        return length;
-    };
-
-    const setNewRoadRippleEnabled = () => katanStore.update(katan => {
-        katan.roadList = katan.roadList
-            .map(road => {
-                let length = getPossibleRoadLength(katan, road);
-
-                if (length > 0) {
-                    road.hide = false;
-                    road.show = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    });
-
-    const makeRoad = () => katanStore.update(katan => {
-        katan.isMakeRoad = true;
-
-        setNewRoadRippleEnabled();
-        recomputePlayer();
-
-        return katan;
-    });
-
-    const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => {
-        katan.isMakeRoad = true;
-        katan.message = '도로을 만들곳을 선택하세요.';
-        let roadIndexList = katan.castleList[castleIndex].roadIndexList;
-
-        katan.roadList = katan.roadList
-            .map(road => {
-
-                let linkLength = roadIndexList.filter(roadIndex => roadIndex === road.index)
-                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === -1)
-                    .length;
-
-                if (linkLength > 0) {
-                    road.hide = false;
-                    road.show = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    });
-
     const camelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
 
     function toStyle (styleObject) {
@@ -1056,13 +831,402 @@ var app = (function (jQuery) {
     const makeCastle = () => katanStore.update(katan => {
             katan.isMakeCastle = true;
             setNewCastleRippleEnabled();
-
             return katan;
     });
 
     const makeCity = () => katanStore.update(katan => {
         katan.isMakeCity = true;
         setNewCityRippleEnabled();
+
+        return katan;
+    });
+
+    const setCastleRippleDisabled = () => katanStore.update(katan => {
+        katan.castleList = katan.castleList.map(castle => {
+            castle.ripple = false;
+            return castle;
+        });
+
+        return katan;
+    });
+
+    const castleClickable = (katan, castleIndex) => {
+        const player = katanStore.getActivePlayer();
+        const castle = katan.castleList[castleIndex];
+
+        if (katan.isMakeCity) {
+            if (castle.city || castle.playerIndex !== player.index) {
+                return false;
+            }
+        } else {
+            if (castle.playerIndex !== -1) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    const clickMakeCastle$1 = (castleIndex) => katanStore.update(katan => {
+        if (!castleClickable(katan, castleIndex)) {
+            return katan;
+        }
+
+        const player = katanStore.getActivePlayer();
+        setCastle(castleIndex, player.index);
+        setHideCastle();
+        setCastleRippleDisabled();
+
+        if (katan.isMakeCastle) {
+            endMakeCastle();
+        } else if (katan.isMakeCity){
+            endMakeCity();
+        } else {
+            setRoadRippleEnabled(castleIndex);
+        }
+
+        return katan;
+    });
+
+    const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
+        let castle = katan.castleList[castleIndex];
+        castle.playerIndex = playerIndex;
+        castle.pick = false;
+
+        if (katan.isMakeCity) {
+            castle.title = '도시';
+        } else {
+            castle.title = '마을';
+        }
+
+        const player = katan.playerList[playerIndex];
+        player.pickCastle += 1;
+        katan.time = new Date().getTime();
+
+        if (katan.isMakeCity) {
+            player.resource.wheat -= 2;
+            player.resource.iron -= 3;
+
+            player.point.castle -= 1;
+            player.point.city += 2;
+
+            player.construction.castle += 1;
+            player.construction.city -= 1;
+
+            katan.castleList = katan.castleList
+                .map(castle => {
+                    if (castle.index === castleIndex) {
+                        castle.city = true;
+                    }
+
+                    return castle;
+                });
+        } else {
+            if (katan.isStart) {
+                player.resource.tree -= 1;
+                player.resource.mud -= 1;
+                player.resource.sheep -= 1;
+                player.resource.wheat -= 1;
+            }
+
+            player.point.castle += 1;
+
+            player.construction.castle -= 1;
+        }
+
+        if (castle.port.tradable) {
+            if (castle.port.type === 'all') {
+                katan.resourceTypeList
+                    .forEach(resourceType => {
+                        if (player.trade[resourceType.type].count > castle.port.trade) {
+                            player.trade[resourceType.type].count = castle.port.trade;
+                        }
+                    });
+            } else {
+                player.trade[castle.port.type].count = castle.port.trade;
+            }
+        }
+
+        return katan;
+    });
+
+    const showConstructableCastle = () => katanStore.update(katan => {
+        katan.message = '마을을 만들곳을 클릭하세요';
+
+        katan.castleList = katan.castleList.map(castle => {
+            if (castle.constructable && castle.playerIndex === -1) {
+                let linkedCastleLength = castle.castleIndexList
+                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
+                    .length;
+
+                if (linkedCastleLength === 0) {
+                    castle.show = true;
+                    castle.hide = false;
+                }
+            }
+
+            return castle;
+        });
+
+        return katan;
+    });
+
+    const recomputeRoad = () =>  {
+        recomputeLongRoad();
+        recomputeRoadPoint();
+    };
+
+    const recomputeRoadPoint = () => katanStore.update(katan => {
+        const player = katanStore.getActivePlayer();
+        const otherPlayer = katanStore.getOtherPlayer(katan);
+
+        if (player.maxRoadLength >= 5) {
+            if (player.point.road === 0) {
+                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
+                    alert('최장 교역로를 달성하였습니다.\n2점을 회득합니다.');
+                    player.point.road = 2;
+                }
+            }
+
+            if (otherPlayer.point.road > 0) {
+                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
+                    otherPlayer.point.road = 0;
+                }
+            }
+        }
+
+        return katan;
+    });
+
+    const recomputeLongRoad = () => {
+        katanStore.update(katan => {
+            katan.playerList
+                .forEach(player => {
+                    const list = katan.roadList
+                        .filter(road => road.playerIndex === player.index);
+
+                    list.forEach(road => {
+                        processLinkedRoadList(katan, player, road, []);
+                    });
+                });
+
+            return katan;
+        });
+    };
+
+    const processLinkedRoadList = (katan, player, road, resultList) => {
+        if (resultList.includes(road.index)) {
+            return;
+        }
+
+        const resultListLength = resultList.length;
+
+        if (resultListLength >= 2) {
+            const a = getIntersectionCastle(katan,
+                resultList[resultListLength - 1],
+                road.index);
+
+            const b = getIntersectionCastle(katan,
+                resultList[resultListLength - 2],
+                resultList[resultListLength - 1]);
+
+            if (a === b) {
+                return;
+            }
+        }
+
+        resultList.push(road.index);
+
+        if (road.playerIndex !== player.index) {
+            return;
+        }
+
+        const roadList = getLinkedRoadList(katan, player, road);
+
+        if (resultList.length > player.maxRoadLength) {
+            player.maxRoadLength = resultList.length;
+        }
+
+        if (roadList.length === 0) {
+            return;
+        }
+
+        roadList.forEach(currentRoad => {
+            processLinkedRoadList(katan, player, currentRoad, [...resultList]);
+        });
+    };
+
+    const getIntersectionCastle = (katan, roadIndexA, roadIndexB) => {
+        const listA = katan.roadList[roadIndexA].castleIndexList;
+        const listB = katan.roadList[roadIndexB].castleIndexList;
+        return listA.find(index => listB.includes(index));
+    };
+
+    const getLinkedRoadList = (katan, player, road) => {
+        const roadIndex = road.index;
+
+        return katan.roadList[roadIndex]
+            .roadIndexList
+            .map(index => katan.roadList[index])
+            .filter(road => road.playerIndex === player.index);
+    };
+
+    const setHideRoad = () => katanStore.update( katan => {
+        katan.roadList =  katan.roadList
+            .map(road => {
+                if (road.playerIndex === -1) {
+                    road.show = false;
+                    road.hide = true;
+                }
+
+                return road;
+            });
+
+        return katan;
+    });
+
+    const setRoadRippleDisabled = () => katanStore.update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                road.ripple = false;
+                return road;
+            });
+
+        return katan;
+    });
+
+    const clickMakeRoad = (roadIndex) => katanStore.update(katan => {
+        if (!katan.isMakeRoad) {
+            return katan;
+        }
+
+        const player = katanStore.getActivePlayer();
+        setRoad(roadIndex, player.index);
+        setHideRoad();
+        setRoadRippleDisabled();
+
+        if (katan.isStart) {
+            endMakeRoad();
+        } else {
+            showConstructableCastle();
+            endMakeRoad();
+            katanStore.turn();
+
+            if (katanStore.isStartable()) {
+                katanStore.start();
+            }
+        }
+
+        return katan;
+    });
+
+    const getPossibleRoadTotalLength = (katan) => {
+        return katan.roadList
+            .map(road => getPossibleRoadLength(katan, road))
+            .reduce((a, b) => a + b);
+    };
+
+    const getPossibleRoadLength = (katan, road) => {
+        let length = 0;
+
+        if (road.playerIndex === -1) {
+            length = road.castleIndexList
+                .map(castleIndex => katan.castleList[castleIndex])
+                .filter(castle => castle.playerIndex === katan.playerIndex)
+                .length;
+
+            length += road.roadIndexList
+                .map(roadIndex => katan.roadList[roadIndex])
+                .filter(road => road.playerIndex === katan.playerIndex)
+                .length;
+        }
+
+        return length;
+    };
+
+    const setNewRoadRippleEnabled = () => katanStore.update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                let length = getPossibleRoadLength(katan, road);
+
+                if (length > 0) {
+                    road.hide = false;
+                    road.show = true;
+                }
+
+                return road;
+            });
+
+        return katan;
+    });
+
+    const makeRoad = () => katanStore.update(katan => {
+        katan.isMakeRoad = true;
+
+        setNewRoadRippleEnabled();
+        recomputePlayer();
+
+        return katan;
+    });
+
+    const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => {
+        katan.isMakeRoad = true;
+        katan.message = '도로을 만들곳을 선택하세요.';
+        let roadIndexList = katan.castleList[castleIndex].roadIndexList;
+
+        katan.roadList = katan.roadList
+            .map(road => {
+
+                let linkLength = roadIndexList.filter(roadIndex => roadIndex === road.index)
+                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === -1)
+                    .length;
+
+                if (linkLength > 0) {
+                    road.hide = false;
+                    road.show = true;
+                }
+
+                return road;
+            });
+
+        return katan;
+    });
+
+    const endMakeRoad =() => katanStore.update(katan => {
+        if (katan.isMakeRoad2) {
+            katan.makeRoadCount += 1;
+        } else {
+            katan.isMakeRoad = false;
+        }
+
+        if (katan.isStart) {
+            if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
+                makeRoad();
+            } else {
+                katan.isMakeRoad2 = false;
+                katan.isMakeRoad = false;
+                katan.makeRoadCount = 0;
+                katanStore.doActionAndTurn();
+            }
+        }
+
+        return katan;
+    });
+
+    const setRoad = (roadIndex, playerIndex) => katanStore.update(katan => {
+        let road = katan.roadList[roadIndex];
+        road.playerIndex = playerIndex;
+        road.pick = false;
+        road.title = '도로';
+
+        const player = katan.playerList[playerIndex];
+        player.pickRoad += 1;
+        player.construction.road -= 1;
+
+        if (katan.isStart && katan.isMakeRoad) {
+            player.resource.tree -= 1;
+            player.resource.mud -= 1;
+        }
 
         return katan;
     });
@@ -2273,7 +2437,7 @@ var app = (function (jQuery) {
             katan.isStart = true;
             katan.isReady = false;
 
-            katanStore.setCastleRippleDisabled();
+            setCastleRippleDisabled();
             setRoadRippleDisabled();
 
             katan.castleList = katan.castleList
@@ -2366,86 +2530,8 @@ var app = (function (jQuery) {
                 player.make.dev;
         },
 
-        updateAndShowResourceModal: async() => {
-            katanStore.setShowResourceModal();
-            await tick();
-            katanStore.showResourceModal();
-        },
-
-        showResourceModal: () => {
-            const modal = new Modal(document.getElementById('resourceModal'), {});
-            modal.show();
-        },
-
-        setShowResourceModal: () => update$2(katan => {
-            katan.showResourceModal = true;
-            return katan;
-        }),
-
-        hideResourceModal: () => update$2(katan => {
-            katan.showResourceModal = false;
-            return katan;
-        }),
-
         clickMakeRoad: (roadIndex) => clickMakeRoad(roadIndex),
-
-        castleClickable: (katan, castleIndex) => {
-            const player = katanStore.getActivePlayer();
-            const castle = katan.castleList[castleIndex];
-
-            if (katan.isMakeCity) {
-                if (castle.city || castle.playerIndex !== player.index) {
-                    return false;
-                }
-            } else {
-                if (castle.playerIndex !== -1) {
-                    return false;
-                }
-            }
-
-            return true;
-        },
-
-        clickMakeCastle: (castleIndex) => update$2(katan => {
-            if (!katanStore.castleClickable(katan, castleIndex)) {
-                return katan;
-            }
-
-            const player = katanStore.getActivePlayer();
-            katanStore.setCastle(castleIndex, player.index);
-            setHideCastle();
-            katanStore.setCastleRippleDisabled();
-
-            if (katan.isMakeCastle) {
-                endMakeCastle();
-            } else if (katan.isMakeCity){
-                endMakeCity();
-            } else {
-                setRoadRippleEnabled(castleIndex);
-            }
-
-            return katan;
-        }),
-
-        endMakeRoad: () => update$2(katan => {
-            if (katan.isMakeRoad2) {
-                katan.makeRoadCount += 1;
-            } else {
-                katan.isMakeRoad = false;
-            }
-
-            if (katan.isStart) {
-                if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
-                    makeRoad();
-                } else {
-                    katan.isMakeRoad2 = false;
-                    katan.makeRoadCount = 0;
-                    katanStore.doActionAndTurn();
-                }
-            }
-
-            return katan;
-        }),
+        clickMakeCastle: (castleIndex) => clickMakeCastle(castleIndex),
 
         setRollDice: () => update$2(katan => {
             katan.rollDice = true;
@@ -2585,7 +2671,6 @@ var app = (function (jQuery) {
         updatePlayerResource: (playerIndex, type) => update$2(katan => {
             katan.playerList[playerIndex].resource[type] -= 1;
             katan.takeResourceFromBuglarCompleCount += 1;
-
             return katan;
         }),
 
@@ -2662,96 +2747,6 @@ var app = (function (jQuery) {
                 .find(player => player.turn);
         },
 
-        setCastle: (castleIndex, playerIndex) => update$2(katan => {
-            let castle = katan.castleList[castleIndex];
-            castle.playerIndex = playerIndex;
-            castle.pick = false;
-
-            if (katan.isMakeCity) {
-                castle.title = '도시';
-            } else {
-                castle.title = '마을';
-            }
-
-            const player = katan.playerList[playerIndex];
-            player.pickCastle += 1;
-            katan.time = new Date().getTime();
-
-            if (katan.isMakeCity) {
-                player.resource.wheat -= 2;
-                player.resource.iron -= 3;
-
-                player.point.castle -= 1;
-                player.point.city += 2;
-
-                player.construction.castle += 1;
-                player.construction.city -= 1;
-
-                katan.castleList = katan.castleList
-                    .map(castle => {
-                        if (castle.index === castleIndex) {
-                            castle.city = true;
-                        }
-
-                        return castle;
-                    });
-            } else {
-                if (katan.isStart) {
-                    player.resource.tree -= 1;
-                    player.resource.mud -= 1;
-                    player.resource.sheep -= 1;
-                    player.resource.wheat -= 1;
-                }
-
-                player.point.castle += 1;
-
-                player.construction.castle -= 1;
-            }
-
-            if (castle.port.tradable) {
-                if (castle.port.type === 'all') {
-                    katan.resourceTypeList
-                        .forEach(resourceType => {
-                            if (player.trade[resourceType.type].count > castle.port.trade) {
-                                player.trade[resourceType.type].count = castle.port.trade;
-                            }
-                        });
-                } else {
-                    player.trade[castle.port.type].count = castle.port.trade;
-                }
-            }
-
-            return katan;
-        }),
-
-        setRoad: (roadIndex, playerIndex) => update$2(katan => {
-            let road = katan.roadList[roadIndex];
-            road.playerIndex = playerIndex;
-            road.pick = false;
-            road.title = '도로';
-
-            const player = katan.playerList[playerIndex];
-            player.pickRoad += 1;
-            player.construction.road -= 1;
-
-            if (katan.isStart && katan.isMakeRoad) {
-                player.resource.tree -= 1;
-                player.resource.mud -= 1;
-            }
-
-            return katan;
-        }),
-
-        setPickRoadMode: () => update$2(katan => {
-            katanStore.getCurrentPlayer(katan);
-            return katan;
-        }),
-
-        setPickCastleMode: () => update$2(katan => {
-            katanStore.getCurrentPlayer(katan);
-            return katan;
-        }),
-
         makeRoad: () => makeRoad(),
 
         makeDev: () => makeDev(),
@@ -2787,53 +2782,7 @@ var app = (function (jQuery) {
 
         makeCity: () => makeCity(),
 
-        setNewRoadRippleEnabled: () => update$2(katan => {
-            katan.roadList = katan.roadList
-                .map(road => {
-                    let length = katanStore.getPossibleRoadLength(katan, road);
-
-                    if (length > 0) {
-                        road.hide = false;
-                        road.show = true;
-                    }
-
-                    return road;
-                });
-
-            return katan;
-        }),
-
         setRoadRippleDisabled: () => setRoadRippleDisabled(),
-
-        setCastleRippleDisabled: () => update$2(katan => {
-            katan.castleList = katan.castleList.map(castle => {
-                castle.ripple = false;
-                return castle;
-            });
-
-            return katan;
-        }),
-
-        showConstructableCastle: () => update$2(katan => {
-            katan.message = '마을을 만들곳을 클릭하세요';
-
-            katan.castleList = katan.castleList.map(castle => {
-                if (castle.constructable && castle.playerIndex === -1) {
-                    let linkedCastleLength = castle.castleIndexList
-                        .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
-                        .length;
-
-                    if (linkedCastleLength === 0) {
-                        castle.show = true;
-                        castle.hide = false;
-                    }
-                }
-
-                return castle;
-            });
-
-            return katan;
-        }),
 
         setSelectedNumberRippleEnabled: (number) => update$2(katan => {
             katan.resourceList = katan.resourceList
@@ -3334,11 +3283,11 @@ var app = (function (jQuery) {
     /* src\Castle.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Castle.svelte";
 
-    // (48:0) {:else}
+    // (50:0) {:else}
     function create_else_block(ctx) {
     	let div1;
     	let div0;
-    	let t_value = /*castle*/ ctx[1].title + "";
+    	let t_value = /*castle*/ ctx[0].title + "";
     	let t;
     	let mounted;
     	let dispose;
@@ -3348,13 +3297,13 @@ var app = (function (jQuery) {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 54, 4, 1482);
+    			add_location(div0, file$1, 56, 4, 1597);
     			attr_dev(div1, "class", "castle svelte-fpx7xf");
-    			attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
-    			toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
-    			toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
-    			toggle_class(div1, "show", /*castle*/ ctx[1].show);
-    			add_location(div1, file$1, 48, 4, 1277);
+    			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
+    			toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
+    			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
+    			toggle_class(div1, "show", /*castle*/ ctx[0].show);
+    			add_location(div1, file$1, 50, 4, 1407);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -3362,27 +3311,27 @@ var app = (function (jQuery) {
     			append_dev(div0, t);
 
     			if (!mounted) {
-    				dispose = listen_dev(div1, "click", /*click_handler*/ ctx[4], false, false, false);
+    				dispose = listen_dev(div1, "click", /*internalClickMakeCastle*/ ctx[2], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 2 && t_value !== (t_value = /*castle*/ ctx[1].title + "")) set_data_dev(t, t_value);
+    			if (dirty & /*castle*/ 1 && t_value !== (t_value = /*castle*/ ctx[0].title + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*castleStyle*/ 4) {
-    				attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
+    			if (dirty & /*castleStyle*/ 2) {
+    				attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
     			}
 
-    			if (dirty & /*castle*/ 2) {
-    				toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
     			}
 
-    			if (dirty & /*castle*/ 2) {
-    				toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
     			}
 
-    			if (dirty & /*castle*/ 2) {
-    				toggle_class(div1, "show", /*castle*/ ctx[1].show);
+    			if (dirty & /*castle*/ 1) {
+    				toggle_class(div1, "show", /*castle*/ ctx[0].show);
     			}
     		},
     		d: function destroy(detaching) {
@@ -3396,25 +3345,25 @@ var app = (function (jQuery) {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(48:0) {:else}",
+    		source: "(50:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (43:0) {#if config.debug}
+    // (45:0) {#if config.debug}
     function create_if_block$1(ctx) {
     	let div2;
     	let div0;
-    	let t0_value = /*castle*/ ctx[1].i + "";
+    	let t0_value = /*castle*/ ctx[0].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*castle*/ ctx[1].j + "";
+    	let t2_value = /*castle*/ ctx[0].j + "";
     	let t2;
     	let t3;
     	let div1;
-    	let t4_value = /*castle*/ ctx[1].index + "";
+    	let t4_value = /*castle*/ ctx[0].index + "";
     	let t4;
 
     	const block = {
@@ -3427,11 +3376,11 @@ var app = (function (jQuery) {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 44, 8, 1183);
-    			add_location(div1, file$1, 45, 8, 1225);
+    			add_location(div0, file$1, 46, 8, 1313);
+    			add_location(div1, file$1, 47, 8, 1355);
     			attr_dev(div2, "class", "castle svelte-fpx7xf");
-    			attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
-    			add_location(div2, file$1, 43, 4, 1133);
+    			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
+    			add_location(div2, file$1, 45, 4, 1263);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -3444,12 +3393,12 @@ var app = (function (jQuery) {
     			append_dev(div1, t4);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 2 && t0_value !== (t0_value = /*castle*/ ctx[1].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*castle*/ 2 && t2_value !== (t2_value = /*castle*/ ctx[1].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*castle*/ 2 && t4_value !== (t4_value = /*castle*/ ctx[1].index + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*castle*/ 1 && t0_value !== (t0_value = /*castle*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*castle*/ 1 && t2_value !== (t2_value = /*castle*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*castle*/ 1 && t4_value !== (t4_value = /*castle*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*castleStyle*/ 4) {
-    				attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
+    			if (dirty & /*castleStyle*/ 2) {
+    				attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -3461,7 +3410,7 @@ var app = (function (jQuery) {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(43:0) {#if config.debug}",
+    		source: "(45:0) {#if config.debug}",
     		ctx
     	});
 
@@ -3516,7 +3465,7 @@ var app = (function (jQuery) {
     function instance$1($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(3, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(4, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Castle", slots, []);
     	let { castleIndex } = $$props;
@@ -3531,7 +3480,7 @@ var app = (function (jQuery) {
     			borderRadius: config.castle.height + "px"
     		};
 
-    		if (katanStore.castleClickable($katan, castleIndex)) {
+    		if (castleClickable($katan, castleIndex)) {
     			styleObject.cursor = "default";
     		}
 
@@ -3547,6 +3496,7 @@ var app = (function (jQuery) {
     		return toStyle(styleObject);
     	};
 
+    	const internalClickMakeCastle = () => clickMakeCastle$1(castleIndex);
     	let castle;
     	let castleStyle;
     	const writable_props = ["castleIndex"];
@@ -3555,27 +3505,28 @@ var app = (function (jQuery) {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
-    	const click_handler = () => katanStore.clickMakeCastle(castleIndex);
-
     	$$self.$$set = $$props => {
-    		if ("castleIndex" in $$props) $$invalidate(0, castleIndex = $$props.castleIndex);
+    		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
     	};
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
     		config,
     		toStyle,
+    		castleClickable,
+    		clickMakeCastle: clickMakeCastle$1,
     		castleIndex,
     		createStyle,
+    		internalClickMakeCastle,
     		castle,
     		castleStyle,
     		$katan
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("castleIndex" in $$props) $$invalidate(0, castleIndex = $$props.castleIndex);
-    		if ("castle" in $$props) $$invalidate(1, castle = $$props.castle);
-    		if ("castleStyle" in $$props) $$invalidate(2, castleStyle = $$props.castleStyle);
+    		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
+    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
+    		if ("castleStyle" in $$props) $$invalidate(1, castleStyle = $$props.castleStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -3583,21 +3534,21 @@ var app = (function (jQuery) {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, castleIndex*/ 9) {
+    		if ($$self.$$.dirty & /*$katan, castleIndex*/ 24) {
     			{
-    				$$invalidate(1, castle = $katan.castleList[castleIndex]);
-    				$$invalidate(2, castleStyle = createStyle());
+    				$$invalidate(0, castle = $katan.castleList[castleIndex]);
+    				$$invalidate(1, castleStyle = createStyle());
     			}
     		}
     	};
 
-    	return [castleIndex, castle, castleStyle, $katan, click_handler];
+    	return [castle, castleStyle, internalClickMakeCastle, castleIndex, $katan];
     }
 
     class Castle extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { castleIndex: 0 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { castleIndex: 3 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -3609,7 +3560,7 @@ var app = (function (jQuery) {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*castleIndex*/ ctx[0] === undefined && !("castleIndex" in props)) {
+    		if (/*castleIndex*/ ctx[3] === undefined && !("castleIndex" in props)) {
     			console.warn("<Castle> was created without expected prop 'castleIndex'");
     		}
     	}

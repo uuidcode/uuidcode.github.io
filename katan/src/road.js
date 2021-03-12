@@ -1,5 +1,6 @@
 import katanStore from './katan.js'
 import {recomputePlayer} from "./player";
+import {showConstructableCastle} from "./castle";
 
 export const recomputeRoad = () =>  {
     recomputeLongRoad();
@@ -131,15 +132,15 @@ export const clickMakeRoad = (roadIndex) => katanStore.update(katan => {
     }
 
     const player = katanStore.getActivePlayer();
-    katanStore.setRoad(roadIndex, player.index);
+    setRoad(roadIndex, player.index);
     setHideRoad();
     setRoadRippleDisabled();
 
     if (katan.isStart) {
-        katanStore.endMakeRoad();
+        endMakeRoad();
     } else {
-        katanStore.showConstructableCastle();
-        katanStore.endMakeRoad();
+        showConstructableCastle();
+        endMakeRoad();
         katanStore.turn();
 
         if (katanStore.isStartable()) {
@@ -218,6 +219,45 @@ export const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => 
 
             return road;
         });
+
+    return katan;
+});
+
+const endMakeRoad =() => katanStore.update(katan => {
+    if (katan.isMakeRoad2) {
+        katan.makeRoadCount += 1;
+    } else {
+        katan.isMakeRoad = false;
+    }
+
+    if (katan.isStart) {
+        if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
+            makeRoad();
+        } else {
+            katan.isMakeRoad2 = false;
+            katan.isMakeRoad = false;
+            katan.makeRoadCount = 0;
+            katanStore.doActionAndTurn();
+        }
+    }
+
+    return katan;
+});
+
+export const setRoad = (roadIndex, playerIndex) => katanStore.update(katan => {
+    let road = katan.roadList[roadIndex];
+    road.playerIndex = playerIndex;
+    road.pick = false;
+    road.title = '도로';
+
+    const player = katan.playerList[playerIndex];
+    player.pickRoad += 1;
+    player.construction.road -= 1;
+
+    if (katan.isStart && katan.isMakeRoad) {
+        player.resource.tree -= 1;
+        player.resource.mud -= 1;
+    }
 
     return katan;
 });

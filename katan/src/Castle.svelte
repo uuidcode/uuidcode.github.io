@@ -2,6 +2,7 @@
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
+    import {castleClickable, clickMakeCastle} from './castle'
 
     export let castleIndex;
 
@@ -15,7 +16,7 @@
             borderRadius: config.castle.height + 'px'
         };
 
-        if (katan.castleClickable($katan, castleIndex)) {
+        if (castleClickable($katan, castleIndex)) {
             styleObject.cursor = 'default';
         }
 
@@ -31,6 +32,7 @@
         return toStyle(styleObject);
     };
 
+    const internalClickMakeCastle = () => clickMakeCastle(castleIndex);
     let castle;
     let castleStyle;
 
@@ -47,7 +49,7 @@
     </div>
 {:else}
     <div class="castle"
-         on:click={()=>katan.clickMakeCastle(castleIndex)}
+         on:click={internalClickMakeCastle}
     class:ripple={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
