@@ -1,4 +1,5 @@
 import katanStore from './katan.js'
+import {recomputePlayer} from "./player";
 
 export const recomputeRoad = () =>  {
     recomputeLongRoad();
@@ -118,6 +119,103 @@ export const setRoadRippleDisabled = () => katanStore.update(katan => {
     katan.roadList = katan.roadList
         .map(road => {
             road.ripple = false;
+            return road;
+        });
+
+    return katan;
+});
+
+export const clickMakeRoad = (roadIndex) => katanStore.update(katan => {
+    if (!katan.isMakeRoad) {
+        return katan;
+    }
+
+    const player = katanStore.getActivePlayer();
+    katanStore.setRoad(roadIndex, player.index);
+    setHideRoad();
+    setRoadRippleDisabled();
+
+    if (katan.isStart) {
+        katanStore.endMakeRoad();
+    } else {
+        katanStore.showConstructableCastle();
+        katanStore.endMakeRoad();
+        katanStore.turn();
+
+        if (katanStore.isStartable()) {
+            katanStore.start();
+        }
+    }
+
+    return katan;
+});
+
+export const getPossibleRoadTotalLength = (katan) => {
+    return katan.roadList
+        .map(road => getPossibleRoadLength(katan, road))
+        .reduce((a, b) => a + b);
+};
+
+export const getPossibleRoadLength = (katan, road) => {
+    let length = 0;
+
+    if (road.playerIndex === -1) {
+        length = road.castleIndexList
+            .map(castleIndex => katan.castleList[castleIndex])
+            .filter(castle => castle.playerIndex === katan.playerIndex)
+            .length;
+
+        length += road.roadIndexList
+            .map(roadIndex => katan.roadList[roadIndex])
+            .filter(road => road.playerIndex === katan.playerIndex)
+            .length;
+    }
+
+    return length;
+};
+
+export const setNewRoadRippleEnabled = () => katanStore.update(katan => {
+    katan.roadList = katan.roadList
+        .map(road => {
+            let length = getPossibleRoadLength(katan, road);
+
+            if (length > 0) {
+                road.hide = false;
+                road.show = true;
+            }
+
+            return road;
+        });
+
+    return katan;
+});
+
+export const makeRoad = () => katanStore.update(katan => {
+    katan.isMakeRoad = true;
+
+    setNewRoadRippleEnabled();
+    recomputePlayer();
+
+    return katan;
+});
+
+export const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => {
+    katan.isMakeRoad = true;
+    katan.message = '도로을 만들곳을 선택하세요.';
+    let roadIndexList = katan.castleList[castleIndex].roadIndexList;
+
+    katan.roadList = katan.roadList
+        .map(road => {
+
+            let linkLength = roadIndexList.filter(roadIndex => roadIndex === road.index)
+                .filter(roadIndex => katan.roadList[roadIndex].playerIndex === -1)
+                .length;
+
+            if (linkLength > 0) {
+                road.hide = false;
+                road.show = true;
+            }
+
             return road;
         });
 

@@ -1,15 +1,14 @@
 import {tick} from 'svelte'
 import {writable, get} from "svelte/store";
 import config from './config.js'
-import { getDisplay, sleep } from './util.js'
 import jQuery from 'jquery';
 import { recomputePlayer } from "./player";
 import katanObject from "./katanObject"
 import {random} from "./util";
 import {makeDev} from "./card";
-import {setHideRoad, setRoadRippleDisabled} from "./road";
-import {setHideCastle, endMakeCastle, endMakeCity, setNewCityRippleEnabled} from "./castle";
-import {animateMoveResource, updateResource, takeResource} from "./resource";
+import {setRoadRippleEnabled, makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
+import {makeCastle, makeCity, setHideCastle, endMakeCastle, endMakeCity, setNewCityRippleEnabled, getPossibleCastleIndexList} from "./castle";
+import {animateMoveResource, takeResource, moveResource} from "./resource";
 
 const { subscribe, set, update } = writable(katanObject);
 
@@ -116,52 +115,6 @@ const katanStore = {
         return item.is(':visible')
     },
 
-    moveResource: (number) => update(katan => {
-        let matchResourceCount = 0;
-        let moveResourceCount = 0;
-
-        katan.resourceList
-            .filter(resource => resource.number === number)
-            .filter(resource => !resource.buglar)
-            .forEach(resource => {
-                resource.castleIndexList.forEach(castleIndex => {
-                    const playerIndex = katan.castleList[castleIndex].playerIndex;
-
-                    if (playerIndex !== -1) {
-                        matchResourceCount++;
-                        resource.show = true;
-
-                        animateMoveResource({
-                            sourceClass: `resource_${resource.index}`,
-                            targetClass: `player_${playerIndex}_${resource.type}`,
-                            count: matchResourceCount,
-                            callback: () => {
-                                updateResource(playerIndex, resource);
-                                moveResourceCount++;
-                            }
-                        });
-                    }
-                });
-            });
-
-        katanStore.log(`matchResourceCount ${matchResourceCount}`);
-
-        if (matchResourceCount > 0) {
-            const interval = setInterval(() => {
-                if (moveResourceCount === matchResourceCount) {
-                    clearInterval(interval);
-                    katanStore.log(`move resource animation is complete.`);
-                    katanStore.doActionAndTurn();
-                }
-            }, 100);
-        } else {
-            katanStore.log(`move resource animation is none.`);
-            katanStore.doActionAndTurn();
-        }
-
-        return katan;
-    }),
-
     doActionAndTurn: () => {
         recomputePlayer();
 
@@ -214,30 +167,7 @@ const katanStore = {
         return katan;
     }),
 
-    clickMakeRoad: (roadIndex) => update(katan => {
-        if (!katan.isMakeRoad) {
-            return katan;
-        }
-
-        const player = katanStore.getActivePlayer();
-        katanStore.setRoad(roadIndex, player.index);
-        setHideRoad();
-        setRoadRippleDisabled();
-
-        if (katan.isStart) {
-            katanStore.endMakeRoad();
-        } else {
-            katanStore.showConstructableCastle();
-            katanStore.endMakeRoad();
-            katanStore.turn();
-
-            if (katanStore.isStartable()) {
-                katanStore.start();
-            }
-        }
-
-        return katan;
-    }),
+    clickMakeRoad: (roadIndex) => clickMakeRoad(roadIndex),
 
     castleClickable: (katan, castleIndex) => {
         const player = katanStore.getActivePlayer();
@@ -271,7 +201,7 @@ const katanStore = {
         } else if (katan.isMakeCity){
             endMakeCity(castleIndex);
         } else {
-            katanStore.setRoadRippleEnabled(castleIndex);
+            setRoadRippleEnabled(castleIndex);
         }
 
         return katan;
@@ -286,7 +216,7 @@ const katanStore = {
 
         if (katan.isStart) {
             if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
-                katanStore.makeRoad();
+                makeRoad();
             } else {
                 katan.isMakeRoad2 = false;
                 katan.makeRoadCount = 0;
@@ -365,7 +295,7 @@ const katanStore = {
 
                                 setTimeout(() => {
                                     katanStore.setNumberRippleDisabled(number);
-                                    katanStore.moveResource(number);
+                                    moveResource(number);
                                 }, 2000);
                             }
                         }
@@ -382,7 +312,7 @@ const katanStore = {
 
         setTimeout(() => {
             katanStore.setNumberRippleDisabled(number);
-            katanStore.moveResource(number);
+            moveResource(number);
         }, 2000);
     },
 
@@ -602,14 +532,7 @@ const katanStore = {
         return katan;
     }),
 
-    makeRoad: () => update(katan => {
-        katan.isMakeRoad = true;
-
-        katanStore.setNewRoadRippleEnabled();
-        recomputePlayer();
-
-        return katan;
-    }),
+    makeRoad: () => makeRoad(),
 
     makeDev: () => makeDev(),
 
@@ -640,43 +563,9 @@ const katanStore = {
         return katan.playerList[playerIndex];
     },
 
-    makeCastle: () => update(katan => {
-        katan.isMakeCastle = true;
-        katanStore.setNewCastleRippleEnabled();
+    makeCastle: () => makeCastle(),
 
-        return katan;
-    }),
-
-    makeCity: () => update(katan => {
-        katan.isMakeCity = true;
-        setNewCityRippleEnabled();
-
-        return katan;
-    }),
-
-    getPossibleRoadTotalLength: (katan) => {
-        return katan.roadList
-            .map(road => katanStore.getPossibleRoadLength(katan, road))
-            .reduce((a, b) => a + b);
-    },
-
-    getPossibleRoadLength: (katan, road) => {
-        let length = 0;
-
-        if (road.playerIndex === -1) {
-            length = road.castleIndexList
-                .map(castleIndex => katan.castleList[castleIndex])
-                .filter(castle => castle.playerIndex === katan.playerIndex)
-                .length;
-
-            length += road.roadIndexList
-                .map(roadIndex => katan.roadList[roadIndex])
-                .filter(road => road.playerIndex === katan.playerIndex)
-                .length;
-        }
-
-        return length;
-    },
+    makeCity: () => makeCity(),
 
     setNewRoadRippleEnabled: () => update(katan => {
         katan.roadList = katan.roadList
@@ -684,29 +573,6 @@ const katanStore = {
                 let length = katanStore.getPossibleRoadLength(katan, road);
 
                 if (length > 0) {
-                    road.hide = false;
-                    road.show = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    }),
-
-    setRoadRippleEnabled: (castleIndex) => update(katan => {
-        katan.isMakeRoad = true;
-        katan.message = '도로을 만들곳을 선택하세요.';
-        let roadIndexList = katan.castleList[castleIndex].roadIndexList;
-
-        katan.roadList = katan.roadList
-            .map(road => {
-
-                let linkLength = roadIndexList.filter(roadIndex => roadIndex === road.index)
-                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === -1)
-                    .length;
-
-                if (linkLength > 0) {
                     road.hide = false;
                     road.show = true;
                 }
@@ -741,46 +607,6 @@ const katanStore = {
                     castle.show = true;
                     castle.hide = false;
                 }
-            }
-
-            return castle;
-        });
-
-        return katan;
-    }),
-
-    getPossibleCastleIndexList: (katan) => {
-        return katan.castleList
-            .filter(castle => castle.playerIndex === -1)
-            .map(castle => {
-                const castleLength = castle.castleIndexList
-                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
-                    .length;
-
-                if (castleLength === castle.castleIndexList.length) {
-                    const castleLength = castle.roadIndexList
-                        .filter(roadIndex => {
-                            const road = katan.roadList[roadIndex];
-                            return road.playerIndex === katan.playerIndex
-                        })
-                        .length;
-
-                    if (castleLength > 0) {
-                        return castle.index;
-                    }
-                }
-
-                return -1;
-            })
-            .filter(index => index >= 0);
-    },
-
-    setNewCastleRippleEnabled: () => update(katan => {
-        const castleIndexList = katanStore.getPossibleCastleIndexList(katan);
-        katan.castleList = katan.castleList.map(castle => {
-            if (castleIndexList.includes(castle.index)) {
-                castle.hide = false;
-                castle.show = true;
             }
 
             return castle;

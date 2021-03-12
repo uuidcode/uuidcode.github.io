@@ -1,6 +1,7 @@
 import katanStore from './katan.js'
 import {recomputePlayer} from "./player";
 import {takeResource} from "./resource";
+import {getPossibleCastleIndexList, setNewCityRippleEnabled} from "./castle";
 
 export const makeDev = () => katanStore.update(katan => {
     const card = katan.cardList.pop();
@@ -51,6 +52,20 @@ export const makeDev = () => katanStore.update(katan => {
     }
 
     recomputePlayer();
+
+    return katan;
+});
+
+export const setNewCastleRippleEnabled = () => update(katan => {
+    const castleIndexList = getPossibleCastleIndexList(katan);
+    katan.castleList = katan.castleList.map(castle => {
+        if (castleIndexList.includes(castle.index)) {
+            castle.hide = false;
+            castle.show = true;
+        }
+
+        return castle;
+    });
 
     return katan;
 });

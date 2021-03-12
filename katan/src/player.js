@@ -1,5 +1,7 @@
 import katanStore from './katan.js'
 import { recomputeRoad } from "./road";
+import {getPossibleCastleIndexList} from "./castle";
+import {getPossibleRoadTotalLength} from "./road";
 
 export const recomputePlayer = () => {
     recomputeRoad();
@@ -31,10 +33,10 @@ export const recomputePlayer = () => {
                     player.construction.road >= 1 &&
                     player.resource.tree >= 1 &&
                     player.resource.mud >= 1 &&
-                    katanStore.getPossibleRoadTotalLength(katan) > 0;
+                    getPossibleRoadTotalLength(katan) > 0;
 
                 const possibleCastleIndexList =
-                    katanStore.getPossibleCastleIndexList(katan);
+                    getPossibleCastleIndexList(katan);
 
                 player.make.castle =
                     katanStore.isActive(katan) &&
