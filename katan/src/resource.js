@@ -63,7 +63,8 @@ export const moveResource = (number) => katanStore.update(katan => {
         .filter(resource => !resource.buglar)
         .forEach(resource => {
             resource.castleIndexList.forEach(castleIndex => {
-                const playerIndex = katan.castleList[castleIndex].playerIndex;
+                const castle = katan.castleList[castleIndex];
+                const playerIndex = castle.playerIndex;
 
                 if (playerIndex !== -1) {
                     matchResourceCount++;
@@ -74,7 +75,7 @@ export const moveResource = (number) => katanStore.update(katan => {
                         targetClass: `player_${playerIndex}_${resource.type}`,
                         count: matchResourceCount,
                         callback: () => {
-                            updateResource(playerIndex, resource);
+                            updateResource(castle, playerIndex, resource);
                             moveResourceCount++;
                         }
                     });
@@ -96,8 +97,16 @@ export const moveResource = (number) => katanStore.update(katan => {
     return katan;
 });
 
-export const updateResource = (playerIndex, resource) => katanStore.update(katan => {
-    katan.playerList[playerIndex].resource[resource.type]++;
+export const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {
+    let count = 1;
+
+    if (castle.city) {
+        count = 2;
+    }
+
+    katan.playerList[playerIndex].resource[resource.type] += count;
+
+
     recomputePlayer();
     return katan;
 });
