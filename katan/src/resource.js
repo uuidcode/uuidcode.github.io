@@ -82,18 +82,14 @@ export const moveResource = (number) => katanStore.update(katan => {
             });
         });
 
-    katanStore.log(`matchResourceCount ${matchResourceCount}`);
-
     if (matchResourceCount > 0) {
         const interval = setInterval(() => {
             if (moveResourceCount === matchResourceCount) {
                 clearInterval(interval);
-                katanStore.log(`move resource animation is complete.`);
                 katanStore.doActionAndTurn();
             }
         }, 100);
     } else {
-        katanStore.log(`move resource animation is none.`);
         katanStore.doActionAndTurn();
     }
 

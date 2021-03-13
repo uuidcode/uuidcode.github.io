@@ -7,13 +7,16 @@
     export let castleIndex;
 
     const createStyle = () => {
+        const player = katan.getActivePlayer();
+
         let styleObject = {
             left: castle.left + 'px',
             top: castle.top + 'px',
             width: config.castle.width + 'px',
             height: config.castle.height + 'px',
             lineHeight: config.castle.height + 'px',
-            borderRadius: config.castle.height + 'px'
+            borderRadius: config.castle.height + 'px',
+            backgroundColor: player.color
         };
 
         if (castleClickable($katan, castleIndex)) {

@@ -16,6 +16,7 @@
     let player;
     let playerList;
     let headerStyle;
+    let showDebugUi = false;
 
     $: {
         playerList = $katan.playerList;
@@ -24,6 +25,14 @@
     }
 
     jQuery(() => {
+        jQuery('body').on('keydown', (e) => {
+            console.log('>>> e.keyCode', e.keyCode);
+
+            if (e.keyCode === 121) {
+                showDebugUi = !showDebugUi;
+            }
+        });
+
         setTimeout(() => {
             const element = document.querySelectorAll('[data-bs-toggle="tooltip"]');
             const tooltipTriggerList = [].slice.call(element);
@@ -71,9 +80,11 @@
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
-<!--                    <input type="number" class="test-dice" bind:value={$katan.testDice}>-->
-<!--                    <button class="btn btn-primary"-->
-<!--                            on:click={()=>katan.makeDev()}>test</button>-->
+                    {#if showDebugUi}
+                    <input type="number" class="test-dice" bind:value={$katan.testDice}>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.test()}>test</button>
+                    {/if}
                 </div>
                 <Board resourceList="{$katan.resourceList}"
                        castleList="{$katan.castleList}">

@@ -443,17 +443,31 @@ const katanStore = {
         return katan;
     }),
 
-    log: (message) => {
-        const date = new Date();
-        console.log(`>>> ${date.toISOString()} ${message}`);
-    },
-
     isActive: (katan) => {
         return katan.isKnightMode === false &&
             katan.isMakeRoad === false &&
             katan.isMakeCastle === false &&
             katan.isMakeCity === false &&
             katan.rollDice;
+    },
+
+    test: () => {
+        update(katan => {
+            katan.playerList = katan.playerList
+                .map(player => {
+                    player.resource.tree = 5;
+                    player.resource.mud = 5;
+                    player.resource.wheat = 5;
+                    player.resource.sheep = 5;
+                    player.resource.iron = 5;
+
+                    return player;
+                });
+
+            return katan;
+        });
+
+        recomputePlayer();
     }
 };
 

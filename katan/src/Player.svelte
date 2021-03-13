@@ -248,7 +248,7 @@
         display: inline-block;
         vertical-align: top;
         font-size: 35px;
-        line-height: 35px;
+        line-height: 70px;
         height: 70px;
     }
 

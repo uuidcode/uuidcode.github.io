@@ -6,12 +6,15 @@
     export let roadIndex;
 
     const createStyle = () => {
+        const player = katan.getActivePlayer();
+
         let styleObject = {
             left: road.left + 'px',
             top: road.top + 'px',
             width: config.load.width + 'px',
             height: config.load.height + 'px',
-            lineHeight: config.castle.height + 'px'
+            lineHeight: config.castle.height + 'px',
+            backgroundColor: player.color
         };
 
         if (!$katan.isMakeRoad) {
