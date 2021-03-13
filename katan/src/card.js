@@ -33,7 +33,34 @@ export const knightCard = (player, katan) => {
             }
         }
     }
-}
+};
+
+export const roadCard = (katan) => {
+    alert('도로 2개를 만드세요.');
+    katan.isMakeRoad2 = true;
+    katanStore.makeRoad();
+    recomputePlayer();
+};
+
+export const takeResourceCard = (katan) => {
+    alert('상대방의 자원 2개를 받습니다.');
+    katan.isGetResourceFormOtherPlayer = true;
+    takeResource();
+    recomputePlayer();
+};
+
+export const getResourceCard = (katan) => {
+    alert('자원 2개를 받으세요.');
+    katan.isGetResource = true;
+    recomputePlayer();
+};
+
+export const getPointCard = (katan) => {
+    const player = katanStore.getCurrentPlayer(katan);
+    alert('1점을 얻었습니다.');
+    player.point.point += 1;
+    recomputePlayer();
+};
 
 export const makeDev = () => katanStore.update(katan => {
     const card = katan.cardList.pop();
@@ -41,27 +68,17 @@ export const makeDev = () => katanStore.update(katan => {
 
     processResource();
 
-    const player = katanStore.getActivePlayer();
-
     if (card.type === 'point') {
-        alert('1점을 얻었습니다.');
-        player.point.point += 1;
+        getPointCard(katan);
     } else if (card.type === 'knight') {
         knightCard(player, katan);
     } else if (card.type === 'road') {
-        alert('도로 2개를 만드세요.');
-        katan.isMakeRoad2 = true;
-        katanStore.makeRoad();
+        roadCard(katan);
     } else if (card.type === 'resource') {
-        alert('자원 2개를 받으세요.');
-        katan.isGetResource = true;
+        getResourceCard(katan)
     } else if (card.type === 'get') {
-        alert('상대방의 자원 2개를 받습니다.');
-        katan.isGetResourceFormOtherPlayer = true;
-        takeResource();
+        takeResourceCard(katan);
     }
-
-    recomputePlayer();
 
     return katan;
 });

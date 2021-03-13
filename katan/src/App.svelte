@@ -76,7 +76,7 @@
                     <Dice number={$katan.dice[1]}></Dice>
                     <button class="btn btn-primary"
                             disabled={$katan.diceDisabled}
-                            on:click={()=>katan.play()}>주사위 굴리기</button>
+                            on:click={()=>katan.play()}>주사위</button>
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
@@ -85,9 +85,17 @@
                            style="width: 50px"
                            class="test-dice" bind:value={$katan.testDice}>
                     <button class="btn btn-primary"
-                            on:click={()=>katan.test()}>리소스추가</button>
+                            on:click={()=>katan.test()}>추가</button>
                     <button class="btn btn-primary"
-                            on:click={()=>katan.testKnight()}>기사</button>
+                            on:click={()=>katan.testKnightCard()}>기사</button>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.testRoadCard()}>도로</button>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.testTakeResourceCard()}>뺏기</button>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.testGetResourceCard()}>얻기</button>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.testGetPointCard()}>점수</button>
                     {/if}
                 </div>
                 <Board resourceList="{$katan.resourceList}"
@@ -117,6 +125,7 @@
     .dice-container {
         display: flex;
         justify-content: center;
+        z-index: 100;
     }
 
     .dice-container * {

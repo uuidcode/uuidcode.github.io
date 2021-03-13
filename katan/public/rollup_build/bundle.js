@@ -11881,6 +11881,7 @@ var app = (function () {
                     sum += player.point.point;
                     sum += player.point.castle;
                     sum += player.point.city;
+
                     player.point.sum = sum;
                     player.resourceSum = katanStore.sumResource(katan, player);
 
@@ -13210,6 +13211,7 @@ var app = (function () {
                 katan.getResourceCount = 0;
             }
 
+            katanStore.unsetKnightMode();
             katanStore.doActionAndTurn();
         }
 
@@ -13258,33 +13260,50 @@ var app = (function () {
         }
     };
 
+    const roadCard = (katan) => {
+        alert('도로 2개를 만드세요.');
+        katan.isMakeRoad2 = true;
+        katanStore.makeRoad();
+        recomputePlayer();
+    };
+
+    const takeResourceCard = (katan) => {
+        alert('상대방의 자원 2개를 받습니다.');
+        katan.isGetResourceFormOtherPlayer = true;
+        takeResource();
+        recomputePlayer();
+    };
+
+    const getResourceCard = (katan) => {
+        alert('자원 2개를 받으세요.');
+        katan.isGetResource = true;
+        recomputePlayer();
+    };
+
+    const getPointCard = (katan) => {
+        const player = katanStore.getCurrentPlayer(katan);
+        alert('1점을 얻었습니다.');
+        player.point.point += 1;
+        recomputePlayer();
+    };
+
     const makeDev = () => katanStore.update(katan => {
         const card = katan.cardList.pop();
         katan.afterCardList = [...katan.afterCardList, card];
 
         processResource();
 
-        const player = katanStore.getActivePlayer();
-
         if (card.type === 'point') {
-            alert('1점을 얻었습니다.');
-            player.point.point += 1;
+            getPointCard(katan);
         } else if (card.type === 'knight') {
             knightCard(player, katan);
         } else if (card.type === 'road') {
-            alert('도로 2개를 만드세요.');
-            katan.isMakeRoad2 = true;
-            katanStore.makeRoad();
+            roadCard(katan);
         } else if (card.type === 'resource') {
-            alert('자원 2개를 받으세요.');
-            katan.isGetResource = true;
+            getResourceCard(katan);
         } else if (card.type === 'get') {
-            alert('상대방의 자원 2개를 받습니다.');
-            katan.isGetResourceFormOtherPlayer = true;
-            takeResource();
+            takeResourceCard(katan);
         }
-
-        recomputePlayer();
 
         return katan;
     });
@@ -13749,9 +13768,29 @@ var app = (function () {
             recomputePlayer();
         },
 
-        testKnight: () => update$1(katan => {
+        testKnightCard: () => update$1(katan => {
             knightCard(katanStore.getActivePlayer(), katan);
             return ktan;
+        }),
+
+        testRoadCard: () => update$1(katan => {
+            roadCard(katan);
+            return katan;
+        }),
+
+        testTakeResourceCard: () => update$1(katan => {
+            takeResourceCard(katan);
+            return katan;
+        }),
+
+        testGetPointCard: () => update$1(katan => {
+            getPointCard(katan);
+            return katan;
+        }),
+
+        testGetResourceCard: () => update$1(katan => {
+            getResourceCard(katan);
+            return katan;
         })
     };
 
@@ -17135,6 +17174,14 @@ var app = (function () {
     	let button0;
     	let t2;
     	let button1;
+    	let t4;
+    	let button2;
+    	let t6;
+    	let button3;
+    	let t8;
+    	let button4;
+    	let t10;
+    	let button5;
     	let mounted;
     	let dispose;
 
@@ -17143,18 +17190,38 @@ var app = (function () {
     			input = element("input");
     			t0 = space();
     			button0 = element("button");
-    			button0.textContent = "리소스추가";
+    			button0.textContent = "추가";
     			t2 = space();
     			button1 = element("button");
     			button1.textContent = "기사";
+    			t4 = space();
+    			button2 = element("button");
+    			button2.textContent = "도로";
+    			t6 = space();
+    			button3 = element("button");
+    			button3.textContent = "뺏기";
+    			t8 = space();
+    			button4 = element("button");
+    			button4.textContent = "얻기";
+    			t10 = space();
+    			button5 = element("button");
+    			button5.textContent = "점수";
     			attr_dev(input, "type", "number");
     			set_style(input, "width", "50px");
-    			attr_dev(input, "class", "test-dice svelte-1ridrrg");
-    			add_location(input, file$8, 83, 20, 2992);
-    			attr_dev(button0, "class", "btn btn-primary svelte-1ridrrg");
-    			add_location(button0, file$8, 86, 20, 3158);
-    			attr_dev(button1, "class", "btn btn-primary svelte-1ridrrg");
-    			add_location(button1, file$8, 88, 20, 3283);
+    			attr_dev(input, "class", "test-dice svelte-165vs91");
+    			add_location(input, file$8, 83, 20, 2988);
+    			attr_dev(button0, "class", "btn btn-primary svelte-165vs91");
+    			add_location(button0, file$8, 86, 20, 3154);
+    			attr_dev(button1, "class", "btn btn-primary svelte-165vs91");
+    			add_location(button1, file$8, 88, 20, 3276);
+    			attr_dev(button2, "class", "btn btn-primary svelte-165vs91");
+    			add_location(button2, file$8, 90, 20, 3408);
+    			attr_dev(button3, "class", "btn btn-primary svelte-165vs91");
+    			add_location(button3, file$8, 92, 20, 3538);
+    			attr_dev(button4, "class", "btn btn-primary svelte-165vs91");
+    			add_location(button4, file$8, 94, 20, 3676);
+    			attr_dev(button5, "class", "btn btn-primary svelte-165vs91");
+    			add_location(button5, file$8, 96, 20, 3813);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, input, anchor);
@@ -17163,12 +17230,24 @@ var app = (function () {
     			insert_dev(target, button0, anchor);
     			insert_dev(target, t2, anchor);
     			insert_dev(target, button1, anchor);
+    			insert_dev(target, t4, anchor);
+    			insert_dev(target, button2, anchor);
+    			insert_dev(target, t6, anchor);
+    			insert_dev(target, button3, anchor);
+    			insert_dev(target, t8, anchor);
+    			insert_dev(target, button4, anchor);
+    			insert_dev(target, t10, anchor);
+    			insert_dev(target, button5, anchor);
 
     			if (!mounted) {
     				dispose = [
     					listen_dev(input, "input", /*input_input_handler*/ ctx[7]),
     					listen_dev(button0, "click", /*click_handler_2*/ ctx[8], false, false, false),
-    					listen_dev(button1, "click", /*click_handler_3*/ ctx[9], false, false, false)
+    					listen_dev(button1, "click", /*click_handler_3*/ ctx[9], false, false, false),
+    					listen_dev(button2, "click", /*click_handler_4*/ ctx[10], false, false, false),
+    					listen_dev(button3, "click", /*click_handler_5*/ ctx[11], false, false, false),
+    					listen_dev(button4, "click", /*click_handler_6*/ ctx[12], false, false, false),
+    					listen_dev(button5, "click", /*click_handler_7*/ ctx[13], false, false, false)
     				];
 
     				mounted = true;
@@ -17185,6 +17264,14 @@ var app = (function () {
     			if (detaching) detach_dev(button0);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(button1);
+    			if (detaching) detach_dev(t4);
+    			if (detaching) detach_dev(button2);
+    			if (detaching) detach_dev(t6);
+    			if (detaching) detach_dev(button3);
+    			if (detaching) detach_dev(t8);
+    			if (detaching) detach_dev(button4);
+    			if (detaching) detach_dev(t10);
+    			if (detaching) detach_dev(button5);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -17288,7 +17375,7 @@ var app = (function () {
     			create_component(dice1.$$.fragment);
     			t5 = space();
     			button0 = element("button");
-    			t6 = text("주사위 굴리기");
+    			t6 = text("주사위");
     			t7 = space();
     			button1 = element("button");
     			t8 = text("완료");
@@ -17300,34 +17387,34 @@ var app = (function () {
     			td2 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
-    			attr_dev(td0, "class", "player svelte-1ridrrg");
+    			attr_dev(td0, "class", "player svelte-165vs91");
     			add_location(td0, file$8, 68, 12, 2128);
     			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", "svelte-1ridrrg");
+    			attr_dev(img, "class", "svelte-165vs91");
     			add_location(img, file$8, 72, 63, 2361);
-    			attr_dev(h1, "class", "message-header svelte-1ridrrg");
+    			attr_dev(h1, "class", "message-header svelte-165vs91");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
     			add_location(h1, file$8, 72, 16, 2314);
-    			attr_dev(button0, "class", "btn btn-primary svelte-1ridrrg");
+    			attr_dev(button0, "class", "btn btn-primary svelte-165vs91");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
     			add_location(button0, file$8, 76, 20, 2593);
-    			attr_dev(button1, "class", "btn btn-primary svelte-1ridrrg");
+    			attr_dev(button1, "class", "btn btn-primary svelte-165vs91");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 79, 20, 2780);
-    			attr_dev(div0, "class", "dice-container svelte-1ridrrg");
+    			add_location(button1, file$8, 79, 20, 2776);
+    			attr_dev(div0, "class", "dice-container svelte-165vs91");
     			add_location(div0, file$8, 73, 16, 2425);
     			attr_dev(td1, "valign", "top");
-    			attr_dev(td1, "class", "text-center svelte-1ridrrg");
+    			attr_dev(td1, "class", "text-center svelte-165vs91");
     			attr_dev(td1, "width", "1000px");
     			add_location(td1, file$8, 71, 12, 2244);
     			attr_dev(td2, "valign", "top");
-    			attr_dev(td2, "class", "player svelte-1ridrrg");
-    			add_location(td2, file$8, 96, 12, 3618);
-    			attr_dev(tr, "class", "svelte-1ridrrg");
+    			attr_dev(td2, "class", "player svelte-165vs91");
+    			add_location(td2, file$8, 104, 12, 4154);
+    			attr_dev(tr, "class", "svelte-165vs91");
     			add_location(tr, file$8, 67, 8, 2110);
-    			attr_dev(table, "class", "header svelte-1ridrrg");
+    			attr_dev(table, "class", "header svelte-165vs91");
     			add_location(table, file$8, 66, 4, 2078);
-    			attr_dev(div1, "class", "katan svelte-1ridrrg");
+    			attr_dev(div1, "class", "katan svelte-165vs91");
     			add_location(div1, file$8, 65, 0, 2053);
     		},
     		l: function claim(nodes) {
@@ -17417,7 +17504,7 @@ var app = (function () {
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 2048) {
+    			if (dirty & /*$$scope*/ 32768) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -17537,7 +17624,11 @@ var app = (function () {
     	}
 
     	const click_handler_2 = () => katanStore.test();
-    	const click_handler_3 = () => katanStore.testKnight();
+    	const click_handler_3 = () => katanStore.testKnightCard();
+    	const click_handler_4 = () => katanStore.testRoadCard();
+    	const click_handler_5 = () => katanStore.testTakeResourceCard();
+    	const click_handler_6 = () => katanStore.testGetResourceCard();
+    	const click_handler_7 = () => katanStore.testGetPointCard();
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
@@ -17586,7 +17677,11 @@ var app = (function () {
     		click_handler_1,
     		input_input_handler,
     		click_handler_2,
-    		click_handler_3
+    		click_handler_3,
+    		click_handler_4,
+    		click_handler_5,
+    		click_handler_6,
+    		click_handler_7
     	];
     }
 

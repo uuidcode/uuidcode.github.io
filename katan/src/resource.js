@@ -156,6 +156,7 @@ export const takeResource = () => katanStore.update(katan => {
             katan.getResourceCount = 0;
         }
 
+        katanStore.unsetKnightMode();
         katanStore.doActionAndTurn();
     }
 

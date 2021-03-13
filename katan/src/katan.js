@@ -5,7 +5,7 @@ import jQuery from 'jquery';
 import {recomputePlayer} from "./player";
 import katanObject from "./katanObject"
 import {random} from "./util";
-import {makeDev, knightCard} from "./card";
+import {makeDev, knightCard, roadCard, takeResourceCard, getResourceCard, getPointCard} from "./card";
 import {makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
 import {setCastleRippleDisabled, makeCastle, makeCity, clickMakeCastle} from "./castle";
 import {animateMoveResource, takeResource, moveResource} from "./resource";
@@ -471,9 +471,29 @@ const katanStore = {
         recomputePlayer();
     },
 
-    testKnight: () => update(katan => {
+    testKnightCard: () => update(katan => {
         knightCard(katanStore.getActivePlayer(), katan);
         return ktan;
+    }),
+
+    testRoadCard: () => update(katan => {
+        roadCard(katan);
+        return katan;
+    }),
+
+    testTakeResourceCard: () => update(katan => {
+        takeResourceCard(katan);
+        return katan;
+    }),
+
+    testGetPointCard: () => update(katan => {
+        getPointCard(katan);
+        return katan;
+    }),
+
+    testGetResourceCard: () => update(katan => {
+        getResourceCard(katan);
+        return katan;
     })
 };
 
