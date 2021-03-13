@@ -12000,6 +12000,7 @@ var app = (function () {
         isMakeCity: false,
         construction: false,
         isKnightMode: false,
+        isBurglarMode: false,
         message: '마을을 만들곳을 클릭하세요',
         diceDisabled: true,
         dice: [6, 6],
@@ -13233,6 +13234,30 @@ var app = (function () {
         return katan;
     });
 
+    const knightCard = (player, katan) => {
+        alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
+        katanStore.setKnightMode();
+        katanStore.readyMoveBurglar();
+
+        player.construction.knight += 1;
+
+        if (player.construction.knight >= 3) {
+            const other = katanStore.getOtherPlayer(katan);
+
+            if (player.construction.knight > other.construction.knight) {
+                if (player.point.knight === 0) {
+                    alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
+                }
+
+                player.point.knight = 2;
+
+                if (other.point.knight === 2) {
+                    other.point.knight = 0;
+                }
+            }
+        }
+    };
+
     const makeDev = () => katanStore.update(katan => {
         const card = katan.cardList.pop();
         katan.afterCardList = [...katan.afterCardList, card];
@@ -13245,27 +13270,7 @@ var app = (function () {
             alert('1점을 얻었습니다.');
             player.point.point += 1;
         } else if (card.type === 'knight') {
-            alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
-            katanStore.setKnightMode();
-            katanStore.readyMoveBuglar();
-
-            player.construction.knight += 1;
-
-            if (player.construction.knight >= 3) {
-                const other = katanStore.getOtherPlayer(katan);
-
-                if (player.construction.knight > other.construction.knight) {
-                    if (player.point.knight === 0) {
-                        alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
-                    }
-
-                    player.point.knight = 2;
-
-                    if (other.point.knight === 2) {
-                        other.point.knight = 0;
-                    }
-                }
-            }
+            knightCard(player, katan);
         } else if (card.type === 'road') {
             alert('도로 2개를 만드세요.');
             katan.isMakeRoad2 = true;
@@ -13344,9 +13349,9 @@ var app = (function () {
             return katan;
         }),
 
-        moveBuglar: (resourceIndex) => update$1(katan => {
+        moveBurglar: (resourceIndex) => update$1(katan => {
             if (katan.isKnightMode) ; else {
-                if (katan.mode !== 'moveBuglar') {
+                if (katan.isBurglarMode === false) {
                     return katan;
                 }
             }
@@ -13369,7 +13374,7 @@ var app = (function () {
                 katanStore.doActionAndTurn();
             }
 
-            katan.mode = 'start';
+            katan.isBurglarMode = false;
 
             return katan;
         }),
@@ -13441,7 +13446,7 @@ var app = (function () {
                 const number = katan.sumDice;
 
                 if (number === 7) {
-                    katanStore.readyMoveBuglar();
+                    katanStore.readyMoveBurglar();
                 } else {
                     let numberCount = 2;
 
@@ -13550,9 +13555,9 @@ var app = (function () {
             return katan;
         }),
 
-        readyMoveBuglar: () => update$1(katan => {
+        readyMoveBurglar: () => update$1(katan => {
             if (katan.isKnightMode) {
-                katanStore.internalReadyMoveBuglar(katan);
+                katanStore.internalReadyMoveBurglar(katan);
             } else {
                 katanStore.takeResourceByBuglar(katan);
 
@@ -13563,19 +13568,19 @@ var app = (function () {
                             katan.takeResourceFromBuglarCount = 0;
                             katan.takeResourceFromBuglarCompleCount = 0;
                             clearInterval(interval);
-                            katanStore.internalReadyMoveBuglar(katan);
+                            katanStore.internalReadyMoveBurglar(katan);
                         }
                     }, 100);
                 } else {
-                    katanStore.internalReadyMoveBuglar(katan);
+                    katanStore.internalReadyMoveBurglar(katan);
                 }
             }
 
             return katan;
         }),
 
-        internalReadyMoveBuglar: (katan) => {
-            katan.mode = 'moveBuglar';
+        internalReadyMoveBurglar: (katan) => {
+            katan.isBurglarMode = true;
             katan.message = '도둑의 위치를 선택하세요.';
             katanStore.setNumberRippleEnabled();
             return katan;
@@ -13742,7 +13747,12 @@ var app = (function () {
             });
 
             recomputePlayer();
-        }
+        },
+
+        testKnight: () => update$1(katan => {
+            knightCard(katanStore.getActivePlayer(), katan);
+            return ktan;
+        })
     };
 
     recomputePlayer();
@@ -13826,8 +13836,8 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-803d69");
-    			add_location(img, file, 93, 4, 2843);
-    			add_location(div, file, 92, 4, 2833);
+    			add_location(img, file, 93, 4, 2844);
+    			add_location(div, file, 92, 4, 2834);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -14074,7 +14084,7 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Cell> was created with unknown prop '${key}'`);
     	});
 
-    	const click_handler = () => katanStore.moveBuglar(resource.index);
+    	const click_handler = () => katanStore.moveBurglar(resource.index);
 
     	$$self.$$set = $$props => {
     		if ("resourceIndex" in $$props) $$invalidate(0, resourceIndex = $$props.resourceIndex);
@@ -17122,7 +17132,9 @@ var app = (function () {
     function create_if_block$5(ctx) {
     	let input;
     	let t0;
-    	let button;
+    	let button0;
+    	let t2;
+    	let button1;
     	let mounted;
     	let dispose;
 
@@ -17130,24 +17142,33 @@ var app = (function () {
     		c: function create() {
     			input = element("input");
     			t0 = space();
-    			button = element("button");
-    			button.textContent = "test";
+    			button0 = element("button");
+    			button0.textContent = "리소스추가";
+    			t2 = space();
+    			button1 = element("button");
+    			button1.textContent = "기사";
     			attr_dev(input, "type", "number");
+    			set_style(input, "width", "50px");
     			attr_dev(input, "class", "test-dice svelte-1ridrrg");
     			add_location(input, file$8, 83, 20, 2992);
-    			attr_dev(button, "class", "btn btn-primary svelte-1ridrrg");
-    			add_location(button, file$8, 84, 20, 3082);
+    			attr_dev(button0, "class", "btn btn-primary svelte-1ridrrg");
+    			add_location(button0, file$8, 86, 20, 3158);
+    			attr_dev(button1, "class", "btn btn-primary svelte-1ridrrg");
+    			add_location(button1, file$8, 88, 20, 3283);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, input, anchor);
     			set_input_value(input, /*$katan*/ ctx[0].testDice);
     			insert_dev(target, t0, anchor);
-    			insert_dev(target, button, anchor);
+    			insert_dev(target, button0, anchor);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, button1, anchor);
 
     			if (!mounted) {
     				dispose = [
     					listen_dev(input, "input", /*input_input_handler*/ ctx[7]),
-    					listen_dev(button, "click", /*click_handler_2*/ ctx[8], false, false, false)
+    					listen_dev(button0, "click", /*click_handler_2*/ ctx[8], false, false, false),
+    					listen_dev(button1, "click", /*click_handler_3*/ ctx[9], false, false, false)
     				];
 
     				mounted = true;
@@ -17161,7 +17182,9 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(input);
     			if (detaching) detach_dev(t0);
-    			if (detaching) detach_dev(button);
+    			if (detaching) detach_dev(button0);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(button1);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -17299,7 +17322,7 @@ var app = (function () {
     			add_location(td1, file$8, 71, 12, 2244);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-1ridrrg");
-    			add_location(td2, file$8, 92, 12, 3413);
+    			add_location(td2, file$8, 96, 12, 3618);
     			attr_dev(tr, "class", "svelte-1ridrrg");
     			add_location(tr, file$8, 67, 8, 2110);
     			attr_dev(table, "class", "header svelte-1ridrrg");
@@ -17394,7 +17417,7 @@ var app = (function () {
     			if (dirty & /*$katan*/ 1) board_changes.resourceList = /*$katan*/ ctx[0].resourceList;
     			if (dirty & /*$katan*/ 1) board_changes.castleList = /*$katan*/ ctx[0].castleList;
 
-    			if (dirty & /*$$scope*/ 1024) {
+    			if (dirty & /*$$scope*/ 2048) {
     				board_changes.$$scope = { dirty, ctx };
     			}
 
@@ -17514,6 +17537,7 @@ var app = (function () {
     	}
 
     	const click_handler_2 = () => katanStore.test();
+    	const click_handler_3 = () => katanStore.testKnight();
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
@@ -17561,7 +17585,8 @@ var app = (function () {
     		click_handler,
     		click_handler_1,
     		input_input_handler,
-    		click_handler_2
+    		click_handler_2,
+    		click_handler_3
     	];
     }
 

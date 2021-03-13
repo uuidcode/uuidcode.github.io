@@ -11,6 +11,30 @@ const processResource = () => katanStore.update(katan => {
     return katan;
 });
 
+export const knightCard = (player, katan) => {
+    alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
+    katanStore.setKnightMode();
+    katanStore.readyMoveBurglar();
+
+    player.construction.knight += 1;
+
+    if (player.construction.knight >= 3) {
+        const other = katanStore.getOtherPlayer(katan);
+
+        if (player.construction.knight > other.construction.knight) {
+            if (player.point.knight === 0) {
+                alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
+            }
+
+            player.point.knight = 2;
+
+            if (other.point.knight === 2) {
+                other.point.knight = 0;
+            }
+        }
+    }
+}
+
 export const makeDev = () => katanStore.update(katan => {
     const card = katan.cardList.pop();
     katan.afterCardList = [...katan.afterCardList, card];
@@ -23,27 +47,7 @@ export const makeDev = () => katanStore.update(katan => {
         alert('1점을 얻었습니다.');
         player.point.point += 1;
     } else if (card.type === 'knight') {
-        alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
-        katanStore.setKnightMode();
-        katanStore.readyMoveBuglar();
-
-        player.construction.knight += 1;
-
-        if (player.construction.knight >= 3) {
-            const other = katanStore.getOtherPlayer(katan);
-
-            if (player.construction.knight > other.construction.knight) {
-                if (player.point.knight === 0) {
-                    alert('최강 기사단을 달성하였습니다.\n2점을 회득합니다.');
-                }
-
-                player.point.knight = 2;
-
-                if (other.point.knight === 2) {
-                    other.point.knight = 0;
-                }
-            }
-        }
+        knightCard(player, katan);
     } else if (card.type === 'road') {
         alert('도로 2개를 만드세요.');
         katan.isMakeRoad2 = true;

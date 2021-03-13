@@ -35,6 +35,7 @@ const katanObject = {
     isMakeCity: false,
     construction: false,
     isKnightMode: false,
+    isBurglarMode: false,
     message: '마을을 만들곳을 클릭하세요',
     diceDisabled: true,
     dice: [6, 6],

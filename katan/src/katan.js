@@ -5,7 +5,7 @@ import jQuery from 'jquery';
 import {recomputePlayer} from "./player";
 import katanObject from "./katanObject"
 import {random} from "./util";
-import {makeDev} from "./card";
+import {makeDev, knightCard} from "./card";
 import {makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
 import {setCastleRippleDisabled, makeCastle, makeCity, clickMakeCastle} from "./castle";
 import {animateMoveResource, takeResource, moveResource} from "./resource";
@@ -70,10 +70,10 @@ const katanStore = {
         return katan;
     }),
 
-    moveBuglar: (resourceIndex) => update(katan => {
+    moveBurglar: (resourceIndex) => update(katan => {
         if (katan.isKnightMode) {
         } else {
-            if (katan.mode !== 'moveBuglar') {
+            if (katan.isBurglarMode === false) {
                 return katan;
             }
         }
@@ -96,7 +96,7 @@ const katanStore = {
             katanStore.doActionAndTurn();
         }
 
-        katan.mode = 'start';
+        katan.isBurglarMode = false;
 
         return katan;
     }),
@@ -168,7 +168,7 @@ const katanStore = {
             const number = katan.sumDice;
 
             if (number === 7) {
-                katanStore.readyMoveBuglar();
+                katanStore.readyMoveBurglar();
             } else {
                 let numberCount = 2;
 
@@ -277,9 +277,9 @@ const katanStore = {
         return katan;
     }),
 
-    readyMoveBuglar: () => update(katan => {
+    readyMoveBurglar: () => update(katan => {
         if (katan.isKnightMode) {
-            katanStore.internalReadyMoveBuglar(katan);
+            katanStore.internalReadyMoveBurglar(katan);
         } else {
             katanStore.takeResourceByBuglar(katan);
 
@@ -290,19 +290,19 @@ const katanStore = {
                         katan.takeResourceFromBuglarCount = 0;
                         katan.takeResourceFromBuglarCompleCount = 0;
                         clearInterval(interval);
-                        katanStore.internalReadyMoveBuglar(katan);
+                        katanStore.internalReadyMoveBurglar(katan);
                     }
                 }, 100);
             } else {
-                katanStore.internalReadyMoveBuglar(katan);
+                katanStore.internalReadyMoveBurglar(katan);
             }
         }
 
         return katan;
     }),
 
-    internalReadyMoveBuglar: (katan) => {
-        katan.mode = 'moveBuglar';
+    internalReadyMoveBurglar: (katan) => {
+        katan.isBurglarMode = true;
         katan.message = '도둑의 위치를 선택하세요.';
         katanStore.setNumberRippleEnabled();
         return katan;
@@ -469,7 +469,12 @@ const katanStore = {
         });
 
         recomputePlayer();
-    }
+    },
+
+    testKnight: () => update(katan => {
+        knightCard(katanStore.getActivePlayer(), katan);
+        return ktan;
+    })
 };
 
 recomputePlayer();

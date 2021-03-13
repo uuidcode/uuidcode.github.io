@@ -81,9 +81,13 @@
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
                     {#if showDebugUi}
-                    <input type="number" class="test-dice" bind:value={$katan.testDice}>
+                    <input type="number"
+                           style="width: 50px"
+                           class="test-dice" bind:value={$katan.testDice}>
                     <button class="btn btn-primary"
-                            on:click={()=>katan.test()}>test</button>
+                            on:click={()=>katan.test()}>리소스추가</button>
+                    <button class="btn btn-primary"
+                            on:click={()=>katan.testKnight()}>기사</button>
                     {/if}
                 </div>
                 <Board resourceList="{$katan.resourceList}"
