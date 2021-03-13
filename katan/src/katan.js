@@ -159,30 +159,17 @@ const katanStore = {
         return katan;
     }),
 
-    play: () => update(katan => {
-        katanStore.setDiceDisabled();
+    play: async () => {
+        katanStore.roll();
 
-        const a = Math.floor(Math.random() * 6) + 1;
-        const b = Math.floor(Math.random() * 6) + 1;
+        await tick();
 
-        katanStore.roll(a, b);
+        update(katan => {
+            const number = katan.sumDice;
 
-        let number = a + b;
-
-        if (katan.testDice !== 0) {
-            number = katan.testDice;
-        }
-
-        console.log('>>> number', number);
-
-        katan.rollDice = true;
-
-        console.log('>>> katan.rollDice', katan.rollDice);
-
-        if (number === 7) {
-            katanStore.readyMoveBuglar();
-        } else {
-            setTimeout(() => {
+            if (number === 7) {
+                katanStore.readyMoveBuglar();
+            } else {
                 let numberCount = 2;
 
                 if (number === 2 || number === 12) {
@@ -190,11 +177,11 @@ const katanStore = {
                 }
 
                 for (let i = 1; i <= 2; i++) {
-                    let sourceClass =  `display-dice-number-${i}`;
-                    let targetClass =  `number_${number}_${i}`;
+                    let sourceClass = `display-dice-number-${i}`;
+                    let targetClass = `number_${number}_${i}`;
 
                     if (numberCount === 1) {
-                        targetClass =  `number_${number}`;
+                        targetClass = `number_${number}`;
                     }
 
                     animateMoveResource({
@@ -218,16 +205,16 @@ const katanStore = {
                                 setTimeout(() => {
                                     katanStore.setNumberRippleDisabled(number);
                                     moveResource(number);
-                                }, 2000);
+                                }, 1500);
                             }
                         }
                     });
                 }
-            }, 500);
-        }
+            }
 
-        return katan;
-    }),
+            return katan;
+        });
+    },
 
     internalPlay: (number) => {
         katanStore.setSelectedNumberRippleEnabled(number);
@@ -331,14 +318,28 @@ const katanStore = {
         return katan;
     }),
 
-    roll: (a, b) => {
-        update(katan => {
-            katan.dice[0] = a;
-            katan.dice[1] = b;
-            katan.sumDice = a + b;
-            return katan;
-        });
-    },
+    roll: () => update(katan => {
+        katanStore.setDiceDisabled();
+        const a = Math.floor(Math.random() * 6) + 1;
+        const b = Math.floor(Math.random() * 6) + 1;
+
+        let number = a + b;
+
+        if (katan.testDice !== 0) {
+            number = katan.testDice;
+        }
+
+        console.log('>>> number', number);
+
+        katan.rollDice = true;
+
+        console.log('>>> katan.rollDice', katan.rollDice);
+
+        katan.dice[0] = a;
+        katan.dice[1] = b;
+        katan.sumDice = number;
+        return katan;
+    }),
 
     getNumber: () => katan.dice[0] =  + katan.dice[1],
 

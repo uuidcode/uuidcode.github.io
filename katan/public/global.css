@@ -65,7 +65,7 @@ button:focus {
 }
 
 .ripple {
-    animation: ripple 3s linear infinite;
+    animation: ripple 1500ms linear infinite;
     z-index: 100;
 }
 

@@ -123,6 +123,10 @@ var app = (function () {
             resolved_promise.then(flush);
         }
     }
+    function tick() {
+        schedule_update();
+        return resolved_promise;
+    }
     function add_render_callback(fn) {
         render_callbacks.push(fn);
     }
@@ -13100,7 +13104,7 @@ var app = (function () {
                     newResourceItem.remove();
                     option.callback();
                 });
-        }, option.count * 1000);
+        }, ((option.count - 1) * 1000) + 10);
     };
 
     const moveResource = (number) => katanStore.update(katan => {
@@ -13428,30 +13432,17 @@ var app = (function () {
             return katan;
         }),
 
-        play: () => update$1(katan => {
-            katanStore.setDiceDisabled();
+        play: async () => {
+            katanStore.roll();
 
-            const a = Math.floor(Math.random() * 6) + 1;
-            const b = Math.floor(Math.random() * 6) + 1;
+            await tick();
 
-            katanStore.roll(a, b);
+            update$1(katan => {
+                const number = katan.sumDice;
 
-            let number = a + b;
-
-            if (katan.testDice !== 0) {
-                number = katan.testDice;
-            }
-
-            console.log('>>> number', number);
-
-            katan.rollDice = true;
-
-            console.log('>>> katan.rollDice', katan.rollDice);
-
-            if (number === 7) {
-                katanStore.readyMoveBuglar();
-            } else {
-                setTimeout(() => {
+                if (number === 7) {
+                    katanStore.readyMoveBuglar();
+                } else {
                     let numberCount = 2;
 
                     if (number === 2 || number === 12) {
@@ -13459,11 +13450,11 @@ var app = (function () {
                     }
 
                     for (let i = 1; i <= 2; i++) {
-                        let sourceClass =  `display-dice-number-${i}`;
-                        let targetClass =  `number_${number}_${i}`;
+                        let sourceClass = `display-dice-number-${i}`;
+                        let targetClass = `number_${number}_${i}`;
 
                         if (numberCount === 1) {
-                            targetClass =  `number_${number}`;
+                            targetClass = `number_${number}`;
                         }
 
                         animateMoveResource({
@@ -13487,16 +13478,16 @@ var app = (function () {
                                     setTimeout(() => {
                                         katanStore.setNumberRippleDisabled(number);
                                         moveResource(number);
-                                    }, 2000);
+                                    }, 1500);
                                 }
                             }
                         });
                     }
-                }, 500);
-            }
+                }
 
-            return katan;
-        }),
+                return katan;
+            });
+        },
 
         internalPlay: (number) => {
             katanStore.setSelectedNumberRippleEnabled(number);
@@ -13600,14 +13591,28 @@ var app = (function () {
             return katan;
         }),
 
-        roll: (a, b) => {
-            update$1(katan => {
-                katan.dice[0] = a;
-                katan.dice[1] = b;
-                katan.sumDice = a + b;
-                return katan;
-            });
-        },
+        roll: () => update$1(katan => {
+            katanStore.setDiceDisabled();
+            const a = Math.floor(Math.random() * 6) + 1;
+            const b = Math.floor(Math.random() * 6) + 1;
+
+            let number = a + b;
+
+            if (katan.testDice !== 0) {
+                number = katan.testDice;
+            }
+
+            console.log('>>> number', number);
+
+            katan.rollDice = true;
+
+            console.log('>>> katan.rollDice', katan.rollDice);
+
+            katan.dice[0] = a;
+            katan.dice[1] = b;
+            katan.sumDice = number;
+            return katan;
+        }),
 
         getNumber: () => katan.dice[0] =  + katan.dice[1],
 

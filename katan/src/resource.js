@@ -51,7 +51,7 @@ export const animateMoveResource = (option) => {
                 newResourceItem.remove();
                 option.callback();
             });
-    }, option.count * 1000)
+    }, ((option.count - 1) * 1000) + 10)
 };
 
 export const moveResource = (number) => katanStore.update(katan => {
