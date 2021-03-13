@@ -243,8 +243,8 @@ const katanStore = {
                     });
 
                 targetResourceList = targetResourceList.sort(random());
-                const takeResourceFromBuglarCount = katan.takeResourceFromBuglarCount;
-                katan.takeResourceFromBuglarCount += resourceCount;
+                const takeResourceFromBurglarCount = katan.takeResourceFromBurglarCount;
+                katan.takeResourceFromBurglarCount += resourceCount;
 
                 for (let i = 0; i < resourceCount; i++) {
                     const type = targetResourceList.pop();
@@ -254,7 +254,7 @@ const katanStore = {
                     animateMoveResource({
                         sourceClass,
                         targetClass,
-                        count: takeResourceFromBuglarCount + i,
+                        count: takeResourceFromBurglarCount + i,
                         callback: () => {
                             katanStore.updatePlayerResource(player.index, type);
                             recomputePlayer();
@@ -267,7 +267,7 @@ const katanStore = {
 
     updatePlayerResource: (playerIndex, type) => update(katan => {
         katan.playerList[playerIndex].resource[type] -= 1;
-        katan.takeResourceFromBuglarCompleCount += 1;
+        katan.takeResourceFromBurglarCompleteCount += 1;
         return katan;
     }),
 
@@ -277,12 +277,12 @@ const katanStore = {
         } else {
             katanStore.takeResourceByBurglar(katan);
 
-            if (katan.takeResourceFromBuglarCount > 0) {
+            if (katan.takeResourceFromBurglarCount > 0) {
                 const interval = setInterval(() => {
-                    if (katan.takeResourceFromBuglarCount ===
-                        katan.takeResourceFromBuglarCompleCount ) {
-                        katan.takeResourceFromBuglarCount = 0;
-                        katan.takeResourceFromBuglarCompleCount = 0;
+                    if (katan.takeResourceFromBurglarCount ===
+                        katan.takeResourceFromBurglarCompleteCount ) {
+                        katan.takeResourceFromBurglarCount = 0;
+                        katan.takeResourceFromBurglarCompleteCount = 0;
                         clearInterval(interval);
                         katanStore.internalReadyMoveBurglar(katan);
                     }

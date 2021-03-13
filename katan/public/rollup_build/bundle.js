@@ -11995,8 +11995,8 @@ var app = (function () {
         isMakeRoad2: false,
         makeRoadCount: 0,
         getResourceCount: 0,
-        takeResourceFromBuglarCount: 0,
-        takeResourceFromBuglarCompleCount: 0,
+        takeResourceFromBurglarCount: 0,
+        takeResourceFromBurglarCompleteCount: 0,
         isMakeCastle: false,
         isMakeCity: false,
         construction: false,
@@ -13541,8 +13541,8 @@ var app = (function () {
                         });
 
                     targetResourceList = targetResourceList.sort(random());
-                    const takeResourceFromBuglarCount = katan.takeResourceFromBuglarCount;
-                    katan.takeResourceFromBuglarCount += resourceCount;
+                    const takeResourceFromBurglarCount = katan.takeResourceFromBurglarCount;
+                    katan.takeResourceFromBurglarCount += resourceCount;
 
                     for (let i = 0; i < resourceCount; i++) {
                         const type = targetResourceList.pop();
@@ -13552,7 +13552,7 @@ var app = (function () {
                         animateMoveResource({
                             sourceClass,
                             targetClass,
-                            count: takeResourceFromBuglarCount + i,
+                            count: takeResourceFromBurglarCount + i,
                             callback: () => {
                                 katanStore.updatePlayerResource(player.index, type);
                                 recomputePlayer();
@@ -13565,7 +13565,7 @@ var app = (function () {
 
         updatePlayerResource: (playerIndex, type) => update$1(katan => {
             katan.playerList[playerIndex].resource[type] -= 1;
-            katan.takeResourceFromBuglarCompleCount += 1;
+            katan.takeResourceFromBurglarCompleteCount += 1;
             return katan;
         }),
 
@@ -13575,12 +13575,12 @@ var app = (function () {
             } else {
                 katanStore.takeResourceByBurglar(katan);
 
-                if (katan.takeResourceFromBuglarCount > 0) {
+                if (katan.takeResourceFromBurglarCount > 0) {
                     const interval = setInterval(() => {
-                        if (katan.takeResourceFromBuglarCount ===
-                            katan.takeResourceFromBuglarCompleCount ) {
-                            katan.takeResourceFromBuglarCount = 0;
-                            katan.takeResourceFromBuglarCompleCount = 0;
+                        if (katan.takeResourceFromBurglarCount ===
+                            katan.takeResourceFromBurglarCompleteCount ) {
+                            katan.takeResourceFromBurglarCount = 0;
+                            katan.takeResourceFromBurglarCompleteCount = 0;
                             clearInterval(interval);
                             katanStore.internalReadyMoveBurglar(katan);
                         }
