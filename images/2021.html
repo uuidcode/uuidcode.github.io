@@ -136,8 +136,32 @@
 <div class="container" style="padding: 60px 0">
 <pre>
 
-<h2>20210312</h2>
+    <style>
+        #canvasID {
+            position: absolute;
+            left: 300px;
+            top: 100px;
+            opacity:0.5;
+            /*width: 500px;*/
+            /*height: 500px;*/
+            border: 1px solid black;
+        }
+    </style>
 
+
+<h2>20210312</h2>
+<canvas id="canvasID" width="600" height="600"></canvas>
+    <script>
+        var c = document.getElementById("canvasID");
+        var ctx = c.getContext("2d");
+
+        ctx.lineWidth = 100;
+        ctx.beginPath();
+        ctx.lineCap = "round";
+        ctx.moveTo(100, 100);
+        ctx.lineTo(300, 300);
+        ctx.stroke();
+</script>
 <img src="../i/20210312_02.png">
 
 <img src="../i/20210312_01.png">

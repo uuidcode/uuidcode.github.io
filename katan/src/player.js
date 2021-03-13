@@ -67,6 +67,7 @@ export const recomputePlayer = () => {
                     player.resource.sheep >= 1 &&
                     player.resource.wheat >= 1;
 
+
                 if (player.point.sum === 10) {
                     alert(`${player.name} 승리`);
                 }
