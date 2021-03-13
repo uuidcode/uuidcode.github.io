@@ -46,7 +46,7 @@
             <td class="name"
                 style="background-color:{player.color}">
                 <div class="player-header"><img src={player.image}></div>
-                <div class="player-header player-sum">점수 : {player.point.sum} 자원 : {player.resourceSum}</div>
+                <div class="player-header player-sum">점수 {player.point.sum} 자원 {player.resourceSum}</div>
             </td>
         </tr>
         <tr>
@@ -187,7 +187,7 @@
     }
 
     .trade-resource {
-        width: 420px;
+        width: 430px;
     }
 
     .trade-resource .number {
@@ -247,7 +247,7 @@
     .player-header {
         display: inline-block;
         vertical-align: top;
-        font-size: 35px;
+        font-size: 45px;
         line-height: 70px;
         height: 70px;
     }
@@ -258,7 +258,7 @@
     }
 
     .player-sum {
-        margin-left: 20px;
+        margin-left: 5px;
     }
 
     .resource-item {
