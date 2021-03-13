@@ -13517,22 +13517,13 @@ var app = (function () {
             });
         },
 
-        internalPlay: (number) => {
-            katanStore.setSelectedNumberRippleEnabled(number);
-
-            setTimeout(() => {
-                katanStore.setNumberRippleDisabled(number);
-                moveResource(number);
-            }, 2000);
-        },
-
         sumResource: (katan, player) => {
             return katan.resourceTypeList
                 .map(typeObject => player.resource[typeObject.type])
                 .reduce((a, b) => a + b);
         },
 
-        takeResourceByBuglar: (katan) => {
+        takeResourceByBurglar: (katan) => {
             katan.playerList.forEach(player => {
                 const resourceSum = katanStore.sumResource(katan, player);
 
@@ -13582,7 +13573,7 @@ var app = (function () {
             if (katan.isKnightMode) {
                 katanStore.internalReadyMoveBurglar(katan);
             } else {
-                katanStore.takeResourceByBuglar(katan);
+                katanStore.takeResourceByBurglar(katan);
 
                 if (katan.takeResourceFromBuglarCount > 0) {
                     const interval = setInterval(() => {
