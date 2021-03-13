@@ -11370,581 +11370,6 @@ var app = (function () {
     } );
     });
 
-    const setHideCastle = () => katanStore.update(katan => {
-        katan.castleList =  katan.castleList
-            .map(castle => {
-                if (castle.playerIndex === -1) {
-                    castle.show = false;
-                    castle.hide = true;
-                }
-
-                return castle;
-            });
-
-        return katan;
-    });
-
-    const setNewCityRippleEnabled = () => katanStore.update(katan => {
-        const player = katanStore.getActivePlayer();
-
-        katan.castleList = katan.castleList.map(castle => {
-            if (castle.playerIndex === player.index &&
-                castle.city === false) {
-                castle.ripple = true;
-                castle.hide = false;
-                castle.show = true;
-            }
-
-            return castle;
-        });
-
-        return katan;
-    });
-
-    const endMakeCastle = () => katanStore.update(katan => {
-        katan.isMakeCastle = false;
-        katanStore.doActionAndTurn();
-        return katan;
-    });
-
-    const endMakeCity = (castleIndex) => katanStore.update(katan => {
-        katan.isMakeCity = false;
-        katanStore.doActionAndTurn();
-        return katan;
-    });
-
-    const getPossibleCastleIndexList = (katan) => {
-        return katan.castleList
-            .filter(castle => castle.playerIndex === -1)
-            .map(castle => {
-                const castleLength = castle.castleIndexList
-                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
-                    .length;
-
-                console.log('>>> castleLength1', castle.i,
-                    castle.j, castle.index, castleLength);
-
-                console.log('>>> castle.castleIndexList', castle.castleIndexList);
-
-                if (castleLength === castle.castleIndexList.length) {
-                    const castleLength = castle.roadIndexList
-                        .filter(roadIndex => {
-                            const road = katan.roadList[roadIndex];
-                            return road.playerIndex === katan.playerIndex
-                        })
-                        .length;
-
-                    console.log('>>> castleLength2', castleLength);
-
-                    if (castleLength > 0) {
-                        return castle.index;
-                    }
-                }
-
-                return -1;
-            })
-            .filter(index => index >= 0);
-    };
-
-    const makeCastle = () => katanStore.update(katan => {
-        katan.isMakeCastle = true;
-        setNewCastleRippleEnabled();
-        return katan;
-    });
-
-    const makeCity = () => katanStore.update(katan => {
-        katan.isMakeCity = true;
-        setNewCityRippleEnabled();
-        return katan;
-    });
-
-    const setCastleRippleDisabled = () => katanStore.update(katan => {
-        katan.castleList = katan.castleList.map(castle => {
-            castle.ripple = false;
-            return castle;
-        });
-
-        return katan;
-    });
-
-    const castleClickable = (katan, castleIndex) => {
-        const player = katanStore.getActivePlayer();
-        const castle = katan.castleList[castleIndex];
-
-        if (katan.isMakeCity) {
-            if (castle.city || castle.playerIndex !== player.index) {
-                return false;
-            }
-        } else {
-            if (castle.playerIndex !== -1) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    const clickMakeCastle = (castleIndex) => katanStore.update(katan => {
-        if (!castleClickable(katan, castleIndex)) {
-            return katan;
-        }
-
-        const player = katanStore.getActivePlayer();
-        setCastle(castleIndex, player.index);
-        setHideCastle();
-        setCastleRippleDisabled();
-
-        if (katan.isMakeCastle) {
-            endMakeCastle();
-        } else if (katan.isMakeCity){
-            endMakeCity();
-        } else {
-            setRoadRippleEnabled(castleIndex);
-        }
-
-        return katan;
-    });
-
-    const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
-        let castle = katan.castleList[castleIndex];
-        castle.playerIndex = playerIndex;
-        castle.pick = false;
-
-        if (katan.isMakeCity) {
-            castle.title = '도시';
-        } else {
-            castle.title = '마을';
-        }
-
-        const player = katan.playerList[playerIndex];
-        player.pickCastle += 1;
-        katan.time = new Date().getTime();
-
-        if (katan.isMakeCity) {
-            player.resource.wheat -= 2;
-            player.resource.iron -= 3;
-
-            player.point.castle -= 1;
-            player.point.city += 2;
-
-            player.construction.castle += 1;
-            player.construction.city -= 1;
-
-            katan.castleList = katan.castleList
-                .map(castle => {
-                    if (castle.index === castleIndex) {
-                        castle.city = true;
-                    }
-
-                    return castle;
-                });
-        } else {
-            if (katan.isStart) {
-                player.resource.tree -= 1;
-                player.resource.mud -= 1;
-                player.resource.sheep -= 1;
-                player.resource.wheat -= 1;
-            }
-
-            player.point.castle += 1;
-
-            player.construction.castle -= 1;
-        }
-
-        if (castle.port.tradable) {
-            if (castle.port.type === 'all') {
-                katan.resourceTypeList
-                    .forEach(resourceType => {
-                        if (player.trade[resourceType.type].count > castle.port.trade) {
-                            player.trade[resourceType.type].count = castle.port.trade;
-                        }
-                    });
-            } else {
-                player.trade[castle.port.type].count = castle.port.trade;
-            }
-        }
-
-        return katan;
-    });
-
-    const showConstructableCastle = () => katanStore.update(katan => {
-        katan.message = '마을을 만들곳을 클릭하세요';
-
-        katan.castleList = katan.castleList.map(castle => {
-            if (castle.constructable && castle.playerIndex === -1) {
-                let linkedCastleLength = castle.castleIndexList
-                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
-                    .length;
-
-                if (linkedCastleLength === 0) {
-                    castle.show = true;
-                    castle.hide = false;
-                }
-            }
-
-            return castle;
-        });
-
-        return katan;
-    });
-
-    const setNewCastleRippleEnabled = () => katanStore.update(katan => {
-        const castleIndexList = getPossibleCastleIndexList(katan);
-
-        katan.castleList = katan.castleList.map(castle => {
-            if (castleIndexList.includes(castle.index)) {
-                castle.hide = false;
-                castle.show = true;
-            }
-
-            return castle;
-        });
-
-        return katan;
-    });
-
-    const recomputeRoad = () =>  {
-        recomputeLongRoad();
-        recomputeRoadPoint();
-    };
-
-    const recomputeRoadPoint = () => katanStore.update(katan => {
-        const player = katanStore.getActivePlayer();
-        const otherPlayer = katanStore.getOtherPlayer(katan);
-
-        if (player.maxRoadLength >= 5) {
-            if (player.point.road === 0) {
-                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
-                    alert('최장 교역로를 달성하였습니다.\n2점을 회득합니다.');
-                    player.point.road = 2;
-                }
-            }
-
-            if (otherPlayer.point.road > 0) {
-                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
-                    otherPlayer.point.road = 0;
-                }
-            }
-        }
-
-        return katan;
-    });
-
-    const recomputeLongRoad = () => {
-        katanStore.update(katan => {
-            katan.playerList
-                .forEach(player => {
-                    const list = katan.roadList
-                        .filter(road => road.playerIndex === player.index);
-
-                    list.forEach(road => {
-                        processLinkedRoadList(katan, player, road, []);
-                    });
-                });
-
-            return katan;
-        });
-    };
-
-    const processLinkedRoadList = (katan, player, road, resultList) => {
-        if (resultList.includes(road.index)) {
-            return;
-        }
-
-        const resultListLength = resultList.length;
-
-        if (resultListLength >= 2) {
-            const a = getIntersectionCastle(katan,
-                resultList[resultListLength - 1],
-                road.index);
-
-            const b = getIntersectionCastle(katan,
-                resultList[resultListLength - 2],
-                resultList[resultListLength - 1]);
-
-            if (a === b) {
-                return;
-            }
-        }
-
-        resultList.push(road.index);
-
-        if (road.playerIndex !== player.index) {
-            return;
-        }
-
-        const roadList = getLinkedRoadList(katan, player, road);
-
-        if (resultList.length > player.maxRoadLength) {
-            player.maxRoadLength = resultList.length;
-        }
-
-        if (roadList.length === 0) {
-            return;
-        }
-
-        roadList.forEach(currentRoad => {
-            processLinkedRoadList(katan, player, currentRoad, [...resultList]);
-        });
-    };
-
-    const getIntersectionCastle = (katan, roadIndexA, roadIndexB) => {
-        const listA = katan.roadList[roadIndexA].castleIndexList;
-        const listB = katan.roadList[roadIndexB].castleIndexList;
-        return listA.find(index => listB.includes(index));
-    };
-
-    const getLinkedRoadList = (katan, player, road) => {
-        const roadIndex = road.index;
-
-        return katan.roadList[roadIndex]
-            .roadIndexList
-            .map(index => katan.roadList[index])
-            .filter(road => road.playerIndex === player.index);
-    };
-
-    const setHideRoad = () => katanStore.update(katan => {
-        katan.roadList =  katan.roadList
-            .map(road => {
-                if (road.playerIndex === -1) {
-                    road.show = false;
-                    road.hide = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    });
-
-    const setRoadRippleDisabled = () => katanStore.update(katan => {
-        katan.roadList = katan.roadList
-            .map(road => {
-                road.ripple = false;
-                return road;
-            });
-
-        return katan;
-    });
-
-    const clickMakeRoad = (roadIndex) => katanStore.update(katan => {
-        if (!katan.isMakeRoad) {
-            return katan;
-        }
-
-        const player = katanStore.getActivePlayer();
-        setRoad(roadIndex, player.index);
-        setHideRoad();
-        setRoadRippleDisabled();
-
-        if (katan.isStart) {
-            endMakeRoad();
-        } else {
-            showConstructableCastle();
-            endMakeRoad();
-            katanStore.turn();
-
-            if (katanStore.isStartable()) {
-                katanStore.start();
-            }
-        }
-
-        return katan;
-    });
-
-    const getPossibleRoadTotalLength = (katan) => {
-        return katan.roadList
-            .map(road => getPossibleRoadLength(katan, road))
-            .reduce((a, b) => a + b);
-    };
-
-    const getPossibleRoadLength = (katan, road) => {
-        if (road.playerIndex === -1) {
-            return road.roadIndexList
-                .map(roadIndex => katan.roadList[roadIndex])
-                .filter(currentRoad => {
-                    const castleListA = road.castleIndexList;
-                    const castleListB = currentRoad.castleIndexList;
-                    const currentCastleIndex = castleListA
-                        .find(castleIndex => castleListB.includes(castleIndex));
-
-                    if (currentCastleIndex) {
-                        const castle = katan.castleList[currentCastleIndex];
-
-                        return currentRoad.playerIndex === katan.playerIndex &&
-                            (castle.playerIndex === -1 || castle.playerIndex === katan.playerIndex)
-                    }
-
-                    return currentRoad.playerIndex === katan.playerIndex;
-                })
-                .length;
-        }
-
-        return 0;
-    };
-
-    const setNewRoadRippleEnabled = () => katanStore.update(katan => {
-        katan.roadList = katan.roadList
-            .map(road => {
-                let length = getPossibleRoadLength(katan, road);
-
-                if (length > 0) {
-                    road.hide = false;
-                    road.show = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    });
-
-    const makeRoad = () => katanStore.update(katan => {
-        katan.isMakeRoad = true;
-
-        setNewRoadRippleEnabled();
-        recomputePlayer();
-
-        return katan;
-    });
-
-    const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => {
-        katan.isMakeRoad = true;
-        katan.message = '도로을 만들곳을 선택하세요.';
-        let roadIndexList = katan.castleList[castleIndex].roadIndexList;
-
-        katan.roadList = katan.roadList
-            .map(road => {
-
-                let linkLength = roadIndexList.filter(roadIndex => roadIndex === road.index)
-                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === -1)
-                    .length;
-
-                if (linkLength > 0) {
-                    road.hide = false;
-                    road.show = true;
-                }
-
-                return road;
-            });
-
-        return katan;
-    });
-
-    const endMakeRoad = () => katanStore.update(katan => {
-        if (katan.isMakeRoad2) {
-            katan.makeRoadCount += 1;
-        } else {
-            katan.isMakeRoad = false;
-        }
-
-        if (katan.isStart) {
-            if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
-                makeRoad();
-            } else {
-                katan.isMakeRoad2 = false;
-                katan.isMakeRoad = false;
-                katan.makeRoadCount = 0;
-                katanStore.doActionAndTurn();
-            }
-        }
-
-        return katan;
-    });
-
-    const setRoad = (roadIndex, playerIndex) => katanStore.update(katan => {
-        let road = katan.roadList[roadIndex];
-        road.playerIndex = playerIndex;
-        road.pick = false;
-        road.title = '도로';
-
-        const player = katan.playerList[playerIndex];
-        player.pickRoad += 1;
-        player.construction.road -= 1;
-
-        if (katan.isStart && katan.isMakeRoad && katan.isMakeRoad2 === false) {
-            player.resource.tree -= 1;
-            player.resource.mud -= 1;
-        }
-
-        return katan;
-    });
-
-    const recomputePlayer = () => {
-        recomputeRoad();
-
-        katanStore.update(katan => {
-            katan.playerList = katan.playerList
-                .map(player => {
-                    let sum = player.point.knight;
-                    sum += player.point.road;
-                    sum += player.point.point;
-                    sum += player.point.castle;
-                    sum += player.point.city;
-
-                    player.point.sum = sum;
-                    player.resourceSum = katanStore.sumResource(katan, player);
-
-                    katan.resourceTypeList
-                        .forEach(typeObject => {
-                            const type = typeObject.type;
-                            player.trade[type].action =
-                                katanStore.isActive(katan) &&
-                                player.index === katan.playerIndex;
-
-                            player.trade[type].enable =
-                                player.resource[type] >= player.trade[type].count;
-                        });
-
-                    player.make.road =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex &&
-                        player.construction.road >= 1 &&
-                        player.resource.tree >= 1 &&
-                        player.resource.mud >= 1 &&
-                        getPossibleRoadTotalLength(katan) > 0;
-
-                    player.make.castle =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex &&
-                        player.construction.castle >= 1 &&
-                        player.resource.tree >= 1 &&
-                        player.resource.mud >= 1 &&
-                        player.resource.wheat >= 1 &&
-                        player.resource.sheep >= 1 &&
-                        getPossibleCastleIndexList(katan).length > 0;
-
-                    const castleLength = katan.castleList
-                        .filter(castle => castle.playerIndex === katan.playerIndex)
-                        .filter(castle => castle.city === false)
-                        .length;
-
-                    player.make.city =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex &&
-                        castleLength > 0 &&
-                        player.construction.city >= 1 &&
-                        player.resource.iron >= 3 &&
-                        player.resource.wheat >= 2;
-
-                    player.make.dev =
-                        katanStore.isActive(katan) &&
-                        player.index === katan.playerIndex &&
-                        player.resource.iron >= 1 &&
-                        player.resource.sheep >= 1 &&
-                        player.resource.wheat >= 1;
-
-                    if (player.point.sum === 10) {
-                        alert(`${player.name} 승리`);
-                    }
-
-                    return player;
-                });
-
-            return katan;
-        });
-    };
-
     const camelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
 
     function toStyle (styleObject) {
@@ -11966,1097 +11391,6 @@ var app = (function () {
     const random = () => {
         return () => Math.random() - 0.5;
     };
-
-    const katanObject = {
-        testDice: 0,
-        maxRoadLength: 0,
-        resourceTypeList: [
-            {
-                type: 'tree'
-            },
-            {
-                type: 'mud'
-            },
-            {
-                type: 'wheat'
-            },
-            {
-                type: 'sheep'
-            },
-            {
-                type: 'iron'
-            }
-        ],
-        rollDice: false,
-        action: false,
-        isGetResource: false,
-        isGetResourceFormOtherPlayer: false,
-        isMakeRoad: false,
-        isMakeRoad2: false,
-        makeRoadCount: 0,
-        getResourceCount: 0,
-        takeResourceFromBurglarCount: 0,
-        takeResourceFromBurglarCompleteCount: 0,
-        isMakeCastle: false,
-        isMakeCity: false,
-        construction: false,
-        isKnightMode: false,
-        isBurglarMode: false,
-        message: '마을을 만들곳을 클릭하세요',
-        diceDisabled: true,
-        dice: [6, 6],
-        sumDice: 12,
-        mode: 'ready',
-        isReady: true,
-        isStart: false,
-        playerIndex: 0,
-        showResourceModal: false,
-        playerList: [
-            {
-                color: '#E4A2AE',
-                name: '다은',
-                turn: true,
-                pickCastle: 0,
-                pickRoad: 0,
-                image: 'apeach.png',
-                maxRoadLength: 0,
-                resourceSum: 0
-            },
-            {
-                color: '#90CDEA',
-                name: '아빠',
-                turn: false,
-                pickCastle: 0,
-                pickRoad: 0,
-                image: 'lion.png',
-                maxRoadLength: 0,
-                resourceSum: 0
-            }
-        ]
-    };
-
-    katanObject.cardList = [];
-    katanObject.afterCardList = [];
-
-    for (let i = 0; i < 5; i++) {
-        katanObject.cardList.push({
-            type: 'point'
-        });
-    }
-
-    for (let i = 0; i < 14; i++) {
-        katanObject.cardList.push({
-            type: 'knight'
-        });
-    }
-
-    for (let i = 0; i < 2; i++) {
-        katanObject.cardList.push({
-            type: 'road'
-        });
-    }
-
-    for (let i = 0; i < 2; i++) {
-        katanObject.cardList.push({
-            type: 'resource'
-        });
-    }
-
-    for (let i = 0; i < 2; i++) {
-        katanObject.cardList.push({
-            type: 'get'
-        });
-    }
-
-    katanObject.cardList = shuffle(katanObject.cardList);
-
-    katanObject.playerList.forEach((player, i) => {
-        player.index = i;
-
-        player.pickCastle =  0;
-        player.pickRoad = 0;
-
-        player.resource = {
-            tree: 0,
-            mud: 0,
-            wheat: 0,
-            sheep: 0,
-            iron: 0
-        };
-
-        player.point = {
-            knight: 0,
-            road: 0,
-            point: 0,
-            castle: 0,
-            city: 0,
-            sum: 0
-        };
-
-        player.trade = {
-            tree: {
-                enable: false,
-                action: false,
-                count: 4
-            },
-            mud: {
-                enable: false,
-                action: false,
-                count: 4
-            },
-            wheat: {
-                enable: false,
-                action: false,
-                count: 4
-            },
-            sheep: {
-                enable: false,
-                action: false,
-                count: 4
-            },
-            iron: {
-                enable: false,
-                action: false,
-                count: 4
-            }
-        };
-
-        player.construction = {
-            castle: 5,
-            city: 4,
-            road: 15,
-            knight: 0
-        };
-
-        player.make = {
-            road: false,
-            castle: false,
-            city: false,
-            dev: false
-        };
-
-        player.exchange = false;
-    });
-
-    katanObject.castleList = [];
-
-    for (let i = 0; i < 6; i++) {
-        for (let j = 0; j < 11; j++) {
-            if (i === 0 || i === 5) {
-                if (j >= 2 && j <= 8) {
-                    let top = 0;
-
-                    if (i === 5) {
-                        top = i * (3 * config.cell.height / 4);
-                    }
-
-                    if (j % 2 === i % 2) {
-                        top += config.cell.height / 4;
-                    }
-
-                    katanObject.castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
-                        show: false,
-                        hide: true,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            } else if (i === 1 || i === 4) {
-                if (j >= 1 && j <= 9) {
-                    let top = (3 * config.cell.height / 4);
-
-                    if (i === 4) {
-                        top = i * (3 * config.cell.height / 4);
-                    }
-
-                    if (j % 2 === i % 2) {
-                        top += config.cell.height / 4;
-                    }
-
-                    const show = j >= 3 && j <= 7;
-
-                    katanObject.castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
-                        show,
-                        hide: !show,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            } else if (i === 2 || i === 3) {
-                let top = 2 * (3 * config.cell.height / 4);
-
-                if (i === 3) {
-                    top = i * (3 * config.cell.height / 4);
-                }
-
-                if (j % 2 === i % 2) {
-                    top += config.cell.height / 4;
-                }
-
-                const show = j >= 2 && j <= 8;
-
-                katanObject.castleList.push({
-                    left: j * (config.cell.width / 2) - config.castle.width / 2,
-                    top: top - config.castle.height / 2,
-                    show,
-                    hide: !show,
-                    empty: true,
-                    i,
-                    j
-                });
-            }
-        }
-    }
-
-    katanObject.castleList.forEach((castle, index) => castle.index = index);
-    katanObject.castleList.forEach((castle) => castle.playerIndex = -1);
-    katanObject.castleList.forEach((castle) => castle.city = false);
-    katanObject.castleList.forEach(castle => castle.constructable = castle.show);
-    katanObject.castleList.forEach(castle => castle.title = '');
-    katanObject.castleList.forEach(castle => castle.tradable = false);
-
-    katanObject.castleList[0].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[1].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[2].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[3].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[4].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[5].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[6].port = {
-        enabled: true,
-        placement: 'top'
-    };
-
-    katanObject.castleList[7].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[8].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[9].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[10].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[11].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[12].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[13].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[14].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[15].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[16].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[17].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[18].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[19].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[20].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[21].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[22].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[23].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[24].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[25].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[26].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[27].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[28].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[29].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[30].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[31].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[32].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[33].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[34].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[35].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[36].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[37].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[38].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[39].port = {
-        enabled: true,
-        placement: 'left'
-    };
-
-    katanObject.castleList[40].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[41].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[42].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[43].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[44].port = {
-        enabled: false
-    };
-
-    katanObject.castleList[45].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[46].port = {
-        enabled: true,
-        placement: 'right'
-    };
-
-    katanObject.castleList[47].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-
-    katanObject.castleList[48].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-
-    katanObject.castleList[49].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-
-    katanObject.castleList[50].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-
-    katanObject.castleList[51].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-
-    katanObject.castleList[52].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-    katanObject.castleList[53].port = {
-        enabled: true,
-        placement: 'bottom'
-    };
-
-    const portList = [];
-
-    for (let i = 0; i < 8; i++) {
-        portList.push({
-            trade: 3,
-            type: 'all'
-        });
-    }
-
-    for (let i = 0; i < 2; i++) {
-        portList.push({
-            trade: 2,
-            type: 'tree'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'mud'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'wheat'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'sheep'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'iron'
-        });
-    }
-
-    katanObject.castleList
-        .filter(castle => castle.port.enabled)
-        .map(castle => castle.index)
-        .sort(random())
-        .slice(0, portList.length)
-        .forEach(i => {
-            const port = portList.pop();
-
-            katanObject.castleList[i].port = {
-                ...katanObject.castleList[i].port,
-                trade: port.trade,
-                type: port.type,
-                tradable: true
-            };
-        });
-
-    katanObject.castleList[0].roadIndexList = [0, 6];
-    katanObject.castleList[1].roadIndexList = [0, 1];
-    katanObject.castleList[2].roadIndexList = [1, 2, 7];
-    katanObject.castleList[3].roadIndexList = [2, 3];
-    katanObject.castleList[4].roadIndexList = [3, 4, 8];
-    katanObject.castleList[5].roadIndexList = [4, 5];
-    katanObject.castleList[6].roadIndexList = [5, 9];
-
-    katanObject.castleList[7].roadIndexList = [18, 10];
-    katanObject.castleList[8].roadIndexList = [6, 10, 11];
-    katanObject.castleList[9].roadIndexList = [11, 12, 19];
-    katanObject.castleList[10].roadIndexList = [7, 12, 13];
-    katanObject.castleList[11].roadIndexList = [13, 14, 20];
-    katanObject.castleList[12].roadIndexList = [8, 14, 15];
-    katanObject.castleList[13].roadIndexList = [15, 16, 21];
-    katanObject.castleList[14].roadIndexList = [9, 16, 17];
-    katanObject.castleList[15].roadIndexList = [17, 22];
-
-    katanObject.castleList[16].roadIndexList = [23, 33];
-    katanObject.castleList[17].roadIndexList = [18, 23, 24];
-    katanObject.castleList[18].roadIndexList = [24, 25, 34];
-    katanObject.castleList[19].roadIndexList = [19, 25, 26];
-    katanObject.castleList[20].roadIndexList = [26, 27, 35];
-    katanObject.castleList[21].roadIndexList = [20, 27, 28];
-    katanObject.castleList[22].roadIndexList = [28, 29, 36];
-    katanObject.castleList[23].roadIndexList = [21, 29, 30];
-    katanObject.castleList[24].roadIndexList = [30, 31, 37];
-    katanObject.castleList[25].roadIndexList = [22, 31, 32];
-    katanObject.castleList[26].roadIndexList = [32, 38];
-
-    katanObject.castleList[27].roadIndexList = [33, 39];
-    katanObject.castleList[28].roadIndexList = [39, 40, 49];
-    katanObject.castleList[29].roadIndexList = [34, 40, 41];
-    katanObject.castleList[30].roadIndexList = [41, 42, 50];
-    katanObject.castleList[31].roadIndexList = [35, 42, 43];
-    katanObject.castleList[32].roadIndexList = [43, 44, 51];
-    katanObject.castleList[33].roadIndexList = [36, 44, 45];
-    katanObject.castleList[34].roadIndexList = [45, 46, 52];
-    katanObject.castleList[35].roadIndexList = [37, 46, 47];
-    katanObject.castleList[36].roadIndexList = [47, 48, 53];
-    katanObject.castleList[37].roadIndexList = [38, 48];
-
-    katanObject.castleList[38].roadIndexList = [49, 54];
-    katanObject.castleList[39].roadIndexList = [54, 55, 62];
-    katanObject.castleList[40].roadIndexList = [50, 55, 56];
-    katanObject.castleList[41].roadIndexList = [56, 57, 63];
-    katanObject.castleList[42].roadIndexList = [51, 57, 58];
-    katanObject.castleList[43].roadIndexList = [58, 59, 64];
-    katanObject.castleList[44].roadIndexList = [52, 59, 60];
-    katanObject.castleList[45].roadIndexList = [60, 61, 65];
-    katanObject.castleList[46].roadIndexList = [53, 61];
-
-    katanObject.castleList[47].roadIndexList = [62, 66];
-    katanObject.castleList[48].roadIndexList = [66, 67];
-    katanObject.castleList[49].roadIndexList = [63, 67, 68];
-    katanObject.castleList[50].roadIndexList = [68, 69];
-    katanObject.castleList[51].roadIndexList = [64, 69, 70];
-    katanObject.castleList[52].roadIndexList = [70, 71];
-    katanObject.castleList[53].roadIndexList = [65, 71];
-
-    katanObject.castleList[0].castleIndexList = [1, 8];
-    katanObject.castleList[1].castleIndexList = [0, 2];
-    katanObject.castleList[2].castleIndexList = [1, 3, 10];
-    katanObject.castleList[3].castleIndexList = [2, 4];
-    katanObject.castleList[4].castleIndexList = [3, 5, 12];
-    katanObject.castleList[5].castleIndexList = [4, 6];
-    katanObject.castleList[6].castleIndexList = [5, 14];
-
-    katanObject.castleList[7].castleIndexList = [8, 17];
-    katanObject.castleList[8].castleIndexList = [0, 7, 9];
-    katanObject.castleList[9].castleIndexList = [8, 10, 19];
-    katanObject.castleList[10].castleIndexList = [2, 9, 11];
-    katanObject.castleList[11].castleIndexList = [10, 12, 21];
-    katanObject.castleList[12].castleIndexList = [4, 11 ,13];
-    katanObject.castleList[13].castleIndexList = [12, 14, 23];
-    katanObject.castleList[14].castleIndexList = [6, 13, 15];
-    katanObject.castleList[15].castleIndexList = [14, 25];
-
-    katanObject.castleList[16].castleIndexList = [17, 27];
-    katanObject.castleList[17].castleIndexList = [7, 16, 18];
-    katanObject.castleList[18].castleIndexList = [17, 19, 29];
-    katanObject.castleList[19].castleIndexList = [9, 18, 20];
-    katanObject.castleList[20].castleIndexList = [19, 21, 31];
-    katanObject.castleList[21].castleIndexList = [11, 20, 22];
-    katanObject.castleList[22].castleIndexList = [21, 23, 33];
-    katanObject.castleList[23].castleIndexList = [13, 22, 24];
-    katanObject.castleList[24].castleIndexList = [23, 25, 35];
-    katanObject.castleList[25].castleIndexList = [15, 24, 26];
-    katanObject.castleList[26].castleIndexList = [25, 37];
-
-    katanObject.castleList[27].castleIndexList = [16, 28];
-    katanObject.castleList[28].castleIndexList = [27, 29, 38];
-    katanObject.castleList[29].castleIndexList = [18, 28, 30];
-    katanObject.castleList[30].castleIndexList = [29, 31, 40];
-    katanObject.castleList[31].castleIndexList = [20, 30, 32];
-    katanObject.castleList[32].castleIndexList = [31, 33, 42];
-    katanObject.castleList[33].castleIndexList = [22, 32, 34];
-    katanObject.castleList[34].castleIndexList = [33, 35, 44];
-    katanObject.castleList[35].castleIndexList = [24, 34, 36];
-    katanObject.castleList[36].castleIndexList = [35, 37, 46];
-    katanObject.castleList[37].castleIndexList = [26, 36];
-
-    katanObject.castleList[38].castleIndexList = [28, 39];
-    katanObject.castleList[39].castleIndexList = [38, 40, 47];
-    katanObject.castleList[40].castleIndexList = [30, 39, 41];
-    katanObject.castleList[41].castleIndexList = [40, 42, 49];
-    katanObject.castleList[42].castleIndexList = [32, 41, 43];
-    katanObject.castleList[43].castleIndexList = [42, 44, 51];
-    katanObject.castleList[44].castleIndexList = [34, 43, 45];
-    katanObject.castleList[45].castleIndexList = [44, 46, 53];
-    katanObject.castleList[46].castleIndexList = [36, 45];
-
-    katanObject.castleList[47].castleIndexList = [39, 48];
-    katanObject.castleList[48].castleIndexList = [47, 49];
-    katanObject.castleList[49].castleIndexList = [41, 48, 50];
-    katanObject.castleList[50].castleIndexList = [49, 51];
-    katanObject.castleList[51].castleIndexList = [43, 50, 52];
-    katanObject.castleList[52].castleIndexList = [51, 53];
-    katanObject.castleList[53].castleIndexList = [45, 52];
-
-    katanObject.roadList = [];
-
-    const getLoadTopBySingle = (multiple) => {
-        return multiple * config.cell.height / 8 - config.load.width / 2 ;
-    };
-
-    const getLoadTop = (currentRow, targetRow, currentMultiple, targetMultiple) => {
-        let multiple = currentMultiple;
-
-        if (currentRow === targetRow) {
-            multiple = targetMultiple;
-        }
-
-        return getLoadTopBySingle(multiple) ;
-    };
-
-    for (let i = 0; i <= 11; i++) {
-        for (let j = 0; j <= 20; j++) {
-            if (i === 0 || i === 11) {
-                if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
-                    let top = getLoadTop(i, 11, 1, 31);
-
-                    katanObject.roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        roadRipple: false,
-                        constructable: false,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            } else if (i === 1 || i === 10) {
-                if (j === 4 || j === 8 || j === 12 || j === 16) {
-                    let top = getLoadTop(i, 10, 4, 28);
-
-                    katanObject.roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        roadRipple: false,
-                        constructable: false,
-                        empty: true,
-                        i,
-                        j
-
-                    });
-                }
-            } else if (i === 2 || i === 9) {
-                if (j === 3 || j === 5 || j === 7 || j === 9 ||
-                    j === 11 || j === 13 || j === 15 || j === 17) {
-                    let top = getLoadTop(i, 9, 7, 25);
-
-                    katanObject.roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        roadRipple: false,
-                        constructable: false,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            } else if (i === 3 || i === 8) {
-                if (j === 2 || j === 6 || j === 10 || j === 14 || j === 18) {
-
-                    let top = getLoadTop(i, 8, 10, 22);
-
-                    katanObject.roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        roadRipple: false,
-                        constructable: false,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            } else if (i === 4 || i === 7) {
-                if (j === 1 || j === 3 || j === 5 || j === 7 || j === 9 ||
-                    j === 11 || j === 13 || j === 15 || j === 17 || j === 19) {
-
-                    let top = getLoadTop(i, 7, 13, 19);
-
-                    katanObject.roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        roadRipple: false,
-                        constructable: false,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            } else if (i === 5) {
-                if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
-                    let top = getLoadTopBySingle(16);
-
-                    katanObject.roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
-                        top: top,
-                        roadRipple: false,
-                        constructable: false,
-                        empty: true,
-                        i,
-                        j
-                    });
-                }
-            }
-        }
-    }
-
-    katanObject.roadList.forEach((road, index) => road.index = index);
-    katanObject.roadList.forEach(road => road.hide = true);
-    katanObject.roadList.forEach(road => road.show = false);
-    katanObject.roadList.forEach(road => road.ripple = false);
-    katanObject.roadList.forEach(road => road.playerIndex = -1);
-    katanObject.roadList.forEach(road => road.title = '');
-
-    katanObject.roadList[0].castleIndexList = [0, 1];
-    katanObject.roadList[1].castleIndexList = [1, 2];
-    katanObject.roadList[2].castleIndexList = [2, 3];
-    katanObject.roadList[3].castleIndexList = [3, 4];
-    katanObject.roadList[4].castleIndexList = [4, 5];
-    katanObject.roadList[5].castleIndexList = [5, 6];
-
-    katanObject.roadList[6].castleIndexList = [0, 8];
-    katanObject.roadList[7].castleIndexList = [2, 10];
-    katanObject.roadList[8].castleIndexList = [4, 12];
-    katanObject.roadList[9].castleIndexList = [6, 14];
-
-    katanObject.roadList[10].castleIndexList = [7, 8];
-    katanObject.roadList[11].castleIndexList = [8, 9];
-    katanObject.roadList[12].castleIndexList = [9, 10];
-    katanObject.roadList[13].castleIndexList = [10, 11];
-    katanObject.roadList[14].castleIndexList = [11, 12];
-    katanObject.roadList[15].castleIndexList = [12, 13];
-    katanObject.roadList[16].castleIndexList = [13, 14];
-    katanObject.roadList[17].castleIndexList = [14, 15];
-
-    katanObject.roadList[18].castleIndexList = [7, 17];
-    katanObject.roadList[19].castleIndexList = [9, 19];
-    katanObject.roadList[20].castleIndexList = [11, 21];
-    katanObject.roadList[21].castleIndexList = [13, 23];
-    katanObject.roadList[22].castleIndexList = [15, 25];
-
-    katanObject.roadList[23].castleIndexList = [16, 17];
-    katanObject.roadList[24].castleIndexList = [17, 18];
-    katanObject.roadList[25].castleIndexList = [18, 19];
-    katanObject.roadList[26].castleIndexList = [19, 20];
-    katanObject.roadList[27].castleIndexList = [20, 21];
-    katanObject.roadList[28].castleIndexList = [21, 22];
-    katanObject.roadList[29].castleIndexList = [22, 23];
-    katanObject.roadList[30].castleIndexList = [23, 24];
-    katanObject.roadList[31].castleIndexList = [24, 25];
-    katanObject.roadList[32].castleIndexList = [25, 26];
-
-    katanObject.roadList[33].castleIndexList = [16, 27];
-    katanObject.roadList[34].castleIndexList = [18, 29];
-    katanObject.roadList[35].castleIndexList = [20, 31];
-    katanObject.roadList[36].castleIndexList = [22, 33];
-    katanObject.roadList[37].castleIndexList = [24, 35];
-    katanObject.roadList[38].castleIndexList = [26, 37];
-
-    katanObject.roadList[39].castleIndexList = [27, 28];
-    katanObject.roadList[40].castleIndexList = [28, 29];
-    katanObject.roadList[41].castleIndexList = [29, 30];
-    katanObject.roadList[42].castleIndexList = [30, 31];
-    katanObject.roadList[43].castleIndexList = [31, 32];
-    katanObject.roadList[44].castleIndexList = [32, 33];
-    katanObject.roadList[45].castleIndexList = [33, 34];
-    katanObject.roadList[46].castleIndexList = [34, 35];
-    katanObject.roadList[47].castleIndexList = [35, 36];
-    katanObject.roadList[48].castleIndexList = [36, 37];
-
-    katanObject.roadList[49].castleIndexList = [28, 38];
-    katanObject.roadList[50].castleIndexList = [30, 40];
-    katanObject.roadList[51].castleIndexList = [32, 42];
-    katanObject.roadList[52].castleIndexList = [34, 44];
-    katanObject.roadList[53].castleIndexList = [36, 46];
-
-    katanObject.roadList[54].castleIndexList = [38, 39];
-    katanObject.roadList[55].castleIndexList = [39, 40];
-    katanObject.roadList[56].castleIndexList = [40, 41];
-    katanObject.roadList[57].castleIndexList = [41, 42];
-    katanObject.roadList[58].castleIndexList = [42, 43];
-    katanObject.roadList[59].castleIndexList = [43, 44];
-    katanObject.roadList[60].castleIndexList = [44, 45];
-    katanObject.roadList[61].castleIndexList = [45, 46];
-
-    katanObject.roadList[62].castleIndexList = [39, 47];
-    katanObject.roadList[63].castleIndexList = [41, 49];
-    katanObject.roadList[64].castleIndexList = [43, 51];
-    katanObject.roadList[65].castleIndexList = [45, 53];
-
-    katanObject.roadList[66].castleIndexList = [47, 48];
-    katanObject.roadList[67].castleIndexList = [48, 49];
-    katanObject.roadList[68].castleIndexList = [49, 50];
-    katanObject.roadList[69].castleIndexList = [50, 51];
-    katanObject.roadList[70].castleIndexList = [51, 52];
-    katanObject.roadList[71].castleIndexList = [52, 53];
-
-    katanObject.roadList[0].roadIndexList = [1, 6];
-    katanObject.roadList[1].roadIndexList = [0, 2, 7];
-    katanObject.roadList[2].roadIndexList = [1, 3, 7];
-    katanObject.roadList[3].roadIndexList = [2, 4, 8];
-    katanObject.roadList[4].roadIndexList = [3, 5, 8];
-    katanObject.roadList[5].roadIndexList = [4, 9];
-
-    katanObject.roadList[6].roadIndexList = [0, 10, 11];
-    katanObject.roadList[7].roadIndexList = [1, 2, 12 , 13];
-    katanObject.roadList[8].roadIndexList = [3, 4, 14, 15];
-    katanObject.roadList[9].roadIndexList = [5, 16, 17];
-
-    katanObject.roadList[10].roadIndexList = [6, 11, 18];
-    katanObject.roadList[11].roadIndexList = [6, 10, 12, 19];
-    katanObject.roadList[12].roadIndexList = [7, 11, 13, 19];
-    katanObject.roadList[13].roadIndexList = [7, 12, 14, 20];
-    katanObject.roadList[14].roadIndexList = [8, 13, 15, 20];
-    katanObject.roadList[15].roadIndexList = [8, 14, 16, 21];
-    katanObject.roadList[16].roadIndexList = [9, 15, 17, 21];
-    katanObject.roadList[17].roadIndexList = [9, 16, 22];
-
-    katanObject.roadList[18].roadIndexList = [10, 23, 24];
-    katanObject.roadList[19].roadIndexList = [11, 12, 25, 26];
-    katanObject.roadList[20].roadIndexList = [13, 14, 27, 28];
-    katanObject.roadList[21].roadIndexList = [15, 16, 29, 30];
-    katanObject.roadList[22].roadIndexList = [17, 31, 32];
-
-    katanObject.roadList[23].roadIndexList = [18, 24, 33];
-    katanObject.roadList[24].roadIndexList = [18, 23, 25, 34];
-    katanObject.roadList[25].roadIndexList = [19, 24, 26, 34];
-    katanObject.roadList[26].roadIndexList = [19, 25, 27, 35];
-    katanObject.roadList[27].roadIndexList = [20, 26, 28, 35];
-    katanObject.roadList[28].roadIndexList = [20, 27, 29, 36];
-    katanObject.roadList[29].roadIndexList = [21, 28, 30, 36];
-    katanObject.roadList[30].roadIndexList = [21, 29, 31, 37];
-    katanObject.roadList[31].roadIndexList = [22, 30, 32, 37];
-    katanObject.roadList[32].roadIndexList = [22, 31, 38];
-
-    katanObject.roadList[33].roadIndexList = [23, 39];
-    katanObject.roadList[34].roadIndexList = [24, 25, 40, 41];
-    katanObject.roadList[35].roadIndexList = [26, 27, 42, 43];
-    katanObject.roadList[36].roadIndexList = [28, 29, 44, 45];
-    katanObject.roadList[37].roadIndexList = [30, 31, 46, 47];
-    katanObject.roadList[38].roadIndexList = [32, 48];
-
-    katanObject.roadList[39].roadIndexList = [33, 40, 49];
-    katanObject.roadList[40].roadIndexList = [34, 39, 41, 49];
-    katanObject.roadList[41].roadIndexList = [34, 40, 42, 50];
-    katanObject.roadList[42].roadIndexList = [35, 41, 43, 50];
-    katanObject.roadList[43].roadIndexList = [35, 42, 44, 51];
-    katanObject.roadList[44].roadIndexList = [36, 43, 45, 51];
-    katanObject.roadList[45].roadIndexList = [36, 44, 46, 52];
-    katanObject.roadList[46].roadIndexList = [37, 45, 47, 52];
-    katanObject.roadList[47].roadIndexList = [37, 46, 48, 53];
-    katanObject.roadList[48].roadIndexList = [38, 47, 53];
-
-    katanObject.roadList[49].roadIndexList = [39, 40, 54];
-    katanObject.roadList[50].roadIndexList = [41, 42, 55, 56];
-    katanObject.roadList[51].roadIndexList = [43, 44, 57, 58];
-    katanObject.roadList[52].roadIndexList = [45, 46, 59, 60];
-    katanObject.roadList[53].roadIndexList = [47, 48, 61];
-
-    katanObject.roadList[54].roadIndexList = [49, 55, 62];
-    katanObject.roadList[55].roadIndexList = [50, 54, 56, 62];
-    katanObject.roadList[56].roadIndexList = [50, 55, 57, 63];
-    katanObject.roadList[57].roadIndexList = [51, 56, 58, 63];
-    katanObject.roadList[58].roadIndexList = [51, 57, 59, 64];
-    katanObject.roadList[59].roadIndexList = [52, 58, 60, 64];
-    katanObject.roadList[60].roadIndexList = [52, 59, 61, 65];
-    katanObject.roadList[61].roadIndexList = [53, 60, 65];
-
-    katanObject.roadList[62].roadIndexList = [54, 55, 66];
-    katanObject.roadList[63].roadIndexList = [56, 57, 66, 68];
-    katanObject.roadList[64].roadIndexList = [58, 59, 69, 70];
-    katanObject.roadList[65].roadIndexList = [60, 61, 71];
-
-    katanObject.roadList[66].roadIndexList = [62, 67];
-    katanObject.roadList[67].roadIndexList = [63, 66, 68];
-    katanObject.roadList[68].roadIndexList = [63, 67, 69];
-    katanObject.roadList[69].roadIndexList = [64, 68, 70];
-    katanObject.roadList[70].roadIndexList = [64, 69, 71];
-    katanObject.roadList[71].roadIndexList = [65, 70];
-
-    let resourceList = [];
-
-    resourceList.push({
-        type: 'dessert'
-    });
-
-    for (let i = 0; i < 4; i++) {
-        resourceList.push({
-            type: 'tree'
-        });
-
-        resourceList.push({
-            type: 'iron'
-        });
-
-        resourceList.push({
-            type: 'sheep'
-        });
-    }
-
-    for (let i = 0; i < 3; i++) {
-        resourceList.push({
-            type: 'mud'
-        });
-
-        resourceList.push({
-            type: 'wheat'
-        });
-    }
-
-    resourceList.forEach(resource => {
-        resource.hide = true;
-        resource.show = false;
-        resource.numberRipple = false;
-    });
-
-    katanObject.resourceList = resourceList;
-
-    let numberList = [2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12];
-    numberList = shuffle(numberList);
-
-    katanObject.resourceList = katanObject.resourceList
-        .map((resource, index) => {
-            if (resource.type === 'dessert') {
-                resource.number = 7;
-                resource.numberIndex = 1;
-            } else {
-                resource.number = numberList.pop();
-
-                if (resource.number === 2 || resource.number === 12) {
-                    resource.numberIndex = 1;
-                } else {
-                    if (numberList.includes(resource.number)) {
-                        resource.numberIndex = 1;
-                    } else {
-                        resource.numberIndex = 2;
-                    }
-                }
-            }
-
-            resource.buglar = false;
-
-            if (resource.number === 7) {
-                resource.buglar = true;
-            }
-
-            return resource;
-        })
-        .sort(random())
-        .map((resource, index) => {
-            let left = 0;
-            let top = 0;
-
-            if (0 <= index && index <= 2) {
-                left = config.cell.width + config.cell.width * index;
-            } else if (3 <= index && index <= 6) {
-                left = config.cell.width / 2 + config.cell.width * (index - 3);
-                top = 3 * config.cell.height / 4;
-            } else if (7 <= index && index <= 11) {
-                left = config.cell.width * (index - 7);
-                top = 2 * (3 * config.cell.height / 4);
-            } else if (12 <= index && index <= 15) {
-                left = config.cell.width / 2 + config.cell.width * (index - 12);
-                top = 3 * (3 * config.cell.height / 4);
-            } else if (16 <= index && index <= 18) {
-                left = config.cell.width * (index - 15);
-                top = 4 * (3 * config.cell.height / 4);
-            }
-
-            resource.left = left;
-            resource.top = top;
-            resource.index = index;
-
-            if (resource.index === 0) {
-                resource.castleIndexList = [0, 1, 2, 8, 9, 10];
-            } else if (resource.index === 1) {
-                resource.castleIndexList = [2, 3, 4, 10, 11, 12];
-            } else if (resource.index === 2) {
-                resource.castleIndexList = [4, 5, 6, 12, 13, 14];
-            } else if (resource.index === 3) {
-                resource.castleIndexList = [7, 8, 9, 17, 18, 19];
-            } else if (resource.index === 4) {
-                resource.castleIndexList = [9, 10, 11, 19, 20, 21];
-            } else if (resource.index === 5) {
-                resource.castleIndexList = [11, 12, 13, 21, 22, 23];
-            } else if (resource.index === 6) {
-                resource.castleIndexList = [13, 14, 15, 23, 24, 25];
-            } else if (resource.index === 7) {
-                resource.castleIndexList = [16, 17, 18, 27, 28, 29];
-            } else if (resource.index === 8) {
-                resource.castleIndexList = [18, 19, 20, 29, 30, 31];
-            } else if (resource.index === 9) {
-                resource.castleIndexList = [20, 21, 22, 31, 32, 33];
-            } else if (resource.index === 10) {
-                resource.castleIndexList = [22, 23, 24, 33, 34, 35];
-            } else if (resource.index === 11) {
-                resource.castleIndexList = [24, 25, 26, 35, 36, 37];
-            } else if (resource.index === 12) {
-                resource.castleIndexList = [28, 29, 30, 38, 39, 40];
-            } else if (resource.index === 13) {
-                resource.castleIndexList = [30, 31, 32, 40, 41, 42];
-            } else if (resource.index === 14) {
-                resource.castleIndexList = [32, 33, 34, 42, 43, 44];
-            } else if (resource.index === 15) {
-                resource.castleIndexList = [34, 35, 36, 44, 45, 46];
-            } else if (resource.index === 16) {
-                resource.castleIndexList = [39, 40, 41, 47, 48, 49];
-            } else if (resource.index === 17) {
-                resource.castleIndexList = [41, 42, 43, 49, 50, 51];
-            } else if (resource.index === 18) {
-                resource.castleIndexList = [43, 44, 45, 51, 52, 53];
-            }
-
-            return resource;
-        });
 
     const animateMoveResource = (option) => {
         option = Object.assign({
@@ -13309,12 +11643,1567 @@ var app = (function () {
         return katan;
     });
 
+    const createCardList = () => {
+        const cardList = [];
+
+        for (let i = 0; i < 5; i++) {
+            cardList.push({
+                type: 'point'
+            });
+        }
+
+        for (let i = 0; i < 14; i++) {
+            cardList.push({
+                type: 'knight'
+            });
+        }
+
+        for (let i = 0; i < 2; i++) {
+            cardList.push({
+                type: 'road'
+            });
+        }
+
+        for (let i = 0; i < 2; i++) {
+            cardList.push({
+                type: 'resource'
+            });
+        }
+
+        for (let i = 0; i < 2; i++) {
+            cardList.push({
+                type: 'get'
+            });
+        }
+
+        return shuffle(cardList);
+    };
+
+    const katanObject = {
+        testDice: 0,
+        maxRoadLength: 0,
+        resourceTypeList: [
+            {
+                type: 'tree'
+            },
+            {
+                type: 'mud'
+            },
+            {
+                type: 'wheat'
+            },
+            {
+                type: 'sheep'
+            },
+            {
+                type: 'iron'
+            }
+        ],
+        rollDice: false,
+        action: false,
+        isGetResource: false,
+        isGetResourceFormOtherPlayer: false,
+        isMakeRoad: false,
+        isMakeRoad2: false,
+        makeRoadCount: 0,
+        getResourceCount: 0,
+        takeResourceFromBurglarCount: 0,
+        takeResourceFromBurglarCompleteCount: 0,
+        isMakeCastle: false,
+        isMakeCity: false,
+        construction: false,
+        isKnightMode: false,
+        isBurglarMode: false,
+        message: '마을을 만들곳을 클릭하세요',
+        diceDisabled: true,
+        dice: [6, 6],
+        sumDice: 12,
+        mode: 'ready',
+        isReady: true,
+        isStart: false,
+        playerIndex: 0,
+        showResourceModal: false
+    };
+
+    katanObject.cardList = createCardList();
+    katanObject.afterCardList = [];
+    katanObject.playerList = createPlayerList();
+    katanObject.castleList = createCastleList();
+    katanObject.roadList = createRoadList();
+    katanObject.resourceList = createResourceList();
+
+    const setHideCastle = (katanStore) => katanStore.update(katan => {
+        katan.castleList =  katan.castleList
+            .map(castle => {
+                if (castle.playerIndex === -1) {
+                    castle.show = false;
+                    castle.hide = true;
+                }
+
+                return castle;
+            });
+
+        return katan;
+    });
+
+    const setNewCityRippleEnabled = (katanStore) => katanStore.update(katan => {
+        const player = katanStore.getActivePlayer();
+
+        katan.castleList = katan.castleList.map(castle => {
+            if (castle.playerIndex === player.index &&
+                castle.city === false) {
+                castle.ripple = true;
+                castle.hide = false;
+                castle.show = true;
+            }
+
+            return castle;
+        });
+
+        return katan;
+    });
+
+    const endMakeCastle = (katanStore) => katanStore.update(katan => {
+        katan.isMakeCastle = false;
+        katanStore.doActionAndTurn();
+        return katan;
+    });
+
+    const endMakeCity = (katanStore, castleIndex) => katanStore.update(katan => {
+        katan.isMakeCity = false;
+        katanStore.doActionAndTurn();
+        return katan;
+    });
+
+    const getPossibleCastleIndexList = (katan) => {
+        return katan.castleList
+            .filter(castle => castle.playerIndex === -1)
+            .map(castle => {
+                const castleLength = castle.castleIndexList
+                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
+                    .length;
+
+                console.log('>>> castleLength1', castle.i,
+                    castle.j, castle.index, castleLength);
+
+                console.log('>>> castle.castleIndexList', castle.castleIndexList);
+
+                if (castleLength === castle.castleIndexList.length) {
+                    const castleLength = castle.roadIndexList
+                        .filter(roadIndex => {
+                            const road = katan.roadList[roadIndex];
+                            return road.playerIndex === katan.playerIndex
+                        })
+                        .length;
+
+                    console.log('>>> castleLength2', castleLength);
+
+                    if (castleLength > 0) {
+                        return castle.index;
+                    }
+                }
+
+                return -1;
+            })
+            .filter(index => index >= 0);
+    };
+
+    const makeCastle = (katanStore) => katanStore.update(katan => {
+        katan.isMakeCastle = true;
+        setNewCastleRippleEnabled();
+        return katan;
+    });
+
+    const makeCity = (katanStore) => katanStore.update(katan => {
+        katan.isMakeCity = true;
+        setNewCityRippleEnabled();
+        return katan;
+    });
+
+    const setCastleRippleDisabled = (katanStore) => katanStore.update(katan => {
+        katan.castleList = katan.castleList.map(castle => {
+            castle.ripple = false;
+            return castle;
+        });
+
+        return katan;
+    });
+
+    const castleClickable = (katanStore, katan, castleIndex) => {
+        const player = katanStore.getActivePlayer();
+        const castle = katan.castleList[castleIndex];
+
+        if (katan.isMakeCity) {
+            if (castle.city || castle.playerIndex !== player.index) {
+                return false;
+            }
+        } else {
+            if (castle.playerIndex !== -1) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    const clickMakeCastle = (katanStore, castleIndex) => katanStore.update(katan => {
+        if (!castleClickable(katan, castleIndex)) {
+            return katan;
+        }
+
+        const player = katanStore.getActivePlayer();
+        setCastle(castleIndex, player.index);
+        setHideCastle();
+        setCastleRippleDisabled();
+
+        if (katan.isMakeCastle) {
+            endMakeCastle();
+        } else if (katan.isMakeCity){
+            endMakeCity(castleIndex);
+        } else {
+            setRoadRippleEnabled(castleIndex);
+        }
+
+        return katan;
+    });
+
+    const setCastle = (katanStore, castleIndex, playerIndex) => katanStore.update(katan => {
+        let castle = katan.castleList[castleIndex];
+        castle.playerIndex = playerIndex;
+        castle.pick = false;
+
+        if (katan.isMakeCity) {
+            castle.title = '도시';
+        } else {
+            castle.title = '마을';
+        }
+
+        const player = katan.playerList[playerIndex];
+        player.pickCastle += 1;
+        katan.time = new Date().getTime();
+
+        if (katan.isMakeCity) {
+            player.resource.wheat -= 2;
+            player.resource.iron -= 3;
+
+            player.point.castle -= 1;
+            player.point.city += 2;
+
+            player.construction.castle += 1;
+            player.construction.city -= 1;
+
+            katan.castleList = katan.castleList
+                .map(castle => {
+                    if (castle.index === castleIndex) {
+                        castle.city = true;
+                    }
+
+                    return castle;
+                });
+        } else {
+            if (katan.isStart) {
+                player.resource.tree -= 1;
+                player.resource.mud -= 1;
+                player.resource.sheep -= 1;
+                player.resource.wheat -= 1;
+            }
+
+            player.point.castle += 1;
+
+            player.construction.castle -= 1;
+        }
+
+        if (castle.port.tradable) {
+            if (castle.port.type === 'all') {
+                katan.resourceTypeList
+                    .forEach(resourceType => {
+                        if (player.trade[resourceType.type].count > castle.port.trade) {
+                            player.trade[resourceType.type].count = castle.port.trade;
+                        }
+                    });
+            } else {
+                player.trade[castle.port.type].count = castle.port.trade;
+            }
+        }
+
+        return katan;
+    });
+
+    const showConstructableCastle = (katanStore) => katanStore.update(katan => {
+        katan.message = '마을을 만들곳을 클릭하세요';
+
+        katan.castleList = katan.castleList.map(castle => {
+            if (castle.constructable && castle.playerIndex === -1) {
+                let linkedCastleLength = castle.castleIndexList
+                    .filter(castleIndex => katan.castleList[castleIndex].playerIndex !== -1)
+                    .length;
+
+                if (linkedCastleLength === 0) {
+                    castle.show = true;
+                    castle.hide = false;
+                }
+            }
+
+            return castle;
+        });
+
+        return katan;
+    });
+
+    const setNewCastleRippleEnabled = (katanStore) => katanStore.update(katan => {
+        const castleIndexList = getPossibleCastleIndexList(katan);
+
+        katan.castleList = katan.castleList.map(castle => {
+            if (castleIndexList.includes(castle.index)) {
+                castle.hide = false;
+                castle.show = true;
+            }
+
+            return castle;
+        });
+
+        return katan;
+    });
+
+    const createCastleList = () => {
+        const castleList = [];
+
+        for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 11; j++) {
+                if (i === 0 || i === 5) {
+                    if (j >= 2 && j <= 8) {
+                        let top = 0;
+
+                        if (i === 5) {
+                            top = i * (3 * config.cell.height / 4);
+                        }
+
+                        if (j % 2 === i % 2) {
+                            top += config.cell.height / 4;
+                        }
+
+                        castleList.push({
+                            left: j * (config.cell.width / 2) - config.castle.width / 2,
+                            top: top - config.castle.height / 2,
+                            show: false,
+                            hide: true,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                } else if (i === 1 || i === 4) {
+                    if (j >= 1 && j <= 9) {
+                        let top = (3 * config.cell.height / 4);
+
+                        if (i === 4) {
+                            top = i * (3 * config.cell.height / 4);
+                        }
+
+                        if (j % 2 === i % 2) {
+                            top += config.cell.height / 4;
+                        }
+
+                        const show = j >= 3 && j <= 7;
+
+                        castleList.push({
+                            left: j * (config.cell.width / 2) - config.castle.width / 2,
+                            top: top - config.castle.height / 2,
+                            show,
+                            hide: !show,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                } else if (i === 2 || i === 3) {
+                    let top = 2 * (3 * config.cell.height / 4);
+
+                    if (i === 3) {
+                        top = i * (3 * config.cell.height / 4);
+                    }
+
+                    if (j % 2 === i % 2) {
+                        top += config.cell.height / 4;
+                    }
+
+                    const show = j >= 2 && j <= 8;
+
+                    castleList.push({
+                        left: j * (config.cell.width / 2) - config.castle.width / 2,
+                        top: top - config.castle.height / 2,
+                        show,
+                        hide: !show,
+                        empty: true,
+                        i,
+                        j
+                    });
+                }
+            }
+        }
+
+        castleList.forEach((castle, index) => castle.index = index);
+        castleList.forEach((castle) => castle.playerIndex = -1);
+        castleList.forEach((castle) => castle.city = false);
+        castleList.forEach(castle => castle.constructable = castle.show);
+        castleList.forEach(castle => castle.title = '');
+        castleList.forEach(castle => castle.tradable = false);
+
+        castleList[0].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[1].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[2].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[3].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[4].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[5].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[6].port = {
+            enabled: true,
+            placement: 'top'
+        };
+
+        castleList[7].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[8].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[9].port = {
+            enabled: false
+        };
+
+        castleList[10].port = {
+            enabled: false
+        };
+
+        castleList[11].port = {
+            enabled: false
+        };
+
+        castleList[12].port = {
+            enabled: false
+        };
+
+        castleList[13].port = {
+            enabled: false
+        };
+
+        castleList[14].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[15].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[16].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[17].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[18].port = {
+            enabled: false
+        };
+
+        castleList[19].port = {
+            enabled: false
+        };
+
+        castleList[20].port = {
+            enabled: false
+        };
+
+        castleList[21].port = {
+            enabled: false
+        };
+
+        castleList[22].port = {
+            enabled: false
+        };
+
+        castleList[23].port = {
+            enabled: false
+        };
+
+        castleList[24].port = {
+            enabled: false
+        };
+
+        castleList[25].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[26].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[27].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[28].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[29].port = {
+            enabled: false
+        };
+
+        castleList[30].port = {
+            enabled: false
+        };
+
+        castleList[31].port = {
+            enabled: false
+        };
+
+        castleList[32].port = {
+            enabled: false
+        };
+
+        castleList[33].port = {
+            enabled: false
+        };
+
+        castleList[34].port = {
+            enabled: false
+        };
+
+        castleList[35].port = {
+            enabled: false
+        };
+
+        castleList[36].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[37].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[38].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[39].port = {
+            enabled: true,
+            placement: 'left'
+        };
+
+        castleList[40].port = {
+            enabled: false
+        };
+
+        castleList[41].port = {
+            enabled: false
+        };
+
+        castleList[42].port = {
+            enabled: false
+        };
+
+        castleList[43].port = {
+            enabled: false
+        };
+
+        castleList[44].port = {
+            enabled: false
+        };
+
+        castleList[45].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[46].port = {
+            enabled: true,
+            placement: 'right'
+        };
+
+        castleList[47].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+
+        castleList[48].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+
+        castleList[49].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+
+        castleList[50].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+
+        castleList[51].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+
+        castleList[52].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+        
+        castleList[53].port = {
+            enabled: true,
+            placement: 'bottom'
+        };
+
+        const portList = [];
+
+        for (let i = 0; i < 8; i++) {
+            portList.push({
+                trade: 3,
+                type: 'all'
+            });
+        }
+
+        for (let i = 0; i < 2; i++) {
+            portList.push({
+                trade: 2,
+                type: 'tree'
+            });
+
+            portList.push({
+                trade: 2,
+                type: 'mud'
+            });
+
+            portList.push({
+                trade: 2,
+                type: 'wheat'
+            });
+
+            portList.push({
+                trade: 2,
+                type: 'sheep'
+            });
+
+            portList.push({
+                trade: 2,
+                type: 'iron'
+            });
+        }
+
+        castleList.filter(castle => castle.port.enabled)
+            .map(castle => castle.index)
+            .sort(random())
+            .slice(0, portList.length)
+            .forEach(i => {
+                const port = portList.pop();
+
+                castleList[i].port = {
+                    ...castleList[i].port,
+                    trade: port.trade,
+                    type: port.type,
+                    tradable: true
+                };
+            });
+
+        castleList[0].roadIndexList = [0, 6];
+        castleList[1].roadIndexList = [0, 1];
+        castleList[2].roadIndexList = [1, 2, 7];
+        castleList[3].roadIndexList = [2, 3];
+        castleList[4].roadIndexList = [3, 4, 8];
+        castleList[5].roadIndexList = [4, 5];
+        castleList[6].roadIndexList = [5, 9];
+
+        castleList[7].roadIndexList = [18, 10];
+        castleList[8].roadIndexList = [6, 10, 11];
+        castleList[9].roadIndexList = [11, 12, 19];
+        castleList[10].roadIndexList = [7, 12, 13];
+        castleList[11].roadIndexList = [13, 14, 20];
+        castleList[12].roadIndexList = [8, 14, 15];
+        castleList[13].roadIndexList = [15, 16, 21];
+        castleList[14].roadIndexList = [9, 16, 17];
+        castleList[15].roadIndexList = [17, 22];
+
+        castleList[16].roadIndexList = [23, 33];
+        castleList[17].roadIndexList = [18, 23, 24];
+        castleList[18].roadIndexList = [24, 25, 34];
+        castleList[19].roadIndexList = [19, 25, 26];
+        castleList[20].roadIndexList = [26, 27, 35];
+        castleList[21].roadIndexList = [20, 27, 28];
+        castleList[22].roadIndexList = [28, 29, 36];
+        castleList[23].roadIndexList = [21, 29, 30];
+        castleList[24].roadIndexList = [30, 31, 37];
+        castleList[25].roadIndexList = [22, 31, 32];
+        castleList[26].roadIndexList = [32, 38];
+
+        castleList[27].roadIndexList = [33, 39];
+        castleList[28].roadIndexList = [39, 40, 49];
+        castleList[29].roadIndexList = [34, 40, 41];
+        castleList[30].roadIndexList = [41, 42, 50];
+        castleList[31].roadIndexList = [35, 42, 43];
+        castleList[32].roadIndexList = [43, 44, 51];
+        castleList[33].roadIndexList = [36, 44, 45];
+        castleList[34].roadIndexList = [45, 46, 52];
+        castleList[35].roadIndexList = [37, 46, 47];
+        castleList[36].roadIndexList = [47, 48, 53];
+        castleList[37].roadIndexList = [38, 48];
+
+        castleList[38].roadIndexList = [49, 54];
+        castleList[39].roadIndexList = [54, 55, 62];
+        castleList[40].roadIndexList = [50, 55, 56];
+        castleList[41].roadIndexList = [56, 57, 63];
+        castleList[42].roadIndexList = [51, 57, 58];
+        castleList[43].roadIndexList = [58, 59, 64];
+        castleList[44].roadIndexList = [52, 59, 60];
+        castleList[45].roadIndexList = [60, 61, 65];
+        castleList[46].roadIndexList = [53, 61];
+
+        castleList[47].roadIndexList = [62, 66];
+        castleList[48].roadIndexList = [66, 67];
+        castleList[49].roadIndexList = [63, 67, 68];
+        castleList[50].roadIndexList = [68, 69];
+        castleList[51].roadIndexList = [64, 69, 70];
+        castleList[52].roadIndexList = [70, 71];
+        castleList[53].roadIndexList = [65, 71];
+
+        castleList[0].castleIndexList = [1, 8];
+        castleList[1].castleIndexList = [0, 2];
+        castleList[2].castleIndexList = [1, 3, 10];
+        castleList[3].castleIndexList = [2, 4];
+        castleList[4].castleIndexList = [3, 5, 12];
+        castleList[5].castleIndexList = [4, 6];
+        castleList[6].castleIndexList = [5, 14];
+
+        castleList[7].castleIndexList = [8, 17];
+        castleList[8].castleIndexList = [0, 7, 9];
+        castleList[9].castleIndexList = [8, 10, 19];
+        castleList[10].castleIndexList = [2, 9, 11];
+        castleList[11].castleIndexList = [10, 12, 21];
+        castleList[12].castleIndexList = [4, 11 ,13];
+        castleList[13].castleIndexList = [12, 14, 23];
+        castleList[14].castleIndexList = [6, 13, 15];
+        castleList[15].castleIndexList = [14, 25];
+
+        castleList[16].castleIndexList = [17, 27];
+        castleList[17].castleIndexList = [7, 16, 18];
+        castleList[18].castleIndexList = [17, 19, 29];
+        castleList[19].castleIndexList = [9, 18, 20];
+        castleList[20].castleIndexList = [19, 21, 31];
+        castleList[21].castleIndexList = [11, 20, 22];
+        castleList[22].castleIndexList = [21, 23, 33];
+        castleList[23].castleIndexList = [13, 22, 24];
+        castleList[24].castleIndexList = [23, 25, 35];
+        castleList[25].castleIndexList = [15, 24, 26];
+        castleList[26].castleIndexList = [25, 37];
+
+        castleList[27].castleIndexList = [16, 28];
+        castleList[28].castleIndexList = [27, 29, 38];
+        castleList[29].castleIndexList = [18, 28, 30];
+        castleList[30].castleIndexList = [29, 31, 40];
+        castleList[31].castleIndexList = [20, 30, 32];
+        castleList[32].castleIndexList = [31, 33, 42];
+        castleList[33].castleIndexList = [22, 32, 34];
+        castleList[34].castleIndexList = [33, 35, 44];
+        castleList[35].castleIndexList = [24, 34, 36];
+        castleList[36].castleIndexList = [35, 37, 46];
+        castleList[37].castleIndexList = [26, 36];
+
+        castleList[38].castleIndexList = [28, 39];
+        castleList[39].castleIndexList = [38, 40, 47];
+        castleList[40].castleIndexList = [30, 39, 41];
+        castleList[41].castleIndexList = [40, 42, 49];
+        castleList[42].castleIndexList = [32, 41, 43];
+        castleList[43].castleIndexList = [42, 44, 51];
+        castleList[44].castleIndexList = [34, 43, 45];
+        castleList[45].castleIndexList = [44, 46, 53];
+        castleList[46].castleIndexList = [36, 45];
+
+        castleList[47].castleIndexList = [39, 48];
+        castleList[48].castleIndexList = [47, 49];
+        castleList[49].castleIndexList = [41, 48, 50];
+        castleList[50].castleIndexList = [49, 51];
+        castleList[51].castleIndexList = [43, 50, 52];
+        castleList[52].castleIndexList = [51, 53];
+        castleList[53].castleIndexList = [45, 52];
+        
+        return castleList;
+    };
+
+    const recomputeRoad = () =>  {
+        recomputeLongRoad();
+        recomputeRoadPoint();
+    };
+
+    const recomputeRoadPoint = (katanStore) => katanStore.update(katan => {
+        const player = katanStore.getActivePlayer();
+        const otherPlayer = katanStore.getOtherPlayer(katan);
+
+        if (player.maxRoadLength >= 5) {
+            if (player.point.road === 0) {
+                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
+                    alert('최장 교역로를 달성하였습니다.\n2점을 회득합니다.');
+                    player.point.road = 2;
+                }
+            }
+
+            if (otherPlayer.point.road > 0) {
+                if (player.maxRoadLength > otherPlayer.maxRoadLength) {
+                    otherPlayer.point.road = 0;
+                }
+            }
+        }
+
+        return katan;
+    });
+
+    const recomputeLongRoad = (katanStore) => {
+        katanStore.update(katan => {
+            katan.playerList
+                .forEach(player => {
+                    const list = katan.roadList
+                        .filter(road => road.playerIndex === player.index);
+
+                    list.forEach(road => {
+                        processLinkedRoadList(katan, player, road, []);
+                    });
+                });
+
+            return katan;
+        });
+    };
+
+    const processLinkedRoadList = (katan, player, road, resultList) => {
+        if (resultList.includes(road.index)) {
+            return;
+        }
+
+        const resultListLength = resultList.length;
+
+        if (resultListLength >= 2) {
+            const a = getIntersectionCastle(katan,
+                resultList[resultListLength - 1],
+                road.index);
+
+            const b = getIntersectionCastle(katan,
+                resultList[resultListLength - 2],
+                resultList[resultListLength - 1]);
+
+            if (a === b) {
+                return;
+            }
+        }
+
+        resultList.push(road.index);
+
+        if (road.playerIndex !== player.index) {
+            return;
+        }
+
+        const roadList = getLinkedRoadList(katan, player, road);
+
+        if (resultList.length > player.maxRoadLength) {
+            player.maxRoadLength = resultList.length;
+        }
+
+        if (roadList.length === 0) {
+            return;
+        }
+
+        roadList.forEach(currentRoad => {
+            processLinkedRoadList(katan, player, currentRoad, [...resultList]);
+        });
+    };
+
+    const getIntersectionCastle = (katan, roadIndexA, roadIndexB) => {
+        const listA = katan.roadList[roadIndexA].castleIndexList;
+        const listB = katan.roadList[roadIndexB].castleIndexList;
+        return listA.find(index => listB.includes(index));
+    };
+
+    const getLinkedRoadList = (katan, player, road) => {
+        const roadIndex = road.index;
+
+        return katan.roadList[roadIndex]
+            .roadIndexList
+            .map(index => katan.roadList[index])
+            .filter(road => road.playerIndex === player.index);
+    };
+
+    const setHideRoad = (katanStore) => katanStore.update(katan => {
+        katan.roadList =  katan.roadList
+            .map(road => {
+                if (road.playerIndex === -1) {
+                    road.show = false;
+                    road.hide = true;
+                }
+
+                return road;
+            });
+
+        return katan;
+    });
+
+    const setRoadRippleDisabled = (katanStore) => katanStore.update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                road.ripple = false;
+                return road;
+            });
+
+        return katan;
+    });
+
+    const clickMakeRoad = (katanStore, roadIndex) => katanStore.update(katan => {
+        if (!katan.isMakeRoad) {
+            return katan;
+        }
+
+        const player = katanStore.getActivePlayer();
+        setRoad(roadIndex, player.index);
+        setHideRoad();
+        setRoadRippleDisabled();
+
+        if (katan.isStart) {
+            endMakeRoad();
+        } else {
+            showConstructableCastle();
+            endMakeRoad();
+            katanStore.turn();
+
+            if (katanStore.isStartable()) {
+                katanStore.start();
+            }
+        }
+
+        return katan;
+    });
+
+    const getPossibleRoadTotalLength = (katan) => {
+        return katan.roadList
+            .map(road => getPossibleRoadLength(katan, road))
+            .reduce((a, b) => a + b);
+    };
+
+    const getPossibleRoadLength = (katan, road) => {
+        if (road.playerIndex === -1) {
+            return road.roadIndexList
+                .map(roadIndex => katan.roadList[roadIndex])
+                .filter(currentRoad => {
+                    const castleListA = road.castleIndexList;
+                    const castleListB = currentRoad.castleIndexList;
+                    const currentCastleIndex = castleListA
+                        .find(castleIndex => castleListB.includes(castleIndex));
+
+                    if (currentCastleIndex) {
+                        const castle = katan.castleList[currentCastleIndex];
+
+                        return currentRoad.playerIndex === katan.playerIndex &&
+                            (castle.playerIndex === -1 || castle.playerIndex === katan.playerIndex)
+                    }
+
+                    return currentRoad.playerIndex === katan.playerIndex;
+                })
+                .length;
+        }
+
+        return 0;
+    };
+
+    const setNewRoadRippleEnabled = (katanStore) => katanStore.update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                let length = getPossibleRoadLength(katan, road);
+
+                if (length > 0) {
+                    road.hide = false;
+                    road.show = true;
+                }
+
+                return road;
+            });
+
+        return katan;
+    });
+
+    const makeRoad = (katanStore) => katanStore.update(katan => {
+        katan.isMakeRoad = true;
+
+        setNewRoadRippleEnabled();
+        katanStore.recomputePlayer();
+
+        return katan;
+    });
+
+    const setRoadRippleEnabled = (katanStore, castleIndex) => katanStore.update(katan => {
+        katan.isMakeRoad = true;
+        katan.message = '도로을 만들곳을 선택하세요.';
+        let roadIndexList = katan.castleList[castleIndex].roadIndexList;
+
+        katan.roadList = katan.roadList
+            .map(road => {
+
+                let linkLength = roadIndexList.filter(roadIndex => roadIndex === road.index)
+                    .filter(roadIndex => katan.roadList[roadIndex].playerIndex === -1)
+                    .length;
+
+                if (linkLength > 0) {
+                    road.hide = false;
+                    road.show = true;
+                }
+
+                return road;
+            });
+
+        return katan;
+    });
+
+    const endMakeRoad = (katanStore) => katanStore.update(katan => {
+        if (katan.isMakeRoad2) {
+            katan.makeRoadCount += 1;
+        } else {
+            katan.isMakeRoad = false;
+        }
+
+        if (katan.isStart) {
+            if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
+                makeRoad();
+            } else {
+                katan.isMakeRoad2 = false;
+                katan.isMakeRoad = false;
+                katan.makeRoadCount = 0;
+                katanStore.doActionAndTurn();
+            }
+        }
+
+        return katan;
+    });
+
+    const setRoad = (katanStore, roadIndex, playerIndex) => katanStore.update(katan => {
+        let road = katan.roadList[roadIndex];
+        road.playerIndex = playerIndex;
+        road.pick = false;
+        road.title = '도로';
+
+        const player = katan.playerList[playerIndex];
+        player.pickRoad += 1;
+        player.construction.road -= 1;
+
+        if (katan.isStart && katan.isMakeRoad && katan.isMakeRoad2 === false) {
+            player.resource.tree -= 1;
+            player.resource.mud -= 1;
+        }
+
+        return katan;
+    });
+
+    const getLoadTopBySingle = (multiple) => {
+        return multiple * config.cell.height / 8 - config.load.width / 2 ;
+    };
+
+    const getLoadTop = (currentRow, targetRow, currentMultiple, targetMultiple) => {
+        let multiple = currentMultiple;
+
+        if (currentRow === targetRow) {
+            multiple = targetMultiple;
+        }
+
+        return getLoadTopBySingle(multiple) ;
+    };
+
+    const createRoadList = () => {
+        const roadList = [];
+
+        for (let i = 0; i <= 11; i++) {
+            for (let j = 0; j <= 20; j++) {
+                if (i === 0 || i === 11) {
+                    if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
+                        let top = getLoadTop(i, 11, 1, 31);
+
+                        roadList.push({
+                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            top: top,
+                            roadRipple: false,
+                            constructable: false,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                } else if (i === 1 || i === 10) {
+                    if (j === 4 || j === 8 || j === 12 || j === 16) {
+                        let top = getLoadTop(i, 10, 4, 28);
+
+                        roadList.push({
+                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            top: top,
+                            roadRipple: false,
+                            constructable: false,
+                            empty: true,
+                            i,
+                            j
+
+                        });
+                    }
+                } else if (i === 2 || i === 9) {
+                    if (j === 3 || j === 5 || j === 7 || j === 9 ||
+                        j === 11 || j === 13 || j === 15 || j === 17) {
+                        let top = getLoadTop(i, 9, 7, 25);
+
+                        roadList.push({
+                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            top: top,
+                            roadRipple: false,
+                            constructable: false,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                } else if (i === 3 || i === 8) {
+                    if (j === 2 || j === 6 || j === 10 || j === 14 || j === 18) {
+
+                        let top = getLoadTop(i, 8, 10, 22);
+
+                        roadList.push({
+                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            top: top,
+                            roadRipple: false,
+                            constructable: false,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                } else if (i === 4 || i === 7) {
+                    if (j === 1 || j === 3 || j === 5 || j === 7 || j === 9 ||
+                        j === 11 || j === 13 || j === 15 || j === 17 || j === 19) {
+
+                        let top = getLoadTop(i, 7, 13, 19);
+
+                        roadList.push({
+                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            top: top,
+                            roadRipple: false,
+                            constructable: false,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                } else if (i === 5) {
+                    if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
+                        let top = getLoadTopBySingle(16);
+
+                        roadList.push({
+                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            top: top,
+                            roadRipple: false,
+                            constructable: false,
+                            empty: true,
+                            i,
+                            j
+                        });
+                    }
+                }
+            }
+        }
+
+        roadList.forEach((road, index) => road.index = index);
+        roadList.forEach(road => road.hide = true);
+        roadList.forEach(road => road.show = false);
+        roadList.forEach(road => road.ripple = false);
+        roadList.forEach(road => road.playerIndex = -1);
+        roadList.forEach(road => road.title = '');
+
+        roadList[0].castleIndexList = [0, 1];
+        roadList[1].castleIndexList = [1, 2];
+        roadList[2].castleIndexList = [2, 3];
+        roadList[3].castleIndexList = [3, 4];
+        roadList[4].castleIndexList = [4, 5];
+        roadList[5].castleIndexList = [5, 6];
+
+        roadList[6].castleIndexList = [0, 8];
+        roadList[7].castleIndexList = [2, 10];
+        roadList[8].castleIndexList = [4, 12];
+        roadList[9].castleIndexList = [6, 14];
+
+        roadList[10].castleIndexList = [7, 8];
+        roadList[11].castleIndexList = [8, 9];
+        roadList[12].castleIndexList = [9, 10];
+        roadList[13].castleIndexList = [10, 11];
+        roadList[14].castleIndexList = [11, 12];
+        roadList[15].castleIndexList = [12, 13];
+        roadList[16].castleIndexList = [13, 14];
+        roadList[17].castleIndexList = [14, 15];
+
+        roadList[18].castleIndexList = [7, 17];
+        roadList[19].castleIndexList = [9, 19];
+        roadList[20].castleIndexList = [11, 21];
+        roadList[21].castleIndexList = [13, 23];
+        roadList[22].castleIndexList = [15, 25];
+
+        roadList[23].castleIndexList = [16, 17];
+        roadList[24].castleIndexList = [17, 18];
+        roadList[25].castleIndexList = [18, 19];
+        roadList[26].castleIndexList = [19, 20];
+        roadList[27].castleIndexList = [20, 21];
+        roadList[28].castleIndexList = [21, 22];
+        roadList[29].castleIndexList = [22, 23];
+        roadList[30].castleIndexList = [23, 24];
+        roadList[31].castleIndexList = [24, 25];
+        roadList[32].castleIndexList = [25, 26];
+
+        roadList[33].castleIndexList = [16, 27];
+        roadList[34].castleIndexList = [18, 29];
+        roadList[35].castleIndexList = [20, 31];
+        roadList[36].castleIndexList = [22, 33];
+        roadList[37].castleIndexList = [24, 35];
+        roadList[38].castleIndexList = [26, 37];
+
+        roadList[39].castleIndexList = [27, 28];
+        roadList[40].castleIndexList = [28, 29];
+        roadList[41].castleIndexList = [29, 30];
+        roadList[42].castleIndexList = [30, 31];
+        roadList[43].castleIndexList = [31, 32];
+        roadList[44].castleIndexList = [32, 33];
+        roadList[45].castleIndexList = [33, 34];
+        roadList[46].castleIndexList = [34, 35];
+        roadList[47].castleIndexList = [35, 36];
+        roadList[48].castleIndexList = [36, 37];
+
+        roadList[49].castleIndexList = [28, 38];
+        roadList[50].castleIndexList = [30, 40];
+        roadList[51].castleIndexList = [32, 42];
+        roadList[52].castleIndexList = [34, 44];
+        roadList[53].castleIndexList = [36, 46];
+
+        roadList[54].castleIndexList = [38, 39];
+        roadList[55].castleIndexList = [39, 40];
+        roadList[56].castleIndexList = [40, 41];
+        roadList[57].castleIndexList = [41, 42];
+        roadList[58].castleIndexList = [42, 43];
+        roadList[59].castleIndexList = [43, 44];
+        roadList[60].castleIndexList = [44, 45];
+        roadList[61].castleIndexList = [45, 46];
+
+        roadList[62].castleIndexList = [39, 47];
+        roadList[63].castleIndexList = [41, 49];
+        roadList[64].castleIndexList = [43, 51];
+        roadList[65].castleIndexList = [45, 53];
+
+        roadList[66].castleIndexList = [47, 48];
+        roadList[67].castleIndexList = [48, 49];
+        roadList[68].castleIndexList = [49, 50];
+        roadList[69].castleIndexList = [50, 51];
+        roadList[70].castleIndexList = [51, 52];
+        roadList[71].castleIndexList = [52, 53];
+
+        roadList[0].roadIndexList = [1, 6];
+        roadList[1].roadIndexList = [0, 2, 7];
+        roadList[2].roadIndexList = [1, 3, 7];
+        roadList[3].roadIndexList = [2, 4, 8];
+        roadList[4].roadIndexList = [3, 5, 8];
+        roadList[5].roadIndexList = [4, 9];
+
+        roadList[6].roadIndexList = [0, 10, 11];
+        roadList[7].roadIndexList = [1, 2, 12 , 13];
+        roadList[8].roadIndexList = [3, 4, 14, 15];
+        roadList[9].roadIndexList = [5, 16, 17];
+
+        roadList[10].roadIndexList = [6, 11, 18];
+        roadList[11].roadIndexList = [6, 10, 12, 19];
+        roadList[12].roadIndexList = [7, 11, 13, 19];
+        roadList[13].roadIndexList = [7, 12, 14, 20];
+        roadList[14].roadIndexList = [8, 13, 15, 20];
+        roadList[15].roadIndexList = [8, 14, 16, 21];
+        roadList[16].roadIndexList = [9, 15, 17, 21];
+        roadList[17].roadIndexList = [9, 16, 22];
+
+        roadList[18].roadIndexList = [10, 23, 24];
+        roadList[19].roadIndexList = [11, 12, 25, 26];
+        roadList[20].roadIndexList = [13, 14, 27, 28];
+        roadList[21].roadIndexList = [15, 16, 29, 30];
+        roadList[22].roadIndexList = [17, 31, 32];
+
+        roadList[23].roadIndexList = [18, 24, 33];
+        roadList[24].roadIndexList = [18, 23, 25, 34];
+        roadList[25].roadIndexList = [19, 24, 26, 34];
+        roadList[26].roadIndexList = [19, 25, 27, 35];
+        roadList[27].roadIndexList = [20, 26, 28, 35];
+        roadList[28].roadIndexList = [20, 27, 29, 36];
+        roadList[29].roadIndexList = [21, 28, 30, 36];
+        roadList[30].roadIndexList = [21, 29, 31, 37];
+        roadList[31].roadIndexList = [22, 30, 32, 37];
+        roadList[32].roadIndexList = [22, 31, 38];
+
+        roadList[33].roadIndexList = [23, 39];
+        roadList[34].roadIndexList = [24, 25, 40, 41];
+        roadList[35].roadIndexList = [26, 27, 42, 43];
+        roadList[36].roadIndexList = [28, 29, 44, 45];
+        roadList[37].roadIndexList = [30, 31, 46, 47];
+        roadList[38].roadIndexList = [32, 48];
+
+        roadList[39].roadIndexList = [33, 40, 49];
+        roadList[40].roadIndexList = [34, 39, 41, 49];
+        roadList[41].roadIndexList = [34, 40, 42, 50];
+        roadList[42].roadIndexList = [35, 41, 43, 50];
+        roadList[43].roadIndexList = [35, 42, 44, 51];
+        roadList[44].roadIndexList = [36, 43, 45, 51];
+        roadList[45].roadIndexList = [36, 44, 46, 52];
+        roadList[46].roadIndexList = [37, 45, 47, 52];
+        roadList[47].roadIndexList = [37, 46, 48, 53];
+        roadList[48].roadIndexList = [38, 47, 53];
+
+        roadList[49].roadIndexList = [39, 40, 54];
+        roadList[50].roadIndexList = [41, 42, 55, 56];
+        roadList[51].roadIndexList = [43, 44, 57, 58];
+        roadList[52].roadIndexList = [45, 46, 59, 60];
+        roadList[53].roadIndexList = [47, 48, 61];
+
+        roadList[54].roadIndexList = [49, 55, 62];
+        roadList[55].roadIndexList = [50, 54, 56, 62];
+        roadList[56].roadIndexList = [50, 55, 57, 63];
+        roadList[57].roadIndexList = [51, 56, 58, 63];
+        roadList[58].roadIndexList = [51, 57, 59, 64];
+        roadList[59].roadIndexList = [52, 58, 60, 64];
+        roadList[60].roadIndexList = [52, 59, 61, 65];
+        roadList[61].roadIndexList = [53, 60, 65];
+
+        roadList[62].roadIndexList = [54, 55, 66];
+        roadList[63].roadIndexList = [56, 57, 66, 68];
+        roadList[64].roadIndexList = [58, 59, 69, 70];
+        roadList[65].roadIndexList = [60, 61, 71];
+
+        roadList[66].roadIndexList = [62, 67];
+        roadList[67].roadIndexList = [63, 66, 68];
+        roadList[68].roadIndexList = [63, 67, 69];
+        roadList[69].roadIndexList = [64, 68, 70];
+        roadList[70].roadIndexList = [64, 69, 71];
+        roadList[71].roadIndexList = [65, 70];
+
+        return roadList;
+    };
+
+    const createPlayerList = () => {
+        const playerList = [
+            {
+                color: '#E4A2AE',
+                name: '다은',
+                turn: true,
+                pickCastle: 0,
+                pickRoad: 0,
+                image: 'apeach.png',
+                maxRoadLength: 0,
+                resourceSum: 0
+            },
+            {
+                color: '#90CDEA',
+                name: '아빠',
+                turn: false,
+                pickCastle: 0,
+                pickRoad: 0,
+                image: 'lion.png',
+                maxRoadLength: 0,
+                resourceSum: 0
+            }
+        ];
+
+        playerList.forEach((player, i) => {
+            player.index = i;
+
+            player.pickCastle =  0;
+            player.pickRoad = 0;
+
+            player.resource = {
+                tree: 0,
+                mud: 0,
+                wheat: 0,
+                sheep: 0,
+                iron: 0
+            };
+
+            player.point = {
+                knight: 0,
+                road: 0,
+                point: 0,
+                castle: 0,
+                city: 0,
+                sum: 0
+            };
+
+            player.trade = {
+                tree: {
+                    enable: false,
+                    action: false,
+                    count: 4
+                },
+                mud: {
+                    enable: false,
+                    action: false,
+                    count: 4
+                },
+                wheat: {
+                    enable: false,
+                    action: false,
+                    count: 4
+                },
+                sheep: {
+                    enable: false,
+                    action: false,
+                    count: 4
+                },
+                iron: {
+                    enable: false,
+                    action: false,
+                    count: 4
+                }
+            };
+
+            player.construction = {
+                castle: 5,
+                city: 4,
+                road: 15,
+                knight: 0
+            };
+
+            player.make = {
+                road: false,
+                castle: false,
+                city: false,
+                dev: false
+            };
+
+            player.exchange = false;
+        });
+
+        return createPlayerList;
+    };
+
+    const recomputePlayer = (katanStore) => {
+        recomputeRoad();
+
+        katanStore.update(katan => {
+            katan.playerList = katan.playerList
+                .map(player => {
+                    let sum = player.point.knight;
+                    sum += player.point.road;
+                    sum += player.point.point;
+                    sum += player.point.castle;
+                    sum += player.point.city;
+
+                    player.point.sum = sum;
+                    player.resourceSum = katanStore.sumResource(katan, player);
+
+                    katan.resourceTypeList
+                        .forEach(typeObject => {
+                            const type = typeObject.type;
+                            player.trade[type].action =
+                                katanStore.isActive(katan) &&
+                                player.index === katan.playerIndex;
+
+                            player.trade[type].enable =
+                                player.resource[type] >= player.trade[type].count;
+                        });
+
+                    player.make.road =
+                        katanStore.isActive(katan) &&
+                        player.index === katan.playerIndex &&
+                        player.construction.road >= 1 &&
+                        player.resource.tree >= 1 &&
+                        player.resource.mud >= 1 &&
+                        getPossibleRoadTotalLength(katan) > 0;
+
+                    player.make.castle =
+                        katanStore.isActive(katan) &&
+                        player.index === katan.playerIndex &&
+                        player.construction.castle >= 1 &&
+                        player.resource.tree >= 1 &&
+                        player.resource.mud >= 1 &&
+                        player.resource.wheat >= 1 &&
+                        player.resource.sheep >= 1 &&
+                        getPossibleCastleIndexList(katan).length > 0;
+
+                    const castleLength = katan.castleList
+                        .filter(castle => castle.playerIndex === katan.playerIndex)
+                        .filter(castle => castle.city === false)
+                        .length;
+
+                    player.make.city =
+                        katanStore.isActive(katan) &&
+                        player.index === katan.playerIndex &&
+                        castleLength > 0 &&
+                        player.construction.city >= 1 &&
+                        player.resource.iron >= 3 &&
+                        player.resource.wheat >= 2;
+
+                    player.make.dev =
+                        katanStore.isActive(katan) &&
+                        player.index === katan.playerIndex &&
+                        player.resource.iron >= 1 &&
+                        player.resource.sheep >= 1 &&
+                        player.resource.wheat >= 1;
+
+                    if (player.point.sum === 10) {
+                        alert(`${player.name} 승리`);
+                    }
+
+                    return player;
+                });
+
+            return katan;
+        });
+    };
+
     const { subscribe: subscribe$1, set, update: update$1 } = writable(katanObject);
 
     const katanStore = {
         subscribe: subscribe$1,
         set,
         update: update$1,
+
+        recomputePlayer: () => {
+            recomputePlayer(katanStore);
+        },
 
         turn: () => update$1(katan => {
             katanStore.getActivePlayer();
@@ -13324,7 +13213,7 @@ var app = (function () {
             }
 
             katanStore.unsetRollDice();
-            recomputePlayer();
+            recomputePlayer(katanStore);
 
             katan.playerList = katan.playerList
                 .map((player, i) => {
@@ -16146,9 +16035,9 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 126, 44, 4938);
+    			add_location(tr, file$7, 126, 44, 4934);
     			attr_dev(table, "class", "trade-target-resource svelte-74scc8");
-    			add_location(table, file$7, 125, 40, 4856);
+    			add_location(table, file$7, 125, 40, 4852);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -16215,7 +16104,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "받기";
     			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-74scc8");
-    			add_location(button, file$7, 119, 36, 4458);
+    			add_location(button, file$7, 119, 36, 4454);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -16278,13 +16167,13 @@ var app = (function () {
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-74scc8");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 131, 64, 5313);
+    			add_location(img, file$7, 131, 64, 5309);
     			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-74scc8");
     			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 132, 64, 5442);
-    			add_location(div, file$7, 130, 60, 5243);
+    			add_location(button, file$7, 132, 64, 5438);
+    			add_location(div, file$7, 130, 60, 5239);
     			attr_dev(td, "class", "svelte-74scc8");
-    			add_location(td, file$7, 129, 56, 5178);
+    			add_location(td, file$7, 129, 56, 5174);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -16425,19 +16314,19 @@ var app = (function () {
     			t6 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-74scc8");
-    			add_location(img, file$7, 111, 36, 3912);
+    			add_location(img, file$7, 111, 36, 3908);
     			attr_dev(div0, "class", "trade-ratio svelte-74scc8");
-    			add_location(div0, file$7, 113, 36, 4081);
+    			add_location(div0, file$7, 113, 36, 4077);
     			attr_dev(div1, "class", "resource-item svelte-74scc8");
-    			add_location(div1, file$7, 110, 32, 3848);
+    			add_location(div1, file$7, 110, 32, 3844);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-74scc8");
-    			add_location(td0, file$7, 109, 28, 3800);
+    			add_location(td0, file$7, 109, 28, 3796);
     			attr_dev(td1, "class", "number svelte-74scc8");
-    			add_location(td1, file$7, 116, 28, 4251);
+    			add_location(td1, file$7, 116, 28, 4247);
     			attr_dev(td2, "class", "svelte-74scc8");
-    			add_location(td2, file$7, 117, 28, 4320);
-    			add_location(tr, file$7, 108, 24, 3767);
+    			add_location(td2, file$7, 117, 28, 4316);
+    			add_location(tr, file$7, 108, 24, 3763);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -16633,9 +16522,9 @@ var app = (function () {
     			img = element("img");
     			t0 = space();
     			div1 = element("div");
-    			t1 = text("점수 : ");
+    			t1 = text("점수 ");
     			t2 = text(t2_value);
-    			t3 = text(" 자원 : ");
+    			t3 = text(" 자원 ");
     			t4 = text(t4_value);
     			t5 = space();
     			tr10 = element("tr");
@@ -16752,85 +16641,85 @@ var app = (function () {
     			add_location(tr0, file$7, 44, 8, 1016);
     			attr_dev(td1, "colspan", "3");
     			attr_dev(td1, "class", "header svelte-74scc8");
-    			add_location(td1, file$7, 55, 24, 1449);
-    			add_location(tr1, file$7, 54, 20, 1420);
+    			add_location(td1, file$7, 55, 24, 1445);
+    			add_location(tr1, file$7, 54, 20, 1416);
     			attr_dev(td2, "class", "svelte-74scc8");
-    			add_location(td2, file$7, 62, 36, 1717);
+    			add_location(td2, file$7, 62, 36, 1713);
     			attr_dev(td3, "class", "svelte-74scc8");
-    			add_location(td3, file$7, 63, 36, 1765);
+    			add_location(td3, file$7, 63, 36, 1761);
     			attr_dev(td4, "class", "svelte-74scc8");
-    			add_location(td4, file$7, 64, 36, 1813);
+    			add_location(td4, file$7, 64, 36, 1809);
     			attr_dev(td5, "class", "svelte-74scc8");
-    			add_location(td5, file$7, 65, 36, 1861);
+    			add_location(td5, file$7, 65, 36, 1857);
     			attr_dev(td6, "class", "svelte-74scc8");
-    			add_location(td6, file$7, 66, 36, 1913);
+    			add_location(td6, file$7, 66, 36, 1909);
     			attr_dev(tr2, "class", "point");
-    			add_location(tr2, file$7, 61, 32, 1662);
+    			add_location(tr2, file$7, 61, 32, 1658);
     			attr_dev(td7, "class", "svelte-74scc8");
-    			add_location(td7, file$7, 69, 36, 2040);
+    			add_location(td7, file$7, 69, 36, 2036);
     			attr_dev(td8, "class", "svelte-74scc8");
-    			add_location(td8, file$7, 70, 36, 2107);
+    			add_location(td8, file$7, 70, 36, 2103);
     			attr_dev(td9, "class", "svelte-74scc8");
-    			add_location(td9, file$7, 71, 36, 2172);
+    			add_location(td9, file$7, 71, 36, 2168);
     			attr_dev(td10, "class", "svelte-74scc8");
-    			add_location(td10, file$7, 72, 36, 2238);
+    			add_location(td10, file$7, 72, 36, 2234);
     			attr_dev(td11, "class", "svelte-74scc8");
-    			add_location(td11, file$7, 73, 36, 2303);
-    			add_location(tr3, file$7, 68, 32, 1999);
+    			add_location(td11, file$7, 73, 36, 2299);
+    			add_location(tr3, file$7, 68, 32, 1995);
     			attr_dev(table0, "width", "100%");
-    			add_location(table0, file$7, 59, 28, 1608);
+    			add_location(table0, file$7, 59, 28, 1604);
     			attr_dev(td12, "colspan", "3");
     			attr_dev(td12, "class", "svelte-74scc8");
-    			add_location(td12, file$7, 58, 24, 1563);
-    			add_location(tr4, file$7, 57, 20, 1534);
+    			add_location(td12, file$7, 58, 24, 1559);
+    			add_location(tr4, file$7, 57, 20, 1530);
     			attr_dev(td13, "colspan", "3");
     			attr_dev(td13, "class", "header svelte-74scc8");
-    			add_location(td13, file$7, 80, 24, 2515);
-    			add_location(tr5, file$7, 79, 20, 2486);
+    			add_location(td13, file$7, 80, 24, 2511);
+    			add_location(tr5, file$7, 79, 20, 2482);
     			attr_dev(td14, "class", "svelte-74scc8");
-    			add_location(td14, file$7, 86, 36, 2789);
+    			add_location(td14, file$7, 86, 36, 2785);
     			attr_dev(td15, "class", "svelte-74scc8");
-    			add_location(td15, file$7, 87, 36, 2837);
+    			add_location(td15, file$7, 87, 36, 2833);
     			attr_dev(td16, "class", "svelte-74scc8");
-    			add_location(td16, file$7, 88, 36, 2885);
+    			add_location(td16, file$7, 88, 36, 2881);
     			attr_dev(td17, "class", "svelte-74scc8");
-    			add_location(td17, file$7, 89, 36, 2933);
+    			add_location(td17, file$7, 89, 36, 2929);
     			attr_dev(td18, "class", "svelte-74scc8");
-    			add_location(td18, file$7, 90, 36, 2981);
-    			add_location(tr6, file$7, 85, 32, 2748);
+    			add_location(td18, file$7, 90, 36, 2977);
+    			add_location(tr6, file$7, 85, 32, 2744);
     			attr_dev(td19, "class", "svelte-74scc8");
-    			add_location(td19, file$7, 93, 36, 3106);
+    			add_location(td19, file$7, 93, 36, 3102);
     			attr_dev(td20, "class", "svelte-74scc8");
-    			add_location(td20, file$7, 94, 36, 3184);
+    			add_location(td20, file$7, 94, 36, 3180);
     			attr_dev(td21, "class", "svelte-74scc8");
-    			add_location(td21, file$7, 95, 36, 3260);
+    			add_location(td21, file$7, 95, 36, 3256);
     			attr_dev(td22, "class", "svelte-74scc8");
-    			add_location(td22, file$7, 96, 36, 3337);
+    			add_location(td22, file$7, 96, 36, 3333);
     			attr_dev(td23, "class", "svelte-74scc8");
-    			add_location(td23, file$7, 97, 36, 3411);
-    			add_location(tr7, file$7, 92, 32, 3065);
+    			add_location(td23, file$7, 97, 36, 3407);
+    			add_location(tr7, file$7, 92, 32, 3061);
     			attr_dev(table1, "class", "construction svelte-74scc8");
     			attr_dev(table1, "width", "100%");
-    			add_location(table1, file$7, 84, 28, 2674);
+    			add_location(table1, file$7, 84, 28, 2670);
     			attr_dev(td24, "colspan", "3");
     			attr_dev(td24, "class", "svelte-74scc8");
-    			add_location(td24, file$7, 83, 24, 2629);
-    			add_location(tr8, file$7, 82, 20, 2600);
+    			add_location(td24, file$7, 83, 24, 2625);
+    			add_location(tr8, file$7, 82, 20, 2596);
     			attr_dev(td25, "colspan", "3");
     			attr_dev(td25, "class", "header svelte-74scc8");
-    			add_location(td25, file$7, 104, 24, 3624);
-    			add_location(tr9, file$7, 103, 20, 3595);
+    			add_location(td25, file$7, 104, 24, 3620);
+    			add_location(tr9, file$7, 103, 20, 3591);
     			attr_dev(table2, "class", "inner-resource svelte-74scc8");
-    			add_location(table2, file$7, 53, 16, 1369);
+    			add_location(table2, file$7, 53, 16, 1365);
     			attr_dev(td26, "class", "svelte-74scc8");
-    			add_location(td26, file$7, 52, 12, 1348);
-    			add_location(tr10, file$7, 51, 8, 1331);
+    			add_location(td26, file$7, 52, 12, 1344);
+    			add_location(tr10, file$7, 51, 8, 1327);
     			attr_dev(td27, "class", "header svelte-74scc8");
-    			add_location(td27, file$7, 152, 12, 6529);
-    			add_location(tr11, file$7, 151, 8, 6512);
+    			add_location(td27, file$7, 152, 12, 6525);
+    			add_location(tr11, file$7, 151, 8, 6508);
     			attr_dev(td28, "class", "svelte-74scc8");
-    			add_location(td28, file$7, 155, 12, 6595);
-    			add_location(tr12, file$7, 154, 8, 6578);
+    			add_location(td28, file$7, 155, 12, 6591);
+    			add_location(tr12, file$7, 154, 8, 6574);
     			attr_dev(table3, "class", "trade-resource svelte-74scc8");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			add_location(table3, file$7, 43, 4, 957);

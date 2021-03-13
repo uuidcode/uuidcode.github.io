@@ -1,9 +1,103 @@
-import katanStore from './katan.js'
-import { recomputeRoad } from "./road";
+import {recomputeRoad} from "./road";
 import {getPossibleCastleIndexList} from "./castle";
 import {getPossibleRoadTotalLength} from "./road";
 
-export const recomputePlayer = () => {
+export const createPlayerList = () => {
+    const playerList = [
+        {
+            color: '#E4A2AE',
+            name: '다은',
+            turn: true,
+            pickCastle: 0,
+            pickRoad: 0,
+            image: 'apeach.png',
+            maxRoadLength: 0,
+            resourceSum: 0
+        },
+        {
+            color: '#90CDEA',
+            name: '아빠',
+            turn: false,
+            pickCastle: 0,
+            pickRoad: 0,
+            image: 'lion.png',
+            maxRoadLength: 0,
+            resourceSum: 0
+        }
+    ];
+
+    playerList.forEach((player, i) => {
+        player.index = i;
+
+        player.pickCastle =  0;
+        player.pickRoad = 0;
+
+        player.resource = {
+            tree: 0,
+            mud: 0,
+            wheat: 0,
+            sheep: 0,
+            iron: 0
+        };
+
+        player.point = {
+            knight: 0,
+            road: 0,
+            point: 0,
+            castle: 0,
+            city: 0,
+            sum: 0
+        };
+
+        player.trade = {
+            tree: {
+                enable: false,
+                action: false,
+                count: 4
+            },
+            mud: {
+                enable: false,
+                action: false,
+                count: 4
+            },
+            wheat: {
+                enable: false,
+                action: false,
+                count: 4
+            },
+            sheep: {
+                enable: false,
+                action: false,
+                count: 4
+            },
+            iron: {
+                enable: false,
+                action: false,
+                count: 4
+            }
+        };
+
+        player.construction = {
+            castle: 5,
+            city: 4,
+            road: 15,
+            knight: 0
+        };
+
+        player.make = {
+            road: false,
+            castle: false,
+            city: false,
+            dev: false
+        };
+
+        player.exchange = false;
+    });
+
+    return createPlayerList;
+};
+
+export const recomputePlayer = (katanStore) => {
     recomputeRoad();
 
     katanStore.update(katan => {

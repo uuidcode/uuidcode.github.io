@@ -17,6 +17,10 @@ const katanStore = {
     set,
     update,
 
+    recomputePlayer: () => {
+        recomputePlayer(katanStore);
+    },
+
     turn: () => update(katan => {
         const player = katanStore.getActivePlayer();
 
@@ -25,7 +29,7 @@ const katanStore = {
         }
 
         katanStore.unsetRollDice();
-        recomputePlayer();
+        recomputePlayer(katanStore);
 
         katan.playerList = katan.playerList
             .map((player, i) => {

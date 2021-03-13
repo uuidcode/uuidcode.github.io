@@ -1,7 +1,7 @@
 import katanStore from './katan.js'
 import {recomputePlayer} from "./player";
 import {takeResource} from "./resource";
-import {getPossibleCastleIndexList, setNewCityRippleEnabled} from "./castle";
+import {shuffle} from "./util";
 
 const processResource = () => katanStore.update(katan => {
     const player = katanStore.getActivePlayer();
@@ -83,3 +83,39 @@ export const makeDev = () => katanStore.update(katan => {
 
     return katan;
 });
+
+export const createCardList = () => {
+    const cardList = [];
+
+    for (let i = 0; i < 5; i++) {
+        cardList.push({
+            type: 'point'
+        })
+    }
+
+    for (let i = 0; i < 14; i++) {
+        cardList.push({
+            type: 'knight'
+        })
+    }
+
+    for (let i = 0; i < 2; i++) {
+        cardList.push({
+            type: 'road'
+        });
+    }
+
+    for (let i = 0; i < 2; i++) {
+        cardList.push({
+            type: 'resource'
+        });
+    }
+
+    for (let i = 0; i < 2; i++) {
+        cardList.push({
+            type: 'get'
+        });
+    }
+
+    return shuffle(cardList);
+};
