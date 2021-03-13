@@ -11,8 +11,9 @@ const processResource = () => katanStore.update(katan => {
     return katan;
 });
 
-export const knightCard = (player, katan) => {
+export const knightCard = (katan) => {
     alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
+    const player = katanStore.getCurrentPlayer(katan);
     katanStore.setKnightMode();
     katanStore.readyMoveBurglar();
 
@@ -71,7 +72,7 @@ export const makeDev = () => katanStore.update(katan => {
     if (card.type === 'point') {
         getPointCard(katan);
     } else if (card.type === 'knight') {
-        knightCard(player, katan);
+        knightCard(katan);
     } else if (card.type === 'road') {
         roadCard(katan);
     } else if (card.type === 'resource') {

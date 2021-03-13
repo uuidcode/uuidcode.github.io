@@ -20,7 +20,10 @@ const katanStore = {
     turn: () => update(katan => {
         const player = katanStore.getActivePlayer();
 
-        katanStore.setDiceEnabled();
+        if (katanStore.isStartable()) {
+            katanStore.setDiceEnabled();
+        }
+
         katanStore.unsetRollDice();
         recomputePlayer();
 
@@ -437,7 +440,8 @@ const katanStore = {
         return katan;
     }),
 
-    exchange: (player, resourceType, targetResourceType) => update(katan => {
+    exchange: (resourceType, targetResourceType) => update(katan => {
+        const player = katanStore.getCurrentPlayer(katan);
         player.resource[targetResourceType] += 1;
         player.resource[resourceType] -= player.trade[resourceType].count;
         recomputePlayer();
@@ -472,8 +476,8 @@ const katanStore = {
     },
 
     testKnightCard: () => update(katan => {
-        knightCard(katanStore.getActivePlayer(), katan);
-        return ktan;
+        knightCard(katan);
+        return katan;
     }),
 
     testRoadCard: () => update(katan => {

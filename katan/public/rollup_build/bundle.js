@@ -13236,8 +13236,9 @@ var app = (function () {
         return katan;
     });
 
-    const knightCard = (player, katan) => {
+    const knightCard = (katan) => {
         alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
+        const player = katanStore.getCurrentPlayer(katan);
         katanStore.setKnightMode();
         katanStore.readyMoveBurglar();
 
@@ -13296,7 +13297,7 @@ var app = (function () {
         if (card.type === 'point') {
             getPointCard(katan);
         } else if (card.type === 'knight') {
-            knightCard(player, katan);
+            knightCard(katan);
         } else if (card.type === 'road') {
             roadCard(katan);
         } else if (card.type === 'resource') {
@@ -13318,7 +13319,10 @@ var app = (function () {
         turn: () => update$1(katan => {
             katanStore.getActivePlayer();
 
-            katanStore.setDiceEnabled();
+            if (katanStore.isStartable()) {
+                katanStore.setDiceEnabled();
+            }
+
             katanStore.unsetRollDice();
             recomputePlayer();
 
@@ -13734,7 +13738,8 @@ var app = (function () {
             return katan;
         }),
 
-        exchange: (player, resourceType, targetResourceType) => update$1(katan => {
+        exchange: (resourceType, targetResourceType) => update$1(katan => {
+            const player = katanStore.getCurrentPlayer(katan);
             player.resource[targetResourceType] += 1;
             player.resource[resourceType] -= player.trade[resourceType].count;
             recomputePlayer();
@@ -13769,8 +13774,8 @@ var app = (function () {
         },
 
         testKnightCard: () => update$1(katan => {
-            knightCard(katanStore.getActivePlayer(), katan);
-            return ktan;
+            knightCard(katan);
+            return katan;
         }),
 
         testRoadCard: () => update$1(katan => {
@@ -16830,11 +16835,11 @@ var app = (function () {
     			add_location(td26, file$7, 52, 12, 1348);
     			add_location(tr10, file$7, 51, 8, 1331);
     			attr_dev(td27, "class", "header svelte-74scc8");
-    			add_location(td27, file$7, 152, 12, 6537);
-    			add_location(tr11, file$7, 151, 8, 6520);
+    			add_location(td27, file$7, 152, 12, 6529);
+    			add_location(tr11, file$7, 151, 8, 6512);
     			attr_dev(td28, "class", "svelte-74scc8");
-    			add_location(td28, file$7, 155, 12, 6603);
-    			add_location(tr12, file$7, 154, 8, 6586);
+    			add_location(td28, file$7, 155, 12, 6595);
+    			add_location(tr12, file$7, 154, 8, 6578);
     			attr_dev(table3, "class", "trade-resource svelte-74scc8");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			add_location(table3, file$7, 43, 4, 957);
@@ -17066,7 +17071,7 @@ var app = (function () {
     	});
 
     	const click_handler = resource => katanStore.getResource(resource.type);
-    	const click_handler_1 = (resource, tradeResource) => katanStore.exchange(player, resource.type, tradeResource.type);
+    	const click_handler_1 = (resource, tradeResource) => katanStore.exchange(resource.type, tradeResource.type);
 
     	$$self.$$set = $$props => {
     		if ("playerIndex" in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
