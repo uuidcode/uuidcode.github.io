@@ -19,7 +19,7 @@
             backgroundColor: player.color
         };
 
-        if (castleClickable($katan, castleIndex)) {
+        if (!castleClickable($katan, castleIndex)) {
             styleObject.cursor = 'default';
         }
 

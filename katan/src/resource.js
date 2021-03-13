@@ -10,8 +10,6 @@ export const animateMoveResource = (option) => {
         callback: () => {}
     }, option);
 
-    console.log('>>> option', option);
-
     const sourceItem = jQuery('.' + option.sourceClass);
     const visible = katanStore.isVisible(sourceItem);
 
@@ -67,18 +65,27 @@ export const moveResource = (number) => katanStore.update(katan => {
                 const playerIndex = castle.playerIndex;
 
                 if (playerIndex !== -1) {
-                    matchResourceCount++;
                     resource.show = true;
 
-                    animateMoveResource({
-                        sourceClass: `resource_${resource.index}`,
-                        targetClass: `player_${playerIndex}_${resource.type}`,
-                        count: matchResourceCount,
-                        callback: () => {
-                            updateResource(castle, playerIndex, resource);
-                            moveResourceCount++;
-                        }
-                    });
+                    let resourceCount = 1;
+
+                    if (castle.city) {
+                        resourceCount = 2
+                    }
+
+                    for (let i = 0; i < resourceCount; i++) {
+                        matchResourceCount++;
+
+                        animateMoveResource({
+                            sourceClass: `resource_${resource.index}`,
+                            targetClass: `player_${playerIndex}_${resource.type}`,
+                            count: matchResourceCount,
+                            callback: () => {
+                                updateResource(castle, playerIndex, resource);
+                                moveResourceCount++;
+                            }
+                        });
+                    }
                 }
             });
         });
@@ -98,15 +105,7 @@ export const moveResource = (number) => katanStore.update(katan => {
 });
 
 export const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {
-    let count = 1;
-
-    if (castle.city) {
-        count = 2;
-    }
-
-    katan.playerList[playerIndex].resource[resource.type] += count;
-
-
+    katan.playerList[playerIndex].resource[resource.type] += 1;
     recomputePlayer();
     return katan;
 });

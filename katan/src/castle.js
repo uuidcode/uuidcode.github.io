@@ -55,8 +55,6 @@ export const getPossibleCastleIndexList = (katan) => {
             console.log('>>> castleLength1', castle.i,
                 castle.j, castle.index, castleLength);
 
-            console.log('>>> castle.castleIndexList', castle.castleIndexList);
-
             if (castleLength === castle.castleIndexList.length) {
                 const castleLength = castle.roadIndexList
                     .filter(roadIndex => {
@@ -64,8 +62,6 @@ export const getPossibleCastleIndexList = (katan) => {
                         return road.playerIndex === katan.playerIndex
                     })
                     .length;
-
-                console.log('>>> castleLength2', castleLength);
 
                 if (castleLength > 0) {
                     return castle.index;

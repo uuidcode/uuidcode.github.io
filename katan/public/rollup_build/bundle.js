@@ -11424,8 +11424,6 @@ var app = (function () {
                 console.log('>>> castleLength1', castle.i,
                     castle.j, castle.index, castleLength);
 
-                console.log('>>> castle.castleIndexList', castle.castleIndexList);
-
                 if (castleLength === castle.castleIndexList.length) {
                     const castleLength = castle.roadIndexList
                         .filter(roadIndex => {
@@ -11433,8 +11431,6 @@ var app = (function () {
                             return road.playerIndex === katan.playerIndex
                         })
                         .length;
-
-                    console.log('>>> castleLength2', castleLength);
 
                     if (castleLength > 0) {
                         return castle.index;
@@ -13065,8 +13061,6 @@ var app = (function () {
             callback: () => {}
         }, option);
 
-        console.log('>>> option', option);
-
         const sourceItem = jquery('.' + option.sourceClass);
         const visible = katanStore.isVisible(sourceItem);
 
@@ -13122,18 +13116,27 @@ var app = (function () {
                     const playerIndex = castle.playerIndex;
 
                     if (playerIndex !== -1) {
-                        matchResourceCount++;
                         resource.show = true;
 
-                        animateMoveResource({
-                            sourceClass: `resource_${resource.index}`,
-                            targetClass: `player_${playerIndex}_${resource.type}`,
-                            count: matchResourceCount,
-                            callback: () => {
-                                updateResource(castle, playerIndex, resource);
-                                moveResourceCount++;
-                            }
-                        });
+                        let resourceCount = 1;
+
+                        if (castle.city) {
+                            resourceCount = 2;
+                        }
+
+                        for (let i = 0; i < resourceCount; i++) {
+                            matchResourceCount++;
+
+                            animateMoveResource({
+                                sourceClass: `resource_${resource.index}`,
+                                targetClass: `player_${playerIndex}_${resource.type}`,
+                                count: matchResourceCount,
+                                callback: () => {
+                                    updateResource(castle, playerIndex, resource);
+                                    moveResourceCount++;
+                                }
+                            });
+                        }
                     }
                 });
             });
@@ -13153,15 +13156,7 @@ var app = (function () {
     });
 
     const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {
-        let count = 1;
-
-        if (castle.city) {
-            count = 2;
-        }
-
-        katan.playerList[playerIndex].resource[resource.type] += count;
-
-
+        katan.playerList[playerIndex].resource[resource.type] += 1;
         recomputePlayer();
         return katan;
     });
@@ -14257,13 +14252,13 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 59, 4, 1692);
+    			add_location(div0, file$1, 59, 4, 1693);
     			attr_dev(div1, "class", "castle svelte-1p25i4a");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
     			toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
     			toggle_class(div1, "show", /*castle*/ ctx[0].show);
-    			add_location(div1, file$1, 53, 4, 1502);
+    			add_location(div1, file$1, 53, 4, 1503);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -14336,11 +14331,11 @@ var app = (function () {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 49, 8, 1408);
-    			add_location(div1, file$1, 50, 8, 1450);
+    			add_location(div0, file$1, 49, 8, 1409);
+    			add_location(div1, file$1, 50, 8, 1451);
     			attr_dev(div2, "class", "castle svelte-1p25i4a");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
-    			add_location(div2, file$1, 48, 4, 1358);
+    			add_location(div2, file$1, 48, 4, 1359);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -14443,7 +14438,7 @@ var app = (function () {
     			backgroundColor: player.color
     		};
 
-    		if (castleClickable($katan, castleIndex)) {
+    		if (!castleClickable($katan, castleIndex)) {
     			styleObject.cursor = "default";
     		}
 
