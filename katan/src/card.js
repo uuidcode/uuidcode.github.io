@@ -1,7 +1,6 @@
 import katanStore from './katan.js'
 import {recomputePlayer} from "./player";
 import {takeResource} from "./resource";
-import {getPossibleCastleIndexList, setNewCityRippleEnabled} from "./castle";
 
 const processResource = () => katanStore.update(katan => {
     const player = katanStore.getActivePlayer();
