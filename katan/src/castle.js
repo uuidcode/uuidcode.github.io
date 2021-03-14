@@ -558,9 +558,6 @@ export const getPossibleCastleIndexList = (katan) => {
                 .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
                 .length;
 
-            console.log('>>> castleLength1', castle.i,
-                castle.j, castle.index, castleLength);
-
             if (castleLength === castle.castleIndexList.length) {
                 const castleLength = castle.roadIndexList
                     .filter(roadIndex => {

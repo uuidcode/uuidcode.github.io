@@ -1,9 +1,7 @@
-import {setRoad} from "./road";
-import {get} from "svelte/store";
-import katan from "./katan";
+import {sleep} from "./util";
 
-test("setRoad", () => {
-    setRoad(0, 0);
-    expect(get(katan).playerList[0].construction.road).toEqual(14);
-    expect(get(katan).playerList[1].construction.road).toEqual(15);
+test("sleep", () => {
+    console.log('1');
+    sleep(1000);
+    console.log('2');
 });

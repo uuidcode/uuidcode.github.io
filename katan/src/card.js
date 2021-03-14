@@ -40,6 +40,7 @@ export const roadCard = (katan) => {
 export const takeResourceCard = (katan) => {
     alert('상대방의 자원 2개를 받습니다.');
     katan.isGetResourceFormOtherPlayer = true;
+
     takeResource();
     recomputePlayer();
 };
