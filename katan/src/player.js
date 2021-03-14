@@ -36,9 +36,9 @@ export const createPlayerList = () => {
         player.resource = {
             tree: 0,
             mud: 0,
-            wheat: 1,
-            sheep: 1,
-            iron: 1
+            wheat: 0,
+            sheep: 0,
+            iron: 0
         };
 
         player.point = {

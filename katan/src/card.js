@@ -95,35 +95,35 @@ export const makeDev = () => {
 export const createCardList = () => {
     const cardList = [];
 
-    // for (let i = 0; i < 5; i++) {
-    //     cardList.push({
-    //         type: 'point'
-    //     })
-    // }
-    //
-    // for (let i = 0; i < 14; i++) {
-    //     cardList.push({
-    //         type: 'knight'
-    //     })
-    // }
-    //
-    // for (let i = 0; i < 2; i++) {
-    //     cardList.push({
-    //         type: 'road'
-    //     });
-    // }
-    //
+    for (let i = 0; i < 5; i++) {
+        cardList.push({
+            type: 'point'
+        })
+    }
+
+    for (let i = 0; i < 14; i++) {
+        cardList.push({
+            type: 'knight'
+        })
+    }
+
+    for (let i = 0; i < 2; i++) {
+        cardList.push({
+            type: 'road'
+        });
+    }
+
     for (let i = 0; i < 2; i++) {
         cardList.push({
             type: 'getResource'
         });
     }
 
-    // for (let i = 0; i < 2; i++) {
-    //     cardList.push({
-    //         type: 'takeResource'
-    //     });
-    // }
+    for (let i = 0; i < 2; i++) {
+        cardList.push({
+            type: 'takeResource'
+        });
+    }
 
     return shuffle(cardList);
 };
