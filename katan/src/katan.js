@@ -4,7 +4,7 @@ import config from './config.js'
 import jQuery from 'jquery';
 import {recomputePlayer} from "./player";
 import katanObject from "./katanObject"
-import {random} from "./util";
+import {random, sleep} from "./util";
 import {makeDev, knightCard, roadCard, takeResourceCard, getResourceCard, getPointCard} from "./card";
 import {makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
 import {setCastleRippleDisabled, makeCastle, makeCity, clickMakeCastle} from "./castle";
@@ -169,51 +169,52 @@ const katanStore = {
 
         if (number === 7) {
             await katanStore.takeResourceByBurglar();
-            console.log('>>> readyMoveBurglar before');
             katanStore.readyMoveBurglar();
-            console.log('>>> readyMoveBurglar after');
-        } else {
-            let numberCount = 2;
-
-            if (number === 2 || number === 12) {
-                numberCount = 1;
-            }
-
-            for (let i = 1; i <= 2; i++) {
-                let sourceClass = `display-dice-number-${i}`;
-                let targetClass = `number_${number}_${i}`;
-
-                if (numberCount === 1) {
-                    targetClass = `number_${number}`;
-                }
-
-                animateMoveResource({
-                    sourceClass,
-                    targetClass,
-                    width: '172px',
-                    height: '172px',
-                    lineHeight: '172px',
-                    fontSize: '140px',
-                    count: 1,
-                    animationCss: {
-                        width: '70px',
-                        height: '70px',
-                        fontSize: '50px',
-                        lineHeight: '70px'
-                    },
-                    callback: () => {
-                        if (i === 2) {
-                            katanStore.setSelectedNumberRippleEnabled(number);
-
-                            setTimeout(() => {
-                                katanStore.setNumberRippleDisabled(number);
-                                moveResource(number);
-                            }, 1500);
-                        }
-                    }
-                });
-            }
+            return;
         }
+
+        let numberCount = 2;
+
+        if (number === 2 || number === 12) {
+            numberCount = 1;
+        }
+
+        const animationPromiseList = [];
+
+        for (let i = 1; i <= 2; i++) {
+            let sourceClass = `display-dice-number-${i}`;
+            let targetClass = `number_${number}_${i}`;
+
+            if (numberCount === 1) {
+                targetClass = `number_${number}`;
+            }
+
+            animationPromiseList.push(animateMoveResource({
+                sourceClass,
+                targetClass,
+                width: '172px',
+                height: '172px',
+                lineHeight: '172px',
+                fontSize: '140px',
+                count: 1,
+                animationCss: {
+                    width: '70px',
+                    height: '70px',
+                    fontSize: '50px',
+                    lineHeight: '70px'
+                }
+            }));
+        }
+
+        Promise.all(animationPromiseList);
+
+        katanStore.setSelectedNumberRippleEnabled(number);
+        await sleep(1500);
+
+        katanStore.setNumberRippleDisabled(number);
+        await moveResource(number);
+
+        katanStore.doActionAndTurn();
     },
 
     sumResource: (katan, player) => {

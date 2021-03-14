@@ -11392,6 +11392,10 @@ var app = (function () {
         return () => Math.random() - 0.5;
     };
 
+    const sleep = (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    };
+
     const createCastleList = () => {
         const castleList = [];
 
@@ -13034,15 +13038,19 @@ var app = (function () {
         }));
     };
 
-    const moveResource = (number) => katanStore.update(katan => {
-        let matchResourceCount = 0;
-        let moveResourceCount = 0;
+    const moveResource = (number) => {
+        return new Promise(async resolve => {
+            const katan = get_store_value(katanStore);
 
-        katan.resourceList
-            .filter(resource => resource.number === number)
-            .filter(resource => !resource.burglar)
-            .forEach(resource => {
-                resource.castleIndexList.forEach(castleIndex => {
+            const resourceList = katan.resourceList
+                .filter(resource => resource.number === number)
+                .filter(resource => !resource.burglar);
+
+            for (let i = 0; i < resourceList.length; i++) {
+                const resource = resourceList[i];
+
+                for (let j = 0; j < resource.castleIndexList.length; j++) {
+                    const castleIndex = resource.castleIndexList[j];
                     const castle = katan.castleList[castleIndex];
                     const playerIndex = castle.playerIndex;
 
@@ -13055,36 +13063,21 @@ var app = (function () {
                             resourceCount = 2;
                         }
 
-                        for (let i = 0; i < resourceCount; i++) {
-                            matchResourceCount++;
-
-                            animateMoveResource({
+                        for (let k = 0; k < resourceCount; k++) {
+                            await animateMoveResource({
                                 sourceClass: `resource_${resource.index}`,
-                                targetClass: `player_${playerIndex}_${resource.type}`,
-                                count: matchResourceCount,
-                                callback: () => {
-                                    updateResource(castle, playerIndex, resource);
-                                    moveResourceCount++;
-                                }
+                                targetClass: `player_${playerIndex}_${resource.type}`
                             });
+
+                            updateResource(castle, playerIndex, resource);
                         }
                     }
-                });
-            });
-
-        if (matchResourceCount > 0) {
-            const interval = setInterval(() => {
-                if (moveResourceCount === matchResourceCount) {
-                    clearInterval(interval);
-                    katanStore.doActionAndTurn();
                 }
-            }, 100);
-        } else {
-            katanStore.doActionAndTurn();
-        }
+            }
 
-        return katan;
-    });
+            resolve();
+        })
+    };
 
     const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {
         katan.playerList[playerIndex].resource[resource.type] += 1;
@@ -13469,51 +13462,50 @@ var app = (function () {
 
             if (number === 7) {
                 await katanStore.takeResourceByBurglar();
-                console.log('>>> readyMoveBurglar before');
                 katanStore.readyMoveBurglar();
-                console.log('>>> readyMoveBurglar after');
-            } else {
-                let numberCount = 2;
-
-                if (number === 2 || number === 12) {
-                    numberCount = 1;
-                }
-
-                for (let i = 1; i <= 2; i++) {
-                    let sourceClass = `display-dice-number-${i}`;
-                    let targetClass = `number_${number}_${i}`;
-
-                    if (numberCount === 1) {
-                        targetClass = `number_${number}`;
-                    }
-
-                    animateMoveResource({
-                        sourceClass,
-                        targetClass,
-                        width: '172px',
-                        height: '172px',
-                        lineHeight: '172px',
-                        fontSize: '140px',
-                        count: 1,
-                        animationCss: {
-                            width: '70px',
-                            height: '70px',
-                            fontSize: '50px',
-                            lineHeight: '70px'
-                        },
-                        callback: () => {
-                            if (i === 2) {
-                                katanStore.setSelectedNumberRippleEnabled(number);
-
-                                setTimeout(() => {
-                                    katanStore.setNumberRippleDisabled(number);
-                                    moveResource(number);
-                                }, 1500);
-                            }
-                        }
-                    });
-                }
+                return;
             }
+
+            let numberCount = 2;
+
+            if (number === 2 || number === 12) {
+                numberCount = 1;
+            }
+
+            const animationPromiseList = [];
+
+            for (let i = 1; i <= 2; i++) {
+                let sourceClass = `display-dice-number-${i}`;
+                let targetClass = `number_${number}_${i}`;
+
+                if (numberCount === 1) {
+                    targetClass = `number_${number}`;
+                }
+
+                animationPromiseList.push(animateMoveResource({
+                    sourceClass,
+                    targetClass,
+                    width: '172px',
+                    height: '172px',
+                    lineHeight: '172px',
+                    fontSize: '140px',
+                    count: 1,
+                    animationCss: {
+                        width: '70px',
+                        height: '70px',
+                        fontSize: '50px',
+                        lineHeight: '70px'
+                    }
+                }));
+            }
+
+            katanStore.setSelectedNumberRippleEnabled(number);
+            await sleep(1500);
+
+            katanStore.setNumberRippleDisabled(number);
+            await moveResource(number);
+
+            katanStore.doActionAndTurn();
         },
 
         sumResource: (katan, player) => {
@@ -13873,8 +13865,8 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-k89u53");
-    			add_location(img, file, 93, 4, 2851);
-    			add_location(div, file, 92, 4, 2841);
+    			add_location(img, file, 93, 4, 2944);
+    			add_location(div, file, 92, 4, 2933);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -13947,19 +13939,19 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[5])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[8]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
-    			add_location(img, file, 71, 8, 2179);
+    			add_location(img, file, 71, 8, 2250);
     			attr_dev(div0, "class", div0_class_value = "number number_" + /*resource*/ ctx[1].number + " number_" + /*resource*/ ctx[1].number + "_" + /*resource*/ ctx[1].numberIndex + " svelte-k89u53");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "burglar", /*resource*/ ctx[1].burglar);
-    			add_location(div0, file, 73, 8, 2255);
+    			add_location(div0, file, 73, 8, 2328);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[7]);
-    			add_location(div1, file, 70, 4, 2123);
+    			add_location(div1, file, 70, 4, 2193);
     			attr_dev(div2, "class", "cell svelte-k89u53");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file, 69, 0, 2082);
+    			add_location(div2, file, 69, 0, 2151);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

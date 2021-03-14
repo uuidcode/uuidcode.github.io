@@ -3,6 +3,7 @@ import jQuery from 'jquery';
 import {random, shuffle} from "./util";
 import {recomputePlayer} from "./player";
 import config from "./config";
+import {get} from "svelte/store";
 
 export const createResourceList = () => {
     let resourceList = [];
@@ -191,15 +192,19 @@ export const animateMoveResource = (option) => {
     }));
 };
 
-export const moveResource = (number) => katanStore.update(katan => {
-    let matchResourceCount = 0;
-    let moveResourceCount = 0;
+export const moveResource = (number) => {
+    return new Promise(async resolve => {
+        const katan = get(katanStore);
 
-    katan.resourceList
-        .filter(resource => resource.number === number)
-        .filter(resource => !resource.burglar)
-        .forEach(resource => {
-            resource.castleIndexList.forEach(castleIndex => {
+        const resourceList = katan.resourceList
+            .filter(resource => resource.number === number)
+            .filter(resource => !resource.burglar);
+
+        for (let i = 0; i < resourceList.length; i++) {
+            const resource = resourceList[i];
+
+            for (let j = 0; j < resource.castleIndexList.length; j++) {
+                const castleIndex = resource.castleIndexList[j];
                 const castle = katan.castleList[castleIndex];
                 const playerIndex = castle.playerIndex;
 
@@ -212,36 +217,21 @@ export const moveResource = (number) => katanStore.update(katan => {
                         resourceCount = 2
                     }
 
-                    for (let i = 0; i < resourceCount; i++) {
-                        matchResourceCount++;
-
-                        animateMoveResource({
+                    for (let k = 0; k < resourceCount; k++) {
+                        await animateMoveResource({
                             sourceClass: `resource_${resource.index}`,
-                            targetClass: `player_${playerIndex}_${resource.type}`,
-                            count: matchResourceCount,
-                            callback: () => {
-                                updateResource(castle, playerIndex, resource);
-                                moveResourceCount++;
-                            }
+                            targetClass: `player_${playerIndex}_${resource.type}`
                         });
+
+                        updateResource(castle, playerIndex, resource);
                     }
                 }
-            });
-        });
-
-    if (matchResourceCount > 0) {
-        const interval = setInterval(() => {
-            if (moveResourceCount === matchResourceCount) {
-                clearInterval(interval);
-                katanStore.doActionAndTurn();
             }
-        }, 100);
-    } else {
-        katanStore.doActionAndTurn();
-    }
+        }
 
-    return katan;
-});
+        resolve();
+    })
+};
 
 export const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {
     katan.playerList[playerIndex].resource[resource.type] += 1;
