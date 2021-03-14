@@ -13499,6 +13499,8 @@ var app = (function () {
                 }));
             }
 
+            await Promise.all(animationPromiseList);
+
             katanStore.setSelectedNumberRippleEnabled(number);
             await sleep(1500);
 
