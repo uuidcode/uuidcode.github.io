@@ -12713,9 +12713,9 @@ var app = (function () {
             player.resource = {
                 tree: 0,
                 mud: 0,
-                wheat: 1,
-                sheep: 1,
-                iron: 1
+                wheat: 0,
+                sheep: 0,
+                iron: 0
             };
 
             player.point = {
@@ -13256,35 +13256,35 @@ var app = (function () {
     const createCardList = () => {
         const cardList = [];
 
-        // for (let i = 0; i < 5; i++) {
-        //     cardList.push({
-        //         type: 'point'
-        //     })
-        // }
-        //
-        // for (let i = 0; i < 14; i++) {
-        //     cardList.push({
-        //         type: 'knight'
-        //     })
-        // }
-        //
-        // for (let i = 0; i < 2; i++) {
-        //     cardList.push({
-        //         type: 'road'
-        //     });
-        // }
-        //
+        for (let i = 0; i < 5; i++) {
+            cardList.push({
+                type: 'point'
+            });
+        }
+
+        for (let i = 0; i < 14; i++) {
+            cardList.push({
+                type: 'knight'
+            });
+        }
+
+        for (let i = 0; i < 2; i++) {
+            cardList.push({
+                type: 'road'
+            });
+        }
+
         for (let i = 0; i < 2; i++) {
             cardList.push({
                 type: 'getResource'
             });
         }
 
-        // for (let i = 0; i < 2; i++) {
-        //     cardList.push({
-        //         type: 'takeResource'
-        //     });
-        // }
+        for (let i = 0; i < 2; i++) {
+            cardList.push({
+                type: 'takeResource'
+            });
+        }
 
         return shuffle(cardList);
     };
@@ -13911,8 +13911,8 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-803d69");
-    			add_location(img, file, 93, 4, 2844);
-    			add_location(div, file, 92, 4, 2834);
+    			add_location(img, file, 93, 4, 2937);
+    			add_location(div, file, 92, 4, 2926);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -13985,19 +13985,19 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*imageSrc*/ ctx[5])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "style", /*imageStyle*/ ctx[8]);
     			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
-    			add_location(img, file, 71, 8, 2176);
+    			add_location(img, file, 71, 8, 2247);
     			attr_dev(div0, "class", div0_class_value = "number number_" + /*resource*/ ctx[1].number + " number_" + /*resource*/ ctx[1].number + "_" + /*resource*/ ctx[1].numberIndex + " svelte-803d69");
     			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "buglar", /*resource*/ ctx[1].buglar);
-    			add_location(div0, file, 73, 8, 2252);
+    			add_location(div0, file, 73, 8, 2325);
     			attr_dev(div1, "class", "inner-cell");
     			attr_dev(div1, "style", /*innerCellStyle*/ ctx[7]);
-    			add_location(div1, file, 70, 4, 2120);
+    			add_location(div1, file, 70, 4, 2190);
     			attr_dev(div2, "class", "cell svelte-803d69");
     			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file, 69, 0, 2079);
+    			add_location(div2, file, 69, 0, 2148);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
