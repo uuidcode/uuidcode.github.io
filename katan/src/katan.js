@@ -92,14 +92,7 @@ const katanStore = {
             });
 
         katanStore.setNumberRippleDisabled();
-
-        if (katan.isKnightMode) {
-            takeResource();
-        } else {
-            katanStore.doActionAndTurn();
-        }
-
-        katan.isBurglarMode = false;
+        takeResource();
 
         return katan;
     }),
@@ -121,7 +114,11 @@ const katanStore = {
     doActionAndTurn: () => {
         recomputePlayer();
 
-        if (katanStore.hasAction()) {
+        const hasAction = katanStore.hasAction();
+
+        console.log('>>> hasAction', hasAction);
+
+        if (hasAction) {
             katanStore.doAction();
         } else {
             katanStore.turn();
@@ -362,20 +359,26 @@ const katanStore = {
 
     makeDev: () => makeDev(),
 
-    getResource: (resourceType) => update(katan => {
-        const player = katanStore.getActivePlayer();
-        katan.getResourceCount += 1;
-        player.resource[resourceType] += 1;
+    getResource: (resourceType) => {
+        update(katan => {
+            const player = katanStore.getActivePlayer();
+            katan.getResourceCount += 1;
+            player.resource[resourceType] += 1;
 
-        if (katan.getResourceCount >= 2) {
-            katan.isGetResource = false;
-            katan.getResourceCount = 0;
+            if (katan.getResourceCount >= 2) {
+                katan.isGetResource = false;
+                katan.getResourceCount = 0;
+            }
+
+            return katan;
+        });
+
+        const katan = get(katanStore)
+
+        if (!katan.isGetResource) {
+            katanStore.doActionAndTurn();
         }
-
-        recomputePlayer();
-
-        return katan;
-    }),
+    },
 
     getOtherPlayer: (katan) => {
         let playerIndex = katan.playerIndex;
@@ -431,13 +434,16 @@ const katanStore = {
         return katan;
     }),
 
-    exchange: (resourceType, targetResourceType) => update(katan => {
-        const player = katanStore.getCurrentPlayer(katan);
-        player.resource[targetResourceType] += 1;
-        player.resource[resourceType] -= player.trade[resourceType].count;
-        recomputePlayer();
-        return katan;
-    }),
+    exchange: (resourceType, targetResourceType) => {
+        update(katan => {
+            const player = katanStore.getCurrentPlayer(katan);
+            player.resource[targetResourceType] += 1;
+            player.resource[resourceType] -= player.trade[resourceType].count;
+            return katan;
+        });
+
+        katanStore.doActionAndTurn();
+    },
 
     isActive: (katan) => {
         return katan.isKnightMode === false &&

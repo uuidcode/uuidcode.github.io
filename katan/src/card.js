@@ -1,14 +1,7 @@
 import katanStore from './katan.js'
 import {recomputePlayer} from "./player";
 import {takeResource} from "./resource";
-
-const processResource = () => katanStore.update(katan => {
-    const player = katanStore.getActivePlayer();
-    player.resource.sheep -= 1;
-    player.resource.wheat -= 1;
-    player.resource.iron -= 1;
-    return katan;
-});
+import {shuffle} from "./util";
 
 export const knightCard = (katan) => {
     alert('기사\n도둑을 옮기고 자원하나를 빼았습니다.');
@@ -33,6 +26,8 @@ export const knightCard = (katan) => {
             }
         }
     }
+
+    recomputePlayer();
 };
 
 export const roadCard = (katan) => {
@@ -62,23 +57,73 @@ export const getPointCard = (katan) => {
     recomputePlayer();
 };
 
-export const makeDev = () => katanStore.update(katan => {
-    const card = katan.cardList.pop();
-    katan.afterCardList = [...katan.afterCardList, card];
+export const makeDev = () => {
+    let cardType;
 
-    processResource();
+    katanStore.update(katan => {
+        const card = katan.cardList.pop();
+        katan.afterCardList = [...katan.afterCardList, card];
 
-    if (card.type === 'point') {
-        getPointCard(katan);
-    } else if (card.type === 'knight') {
-        knightCard(katan);
-    } else if (card.type === 'road') {
-        roadCard(katan);
-    } else if (card.type === 'resource') {
-        getResourceCard(katan)
-    } else if (card.type === 'get') {
-        takeResourceCard(katan);
+        let cardType = card.type;
+        console.log('>>> card.type', cardType);
+
+        const player = katanStore.getActivePlayer();
+        player.resource.sheep -= 1;
+        player.resource.wheat -= 1;
+        player.resource.iron -= 1;
+
+        if (cardType === 'point') {
+            getPointCard(katan);
+        } else if (cardType === 'knight') {
+            knightCard(katan);
+        } else if (cardType === 'road') {
+            roadCard(katan);
+        } else if (cardType === 'getResource') {
+            getResourceCard(katan)
+        } else if (cardType === 'takeResource') {
+            takeResourceCard(katan);
+        }
+
+        return katan;
+    });
+
+    if (cardType === 'point') {
+        katanStore.doActionAndTurn();
+    }
+};
+
+export const createCardList = () => {
+    const cardList = [];
+
+    // for (let i = 0; i < 5; i++) {
+    //     cardList.push({
+    //         type: 'point'
+    //     })
+    // }
+    //
+    // for (let i = 0; i < 14; i++) {
+    //     cardList.push({
+    //         type: 'knight'
+    //     })
+    // }
+    //
+    // for (let i = 0; i < 2; i++) {
+    //     cardList.push({
+    //         type: 'road'
+    //     });
+    // }
+    //
+    for (let i = 0; i < 2; i++) {
+        cardList.push({
+            type: 'getResource'
+        });
     }
 
-    return katan;
-});
+    // for (let i = 0; i < 2; i++) {
+    //     cardList.push({
+    //         type: 'takeResource'
+    //     });
+    // }
+
+    return shuffle(cardList);
+};
