@@ -159,6 +159,26 @@ const katanStore = {
         return katan;
     }),
 
+    createMoveResourceAnimationOption : (number, numberIndex, numberCount) => {
+        let sourceClass = `display-dice-number-${numberIndex}`;
+        let targetClass = `number_${number}_${numberIndex}`;
+
+        if (numberCount === 1) {
+            targetClass = `number_${number}`;
+        }
+
+        return {
+            sourceClass,
+            targetClass,
+            animationCss: {
+                width: '70px',
+                height: '70px',
+                fontSize: '50px',
+                lineHeight: '70px'
+            }
+        }
+    },
+
     play: async () => {
         katanStore.roll();
 
@@ -179,40 +199,37 @@ const katanStore = {
             numberCount = 1;
         }
 
-        const animationPromiseList = [];
+        if (numberCount === 1) {
+            const animationPromiseList = [];
 
-        for (let i = 1; i <= 2; i++) {
-            let sourceClass = `display-dice-number-${i}`;
-            let targetClass = `number_${number}_${i}`;
+            for (let i = 1; i <= 2; i++) {
+                const moveResourceAnimationOption = katanStore
+                    .createMoveResourceAnimationOption(number, i, numberCount);
 
-            if (numberCount === 1) {
-                targetClass = `number_${number}`;
+                animationPromiseList.push(animateMoveResource(moveResourceAnimationOption));
             }
 
-            animationPromiseList.push(animateMoveResource({
-                sourceClass,
-                targetClass,
-                width: '172px',
-                height: '172px',
-                lineHeight: '172px',
-                fontSize: '140px',
-                count: 1,
-                animationCss: {
-                    width: '70px',
-                    height: '70px',
-                    fontSize: '50px',
-                    lineHeight: '70px'
-                }
-            }));
+            await Promise.all(animationPromiseList);
+
+            katanStore.setSelectedNumberRippleEnabled(number);
+            await sleep(1500);
+
+            katanStore.setNumberRippleDisabled(number);
+            await moveResource(number);
+        } else {
+            for (let i = 1; i <= 2; i++) {
+                const moveResourceAnimationOption = katanStore
+                    .createMoveResourceAnimationOption(number, i, numberCount);
+
+                await animateMoveResource(moveResourceAnimationOption);
+
+                katanStore.setSelectedNumberRippleEnabled(number, i);
+                await sleep(1500);
+
+                katanStore.setNumberRippleDisabled(number, i);
+                await moveResource(number, i);
+            }
         }
-
-        await Promise.all(animationPromiseList);
-
-        katanStore.setSelectedNumberRippleEnabled(number);
-        await sleep(1500);
-
-        katanStore.setNumberRippleDisabled(number);
-        await moveResource(number);
 
         katanStore.doActionAndTurn();
     },
@@ -393,10 +410,11 @@ const katanStore = {
 
     setRoadRippleDisabled: () => setRoadRippleDisabled(),
 
-    setSelectedNumberRippleEnabled: (number) => update(katan => {
+    setSelectedNumberRippleEnabled: (number, numberIndex = 1) => update(katan => {
         katan.resourceList = katan.resourceList
             .map(resource => {
-                if (resource.number === number) {
+                if (resource.number === number &&
+                    resource.numberIndex === numberIndex) {
                     resource.numberRipple = true;
                 }
 
@@ -419,10 +437,14 @@ const katanStore = {
         return katan;
     }),
 
-    setNumberRippleDisabled: () => update(katan => {
+    setNumberRippleDisabled: (number = 0, numberIndex = 1) => update(katan => {
         katan.resourceList = katan.resourceList
             .map(resource => {
-                resource.numberRipple = false;
+                if (number === 0 ||
+                    (resource.number === number && resource.numberIndex === numberIndex)) {
+                    resource.numberRipple = false;
+                }
+
                 return resource;
             });
 

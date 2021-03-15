@@ -185,52 +185,48 @@ export const animateMoveResource = (option) => {
         newResourceItem.animate(animationCss,
             option.speed,
             () => {
-                console.log('>>> animateMoveResource');
                 newResourceItem.remove();
                 return resolve();
             });
     }));
 };
 
-export const moveResource = (number) => {
-    return new Promise(async resolve => {
-        const katan = get(katanStore);
+export const moveResource = async (number, numberIndex = 1) => {
+    const katan = get(katanStore);
 
-        const resourceList = katan.resourceList
-            .filter(resource => resource.number === number)
-            .filter(resource => !resource.burglar);
+    const resourceList = katan.resourceList
+        .filter(resource => resource.number === number)
+        .filter(resource => !resource.burglar)
+        .filter(resource => resource.numberIndex === numberIndex);
 
-        for (let i = 0; i < resourceList.length; i++) {
-            const resource = resourceList[i];
+    for (let i = 0; i < resourceList.length; i++) {
+        const resource = resourceList[i];
 
-            for (let j = 0; j < resource.castleIndexList.length; j++) {
-                const castleIndex = resource.castleIndexList[j];
-                const castle = katan.castleList[castleIndex];
-                const playerIndex = castle.playerIndex;
+        for (let j = 0; j < resource.castleIndexList.length; j++) {
+            const castleIndex = resource.castleIndexList[j];
+            const castle = katan.castleList[castleIndex];
+            const playerIndex = castle.playerIndex;
 
-                if (playerIndex !== -1) {
-                    resource.show = true;
+            if (playerIndex !== -1) {
+                resource.show = true;
 
-                    let resourceCount = 1;
+                let resourceCount = 1;
 
-                    if (castle.city) {
-                        resourceCount = 2
-                    }
+                if (castle.city) {
+                    resourceCount = 2
+                }
 
-                    for (let k = 0; k < resourceCount; k++) {
-                        await animateMoveResource({
-                            sourceClass: `resource_${resource.index}`,
-                            targetClass: `player_${playerIndex}_${resource.type}`
-                        });
+                for (let k = 0; k < resourceCount; k++) {
+                    await animateMoveResource({
+                        sourceClass: `resource_${resource.index}`,
+                        targetClass: `player_${playerIndex}_${resource.type}`
+                    });
 
-                        updateResource(castle, playerIndex, resource);
-                    }
+                    updateResource(castle, playerIndex, resource);
                 }
             }
         }
-
-        resolve();
-    })
+    }
 };
 
 export const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {

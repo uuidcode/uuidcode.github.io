@@ -13031,52 +13031,48 @@ var app = (function () {
             newResourceItem.animate(animationCss,
                 option.speed,
                 () => {
-                    console.log('>>> animateMoveResource');
                     newResourceItem.remove();
                     return resolve();
                 });
         }));
     };
 
-    const moveResource = (number) => {
-        return new Promise(async resolve => {
-            const katan = get_store_value(katanStore);
+    const moveResource = async (number, numberIndex = 1) => {
+        const katan = get_store_value(katanStore);
 
-            const resourceList = katan.resourceList
-                .filter(resource => resource.number === number)
-                .filter(resource => !resource.burglar);
+        const resourceList = katan.resourceList
+            .filter(resource => resource.number === number)
+            .filter(resource => !resource.burglar)
+            .filter(resource => resource.numberIndex === numberIndex);
 
-            for (let i = 0; i < resourceList.length; i++) {
-                const resource = resourceList[i];
+        for (let i = 0; i < resourceList.length; i++) {
+            const resource = resourceList[i];
 
-                for (let j = 0; j < resource.castleIndexList.length; j++) {
-                    const castleIndex = resource.castleIndexList[j];
-                    const castle = katan.castleList[castleIndex];
-                    const playerIndex = castle.playerIndex;
+            for (let j = 0; j < resource.castleIndexList.length; j++) {
+                const castleIndex = resource.castleIndexList[j];
+                const castle = katan.castleList[castleIndex];
+                const playerIndex = castle.playerIndex;
 
-                    if (playerIndex !== -1) {
-                        resource.show = true;
+                if (playerIndex !== -1) {
+                    resource.show = true;
 
-                        let resourceCount = 1;
+                    let resourceCount = 1;
 
-                        if (castle.city) {
-                            resourceCount = 2;
-                        }
+                    if (castle.city) {
+                        resourceCount = 2;
+                    }
 
-                        for (let k = 0; k < resourceCount; k++) {
-                            await animateMoveResource({
-                                sourceClass: `resource_${resource.index}`,
-                                targetClass: `player_${playerIndex}_${resource.type}`
-                            });
+                    for (let k = 0; k < resourceCount; k++) {
+                        await animateMoveResource({
+                            sourceClass: `resource_${resource.index}`,
+                            targetClass: `player_${playerIndex}_${resource.type}`
+                        });
 
-                            updateResource(castle, playerIndex, resource);
-                        }
+                        updateResource(castle, playerIndex, resource);
                     }
                 }
             }
-
-            resolve();
-        })
+        }
     };
 
     const updateResource = (castle, playerIndex, resource) => katanStore.update(katan => {
@@ -13452,6 +13448,26 @@ var app = (function () {
             return katan;
         }),
 
+        createMoveResourceAnimationOption : (number, numberIndex, numberCount) => {
+            let sourceClass = `display-dice-number-${numberIndex}`;
+            let targetClass = `number_${number}_${numberIndex}`;
+
+            if (numberCount === 1) {
+                targetClass = `number_${number}`;
+            }
+
+            return {
+                sourceClass,
+                targetClass,
+                animationCss: {
+                    width: '70px',
+                    height: '70px',
+                    fontSize: '50px',
+                    lineHeight: '70px'
+                }
+            }
+        },
+
         play: async () => {
             katanStore.roll();
 
@@ -13472,40 +13488,37 @@ var app = (function () {
                 numberCount = 1;
             }
 
-            const animationPromiseList = [];
+            if (numberCount === 1) {
+                const animationPromiseList = [];
 
-            for (let i = 1; i <= 2; i++) {
-                let sourceClass = `display-dice-number-${i}`;
-                let targetClass = `number_${number}_${i}`;
+                for (let i = 1; i <= 2; i++) {
+                    const moveResourceAnimationOption = katanStore
+                        .createMoveResourceAnimationOption(number, i, numberCount);
 
-                if (numberCount === 1) {
-                    targetClass = `number_${number}`;
+                    animationPromiseList.push(animateMoveResource(moveResourceAnimationOption));
                 }
 
-                animationPromiseList.push(animateMoveResource({
-                    sourceClass,
-                    targetClass,
-                    width: '172px',
-                    height: '172px',
-                    lineHeight: '172px',
-                    fontSize: '140px',
-                    count: 1,
-                    animationCss: {
-                        width: '70px',
-                        height: '70px',
-                        fontSize: '50px',
-                        lineHeight: '70px'
-                    }
-                }));
+                await Promise.all(animationPromiseList);
+
+                katanStore.setSelectedNumberRippleEnabled(number);
+                await sleep(1500);
+
+                katanStore.setNumberRippleDisabled(number);
+                await moveResource(number);
+            } else {
+                for (let i = 1; i <= 2; i++) {
+                    const moveResourceAnimationOption = katanStore
+                        .createMoveResourceAnimationOption(number, i, numberCount);
+
+                    await animateMoveResource(moveResourceAnimationOption);
+
+                    katanStore.setSelectedNumberRippleEnabled(number, i);
+                    await sleep(1500);
+
+                    katanStore.setNumberRippleDisabled(number, i);
+                    await moveResource(number, i);
+                }
             }
-
-            await Promise.all(animationPromiseList);
-
-            katanStore.setSelectedNumberRippleEnabled(number);
-            await sleep(1500);
-
-            katanStore.setNumberRippleDisabled(number);
-            await moveResource(number);
 
             katanStore.doActionAndTurn();
         },
@@ -13686,10 +13699,11 @@ var app = (function () {
 
         setRoadRippleDisabled: () => setRoadRippleDisabled(),
 
-        setSelectedNumberRippleEnabled: (number) => update$1(katan => {
+        setSelectedNumberRippleEnabled: (number, numberIndex = 1) => update$1(katan => {
             katan.resourceList = katan.resourceList
                 .map(resource => {
-                    if (resource.number === number) {
+                    if (resource.number === number &&
+                        resource.numberIndex === numberIndex) {
                         resource.numberRipple = true;
                     }
 
@@ -13712,10 +13726,14 @@ var app = (function () {
             return katan;
         }),
 
-        setNumberRippleDisabled: () => update$1(katan => {
+        setNumberRippleDisabled: (number = 0, numberIndex = 1) => update$1(katan => {
             katan.resourceList = katan.resourceList
                 .map(resource => {
-                    resource.numberRipple = false;
+                    if (number === 0 ||
+                        (resource.number === number && resource.numberIndex === numberIndex)) {
+                        resource.numberRipple = false;
+                    }
+
                     return resource;
                 });
 
