@@ -30,8 +30,8 @@ const katanObject = {
     action: false,
     isGetResource: false,
     isGetResourceFormOtherPlayer: false,
-    isMakeRoad: false,
-    isMakeRoad2: false,
+    isMakeRoadMode: false,
+    isMakeRoad2Mode: false,
     makeRoadCount: 0,
     getResourceCount: 0,
     takeResourceFromBurglarCount: 0,
@@ -47,7 +47,7 @@ const katanObject = {
     sumDice: 12,
     mode: 'ready',
     isReady: true,
-    isStart: false,
+    isStartMode: false,
     playerIndex: 0,
     showResourceModal: false
 };

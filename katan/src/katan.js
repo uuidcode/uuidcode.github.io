@@ -40,7 +40,7 @@ const katanStore = {
 
         katan.action = false;
 
-        if (katan.isStart) {
+        if (katan.isStartMode) {
             katan.message = '주사위를 굴리세요.';
             katan.diceDisabled = false;
         }
@@ -52,7 +52,7 @@ const katanStore = {
         katan.message = '주사위를 굴리세요.';
 
         katan.mode = 'start';
-        katan.isStart = true;
+        katan.isStartMode = true;
         katan.isReady = false;
 
         setCastleRippleDisabled();
@@ -73,29 +73,32 @@ const katanStore = {
         return katan;
     }),
 
-    moveBurglar: (resourceIndex) => update(katan => {
-        if (katan.isKnightMode) {
-        } else {
-            if (katan.isBurglarMode === false) {
-                return katan;
-            }
-        }
+    moveBurglar: async (resourceIndex) => {
+        const katan = get(katanStore);
 
         if (katan.resourceList[resourceIndex].burglar) {
-            return katan;
+            return;
         }
 
-        katan.resourceList = katan.resourceList
-            .map(resource => {
-                resource.burglar = resource.index === resourceIndex;
-                return resource;
-            });
+        await takeResource();
+
+        katanStore.unsetBurglarMode();
+        katanStore.unsetKnightMode();
 
         katanStore.setNumberRippleDisabled();
-        takeResource();
 
-        return katan;
-    }),
+        update(katan => {
+            katan.resourceList = katan.resourceList
+                .map(resource => {
+                    resource.burglar = resource.index === resourceIndex;
+                    return resource;
+                });
+
+            return katan;
+        });
+
+        katanStore.doActionAndTurn();
+    },
 
     setDiceDisabled: () => update(katan => {
         katan.diceDisabled = true;
@@ -111,7 +114,7 @@ const katanStore = {
         return item.is(':visible')
     },
 
-    doActionAndTurn: () => {
+    doActionAndTurn: async () => {
         recomputePlayer();
 
         const hasAction = katanStore.hasAction();
@@ -123,6 +126,8 @@ const katanStore = {
         } else {
             katanStore.turn();
         }
+
+        await tick();
     },
 
     doAction: () => update(katan => {
@@ -187,15 +192,9 @@ const katanStore = {
         const katan = get(katanStore);
         const number = katan.sumDice;
 
-        if (number === 7) {
-            await katanStore.takeResourceByBurglar();
-            katanStore.readyMoveBurglar();
-            return;
-        }
-
         let numberCount = 2;
 
-        if (number === 2 || number === 12) {
+        if (number === 2 || number === 7 || number === 12) {
             numberCount = 1;
         }
 
@@ -215,7 +214,15 @@ const katanStore = {
             await sleep(1500);
 
             katanStore.setNumberRippleDisabled(number);
-            await moveResource(number);
+
+            if (number === 7) {
+                await katanStore.takeResourceByBurglar();
+                katanStore.setBurglarMode();
+                katanStore.readyMoveBurglar();
+                return;
+            } else {
+                await moveResource(number);
+            }
         } else {
             for (let i = 1; i <= 2; i++) {
                 const moveResourceAnimationOption = katanStore
@@ -240,49 +247,42 @@ const katanStore = {
             .reduce((a, b) => a + b);
     },
 
-    takeResourceByBurglar: () => {
-        return new Promise(async (resolve) => {
-            const katan = get(katanStore);
+    takeResourceByBurglar: async () => {
+        const katan = get(katanStore);
 
-            for (let i = 0; i < katan.playerList.length; i++) {
-                const player = katan.playerList[i];
-                console.log('>>> player', player);
-                const resourceSum = katanStore.sumResource(katan, player);
+        for (let i = 0; i < katan.playerList.length; i++) {
+            const player = katan.playerList[i];
+            const resourceSum = katanStore.sumResource(katan, player);
 
-                if (resourceSum >= 8) {
-                    const resourceCount = Math.floor(resourceSum / 2);
-                    let targetResourceList = [];
+            if (resourceSum >= 8) {
+                const resourceCount = Math.floor(resourceSum / 2);
+                let targetResourceList = [];
 
-                    katan.resourceTypeList
-                        .forEach(typeObject => {
-                            const count = player.resource[typeObject.type];
+                katan.resourceTypeList
+                    .forEach(typeObject => {
+                        const count = player.resource[typeObject.type];
 
-                            for (let i = 0; i < count; i++) {
-                                targetResourceList.push(typeObject.type);
-                            }
-                        });
+                        for (let i = 0; i < count; i++) {
+                            targetResourceList.push(typeObject.type);
+                        }
+                    });
 
-                    targetResourceList = targetResourceList.sort(random());
+                targetResourceList = targetResourceList.sort(random());
 
-                    for (let j = 0; j < resourceCount; j++) {
-                        const type = targetResourceList.pop();
-                        const sourceClass = `player_${player.index}_${type}`;
-                        const targetClass = 'burglar';
+                for (let j = 0; j < resourceCount; j++) {
+                    const type = targetResourceList.pop();
+                    const sourceClass = `player_${player.index}_${type}`;
+                    const targetClass = 'burglar';
 
-                        await move({
-                            sourceClass,
-                            targetClass
-                        });
+                    await move({
+                        sourceClass,
+                        targetClass
+                    });
 
-                        console.log('>>> player.index', player.index);
-                        katanStore.updatePlayerResource(player.index, type);
-                        recomputePlayer();
-                    }
+                    katanStore.updatePlayerResource(player.index, type);
                 }
             }
-
-            resolve();
-        });
+        }
     },
 
     updatePlayerResource: (playerIndex, type) => update(katan => {
@@ -292,16 +292,10 @@ const katanStore = {
     }),
 
     readyMoveBurglar: () => update(katan => {
-        katanStore.internalReadyMoveBurglar(katan);
-        return katan;
-    }),
-
-    internalReadyMoveBurglar: (katan) => {
-        katan.isBurglarMode = true;
         katan.message = '도둑의 위치를 선택하세요.';
         katanStore.setNumberRippleEnabled();
         return katan;
-    },
+    }),
 
     setKnightMode: () => update(katan => {
         katan.isKnightMode = true;
@@ -310,6 +304,46 @@ const katanStore = {
 
     unsetKnightMode: () => update(katan => {
         katan.isKnightMode = false;
+        return katan;
+    }),
+
+    setMakeRoad2Mode: () => update(katan => {
+        katan.isMakeRoad2Mode = true;
+        return katan;
+    }),
+
+    unsetMakeRoad2Mode: () => update(katan => {
+        katan.isMakeRoad2Mode = false;
+        return katan;
+    }),
+
+    setBurglarMode: () => update(katan => {
+        katan.isBurglarMode = true;
+        return katan;
+    }),
+
+    unsetBurglarMode: () => update(katan => {
+        katan.isBurglarMode = false;
+        return katan;
+    }),
+
+    setTakeResourceMode: () => update(katan => {
+        katan.isTakeResource = true;
+        return katan;
+    }),
+
+    unsetTakeResourceMode: () => update(katan => {
+        katan.isTakeResource = false;
+        return katan;
+    }),
+
+    setGetResourceMode: () => update(katan => {
+        katan.isGetResource = true;
+        return katan;
+    }),
+
+    unsetGetResourceMode: () => update(katan => {
+        katan.isGetResource = false;
         return katan;
     }),
 
@@ -456,7 +490,7 @@ const katanStore = {
 
     isActive: (katan) => {
         return katan.isKnightMode === false &&
-            katan.isMakeRoad === false &&
+            katan.isMakeRoadMode === false &&
             katan.isMakeCastle === false &&
             katan.isMakeCity === false &&
             katan.rollDice;
@@ -481,30 +515,21 @@ const katanStore = {
         recomputePlayer();
     },
 
-    testKnightCard: () => update(katan => {
-        knightCard(katan);
+    plusPoint: () => update(katan => {
+        const player = katanStore.getActivePlayer();
+        player.point.point += 1;
         return katan;
     }),
 
-    testRoadCard: () => update(katan => {
-        roadCard(katan);
-        return katan;
-    }),
+    testKnightCard: () => () => knightCard(),
 
-    testTakeResourceCard: () => update(katan => {
-        takeResourceCard(katan);
-        return katan;
-    }),
+    testRoadCard: () => roadCard(),
 
-    testGetPointCard: () => update(katan => {
-        getPointCard(katan);
-        return katan;
-    }),
+    testTakeResourceCard: () =>  takeResourceCard(),
 
-    testGetResourceCard: () => update(katan => {
-        getResourceCard(katan);
-        return katan;
-    })
+    testGetPointCard: () => () => getPointCard(),
+
+    testGetResourceCard: () => getResourceCard()
 };
 
 recomputePlayer();

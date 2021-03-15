@@ -669,7 +669,7 @@ const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
                 return castle;
             });
     } else {
-        if (katan.isStart) {
+        if (katan.isStartMode) {
             player.resource.tree -= 1;
             player.resource.mud -= 1;
             player.resource.sheep -= 1;

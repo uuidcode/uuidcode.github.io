@@ -17,7 +17,7 @@
             backgroundColor: player.color
         };
 
-        if (!$katan.isMakeRoad) {
+        if (!$katan.isMakeRoadMode) {
             styleObject.cursor = 'default';
         }
 

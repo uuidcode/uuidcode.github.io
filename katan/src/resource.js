@@ -189,56 +189,47 @@ export const updateResource = (castle, playerIndex, resource) => katanStore.upda
     return katan;
 });
 
-export const takeResource = () => {
-    katanStore.update(async (katan) => {
-        const other = katanStore.getOtherPlayer(katan);
+export const takeResource = async () => {
+    const katan = get(katanStore);
+    const other = katanStore.getOtherPlayer(katan);
 
-        let resourceTypeList = katan.resourceTypeList
-            .map(resourceType => {
-                return {
-                    type: resourceType.type,
-                    count: other.resource[resourceType.type]
-                }
-            });
+    let resourceTypeList = katan.resourceTypeList
+        .map(resourceType => {
+            return {
+                type: resourceType.type,
+                count: other.resource[resourceType.type]
+            }
+        });
 
-        resourceTypeList = resourceTypeList
-            .filter(item => item.count > 0)
-            .sort(random());
+    resourceTypeList = resourceTypeList
+        .filter(item => item.count > 0)
+        .sort(random());
 
-        if (resourceTypeList.length > 0) {
-            const resource = resourceTypeList[0];
-            const player = katanStore.getActivePlayer();
+    if (resourceTypeList.length > 0) {
+        const resource = resourceTypeList[0];
+        const player = katanStore.getActivePlayer();
 
-            const playerIndex = player.index;
-            const otherPlayerIndex = other.index;
+        const playerIndex = player.index;
+        const otherPlayerIndex = other.index;
 
-            const sourceClass = `player_${otherPlayerIndex}_${resource.type}`;
-            const targetClass = `player_${playerIndex}_${resource.type}`;
+        const sourceClass = `player_${otherPlayerIndex}_${resource.type}`;
+        const targetClass = `player_${playerIndex}_${resource.type}`;
 
-            await move({
-                sourceClass,
-                targetClass
-            });
-        }
+        await move({
+            sourceClass,
+            targetClass
+        });
 
-        if (katan.isGetResourceFormOtherPlayer) {
-            katan.isGetResourceFormOtherPlayer = false;
-        } else if (katan.isBurglarMode) {
-            katan.isBurglarMode = false;
-        } else if (katan.isKnightMode) {
-            katan.isKnightMode = false;
-        }
-
-        return katan;
-    });
+        updateTakeResource(resource);
+    }
 };
 
 const updateTakeResource = (resource) => katanStore.update(katan => {
     const player = katanStore.getActivePlayer();
     const other = katanStore.getOtherPlayer(katan);
 
-    other.resource[resource.type] = other.resource[resource.type] - 1;
     player.resource[resource.type] = player.resource[resource.type] + 1;
+    other.resource[resource.type] = other.resource[resource.type] - 1;
 
     return katan;
 });
