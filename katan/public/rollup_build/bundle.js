@@ -11396,6 +11396,54 @@ var app = (function () {
         return new Promise(resolve => setTimeout(resolve, ms))
     };
 
+    const move = (option) => {
+        return new Promise((resolve => {
+            option = Object.assign({
+                count: 1,
+                speed: 1000,
+                callback: () => {}
+            }, option);
+
+            const sourceItem = jquery('.' + option.sourceClass);
+            const visible = katanStore.isVisible(sourceItem);
+
+            if (!visible) {
+                sourceItem.show();
+            }
+
+            const targetItem = jquery('.' + option.targetClass);
+            const sourceOffset = sourceItem.offset();
+            const targetOffset = targetItem.offset();
+
+            const body = jquery('body');
+            const newResourceItem = sourceItem.clone()
+                .removeClass(option.sourceClass);
+
+            newResourceItem.appendTo(body)
+                .css({
+                    left: sourceOffset.left + 'px',
+                    top: sourceOffset.top + 'px',
+                    position: 'absolute'
+                });
+
+            if (!visible) {
+                sourceItem.hide();
+            }
+
+            const animationCss = Object.assign({
+                left: targetOffset.left + 'px',
+                top: targetOffset.top + 'px'
+            }, option.animationCss);
+
+            newResourceItem.animate(animationCss,
+                option.speed,
+                () => {
+                    newResourceItem.remove();
+                    return resolve();
+                });
+        }));
+    };
+
     const createCastleList = () => {
         const castleList = [];
 
@@ -12989,54 +13037,6 @@ var app = (function () {
         return resourceList;
     };
 
-    const animateMoveResource = (option) => {
-        return new Promise((resolve => {
-            option = Object.assign({
-                count: 1,
-                speed: 1000,
-                callback: () => {}
-            }, option);
-
-            const sourceItem = jquery('.' + option.sourceClass);
-            const visible = katanStore.isVisible(sourceItem);
-
-            if (!visible) {
-                sourceItem.show();
-            }
-
-            const targetItem = jquery('.' + option.targetClass);
-            const sourceOffset = sourceItem.offset();
-            const targetOffset = targetItem.offset();
-
-            const body = jquery('body');
-            const newResourceItem = sourceItem.clone()
-                .removeClass(option.sourceClass);
-
-            newResourceItem.appendTo(body)
-                .css({
-                    left: sourceOffset.left + 'px',
-                    top: sourceOffset.top + 'px',
-                    position: 'absolute'
-                });
-
-            if (!visible) {
-                sourceItem.hide();
-            }
-
-            const animationCss = Object.assign({
-                left: targetOffset.left + 'px',
-                top: targetOffset.top + 'px'
-            }, option.animationCss);
-
-            newResourceItem.animate(animationCss,
-                option.speed,
-                () => {
-                    newResourceItem.remove();
-                    return resolve();
-                });
-        }));
-    };
-
     const moveResource = async (number, numberIndex = 1) => {
         const katan = get_store_value(katanStore);
 
@@ -13045,30 +13045,32 @@ var app = (function () {
             .filter(resource => !resource.burglar)
             .filter(resource => resource.numberIndex === numberIndex);
 
-        for (let i = 0; i < resourceList.length; i++) {
-            const resource = resourceList[i];
+        for (let playerIndex = 0; playerIndex < katan.playerList.length; playerIndex++) {
+            const currentPlayerIndex = katan.playerList[playerIndex].index;
 
-            for (let j = 0; j < resource.castleIndexList.length; j++) {
-                const castleIndex = resource.castleIndexList[j];
-                const castle = katan.castleList[castleIndex];
-                const playerIndex = castle.playerIndex;
+            for (let resourceIndex = 0; resourceIndex < resourceList.length; resourceIndex++) {
+                const resource = resourceList[resourceIndex];
 
-                if (playerIndex !== -1) {
-                    resource.show = true;
+                for (let castleIndex = 0; castleIndex < resource.castleIndexList.length; castleIndex++) {
+                    const currentCastleIndex = resource.castleIndexList[castleIndex];
+                    const castle = katan.castleList[currentCastleIndex];
+                    const castlePlayerIndex = castle.playerIndex;
 
-                    let resourceCount = 1;
+                    if (castlePlayerIndex === currentPlayerIndex) {
+                        let resourceCount = 1;
 
-                    if (castle.city) {
-                        resourceCount = 2;
-                    }
+                        if (castle.city) {
+                            resourceCount = 2;
+                        }
 
-                    for (let k = 0; k < resourceCount; k++) {
-                        await animateMoveResource({
-                            sourceClass: `resource_${resource.index}`,
-                            targetClass: `player_${playerIndex}_${resource.type}`
-                        });
+                        for (let k = 0; k < resourceCount; k++) {
+                            await move({
+                                sourceClass: `resource_${resource.index}`,
+                                targetClass: `player_${castlePlayerIndex}_${resource.type}`
+                            });
 
-                        updateResource(castle, playerIndex, resource);
+                            updateResource(castle, castlePlayerIndex, resource);
+                        }
                     }
                 }
             }
@@ -13107,7 +13109,7 @@ var app = (function () {
                 const sourceClass = `player_${otherPlayerIndex}_${resource.type}`;
                 const targetClass = `player_${playerIndex}_${resource.type}`;
 
-                await animateMoveResource({
+                await move({
                     sourceClass,
                     targetClass
                 });
@@ -13495,7 +13497,7 @@ var app = (function () {
                     const moveResourceAnimationOption = katanStore
                         .createMoveResourceAnimationOption(number, i, numberCount);
 
-                    animationPromiseList.push(animateMoveResource(moveResourceAnimationOption));
+                    animationPromiseList.push(move(moveResourceAnimationOption));
                 }
 
                 await Promise.all(animationPromiseList);
@@ -13510,7 +13512,7 @@ var app = (function () {
                     const moveResourceAnimationOption = katanStore
                         .createMoveResourceAnimationOption(number, i, numberCount);
 
-                    await animateMoveResource(moveResourceAnimationOption);
+                    await move(moveResourceAnimationOption);
 
                     katanStore.setSelectedNumberRippleEnabled(number, i);
                     await sleep(1500);
@@ -13553,14 +13555,12 @@ var app = (function () {
 
                         targetResourceList = targetResourceList.sort(random());
 
-                        console.log('>>> resourceCount', resourceCount);
-
                         for (let j = 0; j < resourceCount; j++) {
                             const type = targetResourceList.pop();
                             const sourceClass = `player_${player.index}_${type}`;
                             const targetClass = 'burglar';
 
-                            await animateMoveResource({
+                            await move({
                                 sourceClass,
                                 targetClass
                             });
@@ -13577,13 +13577,7 @@ var app = (function () {
         },
 
         updatePlayerResource: (playerIndex, type) => update$1(katan => {
-            console.log('>>> playerIndex', playerIndex);
-            console.log('>>> type', type);
-
-            console.log('>>> katan', katan);
             const player = katan.playerList[playerIndex];
-            console.log('>>> player', player);
-
             player.resource[type] -= 1;
             return katan;
         }),

@@ -1,6 +1,6 @@
 import katanStore from './katan.js'
 import jQuery from 'jquery';
-import {random, shuffle} from "./util";
+import {random, shuffle, move} from "./util";
 import {recomputePlayer} from "./player";
 import config from "./config";
 import {get} from "svelte/store";
@@ -143,54 +143,6 @@ export const createResourceList = () => {
     return resourceList;
 };
 
-export const animateMoveResource = (option) => {
-    return new Promise((resolve => {
-        option = Object.assign({
-            count: 1,
-            speed: 1000,
-            callback: () => {}
-        }, option);
-
-        const sourceItem = jQuery('.' + option.sourceClass);
-        const visible = katanStore.isVisible(sourceItem);
-
-        if (!visible) {
-            sourceItem.show();
-        }
-
-        const targetItem = jQuery('.' + option.targetClass);
-        const sourceOffset = sourceItem.offset();
-        const targetOffset = targetItem.offset();
-
-        const body = jQuery('body');
-        const newResourceItem = sourceItem.clone()
-            .removeClass(option.sourceClass);
-
-        newResourceItem.appendTo(body)
-            .css({
-                left: sourceOffset.left + 'px',
-                top: sourceOffset.top + 'px',
-                position: 'absolute'
-            });
-
-        if (!visible) {
-            sourceItem.hide();
-        }
-
-        const animationCss = Object.assign({
-            left: targetOffset.left + 'px',
-            top: targetOffset.top + 'px'
-        }, option.animationCss);
-
-        newResourceItem.animate(animationCss,
-            option.speed,
-            () => {
-                newResourceItem.remove();
-                return resolve();
-            });
-    }));
-};
-
 export const moveResource = async (number, numberIndex = 1) => {
     const katan = get(katanStore);
 
@@ -199,30 +151,32 @@ export const moveResource = async (number, numberIndex = 1) => {
         .filter(resource => !resource.burglar)
         .filter(resource => resource.numberIndex === numberIndex);
 
-    for (let i = 0; i < resourceList.length; i++) {
-        const resource = resourceList[i];
+    for (let playerIndex = 0; playerIndex < katan.playerList.length; playerIndex++) {
+        const currentPlayerIndex = katan.playerList[playerIndex].index;
 
-        for (let j = 0; j < resource.castleIndexList.length; j++) {
-            const castleIndex = resource.castleIndexList[j];
-            const castle = katan.castleList[castleIndex];
-            const playerIndex = castle.playerIndex;
+        for (let resourceIndex = 0; resourceIndex < resourceList.length; resourceIndex++) {
+            const resource = resourceList[resourceIndex];
 
-            if (playerIndex !== -1) {
-                resource.show = true;
+            for (let castleIndex = 0; castleIndex < resource.castleIndexList.length; castleIndex++) {
+                const currentCastleIndex = resource.castleIndexList[castleIndex];
+                const castle = katan.castleList[currentCastleIndex];
+                const castlePlayerIndex = castle.playerIndex;
 
-                let resourceCount = 1;
+                if (castlePlayerIndex === currentPlayerIndex) {
+                    let resourceCount = 1;
 
-                if (castle.city) {
-                    resourceCount = 2
-                }
+                    if (castle.city) {
+                        resourceCount = 2
+                    }
 
-                for (let k = 0; k < resourceCount; k++) {
-                    await animateMoveResource({
-                        sourceClass: `resource_${resource.index}`,
-                        targetClass: `player_${playerIndex}_${resource.type}`
-                    });
+                    for (let k = 0; k < resourceCount; k++) {
+                        await move({
+                            sourceClass: `resource_${resource.index}`,
+                            targetClass: `player_${castlePlayerIndex}_${resource.type}`
+                        });
 
-                    updateResource(castle, playerIndex, resource);
+                        updateResource(castle, castlePlayerIndex, resource);
+                    }
                 }
             }
         }
@@ -261,7 +215,7 @@ export const takeResource = () => {
             const sourceClass = `player_${otherPlayerIndex}_${resource.type}`;
             const targetClass = `player_${playerIndex}_${resource.type}`;
 
-            await animateMoveResource({
+            await move({
                 sourceClass,
                 targetClass
             });

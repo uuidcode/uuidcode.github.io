@@ -4,11 +4,11 @@ import config from './config.js'
 import jQuery from 'jquery';
 import {recomputePlayer} from "./player";
 import katanObject from "./katanObject"
-import {random, sleep} from "./util";
+import {random, sleep, move} from "./util";
 import {makeDev, knightCard, roadCard, takeResourceCard, getResourceCard, getPointCard} from "./card";
 import {makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
 import {setCastleRippleDisabled, makeCastle, makeCity, clickMakeCastle} from "./castle";
-import {animateMoveResource, takeResource, moveResource} from "./resource";
+import {takeResource, moveResource} from "./resource";
 
 const { subscribe, set, update } = writable(katanObject);
 
@@ -206,7 +206,7 @@ const katanStore = {
                 const moveResourceAnimationOption = katanStore
                     .createMoveResourceAnimationOption(number, i, numberCount);
 
-                animationPromiseList.push(animateMoveResource(moveResourceAnimationOption));
+                animationPromiseList.push(move(moveResourceAnimationOption));
             }
 
             await Promise.all(animationPromiseList);
@@ -221,7 +221,7 @@ const katanStore = {
                 const moveResourceAnimationOption = katanStore
                     .createMoveResourceAnimationOption(number, i, numberCount);
 
-                await animateMoveResource(moveResourceAnimationOption);
+                await move(moveResourceAnimationOption);
 
                 katanStore.setSelectedNumberRippleEnabled(number, i);
                 await sleep(1500);
@@ -264,14 +264,12 @@ const katanStore = {
 
                     targetResourceList = targetResourceList.sort(random());
 
-                    console.log('>>> resourceCount', resourceCount);
-
                     for (let j = 0; j < resourceCount; j++) {
                         const type = targetResourceList.pop();
                         const sourceClass = `player_${player.index}_${type}`;
                         const targetClass = 'burglar';
 
-                        await animateMoveResource({
+                        await move({
                             sourceClass,
                             targetClass
                         });
@@ -288,13 +286,7 @@ const katanStore = {
     },
 
     updatePlayerResource: (playerIndex, type) => update(katan => {
-        console.log('>>> playerIndex', playerIndex);
-        console.log('>>> type', type);
-
-        console.log('>>> katan', katan);
         const player = katan.playerList[playerIndex];
-        console.log('>>> player', player);
-
         player.resource[type] -= 1;
         return katan;
     }),
