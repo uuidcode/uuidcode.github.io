@@ -56,7 +56,7 @@ katanObject.cardList = createCardList();
 katanObject.afterCardList = [];
 
 katanObject.playerList = createPlayerList();
-katanObject.castleList = createCastleList();
+katanObject.castleList = createCastleList(katanObject);
 katanObject.roadList = createRoadList();
 katanObject.resourceList = createResourceList();
 

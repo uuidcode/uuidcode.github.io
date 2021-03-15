@@ -19,7 +19,7 @@ const katanStore = {
 
     plus: (playerIndex, resourceType) => {
         update(katan => {
-            katan.playerList[playerIndex].resource[resourceType]++;
+            // katan.playerList[playerIndex].resource[resourceType]++;
             return katan;
         });
 

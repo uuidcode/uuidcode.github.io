@@ -11438,7 +11438,7 @@ var app = (function () {
         }));
     };
 
-    const createCastleList = () => {
+    const createCastleList = (katanObject) => {
         const castleList = [];
 
         for (let i = 0; i < 6; i++) {
@@ -11521,6 +11521,9 @@ var app = (function () {
         castleList.forEach(castle => castle.constructable = castle.show);
         castleList.forEach(castle => castle.title = '');
         castleList.forEach(castle => castle.tradable = false);
+        castleList.forEach(castle => castle.port = {
+            enabled: false
+        });
 
         castleList[0].port = {
             enabled: true,
@@ -11567,26 +11570,6 @@ var app = (function () {
             placement: 'left'
         };
 
-        castleList[9].port = {
-            enabled: false
-        };
-
-        castleList[10].port = {
-            enabled: false
-        };
-
-        castleList[11].port = {
-            enabled: false
-        };
-
-        castleList[12].port = {
-            enabled: false
-        };
-
-        castleList[13].port = {
-            enabled: false
-        };
-
         castleList[14].port = {
             enabled: true,
             placement: 'right'
@@ -11605,34 +11588,6 @@ var app = (function () {
         castleList[17].port = {
             enabled: true,
             placement: 'left'
-        };
-
-        castleList[18].port = {
-            enabled: false
-        };
-
-        castleList[19].port = {
-            enabled: false
-        };
-
-        castleList[20].port = {
-            enabled: false
-        };
-
-        castleList[21].port = {
-            enabled: false
-        };
-
-        castleList[22].port = {
-            enabled: false
-        };
-
-        castleList[23].port = {
-            enabled: false
-        };
-
-        castleList[24].port = {
-            enabled: false
         };
 
         castleList[25].port = {
@@ -11655,34 +11610,6 @@ var app = (function () {
             placement: 'left'
         };
 
-        castleList[29].port = {
-            enabled: false
-        };
-
-        castleList[30].port = {
-            enabled: false
-        };
-
-        castleList[31].port = {
-            enabled: false
-        };
-
-        castleList[32].port = {
-            enabled: false
-        };
-
-        castleList[33].port = {
-            enabled: false
-        };
-
-        castleList[34].port = {
-            enabled: false
-        };
-
-        castleList[35].port = {
-            enabled: false
-        };
-
         castleList[36].port = {
             enabled: true,
             placement: 'right'
@@ -11701,26 +11628,6 @@ var app = (function () {
         castleList[39].port = {
             enabled: true,
             placement: 'left'
-        };
-
-        castleList[40].port = {
-            enabled: false
-        };
-
-        castleList[41].port = {
-            enabled: false
-        };
-
-        castleList[42].port = {
-            enabled: false
-        };
-
-        castleList[43].port = {
-            enabled: false
-        };
-
-        castleList[44].port = {
-            enabled: false
         };
 
         castleList[45].port = {
@@ -11762,6 +11669,7 @@ var app = (function () {
             enabled: true,
             placement: 'bottom'
         };
+
         castleList[53].port = {
             enabled: true,
             placement: 'bottom'
@@ -11777,30 +11685,12 @@ var app = (function () {
         }
 
         for (let i = 0; i < 2; i++) {
-            portList.push({
-                trade: 2,
-                type: 'tree'
-            });
-
-            portList.push({
-                trade: 2,
-                type: 'mud'
-            });
-
-            portList.push({
-                trade: 2,
-                type: 'wheat'
-            });
-
-            portList.push({
-                trade: 2,
-                type: 'sheep'
-            });
-
-            portList.push({
-                trade: 2,
-                type: 'iron'
-            });
+            katanObject.resourceTypeList
+                .map(resourceType => ({
+                    trade: 2,
+                    type: resourceType.type
+                }))
+                .forEach(port => portList.push(port));
         }
 
         castleList
@@ -12052,7 +11942,7 @@ var app = (function () {
     };
 
     const clickMakeCastle = (castleIndex) =>  {
-        const katan = get_store_value(katanStore);
+        const katan = get(katanStore);
 
         if (!castleClickable(katan, castleIndex)) {
             return katan;
@@ -13306,7 +13196,7 @@ var app = (function () {
     katanObject.afterCardList = [];
 
     katanObject.playerList = createPlayerList();
-    katanObject.castleList = createCastleList();
+    katanObject.castleList = createCastleList(katanObject);
     katanObject.roadList = createRoadList();
     katanObject.resourceList = createResourceList();
 
@@ -13319,7 +13209,7 @@ var app = (function () {
 
         plus: (playerIndex, resourceType) => {
             update$1(katan => {
-                katan.playerList[playerIndex].resource[resourceType]++;
+                // katan.playerList[playerIndex].resource[resourceType]++;
                 return katan;
             });
 
@@ -16218,9 +16108,9 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 127, 44, 5156);
-    			attr_dev(table, "class", "trade-target-resource svelte-aqu9kt");
-    			add_location(table, file$7, 126, 40, 5073);
+    			add_location(tr, file$7, 127, 44, 5170);
+    			attr_dev(table, "class", "trade-target-resource svelte-1mhhrhi");
+    			add_location(table, file$7, 126, 40, 5087);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -16286,8 +16176,8 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "받기";
-    			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-aqu9kt");
-    			add_location(button, file$7, 120, 36, 4669);
+    			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-1mhhrhi");
+    			add_location(button, file$7, 120, 36, 4683);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -16348,15 +16238,16 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text(":1교환");
     			t3 = space();
-    			attr_dev(img, "class", "trade-resource svelte-aqu9kt");
+    			attr_dev(img, "class", "trade-resource svelte-1mhhrhi");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[15].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 132, 64, 5536);
-    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-aqu9kt");
+    			attr_dev(img, "alt", "");
+    			add_location(img, file$7, 132, 64, 5550);
+    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1mhhrhi");
     			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[12].type].action;
-    			add_location(button, file$7, 133, 64, 5666);
-    			add_location(div, file$7, 131, 60, 5465);
-    			attr_dev(td, "class", "svelte-aqu9kt");
-    			add_location(td, file$7, 130, 56, 5399);
+    			add_location(button, file$7, 133, 64, 5687);
+    			add_location(div, file$7, 131, 60, 5479);
+    			attr_dev(td, "class", "svelte-1mhhrhi");
+    			add_location(td, file$7, 130, 56, 5413);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -16502,20 +16393,21 @@ var app = (function () {
     			if (if_block) if_block.c();
     			t6 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[12].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-aqu9kt");
-    			add_location(img, file$7, 111, 36, 4019);
-    			attr_dev(div0, "class", "trade-ratio svelte-aqu9kt");
-    			add_location(div0, file$7, 114, 36, 4286);
-    			attr_dev(div1, "class", "resource-item svelte-aqu9kt");
-    			add_location(div1, file$7, 110, 32, 3954);
+    			attr_dev(img, "alt", "");
+    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-1mhhrhi");
+    			add_location(img, file$7, 111, 36, 4026);
+    			attr_dev(div0, "class", "trade-ratio svelte-1mhhrhi");
+    			add_location(div0, file$7, 114, 36, 4300);
+    			attr_dev(div1, "class", "resource-item svelte-1mhhrhi");
+    			add_location(div1, file$7, 110, 32, 3961);
     			attr_dev(td0, "width", "80");
-    			attr_dev(td0, "class", "svelte-aqu9kt");
-    			add_location(td0, file$7, 109, 28, 3905);
-    			attr_dev(td1, "class", "number svelte-aqu9kt");
-    			add_location(td1, file$7, 117, 28, 4459);
-    			attr_dev(td2, "class", "svelte-aqu9kt");
-    			add_location(td2, file$7, 118, 28, 4529);
-    			add_location(tr, file$7, 108, 24, 3871);
+    			attr_dev(td0, "class", "svelte-1mhhrhi");
+    			add_location(td0, file$7, 109, 28, 3912);
+    			attr_dev(td1, "class", "number svelte-1mhhrhi");
+    			add_location(td1, file$7, 117, 28, 4473);
+    			attr_dev(td2, "class", "svelte-1mhhrhi");
+    			add_location(td2, file$7, 118, 28, 4543);
+    			add_location(tr, file$7, 108, 24, 3878);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -16546,7 +16438,7 @@ var app = (function () {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 18 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-aqu9kt")) {
+    			if (dirty & /*player, resourceList*/ 18 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-1mhhrhi")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -16828,98 +16720,99 @@ var app = (function () {
     			td28 = element("td");
     			create_component(construction.$$.fragment);
     			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", "svelte-aqu9kt");
+    			attr_dev(img, "alt", "");
+    			attr_dev(img, "class", "svelte-1mhhrhi");
     			add_location(img, file$7, 47, 43, 1197);
-    			attr_dev(div0, "class", "player-header svelte-aqu9kt");
+    			attr_dev(div0, "class", "player-header svelte-1mhhrhi");
     			add_location(div0, file$7, 47, 16, 1170);
-    			attr_dev(div1, "class", "player-header player-sum svelte-aqu9kt");
-    			add_location(div1, file$7, 48, 16, 1245);
-    			attr_dev(td0, "class", "name svelte-aqu9kt");
+    			attr_dev(div1, "class", "player-header player-sum svelte-1mhhrhi");
+    			add_location(div1, file$7, 48, 16, 1252);
+    			attr_dev(td0, "class", "name svelte-1mhhrhi");
     			set_style(td0, "background-color", /*player*/ ctx[1].color);
     			add_location(td0, file$7, 45, 12, 1078);
     			add_location(tr0, file$7, 44, 8, 1060);
     			attr_dev(td1, "colspan", "3");
-    			attr_dev(td1, "class", "header svelte-aqu9kt");
-    			add_location(td1, file$7, 55, 24, 1500);
-    			add_location(tr1, file$7, 54, 20, 1470);
-    			attr_dev(td2, "class", "svelte-aqu9kt");
-    			add_location(td2, file$7, 62, 36, 1775);
-    			attr_dev(td3, "class", "svelte-aqu9kt");
-    			add_location(td3, file$7, 63, 36, 1824);
-    			attr_dev(td4, "class", "svelte-aqu9kt");
-    			add_location(td4, file$7, 64, 36, 1873);
-    			attr_dev(td5, "class", "svelte-aqu9kt");
-    			add_location(td5, file$7, 65, 36, 1922);
-    			attr_dev(td6, "class", "svelte-aqu9kt");
-    			add_location(td6, file$7, 66, 36, 1975);
+    			attr_dev(td1, "class", "header svelte-1mhhrhi");
+    			add_location(td1, file$7, 55, 24, 1507);
+    			add_location(tr1, file$7, 54, 20, 1477);
+    			attr_dev(td2, "class", "svelte-1mhhrhi");
+    			add_location(td2, file$7, 62, 36, 1782);
+    			attr_dev(td3, "class", "svelte-1mhhrhi");
+    			add_location(td3, file$7, 63, 36, 1831);
+    			attr_dev(td4, "class", "svelte-1mhhrhi");
+    			add_location(td4, file$7, 64, 36, 1880);
+    			attr_dev(td5, "class", "svelte-1mhhrhi");
+    			add_location(td5, file$7, 65, 36, 1929);
+    			attr_dev(td6, "class", "svelte-1mhhrhi");
+    			add_location(td6, file$7, 66, 36, 1982);
     			attr_dev(tr2, "class", "point");
-    			add_location(tr2, file$7, 61, 32, 1719);
-    			attr_dev(td7, "class", "svelte-aqu9kt");
-    			add_location(td7, file$7, 69, 36, 2105);
-    			attr_dev(td8, "class", "svelte-aqu9kt");
-    			add_location(td8, file$7, 70, 36, 2173);
-    			attr_dev(td9, "class", "svelte-aqu9kt");
-    			add_location(td9, file$7, 71, 36, 2239);
-    			attr_dev(td10, "class", "svelte-aqu9kt");
-    			add_location(td10, file$7, 72, 36, 2306);
-    			attr_dev(td11, "class", "svelte-aqu9kt");
-    			add_location(td11, file$7, 73, 36, 2372);
-    			add_location(tr3, file$7, 68, 32, 2063);
+    			add_location(tr2, file$7, 61, 32, 1726);
+    			attr_dev(td7, "class", "svelte-1mhhrhi");
+    			add_location(td7, file$7, 69, 36, 2112);
+    			attr_dev(td8, "class", "svelte-1mhhrhi");
+    			add_location(td8, file$7, 70, 36, 2180);
+    			attr_dev(td9, "class", "svelte-1mhhrhi");
+    			add_location(td9, file$7, 71, 36, 2246);
+    			attr_dev(td10, "class", "svelte-1mhhrhi");
+    			add_location(td10, file$7, 72, 36, 2313);
+    			attr_dev(td11, "class", "svelte-1mhhrhi");
+    			add_location(td11, file$7, 73, 36, 2379);
+    			add_location(tr3, file$7, 68, 32, 2070);
     			attr_dev(table0, "width", "100%");
-    			add_location(table0, file$7, 59, 28, 1663);
+    			add_location(table0, file$7, 59, 28, 1670);
     			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "svelte-aqu9kt");
-    			add_location(td12, file$7, 58, 24, 1617);
-    			add_location(tr4, file$7, 57, 20, 1587);
+    			attr_dev(td12, "class", "svelte-1mhhrhi");
+    			add_location(td12, file$7, 58, 24, 1624);
+    			add_location(tr4, file$7, 57, 20, 1594);
     			attr_dev(td13, "colspan", "3");
-    			attr_dev(td13, "class", "header svelte-aqu9kt");
-    			add_location(td13, file$7, 80, 24, 2591);
-    			add_location(tr5, file$7, 79, 20, 2561);
-    			attr_dev(td14, "class", "svelte-aqu9kt");
-    			add_location(td14, file$7, 86, 36, 2871);
-    			attr_dev(td15, "class", "svelte-aqu9kt");
-    			add_location(td15, file$7, 87, 36, 2920);
-    			attr_dev(td16, "class", "svelte-aqu9kt");
-    			add_location(td16, file$7, 88, 36, 2969);
-    			attr_dev(td17, "class", "svelte-aqu9kt");
-    			add_location(td17, file$7, 89, 36, 3018);
-    			attr_dev(td18, "class", "svelte-aqu9kt");
-    			add_location(td18, file$7, 90, 36, 3067);
-    			add_location(tr6, file$7, 85, 32, 2829);
-    			attr_dev(td19, "class", "svelte-aqu9kt");
-    			add_location(td19, file$7, 93, 36, 3195);
-    			attr_dev(td20, "class", "svelte-aqu9kt");
-    			add_location(td20, file$7, 94, 36, 3274);
-    			attr_dev(td21, "class", "svelte-aqu9kt");
-    			add_location(td21, file$7, 95, 36, 3351);
-    			attr_dev(td22, "class", "svelte-aqu9kt");
-    			add_location(td22, file$7, 96, 36, 3429);
-    			attr_dev(td23, "class", "svelte-aqu9kt");
-    			add_location(td23, file$7, 97, 36, 3504);
-    			add_location(tr7, file$7, 92, 32, 3153);
-    			attr_dev(table1, "class", "construction svelte-aqu9kt");
+    			attr_dev(td13, "class", "header svelte-1mhhrhi");
+    			add_location(td13, file$7, 80, 24, 2598);
+    			add_location(tr5, file$7, 79, 20, 2568);
+    			attr_dev(td14, "class", "svelte-1mhhrhi");
+    			add_location(td14, file$7, 86, 36, 2878);
+    			attr_dev(td15, "class", "svelte-1mhhrhi");
+    			add_location(td15, file$7, 87, 36, 2927);
+    			attr_dev(td16, "class", "svelte-1mhhrhi");
+    			add_location(td16, file$7, 88, 36, 2976);
+    			attr_dev(td17, "class", "svelte-1mhhrhi");
+    			add_location(td17, file$7, 89, 36, 3025);
+    			attr_dev(td18, "class", "svelte-1mhhrhi");
+    			add_location(td18, file$7, 90, 36, 3074);
+    			add_location(tr6, file$7, 85, 32, 2836);
+    			attr_dev(td19, "class", "svelte-1mhhrhi");
+    			add_location(td19, file$7, 93, 36, 3202);
+    			attr_dev(td20, "class", "svelte-1mhhrhi");
+    			add_location(td20, file$7, 94, 36, 3281);
+    			attr_dev(td21, "class", "svelte-1mhhrhi");
+    			add_location(td21, file$7, 95, 36, 3358);
+    			attr_dev(td22, "class", "svelte-1mhhrhi");
+    			add_location(td22, file$7, 96, 36, 3436);
+    			attr_dev(td23, "class", "svelte-1mhhrhi");
+    			add_location(td23, file$7, 97, 36, 3511);
+    			add_location(tr7, file$7, 92, 32, 3160);
+    			attr_dev(table1, "class", "construction svelte-1mhhrhi");
     			attr_dev(table1, "width", "100%");
-    			add_location(table1, file$7, 84, 28, 2754);
+    			add_location(table1, file$7, 84, 28, 2761);
     			attr_dev(td24, "colspan", "3");
-    			attr_dev(td24, "class", "svelte-aqu9kt");
-    			add_location(td24, file$7, 83, 24, 2708);
-    			add_location(tr8, file$7, 82, 20, 2678);
+    			attr_dev(td24, "class", "svelte-1mhhrhi");
+    			add_location(td24, file$7, 83, 24, 2715);
+    			add_location(tr8, file$7, 82, 20, 2685);
     			attr_dev(td25, "colspan", "3");
-    			attr_dev(td25, "class", "header svelte-aqu9kt");
-    			add_location(td25, file$7, 104, 24, 3724);
-    			add_location(tr9, file$7, 103, 20, 3694);
-    			attr_dev(table2, "class", "inner-resource svelte-aqu9kt");
-    			add_location(table2, file$7, 53, 16, 1418);
-    			attr_dev(td26, "class", "svelte-aqu9kt");
-    			add_location(td26, file$7, 52, 12, 1396);
-    			add_location(tr10, file$7, 51, 8, 1378);
-    			attr_dev(td27, "class", "header svelte-aqu9kt");
-    			add_location(td27, file$7, 153, 12, 6773);
-    			add_location(tr11, file$7, 152, 8, 6755);
-    			attr_dev(td28, "class", "svelte-aqu9kt");
-    			add_location(td28, file$7, 156, 12, 6842);
-    			add_location(tr12, file$7, 155, 8, 6824);
-    			attr_dev(table3, "class", "trade-resource svelte-aqu9kt");
+    			attr_dev(td25, "class", "header svelte-1mhhrhi");
+    			add_location(td25, file$7, 104, 24, 3731);
+    			add_location(tr9, file$7, 103, 20, 3701);
+    			attr_dev(table2, "class", "inner-resource svelte-1mhhrhi");
+    			add_location(table2, file$7, 53, 16, 1425);
+    			attr_dev(td26, "class", "svelte-1mhhrhi");
+    			add_location(td26, file$7, 52, 12, 1403);
+    			add_location(tr10, file$7, 51, 8, 1385);
+    			attr_dev(td27, "class", "header svelte-1mhhrhi");
+    			add_location(td27, file$7, 153, 12, 6794);
+    			add_location(tr11, file$7, 152, 8, 6776);
+    			attr_dev(td28, "class", "svelte-1mhhrhi");
+    			add_location(td28, file$7, 156, 12, 6863);
+    			add_location(tr12, file$7, 155, 8, 6845);
+    			attr_dev(table3, "class", "trade-resource svelte-1mhhrhi");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			add_location(table3, file$7, 43, 4, 1000);
     			add_location(main, file$7, 42, 0, 988);
