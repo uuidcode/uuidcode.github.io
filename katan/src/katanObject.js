@@ -29,7 +29,7 @@ const katanObject = {
     rollDice: false,
     action: false,
     isGetResource: false,
-    isGetResourceFormOtherPlayer: false,
+    isTakeResource: false,
     isMakeRoadMode: false,
     isMakeRoad2Mode: false,
     makeRoadCount: 0,

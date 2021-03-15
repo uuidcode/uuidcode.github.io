@@ -12018,12 +12018,14 @@ var app = (function () {
     };
 
     const makeCastle = () => katanStore.update(katan => {
+        console.log('makeCastle', katan.playerIndex);
         katan.isMakeCastle = true;
         setNewCastleRippleEnabled();
         return katan;
     });
 
     const makeCity = () => katanStore.update(katan => {
+        console.log('makeCity', katan.playerIndex);
         katan.isMakeCity = true;
         setNewCityRippleEnabled();
         return katan;
@@ -12055,13 +12057,18 @@ var app = (function () {
         return true;
     };
 
-    const clickMakeCastle = (castleIndex) => katanStore.update(katan => {
+    const clickMakeCastle = (castleIndex) =>  {
+        const katan = get_store_value(katanStore);
+
         if (!castleClickable(katan, castleIndex)) {
             return katan;
         }
 
         const player = katanStore.getActivePlayer();
         setCastle(castleIndex, player.index);
+
+        console.log('clickMakeCastle', player.index, castleIndex, katan.isMakeCastle);
+
         setHideCastle();
         setCastleRippleDisabled();
 
@@ -12072,9 +12079,7 @@ var app = (function () {
         } else {
             setRoadRippleEnabled(castleIndex);
         }
-
-        return katan;
-    });
+    };
 
     const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
         let castle = katan.castleList[castleIndex];
@@ -12590,6 +12595,12 @@ var app = (function () {
         const katan = get_store_value(katanStore);
         const player = katanStore.getActivePlayer();
 
+        console.log('clickMakeRoad', player.index, roadIndex);
+
+        if (katan.roadList[roadIndex].playerIndex !== -1) {
+            return;
+        }
+
         setRoad(roadIndex, player.index);
         setHideRoad();
         setRoadRippleDisabled();
@@ -12657,6 +12668,7 @@ var app = (function () {
 
     const makeRoad = () => {
         katanStore.update(katan => {
+            console.log('makeRoad', katan.playerIndex);
             katan.isMakeRoadMode = true;
             return katan;
         });
@@ -13159,7 +13171,6 @@ var app = (function () {
         alert('도로 2개를 만드세요.');
         katanStore.setMakeRoad2Mode();
         katanStore.makeRoad();
-        recomputePlayer();
     };
 
     const takeResourceCard = async () => {
@@ -13168,22 +13179,19 @@ var app = (function () {
         await takeResource();
         await takeResource();
         katanStore.unsetTakeResourceMode();
-        recomputePlayer();
     };
 
     const getResourceCard = () => {
         alert('자원 2개를 받으세요.');
         katanStore.setGetResourceMode();
-        recomputePlayer();
     };
 
     const getPointCard = () => {
         alert('1점을 얻었습니다.');
         katanStore.plusPoint();
-        recomputePlayer();
     };
 
-    const makeDev = () => {
+    const openCard = async () => {
         let cardType;
 
         katanStore.update(katan => {
@@ -13191,7 +13199,8 @@ var app = (function () {
             katan.afterCardList = [...katan.afterCardList, card];
 
             cardType = card.type;
-            console.log('>>> card.type', cardType);
+
+            console.log('openCard', katan.playerIndex, card.type);
 
             const player = katanStore.getActivePlayer();
 
@@ -13211,7 +13220,7 @@ var app = (function () {
         } else if (cardType === 'getResource') {
             getResourceCard();
         } else if (cardType === 'takeResource') {
-            takeResourceCard();
+            await takeResourceCard();
         }
 
         katanStore.doActionAndTurn();
@@ -13226,7 +13235,7 @@ var app = (function () {
             });
         }
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 14; i++) {
             cardList.push({
                 type: 'knight'
             });
@@ -13276,7 +13285,7 @@ var app = (function () {
         rollDice: false,
         action: false,
         isGetResource: false,
-        isGetResourceFormOtherPlayer: false,
+        isTakeResource: false,
         isMakeRoadMode: false,
         isMakeRoad2Mode: false,
         makeRoadCount: 0,
@@ -13435,9 +13444,13 @@ var app = (function () {
         }),
 
         hasAction: () => {
+            const katan = get_store_value(katanStore);
             const player = katanStore.getActivePlayer();
 
-            return player.trade.tree.enable ||
+            return katan.isKnightMode ||
+                katan.isGetResource ||
+                katan.isMakeRoad2Mode ||
+                player.trade.tree.enable ||
                 player.trade.mud.enable ||
                 player.trade.wheat.enable ||
                 player.trade.sheep.enable ||
@@ -13488,6 +13501,8 @@ var app = (function () {
 
             const katan = get_store_value(katanStore);
             const number = katan.sumDice;
+
+            console.log('play', katan.playerIndex, number);
 
             let numberCount = 2;
 
@@ -13577,6 +13592,7 @@ var app = (function () {
                         });
 
                         katanStore.updatePlayerResource(player.index, type);
+                        recomputePlayer();
                     }
                 }
             }
@@ -13692,7 +13708,7 @@ var app = (function () {
 
         makeRoad: () => makeRoad(),
 
-        makeDev: () => makeDev(),
+        openCard: () => openCard(),
 
         getResource: (resourceType) => {
             update$1(katan => {
@@ -13818,15 +13834,30 @@ var app = (function () {
             return katan;
         }),
 
-        testKnightCard: () => () => knightCard(),
+        testKnightCard: () => update$1(katan => {
+            katan.cardList = [...katan.cardList, {type: 'knight'}];
+            return katan;
+        }),
 
-        testRoadCard: () => roadCard(),
+        testRoadCard: () => update$1(katan => {
+            katan.cardList = [...katan.cardList, {type: 'road'}];
+            return katan;
+        }),
 
-        testTakeResourceCard: () =>  takeResourceCard(),
+        testTakeResourceCard: () => update$1(katan => {
+            katan.cardList = [...katan.cardList, {type: 'takeResource'}];
+            return katan;
+        }),
 
-        testGetPointCard: () => () => getPointCard(),
+        testGetPointCard: () => update$1(katan => {
+            katan.cardList = [...katan.cardList, {type: 'point'}];
+            return katan;
+        }),
 
-        testGetResourceCard: () => getResourceCard()
+        testGetResourceCard: () => update$1(katan => {
+            katan.cardList = [...katan.cardList, {type: 'getResource'}];
+            return katan;
+        })
     };
 
     recomputePlayer();
@@ -14273,11 +14304,11 @@ var app = (function () {
     /* src\Castle.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Castle.svelte";
 
-    // (53:0) {:else}
+    // (52:0) {:else}
     function create_else_block(ctx) {
     	let div1;
     	let div0;
-    	let t_value = /*castle*/ ctx[0].title + "";
+    	let t_value = /*castle*/ ctx[1].title + "";
     	let t;
     	let mounted;
     	let dispose;
@@ -14287,13 +14318,13 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 59, 4, 1693);
+    			add_location(div0, file$1, 58, 4, 1618);
     			attr_dev(div1, "class", "castle svelte-1p25i4a");
-    			attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
-    			toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
-    			toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
-    			toggle_class(div1, "show", /*castle*/ ctx[0].show);
-    			add_location(div1, file$1, 53, 4, 1503);
+    			attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
+    			toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
+    			toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
+    			toggle_class(div1, "show", /*castle*/ ctx[1].show);
+    			add_location(div1, file$1, 52, 4, 1413);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -14301,27 +14332,27 @@ var app = (function () {
     			append_dev(div0, t);
 
     			if (!mounted) {
-    				dispose = listen_dev(div1, "click", /*internalClickMakeCastle*/ ctx[2], false, false, false);
+    				dispose = listen_dev(div1, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 1 && t_value !== (t_value = /*castle*/ ctx[0].title + "")) set_data_dev(t, t_value);
+    			if (dirty & /*castle*/ 2 && t_value !== (t_value = /*castle*/ ctx[1].title + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*castleStyle*/ 2) {
-    				attr_dev(div1, "style", /*castleStyle*/ ctx[1]);
+    			if (dirty & /*castleStyle*/ 4) {
+    				attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
     			}
 
-    			if (dirty & /*castle*/ 1) {
-    				toggle_class(div1, "ripple", /*castle*/ ctx[0].ripple);
+    			if (dirty & /*castle*/ 2) {
+    				toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
     			}
 
-    			if (dirty & /*castle*/ 1) {
-    				toggle_class(div1, "hide", /*castle*/ ctx[0].hide);
+    			if (dirty & /*castle*/ 2) {
+    				toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
     			}
 
-    			if (dirty & /*castle*/ 1) {
-    				toggle_class(div1, "show", /*castle*/ ctx[0].show);
+    			if (dirty & /*castle*/ 2) {
+    				toggle_class(div1, "show", /*castle*/ ctx[1].show);
     			}
     		},
     		d: function destroy(detaching) {
@@ -14335,25 +14366,25 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(53:0) {:else}",
+    		source: "(52:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (48:0) {#if config.debug}
+    // (47:0) {#if config.debug}
     function create_if_block$1(ctx) {
     	let div2;
     	let div0;
-    	let t0_value = /*castle*/ ctx[0].i + "";
+    	let t0_value = /*castle*/ ctx[1].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*castle*/ ctx[0].j + "";
+    	let t2_value = /*castle*/ ctx[1].j + "";
     	let t2;
     	let t3;
     	let div1;
-    	let t4_value = /*castle*/ ctx[0].index + "";
+    	let t4_value = /*castle*/ ctx[1].index + "";
     	let t4;
 
     	const block = {
@@ -14366,11 +14397,11 @@ var app = (function () {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 49, 8, 1409);
-    			add_location(div1, file$1, 50, 8, 1451);
+    			add_location(div0, file$1, 48, 8, 1319);
+    			add_location(div1, file$1, 49, 8, 1361);
     			attr_dev(div2, "class", "castle svelte-1p25i4a");
-    			attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
-    			add_location(div2, file$1, 48, 4, 1359);
+    			attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
+    			add_location(div2, file$1, 47, 4, 1269);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -14383,12 +14414,12 @@ var app = (function () {
     			append_dev(div1, t4);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 1 && t0_value !== (t0_value = /*castle*/ ctx[0].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*castle*/ 1 && t2_value !== (t2_value = /*castle*/ ctx[0].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*castle*/ 1 && t4_value !== (t4_value = /*castle*/ ctx[0].index + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*castle*/ 2 && t0_value !== (t0_value = /*castle*/ ctx[1].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*castle*/ 2 && t2_value !== (t2_value = /*castle*/ ctx[1].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*castle*/ 2 && t4_value !== (t4_value = /*castle*/ ctx[1].index + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*castleStyle*/ 2) {
-    				attr_dev(div2, "style", /*castleStyle*/ ctx[1]);
+    			if (dirty & /*castleStyle*/ 4) {
+    				attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -14400,7 +14431,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(48:0) {#if config.debug}",
+    		source: "(47:0) {#if config.debug}",
     		ctx
     	});
 
@@ -14455,7 +14486,7 @@ var app = (function () {
     function instance$1($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(4, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(3, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Castle", slots, []);
     	let { castleIndex } = $$props;
@@ -14489,7 +14520,6 @@ var app = (function () {
     		return toStyle(styleObject);
     	};
 
-    	const internalClickMakeCastle = () => clickMakeCastle(castleIndex);
     	let castle;
     	let castleStyle;
     	const writable_props = ["castleIndex"];
@@ -14498,8 +14528,10 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Castle> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = () => katanStore.clickMakeCastle(castleIndex);
+
     	$$self.$$set = $$props => {
-    		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
+    		if ("castleIndex" in $$props) $$invalidate(0, castleIndex = $$props.castleIndex);
     	};
 
     	$$self.$capture_state = () => ({
@@ -14507,19 +14539,17 @@ var app = (function () {
     		config,
     		toStyle,
     		castleClickable,
-    		clickMakeCastle,
     		castleIndex,
     		createStyle,
-    		internalClickMakeCastle,
     		castle,
     		castleStyle,
     		$katan
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("castleIndex" in $$props) $$invalidate(3, castleIndex = $$props.castleIndex);
-    		if ("castle" in $$props) $$invalidate(0, castle = $$props.castle);
-    		if ("castleStyle" in $$props) $$invalidate(1, castleStyle = $$props.castleStyle);
+    		if ("castleIndex" in $$props) $$invalidate(0, castleIndex = $$props.castleIndex);
+    		if ("castle" in $$props) $$invalidate(1, castle = $$props.castle);
+    		if ("castleStyle" in $$props) $$invalidate(2, castleStyle = $$props.castleStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -14527,21 +14557,21 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, castleIndex*/ 24) {
+    		if ($$self.$$.dirty & /*$katan, castleIndex*/ 9) {
     			{
-    				$$invalidate(0, castle = $katan.castleList[castleIndex]);
-    				$$invalidate(1, castleStyle = createStyle());
+    				$$invalidate(1, castle = $katan.castleList[castleIndex]);
+    				$$invalidate(2, castleStyle = createStyle());
     			}
     		}
     	};
 
-    	return [castle, castleStyle, internalClickMakeCastle, castleIndex, $katan];
+    	return [castleIndex, castle, castleStyle, $katan, click_handler];
     }
 
     class Castle extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { castleIndex: 3 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { castleIndex: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -14553,7 +14583,7 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || {};
 
-    		if (/*castleIndex*/ ctx[3] === undefined && !("castleIndex" in props)) {
+    		if (/*castleIndex*/ ctx[0] === undefined && !("castleIndex" in props)) {
     			console.warn("<Castle> was created without expected prop 'castleIndex'");
     		}
     	}
@@ -16084,7 +16114,7 @@ var app = (function () {
     	const click_handler = () => katanStore.makeRoad();
     	const click_handler_1 = () => katanStore.makeCastle();
     	const click_handler_2 = () => katanStore.makeCity();
-    	const click_handler_3 = () => katanStore.makeDev();
+    	const click_handler_3 = () => katanStore.openCard();
 
     	$$self.$$set = $$props => {
     		if ("playerIndex" in $$props) $$invalidate(1, playerIndex = $$props.playerIndex);

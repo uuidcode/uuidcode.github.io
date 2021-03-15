@@ -2,6 +2,7 @@ import katanStore from './katan.js'
 import {setRoadRippleEnabled} from "./road";
 import config from "./config";
 import {random} from "./util";
+import {get} from "svelte/store";
 
 export const createCastleList = () => {
     const castleList = [];
@@ -577,12 +578,14 @@ export const getPossibleCastleIndexList = (katan) => {
 };
 
 export const makeCastle = () => katanStore.update(katan => {
+    console.log('makeCastle', katan.playerIndex);
     katan.isMakeCastle = true;
     setNewCastleRippleEnabled();
     return katan;
 });
 
 export const makeCity = () => katanStore.update(katan => {
+    console.log('makeCity', katan.playerIndex);
     katan.isMakeCity = true;
     setNewCityRippleEnabled();
     return katan;
@@ -614,13 +617,18 @@ export const castleClickable = (katan, castleIndex) => {
     return true;
 };
 
-export const clickMakeCastle = (castleIndex) => katanStore.update(katan => {
+export const clickMakeCastle = (castleIndex) =>  {
+    const katan = get(katanStore);
+
     if (!castleClickable(katan, castleIndex)) {
         return katan;
     }
 
     const player = katanStore.getActivePlayer();
     setCastle(castleIndex, player.index);
+
+    console.log('clickMakeCastle', player.index, castleIndex, katan.isMakeCastle);
+
     setHideCastle();
     setCastleRippleDisabled();
 
@@ -631,9 +639,7 @@ export const clickMakeCastle = (castleIndex) => katanStore.update(katan => {
     } else {
         setRoadRippleEnabled(castleIndex);
     }
-
-    return katan;
-});
+};
 
 const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
     let castle = katan.castleList[castleIndex];

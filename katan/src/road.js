@@ -420,6 +420,12 @@ export const clickMakeRoad = (roadIndex) =>{
     const katan = get(katanStore);
     const player = katanStore.getActivePlayer();
 
+    console.log('clickMakeRoad', player.index, roadIndex);
+
+    if (katan.roadList[roadIndex].playerIndex !== -1) {
+        return;
+    }
+
     setRoad(roadIndex, player.index);
     setHideRoad();
     setRoadRippleDisabled();
@@ -487,6 +493,7 @@ export const setNewRoadRippleEnabled = () => katanStore.update(katan => {
 
 export const makeRoad = () => {
     katanStore.update(katan => {
+        console.log('makeRoad', katan.playerIndex);
         katan.isMakeRoadMode = true;
         return katan;
     });

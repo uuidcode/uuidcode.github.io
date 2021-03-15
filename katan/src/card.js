@@ -37,7 +37,6 @@ export const roadCard = () => {
     alert('도로 2개를 만드세요.');
     katanStore.setMakeRoad2Mode();
     katanStore.makeRoad();
-    recomputePlayer();
 };
 
 export const takeResourceCard = async () => {
@@ -46,22 +45,19 @@ export const takeResourceCard = async () => {
     await takeResource();
     await takeResource();
     katanStore.unsetTakeResourceMode();
-    recomputePlayer();
 };
 
 export const getResourceCard = () => {
     alert('자원 2개를 받으세요.');
     katanStore.setGetResourceMode();
-    recomputePlayer();
 };
 
 export const getPointCard = () => {
     alert('1점을 얻었습니다.');
     katanStore.plusPoint();
-    recomputePlayer();
 };
 
-export const makeDev = () => {
+export const openCard = async () => {
     let cardType;
 
     katanStore.update(katan => {
@@ -69,7 +65,8 @@ export const makeDev = () => {
         katan.afterCardList = [...katan.afterCardList, card];
 
         cardType = card.type;
-        console.log('>>> card.type', cardType);
+
+        console.log('openCard', katan.playerIndex, card.type);
 
         const player = katanStore.getActivePlayer();
 
@@ -89,7 +86,7 @@ export const makeDev = () => {
     } else if (cardType === 'getResource') {
         getResourceCard()
     } else if (cardType === 'takeResource') {
-        takeResourceCard();
+        await takeResourceCard();
     }
 
     katanStore.doActionAndTurn();
@@ -104,7 +101,7 @@ export const createCardList = () => {
         })
     }
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 14; i++) {
         cardList.push({
             type: 'knight'
         })

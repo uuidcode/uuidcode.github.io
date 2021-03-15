@@ -5,7 +5,7 @@ import jQuery from 'jquery';
 import {recomputePlayer} from "./player";
 import katanObject from "./katanObject"
 import {random, sleep, move} from "./util";
-import {makeDev, knightCard, roadCard, takeResourceCard, getResourceCard, getPointCard} from "./card";
+import {openCard, knightCard, roadCard, takeResourceCard, getResourceCard, getPointCard} from "./card";
 import {makeRoad, setRoadRippleDisabled, clickMakeRoad} from "./road";
 import {setCastleRippleDisabled, makeCastle, makeCity, clickMakeCastle} from "./castle";
 import {takeResource, moveResource} from "./resource";
@@ -138,9 +138,13 @@ const katanStore = {
     }),
 
     hasAction: () => {
+        const katan = get(katanStore);
         const player = katanStore.getActivePlayer();
 
-        return player.trade.tree.enable ||
+        return katan.isKnightMode ||
+            katan.isGetResource ||
+            katan.isMakeRoad2Mode ||
+            player.trade.tree.enable ||
             player.trade.mud.enable ||
             player.trade.wheat.enable ||
             player.trade.sheep.enable ||
@@ -191,6 +195,8 @@ const katanStore = {
 
         const katan = get(katanStore);
         const number = katan.sumDice;
+
+        console.log('play', katan.playerIndex, number);
 
         let numberCount = 2;
 
@@ -280,6 +286,7 @@ const katanStore = {
                     });
 
                     katanStore.updatePlayerResource(player.index, type);
+                    recomputePlayer();
                 }
             }
         }
@@ -395,7 +402,7 @@ const katanStore = {
 
     makeRoad: () => makeRoad(),
 
-    makeDev: () => makeDev(),
+    openCard: () => openCard(),
 
     getResource: (resourceType) => {
         update(katan => {
@@ -521,15 +528,30 @@ const katanStore = {
         return katan;
     }),
 
-    testKnightCard: () => () => knightCard(),
+    testKnightCard: () => update(katan => {
+        katan.cardList = [...katan.cardList, {type: 'knight'}];
+        return katan;
+    }),
 
-    testRoadCard: () => roadCard(),
+    testRoadCard: () => update(katan => {
+        katan.cardList = [...katan.cardList, {type: 'road'}];
+        return katan;
+    }),
 
-    testTakeResourceCard: () =>  takeResourceCard(),
+    testTakeResourceCard: () => update(katan => {
+        katan.cardList = [...katan.cardList, {type: 'takeResource'}];
+        return katan;
+    }),
 
-    testGetPointCard: () => () => getPointCard(),
+    testGetPointCard: () => update(katan => {
+        katan.cardList = [...katan.cardList, {type: 'point'}];
+        return katan;
+    }),
 
-    testGetResourceCard: () => getResourceCard()
+    testGetResourceCard: () => update(katan => {
+        katan.cardList = [...katan.cardList, {type: 'getResource'}];
+        return katan;
+    })
 };
 
 recomputePlayer();
