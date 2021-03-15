@@ -215,12 +215,6 @@ var app = (function () {
             block.o(local);
         }
     }
-
-    const globals = (typeof window !== 'undefined'
-        ? window
-        : typeof globalThis !== 'undefined'
-            ? globalThis
-            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -13323,6 +13317,15 @@ var app = (function () {
         set,
         update: update$1,
 
+        plus: (playerIndex, resourceType) => {
+            update$1(katan => {
+                katan.playerList[playerIndex].resource[resourceType]++;
+                return katan;
+            });
+
+            recomputePlayer();
+        },
+
         turn: () => update$1(katan => {
             katanStore.getActivePlayer();
 
@@ -16184,17 +16187,17 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[11] = list[i];
+    	child_ctx[12] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
+    	child_ctx[15] = list[i];
     	return child_ctx;
     }
 
-    // (125:36) {#if player.trade[resource.type].enable}
+    // (126:36) {#if player.trade[resource.type].enable}
     function create_if_block_1$1(ctx) {
     	let table;
     	let tr;
@@ -16215,9 +16218,9 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(tr, file$7, 126, 44, 5060);
+    			add_location(tr, file$7, 127, 44, 5156);
     			attr_dev(table, "class", "trade-target-resource svelte-aqu9kt");
-    			add_location(table, file$7, 125, 40, 4977);
+    			add_location(table, file$7, 126, 40, 5073);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -16262,21 +16265,21 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(125:36) {#if player.trade[resource.type].enable}",
+    		source: "(126:36) {#if player.trade[resource.type].enable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (119:32) {#if $katan.isGetResource && $katan.playerIndex === playerIndex}
+    // (120:32) {#if $katan.isGetResource && $katan.playerIndex === playerIndex}
     function create_if_block$4(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
-    	function click_handler() {
-    		return /*click_handler*/ ctx[6](/*resource*/ ctx[11]);
+    	function click_handler_1() {
+    		return /*click_handler_1*/ ctx[7](/*resource*/ ctx[12]);
     	}
 
     	const block = {
@@ -16284,13 +16287,13 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "받기";
     			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-aqu9kt");
-    			add_location(button, file$7, 119, 36, 4573);
+    			add_location(button, file$7, 120, 36, 4669);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", click_handler, false, false, false);
+    				dispose = listen_dev(button, "click", click_handler_1, false, false, false);
     				mounted = true;
     			}
     		},
@@ -16308,14 +16311,14 @@ var app = (function () {
     		block,
     		id: create_if_block$4.name,
     		type: "if",
-    		source: "(119:32) {#if $katan.isGetResource && $katan.playerIndex === playerIndex}",
+    		source: "(120:32) {#if $katan.isGetResource && $katan.playerIndex === playerIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (129:52) {#if resource.type!==tradeResource.type}
+    // (130:52) {#if resource.type!==tradeResource.type}
     function create_if_block_2$1(ctx) {
     	let td;
     	let div;
@@ -16323,7 +16326,7 @@ var app = (function () {
     	let img_src_value;
     	let t0;
     	let button;
-    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "";
+    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[12].type].count + "";
     	let t1;
     	let t2;
     	let button_disabled_value;
@@ -16331,8 +16334,8 @@ var app = (function () {
     	let mounted;
     	let dispose;
 
-    	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[7](/*resource*/ ctx[11], /*tradeResource*/ ctx[14]);
+    	function click_handler_2() {
+    		return /*click_handler_2*/ ctx[8](/*resource*/ ctx[12], /*tradeResource*/ ctx[15]);
     	}
 
     	const block = {
@@ -16346,14 +16349,14 @@ var app = (function () {
     			t2 = text(":1교환");
     			t3 = space();
     			attr_dev(img, "class", "trade-resource svelte-aqu9kt");
-    			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			add_location(img, file$7, 131, 64, 5440);
+    			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[15].type + "_item.png"))) attr_dev(img, "src", img_src_value);
+    			add_location(img, file$7, 132, 64, 5536);
     			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-aqu9kt");
-    			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action;
-    			add_location(button, file$7, 132, 64, 5570);
-    			add_location(div, file$7, 130, 60, 5369);
+    			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[12].type].action;
+    			add_location(button, file$7, 133, 64, 5666);
+    			add_location(div, file$7, 131, 60, 5465);
     			attr_dev(td, "class", "svelte-aqu9kt");
-    			add_location(td, file$7, 129, 56, 5303);
+    			add_location(td, file$7, 130, 56, 5399);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
@@ -16366,20 +16369,20 @@ var app = (function () {
     			append_dev(td, t3);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", click_handler_1, false, false, false);
+    				dispose = listen_dev(button, "click", click_handler_2, false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (dirty & /*resourceList*/ 16 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[14].type + "_item.png"))) {
+    			if (dirty & /*resourceList*/ 16 && img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[15].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 18 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*player, resourceList*/ 18 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[12].type].count + "")) set_data_dev(t1, t1_value);
 
-    			if (dirty & /*player, resourceList*/ 18 && button_disabled_value !== (button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].action)) {
+    			if (dirty & /*player, resourceList*/ 18 && button_disabled_value !== (button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[12].type].action)) {
     				prop_dev(button, "disabled", button_disabled_value);
     			}
     		},
@@ -16394,17 +16397,17 @@ var app = (function () {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(129:52) {#if resource.type!==tradeResource.type}",
+    		source: "(130:52) {#if resource.type!==tradeResource.type}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (128:48) {#each resourceList as tradeResource}
+    // (129:48) {#each resourceList as tradeResource}
     function create_each_block_1$1(ctx) {
     	let if_block_anchor;
-    	let if_block = /*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type && create_if_block_2$1(ctx);
+    	let if_block = /*resource*/ ctx[12].type !== /*tradeResource*/ ctx[15].type && create_if_block_2$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -16416,7 +16419,7 @@ var app = (function () {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (/*resource*/ ctx[11].type !== /*tradeResource*/ ctx[14].type) {
+    			if (/*resource*/ ctx[12].type !== /*tradeResource*/ ctx[15].type) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
@@ -16439,7 +16442,7 @@ var app = (function () {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(128:48) {#each resourceList as tradeResource}",
+    		source: "(129:48) {#each resourceList as tradeResource}",
     		ctx
     	});
 
@@ -16456,20 +16459,26 @@ var app = (function () {
     	let img_class_value;
     	let t0;
     	let div0;
-    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "";
+    	let t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[12].type].count + "";
     	let t1;
     	let t2;
     	let t3;
     	let td1;
-    	let t4_value = /*resource*/ ctx[11].count + "";
+    	let t4_value = /*resource*/ ctx[12].count + "";
     	let t4;
     	let t5;
     	let td2;
     	let t6;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[6](/*resource*/ ctx[12]);
+    	}
 
     	function select_block_type(ctx, dirty) {
     		if (/*$katan*/ ctx[2].isGetResource && /*$katan*/ ctx[2].playerIndex === /*playerIndex*/ ctx[0]) return create_if_block$4;
-    		if (/*player*/ ctx[1].trade[/*resource*/ ctx[11].type].enable) return create_if_block_1$1;
+    		if (/*player*/ ctx[1].trade[/*resource*/ ctx[12].type].enable) return create_if_block_1$1;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -16492,20 +16501,20 @@ var app = (function () {
     			td2 = element("td");
     			if (if_block) if_block.c();
     			t6 = space();
-    			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-aqu9kt");
+    			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[12].type + "_item.png"))) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-aqu9kt");
     			add_location(img, file$7, 111, 36, 4019);
     			attr_dev(div0, "class", "trade-ratio svelte-aqu9kt");
-    			add_location(div0, file$7, 113, 36, 4190);
+    			add_location(div0, file$7, 114, 36, 4286);
     			attr_dev(div1, "class", "resource-item svelte-aqu9kt");
     			add_location(div1, file$7, 110, 32, 3954);
     			attr_dev(td0, "width", "80");
     			attr_dev(td0, "class", "svelte-aqu9kt");
     			add_location(td0, file$7, 109, 28, 3905);
     			attr_dev(td1, "class", "number svelte-aqu9kt");
-    			add_location(td1, file$7, 116, 28, 4363);
+    			add_location(td1, file$7, 117, 28, 4459);
     			attr_dev(td2, "class", "svelte-aqu9kt");
-    			add_location(td2, file$7, 117, 28, 4433);
+    			add_location(td2, file$7, 118, 28, 4529);
     			add_location(tr, file$7, 108, 24, 3871);
     		},
     		m: function mount(target, anchor) {
@@ -16524,18 +16533,25 @@ var app = (function () {
     			append_dev(tr, td2);
     			if (if_block) if_block.m(td2, null);
     			append_dev(tr, t6);
+
+    			if (!mounted) {
+    				dispose = listen_dev(img, "click", click_handler, false, false, false);
+    				mounted = true;
+    			}
     		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceList*/ 16 && img.src !== (img_src_value = "" + (/*resource*/ ctx[11].type + "_item.png"))) {
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*resourceList*/ 16 && img.src !== (img_src_value = "" + (/*resource*/ ctx[12].type + "_item.png"))) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 18 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[11].type + " svelte-aqu9kt")) {
+    			if (dirty & /*player, resourceList*/ 18 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-aqu9kt")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 18 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[11].type].count + "")) set_data_dev(t1, t1_value);
-    			if (dirty & /*resourceList*/ 16 && t4_value !== (t4_value = /*resource*/ ctx[11].count + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*player, resourceList*/ 18 && t1_value !== (t1_value = /*player*/ ctx[1].trade[/*resource*/ ctx[12].type].count + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*resourceList*/ 16 && t4_value !== (t4_value = /*resource*/ ctx[12].count + "")) set_data_dev(t4, t4_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
@@ -16555,6 +16571,9 @@ var app = (function () {
     			if (if_block) {
     				if_block.d();
     			}
+
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -16895,11 +16914,11 @@ var app = (function () {
     			add_location(td26, file$7, 52, 12, 1396);
     			add_location(tr10, file$7, 51, 8, 1378);
     			attr_dev(td27, "class", "header svelte-aqu9kt");
-    			add_location(td27, file$7, 152, 12, 6677);
-    			add_location(tr11, file$7, 151, 8, 6659);
+    			add_location(td27, file$7, 153, 12, 6773);
+    			add_location(tr11, file$7, 152, 8, 6755);
     			attr_dev(td28, "class", "svelte-aqu9kt");
-    			add_location(td28, file$7, 155, 12, 6746);
-    			add_location(tr12, file$7, 154, 8, 6728);
+    			add_location(td28, file$7, 156, 12, 6842);
+    			add_location(tr12, file$7, 155, 8, 6824);
     			attr_dev(table3, "class", "trade-resource svelte-aqu9kt");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			add_location(table3, file$7, 43, 4, 1000);
@@ -17130,8 +17149,9 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Player> was created with unknown prop '${key}'`);
     	});
 
-    	const click_handler = resource => katanStore.getResource(resource.type);
-    	const click_handler_1 = (resource, tradeResource) => katanStore.exchange(resource.type, tradeResource.type);
+    	const click_handler = resource => katanStore.plus(playerIndex, resource.type);
+    	const click_handler_1 = resource => katanStore.getResource(resource.type);
+    	const click_handler_2 = (resource, tradeResource) => katanStore.exchange(resource.type, tradeResource.type);
 
     	$$self.$$set = $$props => {
     		if ("playerIndex" in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
@@ -17183,7 +17203,8 @@ var app = (function () {
     		resourceList,
     		playerList,
     		click_handler,
-    		click_handler_1
+    		click_handler_1,
+    		click_handler_2
     	];
     }
 
@@ -17228,11 +17249,9 @@ var app = (function () {
     });
 
     /* src\App.svelte generated by Svelte v3.32.3 */
-
-    const { console: console_1 } = globals;
     const file$8 = "src\\App.svelte";
 
-    // (83:20) {#if showDebugUi}
+    // (81:20) {#if showDebugUi}
     function create_if_block$5(ctx) {
     	let input;
     	let t0;
@@ -17274,19 +17293,19 @@ var app = (function () {
     			attr_dev(input, "type", "number");
     			set_style(input, "width", "50px");
     			attr_dev(input, "class", "test-dice svelte-165vs91");
-    			add_location(input, file$8, 83, 20, 2988);
+    			add_location(input, file$8, 81, 20, 2932);
     			attr_dev(button0, "class", "btn btn-primary svelte-165vs91");
-    			add_location(button0, file$8, 86, 20, 3154);
+    			add_location(button0, file$8, 85, 20, 3100);
     			attr_dev(button1, "class", "btn btn-primary svelte-165vs91");
-    			add_location(button1, file$8, 88, 20, 3276);
+    			add_location(button1, file$8, 87, 20, 3222);
     			attr_dev(button2, "class", "btn btn-primary svelte-165vs91");
-    			add_location(button2, file$8, 90, 20, 3408);
+    			add_location(button2, file$8, 89, 20, 3354);
     			attr_dev(button3, "class", "btn btn-primary svelte-165vs91");
-    			add_location(button3, file$8, 92, 20, 3538);
+    			add_location(button3, file$8, 91, 20, 3484);
     			attr_dev(button4, "class", "btn btn-primary svelte-165vs91");
-    			add_location(button4, file$8, 94, 20, 3676);
+    			add_location(button4, file$8, 93, 20, 3622);
     			attr_dev(button5, "class", "btn btn-primary svelte-165vs91");
-    			add_location(button5, file$8, 96, 20, 3813);
+    			add_location(button5, file$8, 95, 20, 3759);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, input, anchor);
@@ -17346,7 +17365,7 @@ var app = (function () {
     		block,
     		id: create_if_block$5.name,
     		type: "if",
-    		source: "(83:20) {#if showDebugUi}",
+    		source: "(81:20) {#if showDebugUi}",
     		ctx
     	});
 
@@ -17453,34 +17472,34 @@ var app = (function () {
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
     			attr_dev(td0, "class", "player svelte-165vs91");
-    			add_location(td0, file$8, 68, 12, 2128);
+    			add_location(td0, file$8, 66, 12, 2072);
     			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "class", "svelte-165vs91");
-    			add_location(img, file$8, 72, 63, 2361);
+    			add_location(img, file$8, 70, 63, 2305);
     			attr_dev(h1, "class", "message-header svelte-165vs91");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
-    			add_location(h1, file$8, 72, 16, 2314);
+    			add_location(h1, file$8, 70, 16, 2258);
     			attr_dev(button0, "class", "btn btn-primary svelte-165vs91");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$8, 76, 20, 2593);
+    			add_location(button0, file$8, 74, 20, 2537);
     			attr_dev(button1, "class", "btn btn-primary svelte-165vs91");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 79, 20, 2776);
+    			add_location(button1, file$8, 77, 20, 2720);
     			attr_dev(div0, "class", "dice-container svelte-165vs91");
-    			add_location(div0, file$8, 73, 16, 2425);
+    			add_location(div0, file$8, 71, 16, 2369);
     			attr_dev(td1, "valign", "top");
     			attr_dev(td1, "class", "text-center svelte-165vs91");
     			attr_dev(td1, "width", "1000px");
-    			add_location(td1, file$8, 71, 12, 2244);
+    			add_location(td1, file$8, 69, 12, 2188);
     			attr_dev(td2, "valign", "top");
     			attr_dev(td2, "class", "player svelte-165vs91");
-    			add_location(td2, file$8, 104, 12, 4154);
+    			add_location(td2, file$8, 103, 12, 4100);
     			attr_dev(tr, "class", "svelte-165vs91");
-    			add_location(tr, file$8, 67, 8, 2110);
+    			add_location(tr, file$8, 65, 8, 2054);
     			attr_dev(table, "class", "header svelte-165vs91");
-    			add_location(table, file$8, 66, 4, 2078);
+    			add_location(table, file$8, 64, 4, 2022);
     			attr_dev(div1, "class", "katan svelte-165vs91");
-    			add_location(div1, file$8, 65, 0, 2053);
+    			add_location(div1, file$8, 63, 0, 1997);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -17634,8 +17653,6 @@ var app = (function () {
 
     	jquery(() => {
     		jquery("body").on("keydown", e => {
-    			console.log(">>> e.keyCode", e.keyCode);
-
     			if (e.keyCode === 121) {
     				$$invalidate(3, showDebugUi = !showDebugUi);
     			}
@@ -17677,7 +17694,7 @@ var app = (function () {
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<App> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
     	const click_handler = () => katanStore.play();

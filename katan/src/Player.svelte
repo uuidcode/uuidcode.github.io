@@ -110,6 +110,7 @@
                             <td width="80">
                                 <div class="resource-item">
                                     <img src="{resource.type}_item.png"
+<!--                                         on:click={()=>katan.plus(playerIndex, resource.type)}-->
                                          class="resource player_{player.index}_{resource.type}">
                                     <div class="trade-ratio">{player.trade[resource.type].count}:1</div>
                                 </div>

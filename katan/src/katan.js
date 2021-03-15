@@ -17,6 +17,15 @@ const katanStore = {
     set,
     update,
 
+    plus: (playerIndex, resourceType) => {
+        update(katan => {
+            katan.playerList[playerIndex].resource[resourceType]++;
+            return katan;
+        });
+
+        recomputePlayer();
+    },
+
     turn: () => update(katan => {
         const player = katanStore.getActivePlayer();
 

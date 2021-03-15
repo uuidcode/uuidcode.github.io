@@ -26,8 +26,6 @@
 
     jQuery(() => {
         jQuery('body').on('keydown', (e) => {
-            console.log('>>> e.keyCode', e.keyCode);
-
             if (e.keyCode === 121) {
                 showDebugUi = !showDebugUi;
             }
@@ -84,6 +82,7 @@
                     <input type="number"
                            style="width: 50px"
                            class="test-dice" bind:value={$katan.testDice}>
+
                     <button class="btn btn-primary"
                             on:click={()=>katan.test()}>추가</button>
                     <button class="btn btn-primary"
