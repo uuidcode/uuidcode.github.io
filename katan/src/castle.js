@@ -2,6 +2,7 @@ import katanStore from './katan.js'
 import {setRoadRippleEnabled} from "./road";
 import config from "./config";
 import {random} from "./util";
+import {get} from "svelte/store";
 
 export const createCastleList = (katanObject) => {
     const castleList = [];

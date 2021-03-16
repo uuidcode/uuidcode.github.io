@@ -19,7 +19,7 @@ const katanStore = {
 
     plus: (playerIndex, resourceType) => {
         update(katan => {
-            // katan.playerList[playerIndex].resource[resourceType]++;
+            katan.playerList[playerIndex].resource[resourceType]++;
             return katan;
         });
 
@@ -330,6 +330,16 @@ const katanStore = {
 
     unsetMakeRoad2Mode: () => update(katan => {
         katan.isMakeRoad2Mode = false;
+        return katan;
+    }),
+
+    setMakeRoadMode: () => update(katan => {
+        katan.isMakeRoadMode = true;
+        return katan;
+    }),
+
+    unsetMakeRoadMode: () => update(katan => {
+        katan.isMakeRoadMode = false;
         return katan;
     }),
 

@@ -72,6 +72,7 @@
         cursor: pointer;
         border: 2px solid black;
         opacity: 0.9;
+        z-index: 2000;
     }
 
     .pick {

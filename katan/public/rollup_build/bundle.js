@@ -11417,7 +11417,8 @@ var app = (function () {
                 .css({
                     left: sourceOffset.left + 'px',
                     top: sourceOffset.top + 'px',
-                    position: 'absolute'
+                    position: 'absolute',
+                    zIndex: 2000
                 });
 
             if (!visible) {
@@ -11942,7 +11943,7 @@ var app = (function () {
     };
 
     const clickMakeCastle = (castleIndex) =>  {
-        const katan = get(katanStore);
+        const katan = get_store_value(katanStore);
 
         if (!castleClickable(katan, castleIndex)) {
             return katan;
@@ -12534,21 +12535,47 @@ var app = (function () {
         return 0;
     };
 
-    const setNewRoadRippleEnabled = () => katanStore.update(katan => {
-        katan.roadList = katan.roadList
-            .map(road => {
-                let length = getPossibleRoadLength(katan, road);
+    const setNewRoadRippleEnabled = () => {
+        katanStore.update(katan => {
+            katan.roadList = katan.roadList
+                .map(road => {
+                    let length = getPossibleRoadLength(katan, road);
 
-                if (length > 0) {
-                    road.hide = false;
-                    road.show = true;
-                }
+                    if (length > 0) {
+                        road.hide = false;
+                        road.show = true;
+                    }
 
-                return road;
-            });
+                    return road;
+                });
 
-        return katan;
-    });
+            return katan;
+        });
+
+        const katan = get_store_value(katanStore);
+
+        const roadLength = katan.roadList.filter(road => road.show).length;
+        const player = katanStore.getActivePlayer();
+
+        if (katan.isMakeRoad2Mode) {
+            if (player.construction.road === 0 || roadLength === 0) {
+                alert('도로를 만들수 없습니다.');
+                katanStore.unsetMakeRoad2Mode();
+                katanStore.unsetMakeRoadMode();
+                setHideRoad();
+                return;
+            }
+
+            if (player.construction.road === 1 || roadLength === 1) {
+                alert('도로를 1개만 만들 수 있습니다.');
+                katanStore.unsetMakeRoad2Mode();
+                katanStore.update(katan => {
+                    katan.makeRoadCount = 1;
+                    return katan;
+                });
+            }
+        }
+    };
 
     const makeRoad = () => {
         katanStore.update(katan => {
@@ -12784,6 +12811,7 @@ var app = (function () {
 
                     if (player.point.sum === 10) {
                         alert(`${player.name} 승리`);
+                        return player;
                     }
 
                     return player;
@@ -13209,7 +13237,7 @@ var app = (function () {
 
         plus: (playerIndex, resourceType) => {
             update$1(katan => {
-                // katan.playerList[playerIndex].resource[resourceType]++;
+                katan.playerList[playerIndex].resource[resourceType]++;
                 return katan;
             });
 
@@ -13520,6 +13548,16 @@ var app = (function () {
 
         unsetMakeRoad2Mode: () => update$1(katan => {
             katan.isMakeRoad2Mode = false;
+            return katan;
+        }),
+
+        setMakeRoadMode: () => update$1(katan => {
+            katan.isMakeRoadMode = true;
+            return katan;
+        }),
+
+        unsetMakeRoadMode: () => update$1(katan => {
+            katan.isMakeRoadMode = false;
             return katan;
         }),
 
@@ -14212,7 +14250,7 @@ var app = (function () {
     			div0 = element("div");
     			t = text(t_value);
     			add_location(div0, file$1, 58, 4, 1618);
-    			attr_dev(div1, "class", "castle svelte-1p25i4a");
+    			attr_dev(div1, "class", "castle svelte-voh75m");
     			attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
     			toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
     			toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
@@ -14292,7 +14330,7 @@ var app = (function () {
     			t4 = text(t4_value);
     			add_location(div0, file$1, 48, 8, 1319);
     			add_location(div1, file$1, 49, 8, 1361);
-    			attr_dev(div2, "class", "castle svelte-1p25i4a");
+    			attr_dev(div2, "class", "castle svelte-voh75m");
     			attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
     			add_location(div2, file$1, 47, 4, 1269);
     		},
@@ -14716,7 +14754,7 @@ var app = (function () {
     			div0 = element("div");
     			t = text(t_value);
     			add_location(div0, file$3, 59, 8, 1529);
-    			attr_dev(div1, "class", "road svelte-1a81mvc");
+    			attr_dev(div1, "class", "road svelte-1mp7gxw");
     			attr_dev(div1, "style", /*roadStyle*/ ctx[2]);
     			toggle_class(div1, "ripple1", /*road*/ ctx[1].ripple);
     			toggle_class(div1, "pick", /*road*/ ctx[1].ripple);
@@ -14801,7 +14839,7 @@ var app = (function () {
     			t4 = text(t4_value);
     			add_location(div0, file$3, 48, 8, 1201);
     			add_location(div1, file$3, 49, 8, 1238);
-    			attr_dev(div2, "class", "road svelte-1a81mvc");
+    			attr_dev(div2, "class", "road svelte-1mp7gxw");
     			attr_dev(div2, "style", /*roadStyle*/ ctx[2]);
     			add_location(div2, file$3, 47, 4, 1156);
     		},
@@ -16109,7 +16147,7 @@ var app = (function () {
     			}
 
     			add_location(tr, file$7, 127, 44, 5170);
-    			attr_dev(table, "class", "trade-target-resource svelte-1mhhrhi");
+    			attr_dev(table, "class", "trade-target-resource svelte-zrpzlp");
     			add_location(table, file$7, 126, 40, 5087);
     		},
     		m: function mount(target, anchor) {
@@ -16176,7 +16214,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "받기";
-    			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-1mhhrhi");
+    			attr_dev(button, "class", "get-resource-button btn btn-primary btn-sm svelte-zrpzlp");
     			add_location(button, file$7, 120, 36, 4683);
     		},
     		m: function mount(target, anchor) {
@@ -16238,15 +16276,15 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text(":1교환");
     			t3 = space();
-    			attr_dev(img, "class", "trade-resource svelte-1mhhrhi");
+    			attr_dev(img, "class", "trade-resource svelte-zrpzlp");
     			if (img.src !== (img_src_value = "" + (/*tradeResource*/ ctx[15].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "");
     			add_location(img, file$7, 132, 64, 5550);
-    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-1mhhrhi");
+    			attr_dev(button, "class", "trade-button btn btn-primary btn-sm svelte-zrpzlp");
     			button.disabled = button_disabled_value = !/*player*/ ctx[1].trade[/*resource*/ ctx[12].type].action;
     			add_location(button, file$7, 133, 64, 5687);
     			add_location(div, file$7, 131, 60, 5479);
-    			attr_dev(td, "class", "svelte-1mhhrhi");
+    			attr_dev(td, "class", "svelte-zrpzlp");
     			add_location(td, file$7, 130, 56, 5413);
     		},
     		m: function mount(target, anchor) {
@@ -16394,18 +16432,18 @@ var app = (function () {
     			t6 = space();
     			if (img.src !== (img_src_value = "" + (/*resource*/ ctx[12].type + "_item.png"))) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "");
-    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-1mhhrhi");
+    			attr_dev(img, "class", img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-zrpzlp");
     			add_location(img, file$7, 111, 36, 4026);
-    			attr_dev(div0, "class", "trade-ratio svelte-1mhhrhi");
+    			attr_dev(div0, "class", "trade-ratio svelte-zrpzlp");
     			add_location(div0, file$7, 114, 36, 4300);
-    			attr_dev(div1, "class", "resource-item svelte-1mhhrhi");
+    			attr_dev(div1, "class", "resource-item svelte-zrpzlp");
     			add_location(div1, file$7, 110, 32, 3961);
     			attr_dev(td0, "width", "80");
-    			attr_dev(td0, "class", "svelte-1mhhrhi");
+    			attr_dev(td0, "class", "svelte-zrpzlp");
     			add_location(td0, file$7, 109, 28, 3912);
-    			attr_dev(td1, "class", "number svelte-1mhhrhi");
+    			attr_dev(td1, "class", "number svelte-zrpzlp");
     			add_location(td1, file$7, 117, 28, 4473);
-    			attr_dev(td2, "class", "svelte-1mhhrhi");
+    			attr_dev(td2, "class", "svelte-zrpzlp");
     			add_location(td2, file$7, 118, 28, 4543);
     			add_location(tr, file$7, 108, 24, 3878);
     		},
@@ -16438,7 +16476,7 @@ var app = (function () {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*player, resourceList*/ 18 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-1mhhrhi")) {
+    			if (dirty & /*player, resourceList*/ 18 && img_class_value !== (img_class_value = "resource player_" + /*player*/ ctx[1].index + "_" + /*resource*/ ctx[12].type + " svelte-zrpzlp")) {
     				attr_dev(img, "class", img_class_value);
     			}
 
@@ -16721,98 +16759,98 @@ var app = (function () {
     			create_component(construction.$$.fragment);
     			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "");
-    			attr_dev(img, "class", "svelte-1mhhrhi");
+    			attr_dev(img, "class", "svelte-zrpzlp");
     			add_location(img, file$7, 47, 43, 1197);
-    			attr_dev(div0, "class", "player-header svelte-1mhhrhi");
+    			attr_dev(div0, "class", "player-header svelte-zrpzlp");
     			add_location(div0, file$7, 47, 16, 1170);
-    			attr_dev(div1, "class", "player-header player-sum svelte-1mhhrhi");
+    			attr_dev(div1, "class", "player-header player-sum svelte-zrpzlp");
     			add_location(div1, file$7, 48, 16, 1252);
-    			attr_dev(td0, "class", "name svelte-1mhhrhi");
+    			attr_dev(td0, "class", "name svelte-zrpzlp");
     			set_style(td0, "background-color", /*player*/ ctx[1].color);
     			add_location(td0, file$7, 45, 12, 1078);
     			add_location(tr0, file$7, 44, 8, 1060);
     			attr_dev(td1, "colspan", "3");
-    			attr_dev(td1, "class", "header svelte-1mhhrhi");
+    			attr_dev(td1, "class", "header svelte-zrpzlp");
     			add_location(td1, file$7, 55, 24, 1507);
     			add_location(tr1, file$7, 54, 20, 1477);
-    			attr_dev(td2, "class", "svelte-1mhhrhi");
+    			attr_dev(td2, "class", "svelte-zrpzlp");
     			add_location(td2, file$7, 62, 36, 1782);
-    			attr_dev(td3, "class", "svelte-1mhhrhi");
+    			attr_dev(td3, "class", "svelte-zrpzlp");
     			add_location(td3, file$7, 63, 36, 1831);
-    			attr_dev(td4, "class", "svelte-1mhhrhi");
+    			attr_dev(td4, "class", "svelte-zrpzlp");
     			add_location(td4, file$7, 64, 36, 1880);
-    			attr_dev(td5, "class", "svelte-1mhhrhi");
+    			attr_dev(td5, "class", "svelte-zrpzlp");
     			add_location(td5, file$7, 65, 36, 1929);
-    			attr_dev(td6, "class", "svelte-1mhhrhi");
+    			attr_dev(td6, "class", "svelte-zrpzlp");
     			add_location(td6, file$7, 66, 36, 1982);
     			attr_dev(tr2, "class", "point");
     			add_location(tr2, file$7, 61, 32, 1726);
-    			attr_dev(td7, "class", "svelte-1mhhrhi");
+    			attr_dev(td7, "class", "svelte-zrpzlp");
     			add_location(td7, file$7, 69, 36, 2112);
-    			attr_dev(td8, "class", "svelte-1mhhrhi");
+    			attr_dev(td8, "class", "svelte-zrpzlp");
     			add_location(td8, file$7, 70, 36, 2180);
-    			attr_dev(td9, "class", "svelte-1mhhrhi");
+    			attr_dev(td9, "class", "svelte-zrpzlp");
     			add_location(td9, file$7, 71, 36, 2246);
-    			attr_dev(td10, "class", "svelte-1mhhrhi");
+    			attr_dev(td10, "class", "svelte-zrpzlp");
     			add_location(td10, file$7, 72, 36, 2313);
-    			attr_dev(td11, "class", "svelte-1mhhrhi");
+    			attr_dev(td11, "class", "svelte-zrpzlp");
     			add_location(td11, file$7, 73, 36, 2379);
     			add_location(tr3, file$7, 68, 32, 2070);
     			attr_dev(table0, "width", "100%");
     			add_location(table0, file$7, 59, 28, 1670);
     			attr_dev(td12, "colspan", "3");
-    			attr_dev(td12, "class", "svelte-1mhhrhi");
+    			attr_dev(td12, "class", "svelte-zrpzlp");
     			add_location(td12, file$7, 58, 24, 1624);
     			add_location(tr4, file$7, 57, 20, 1594);
     			attr_dev(td13, "colspan", "3");
-    			attr_dev(td13, "class", "header svelte-1mhhrhi");
+    			attr_dev(td13, "class", "header svelte-zrpzlp");
     			add_location(td13, file$7, 80, 24, 2598);
     			add_location(tr5, file$7, 79, 20, 2568);
-    			attr_dev(td14, "class", "svelte-1mhhrhi");
+    			attr_dev(td14, "class", "svelte-zrpzlp");
     			add_location(td14, file$7, 86, 36, 2878);
-    			attr_dev(td15, "class", "svelte-1mhhrhi");
+    			attr_dev(td15, "class", "svelte-zrpzlp");
     			add_location(td15, file$7, 87, 36, 2927);
-    			attr_dev(td16, "class", "svelte-1mhhrhi");
+    			attr_dev(td16, "class", "svelte-zrpzlp");
     			add_location(td16, file$7, 88, 36, 2976);
-    			attr_dev(td17, "class", "svelte-1mhhrhi");
+    			attr_dev(td17, "class", "svelte-zrpzlp");
     			add_location(td17, file$7, 89, 36, 3025);
-    			attr_dev(td18, "class", "svelte-1mhhrhi");
+    			attr_dev(td18, "class", "svelte-zrpzlp");
     			add_location(td18, file$7, 90, 36, 3074);
     			add_location(tr6, file$7, 85, 32, 2836);
-    			attr_dev(td19, "class", "svelte-1mhhrhi");
+    			attr_dev(td19, "class", "svelte-zrpzlp");
     			add_location(td19, file$7, 93, 36, 3202);
-    			attr_dev(td20, "class", "svelte-1mhhrhi");
+    			attr_dev(td20, "class", "svelte-zrpzlp");
     			add_location(td20, file$7, 94, 36, 3281);
-    			attr_dev(td21, "class", "svelte-1mhhrhi");
+    			attr_dev(td21, "class", "svelte-zrpzlp");
     			add_location(td21, file$7, 95, 36, 3358);
-    			attr_dev(td22, "class", "svelte-1mhhrhi");
+    			attr_dev(td22, "class", "svelte-zrpzlp");
     			add_location(td22, file$7, 96, 36, 3436);
-    			attr_dev(td23, "class", "svelte-1mhhrhi");
+    			attr_dev(td23, "class", "svelte-zrpzlp");
     			add_location(td23, file$7, 97, 36, 3511);
     			add_location(tr7, file$7, 92, 32, 3160);
-    			attr_dev(table1, "class", "construction svelte-1mhhrhi");
+    			attr_dev(table1, "class", "construction svelte-zrpzlp");
     			attr_dev(table1, "width", "100%");
     			add_location(table1, file$7, 84, 28, 2761);
     			attr_dev(td24, "colspan", "3");
-    			attr_dev(td24, "class", "svelte-1mhhrhi");
+    			attr_dev(td24, "class", "svelte-zrpzlp");
     			add_location(td24, file$7, 83, 24, 2715);
     			add_location(tr8, file$7, 82, 20, 2685);
     			attr_dev(td25, "colspan", "3");
-    			attr_dev(td25, "class", "header svelte-1mhhrhi");
+    			attr_dev(td25, "class", "header svelte-zrpzlp");
     			add_location(td25, file$7, 104, 24, 3731);
     			add_location(tr9, file$7, 103, 20, 3701);
-    			attr_dev(table2, "class", "inner-resource svelte-1mhhrhi");
+    			attr_dev(table2, "class", "inner-resource svelte-zrpzlp");
     			add_location(table2, file$7, 53, 16, 1425);
-    			attr_dev(td26, "class", "svelte-1mhhrhi");
+    			attr_dev(td26, "class", "svelte-zrpzlp");
     			add_location(td26, file$7, 52, 12, 1403);
     			add_location(tr10, file$7, 51, 8, 1385);
-    			attr_dev(td27, "class", "header svelte-1mhhrhi");
+    			attr_dev(td27, "class", "header svelte-zrpzlp");
     			add_location(td27, file$7, 153, 12, 6794);
     			add_location(tr11, file$7, 152, 8, 6776);
-    			attr_dev(td28, "class", "svelte-1mhhrhi");
+    			attr_dev(td28, "class", "svelte-zrpzlp");
     			add_location(td28, file$7, 156, 12, 6863);
     			add_location(tr12, file$7, 155, 8, 6845);
-    			attr_dev(table3, "class", "trade-resource svelte-1mhhrhi");
+    			attr_dev(table3, "class", "trade-resource svelte-zrpzlp");
     			attr_dev(table3, "style", /*playerStyle*/ ctx[3]);
     			add_location(table3, file$7, 43, 4, 1000);
     			add_location(main, file$7, 42, 0, 988);

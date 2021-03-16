@@ -62,7 +62,8 @@ export const move = (option) => {
             .css({
                 left: sourceOffset.left + 'px',
                 top: sourceOffset.top + 'px',
-                position: 'absolute'
+                position: 'absolute',
+                zIndex: 2000
             });
 
         if (!visible) {

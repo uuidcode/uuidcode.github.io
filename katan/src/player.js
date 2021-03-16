@@ -164,6 +164,7 @@ export const recomputePlayer = () => {
 
                 if (player.point.sum === 10) {
                     alert(`${player.name} 승리`);
+                    return player;
                 }
 
                 return player;

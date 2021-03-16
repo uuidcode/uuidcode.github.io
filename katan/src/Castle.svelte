@@ -69,7 +69,7 @@
         font-weight: bolder;
         font-size: 12px;
         cursor: pointer;
-        z-index: 20;
+        z-index: 2000;
         border: 2px solid black;
         opacity: 0.9;
     }

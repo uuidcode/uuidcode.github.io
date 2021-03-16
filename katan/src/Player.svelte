@@ -211,7 +211,8 @@
 
     td {
         border: 1px solid lightskyblue;
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: bolder;
     }
 
     button {

@@ -475,21 +475,47 @@ export const getPossibleRoadLength = (katan, road) => {
     return 0;
 };
 
-export const setNewRoadRippleEnabled = () => katanStore.update(katan => {
-    katan.roadList = katan.roadList
-        .map(road => {
-            let length = getPossibleRoadLength(katan, road);
+export const setNewRoadRippleEnabled = () => {
+    katanStore.update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                let length = getPossibleRoadLength(katan, road);
 
-            if (length > 0) {
-                road.hide = false;
-                road.show = true;
-            }
+                if (length > 0) {
+                    road.hide = false;
+                    road.show = true;
+                }
 
-            return road;
-        });
+                return road;
+            });
 
-    return katan;
-});
+        return katan;
+    });
+
+    const katan = get(katanStore);
+
+    const roadLength = katan.roadList.filter(road => road.show).length;
+    const player = katanStore.getActivePlayer();
+
+    if (katan.isMakeRoad2Mode) {
+        if (player.construction.road === 0 || roadLength === 0) {
+            alert('도로를 만들수 없습니다.');
+            katanStore.unsetMakeRoad2Mode();
+            katanStore.unsetMakeRoadMode();
+            setHideRoad();
+            return;
+        }
+
+        if (player.construction.road === 1 || roadLength === 1) {
+            alert('도로를 1개만 만들 수 있습니다.');
+            katanStore.unsetMakeRoad2Mode();
+            katanStore.update(katan => {
+                katan.makeRoadCount = 1;
+                return katan;
+            });
+        }
+    }
+};
 
 export const makeRoad = () => {
     katanStore.update(katan => {
