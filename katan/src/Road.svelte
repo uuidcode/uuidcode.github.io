@@ -17,7 +17,7 @@
             backgroundColor: player.color
         };
 
-        if (!$katan.isMakeRoad) {
+        if (!$katan.isMakeRoadMode) {
             styleObject.cursor = 'default';
         }
 
@@ -72,6 +72,7 @@
         cursor: pointer;
         border: 2px solid black;
         opacity: 0.9;
+        z-index: 2000;
     }
 
     .pick {

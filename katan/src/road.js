@@ -2,6 +2,7 @@ import katanStore from './katan.js'
 import {recomputePlayer} from "./player";
 import {showConstructableCastle} from "./castle";
 import config from "./config";
+import {get} from "svelte/store";
 
 const getLoadTopBySingle = (multiple) => {
     return multiple * config.cell.height / 8 - config.load.width / 2 ;
@@ -415,30 +416,33 @@ export const setRoadRippleDisabled = () => katanStore.update(katan => {
     return katan;
 });
 
-export const clickMakeRoad = (roadIndex) => katanStore.update(katan => {
-    if (!katan.isMakeRoad) {
-        return katan;
+export const clickMakeRoad = (roadIndex) =>{
+    const katan = get(katanStore);
+    const player = katanStore.getActivePlayer();
+
+    console.log('clickMakeRoad', player.index, roadIndex);
+
+    if (katan.roadList[roadIndex].playerIndex !== -1) {
+        return;
     }
 
-    const player = katanStore.getActivePlayer();
     setRoad(roadIndex, player.index);
     setHideRoad();
     setRoadRippleDisabled();
 
-    if (katan.isStart) {
+    if (katan.isStartMode) {
         endMakeRoad();
-    } else {
-        showConstructableCastle();
-        endMakeRoad();
-        katanStore.turn();
-
-        if (katanStore.isStartable()) {
-            katanStore.start();
-        }
+        return;
     }
 
-    return katan;
-});
+    showConstructableCastle();
+    endMakeRoad();
+    katanStore.turn();
+
+    if (katanStore.isStartable()) {
+        katanStore.start();
+    }
+};
 
 export const getPossibleRoadTotalLength = (katan) => {
     return katan.roadList
@@ -471,33 +475,59 @@ export const getPossibleRoadLength = (katan, road) => {
     return 0;
 };
 
-export const setNewRoadRippleEnabled = () => katanStore.update(katan => {
-    katan.roadList = katan.roadList
-        .map(road => {
-            let length = getPossibleRoadLength(katan, road);
+export const setNewRoadRippleEnabled = () => {
+    katanStore.update(katan => {
+        katan.roadList = katan.roadList
+            .map(road => {
+                let length = getPossibleRoadLength(katan, road);
 
-            if (length > 0) {
-                road.hide = false;
-                road.show = true;
-            }
+                if (length > 0) {
+                    road.hide = false;
+                    road.show = true;
+                }
 
-            return road;
-        });
+                return road;
+            });
 
-    return katan;
-});
+        return katan;
+    });
 
-export const makeRoad = () => katanStore.update(katan => {
-    katan.isMakeRoad = true;
+    const katan = get(katanStore);
+
+    const roadLength = katan.roadList.filter(road => road.show).length;
+    const player = katanStore.getActivePlayer();
+
+    if (katan.isMakeRoad2Mode) {
+        if (player.construction.road === 0 || roadLength === 0) {
+            alert('도로를 만들수 없습니다.');
+            katanStore.unsetMakeRoad2Mode();
+            katanStore.unsetMakeRoadMode();
+            setHideRoad();
+            return;
+        }
+
+        if (player.construction.road === 1 || roadLength === 1) {
+            alert('도로를 1개만 만들 수 있습니다.');
+            katanStore.unsetMakeRoad2Mode();
+            katanStore.update(katan => {
+                katan.makeRoadCount = 1;
+                return katan;
+            });
+        }
+    }
+};
+
+export const makeRoad = () => {
+    katanStore.update(katan => {
+        console.log('makeRoad', katan.playerIndex);
+        katan.isMakeRoadMode = true;
+        return katan;
+    });
 
     setNewRoadRippleEnabled();
-    recomputePlayer();
-
-    return katan;
-});
+};
 
 export const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => {
-    katan.isMakeRoad = true;
     katan.message = '도로을 만들곳을 선택하세요.';
     let roadIndexList = katan.castleList[castleIndex].roadIndexList;
 
@@ -520,18 +550,18 @@ export const setRoadRippleEnabled = (castleIndex) => katanStore.update(katan => 
 });
 
 const endMakeRoad = () => katanStore.update(katan => {
-    if (katan.isMakeRoad2) {
+    if (katan.isMakeRoad2Mode) {
         katan.makeRoadCount += 1;
     } else {
-        katan.isMakeRoad = false;
+        katan.isMakeRoadMode = false;
     }
 
-    if (katan.isStart) {
-        if (katan.isMakeRoad2 && katan.makeRoadCount === 1) {
+    if (katan.isStartMode) {
+        if (katan.isMakeRoad2Mode && katan.makeRoadCount === 1) {
             makeRoad();
         } else {
-            katan.isMakeRoad2 = false;
-            katan.isMakeRoad = false;
+            katan.isMakeRoad2Mode = false;
+            katan.isMakeRoadMode = false;
             katan.makeRoadCount = 0;
             katanStore.doActionAndTurn();
         }
@@ -550,7 +580,9 @@ export const setRoad = (roadIndex, playerIndex) => katanStore.update(katan => {
     player.pickRoad += 1;
     player.construction.road -= 1;
 
-    if (katan.isStart && katan.isMakeRoad && katan.isMakeRoad2 === false) {
+    if (katan.isStartMode &&
+        katan.isMakeRoadMode &&
+        katan.isMakeRoad2Mode === false) {
         player.resource.tree -= 1;
         player.resource.mud -= 1;
     }

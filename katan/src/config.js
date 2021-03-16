@@ -21,7 +21,7 @@ const config = {
         width: 60,
         height: 60,
     },
-    buglar: {
+    burglar: {
         width: 90,
         height: 90,
     },

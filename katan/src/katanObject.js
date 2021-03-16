@@ -29,9 +29,9 @@ const katanObject = {
     rollDice: false,
     action: false,
     isGetResource: false,
-    isGetResourceFormOtherPlayer: false,
-    isMakeRoad: false,
-    isMakeRoad2: false,
+    isTakeResource: false,
+    isMakeRoadMode: false,
+    isMakeRoad2Mode: false,
     makeRoadCount: 0,
     getResourceCount: 0,
     takeResourceFromBurglarCount: 0,
@@ -47,7 +47,7 @@ const katanObject = {
     sumDice: 12,
     mode: 'ready',
     isReady: true,
-    isStart: false,
+    isStartMode: false,
     playerIndex: 0,
     showResourceModal: false
 };
@@ -56,7 +56,7 @@ katanObject.cardList = createCardList();
 katanObject.afterCardList = [];
 
 katanObject.playerList = createPlayerList();
-katanObject.castleList = createCastleList();
+katanObject.castleList = createCastleList(katanObject);
 katanObject.roadList = createRoadList();
 katanObject.resourceList = createResourceList();
 

@@ -45,7 +45,7 @@
         <tr>
             <td class="name"
                 style="background-color:{player.color}">
-                <div class="player-header"><img src={player.image}></div>
+                <div class="player-header"><img src={player.image} alt=""></div>
                 <div class="player-header player-sum">점수 {player.point.sum} 자원 {player.resourceSum}</div>
             </td>
         </tr>
@@ -109,7 +109,8 @@
                         <tr>
                             <td width="80">
                                 <div class="resource-item">
-                                    <img src="{resource.type}_item.png"
+                                    <img src="{resource.type}_item.png" alt=""
+                                         on:click={()=>katan.plus(playerIndex, resource.type)}
                                          class="resource player_{player.index}_{resource.type}">
                                     <div class="trade-ratio">{player.trade[resource.type].count}:1</div>
                                 </div>
@@ -129,7 +130,7 @@
                                                     {#if resource.type!==tradeResource.type}
                                                         <td>
                                                             <div>
-                                                                <img class="trade-resource" src="{tradeResource.type}_item.png">
+                                                                <img class="trade-resource" src="{tradeResource.type}_item.png" alt="">
                                                                 <button class="trade-button btn btn-primary btn-sm"
                                                                         disabled={!player.trade[resource.type].action}
                                                                         on:click={()=>katan.exchange(resource.type, tradeResource.type)}>
@@ -161,10 +162,6 @@
 </main>
 
 <style>
-    .resource td {
-        text-align: center;
-    }
-
     img.resource {
         width: 74px;
         height: 74px;
@@ -214,7 +211,8 @@
 
     td {
         border: 1px solid lightskyblue;
-        font-size: 12px;
+        font-size: 14px;
+        font-weight: bolder;
     }
 
     button {
@@ -227,13 +225,6 @@
 
     .trade-target-resource td {
         border: unset;
-    }
-
-    .construction-resource img {
-        width: 60px;
-        height: 60px;
-        filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5));
-        margin: 4px;
     }
 
     table.inner-resource {

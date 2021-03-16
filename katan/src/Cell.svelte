@@ -30,8 +30,8 @@
     };
 
     const getNumberStyleByResource = () => {
-        if (resource.buglar) {
-            return getNumberStyle(config.buglar.width, config.buglar.height);
+        if (resource.burglar) {
+            return getNumberStyle(config.burglar.width, config.burglar.height);
         }
 
         return getNumberStyle(config.number.width, config.number.height);
@@ -75,10 +75,10 @@
              on:click={()=>katan.moveBurglar(resource.index)}
              class:pick={resource.numberRipple}
              class:ripple={resource.numberRipple}
-             class:buglar={resource.buglar}
+             class:burglar={resource.burglar}
              style={numberStyle}>
             {resource.number}
-            {#if resource.buglar}
+            {#if resource.burglar}
                 (도둑)
             {/if}
 
@@ -89,7 +89,7 @@
     </div>
 </div>
 
-{#if resource.buglar===false}
+{#if resource.burglar===false}
     <div>
     <img src="{resourceImage}"
          style="{resourceImageStyle}"
@@ -118,7 +118,7 @@
         cursor: pointer;
     }
 
-    .buglar {
+    .burglar {
         background-color: red;
     }
 

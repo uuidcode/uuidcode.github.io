@@ -2,7 +2,7 @@
     import katan from './katan'
     import config from './config.js'
     import { toStyle } from './util.js'
-    import {castleClickable, clickMakeCastle} from './castle'
+    import {castleClickable} from './castle'
 
     export let castleIndex;
 
@@ -35,7 +35,6 @@
         return toStyle(styleObject);
     };
 
-    const internalClickMakeCastle = () => clickMakeCastle(castleIndex);
     let castle;
     let castleStyle;
 
@@ -52,7 +51,7 @@
     </div>
 {:else}
     <div class="castle"
-         on:click={internalClickMakeCastle}
+         on:click={()=>katan.clickMakeCastle(castleIndex)}
     class:ripple={castle.ripple}
     class:hide={castle.hide}
     class:show={castle.show}
@@ -70,7 +69,7 @@
         font-weight: bolder;
         font-size: 12px;
         cursor: pointer;
-        z-index: 20;
+        z-index: 2000;
         border: 2px solid black;
         opacity: 0.9;
     }

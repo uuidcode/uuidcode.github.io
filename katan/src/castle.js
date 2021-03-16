@@ -2,8 +2,9 @@ import katanStore from './katan.js'
 import {setRoadRippleEnabled} from "./road";
 import config from "./config";
 import {random} from "./util";
+import {get} from "svelte/store";
 
-export const createCastleList = () => {
+export const createCastleList = (katanObject) => {
     const castleList = [];
 
     for (let i = 0; i < 6; i++) {
@@ -86,6 +87,9 @@ export const createCastleList = () => {
     castleList.forEach(castle => castle.constructable = castle.show);
     castleList.forEach(castle => castle.title = '');
     castleList.forEach(castle => castle.tradable = false);
+    castleList.forEach(castle => castle.port = {
+        enabled: false
+    });
 
     castleList[0].port = {
         enabled: true,
@@ -132,26 +136,6 @@ export const createCastleList = () => {
         placement: 'left'
     };
 
-    castleList[9].port = {
-        enabled: false
-    };
-
-    castleList[10].port = {
-        enabled: false
-    };
-
-    castleList[11].port = {
-        enabled: false
-    };
-
-    castleList[12].port = {
-        enabled: false
-    };
-
-    castleList[13].port = {
-        enabled: false
-    };
-
     castleList[14].port = {
         enabled: true,
         placement: 'right'
@@ -170,34 +154,6 @@ export const createCastleList = () => {
     castleList[17].port = {
         enabled: true,
         placement: 'left'
-    };
-
-    castleList[18].port = {
-        enabled: false
-    };
-
-    castleList[19].port = {
-        enabled: false
-    };
-
-    castleList[20].port = {
-        enabled: false
-    };
-
-    castleList[21].port = {
-        enabled: false
-    };
-
-    castleList[22].port = {
-        enabled: false
-    };
-
-    castleList[23].port = {
-        enabled: false
-    };
-
-    castleList[24].port = {
-        enabled: false
     };
 
     castleList[25].port = {
@@ -220,34 +176,6 @@ export const createCastleList = () => {
         placement: 'left'
     };
 
-    castleList[29].port = {
-        enabled: false
-    };
-
-    castleList[30].port = {
-        enabled: false
-    };
-
-    castleList[31].port = {
-        enabled: false
-    };
-
-    castleList[32].port = {
-        enabled: false
-    };
-
-    castleList[33].port = {
-        enabled: false
-    };
-
-    castleList[34].port = {
-        enabled: false
-    };
-
-    castleList[35].port = {
-        enabled: false
-    };
-
     castleList[36].port = {
         enabled: true,
         placement: 'right'
@@ -266,26 +194,6 @@ export const createCastleList = () => {
     castleList[39].port = {
         enabled: true,
         placement: 'left'
-    };
-
-    castleList[40].port = {
-        enabled: false
-    };
-
-    castleList[41].port = {
-        enabled: false
-    };
-
-    castleList[42].port = {
-        enabled: false
-    };
-
-    castleList[43].port = {
-        enabled: false
-    };
-
-    castleList[44].port = {
-        enabled: false
     };
 
     castleList[45].port = {
@@ -327,6 +235,7 @@ export const createCastleList = () => {
         enabled: true,
         placement: 'bottom'
     };
+
     castleList[53].port = {
         enabled: true,
         placement: 'bottom'
@@ -342,30 +251,12 @@ export const createCastleList = () => {
     }
 
     for (let i = 0; i < 2; i++) {
-        portList.push({
-            trade: 2,
-            type: 'tree'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'mud'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'wheat'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'sheep'
-        });
-
-        portList.push({
-            trade: 2,
-            type: 'iron'
-        });
+        katanObject.resourceTypeList
+            .map(resourceType => ({
+                trade: 2,
+                type: resourceType.type
+            }))
+            .forEach(port => portList.push(port));
     }
 
     castleList
@@ -558,9 +449,6 @@ export const getPossibleCastleIndexList = (katan) => {
                 .filter(castleIndex => katan.castleList[castleIndex].playerIndex === -1)
                 .length;
 
-            console.log('>>> castleLength1', castle.i,
-                castle.j, castle.index, castleLength);
-
             if (castleLength === castle.castleIndexList.length) {
                 const castleLength = castle.roadIndexList
                     .filter(roadIndex => {
@@ -580,12 +468,14 @@ export const getPossibleCastleIndexList = (katan) => {
 };
 
 export const makeCastle = () => katanStore.update(katan => {
+    console.log('makeCastle', katan.playerIndex);
     katan.isMakeCastle = true;
     setNewCastleRippleEnabled();
     return katan;
 });
 
 export const makeCity = () => katanStore.update(katan => {
+    console.log('makeCity', katan.playerIndex);
     katan.isMakeCity = true;
     setNewCityRippleEnabled();
     return katan;
@@ -617,13 +507,18 @@ export const castleClickable = (katan, castleIndex) => {
     return true;
 };
 
-export const clickMakeCastle = (castleIndex) => katanStore.update(katan => {
+export const clickMakeCastle = (castleIndex) =>  {
+    const katan = get(katanStore);
+
     if (!castleClickable(katan, castleIndex)) {
         return katan;
     }
 
     const player = katanStore.getActivePlayer();
     setCastle(castleIndex, player.index);
+
+    console.log('clickMakeCastle', player.index, castleIndex, katan.isMakeCastle);
+
     setHideCastle();
     setCastleRippleDisabled();
 
@@ -634,9 +529,7 @@ export const clickMakeCastle = (castleIndex) => katanStore.update(katan => {
     } else {
         setRoadRippleEnabled(castleIndex);
     }
-
-    return katan;
-});
+};
 
 const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
     let castle = katan.castleList[castleIndex];
@@ -672,7 +565,7 @@ const setCastle = (castleIndex, playerIndex) => katanStore.update(katan => {
                 return castle;
             });
     } else {
-        if (katan.isStart) {
+        if (katan.isStartMode) {
             player.resource.tree -= 1;
             player.resource.mud -= 1;
             player.resource.sheep -= 1;
