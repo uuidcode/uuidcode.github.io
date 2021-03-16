@@ -17,12 +17,12 @@ const katanStore = {
     update,
 
     plus: (playerIndex, resourceType) => {
-        // update(katan => {
-        //     katan.playerList[playerIndex].resource[resourceType]++;
-        //     return katan;
-        // });
-        //
-        // recomputePlayer();
+        update(katan => {
+            katan.playerList[playerIndex].resource[resourceType]++;
+            return katan;
+        });
+
+        recomputePlayer();
     },
 
     turn: () => update(katan => {
@@ -124,6 +124,12 @@ const katanStore = {
 
     doActionAndTurn: async () => {
         recomputePlayer();
+
+        const katan = get(katanStore);
+
+        if (katan.isEnd) {
+            return;
+        }
 
         const hasAction = katanStore.hasAction();
 

@@ -491,7 +491,6 @@ export const setNewRoadRippleEnabled = () => {
     });
 
     const katan = get(katanStore);
-
     const roadLength = katan.roadList.filter(road => road.show).length;
     const player = katanStore.getActivePlayer();
 

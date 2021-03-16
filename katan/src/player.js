@@ -163,6 +163,7 @@ export const recomputePlayer = () => {
                     player.resource.wheat >= 1;
 
                 if (player.point.sum === 10) {
+                    katan.isEnd = true;
                     alert(`${player.name} 승리`);
                     return player;
                 }

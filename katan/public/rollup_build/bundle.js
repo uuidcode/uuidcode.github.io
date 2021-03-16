@@ -12523,7 +12523,6 @@ var app = (function () {
         });
 
         const katan = get_store_value(katanStore);
-
         const roadLength = katan.roadList.filter(road => road.show).length;
         const player = katanStore.getActivePlayer();
 
@@ -12780,6 +12779,7 @@ var app = (function () {
                         player.resource.wheat >= 1;
 
                     if (player.point.sum === 10) {
+                        katan.isEnd = true;
                         alert(`${player.name} 승리`);
                         return player;
                     }
@@ -13188,6 +13188,7 @@ var app = (function () {
         isStartMode: false,
         playerIndex: 0,
         showResourceModal: false,
+        isEnd: false,
         config: {
             debug: false,
             cell: {
@@ -13236,12 +13237,12 @@ var app = (function () {
         update: update$1,
 
         plus: (playerIndex, resourceType) => {
-            // update(katan => {
-            //     katan.playerList[playerIndex].resource[resourceType]++;
-            //     return katan;
-            // });
-            //
-            // recomputePlayer();
+            update$1(katan => {
+                katan.playerList[playerIndex].resource[resourceType]++;
+                return katan;
+            });
+
+            recomputePlayer();
         },
 
         turn: () => update$1(katan => {
@@ -13343,6 +13344,12 @@ var app = (function () {
 
         doActionAndTurn: async () => {
             recomputePlayer();
+
+            const katan = get_store_value(katanStore);
+
+            if (katan.isEnd) {
+                return;
+            }
 
             const hasAction = katanStore.hasAction();
 

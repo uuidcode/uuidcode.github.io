@@ -48,6 +48,7 @@ const katanObject = {
     isStartMode: false,
     playerIndex: 0,
     showResourceModal: false,
+    isEnd: false,
     config: {
         debug: false,
         cell: {
