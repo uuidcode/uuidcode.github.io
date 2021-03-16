@@ -1,6 +1,5 @@
 import katanStore from './katan.js'
 import {setRoadRippleEnabled} from "./road";
-import config from "./config";
 import {random} from "./util";
 import {get} from "svelte/store";
 
@@ -14,16 +13,16 @@ export const createCastleList = (katanObject) => {
                     let top = 0;
 
                     if (i === 5) {
-                        top = i * (3 * config.cell.height / 4);
+                        top = i * (3 * katanObject.config.cell.height / 4);
                     }
 
                     if (j % 2 === i % 2) {
-                        top += config.cell.height / 4
+                        top += katanObject.config.cell.height / 4
                     }
 
                     castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
+                        left: j * (katanObject.config.cell.width / 2) - katanObject.config.castle.width / 2,
+                        top: top - katanObject.config.castle.height / 2,
                         show: false,
                         hide: true,
                         empty: true,
@@ -33,21 +32,21 @@ export const createCastleList = (katanObject) => {
                 }
             } else if (i === 1 || i === 4) {
                 if (j >= 1 && j <= 9) {
-                    let top = (3 * config.cell.height / 4);
+                    let top = (3 * katanObject.config.cell.height / 4);
 
                     if (i === 4) {
-                        top = i * (3 * config.cell.height / 4);
+                        top = i * (3 * katanObject.config.cell.height / 4);
                     }
 
                     if (j % 2 === i % 2) {
-                        top += config.cell.height / 4
+                        top += katanObject.config.cell.height / 4
                     }
 
                     const show = j >= 3 && j <= 7;
 
                     castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
+                        left: j * (katanObject.config.cell.width / 2) - katanObject.config.castle.width / 2,
+                        top: top - katanObject.config.castle.height / 2,
                         show,
                         hide: !show,
                         empty: true,
@@ -56,21 +55,21 @@ export const createCastleList = (katanObject) => {
                     });
                 }
             } else if (i === 2 || i === 3) {
-                let top = 2 * (3 * config.cell.height / 4);
+                let top = 2 * (3 * katanObject.config.cell.height / 4);
 
                 if (i === 3) {
-                    top = i * (3 * config.cell.height / 4);
+                    top = i * (3 * katanObject.config.cell.height / 4);
                 }
 
                 if (j % 2 === i % 2) {
-                    top += config.cell.height / 4
+                    top += katanObject.config.cell.height / 4
                 }
 
                 const show = j >= 2 && j <= 8;
 
                 castleList.push({
-                    left: j * (config.cell.width / 2) - config.castle.width / 2,
-                    top: top - config.castle.height / 2,
+                    left: j * (katanObject.config.cell.width / 2) - katanObject.config.castle.width / 2,
+                    top: top - katanObject.config.castle.height / 2,
                     show,
                     hide: !show,
                     empty: true,

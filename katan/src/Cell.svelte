@@ -1,26 +1,25 @@
 <script>
-    import config from './config.js'
     import { toStyle } from './util.js'
     import katan from './katan';
 
     export let resourceIndex;
 
-    const margin = config.cell.margin;
-    const offset = 100 - config.cell.margin;
+    const margin = $katan.config.cell.margin;
+    const offset = 100 - $katan.config.cell.margin;
 
     let innerCellStyle = toStyle({
         'clip-path': `polygon(50% ${margin}%, ${offset}% 25%, ${offset}% 75%, 50% ${offset}%, ${margin}% 75%, ${margin}% 25%)`
     });
 
     let imageStyle = toStyle({
-        width: config.cell.width + 'px',
-        height: config.cell.height + 'px',
+        width: $katan.config.cell.width + 'px',
+        height: $katan.config.cell.height + 'px',
     });
 
     const getNumberStyle = (width, height) => {
         return toStyle({
-            left: (config.cell.width - width) / 2 + 'px',
-            top: (config.cell.height - height) / 2 + 'px',
+            left: ($katan.config.cell.width - width) / 2 + 'px',
+            top: ($katan.config.cell.height - height) / 2 + 'px',
             width: width + 'px',
             height: height + 'px',
             "line-height": height + 'px',
@@ -31,10 +30,10 @@
 
     const getNumberStyleByResource = () => {
         if (resource.burglar) {
-            return getNumberStyle(config.burglar.width, config.burglar.height);
+            return getNumberStyle($katan.config.burglar.width, $katan.config.burglar.height);
         }
 
-        return getNumberStyle(config.number.width, config.number.height);
+        return getNumberStyle($katan.config.number.width, $katan.config.number.height);
     };
 
     let resource;
@@ -51,15 +50,15 @@
         cellStyle = toStyle({
             left: resource.left + 'px',
             top: resource.top + 'px',
-            width: config.cell.width + 'px',
-            height: config.cell.height + 'px'
+            width: $katan.config.cell.width + 'px',
+            height: $katan.config.cell.height + 'px'
         });
 
         resourceImageStyle = toStyle({
-            left: resource.left + (config.cell.width  - config.resource.width) / 2 + 'px',
-            top: resource.top + (config.cell.height - config.resource.height) / 2 + 'px',
-            width: `${config.resource.width}px`,
-            height: `${config.resource.height}px`,
+            left: resource.left + ($katan.config.cell.width  - $katan.config.resource.width) / 2 + 'px',
+            top: resource.top + ($katan.config.cell.height - $katan.config.resource.height) / 2 + 'px',
+            width: `${$katan.config.resource.width}px`,
+            height: `${$katan.config.resource.height}px`,
         });
 
         imageSrc = `${resource.type}.png`;
@@ -82,7 +81,7 @@
                 (도둑)
             {/if}
 
-            {#if config.debug}
+            {#if $katan.config.debug}
             ,{resource.index}
             {/if}
         </div>

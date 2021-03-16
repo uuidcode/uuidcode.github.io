@@ -1,6 +1,5 @@
 <script>
     import katan from './katan'
-    import config from './config.js'
     import { toStyle } from './util.js'
 
     export let castleIndex;
@@ -9,9 +8,9 @@
         let styleObject = {
             left: castle.left + 'px',
             top: castle.top + 'px',
-            width: config.castle.width + 'px',
-            height: config.castle.height + 'px',
-            borderRadius: config.castle.height + 'px'
+            width: $katan.config.castle.width + 'px',
+            height: $katan.config.castle.height + 'px',
+            borderRadius: $katan.config.castle.height + 'px'
         };
 
         return toStyle(styleObject);

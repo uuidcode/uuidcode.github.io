@@ -1,5 +1,4 @@
 <script>
-    import config from './config.js'
     import { toStyle } from './util.js'
     import Cell from './Cell.svelte'
     import Castle from './Castle.svelte'
@@ -11,8 +10,8 @@
     export let castleList;
 
     let boardStyle = toStyle({
-        width: 4 * config.cell.width + 'px',
-        height: 4 * config.cell.height + 'px'
+        width: 4 * $katan.config.cell.width + 'px',
+        height: 4 * $katan.config.cell.height + 'px'
     });
 </script>
 

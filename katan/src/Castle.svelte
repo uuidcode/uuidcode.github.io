@@ -1,6 +1,5 @@
 <script>
     import katan from './katan'
-    import config from './config.js'
     import { toStyle } from './util.js'
     import {castleClickable} from './castle'
 
@@ -12,10 +11,10 @@
         let styleObject = {
             left: castle.left + 'px',
             top: castle.top + 'px',
-            width: config.castle.width + 'px',
-            height: config.castle.height + 'px',
-            lineHeight: config.castle.height + 'px',
-            borderRadius: config.castle.height + 'px',
+            width: $katan.config.castle.width + 'px',
+            height: $katan.config.castle.height + 'px',
+            lineHeight: $katan.config.castle.height + 'px',
+            borderRadius: $katan.config.castle.height + 'px',
             backgroundColor: player.color
         };
 
@@ -23,7 +22,7 @@
             styleObject.cursor = 'default';
         }
 
-        if (config.debug) {
+        if ($katan.config.debug) {
             delete styleObject.lineHeight;
             styleObject.color = 'black';
         }
@@ -44,7 +43,7 @@
     }
 </script>
 
-{#if config.debug}
+{#if $katan.config.debug}
     <div class="castle" style={castleStyle}>
         <div>{castle.i},{castle.j}</div>
         <div>{castle.index}</div>

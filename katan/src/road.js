@@ -1,34 +1,32 @@
 import katanStore from './katan.js'
-import {recomputePlayer} from "./player";
 import {showConstructableCastle} from "./castle";
-import config from "./config";
 import {get} from "svelte/store";
 
-const getLoadTopBySingle = (multiple) => {
-    return multiple * config.cell.height / 8 - config.load.width / 2 ;
+const getLoadTopBySingle = (katanObject, multiple) => {
+    return multiple * katanObject.config.cell.height / 8 - katanObject.config.load.width / 2 ;
 };
 
-const getLoadTop = (currentRow, targetRow, currentMultiple, targetMultiple) => {
+const getLoadTop = (katanObject, currentRow, targetRow, currentMultiple, targetMultiple) => {
     let multiple = currentMultiple;
 
     if (currentRow === targetRow) {
         multiple = targetMultiple;
     }
 
-    return getLoadTopBySingle(multiple) ;
+    return getLoadTopBySingle(katanObject, multiple) ;
 };
 
-export const createRoadList = () => {
+export const createRoadList = (katanObject) => {
     const roadList = [];
 
     for (let i = 0; i <= 11; i++) {
         for (let j = 0; j <= 20; j++) {
             if (i === 0 || i === 11) {
                 if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
-                    let top = getLoadTop(i, 11, 1, 31);
+                    let top = getLoadTop(katanObject, i, 11, 1, 31);
 
                     roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                         top: top,
                         roadRipple: false,
                         constructable: false,
@@ -39,10 +37,10 @@ export const createRoadList = () => {
                 }
             } else if (i === 1 || i === 10) {
                 if (j === 4 || j === 8 || j === 12 || j === 16) {
-                    let top = getLoadTop(i, 10, 4, 28);
+                    let top = getLoadTop(katanObject, i, 10, 4, 28);
 
                     roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                         top: top,
                         roadRipple: false,
                         constructable: false,
@@ -55,10 +53,10 @@ export const createRoadList = () => {
             } else if (i === 2 || i === 9) {
                 if (j === 3 || j === 5 || j === 7 || j === 9 ||
                     j === 11 || j === 13 || j === 15 || j === 17) {
-                    let top = getLoadTop(i, 9, 7, 25);
+                    let top = getLoadTop(katanObject, i, 9, 7, 25);
 
                     roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                         top: top,
                         roadRipple: false,
                         constructable: false,
@@ -70,10 +68,10 @@ export const createRoadList = () => {
             } else if (i === 3 || i === 8) {
                 if (j === 2 || j === 6 || j === 10 || j === 14 || j === 18) {
 
-                    let top = getLoadTop(i, 8, 10, 22);
+                    let top = getLoadTop(katanObject, i, 8, 10, 22);
 
                     roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                         top: top,
                         roadRipple: false,
                         constructable: false,
@@ -86,10 +84,10 @@ export const createRoadList = () => {
                 if (j === 1 || j === 3 || j === 5 || j === 7 || j === 9 ||
                     j === 11 || j === 13 || j === 15 || j === 17 || j === 19) {
 
-                    let top = getLoadTop(i, 7, 13, 19);
+                    let top = getLoadTop(katanObject, i, 7, 13, 19);
 
                     roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                         top: top,
                         roadRipple: false,
                         constructable: false,
@@ -100,10 +98,10 @@ export const createRoadList = () => {
                 }
             } else if (i === 5) {
                 if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
-                    let top = getLoadTopBySingle(16);
+                    let top = getLoadTopBySingle(katanObject, 16);
 
                     roadList.push({
-                        left: j * (config.cell.width / 4) - config.load.width / 2,
+                        left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                         top: top,
                         roadRipple: false,
                         constructable: false,

@@ -473,36 +473,6 @@ var app = (function () {
         return { set, update, subscribe };
     }
 
-    const config = {
-        debug: false,
-        cell: {
-            width: 130,
-            height: 130,
-            margin: 2
-        },
-        castle: {
-            width: 32,
-            height: 32,
-        },
-        load: {
-            width: 32,
-            height: 32,
-        },
-        number: {
-            width: 60,
-            height: 60,
-        },
-        resource: {
-            width: 60,
-            height: 60,
-        },
-        burglar: {
-            width: 90,
-            height: 90,
-        },
-        selectedColor: 'blueviolet'
-    };
-
     var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
     function createCommonjsModule(fn) {
@@ -11449,16 +11419,16 @@ var app = (function () {
                         let top = 0;
 
                         if (i === 5) {
-                            top = i * (3 * config.cell.height / 4);
+                            top = i * (3 * katanObject.config.cell.height / 4);
                         }
 
                         if (j % 2 === i % 2) {
-                            top += config.cell.height / 4;
+                            top += katanObject.config.cell.height / 4;
                         }
 
                         castleList.push({
-                            left: j * (config.cell.width / 2) - config.castle.width / 2,
-                            top: top - config.castle.height / 2,
+                            left: j * (katanObject.config.cell.width / 2) - katanObject.config.castle.width / 2,
+                            top: top - katanObject.config.castle.height / 2,
                             show: false,
                             hide: true,
                             empty: true,
@@ -11468,21 +11438,21 @@ var app = (function () {
                     }
                 } else if (i === 1 || i === 4) {
                     if (j >= 1 && j <= 9) {
-                        let top = (3 * config.cell.height / 4);
+                        let top = (3 * katanObject.config.cell.height / 4);
 
                         if (i === 4) {
-                            top = i * (3 * config.cell.height / 4);
+                            top = i * (3 * katanObject.config.cell.height / 4);
                         }
 
                         if (j % 2 === i % 2) {
-                            top += config.cell.height / 4;
+                            top += katanObject.config.cell.height / 4;
                         }
 
                         const show = j >= 3 && j <= 7;
 
                         castleList.push({
-                            left: j * (config.cell.width / 2) - config.castle.width / 2,
-                            top: top - config.castle.height / 2,
+                            left: j * (katanObject.config.cell.width / 2) - katanObject.config.castle.width / 2,
+                            top: top - katanObject.config.castle.height / 2,
                             show,
                             hide: !show,
                             empty: true,
@@ -11491,21 +11461,21 @@ var app = (function () {
                         });
                     }
                 } else if (i === 2 || i === 3) {
-                    let top = 2 * (3 * config.cell.height / 4);
+                    let top = 2 * (3 * katanObject.config.cell.height / 4);
 
                     if (i === 3) {
-                        top = i * (3 * config.cell.height / 4);
+                        top = i * (3 * katanObject.config.cell.height / 4);
                     }
 
                     if (j % 2 === i % 2) {
-                        top += config.cell.height / 4;
+                        top += katanObject.config.cell.height / 4;
                     }
 
                     const show = j >= 2 && j <= 8;
 
                     castleList.push({
-                        left: j * (config.cell.width / 2) - config.castle.width / 2,
-                        top: top - config.castle.height / 2,
+                        left: j * (katanObject.config.cell.width / 2) - katanObject.config.castle.width / 2,
+                        top: top - katanObject.config.castle.height / 2,
                         show,
                         hide: !show,
                         empty: true,
@@ -12064,31 +12034,31 @@ var app = (function () {
         return katan;
     });
 
-    const getLoadTopBySingle = (multiple) => {
-        return multiple * config.cell.height / 8 - config.load.width / 2 ;
+    const getLoadTopBySingle = (katanObject, multiple) => {
+        return multiple * katanObject.config.cell.height / 8 - katanObject.config.load.width / 2 ;
     };
 
-    const getLoadTop = (currentRow, targetRow, currentMultiple, targetMultiple) => {
+    const getLoadTop = (katanObject, currentRow, targetRow, currentMultiple, targetMultiple) => {
         let multiple = currentMultiple;
 
         if (currentRow === targetRow) {
             multiple = targetMultiple;
         }
 
-        return getLoadTopBySingle(multiple) ;
+        return getLoadTopBySingle(katanObject, multiple) ;
     };
 
-    const createRoadList = () => {
+    const createRoadList = (katanObject) => {
         const roadList = [];
 
         for (let i = 0; i <= 11; i++) {
             for (let j = 0; j <= 20; j++) {
                 if (i === 0 || i === 11) {
                     if (j === 5 || j === 7 || j === 9 || j === 11 || j === 13 || j === 15) {
-                        let top = getLoadTop(i, 11, 1, 31);
+                        let top = getLoadTop(katanObject, i, 11, 1, 31);
 
                         roadList.push({
-                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                             top: top,
                             roadRipple: false,
                             constructable: false,
@@ -12099,10 +12069,10 @@ var app = (function () {
                     }
                 } else if (i === 1 || i === 10) {
                     if (j === 4 || j === 8 || j === 12 || j === 16) {
-                        let top = getLoadTop(i, 10, 4, 28);
+                        let top = getLoadTop(katanObject, i, 10, 4, 28);
 
                         roadList.push({
-                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                             top: top,
                             roadRipple: false,
                             constructable: false,
@@ -12115,10 +12085,10 @@ var app = (function () {
                 } else if (i === 2 || i === 9) {
                     if (j === 3 || j === 5 || j === 7 || j === 9 ||
                         j === 11 || j === 13 || j === 15 || j === 17) {
-                        let top = getLoadTop(i, 9, 7, 25);
+                        let top = getLoadTop(katanObject, i, 9, 7, 25);
 
                         roadList.push({
-                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                             top: top,
                             roadRipple: false,
                             constructable: false,
@@ -12130,10 +12100,10 @@ var app = (function () {
                 } else if (i === 3 || i === 8) {
                     if (j === 2 || j === 6 || j === 10 || j === 14 || j === 18) {
 
-                        let top = getLoadTop(i, 8, 10, 22);
+                        let top = getLoadTop(katanObject, i, 8, 10, 22);
 
                         roadList.push({
-                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                             top: top,
                             roadRipple: false,
                             constructable: false,
@@ -12146,10 +12116,10 @@ var app = (function () {
                     if (j === 1 || j === 3 || j === 5 || j === 7 || j === 9 ||
                         j === 11 || j === 13 || j === 15 || j === 17 || j === 19) {
 
-                        let top = getLoadTop(i, 7, 13, 19);
+                        let top = getLoadTop(katanObject, i, 7, 13, 19);
 
                         roadList.push({
-                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                             top: top,
                             roadRipple: false,
                             constructable: false,
@@ -12160,10 +12130,10 @@ var app = (function () {
                     }
                 } else if (i === 5) {
                     if (j === 0 || j === 4 || j === 8 || j === 12 || j === 16 || j === 20) {
-                        let top = getLoadTopBySingle(16);
+                        let top = getLoadTopBySingle(katanObject, 16);
 
                         roadList.push({
-                            left: j * (config.cell.width / 4) - config.load.width / 2,
+                            left: j * (katanObject.config.cell.width / 4) - katanObject.config.load.width / 2,
                             top: top,
                             roadRipple: false,
                             constructable: false,
@@ -12821,7 +12791,7 @@ var app = (function () {
         });
     };
 
-    const createResourceList = () => {
+    const createResourceList = (katanObject) => {
         let resourceList = [];
 
         resourceList.push({
@@ -12894,19 +12864,19 @@ var app = (function () {
                 let top = 0;
 
                 if (0 <= index && index <= 2) {
-                    left = config.cell.width + config.cell.width * index;
+                    left = katanObject.config.cell.width + katanObject.config.cell.width * index;
                 } else if (3 <= index && index <= 6) {
-                    left = config.cell.width / 2 + config.cell.width * (index - 3);
-                    top = 3 * config.cell.height / 4;
+                    left = katanObject.config.cell.width / 2 + katanObject.config.cell.width * (index - 3);
+                    top = 3 * katanObject.config.cell.height / 4;
                 } else if (7 <= index && index <= 11) {
-                    left = config.cell.width * (index - 7);
-                    top = 2 * (3 * config.cell.height / 4);
+                    left = katanObject.config.cell.width * (index - 7);
+                    top = 2 * (3 * katanObject.config.cell.height / 4);
                 } else if (12 <= index && index <= 15) {
-                    left = config.cell.width / 2 + config.cell.width * (index - 12);
-                    top = 3 * (3 * config.cell.height / 4);
+                    left = katanObject.config.cell.width / 2 + katanObject.config.cell.width * (index - 12);
+                    top = 3 * (3 * katanObject.config.cell.height / 4);
                 } else if (16 <= index && index <= 18) {
-                    left = config.cell.width * (index - 15);
-                    top = 4 * (3 * config.cell.height / 4);
+                    left = katanObject.config.cell.width * (index - 15);
+                    top = 4 * (3 * katanObject.config.cell.height / 4);
                 }
 
                 resource.left = left;
@@ -13217,7 +13187,37 @@ var app = (function () {
         isReady: true,
         isStartMode: false,
         playerIndex: 0,
-        showResourceModal: false
+        showResourceModal: false,
+        config: {
+            debug: false,
+            cell: {
+                width: 130,
+                height: 130,
+                margin: 2
+            },
+            castle: {
+                width: 32,
+                height: 32,
+            },
+            load: {
+                width: 32,
+                height: 32,
+            },
+            number: {
+                width: 60,
+                height: 60,
+            },
+            resource: {
+                width: 60,
+                height: 60,
+            },
+            burglar: {
+                width: 90,
+                height: 90,
+            },
+            selectedColor: 'blueviolet'
+        }
+
     };
 
     katanObject.cardList = createCardList();
@@ -13225,8 +13225,8 @@ var app = (function () {
 
     katanObject.playerList = createPlayerList();
     katanObject.castleList = createCastleList(katanObject);
-    katanObject.roadList = createRoadList();
-    katanObject.resourceList = createResourceList();
+    katanObject.roadList = createRoadList(katanObject);
+    katanObject.resourceList = createResourceList(katanObject);
 
     const { subscribe: subscribe$1, set, update: update$1 } = writable(katanObject);
 
@@ -13236,12 +13236,12 @@ var app = (function () {
         update: update$1,
 
         plus: (playerIndex, resourceType) => {
-            update$1(katan => {
-                katan.playerList[playerIndex].resource[resourceType]++;
-                return katan;
-            });
-
-            recomputePlayer();
+            // update(katan => {
+            //     katan.playerList[playerIndex].resource[resourceType]++;
+            //     return katan;
+            // });
+            //
+            // recomputePlayer();
         },
 
         turn: () => update$1(katan => {
@@ -13796,7 +13796,7 @@ var app = (function () {
     /* src\Cell.svelte generated by Svelte v3.32.3 */
     const file = "src\\Cell.svelte";
 
-    // (81:12) {#if resource.burglar}
+    // (80:12) {#if resource.burglar}
     function create_if_block_2(ctx) {
     	let t;
 
@@ -13816,14 +13816,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(81:12) {#if resource.burglar}",
+    		source: "(80:12) {#if resource.burglar}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (85:12) {#if config.debug}
+    // (84:12) {#if $katan.config.debug}
     function create_if_block_1(ctx) {
     	let t0;
     	let t1_value = /*resource*/ ctx[1].index + "";
@@ -13851,14 +13851,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(85:12) {#if config.debug}",
+    		source: "(84:12) {#if $katan.config.debug}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (92:0) {#if resource.burglar===false}
+    // (91:0) {#if resource.burglar===false}
     function create_if_block(ctx) {
     	let div;
     	let img;
@@ -13869,23 +13869,23 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			img = element("img");
-    			if (img.src !== (img_src_value = /*resourceImage*/ ctx[6])) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
+    			if (img.src !== (img_src_value = /*resourceImage*/ ctx[7])) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "style", /*resourceImageStyle*/ ctx[5]);
     			attr_dev(img, "class", img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-k89u53");
-    			add_location(img, file, 93, 4, 2944);
-    			add_location(div, file, 92, 4, 2933);
+    			add_location(img, file, 92, 4, 3039);
+    			add_location(div, file, 91, 4, 3028);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     			append_dev(div, img);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*resourceImage*/ 64 && img.src !== (img_src_value = /*resourceImage*/ ctx[6])) {
+    			if (dirty & /*resourceImage*/ 128 && img.src !== (img_src_value = /*resourceImage*/ ctx[7])) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*resourceImageStyle*/ 16) {
-    				attr_dev(img, "style", /*resourceImageStyle*/ ctx[4]);
+    			if (dirty & /*resourceImageStyle*/ 32) {
+    				attr_dev(img, "style", /*resourceImageStyle*/ ctx[5]);
     			}
 
     			if (dirty & /*resourceIndex*/ 1 && img_class_value !== (img_class_value = "resource_" + /*resourceIndex*/ ctx[0] + " resource hide" + " svelte-k89u53")) {
@@ -13901,7 +13901,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(92:0) {#if resource.burglar===false}",
+    		source: "(91:0) {#if resource.burglar===false}",
     		ctx
     	});
 
@@ -13925,7 +13925,7 @@ var app = (function () {
     	let mounted;
     	let dispose;
     	let if_block0 = /*resource*/ ctx[1].burglar && create_if_block_2(ctx);
-    	let if_block1 = config.debug && create_if_block_1(ctx);
+    	let if_block1 = /*$katan*/ ctx[2].config.debug && create_if_block_1(ctx);
     	let if_block2 = /*resource*/ ctx[1].burglar === false && create_if_block(ctx);
 
     	const block = {
@@ -13943,22 +13943,22 @@ var app = (function () {
     			t4 = space();
     			if (if_block2) if_block2.c();
     			if_block2_anchor = empty();
-    			if (img.src !== (img_src_value = /*imageSrc*/ ctx[5])) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "style", /*imageStyle*/ ctx[8]);
-    			attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
-    			add_location(img, file, 71, 8, 2250);
+    			if (img.src !== (img_src_value = /*imageSrc*/ ctx[6])) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "style", /*imageStyle*/ ctx[9]);
+    			attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
+    			add_location(img, file, 70, 8, 2338);
     			attr_dev(div0, "class", div0_class_value = "number number_" + /*resource*/ ctx[1].number + " number_" + /*resource*/ ctx[1].number + "_" + /*resource*/ ctx[1].numberIndex + " svelte-k89u53");
-    			attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
+    			attr_dev(div0, "style", /*numberStyle*/ ctx[3]);
     			toggle_class(div0, "pick", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "ripple", /*resource*/ ctx[1].numberRipple);
     			toggle_class(div0, "burglar", /*resource*/ ctx[1].burglar);
-    			add_location(div0, file, 73, 8, 2328);
+    			add_location(div0, file, 72, 8, 2416);
     			attr_dev(div1, "class", "inner-cell");
-    			attr_dev(div1, "style", /*innerCellStyle*/ ctx[7]);
-    			add_location(div1, file, 70, 4, 2193);
+    			attr_dev(div1, "style", /*innerCellStyle*/ ctx[8]);
+    			add_location(div1, file, 69, 4, 2281);
     			attr_dev(div2, "class", "cell svelte-k89u53");
-    			attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
-    			add_location(div2, file, 69, 0, 2151);
+    			attr_dev(div2, "style", /*cellStyle*/ ctx[4]);
+    			add_location(div2, file, 68, 0, 2239);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -13984,12 +13984,12 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*imageSrc*/ 32 && img.src !== (img_src_value = /*imageSrc*/ ctx[5])) {
+    			if (dirty & /*imageSrc*/ 64 && img.src !== (img_src_value = /*imageSrc*/ ctx[6])) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*imageSrc*/ 32) {
-    				attr_dev(img, "alt", /*imageSrc*/ ctx[5]);
+    			if (dirty & /*imageSrc*/ 64) {
+    				attr_dev(img, "alt", /*imageSrc*/ ctx[6]);
     			}
 
     			if (dirty & /*resource*/ 2 && t1_value !== (t1_value = /*resource*/ ctx[1].number + "")) set_data_dev(t1, t1_value);
@@ -14005,14 +14005,25 @@ var app = (function () {
     				if_block0 = null;
     			}
 
-    			if (config.debug) if_block1.p(ctx, dirty);
+    			if (/*$katan*/ ctx[2].config.debug) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block_1(ctx);
+    					if_block1.c();
+    					if_block1.m(div0, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
 
     			if (dirty & /*resource*/ 2 && div0_class_value !== (div0_class_value = "number number_" + /*resource*/ ctx[1].number + " number_" + /*resource*/ ctx[1].number + "_" + /*resource*/ ctx[1].numberIndex + " svelte-k89u53")) {
     				attr_dev(div0, "class", div0_class_value);
     			}
 
-    			if (dirty & /*numberStyle*/ 4) {
-    				attr_dev(div0, "style", /*numberStyle*/ ctx[2]);
+    			if (dirty & /*numberStyle*/ 8) {
+    				attr_dev(div0, "style", /*numberStyle*/ ctx[3]);
     			}
 
     			if (dirty & /*resource, resource*/ 2) {
@@ -14027,8 +14038,8 @@ var app = (function () {
     				toggle_class(div0, "burglar", /*resource*/ ctx[1].burglar);
     			}
 
-    			if (dirty & /*cellStyle*/ 8) {
-    				attr_dev(div2, "style", /*cellStyle*/ ctx[3]);
+    			if (dirty & /*cellStyle*/ 16) {
+    				attr_dev(div2, "style", /*cellStyle*/ ctx[4]);
     			}
 
     			if (/*resource*/ ctx[1].burglar === false) {
@@ -14072,26 +14083,26 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(9, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(2, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Cell", slots, []);
     	let { resourceIndex } = $$props;
-    	const margin = config.cell.margin;
-    	const offset = 100 - config.cell.margin;
+    	const margin = $katan.config.cell.margin;
+    	const offset = 100 - $katan.config.cell.margin;
 
     	let innerCellStyle = toStyle({
     		"clip-path": `polygon(50% ${margin}%, ${offset}% 25%, ${offset}% 75%, 50% ${offset}%, ${margin}% 75%, ${margin}% 25%)`
     	});
 
     	let imageStyle = toStyle({
-    		width: config.cell.width + "px",
-    		height: config.cell.height + "px"
+    		width: $katan.config.cell.width + "px",
+    		height: $katan.config.cell.height + "px"
     	});
 
     	const getNumberStyle = (width, height) => {
     		return toStyle({
-    			left: (config.cell.width - width) / 2 + "px",
-    			top: (config.cell.height - height) / 2 + "px",
+    			left: ($katan.config.cell.width - width) / 2 + "px",
+    			top: ($katan.config.cell.height - height) / 2 + "px",
     			width: width + "px",
     			height: height + "px",
     			"line-height": height + "px",
@@ -14102,10 +14113,10 @@ var app = (function () {
 
     	const getNumberStyleByResource = () => {
     		if (resource.burglar) {
-    			return getNumberStyle(config.burglar.width, config.burglar.height);
+    			return getNumberStyle($katan.config.burglar.width, $katan.config.burglar.height);
     		}
 
-    		return getNumberStyle(config.number.width, config.number.height);
+    		return getNumberStyle($katan.config.number.width, $katan.config.number.height);
     	};
 
     	let resource;
@@ -14127,7 +14138,6 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
-    		config,
     		toStyle,
     		katan: katanStore,
     		resourceIndex,
@@ -14148,14 +14158,14 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ("resourceIndex" in $$props) $$invalidate(0, resourceIndex = $$props.resourceIndex);
-    		if ("innerCellStyle" in $$props) $$invalidate(7, innerCellStyle = $$props.innerCellStyle);
-    		if ("imageStyle" in $$props) $$invalidate(8, imageStyle = $$props.imageStyle);
+    		if ("innerCellStyle" in $$props) $$invalidate(8, innerCellStyle = $$props.innerCellStyle);
+    		if ("imageStyle" in $$props) $$invalidate(9, imageStyle = $$props.imageStyle);
     		if ("resource" in $$props) $$invalidate(1, resource = $$props.resource);
-    		if ("numberStyle" in $$props) $$invalidate(2, numberStyle = $$props.numberStyle);
-    		if ("cellStyle" in $$props) $$invalidate(3, cellStyle = $$props.cellStyle);
-    		if ("resourceImageStyle" in $$props) $$invalidate(4, resourceImageStyle = $$props.resourceImageStyle);
-    		if ("imageSrc" in $$props) $$invalidate(5, imageSrc = $$props.imageSrc);
-    		if ("resourceImage" in $$props) $$invalidate(6, resourceImage = $$props.resourceImage);
+    		if ("numberStyle" in $$props) $$invalidate(3, numberStyle = $$props.numberStyle);
+    		if ("cellStyle" in $$props) $$invalidate(4, cellStyle = $$props.cellStyle);
+    		if ("resourceImageStyle" in $$props) $$invalidate(5, resourceImageStyle = $$props.resourceImageStyle);
+    		if ("imageSrc" in $$props) $$invalidate(6, imageSrc = $$props.imageSrc);
+    		if ("resourceImage" in $$props) $$invalidate(7, resourceImage = $$props.resourceImage);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -14163,27 +14173,27 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, resourceIndex, resource*/ 515) {
+    		if ($$self.$$.dirty & /*$katan, resourceIndex, resource*/ 7) {
     			{
     				$$invalidate(1, resource = $katan.resourceList[resourceIndex]);
-    				$$invalidate(2, numberStyle = getNumberStyleByResource());
+    				$$invalidate(3, numberStyle = getNumberStyleByResource());
 
-    				$$invalidate(3, cellStyle = toStyle({
+    				$$invalidate(4, cellStyle = toStyle({
     					left: resource.left + "px",
     					top: resource.top + "px",
-    					width: config.cell.width + "px",
-    					height: config.cell.height + "px"
+    					width: $katan.config.cell.width + "px",
+    					height: $katan.config.cell.height + "px"
     				}));
 
-    				$$invalidate(4, resourceImageStyle = toStyle({
-    					left: resource.left + (config.cell.width - config.resource.width) / 2 + "px",
-    					top: resource.top + (config.cell.height - config.resource.height) / 2 + "px",
-    					width: `${config.resource.width}px`,
-    					height: `${config.resource.height}px`
+    				$$invalidate(5, resourceImageStyle = toStyle({
+    					left: resource.left + ($katan.config.cell.width - $katan.config.resource.width) / 2 + "px",
+    					top: resource.top + ($katan.config.cell.height - $katan.config.resource.height) / 2 + "px",
+    					width: `${$katan.config.resource.width}px`,
+    					height: `${$katan.config.resource.height}px`
     				}));
 
-    				$$invalidate(5, imageSrc = `${resource.type}.png`);
-    				$$invalidate(6, resourceImage = `${resource.type}_item.png`);
+    				$$invalidate(6, imageSrc = `${resource.type}.png`);
+    				$$invalidate(7, resourceImage = `${resource.type}_item.png`);
     			}
     		}
     	};
@@ -14191,6 +14201,7 @@ var app = (function () {
     	return [
     		resourceIndex,
     		resource,
+    		$katan,
     		numberStyle,
     		cellStyle,
     		resourceImageStyle,
@@ -14198,7 +14209,6 @@ var app = (function () {
     		resourceImage,
     		innerCellStyle,
     		imageStyle,
-    		$katan,
     		click_handler
     	];
     }
@@ -14235,11 +14245,11 @@ var app = (function () {
     /* src\Castle.svelte generated by Svelte v3.32.3 */
     const file$1 = "src\\Castle.svelte";
 
-    // (52:0) {:else}
+    // (51:0) {:else}
     function create_else_block(ctx) {
     	let div1;
     	let div0;
-    	let t_value = /*castle*/ ctx[1].title + "";
+    	let t_value = /*castle*/ ctx[2].title + "";
     	let t;
     	let mounted;
     	let dispose;
@@ -14249,13 +14259,13 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$1, 58, 4, 1618);
+    			add_location(div0, file$1, 57, 4, 1622);
     			attr_dev(div1, "class", "castle svelte-voh75m");
-    			attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
-    			toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
-    			toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
-    			toggle_class(div1, "show", /*castle*/ ctx[1].show);
-    			add_location(div1, file$1, 52, 4, 1413);
+    			attr_dev(div1, "style", /*castleStyle*/ ctx[3]);
+    			toggle_class(div1, "ripple", /*castle*/ ctx[2].ripple);
+    			toggle_class(div1, "hide", /*castle*/ ctx[2].hide);
+    			toggle_class(div1, "show", /*castle*/ ctx[2].show);
+    			add_location(div1, file$1, 51, 4, 1417);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -14268,22 +14278,22 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 2 && t_value !== (t_value = /*castle*/ ctx[1].title + "")) set_data_dev(t, t_value);
+    			if (dirty & /*castle*/ 4 && t_value !== (t_value = /*castle*/ ctx[2].title + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*castleStyle*/ 4) {
-    				attr_dev(div1, "style", /*castleStyle*/ ctx[2]);
+    			if (dirty & /*castleStyle*/ 8) {
+    				attr_dev(div1, "style", /*castleStyle*/ ctx[3]);
     			}
 
-    			if (dirty & /*castle*/ 2) {
-    				toggle_class(div1, "ripple", /*castle*/ ctx[1].ripple);
+    			if (dirty & /*castle*/ 4) {
+    				toggle_class(div1, "ripple", /*castle*/ ctx[2].ripple);
     			}
 
-    			if (dirty & /*castle*/ 2) {
-    				toggle_class(div1, "hide", /*castle*/ ctx[1].hide);
+    			if (dirty & /*castle*/ 4) {
+    				toggle_class(div1, "hide", /*castle*/ ctx[2].hide);
     			}
 
-    			if (dirty & /*castle*/ 2) {
-    				toggle_class(div1, "show", /*castle*/ ctx[1].show);
+    			if (dirty & /*castle*/ 4) {
+    				toggle_class(div1, "show", /*castle*/ ctx[2].show);
     			}
     		},
     		d: function destroy(detaching) {
@@ -14297,25 +14307,25 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(52:0) {:else}",
+    		source: "(51:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (47:0) {#if config.debug}
+    // (46:0) {#if $katan.config.debug}
     function create_if_block$1(ctx) {
     	let div2;
     	let div0;
-    	let t0_value = /*castle*/ ctx[1].i + "";
+    	let t0_value = /*castle*/ ctx[2].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*castle*/ ctx[1].j + "";
+    	let t2_value = /*castle*/ ctx[2].j + "";
     	let t2;
     	let t3;
     	let div1;
-    	let t4_value = /*castle*/ ctx[1].index + "";
+    	let t4_value = /*castle*/ ctx[2].index + "";
     	let t4;
 
     	const block = {
@@ -14328,11 +14338,11 @@ var app = (function () {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$1, 48, 8, 1319);
-    			add_location(div1, file$1, 49, 8, 1361);
+    			add_location(div0, file$1, 47, 8, 1323);
+    			add_location(div1, file$1, 48, 8, 1365);
     			attr_dev(div2, "class", "castle svelte-voh75m");
-    			attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
-    			add_location(div2, file$1, 47, 4, 1269);
+    			attr_dev(div2, "style", /*castleStyle*/ ctx[3]);
+    			add_location(div2, file$1, 46, 4, 1273);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -14345,12 +14355,12 @@ var app = (function () {
     			append_dev(div1, t4);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*castle*/ 2 && t0_value !== (t0_value = /*castle*/ ctx[1].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*castle*/ 2 && t2_value !== (t2_value = /*castle*/ ctx[1].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*castle*/ 2 && t4_value !== (t4_value = /*castle*/ ctx[1].index + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*castle*/ 4 && t0_value !== (t0_value = /*castle*/ ctx[2].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*castle*/ 4 && t2_value !== (t2_value = /*castle*/ ctx[2].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*castle*/ 4 && t4_value !== (t4_value = /*castle*/ ctx[2].index + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*castleStyle*/ 4) {
-    				attr_dev(div2, "style", /*castleStyle*/ ctx[2]);
+    			if (dirty & /*castleStyle*/ 8) {
+    				attr_dev(div2, "style", /*castleStyle*/ ctx[3]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -14362,7 +14372,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(47:0) {#if config.debug}",
+    		source: "(46:0) {#if $katan.config.debug}",
     		ctx
     	});
 
@@ -14373,11 +14383,11 @@ var app = (function () {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (config.debug) return create_if_block$1;
+    		if (/*$katan*/ ctx[1].config.debug) return create_if_block$1;
     		return create_else_block;
     	}
 
-    	let current_block_type = select_block_type();
+    	let current_block_type = select_block_type(ctx);
     	let if_block = current_block_type(ctx);
 
     	const block = {
@@ -14393,7 +14403,17 @@ var app = (function () {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, [dirty]) {
-    			if_block.p(ctx, dirty);
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
     		},
     		i: noop,
     		o: noop,
@@ -14417,7 +14437,7 @@ var app = (function () {
     function instance$1($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(3, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(1, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Castle", slots, []);
     	let { castleIndex } = $$props;
@@ -14428,10 +14448,10 @@ var app = (function () {
     		let styleObject = {
     			left: castle.left + "px",
     			top: castle.top + "px",
-    			width: config.castle.width + "px",
-    			height: config.castle.height + "px",
-    			lineHeight: config.castle.height + "px",
-    			borderRadius: config.castle.height + "px",
+    			width: $katan.config.castle.width + "px",
+    			height: $katan.config.castle.height + "px",
+    			lineHeight: $katan.config.castle.height + "px",
+    			borderRadius: $katan.config.castle.height + "px",
     			backgroundColor: player.color
     		};
 
@@ -14439,7 +14459,7 @@ var app = (function () {
     			styleObject.cursor = "default";
     		}
 
-    		if (config.debug) {
+    		if ($katan.config.debug) {
     			delete styleObject.lineHeight;
     			styleObject.color = "black";
     		}
@@ -14467,7 +14487,6 @@ var app = (function () {
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
-    		config,
     		toStyle,
     		castleClickable,
     		castleIndex,
@@ -14479,8 +14498,8 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ("castleIndex" in $$props) $$invalidate(0, castleIndex = $$props.castleIndex);
-    		if ("castle" in $$props) $$invalidate(1, castle = $$props.castle);
-    		if ("castleStyle" in $$props) $$invalidate(2, castleStyle = $$props.castleStyle);
+    		if ("castle" in $$props) $$invalidate(2, castle = $$props.castle);
+    		if ("castleStyle" in $$props) $$invalidate(3, castleStyle = $$props.castleStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -14488,15 +14507,15 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, castleIndex*/ 9) {
+    		if ($$self.$$.dirty & /*$katan, castleIndex*/ 3) {
     			{
-    				$$invalidate(1, castle = $katan.castleList[castleIndex]);
-    				$$invalidate(2, castleStyle = createStyle());
+    				$$invalidate(2, castle = $katan.castleList[castleIndex]);
+    				$$invalidate(3, castleStyle = createStyle());
     			}
     		}
     	};
 
-    	return [castleIndex, castle, castleStyle, $katan, click_handler];
+    	return [castleIndex, $katan, castle, castleStyle, click_handler];
     }
 
     class Castle extends SvelteComponentDev {
@@ -14531,7 +14550,7 @@ var app = (function () {
     /* src\Port.svelte generated by Svelte v3.32.3 */
     const file$2 = "src\\Port.svelte";
 
-    // (33:0) {#if port.tradable}
+    // (32:0) {#if port.tradable}
     function create_if_block$2(ctx) {
     	let div;
     	let div_placement_value;
@@ -14547,7 +14566,7 @@ var app = (function () {
     			attr_dev(div, "trade", div_trade_value = /*port*/ ctx[1].trade);
     			attr_dev(div, "type", div_type_value = /*port*/ ctx[1].type);
     			attr_dev(div, "style", /*portStyle*/ ctx[0]);
-    			add_location(div, file$2, 33, 0, 783);
+    			add_location(div, file$2, 32, 0, 766);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -14578,7 +14597,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(33:0) {#if port.tradable}",
+    		source: "(32:0) {#if port.tradable}",
     		ctx
     	});
 
@@ -14646,9 +14665,9 @@ var app = (function () {
     		let styleObject = {
     			left: castle.left + "px",
     			top: castle.top + "px",
-    			width: config.castle.width + "px",
-    			height: config.castle.height + "px",
-    			borderRadius: config.castle.height + "px"
+    			width: $katan.config.castle.width + "px",
+    			height: $katan.config.castle.height + "px",
+    			borderRadius: $katan.config.castle.height + "px"
     		};
 
     		return toStyle(styleObject);
@@ -14670,7 +14689,6 @@ var app = (function () {
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
-    		config,
     		toStyle,
     		castleIndex,
     		createStyle,
@@ -14739,11 +14757,11 @@ var app = (function () {
     /* src\Road.svelte generated by Svelte v3.32.3 */
     const file$3 = "src\\Road.svelte";
 
-    // (52:0) {:else}
+    // (51:0) {:else}
     function create_else_block$1(ctx) {
     	let div1;
     	let div0;
-    	let t_value = /*road*/ ctx[1].title + "";
+    	let t_value = /*road*/ ctx[2].title + "";
     	let t;
     	let mounted;
     	let dispose;
@@ -14753,14 +14771,14 @@ var app = (function () {
     			div1 = element("div");
     			div0 = element("div");
     			t = text(t_value);
-    			add_location(div0, file$3, 59, 8, 1529);
+    			add_location(div0, file$3, 58, 8, 1585);
     			attr_dev(div1, "class", "road svelte-1mp7gxw");
-    			attr_dev(div1, "style", /*roadStyle*/ ctx[2]);
-    			toggle_class(div1, "ripple1", /*road*/ ctx[1].ripple);
-    			toggle_class(div1, "pick", /*road*/ ctx[1].ripple);
-    			toggle_class(div1, "hide", /*road*/ ctx[1].hide);
-    			toggle_class(div1, "show", /*road*/ ctx[1].show);
-    			add_location(div1, file$3, 52, 4, 1285);
+    			attr_dev(div1, "style", /*roadStyle*/ ctx[3]);
+    			toggle_class(div1, "ripple1", /*road*/ ctx[2].ripple);
+    			toggle_class(div1, "pick", /*road*/ ctx[2].ripple);
+    			toggle_class(div1, "hide", /*road*/ ctx[2].hide);
+    			toggle_class(div1, "show", /*road*/ ctx[2].show);
+    			add_location(div1, file$3, 51, 4, 1334);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -14773,26 +14791,26 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*road*/ 2 && t_value !== (t_value = /*road*/ ctx[1].title + "")) set_data_dev(t, t_value);
+    			if (dirty & /*road*/ 4 && t_value !== (t_value = /*road*/ ctx[2].title + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*roadStyle*/ 4) {
-    				attr_dev(div1, "style", /*roadStyle*/ ctx[2]);
+    			if (dirty & /*roadStyle*/ 8) {
+    				attr_dev(div1, "style", /*roadStyle*/ ctx[3]);
     			}
 
-    			if (dirty & /*road*/ 2) {
-    				toggle_class(div1, "ripple1", /*road*/ ctx[1].ripple);
+    			if (dirty & /*road*/ 4) {
+    				toggle_class(div1, "ripple1", /*road*/ ctx[2].ripple);
     			}
 
-    			if (dirty & /*road*/ 2) {
-    				toggle_class(div1, "pick", /*road*/ ctx[1].ripple);
+    			if (dirty & /*road*/ 4) {
+    				toggle_class(div1, "pick", /*road*/ ctx[2].ripple);
     			}
 
-    			if (dirty & /*road*/ 2) {
-    				toggle_class(div1, "hide", /*road*/ ctx[1].hide);
+    			if (dirty & /*road*/ 4) {
+    				toggle_class(div1, "hide", /*road*/ ctx[2].hide);
     			}
 
-    			if (dirty & /*road*/ 2) {
-    				toggle_class(div1, "show", /*road*/ ctx[1].show);
+    			if (dirty & /*road*/ 4) {
+    				toggle_class(div1, "show", /*road*/ ctx[2].show);
     			}
     		},
     		d: function destroy(detaching) {
@@ -14806,25 +14824,25 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(52:0) {:else}",
+    		source: "(51:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (47:0) {#if config.debug}
+    // (46:0) {#if $katan.config.debug}
     function create_if_block$3(ctx) {
     	let div2;
     	let div0;
-    	let t0_value = /*road*/ ctx[1].i + "";
+    	let t0_value = /*road*/ ctx[2].i + "";
     	let t0;
     	let t1;
-    	let t2_value = /*road*/ ctx[1].j + "";
+    	let t2_value = /*road*/ ctx[2].j + "";
     	let t2;
     	let t3;
     	let div1;
-    	let t4_value = /*road*/ ctx[1].index + "";
+    	let t4_value = /*road*/ ctx[2].index + "";
     	let t4;
 
     	const block = {
@@ -14837,11 +14855,11 @@ var app = (function () {
     			t3 = space();
     			div1 = element("div");
     			t4 = text(t4_value);
-    			add_location(div0, file$3, 48, 8, 1201);
-    			add_location(div1, file$3, 49, 8, 1238);
+    			add_location(div0, file$3, 47, 8, 1246);
+    			add_location(div1, file$3, 48, 8, 1284);
     			attr_dev(div2, "class", "road svelte-1mp7gxw");
-    			attr_dev(div2, "style", /*roadStyle*/ ctx[2]);
-    			add_location(div2, file$3, 47, 4, 1156);
+    			attr_dev(div2, "style", /*roadStyle*/ ctx[3]);
+    			add_location(div2, file$3, 46, 4, 1200);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -14854,12 +14872,12 @@ var app = (function () {
     			append_dev(div1, t4);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*road*/ 2 && t0_value !== (t0_value = /*road*/ ctx[1].i + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*road*/ 2 && t2_value !== (t2_value = /*road*/ ctx[1].j + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*road*/ 2 && t4_value !== (t4_value = /*road*/ ctx[1].index + "")) set_data_dev(t4, t4_value);
+    			if (dirty & /*road*/ 4 && t0_value !== (t0_value = /*road*/ ctx[2].i + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*road*/ 4 && t2_value !== (t2_value = /*road*/ ctx[2].j + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*road*/ 4 && t4_value !== (t4_value = /*road*/ ctx[2].index + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*roadStyle*/ 4) {
-    				attr_dev(div2, "style", /*roadStyle*/ ctx[2]);
+    			if (dirty & /*roadStyle*/ 8) {
+    				attr_dev(div2, "style", /*roadStyle*/ ctx[3]);
     			}
     		},
     		d: function destroy(detaching) {
@@ -14871,7 +14889,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(47:0) {#if config.debug}",
+    		source: "(46:0) {#if $katan.config.debug}",
     		ctx
     	});
 
@@ -14882,11 +14900,11 @@ var app = (function () {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (config.debug) return create_if_block$3;
+    		if (/*$katan*/ ctx[1].config.debug) return create_if_block$3;
     		return create_else_block$1;
     	}
 
-    	let current_block_type = select_block_type();
+    	let current_block_type = select_block_type(ctx);
     	let if_block = current_block_type(ctx);
 
     	const block = {
@@ -14902,7 +14920,17 @@ var app = (function () {
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, [dirty]) {
-    			if_block.p(ctx, dirty);
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
     		},
     		i: noop,
     		o: noop,
@@ -14926,7 +14954,7 @@ var app = (function () {
     function instance$3($$self, $$props, $$invalidate) {
     	let $katan;
     	validate_store(katanStore, "katan");
-    	component_subscribe($$self, katanStore, $$value => $$invalidate(3, $katan = $$value));
+    	component_subscribe($$self, katanStore, $$value => $$invalidate(1, $katan = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("Road", slots, []);
     	let { roadIndex } = $$props;
@@ -14937,9 +14965,9 @@ var app = (function () {
     		let styleObject = {
     			left: road.left + "px",
     			top: road.top + "px",
-    			width: config.load.width + "px",
-    			height: config.load.height + "px",
-    			lineHeight: config.castle.height + "px",
+    			width: $katan.config.load.width + "px",
+    			height: $katan.config.load.height + "px",
+    			lineHeight: $katan.config.castle.height + "px",
     			backgroundColor: player.color
     		};
 
@@ -14947,7 +14975,7 @@ var app = (function () {
     			styleObject.cursor = "default";
     		}
 
-    		if (config.debug) {
+    		if ($katan.config.debug) {
     			delete styleObject.lineHeight;
     			styleObject.color = "black";
     			styleObject.backgroundColor = "lightblue";
@@ -14976,7 +15004,6 @@ var app = (function () {
 
     	$$self.$capture_state = () => ({
     		katan: katanStore,
-    		config,
     		toStyle,
     		roadIndex,
     		createStyle,
@@ -14987,8 +15014,8 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ("roadIndex" in $$props) $$invalidate(0, roadIndex = $$props.roadIndex);
-    		if ("road" in $$props) $$invalidate(1, road = $$props.road);
-    		if ("roadStyle" in $$props) $$invalidate(2, roadStyle = $$props.roadStyle);
+    		if ("road" in $$props) $$invalidate(2, road = $$props.road);
+    		if ("roadStyle" in $$props) $$invalidate(3, roadStyle = $$props.roadStyle);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -14996,15 +15023,15 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$katan, roadIndex*/ 9) {
+    		if ($$self.$$.dirty & /*$katan, roadIndex*/ 3) {
     			{
-    				$$invalidate(1, road = $katan.roadList[roadIndex]);
-    				$$invalidate(2, roadStyle = createStyle());
+    				$$invalidate(2, road = $katan.roadList[roadIndex]);
+    				$$invalidate(3, roadStyle = createStyle());
     			}
     		}
     	};
 
-    	return [roadIndex, road, roadStyle, $katan, click_handler];
+    	return [roadIndex, $katan, road, roadStyle, click_handler];
     }
 
     class Road extends SvelteComponentDev {
@@ -15060,7 +15087,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (24:4) {#each resourceList as resource, i}
+    // (23:4) {#each resourceList as resource, i}
     function create_each_block_2(ctx) {
     	let cell;
     	let current;
@@ -15097,14 +15124,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(24:4) {#each resourceList as resource, i}",
+    		source: "(23:4) {#each resourceList as resource, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (27:4) {#each castleList as castle, i}
+    // (26:4) {#each castleList as castle, i}
     function create_each_block_1(ctx) {
     	let castle;
     	let t;
@@ -15156,14 +15183,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(27:4) {#each castleList as castle, i}",
+    		source: "(26:4) {#each castleList as castle, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (31:4) {#each $katan.roadList as road, i}
+    // (30:4) {#each $katan.roadList as road, i}
     function create_each_block(ctx) {
     	let road;
     	let current;
@@ -15200,7 +15227,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(31:4) {#each $katan.roadList as road, i}",
+    		source: "(30:4) {#each $katan.roadList as road, i}",
     		ctx
     	});
 
@@ -15313,20 +15340,20 @@ var app = (function () {
     			}
 
     			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left svelte-swjckl");
-    			add_location(div0, file$4, 19, 4, 535);
+    			add_location(div0, file$4, 18, 4, 511);
     			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right svelte-swjckl");
-    			add_location(div1, file$4, 20, 4, 628);
-    			add_location(br0, file$4, 21, 52, 770);
-    			add_location(br1, file$4, 21, 59, 777);
+    			add_location(div1, file$4, 19, 4, 604);
+    			add_location(br0, file$4, 20, 52, 746);
+    			add_location(br1, file$4, 20, 59, 753);
     			attr_dev(div2, "class", "display-card display-card-left svelte-swjckl");
-    			add_location(div2, file$4, 21, 4, 722);
-    			add_location(br2, file$4, 22, 53, 866);
-    			add_location(br3, file$4, 22, 60, 873);
+    			add_location(div2, file$4, 20, 4, 698);
+    			add_location(br2, file$4, 21, 53, 842);
+    			add_location(br3, file$4, 21, 60, 849);
     			attr_dev(div3, "class", "display-card display-card-right svelte-swjckl");
-    			add_location(div3, file$4, 22, 4, 817);
+    			add_location(div3, file$4, 21, 4, 793);
     			attr_dev(main, "class", "board svelte-swjckl");
     			attr_dev(main, "style", /*boardStyle*/ ctx[3]);
-    			add_location(main, file$4, 18, 0, 490);
+    			add_location(main, file$4, 17, 0, 466);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -15529,8 +15556,8 @@ var app = (function () {
     	let { castleList } = $$props;
 
     	let boardStyle = toStyle({
-    		width: 4 * config.cell.width + "px",
-    		height: 4 * config.cell.height + "px"
+    		width: 4 * $katan.config.cell.width + "px",
+    		height: 4 * $katan.config.cell.height + "px"
     	});
 
     	const writable_props = ["resourceList", "castleList"];
@@ -15545,7 +15572,6 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
-    		config,
     		toStyle,
     		Cell,
     		Castle,
@@ -15846,81 +15872,81 @@ var app = (function () {
     			t20 = text("발전카드");
     			if (img0.src !== (img0_src_value = "tree_item.png")) attr_dev(img0, "src", img0_src_value);
     			attr_dev(img0, "class", "svelte-137w15p");
-    			add_location(img0, file$6, 16, 16, 258);
+    			add_location(img0, file$6, 16, 16, 274);
     			if (img1.src !== (img1_src_value = "mud_item.png")) attr_dev(img1, "src", img1_src_value);
     			attr_dev(img1, "class", "svelte-137w15p");
-    			add_location(img1, file$6, 17, 16, 300);
+    			add_location(img1, file$6, 17, 16, 317);
     			attr_dev(td0, "class", "svelte-137w15p");
-    			add_location(td0, file$6, 15, 12, 237);
+    			add_location(td0, file$6, 15, 12, 252);
     			attr_dev(button0, "class", "btn btn-primary btn-sm svelte-137w15p");
     			button0.disabled = button0_disabled_value = !/*player*/ ctx[0].make.road;
-    			add_location(button0, file$6, 20, 16, 376);
+    			add_location(button0, file$6, 20, 16, 396);
     			attr_dev(td1, "class", "svelte-137w15p");
-    			add_location(td1, file$6, 19, 12, 355);
-    			add_location(tr0, file$6, 14, 8, 220);
+    			add_location(td1, file$6, 19, 12, 374);
+    			add_location(tr0, file$6, 14, 8, 234);
     			if (img2.src !== (img2_src_value = "tree_item.png")) attr_dev(img2, "src", img2_src_value);
     			attr_dev(img2, "class", "svelte-137w15p");
-    			add_location(img2, file$6, 27, 16, 618);
+    			add_location(img2, file$6, 27, 16, 645);
     			if (img3.src !== (img3_src_value = "mud_item.png")) attr_dev(img3, "src", img3_src_value);
     			attr_dev(img3, "class", "svelte-137w15p");
-    			add_location(img3, file$6, 28, 16, 660);
+    			add_location(img3, file$6, 28, 16, 688);
     			if (img4.src !== (img4_src_value = "wheat_item.png")) attr_dev(img4, "src", img4_src_value);
     			attr_dev(img4, "class", "svelte-137w15p");
-    			add_location(img4, file$6, 29, 16, 701);
+    			add_location(img4, file$6, 29, 16, 730);
     			if (img5.src !== (img5_src_value = "sheep_item.png")) attr_dev(img5, "src", img5_src_value);
     			attr_dev(img5, "class", "svelte-137w15p");
-    			add_location(img5, file$6, 30, 16, 744);
+    			add_location(img5, file$6, 30, 16, 774);
     			attr_dev(td2, "class", "svelte-137w15p");
-    			add_location(td2, file$6, 26, 12, 597);
+    			add_location(td2, file$6, 26, 12, 623);
     			attr_dev(button1, "class", "btn btn-primary btn-sm svelte-137w15p");
     			button1.disabled = button1_disabled_value = !/*player*/ ctx[0].make.castle;
-    			add_location(button1, file$6, 33, 16, 822);
+    			add_location(button1, file$6, 33, 16, 855);
     			attr_dev(td3, "class", "svelte-137w15p");
-    			add_location(td3, file$6, 32, 12, 801);
-    			add_location(tr1, file$6, 25, 8, 580);
+    			add_location(td3, file$6, 32, 12, 833);
+    			add_location(tr1, file$6, 25, 8, 605);
     			if (img6.src !== (img6_src_value = "wheat_item.png")) attr_dev(img6, "src", img6_src_value);
     			attr_dev(img6, "class", "svelte-137w15p");
-    			add_location(img6, file$6, 40, 16, 1068);
+    			add_location(img6, file$6, 40, 16, 1108);
     			if (img7.src !== (img7_src_value = "wheat_item.png")) attr_dev(img7, "src", img7_src_value);
     			attr_dev(img7, "class", "svelte-137w15p");
-    			add_location(img7, file$6, 41, 16, 1111);
+    			add_location(img7, file$6, 41, 16, 1152);
     			if (img8.src !== (img8_src_value = "iron_item.png")) attr_dev(img8, "src", img8_src_value);
     			attr_dev(img8, "class", "svelte-137w15p");
-    			add_location(img8, file$6, 42, 16, 1154);
+    			add_location(img8, file$6, 42, 16, 1196);
     			if (img9.src !== (img9_src_value = "iron_item.png")) attr_dev(img9, "src", img9_src_value);
     			attr_dev(img9, "class", "svelte-137w15p");
-    			add_location(img9, file$6, 43, 16, 1196);
+    			add_location(img9, file$6, 43, 16, 1239);
     			if (img10.src !== (img10_src_value = "iron_item.png")) attr_dev(img10, "src", img10_src_value);
     			attr_dev(img10, "class", "svelte-137w15p");
-    			add_location(img10, file$6, 44, 16, 1238);
+    			add_location(img10, file$6, 44, 16, 1282);
     			attr_dev(td4, "class", "svelte-137w15p");
-    			add_location(td4, file$6, 39, 12, 1047);
+    			add_location(td4, file$6, 39, 12, 1086);
     			attr_dev(button2, "class", "btn btn-primary btn-sm svelte-137w15p");
     			button2.disabled = button2_disabled_value = !/*player*/ ctx[0].make.city;
-    			add_location(button2, file$6, 47, 16, 1315);
+    			add_location(button2, file$6, 47, 16, 1362);
     			attr_dev(td5, "class", "svelte-137w15p");
-    			add_location(td5, file$6, 46, 12, 1294);
-    			add_location(tr2, file$6, 38, 8, 1030);
+    			add_location(td5, file$6, 46, 12, 1340);
+    			add_location(tr2, file$6, 38, 8, 1068);
     			if (img11.src !== (img11_src_value = "wheat_item.png")) attr_dev(img11, "src", img11_src_value);
     			attr_dev(img11, "class", "svelte-137w15p");
-    			add_location(img11, file$6, 54, 16, 1557);
+    			add_location(img11, file$6, 54, 16, 1611);
     			if (img12.src !== (img12_src_value = "sheep_item.png")) attr_dev(img12, "src", img12_src_value);
     			attr_dev(img12, "class", "svelte-137w15p");
-    			add_location(img12, file$6, 55, 16, 1600);
+    			add_location(img12, file$6, 55, 16, 1655);
     			if (img13.src !== (img13_src_value = "iron_item.png")) attr_dev(img13, "src", img13_src_value);
     			attr_dev(img13, "class", "svelte-137w15p");
-    			add_location(img13, file$6, 56, 16, 1643);
+    			add_location(img13, file$6, 56, 16, 1699);
     			attr_dev(td6, "class", "svelte-137w15p");
-    			add_location(td6, file$6, 53, 12, 1536);
+    			add_location(td6, file$6, 53, 12, 1589);
     			attr_dev(button3, "class", "btn btn-primary btn-sm svelte-137w15p");
     			button3.disabled = button3_disabled_value = !/*player*/ ctx[0].make.dev;
-    			add_location(button3, file$6, 59, 16, 1720);
+    			add_location(button3, file$6, 59, 16, 1779);
     			attr_dev(td7, "class", "svelte-137w15p");
-    			add_location(td7, file$6, 58, 12, 1699);
-    			add_location(tr3, file$6, 52, 8, 1519);
+    			add_location(td7, file$6, 58, 12, 1757);
+    			add_location(tr3, file$6, 52, 8, 1571);
     			attr_dev(table, "class", "construction-resource svelte-137w15p");
-    			add_location(table, file$6, 13, 4, 174);
-    			add_location(main, file$6, 12, 0, 163);
+    			add_location(table, file$6, 13, 4, 187);
+    			add_location(main, file$6, 12, 0, 175);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

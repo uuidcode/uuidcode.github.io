@@ -2,10 +2,9 @@ import katanStore from './katan.js'
 import jQuery from 'jquery';
 import {random, shuffle, move} from "./util";
 import {recomputePlayer} from "./player";
-import config from "./config";
 import {get} from "svelte/store";
 
-export const createResourceList = () => {
+export const createResourceList = (katanObject) => {
     let resourceList = [];
 
     resourceList.push({
@@ -78,19 +77,19 @@ export const createResourceList = () => {
             let top = 0;
 
             if (0 <= index && index <= 2) {
-                left = config.cell.width + config.cell.width * index;
+                left = katanObject.config.cell.width + katanObject.config.cell.width * index;
             } else if (3 <= index && index <= 6) {
-                left = config.cell.width / 2 + config.cell.width * (index - 3);
-                top = 3 * config.cell.height / 4;
+                left = katanObject.config.cell.width / 2 + katanObject.config.cell.width * (index - 3);
+                top = 3 * katanObject.config.cell.height / 4;
             } else if (7 <= index && index <= 11) {
-                left = config.cell.width * (index - 7);
-                top = 2 * (3 * config.cell.height / 4);
+                left = katanObject.config.cell.width * (index - 7);
+                top = 2 * (3 * katanObject.config.cell.height / 4);
             } else if (12 <= index && index <= 15) {
-                left = config.cell.width / 2 + config.cell.width * (index - 12);
-                top = 3 * (3 * config.cell.height / 4);
+                left = katanObject.config.cell.width / 2 + katanObject.config.cell.width * (index - 12);
+                top = 3 * (3 * katanObject.config.cell.height / 4);
             } else if (16 <= index && index <= 18) {
-                left = config.cell.width * (index - 15);
-                top = 4 * (3 * config.cell.height / 4);
+                left = katanObject.config.cell.width * (index - 15);
+                top = 4 * (3 * katanObject.config.cell.height / 4);
             }
 
             resource.left = left;

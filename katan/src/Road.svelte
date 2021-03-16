@@ -1,6 +1,5 @@
 <script>
     import katan from './katan'
-    import config from './config.js'
     import { toStyle } from './util.js'
 
     export let roadIndex;
@@ -11,9 +10,9 @@
         let styleObject = {
             left: road.left + 'px',
             top: road.top + 'px',
-            width: config.load.width + 'px',
-            height: config.load.height + 'px',
-            lineHeight: config.castle.height + 'px',
+            width: $katan.config.load.width + 'px',
+            height: $katan.config.load.height + 'px',
+            lineHeight: $katan.config.castle.height + 'px',
             backgroundColor: player.color
         };
 
@@ -21,7 +20,7 @@
             styleObject.cursor = 'default';
         }
 
-        if (config.debug) {
+        if ($katan.config.debug) {
             delete styleObject.lineHeight;
             styleObject.color = 'black';
             styleObject.backgroundColor = 'lightblue';
@@ -44,7 +43,7 @@
     }
 </script>
 
-{#if config.debug}
+{#if $katan.config.debug}
     <div class="road" style={roadStyle}>
         <div>{road.i},{road.j}</div>
         <div>{road.index}</div>

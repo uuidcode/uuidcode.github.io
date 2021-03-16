@@ -1,6 +1,5 @@
 import {tick} from 'svelte'
 import {writable, get} from "svelte/store";
-import config from './config.js'
 import jQuery from 'jquery';
 import {recomputePlayer} from "./player";
 import katanObject from "./katanObject"
@@ -18,12 +17,12 @@ const katanStore = {
     update,
 
     plus: (playerIndex, resourceType) => {
-        update(katan => {
-            katan.playerList[playerIndex].resource[resourceType]++;
-            return katan;
-        });
-
-        recomputePlayer();
+        // update(katan => {
+        //     katan.playerList[playerIndex].resource[resourceType]++;
+        //     return katan;
+        // });
+        //
+        // recomputePlayer();
     },
 
     turn: () => update(katan => {
