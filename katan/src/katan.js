@@ -17,12 +17,16 @@ const katanStore = {
     update,
 
     plus: (playerIndex, resourceType) => {
-        update(katan => {
-            katan.playerList[playerIndex].resource[resourceType]++;
-            return katan;
-        });
+        const katan = get(katanStore);
 
-        recomputePlayer();
+        if (katan.showDebugUi) {
+            update(katan => {
+                katan.playerList[playerIndex].resource[resourceType]++;
+                return katan;
+            });
+
+            recomputePlayer();
+        }
     },
 
     turn: () => update(katan => {
@@ -527,25 +531,6 @@ const katanStore = {
             katan.rollDice;
     },
 
-    test: () => {
-        update(katan => {
-            katan.playerList = katan.playerList
-                .map(player => {
-                    player.resource.tree = 5;
-                    player.resource.mud = 5;
-                    player.resource.wheat = 5;
-                    player.resource.sheep = 5;
-                    player.resource.iron = 5;
-
-                    return player;
-                });
-
-            return katan;
-        });
-
-        recomputePlayer();
-    },
-
     plusPoint: () => update(katan => {
         const player = katanStore.getActivePlayer();
         player.point.point += 1;
@@ -553,27 +538,42 @@ const katanStore = {
     }),
 
     testKnightCard: () => update(katan => {
-        katan.cardList = [...katan.cardList, {type: 'knight'}];
+        if (katan.showDebugUi) {
+            katan.cardList = [...katan.cardList, {type: 'knight'}];
+        }
+
         return katan;
     }),
 
     testRoadCard: () => update(katan => {
-        katan.cardList = [...katan.cardList, {type: 'road'}];
+        if (katan.showDebugUi) {
+            katan.cardList = [...katan.cardList, {type: 'road'}];
+        }
+
         return katan;
     }),
 
     testTakeResourceCard: () => update(katan => {
-        katan.cardList = [...katan.cardList, {type: 'takeResource'}];
+        if (katan.showDebugUi) {
+            katan.cardList = [...katan.cardList, {type: 'takeResource'}];
+        }
+
         return katan;
     }),
 
-    testGetPointCard: () => update(katan => {
-        katan.cardList = [...katan.cardList, {type: 'point'}];
+    testPointCard: () => update(katan => {
+        if (katan.showDebugUi) {
+            katan.cardList = [...katan.cardList, {type: 'point'}];
+        }
+
         return katan;
     }),
 
     testGetResourceCard: () => update(katan => {
-        katan.cardList = [...katan.cardList, {type: 'getResource'}];
+        if (katan.showDebugUi) {
+            katan.cardList = [...katan.cardList, {type: 'getResource'}];
+        }
+
         return katan;
     })
 };

@@ -13,6 +13,20 @@
         width: 4 * $katan.config.cell.width + 'px',
         height: 4 * $katan.config.cell.height + 'px'
     });
+
+    let knightCard;
+    let pointCard;
+    let roadCard;
+    let takeResourceCard;
+    let getResourceCard;
+
+    $: {
+        knightCard = $katan.cardList.filter(card => card.type === 'knight').length;
+        pointCard = $katan.cardList.filter(card => card.type === 'point').length;
+        roadCard = $katan.cardList.filter(card => card.type === 'road').length;
+        takeResourceCard = $katan.cardList.filter(card => card.type === 'takeResource').length;
+        getResourceCard = $katan.cardList.filter(card => card.type === 'getResource').length;
+    }
 </script>
 
 <main class="board" style={boardStyle}>
@@ -20,6 +34,24 @@
     <div class="display-dice-number display-dice-number-2 dice-right">{$katan.sumDice}</div>
     <div class="display-card display-card-left">발전카드<br>사용전<br>{$katan.cardList.length}</div>
     <div class="display-card display-card-right">발전카드<br>사용후<br>{$katan.afterCardList.length}</div>
+    <div class="display-card-info">
+        <table>
+            <tr>
+                <td on:click={()=>katan.testKnightCard()}>기사</td>
+                <td on:click={()=>katan.testPointCard()}>점수</td>
+                <td on:click={()=>katan.testRoadCard()}>도로2개 만들기</td>
+                <td on:click={()=>katan.testTakeResourceCard()}>자원2개 뺏기</td>
+                <td on:click={()=>katan.testGetResourceCard()}>자원2개 얻기</td>
+            </tr>
+            <tr>
+                <td>{knightCard}/14</td>
+                <td>{pointCard}/2</td>
+                <td>{roadCard}/2</td>
+                <td>{takeResourceCard}/2</td>
+                <td>{getResourceCard}/2</td>
+            </tr>
+        </table>
+    </div>
     {#each resourceList as resource, i}
         <Cell resourceIndex={i}></Cell>
     {/each}
@@ -72,7 +104,7 @@
     .display-card {
         vertical-align: middle;
         position: absolute;
-        bottom: -135px;
+        bottom: -160px;
         width: 150px;
         height: 150px;
         font-size: 20px;
@@ -80,6 +112,25 @@
         border: 1px solid black;
         background-color: white;
         text-align: center;
+    }
+
+    .display-card-info {
+        position: absolute;
+        bottom: -140px;
+        width: 700px;
+        height: 50px;
+        text-align: center;
+    }
+
+    .display-card-info table {
+        margin: 10px auto;
+    }
+
+    .display-card-info td {
+        border: 1px solid lightskyblue;
+        font-size: 14px;
+        font-weight: bolder;
+        width: 120px;
     }
 
     .display-card-left {

@@ -16,7 +16,6 @@
     let player;
     let playerList;
     let headerStyle;
-    let showDebugUi = false;
 
     $: {
         playerList = $katan.playerList;
@@ -27,7 +26,7 @@
     jQuery(() => {
         jQuery('body').on('keydown', (e) => {
             if (e.keyCode === 121) {
-                showDebugUi = !showDebugUi;
+                $katan.showDebugUi = !$katan.showDebugUi;
             }
         });
 
@@ -78,23 +77,10 @@
                     <button class="btn btn-primary"
                             disabled={!$katan.action}
                         on:click={()=>katan.turn()}>완료</button>
-                    {#if showDebugUi}
+                    {#if $katan.showDebugUi}
                     <input type="number"
                            style="width: 50px"
                            class="test-dice" bind:value={$katan.testDice}>
-
-                    <button class="btn btn-primary"
-                            on:click={()=>katan.test()}>추가</button>
-                    <button class="btn btn-primary"
-                            on:click={()=>katan.testKnightCard()}>기사</button>
-                    <button class="btn btn-primary"
-                            on:click={()=>katan.testRoadCard()}>도로</button>
-                    <button class="btn btn-primary"
-                            on:click={()=>katan.testTakeResourceCard()}>뺏기</button>
-                    <button class="btn btn-primary"
-                            on:click={()=>katan.testGetResourceCard()}>얻기</button>
-                    <button class="btn btn-primary"
-                            on:click={()=>katan.testGetPointCard()}>점수</button>
                     {/if}
                 </div>
                 <Board resourceList="{$katan.resourceList}"

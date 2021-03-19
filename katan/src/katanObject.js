@@ -5,6 +5,7 @@ import {createRoadList} from "./road";
 import {createResourceList} from "./resource";
 
 const katanObject = {
+    showDebugUi: false,
     testDice: 0,
     maxRoadLength: 0,
     resourceTypeList: [
