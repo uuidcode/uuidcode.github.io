@@ -9,11 +9,6 @@
     export let resourceList;
     export let castleList;
 
-    let boardStyle = toStyle({
-        width: 4 * $katan.config.cell.width + 'px',
-        height: 4 * $katan.config.cell.height + 'px'
-    });
-
     let knightCard;
     let pointCard;
     let roadCard;
@@ -28,43 +23,44 @@
         getResourceCard = $katan.cardList.filter(card => card.type === 'getResource').length;
     }
 </script>
-
-<main class="board" style={boardStyle}>
-    <div class="display-dice-number display-dice-number-1 dice-left">{$katan.sumDice}</div>
-    <div class="display-dice-number display-dice-number-2 dice-right">{$katan.sumDice}</div>
-    <div class="display-card display-card-left">발전카드<br>사용전<br>{$katan.cardList.length}</div>
-    <div class="display-card display-card-right">발전카드<br>사용후<br>{$katan.afterCardList.length}</div>
-    <div class="display-card-info">
-        <table>
-            <tr>
-                <td on:click={()=>katan.testKnightCard()}>기사</td>
-                <td on:click={()=>katan.testPointCard()}>점수</td>
-                <td on:click={()=>katan.testRoadCard()}>도로2개 만들기</td>
-                <td on:click={()=>katan.testTakeResourceCard()}>자원2개 뺏기</td>
-                <td on:click={()=>katan.testGetResourceCard()}>자원2개 얻기</td>
-            </tr>
-            <tr>
-                <td>{knightCard}/14</td>
-                <td>{pointCard}/5</td>
-                <td>{roadCard}/2</td>
-                <td>{takeResourceCard}/2</td>
-                <td>{getResourceCard}/2</td>
-            </tr>
-        </table>
+<div class="board-outer">
+    <div class="board">
+        <div class="display-dice-number display-dice-number-1 dice-left">{$katan.sumDice}</div>
+        <div class="display-dice-number display-dice-number-2 dice-right">{$katan.sumDice}</div>
+        <div class="display-card display-card-left">발전카드<br>사용전<br>{$katan.cardList.length}</div>
+        <div class="display-card display-card-right">발전카드<br>사용후<br>{$katan.afterCardList.length}</div>
+        <div class="display-card-info">
+            <table>
+                <tr>
+                    <td on:click={()=>katan.testKnightCard()}>기사</td>
+                    <td on:click={()=>katan.testPointCard()}>점수</td>
+                    <td on:click={()=>katan.testRoadCard()}>도로2개 만들기</td>
+                    <td on:click={()=>katan.testTakeResourceCard()}>자원2개 뺏기</td>
+                    <td on:click={()=>katan.testGetResourceCard()}>자원2개 얻기</td>
+                </tr>
+                <tr>
+                    <td>{knightCard}/14</td>
+                    <td>{pointCard}/5</td>
+                    <td>{roadCard}/2</td>
+                    <td>{takeResourceCard}/2</td>
+                    <td>{getResourceCard}/2</td>
+                </tr>
+            </table>
+        </div>
+        {#each resourceList as resource, i}
+            <Cell resourceIndex={i}></Cell>
+        {/each}
+        {#each castleList as castle, i}
+            <Castle castleIndex={i}></Castle>
+            <Port castleIndex={i}></Port>
+        {/each}
+        {#each $katan.roadList as road, i}
+            <Road roadIndex={i}></Road>
+        {/each}
     </div>
-    {#each resourceList as resource, i}
-        <Cell resourceIndex={i}></Cell>
-    {/each}
-    {#each castleList as castle, i}
-        <Castle castleIndex={i}></Castle>
-        <Port castleIndex={i}></Port>
-    {/each}
-    {#each $katan.roadList as road, i}
-        <Road roadIndex={i}></Road>
-    {/each}
-</main>
-
+</div>
 <style>
+
     .resource td {
         height: 160px;
         background-color: lightgray;
@@ -73,11 +69,19 @@
         text-align: center;
     }
 
+    .board-outer {
+        top: -70px;
+        box-sizing: border-box;
+        position: relative;
+        width: 1000px;
+        height: 800px;
+        padding: 150px;
+    }
+
     .board {
         position: relative;
-        margin-left: 150px;
-        margin-right: 150px;
-        margin-top: 80px;
+        width: 100%;
+        height: 100%;
     }
 
     .display-dice-number {
@@ -98,7 +102,7 @@
     }
 
     .dice-right {
-        right: -330px;
+        right: -150px;
     }
 
     .display-card {
@@ -138,6 +142,6 @@
     }
 
     .display-card-right {
-        right: -330px;
+        right: -150px;
     }
 </style>

@@ -15080,32 +15080,32 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[14] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[13] = list[i];
+    	child_ctx[15] = i;
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[17] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[16] = list[i];
+    	child_ctx[15] = i;
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[19] = list[i];
-    	child_ctx[16] = i;
+    	child_ctx[18] = list[i];
+    	child_ctx[15] = i;
     	return child_ctx;
     }
 
-    // (55:4) {#each resourceList as resource, i}
+    // (50:8) {#each resourceList as resource, i}
     function create_each_block_2(ctx) {
     	let cell;
     	let current;
 
     	cell = new Cell({
-    			props: { resourceIndex: /*i*/ ctx[16] },
+    			props: { resourceIndex: /*i*/ ctx[15] },
     			$$inline: true
     		});
 
@@ -15136,14 +15136,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(55:4) {#each resourceList as resource, i}",
+    		source: "(50:8) {#each resourceList as resource, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (58:4) {#each castleList as castle, i}
+    // (53:8) {#each castleList as castle, i}
     function create_each_block_1(ctx) {
     	let castle;
     	let t;
@@ -15151,12 +15151,12 @@ var app = (function () {
     	let current;
 
     	castle = new Castle({
-    			props: { castleIndex: /*i*/ ctx[16] },
+    			props: { castleIndex: /*i*/ ctx[15] },
     			$$inline: true
     		});
 
     	port = new Port({
-    			props: { castleIndex: /*i*/ ctx[16] },
+    			props: { castleIndex: /*i*/ ctx[15] },
     			$$inline: true
     		});
 
@@ -15195,20 +15195,20 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(58:4) {#each castleList as castle, i}",
+    		source: "(53:8) {#each castleList as castle, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (62:4) {#each $katan.roadList as road, i}
+    // (57:8) {#each $katan.roadList as road, i}
     function create_each_block(ctx) {
     	let road;
     	let current;
 
     	road = new Road({
-    			props: { roadIndex: /*i*/ ctx[16] },
+    			props: { roadIndex: /*i*/ ctx[15] },
     			$$inline: true
     		});
 
@@ -15239,7 +15239,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(62:4) {#each $katan.roadList as road, i}",
+    		source: "(57:8) {#each $katan.roadList as road, i}",
     		ctx
     	});
 
@@ -15247,7 +15247,8 @@ var app = (function () {
     }
 
     function create_fragment$4(ctx) {
-    	let main;
+    	let div6;
+    	let div5;
     	let div0;
     	let t0_value = /*$katan*/ ctx[2].sumDice + "";
     	let t0;
@@ -15349,7 +15350,8 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			main = element("main");
+    			div6 = element("div");
+    			div5 = element("div");
     			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = space();
@@ -15426,74 +15428,76 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left svelte-1om87v2");
-    			add_location(div0, file$4, 32, 4, 1086);
-    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right svelte-1om87v2");
-    			add_location(div1, file$4, 33, 4, 1179);
-    			add_location(br0, file$4, 34, 52, 1321);
-    			add_location(br1, file$4, 34, 59, 1328);
-    			attr_dev(div2, "class", "display-card display-card-left svelte-1om87v2");
-    			add_location(div2, file$4, 34, 4, 1273);
-    			add_location(br2, file$4, 35, 53, 1417);
-    			add_location(br3, file$4, 35, 60, 1424);
-    			attr_dev(div3, "class", "display-card display-card-right svelte-1om87v2");
-    			add_location(div3, file$4, 35, 4, 1368);
-    			attr_dev(td0, "class", "svelte-1om87v2");
-    			add_location(td0, file$4, 39, 16, 1553);
-    			attr_dev(td1, "class", "svelte-1om87v2");
-    			add_location(td1, file$4, 40, 16, 1620);
-    			attr_dev(td2, "class", "svelte-1om87v2");
-    			add_location(td2, file$4, 41, 16, 1686);
-    			attr_dev(td3, "class", "svelte-1om87v2");
-    			add_location(td3, file$4, 42, 16, 1757);
-    			attr_dev(td4, "class", "svelte-1om87v2");
-    			add_location(td4, file$4, 43, 16, 1835);
-    			add_location(tr0, file$4, 38, 12, 1531);
-    			attr_dev(td5, "class", "svelte-1om87v2");
-    			add_location(td5, file$4, 46, 16, 1949);
-    			attr_dev(td6, "class", "svelte-1om87v2");
-    			add_location(td6, file$4, 47, 16, 1991);
-    			attr_dev(td7, "class", "svelte-1om87v2");
-    			add_location(td7, file$4, 48, 16, 2031);
-    			attr_dev(td8, "class", "svelte-1om87v2");
-    			add_location(td8, file$4, 49, 16, 2070);
-    			attr_dev(td9, "class", "svelte-1om87v2");
-    			add_location(td9, file$4, 50, 16, 2117);
-    			add_location(tr1, file$4, 45, 12, 1927);
-    			attr_dev(table, "class", "svelte-1om87v2");
-    			add_location(table, file$4, 37, 8, 1510);
-    			attr_dev(div4, "class", "display-card-info svelte-1om87v2");
-    			add_location(div4, file$4, 36, 4, 1469);
-    			attr_dev(main, "class", "board svelte-1om87v2");
-    			attr_dev(main, "style", /*boardStyle*/ ctx[8]);
-    			add_location(main, file$4, 31, 0, 1041);
+    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left svelte-klexg0");
+    			add_location(div0, file$4, 27, 8, 949);
+    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right svelte-klexg0");
+    			add_location(div1, file$4, 28, 8, 1046);
+    			add_location(br0, file$4, 29, 56, 1192);
+    			add_location(br1, file$4, 29, 63, 1199);
+    			attr_dev(div2, "class", "display-card display-card-left svelte-klexg0");
+    			add_location(div2, file$4, 29, 8, 1144);
+    			add_location(br2, file$4, 30, 57, 1292);
+    			add_location(br3, file$4, 30, 64, 1299);
+    			attr_dev(div3, "class", "display-card display-card-right svelte-klexg0");
+    			add_location(div3, file$4, 30, 8, 1243);
+    			attr_dev(td0, "class", "svelte-klexg0");
+    			add_location(td0, file$4, 34, 20, 1444);
+    			attr_dev(td1, "class", "svelte-klexg0");
+    			add_location(td1, file$4, 35, 20, 1515);
+    			attr_dev(td2, "class", "svelte-klexg0");
+    			add_location(td2, file$4, 36, 20, 1585);
+    			attr_dev(td3, "class", "svelte-klexg0");
+    			add_location(td3, file$4, 37, 20, 1660);
+    			attr_dev(td4, "class", "svelte-klexg0");
+    			add_location(td4, file$4, 38, 20, 1742);
+    			add_location(tr0, file$4, 33, 16, 1418);
+    			attr_dev(td5, "class", "svelte-klexg0");
+    			add_location(td5, file$4, 41, 20, 1868);
+    			attr_dev(td6, "class", "svelte-klexg0");
+    			add_location(td6, file$4, 42, 20, 1914);
+    			attr_dev(td7, "class", "svelte-klexg0");
+    			add_location(td7, file$4, 43, 20, 1958);
+    			attr_dev(td8, "class", "svelte-klexg0");
+    			add_location(td8, file$4, 44, 20, 2001);
+    			attr_dev(td9, "class", "svelte-klexg0");
+    			add_location(td9, file$4, 45, 20, 2052);
+    			add_location(tr1, file$4, 40, 16, 1842);
+    			attr_dev(table, "class", "svelte-klexg0");
+    			add_location(table, file$4, 32, 12, 1393);
+    			attr_dev(div4, "class", "display-card-info svelte-klexg0");
+    			add_location(div4, file$4, 31, 8, 1348);
+    			attr_dev(div5, "class", "board svelte-klexg0");
+    			add_location(div5, file$4, 26, 4, 920);
+    			attr_dev(div6, "class", "board-outer svelte-klexg0");
+    			add_location(div6, file$4, 25, 0, 889);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, main, anchor);
-    			append_dev(main, div0);
+    			insert_dev(target, div6, anchor);
+    			append_dev(div6, div5);
+    			append_dev(div5, div0);
     			append_dev(div0, t0);
-    			append_dev(main, t1);
-    			append_dev(main, div1);
+    			append_dev(div5, t1);
+    			append_dev(div5, div1);
     			append_dev(div1, t2);
-    			append_dev(main, t3);
-    			append_dev(main, div2);
+    			append_dev(div5, t3);
+    			append_dev(div5, div2);
     			append_dev(div2, t4);
     			append_dev(div2, br0);
     			append_dev(div2, t5);
     			append_dev(div2, br1);
     			append_dev(div2, t6);
-    			append_dev(main, t7);
-    			append_dev(main, div3);
+    			append_dev(div5, t7);
+    			append_dev(div5, div3);
     			append_dev(div3, t8);
     			append_dev(div3, br2);
     			append_dev(div3, t9);
     			append_dev(div3, br3);
     			append_dev(div3, t10);
-    			append_dev(main, t11);
-    			append_dev(main, div4);
+    			append_dev(div5, t11);
+    			append_dev(div5, div4);
     			append_dev(div4, table);
     			append_dev(table, tr0);
     			append_dev(tr0, td0);
@@ -15526,33 +15530,33 @@ var app = (function () {
     			append_dev(tr1, td9);
     			append_dev(td9, t34);
     			append_dev(td9, t35);
-    			append_dev(main, t36);
+    			append_dev(div5, t36);
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
-    				each_blocks_2[i].m(main, null);
+    				each_blocks_2[i].m(div5, null);
     			}
 
-    			append_dev(main, t37);
+    			append_dev(div5, t37);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
-    				each_blocks_1[i].m(main, null);
+    				each_blocks_1[i].m(div5, null);
     			}
 
-    			append_dev(main, t38);
+    			append_dev(div5, t38);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(main, null);
+    				each_blocks[i].m(div5, null);
     			}
 
     			current = true;
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(td0, "click", /*click_handler*/ ctx[9], false, false, false),
-    					listen_dev(td1, "click", /*click_handler_1*/ ctx[10], false, false, false),
-    					listen_dev(td2, "click", /*click_handler_2*/ ctx[11], false, false, false),
-    					listen_dev(td3, "click", /*click_handler_3*/ ctx[12], false, false, false),
-    					listen_dev(td4, "click", /*click_handler_4*/ ctx[13], false, false, false)
+    					listen_dev(td0, "click", /*click_handler*/ ctx[8], false, false, false),
+    					listen_dev(td1, "click", /*click_handler_1*/ ctx[9], false, false, false),
+    					listen_dev(td2, "click", /*click_handler_2*/ ctx[10], false, false, false),
+    					listen_dev(td3, "click", /*click_handler_3*/ ctx[11], false, false, false),
+    					listen_dev(td4, "click", /*click_handler_4*/ ctx[12], false, false, false)
     				];
 
     				mounted = true;
@@ -15584,7 +15588,7 @@ var app = (function () {
     						each_blocks_2[i] = create_each_block_2(child_ctx);
     						each_blocks_2[i].c();
     						transition_in(each_blocks_2[i], 1);
-    						each_blocks_2[i].m(main, t37);
+    						each_blocks_2[i].m(div5, t37);
     					}
     				}
 
@@ -15612,7 +15616,7 @@ var app = (function () {
     						each_blocks_1[i] = create_each_block_1(child_ctx);
     						each_blocks_1[i].c();
     						transition_in(each_blocks_1[i], 1);
-    						each_blocks_1[i].m(main, t38);
+    						each_blocks_1[i].m(div5, t38);
     					}
     				}
 
@@ -15640,7 +15644,7 @@ var app = (function () {
     						each_blocks[i] = create_each_block(child_ctx);
     						each_blocks[i].c();
     						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(main, null);
+    						each_blocks[i].m(div5, null);
     					}
     				}
 
@@ -15692,7 +15696,7 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(main);
+    			if (detaching) detach_dev(div6);
     			destroy_each(each_blocks_2, detaching);
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
@@ -15720,12 +15724,6 @@ var app = (function () {
     	validate_slots("Board", slots, []);
     	let { resourceList } = $$props;
     	let { castleList } = $$props;
-
-    	let boardStyle = toStyle({
-    		width: 4 * $katan.config.cell.width + "px",
-    		height: 4 * $katan.config.cell.height + "px"
-    	});
-
     	let knightCard;
     	let pointCard;
     	let roadCard;
@@ -15757,7 +15755,6 @@ var app = (function () {
     		katan: katanStore,
     		resourceList,
     		castleList,
-    		boardStyle,
     		knightCard,
     		pointCard,
     		roadCard,
@@ -15769,7 +15766,6 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("resourceList" in $$props) $$invalidate(0, resourceList = $$props.resourceList);
     		if ("castleList" in $$props) $$invalidate(1, castleList = $$props.castleList);
-    		if ("boardStyle" in $$props) $$invalidate(8, boardStyle = $$props.boardStyle);
     		if ("knightCard" in $$props) $$invalidate(3, knightCard = $$props.knightCard);
     		if ("pointCard" in $$props) $$invalidate(4, pointCard = $$props.pointCard);
     		if ("roadCard" in $$props) $$invalidate(5, roadCard = $$props.roadCard);
@@ -15802,7 +15798,6 @@ var app = (function () {
     		roadCard,
     		takeResourceCard,
     		getResourceCard,
-    		boardStyle,
     		click_handler,
     		click_handler_1,
     		click_handler_2,
