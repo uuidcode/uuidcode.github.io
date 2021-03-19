@@ -45,7 +45,7 @@
             </tr>
             <tr>
                 <td>{knightCard}/14</td>
-                <td>{pointCard}/2</td>
+                <td>{pointCard}/5</td>
                 <td>{roadCard}/2</td>
                 <td>{takeResourceCard}/2</td>
                 <td>{getResourceCard}/2</td>
