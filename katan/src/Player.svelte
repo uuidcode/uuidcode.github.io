@@ -41,7 +41,8 @@
 </script>
 
 <main>
-    <table class="trade-resource" style={playerStyle}>
+    <table class="trade-resource" style="{playerStyle}"
+           cellspacing="0" cellpadding="0">
         <tr>
             <td class="name"
                 style="background-color:{player.color}">
@@ -184,6 +185,7 @@
     }
 
     .trade-resource {
+        border-spacing: 0;
         width: 430px;
     }
 
@@ -229,6 +231,7 @@
 
     table.inner-resource {
         width: 100%;
+        border-spacing: 0;
     }
 
     button {

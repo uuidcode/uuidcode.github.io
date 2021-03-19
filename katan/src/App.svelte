@@ -61,7 +61,7 @@
 </script>
 
 <div class="katan">
-    <table class="header">
+    <table class="header" cellspacing="0" cellpadding="0">
         <tr>
             <td valign="top" class="player">
                 <Player playerIndex={0}></Player>
@@ -95,12 +95,12 @@
 </div>
 <style>
     .header {
+        margin:0;
         border-collapse: collapse;
-        border-spacing: 0;
     }
 
     .header td {
-        border: 1px solid black;
+        border-spacing: 0;
     }
 
     .header tr {

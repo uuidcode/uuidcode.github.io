@@ -104,7 +104,7 @@
     .display-card {
         vertical-align: middle;
         position: absolute;
-        bottom: -160px;
+        bottom: -150px;
         width: 150px;
         height: 150px;
         font-size: 20px;
@@ -116,7 +116,7 @@
 
     .display-card-info {
         position: absolute;
-        bottom: -140px;
+        bottom: -135px;
         width: 700px;
         height: 50px;
         text-align: center;
