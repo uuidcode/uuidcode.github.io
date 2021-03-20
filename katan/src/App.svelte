@@ -66,7 +66,7 @@
             <td valign="top" class="player">
                 <Player playerIndex={0}></Player>
             </td>
-            <td valign="top" class="text-center" width="1000px">
+            <td valign="top" class="text-center">
                 <h1 class="message-header" style={headerStyle}><img src={player.image}> {$katan.message}</h1>
                 <div class="dice-container">
                     <Dice number={$katan.dice[0]}></Dice>
@@ -110,7 +110,7 @@
     .dice-container {
         display: flex;
         justify-content: center;
-        z-index: 100;
+        z-index: 300;
     }
 
     .dice-container * {

@@ -13313,6 +13313,10 @@ var app = (function () {
         moveBurglar: async (resourceIndex) => {
             const katan = get_store_value(katanStore);
 
+            if (!katan.isStartMode) {
+                return;
+            }
+
             if (katan.resourceList[resourceIndex].burglar) {
                 return;
             }
@@ -15428,47 +15432,47 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left svelte-klexg0");
+    			attr_dev(div0, "class", "display-dice-number display-dice-number-1 dice-left svelte-fgp3go");
     			add_location(div0, file$4, 27, 8, 949);
-    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right svelte-klexg0");
+    			attr_dev(div1, "class", "display-dice-number display-dice-number-2 dice-right svelte-fgp3go");
     			add_location(div1, file$4, 28, 8, 1046);
     			add_location(br0, file$4, 29, 56, 1192);
     			add_location(br1, file$4, 29, 63, 1199);
-    			attr_dev(div2, "class", "display-card display-card-left svelte-klexg0");
+    			attr_dev(div2, "class", "display-card display-card-left svelte-fgp3go");
     			add_location(div2, file$4, 29, 8, 1144);
     			add_location(br2, file$4, 30, 57, 1292);
     			add_location(br3, file$4, 30, 64, 1299);
-    			attr_dev(div3, "class", "display-card display-card-right svelte-klexg0");
+    			attr_dev(div3, "class", "display-card display-card-right svelte-fgp3go");
     			add_location(div3, file$4, 30, 8, 1243);
-    			attr_dev(td0, "class", "svelte-klexg0");
+    			attr_dev(td0, "class", "svelte-fgp3go");
     			add_location(td0, file$4, 34, 20, 1444);
-    			attr_dev(td1, "class", "svelte-klexg0");
+    			attr_dev(td1, "class", "svelte-fgp3go");
     			add_location(td1, file$4, 35, 20, 1515);
-    			attr_dev(td2, "class", "svelte-klexg0");
+    			attr_dev(td2, "class", "svelte-fgp3go");
     			add_location(td2, file$4, 36, 20, 1585);
-    			attr_dev(td3, "class", "svelte-klexg0");
+    			attr_dev(td3, "class", "svelte-fgp3go");
     			add_location(td3, file$4, 37, 20, 1660);
-    			attr_dev(td4, "class", "svelte-klexg0");
+    			attr_dev(td4, "class", "svelte-fgp3go");
     			add_location(td4, file$4, 38, 20, 1742);
     			add_location(tr0, file$4, 33, 16, 1418);
-    			attr_dev(td5, "class", "svelte-klexg0");
+    			attr_dev(td5, "class", "svelte-fgp3go");
     			add_location(td5, file$4, 41, 20, 1868);
-    			attr_dev(td6, "class", "svelte-klexg0");
+    			attr_dev(td6, "class", "svelte-fgp3go");
     			add_location(td6, file$4, 42, 20, 1914);
-    			attr_dev(td7, "class", "svelte-klexg0");
+    			attr_dev(td7, "class", "svelte-fgp3go");
     			add_location(td7, file$4, 43, 20, 1958);
-    			attr_dev(td8, "class", "svelte-klexg0");
+    			attr_dev(td8, "class", "svelte-fgp3go");
     			add_location(td8, file$4, 44, 20, 2001);
-    			attr_dev(td9, "class", "svelte-klexg0");
+    			attr_dev(td9, "class", "svelte-fgp3go");
     			add_location(td9, file$4, 45, 20, 2052);
     			add_location(tr1, file$4, 40, 16, 1842);
-    			attr_dev(table, "class", "svelte-klexg0");
+    			attr_dev(table, "class", "svelte-fgp3go");
     			add_location(table, file$4, 32, 12, 1393);
-    			attr_dev(div4, "class", "display-card-info svelte-klexg0");
+    			attr_dev(div4, "class", "display-card-info svelte-fgp3go");
     			add_location(div4, file$4, 31, 8, 1348);
-    			attr_dev(div5, "class", "board svelte-klexg0");
+    			attr_dev(div5, "class", "board svelte-fgp3go");
     			add_location(div5, file$4, 26, 4, 920);
-    			attr_dev(div6, "class", "board-outer svelte-klexg0");
+    			attr_dev(div6, "class", "board-outer svelte-fgp3go");
     			add_location(div6, file$4, 25, 0, 889);
     		},
     		l: function claim(nodes) {
@@ -17430,8 +17434,8 @@ var app = (function () {
     			input = element("input");
     			attr_dev(input, "type", "number");
     			set_style(input, "width", "50px");
-    			attr_dev(input, "class", "test-dice svelte-10gxdnc");
-    			add_location(input, file$8, 80, 20, 2955);
+    			attr_dev(input, "class", "test-dice svelte-17gma6u");
+    			add_location(input, file$8, 80, 20, 2940);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, input, anchor);
@@ -17564,36 +17568,35 @@ var app = (function () {
     			td2 = element("td");
     			create_component(player1.$$.fragment);
     			attr_dev(td0, "valign", "top");
-    			attr_dev(td0, "class", "player svelte-10gxdnc");
+    			attr_dev(td0, "class", "player svelte-17gma6u");
     			add_location(td0, file$8, 65, 12, 2088);
     			if (img.src !== (img_src_value = /*player*/ ctx[1].image)) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "class", "svelte-10gxdnc");
-    			add_location(img, file$8, 69, 63, 2321);
-    			attr_dev(h1, "class", "message-header svelte-10gxdnc");
+    			attr_dev(img, "class", "svelte-17gma6u");
+    			add_location(img, file$8, 69, 63, 2306);
+    			attr_dev(h1, "class", "message-header svelte-17gma6u");
     			attr_dev(h1, "style", /*headerStyle*/ ctx[2]);
-    			add_location(h1, file$8, 69, 16, 2274);
-    			attr_dev(button0, "class", "btn btn-primary svelte-10gxdnc");
+    			add_location(h1, file$8, 69, 16, 2259);
+    			attr_dev(button0, "class", "btn btn-primary svelte-17gma6u");
     			button0.disabled = button0_disabled_value = /*$katan*/ ctx[0].diceDisabled;
-    			add_location(button0, file$8, 73, 20, 2553);
-    			attr_dev(button1, "class", "btn btn-primary svelte-10gxdnc");
+    			add_location(button0, file$8, 73, 20, 2538);
+    			attr_dev(button1, "class", "btn btn-primary svelte-17gma6u");
     			button1.disabled = button1_disabled_value = !/*$katan*/ ctx[0].action;
-    			add_location(button1, file$8, 76, 20, 2736);
-    			attr_dev(div0, "class", "dice-container svelte-10gxdnc");
-    			add_location(div0, file$8, 70, 16, 2385);
+    			add_location(button1, file$8, 76, 20, 2721);
+    			attr_dev(div0, "class", "dice-container svelte-17gma6u");
+    			add_location(div0, file$8, 70, 16, 2370);
     			attr_dev(td1, "valign", "top");
-    			attr_dev(td1, "class", "text-center svelte-10gxdnc");
-    			attr_dev(td1, "width", "1000px");
+    			attr_dev(td1, "class", "text-center svelte-17gma6u");
     			add_location(td1, file$8, 68, 12, 2204);
     			attr_dev(td2, "valign", "top");
-    			attr_dev(td2, "class", "player svelte-10gxdnc");
-    			add_location(td2, file$8, 89, 12, 3328);
-    			attr_dev(tr, "class", "svelte-10gxdnc");
+    			attr_dev(td2, "class", "player svelte-17gma6u");
+    			add_location(td2, file$8, 89, 12, 3313);
+    			attr_dev(tr, "class", "svelte-17gma6u");
     			add_location(tr, file$8, 64, 8, 2070);
-    			attr_dev(table, "class", "header svelte-10gxdnc");
+    			attr_dev(table, "class", "header svelte-17gma6u");
     			attr_dev(table, "cellspacing", "0");
     			attr_dev(table, "cellpadding", "0");
     			add_location(table, file$8, 63, 4, 2006);
-    			attr_dev(div1, "class", "katan svelte-10gxdnc");
+    			attr_dev(div1, "class", "katan svelte-17gma6u");
     			add_location(div1, file$8, 62, 0, 1981);
     		},
     		l: function claim(nodes) {

@@ -88,6 +88,10 @@ const katanStore = {
     moveBurglar: async (resourceIndex) => {
         const katan = get(katanStore);
 
+        if (!katan.isStartMode) {
+            return;
+        }
+
         if (katan.resourceList[resourceIndex].burglar) {
             return;
         }

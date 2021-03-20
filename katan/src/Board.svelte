@@ -60,7 +60,6 @@
     </div>
 </div>
 <style>
-
     .resource td {
         height: 160px;
         background-color: lightgray;
@@ -70,18 +69,18 @@
     }
 
     .board-outer {
-        top: -70px;
+        top: -20px;
         box-sizing: border-box;
         position: relative;
         width: 1000px;
-        height: 800px;
-        padding: 150px;
+        height: 760px;
+        padding: 100px 150px 0 150px;
     }
 
     .board {
         position: relative;
         width: 100%;
-        height: 100%;
+        height: 650px;
     }
 
     .display-dice-number {
@@ -108,7 +107,7 @@
     .display-card {
         vertical-align: middle;
         position: absolute;
-        bottom: -150px;
+        bottom: -20px;
         width: 150px;
         height: 150px;
         font-size: 20px;
@@ -120,7 +119,7 @@
 
     .display-card-info {
         position: absolute;
-        bottom: -135px;
+        bottom: -10px;
         width: 700px;
         height: 50px;
         text-align: center;
