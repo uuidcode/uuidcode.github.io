@@ -88,7 +88,7 @@ const katanStore = {
     moveBurglar: async (resourceIndex) => {
         const katan = get(katanStore);
 
-        if (!katan.isStartMode) {
+        if (!(katan.isBurglarMode || katan.isKnightMode)) {
             return;
         }
 

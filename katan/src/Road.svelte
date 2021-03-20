@@ -16,10 +16,6 @@
             backgroundColor: player.color
         };
 
-        if (!$katan.isMakeRoadMode) {
-            styleObject.cursor = 'default';
-        }
-
         if ($katan.config.debug) {
             delete styleObject.lineHeight;
             styleObject.color = 'black';
@@ -29,6 +25,7 @@
         if (road.playerIndex !== -1) {
             styleObject.backgroundColor =
                     $katan.playerList[road.playerIndex].color;
+            styleObject.cursor = 'default';
         }
 
         return toStyle(styleObject);
