@@ -414,7 +414,7 @@ export const setRoadRippleDisabled = () => katanStore.update(katan => {
     return katan;
 });
 
-export const clickMakeRoad = (roadIndex) =>{
+export const clickMakeRoad = (roadIndex) => {
     const katan = get(katanStore);
     const player = katanStore.getActivePlayer();
 
@@ -503,7 +503,7 @@ export const setNewRoadRippleEnabled = () => {
             return;
         }
 
-        if (player.construction.road === 1 || roadLength === 1) {
+        if (katan.makeRoadCount === 0 && (player.construction.road === 1 || roadLength === 1)) {
             alert('도로를 1개만 만들 수 있습니다.');
             katanStore.unsetMakeRoad2Mode();
             katanStore.update(katan => {

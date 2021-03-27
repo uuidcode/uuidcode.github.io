@@ -12450,7 +12450,7 @@ var app = (function () {
         return katan;
     });
 
-    const clickMakeRoad = (roadIndex) =>{
+    const clickMakeRoad = (roadIndex) => {
         const katan = get_store_value(katanStore);
         const player = katanStore.getActivePlayer();
 
@@ -12539,7 +12539,7 @@ var app = (function () {
                 return;
             }
 
-            if (player.construction.road === 1 || roadLength === 1) {
+            if (katan.makeRoadCount === 0 && (player.construction.road === 1 || roadLength === 1)) {
                 alert('도로를 1개만 만들 수 있습니다.');
                 katanStore.unsetMakeRoad2Mode();
                 katanStore.update(katan => {
