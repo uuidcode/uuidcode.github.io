@@ -23,7 +23,7 @@
 
 <style>
 .resource {
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
 }
 </style>

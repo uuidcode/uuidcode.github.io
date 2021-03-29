@@ -11316,7 +11316,7 @@ var app = (function () {
     let totalResourceTypeList = [];
     let totalCrownList = [];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 16; i++) {
         gameObject.resourceTypeList
             .forEach(item => {
                 totalResourceTypeList.push(item);
@@ -11344,7 +11344,7 @@ var app = (function () {
     totalResourceTypeList = shuffle(totalResourceTypeList);
     totalCrownList = shuffle(totalCrownList);
 
-    for (let i = 0; i < 24; i++) {
+    for (let i = 0; i < 48; i++) {
         const resourceList = [];
 
         for (let j = 0; j < 2; j++) {
@@ -11375,7 +11375,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "resource svelte-1p29ke");
+    			attr_dev(div, "class", "resource svelte-12l09jq");
     			toggle_class(div, "sea", /*resource*/ ctx[0].sea);
     			toggle_class(div, "forest", /*resource*/ ctx[0].forest);
     			toggle_class(div, "mud", /*resource*/ ctx[0].mud);
@@ -11757,7 +11757,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "resource-card-container svelte-gl5ak");
+    			attr_dev(div, "class", "resource-card-container svelte-1010c0w");
     			add_location(div, file$2, 5, 0, 106);
     		},
     		l: function claim(nodes) {
@@ -11889,13 +11889,13 @@ var app = (function () {
     			div1 = element("div");
     			t1 = space();
     			div2 = element("div");
-    			attr_dev(div0, "class", "svelte-clhlf0");
+    			attr_dev(div0, "class", "svelte-xlarmq");
     			add_location(div0, file$3, 6, 4, 147);
-    			attr_dev(div1, "class", "svelte-clhlf0");
+    			attr_dev(div1, "class", "svelte-xlarmq");
     			add_location(div1, file$3, 9, 4, 224);
-    			attr_dev(div2, "class", "svelte-clhlf0");
+    			attr_dev(div2, "class", "svelte-xlarmq");
     			add_location(div2, file$3, 10, 4, 240);
-    			attr_dev(div3, "class", "game svelte-clhlf0");
+    			attr_dev(div3, "class", "game svelte-xlarmq");
     			add_location(div3, file$3, 5, 0, 124);
     		},
     		l: function claim(nodes) {

@@ -24,7 +24,7 @@ const gameObject = {
 let totalResourceTypeList = [];
 let totalCrownList = [];
 
-for (let i = 0; i < 8; i++) {
+for (let i = 0; i < 16; i++) {
     gameObject.resourceTypeList
         .forEach(item => {
             totalResourceTypeList.push(item);
@@ -52,7 +52,7 @@ totalCrownList[13] = 1;
 totalResourceTypeList = shuffle(totalResourceTypeList);
 totalCrownList = shuffle(totalCrownList);
 
-for (let i = 0; i < 24; i++) {
+for (let i = 0; i < 48; i++) {
     const resourceList = [];
 
     for (let j = 0; j < 2; j++) {
