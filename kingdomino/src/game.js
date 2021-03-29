@@ -4,7 +4,9 @@ import {shuffle} from "./util";
 const setResource = (resource, resourceType) => {
     gameObject.resourceTypeList.forEach(item => {
         resource[item] = item === resourceType;
-    })
+    });
+
+    return resource;
 };
 
 const gameObject = {
@@ -54,11 +56,11 @@ for (let i = 0; i < 24; i++) {
     const resourceList = [];
 
     for (let j = 0; j < 2; j++) {
-        const resource = {
+        let resource = {
             crown: totalCrownList.pop()
         };
 
-        setResource(resource, totalResourceTypeList.pop());
+        resource = setResource(resource, totalResourceTypeList.pop());
 
         resourceList.push(resource);
     }
@@ -67,5 +69,7 @@ for (let i = 0; i < 24; i++) {
         resourceList
     });
 }
+
+console.log('>>> gameObject', gameObject);
 
 export default writable(gameObject)
