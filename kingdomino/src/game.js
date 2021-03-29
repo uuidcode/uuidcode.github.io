@@ -70,6 +70,4 @@ for (let i = 0; i < 48; i++) {
     });
 }
 
-console.log('>>> gameObject', gameObject);
-
 export default writable(gameObject)

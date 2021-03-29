@@ -7,25 +7,31 @@ html, body {
 }
 
 .wheat {
-    background-color: yellow;
+    background-image: url(wheat.png);
+    background-size: cover;
 }
 
 .mud {
-    background-color: brown;
+    background-image: url(mud.png);
+    background-size: cover;
 }
 
 .cave {
-    background-color: grey;
+    background-image: url(cave.png);
+    background-size: cover;
 }
 
 .sea {
-    background-color: blue;
+    background-image: url(sea.png);
+    background-size: cover;
 }
 
 .field {
-    background-color: lightgreen;
+    background-image: url(field.png);
+    background-size: cover;
 }
 
 .forest {
-    background-color: green;
+    background-image: url(forest.png);
+    background-size: cover;
 }
