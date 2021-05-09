@@ -3,22 +3,28 @@
 
     const cityList = $gameStore.cityList;
 
-    const handleClick = (e) => {
-        console.log('>>> e', e);
-    }
+    const handleKeydown = (e) => {
+        if (e.keyCode === 68) {
+            gameStore.toggleDebug();
+        }
+    };
 </script>
+
+<svelte:window on:keydown={handleKeydown}/>
 
 <div class="pandemic">
     <div class="left">1</div>
-    <div class="board" on:click={handleClick}>
+    <div class="board">
         {#each cityList as city}
             <div class="city"
                  class:blue={city.blue}
                  class:yellow={city.yellow}
                  class:black={city.black}
                  class:red={city.red}
-                 style="left:{city.x}px;top:{city.y}px">{city.count}
-<!--                <div class="city-index">{city.index}</div>-->
+                 style="left:{city.x}px;top:{city.y}px">{city.displayVirusCount}
+                {#if $gameStore.debug}
+                <div class="city-index">{city.index}</div>
+                {/if}
             </div>
         {/each}
     </div>

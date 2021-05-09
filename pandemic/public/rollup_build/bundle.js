@@ -167,12 +167,6 @@ var app = (function () {
             block.i(local);
         }
     }
-
-    const globals = (typeof window !== 'undefined'
-        ? window
-        : typeof globalThis !== 'undefined'
-            ? globalThis
-            : global);
     function mount_component(component, target, anchor) {
         const { fragment, on_mount, on_destroy, after_update } = component.$$;
         fragment && fragment.m(target, anchor);
@@ -418,13 +412,14 @@ var app = (function () {
     }
 
     const gameObject = {
+        debug: false,
         cityList: [
             {
                 index: 0,
                 name: '샌프란시스코',
                 x: 58,
                 y: 280,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -436,7 +431,7 @@ var app = (function () {
                 name: '시카고',
                 x: 183,
                 y: 245,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -448,7 +443,7 @@ var app = (function () {
                 name: '몬트리올',
                 x: 280,
                 y: 245,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -460,7 +455,7 @@ var app = (function () {
                 name: '뉴욕',
                 x: 360,
                 y: 250,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -472,7 +467,7 @@ var app = (function () {
                 name: '애틀란타',
                 x: 220,
                 y: 306,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -484,7 +479,7 @@ var app = (function () {
                 name: '위싱턴',
                 x: 324,
                 y: 300,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -496,7 +491,7 @@ var app = (function () {
                 name: '런던',
                 x: 530,
                 y: 195,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -508,7 +503,7 @@ var app = (function () {
                 name: '마그리드',
                 x: 520,
                 y: 290,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -520,7 +515,7 @@ var app = (function () {
                 name: '파리',
                 x: 600,
                 y: 245,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -532,7 +527,7 @@ var app = (function () {
                 name: '에센',
                 x: 630,
                 y: 185,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -544,7 +539,7 @@ var app = (function () {
                 name: '밀라노',
                 x: 665,
                 y: 240,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -556,7 +551,7 @@ var app = (function () {
                 name: '상트페테르부르크',
                 x: 735,
                 y: 165,
-                count: 3,
+                virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
@@ -568,7 +563,7 @@ var app = (function () {
                 name: '마이에미',
                 x: 280,
                 y: 385,
-                count: 3,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -580,7 +575,7 @@ var app = (function () {
                 name: '멕시코 시티',
                 x: 170,
                 y: 400,
-                count: 3,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -592,7 +587,7 @@ var app = (function () {
                 name: '로스엔젤레스',
                 x: 80,
                 y: 370,
-                count: 3,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -604,7 +599,7 @@ var app = (function () {
                 name: '보고타',
                 x: 275,
                 y: 485,
-                count: 3,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -616,7 +611,7 @@ var app = (function () {
                 name: '리마',
                 x: 240,
                 y: 590,
-                count: 3,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -628,7 +623,7 @@ var app = (function () {
                 name: '산티아고',
                 x: 255,
                 y: 695,
-                count: 2,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -640,7 +635,7 @@ var app = (function () {
                 name: '부에노스아이레스',
                 x: 355,
                 y: 680,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -652,7 +647,7 @@ var app = (function () {
                 name: '상파울루',
                 x: 415,
                 y: 610,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -664,7 +659,7 @@ var app = (function () {
                 name: '라고스',
                 x: 600,
                 y: 475,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -676,7 +671,7 @@ var app = (function () {
                 name: '카스툼',
                 x: 715,
                 y: 460,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -688,7 +683,7 @@ var app = (function () {
                 name: '킨샤샤',
                 x: 650,
                 y: 540,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -700,7 +695,7 @@ var app = (function () {
                 name: '요하네스버그',
                 x: 715,
                 y: 630,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
@@ -712,7 +707,7 @@ var app = (function () {
                 name: '알제',
                 x: 620,
                 y: 340,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -724,7 +719,7 @@ var app = (function () {
                 name: '카이로',
                 x: 705,
                 y: 355,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -736,7 +731,7 @@ var app = (function () {
                 name: '리야드',
                 x: 795,
                 y: 410,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -748,7 +743,7 @@ var app = (function () {
                 name: '바그다드',
                 x: 785,
                 y: 335,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -760,7 +755,7 @@ var app = (function () {
                 name: '이스탄불',
                 x: 715,
                 y: 275,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -772,7 +767,7 @@ var app = (function () {
                 name: '뭄바이',
                 x: 885,
                 y: 425,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -784,7 +779,7 @@ var app = (function () {
                 name: '카라치',
                 x: 875,
                 y: 365,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -796,7 +791,7 @@ var app = (function () {
                 name: '모스크바',
                 x: 790,
                 y: 230,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -808,7 +803,7 @@ var app = (function () {
                 name: '테헤란',
                 x: 855,
                 y: 275,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -820,7 +815,7 @@ var app = (function () {
                 name: '델리',
                 x: 945,
                 y: 340,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -832,7 +827,7 @@ var app = (function () {
                 name: '콜카타',
                 x: 1010,
                 y: 370,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -844,7 +839,7 @@ var app = (function () {
                 name: '첸나이',
                 x: 960,
                 y: 490,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -856,7 +851,7 @@ var app = (function () {
                 name: '베이징',
                 x: 1060,
                 y: 260,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -868,7 +863,7 @@ var app = (function () {
                 name: '상하이',
                 x: 1060,
                 y: 320,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -880,7 +875,7 @@ var app = (function () {
                 name: '서울',
                 x: 1140,
                 y: 260,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -892,7 +887,7 @@ var app = (function () {
                 name: '도쿄',
                 x: 1210,
                 y: 290,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -904,7 +899,7 @@ var app = (function () {
                 name: '방콕',
                 x: 1015,
                 y: 440,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -916,7 +911,7 @@ var app = (function () {
                 name: '자카르타',
                 x: 1015,
                 y: 570,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -928,7 +923,7 @@ var app = (function () {
                 name: '호치민 시티',
                 x: 1075,
                 y: 500,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -940,7 +935,7 @@ var app = (function () {
                 name: '홍콩',
                 x: 1070,
                 y: 400,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -952,7 +947,7 @@ var app = (function () {
                 name: '오사카',
                 x: 1225,
                 y: 360,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -964,7 +959,7 @@ var app = (function () {
                 name: '타이베이',
                 x: 1155,
                 y: 390,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -976,7 +971,7 @@ var app = (function () {
                 name: '마닐라',
                 x: 1165,
                 y: 495,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -988,7 +983,7 @@ var app = (function () {
                 name: '시드니',
                 x: 1220,
                 y: 695,
-                count: 1,
+                virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
@@ -1003,12 +998,28 @@ var app = (function () {
     const gameStore = {
         subscribe: subscribe$1,
         set,
-        update: update$1
+        update: update$1,
+        recompute : () => update$1(game => {
+            game.cityList.forEach(city => {
+                if (city.virusCount === 0) {
+                    city.displayVirusCount = '';
+                } else {
+                    city.displayVirusCount = city.virusCount;
+                }
+            });
+
+            return game;
+        }),
+
+        toggleDebug: () => update$1(game => {
+           game.debug = !game.debug;
+           return game;
+        })
     };
 
-    /* src\App.svelte generated by Svelte v3.32.3 */
+    gameStore.recompute();
 
-    const { console: console_1 } = globals;
+    /* src\App.svelte generated by Svelte v3.32.3 */
     const file = "src\\App.svelte";
 
     function get_each_context(ctx, list, i) {
@@ -1017,31 +1028,22 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (14:8) {#each cityList as city}
-    function create_each_block(ctx) {
+    // (25:16) {#if $gameStore.debug}
+    function create_if_block(ctx) {
     	let div;
-    	let t0_value = /*city*/ ctx[3].count + "";
-    	let t0;
-    	let t1;
+    	let t_value = /*city*/ ctx[3].index + "";
+    	let t;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			attr_dev(div, "class", "city svelte-crh8lm");
-    			set_style(div, "left", /*city*/ ctx[3].x + "px");
-    			set_style(div, "top", /*city*/ ctx[3].y + "px");
-    			toggle_class(div, "blue", /*city*/ ctx[3].blue);
-    			toggle_class(div, "yellow", /*city*/ ctx[3].yellow);
-    			toggle_class(div, "black", /*city*/ ctx[3].black);
-    			toggle_class(div, "red", /*city*/ ctx[3].red);
-    			add_location(div, file, 14, 12, 334);
+    			t = text(t_value);
+    			attr_dev(div, "class", "city-index svelte-crh8lm");
+    			add_location(div, file, 25, 16, 734);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			append_dev(div, t0);
-    			append_dev(div, t1);
+    			append_dev(div, t);
     		},
     		p: noop,
     		d: function destroy(detaching) {
@@ -1051,9 +1053,72 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(25:16) {#if $gameStore.debug}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (18:8) {#each cityList as city}
+    function create_each_block(ctx) {
+    	let div;
+    	let t0_value = /*city*/ ctx[3].displayVirusCount + "";
+    	let t0;
+    	let t1;
+    	let t2;
+    	let if_block = /*$gameStore*/ ctx[0].debug && create_if_block(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			if (if_block) if_block.c();
+    			t2 = space();
+    			attr_dev(div, "class", "city svelte-crh8lm");
+    			set_style(div, "left", /*city*/ ctx[3].x + "px");
+    			set_style(div, "top", /*city*/ ctx[3].y + "px");
+    			toggle_class(div, "blue", /*city*/ ctx[3].blue);
+    			toggle_class(div, "yellow", /*city*/ ctx[3].yellow);
+    			toggle_class(div, "black", /*city*/ ctx[3].black);
+    			toggle_class(div, "red", /*city*/ ctx[3].red);
+    			add_location(div, file, 18, 12, 409);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, t0);
+    			append_dev(div, t1);
+    			if (if_block) if_block.m(div, null);
+    			append_dev(div, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (/*$gameStore*/ ctx[0].debug) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(div, t2);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			if (if_block) if_block.d();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(14:8) {#each cityList as city}",
+    		source: "(18:8) {#each cityList as city}",
     		ctx
     	});
 
@@ -1069,7 +1134,7 @@ var app = (function () {
     	let div2;
     	let mounted;
     	let dispose;
-    	let each_value = /*cityList*/ ctx[0];
+    	let each_value = /*cityList*/ ctx[1];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -1093,13 +1158,13 @@ var app = (function () {
     			div2 = element("div");
     			div2.textContent = "3";
     			attr_dev(div0, "class", "left svelte-crh8lm");
-    			add_location(div0, file, 11, 4, 213);
+    			add_location(div0, file, 15, 4, 311);
     			attr_dev(div1, "class", "board svelte-crh8lm");
-    			add_location(div1, file, 12, 4, 244);
+    			add_location(div1, file, 16, 4, 342);
     			attr_dev(div2, "class", "right svelte-crh8lm");
-    			add_location(div2, file, 24, 4, 711);
+    			add_location(div2, file, 30, 4, 854);
     			attr_dev(div3, "class", "pandemic svelte-crh8lm");
-    			add_location(div3, file, 10, 0, 185);
+    			add_location(div3, file, 14, 0, 283);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1118,13 +1183,13 @@ var app = (function () {
     			append_dev(div3, div2);
 
     			if (!mounted) {
-    				dispose = listen_dev(div1, "click", /*handleClick*/ ctx[1], false, false, false);
+    				dispose = listen_dev(window, "keydown", /*handleKeydown*/ ctx[2], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*cityList*/ 1) {
-    				each_value = /*cityList*/ ctx[0];
+    			if (dirty & /*cityList, $gameStore*/ 3) {
+    				each_value = /*cityList*/ ctx[1];
     				validate_each_argument(each_value);
     				let i;
 
@@ -1171,29 +1236,31 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let $gameStore;
     	validate_store(gameStore, "gameStore");
-    	component_subscribe($$self, gameStore, $$value => $$invalidate(2, $gameStore = $$value));
+    	component_subscribe($$self, gameStore, $$value => $$invalidate(0, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
     	const cityList = $gameStore.cityList;
 
-    	const handleClick = e => {
-    		console.log(">>> e", e);
+    	const handleKeydown = e => {
+    		if (e.keyCode === 68) {
+    			gameStore.toggleDebug();
+    		}
     	};
 
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<App> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<App> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$capture_state = () => ({
     		gameStore,
     		cityList,
-    		handleClick,
+    		handleKeydown,
     		$gameStore
     	});
 
-    	return [cityList, handleClick];
+    	return [$gameStore, cityList, handleKeydown];
     }
 
     class App extends SvelteComponentDev {
