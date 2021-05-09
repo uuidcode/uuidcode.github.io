@@ -6,7 +6,7 @@ const gameObject = {
             index: 0,
             name: '샌프란시스코',
             x: 58,
-            y: 270,
+            y: 280,
             count: 3,
             blue: true,
             red: false,
@@ -18,7 +18,7 @@ const gameObject = {
             index: 1,
             name: '시카고',
             x: 183,
-            y: 232,
+            y: 245,
             count: 3,
             blue: true,
             red: false,
@@ -30,7 +30,7 @@ const gameObject = {
             index: 2,
             name: '몬트리올',
             x: 280,
-            y: 232,
+            y: 245,
             count: 3,
             blue: true,
             red: false,
@@ -42,7 +42,7 @@ const gameObject = {
             index: 3,
             name: '뉴욕',
             x: 360,
-            y: 242,
+            y: 250,
             count: 3,
             blue: true,
             red: false,
@@ -77,8 +77,8 @@ const gameObject = {
         {
             index: 6,
             name: '런던',
-            x: 539,
-            y: 188,
+            x: 530,
+            y: 195,
             count: 3,
             blue: true,
             red: false,
@@ -89,8 +89,8 @@ const gameObject = {
         {
             index: 7,
             name: '마그리드',
-            x: 528,
-            y: 282,
+            x: 520,
+            y: 290,
             count: 3,
             blue: true,
             red: false,
@@ -101,8 +101,8 @@ const gameObject = {
         {
             index: 8,
             name: '파리',
-            x: 610,
-            y: 240,
+            x: 600,
+            y: 245,
             count: 3,
             blue: true,
             red: false,
@@ -113,8 +113,8 @@ const gameObject = {
         {
             index: 9,
             name: '에센',
-            x: 635,
-            y: 170,
+            x: 630,
+            y: 185,
             count: 3,
             blue: true,
             red: false,
@@ -125,8 +125,8 @@ const gameObject = {
         {
             index: 10,
             name: '밀라노',
-            x: 675,
-            y: 215,
+            x: 665,
+            y: 240,
             count: 3,
             blue: true,
             red: false,
@@ -137,8 +137,8 @@ const gameObject = {
         {
             index: 11,
             name: '상트페테르부르크',
-            x: 740,
-            y: 155,
+            x: 735,
+            y: 165,
             count: 3,
             blue: true,
             red: false,
@@ -176,7 +176,11 @@ const gameObject = {
             x: 80,
             y: 370,
             count: 3,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [0, 1, 13, 47]
         },
         {
             index: 15,
@@ -184,7 +188,11 @@ const gameObject = {
             x: 275,
             y: 485,
             count: 3,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [12, 13, 16, 18, 19]
         },
         {
             index: 16,
@@ -192,7 +200,11 @@ const gameObject = {
             x: 240,
             y: 590,
             count: 3,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [13, 15, 17]
         },
         {
             index: 17,
@@ -200,7 +212,11 @@ const gameObject = {
             x: 255,
             y: 695,
             count: 2,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [16]
         },
         {
             index: 18,
@@ -208,39 +224,59 @@ const gameObject = {
             x: 355,
             y: 680,
             count: 1,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [15, 19]
         },
         {
             index: 19,
             name: '상파울루',
             x: 415,
-            y: 600,
+            y: 610,
             count: 1,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [7, 15]
         },
         {
             index: 20,
             name: '라고스',
             x: 600,
-            y: 465,
+            y: 475,
             count: 1,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [19, 21, 22]
         },
         {
             index: 21,
             name: '카스툼',
-            x: 725,
-            y: 450,
+            x: 715,
+            y: 460,
             count: 1,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [20, 22, 23, 25]
         },
         {
             index: 22,
             name: '킨샤샤',
-            x: 660,
-            y: 530,
+            x: 650,
+            y: 540,
             count: 1,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [20, 21, 23]
         },
         {
             index: 23,
@@ -248,15 +284,23 @@ const gameObject = {
             x: 715,
             y: 630,
             count: 1,
-            type: 'yellow'
+            blue: false,
+            red: false,
+            yellow: true,
+            black: false,
+            linkedCityListIndex: [21, 22]
         },
         {
             index: 24,
             name: '알제',
-            x: 630,
+            x: 620,
             y: 340,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [7, 8, 25, 28]
         },
         {
             index: 25,
@@ -264,7 +308,11 @@ const gameObject = {
             x: 705,
             y: 355,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [21, 24, 26, 27, 28]
         },
         {
             index: 26,
@@ -272,15 +320,23 @@ const gameObject = {
             x: 795,
             y: 410,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [25, 27, 30]
         },
         {
             index: 27,
             name: '바그다드',
             x: 785,
-            y: 325,
+            y: 335,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [25, 26, 28, 30, 32]
         },
         {
             index: 28,
@@ -288,7 +344,11 @@ const gameObject = {
             x: 715,
             y: 275,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [10, 11, 24, 25, 27, 31]
         },
         {
             index: 29,
@@ -296,151 +356,227 @@ const gameObject = {
             x: 885,
             y: 425,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [30, 33, 35]
         },
         {
             index: 30,
             name: '카라치',
             x: 875,
-            y: 355,
+            y: 365,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [26, 27, 29, 32, 33]
         },
         {
             index: 31,
             name: '모스크바',
-            x: 795,
-            y: 220,
+            x: 790,
+            y: 230,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [11, 28, 32]
         },
         {
             index: 32,
             name: '테헤란',
             x: 855,
-            y: 265,
+            y: 275,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [27, 30, 31]
         },
         {
             index: 33,
             name: '델리',
             x: 945,
-            y: 330,
+            y: 340,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [29, 30, 32, 34, 35]
         },
         {
             index: 34,
             name: '콜카타',
-            x: 1015,
-            y: 350,
+            x: 1010,
+            y: 370,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [33, 35, 40, 43]
         },
         {
             index: 35,
             name: '첸나이',
             x: 960,
-            y: 480,
+            y: 490,
             count: 1,
-            type: 'black'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [29, 33, 34, 40, 41]
         },
         {
             index: 36,
             name: '베이징',
-            x: 1070,
-            y: 240,
+            x: 1060,
+            y: 260,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [37, 38]
         },
         {
             index: 37,
             name: '상하이',
-            x: 1072,
-            y: 310,
+            x: 1060,
+            y: 320,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [36, 38, 39, 43, 45]
         },
         {
             index: 38,
             name: '서울',
-            x: 1152,
-            y: 240,
+            x: 1140,
+            y: 260,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [36, 37, 39]
         },
         {
             index: 39,
             name: '도쿄',
-            x: 1220,
-            y: 275,
+            x: 1210,
+            y: 290,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [37, 38, 44]
         },
         {
             index: 40,
             name: '방콕',
-            x: 1025,
-            y: 430,
+            x: 1015,
+            y: 440,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [34, 35, 41, 42, 43]
         },
         {
             index: 41,
             name: '자카르타',
-            x: 1025,
-            y: 560,
+            x: 1015,
+            y: 570,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [35, 40, 42, 47]
         },
         {
             index: 42,
             name: '호치민 시티',
-            x: 1085,
+            x: 1075,
             y: 500,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [40, 41, 43, 46]
         },
         {
             index: 43,
             name: '홍콩',
-            x: 1082,
-            y: 390,
+            x: 1070,
+            y: 400,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [34, 37, 40, 42, 45, 46]
         },
         {
             index: 44,
             name: '오사카',
             x: 1225,
-            y: 348,
+            y: 360,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [39, 45]
         },
         {
             index: 45,
             name: '타이베이',
             x: 1155,
-            y: 378,
+            y: 390,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [37, 43, 44, 46]
         },
         {
             index: 46,
             name: '마닐라',
-            x: 1175,
+            x: 1165,
             y: 495,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [43, 43, 45, 47]
         },
         {
             index: 47,
             name: '시드니',
-            x: 1230,
-            y: 685,
+            x: 1220,
+            y: 695,
             count: 1,
-            type: 'red'
+            blue: false,
+            red: false,
+            yellow: false,
+            black: true,
+            linkedCityListIndex: [14, 41, 46]
         }
     ]
 };
