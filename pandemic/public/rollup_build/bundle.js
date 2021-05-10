@@ -12109,36 +12109,41 @@ var app = (function () {
                 currentCity.virusCount > 0
         },
 
+        getCity: () => {
+            const cityIndexList = [];
+
+            update$1(game => {
+                game.cityList = game.cityList
+                    .map(city => {
+                        if (cityIndexList.length < 2) {
+                            if (city.active) {
+                                city.active = false;
+                                cityIndexList.push(city.index);
+                            }
+                        }
+
+                        return city;
+                    });
+
+                game.playerList.map(player => {
+                    if (player.turn) {
+                        player.cityIndexList =
+                            [...player.cityIndexList, ...cityIndexList];
+                    }
+
+                    return playe;
+                });
+
+                return game;
+            });
+        },
+
         turn: () => {
             const activePlayer = gameStore.getActivePlayer();
 
             if (activePlayer.action === 0) {
-                const cityIndexList = [];
-
-                update$1(game => {
-                    game.cityList = game.cityList
-                        .map(city => {
-                            if (cityIndexList.length < 2) {
-                                if (city.active) {
-                                    city.active = false;
-                                    cityIndexList.push(city.index);
-                                }
-                            }
-
-                            return city;
-                        });
-
-                    game.playerList.map(player => {
-                        if (player.turn) {
-                            player.cityIndexList =
-                                [...player.cityIndexList, ...cityIndexList];
-                        }
-
-                        return playe;
-                    });
-
-                    return game;
-                });
+                gameStore.getCity();
+            }
 
 
                 // update(game => {
@@ -12155,7 +12160,6 @@ var app = (function () {
                 //
                 //     return game;
                 // });
-            }
         },
 
         move: (currentCity) => {
