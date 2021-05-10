@@ -1,7 +1,42 @@
-import {writable} from "svelte/store";
+import {writable, get} from "svelte/store";
+import {shuffle} from "../../kingdomino/src/util";
 
 const gameObject = {
     debug: false,
+    playerList: [
+        {
+            class: 'left'
+        },
+        {
+            class: 'right'
+        }
+    ],
+    virusList: [
+        {
+            type: 'red',
+            x: 420,
+            y: 870,
+            count: 0
+        },
+        {
+            type: 'black',
+            x: 485,
+            y: 870,
+            count: 0
+        },
+        {
+            type: 'blue',
+            x: 548,
+            y: 870,
+            count: 0
+        },
+        {
+            type: 'yellow',
+            x: 607,
+            y: 870,
+            count: 0
+        }
+    ],
     cityList: [
         {
             index: 0,
@@ -442,9 +477,9 @@ const gameObject = {
             y: 260,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [37, 38]
         },
         {
@@ -454,9 +489,9 @@ const gameObject = {
             y: 320,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [36, 38, 39, 43, 45]
         },
         {
@@ -466,9 +501,9 @@ const gameObject = {
             y: 260,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [36, 37, 39]
         },
         {
@@ -478,9 +513,9 @@ const gameObject = {
             y: 290,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [37, 38, 44]
         },
         {
@@ -490,9 +525,9 @@ const gameObject = {
             y: 440,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [34, 35, 41, 42, 43]
         },
         {
@@ -502,9 +537,9 @@ const gameObject = {
             y: 570,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [35, 40, 42, 47]
         },
         {
@@ -514,9 +549,9 @@ const gameObject = {
             y: 500,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [40, 41, 43, 46]
         },
         {
@@ -526,9 +561,9 @@ const gameObject = {
             y: 400,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [34, 37, 40, 42, 45, 46]
         },
         {
@@ -538,9 +573,9 @@ const gameObject = {
             y: 360,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [39, 45]
         },
         {
@@ -550,9 +585,9 @@ const gameObject = {
             y: 390,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [37, 43, 44, 46]
         },
         {
@@ -562,9 +597,9 @@ const gameObject = {
             y: 495,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [43, 43, 45, 47]
         },
         {
@@ -574,9 +609,9 @@ const gameObject = {
             y: 695,
             virusCount: 0,
             blue: false,
-            red: false,
+            red: true,
             yellow: false,
-            black: true,
+            black: false,
             linkedCityListIndex: [14, 41, 46]
         }
     ]
@@ -603,9 +638,62 @@ const gameStore = {
     toggleDebug: () => update(game => {
        game.debug = !game.debug;
        return game;
+    }),
+
+    getRandomCityIndex: (virus) => {
+        let cityIndex = [];
+
+        for (let i = 0; i < 12; i++) {
+            cityIndex[i] = i;
+        }
+
+        cityIndex = shuffle(cityIndex).slice(0, 3);
+
+        return get(gameStore).cityList
+            .filter(city => city[virus.type])
+            .filter((city, index) => cityIndex.includes(index))
+            .map(city => city.index);
+    },
+
+    init: () => update(game => {
+        game.cityList = shuffle(game.cityList);
+
+        game.virusList.forEach(virus => {
+            virus.black = virus.type === 'black';
+            virus.red = virus.type === 'red';
+            virus.blue = virus.type === 'blue';
+            virus.yellow = virus.type === 'yellow';
+
+            const cityIndexList = gameStore.getRandomCityIndex(virus);
+
+            game.cityList = game.cityList.map(city => {
+                const indexOf = cityIndexList.indexOf(city.index);
+
+                if (indexOf >= 0) {
+                    city.virusCount = indexOf + 1;
+                    virus.count += city.virusCount;
+                }
+
+                return city;
+            });
+
+            const initCityCount = 3;
+
+            for (let i = 0; i < game.playerList.length; i++) {
+                const start = i * initCityCount;
+                const end = (i + 1) * initCityCount;
+
+                game.playerList[i].cityIndexList =
+                    game.cityList.slice(start, end)
+                        .map(city => city.index);
+            }
+        });
+
+        return game;
     })
 };
 
+gameStore.init();
 gameStore.recompute();
 
 export default gameStore;

@@ -1,7 +1,10 @@
 <script>
     import gameStore from './pandemic'
+    import Player from "./Player.svelte";
 
     const cityList = $gameStore.cityList;
+    const virusList = $gameStore.virusList;
+    const playerList = $gameStore.playerList;
 
     const handleKeydown = (e) => {
         if (e.keyCode === 68) {
@@ -13,8 +16,9 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <div class="pandemic">
-    <div class="left">1</div>
+    <Player player={playerList[0]}></Player>
     <div class="board">
+        <img src="background.jpg" width="1300">
         {#each cityList as city}
             <div class="city"
                  class:blue={city.blue}
@@ -27,8 +31,20 @@
                 {/if}
             </div>
         {/each}
+        {#each virusList as virus}
+            <div class="virus"
+                 class:blue={virus.blue}
+                 class:yellow={virus.yellow}
+                 class:black={virus.black}
+                 class:red={virus.red}
+                 style="left:{virus.x}px;top:{virus.y}px">{virus.count}
+                {#if $gameStore.debug}
+                    <div class="city-index">{city.index}</div>
+                {/if}
+            </div>
+        {/each}
     </div>
-    <div class="right">3</div>
+    <Player player={playerList[1]}></Player>
 </div>
 
 <style>
@@ -44,35 +60,6 @@
         line-height: 40px;
         text-align: center;
     }
-
-    /*.blue {*/
-    /*    text-shadow: 2px 2px 10px #7A7CAE,*/
-    /*    -2px -2px 10px #7A7CAE,*/
-    /*    2px -2px 10px #7A7CAE,*/
-    /*    -2px 2px 10px #7A7CAE;*/
-    /*}*/
-
-    /*.yellow {*/
-    /*    text-shadow: 2px 2px 10px #F9E14E,*/
-    /*    -2px -2px 10px #F9E14E,*/
-    /*    2px -2px 10px #F9E14E,*/
-    /*    -2px 2px 10px #F9E14E;*/
-    /*}*/
-
-    /*.black {*/
-    /*    text-shadow: 2px 2px 10px #4C452D,*/
-    /*    -2px -2px 10px #4C452D,*/
-    /*    2px -2px 10px #4C452D,*/
-    /*    -2px 2px 10px #4C452D;*/
-    /*}*/
-
-
-    /*.red {*/
-    /*    text-shadow: 2px 2px 10px #D95B22,*/
-    /*    -2px -2px 10px #D95B22,*/
-    /*    2px -2px 10px #D95B22,*/
-    /*    -2px 2px 10px #D95B22;*/
-    /*}*/
 
     .city-index {
         position: absolute;
@@ -105,13 +92,43 @@
 
     .board {
         position: relative;
-        width: 1300px;
-        background-image: url("/background.jpg");
-        background-size: contain;
-        background-repeat: no-repeat;
     }
 
     .right {
         width: 300px;
+    }
+
+    .virus {
+        z-index: 100;
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        color: white;
+        font-size: 18px;
+        font-weight: bolder;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        border-radius: 15px 15px;
+    }
+
+    .virus.red {
+        box-shadow: 1px 1px 2px 2px red;
+        background-color: #FD682D;
+    }
+
+    .virus.blue {
+        box-shadow: 1px 1px 2px 2px blue;
+        background-color: #8185B1;
+    }
+
+    .virus.yellow {
+        box-shadow: 1px 1px 2px 2px yellow;
+        background-color: #FEEA1B;
+    }
+
+    .virus.black {
+        box-shadow: 1px 1px 2px 2px black;
+        background-color: #352F21;
     }
 </style>
