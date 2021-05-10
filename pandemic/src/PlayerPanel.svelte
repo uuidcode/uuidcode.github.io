@@ -1,5 +1,7 @@
 <script>
     import gameStore from './pandemic'
+    import { fade, scale } from 'svelte/transition';
+    import { flip } from 'svelte/animate';
 
     export let player;
 
@@ -18,8 +20,11 @@
         <img src="{player.image}" width="50" height="50">
         <div class="action">{player.action}</div>
     </div>
-    {#each player.cityList as city}
-        <div class="city"
+    {#each player.cityList as city (city.index)}
+        <div animate:flip="{{ duration: 300 }}"
+             out:scale="{{ duration: 250 }}"
+             in:scale="{{ duration: 250 }}
+             class="city"
              class:blue={city.blue}
              class:yellow={city.yellow}
              class:black={city.black}
