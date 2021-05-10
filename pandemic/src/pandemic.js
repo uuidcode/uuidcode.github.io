@@ -3,6 +3,7 @@ import {shuffle} from "../../kingdomino/src/util";
 
 const gameObject = {
     debug: false,
+    removeCity: false,
     playerList: [
         {
             index: 0,
@@ -706,6 +707,7 @@ const gameStore = {
         game.cityList = shuffle(game.cityList)
             .map(city => {
                 city.active = true;
+                city.remove = false;
                 return city;
             });
 
@@ -805,11 +807,50 @@ const gameStore = {
             game.playerList.map(player => {
                 if (player.turn) {
                     player.cityIndexList =
-                        [...player.cityIndexList, ...cityIndexList];
+                        [...cityIndexList, ...player.cityIndexList];
                 }
 
-                return playe;
+                return player;
             });
+
+            return game;
+        });
+    },
+
+    removeCity: () => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        if (activePlayer.cityIndexList.length > 7 ) {
+            update(game => {
+                game.cityList = game.cityList
+                    .map(city => {
+                        if (activePlayer.cityIndexList.includes(city.index)) {
+                            city.remove = true;
+                        } else {
+                            city.remove = false;
+                        }
+
+                        return city;
+                    });
+
+                game.removeCity = true;
+                return game;
+            });
+        }
+    },
+
+    changePlayer: () => {
+        update(game => {
+            game.playerList = game.playerList
+                .map(player => {
+                    player.turn = !player.turn;
+
+                    if (player.turn) {
+                        player.action = 4;
+                    }
+
+                    return player;
+                });
 
             return game;
         });
@@ -820,23 +861,14 @@ const gameStore = {
 
         if (activePlayer.action === 0) {
             gameStore.getCity();
+            gameStore.removeCity();
+
+            const game = get(gameStore);
+
+            if (!game.removeCity) {
+                gameStore.changePlayer();
+            }
         }
-
-
-            // update(game => {
-            //     game.playerList = game.playerList
-            //         .map(player => {
-            //             player.turn = !player.turn;
-            //
-            //             if (player.turn) {
-            //                 player.action = 4;
-            //             }
-            //
-            //             return player;
-            //         });
-            //
-            //     return game;
-            // });
     },
 
     move: (currentCity) => {

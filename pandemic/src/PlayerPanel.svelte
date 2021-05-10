@@ -22,14 +22,15 @@
     </div>
     {#each player.cityList as city (city.index)}
         <div animate:flip="{{ duration: 300 }}"
-             out:scale="{{ duration: 250 }}"
-             in:scale="{{ duration: 250 }}
              class="city"
              class:blue={city.blue}
              class:yellow={city.yellow}
              class:black={city.black}
              class:red={city.red}>
             {city.name}
+            {#if city.remove}
+                <button class="btn btn-danger">삭제</button>
+            {/if}
         </div>
     {/each}
 </div>

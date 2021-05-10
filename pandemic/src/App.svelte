@@ -43,7 +43,7 @@
                 <div class="player-position">
                     {#each playerList as player}
                         {#if city.index === player.cityIndex}
-                            <div class="player">
+                            <div class="player" class:turn={player.turn}>
                                 <img class="player-image" src="{player.image}">
                             </div>
                         {/if}
@@ -168,11 +168,16 @@
 
     .player {
         position: relative;
-        width: 34px;
-        height: 34px;
-        border-radius: 17px 17px;
-        border: 2px solid white;
+        width: 32px;
+        height: 32px;
+        border-radius: 16px 16px;
+        background-color: black;
+        opacity: .5;
+    }
+
+    .player.turn {
         background-color: white;
+        opacity: 1;
     }
 
     .player-image {
