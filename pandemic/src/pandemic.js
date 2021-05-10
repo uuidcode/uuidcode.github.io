@@ -18,7 +18,7 @@ const gameObject = {
             image: 'lion.png',
             cityIndex: 12,
             turn: false,
-            action: 4
+            action: 0
         }
     ],
     virusList: [
@@ -26,25 +26,29 @@ const gameObject = {
             type: 'red',
             x: 420,
             y: 870,
-            count: 0
+            count: 0,
+            active: true
         },
         {
             type: 'black',
             x: 485,
             y: 870,
-            count: 0
+            count: 0,
+            active: true
         },
         {
             type: 'blue',
             x: 548,
             y: 870,
-            count: 0
+            count: 0,
+            active: true
         },
         {
             type: 'yellow',
             x: 607,
             y: 870,
-            count: 0
+            count: 0,
+            active: true
         }
     ],
     cityList: [
@@ -633,17 +637,50 @@ const gameStore = {
     subscribe,
     set,
     update,
-    recompute : () => update(game => {
-        game.cityList.forEach(city => {
-            if (city.virusCount === 0) {
-                city.displayVirusCount = '';
-            } else {
-                city.displayVirusCount = city.virusCount;
+    recompute : () => {
+        update(game => {
+            game.cityList.forEach(city => {
+                if (city.virusCount === 0) {
+                    city.displayVirusCount = '';
+                } else {
+                    city.displayVirusCount = city.virusCount;
+                }
+            });
+
+            game.virusList = game.virusList.map(virus => {
+                virus.count = game.cityList.map(city => {
+                    if (city[virus.type]) {
+                        return city.virusCount;
+                    }
+
+                    return 0;
+                })
+                    .reduce((a, b) => a + b, 0);
+
+                if (virus.count === 0) {
+                    if (virus.active) {
+                        alert(`${virus.type}` + ' 치료완료');
+                    }
+
+                    virus.active = false;
+                }
+
+                return virus;
+            });
+
+            const totalVirusCount = game.virusList
+                .map(virus => virus.count)
+                .reduce((a, b) => a + b);
+
+            if (totalVirusCount === 0) {
+                alert('모든 바이러스 치료');
             }
+
+            return game;
         });
 
-        return game;
-    }),
+        gameStore.turn();
+    },
 
     toggleDebug: () => update(game => {
        game.debug = !game.debug;
@@ -666,7 +703,11 @@ const gameStore = {
     },
 
     init: () => update(game => {
-        game.cityList = shuffle(game.cityList);
+        game.cityList = shuffle(game.cityList)
+            .map(city => {
+                city.active = true;
+                return city;
+            });
 
         game.virusList.forEach(virus => {
             virus.black = virus.type === 'black';
@@ -686,18 +727,27 @@ const gameStore = {
 
                 return city;
             });
-
-            const initCityCount = 3;
-
-            for (let i = 0; i < game.playerList.length; i++) {
-                const start = i * initCityCount;
-                const end = (i + 1) * initCityCount;
-
-                game.playerList[i].cityIndexList =
-                    game.cityList.slice(start, end)
-                        .map(city => city.index);
-            }
         });
+
+        const initCityCount = 3;
+
+        for (let i = 0; i < game.playerList.length; i++) {
+            const start = i * initCityCount;
+            const end = (i + 1) * initCityCount;
+
+            game.playerList[i].cityIndexList =
+                game.cityList.slice(start, end)
+                    .map(city => city.index);
+
+            game.cityList = game.cityList
+                .map(city => {
+                    if (game.playerList[i].cityIndexList.includes(city.index)) {
+                        city.active = false;
+                    }
+
+                    return city;
+                });
+        }
 
         return game;
     }),
@@ -707,9 +757,17 @@ const gameStore = {
         return game.playerList.find(player => player.turn);
     },
 
+    findActivePlayer: (game) => {
+        return game.playerList.find(player => player.turn);
+    },
+
     movable: (currentCity) => {
         const game = get(gameStore);
         const activePlayer = gameStore.getActivePlayer();
+
+        if (activePlayer.action === 0) {
+            return false;
+        }
 
         return game.cityList
             .find(city => city.index === activePlayer.cityIndex)
@@ -720,8 +778,116 @@ const gameStore = {
         const game = get(gameStore);
         const activePlayer = gameStore.getActivePlayer();
 
+        if (activePlayer.action === 0) {
+            return false;
+        }
+
         return currentCity.index === activePlayer.cityIndex &&
             currentCity.virusCount > 0
+    },
+
+    turn: () => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        if (activePlayer.action === 0) {
+            const cityIndexList = [];
+
+            update(game => {
+                game.cityList = game.cityList
+                    .map(city => {
+                        if (cityIndexList.length < 2) {
+                            if (city.active) {
+                                city.active = false;
+                                cityIndexList.push(city.index);
+                            }
+                        }
+
+                        return city;
+                    });
+
+                game.playerList.map(player => {
+                    if (player.turn) {
+                        player.cityIndexList =
+                            [...player.cityIndexList, ...cityIndexList];
+                    }
+
+                    return playe;
+                });
+
+                return game;
+            });
+
+
+            // update(game => {
+            //     game.playerList = game.playerList
+            //         .map(player => {
+            //             player.turn = !player.turn;
+            //
+            //             if (player.turn) {
+            //                 player.action = 4;
+            //             }
+            //
+            //             return player;
+            //         });
+            //
+            //     return game;
+            // });
+        }
+    },
+
+    move: (currentCity) => {
+        const currentCityIndex = currentCity.index;
+
+        update(game => {
+            gameStore.action(game);
+
+            game.playerList = game.playerList
+                .map(player => {
+                    if (player.turn) {
+                        player.cityIndex = currentCityIndex;
+                    }
+
+                    return player;
+                });
+
+            console.log('>>> game.playerList', game.playerList);
+
+            return game;
+        });
+
+        gameStore.recompute();
+    },
+
+    action: game => {
+        game.playerList = game.playerList
+            .map(player => {
+                if (player.turn) {
+                    player.action -= 1;
+                }
+
+                return player;
+            });
+    },
+
+    cure: (currentCity) => {
+        const currentCityIndex = currentCity.index;
+
+        update(game => {
+            gameStore.action(game);
+
+            game.cityList = game.cityList
+                .map(city => {
+                    if (city.cityIndex === currentCityIndex) {
+                        city.virusCount -= 1;
+                    }
+
+                    return city;
+                });
+
+            return game;
+        });
+
+        gameStore.recompute();
     }
 };
 

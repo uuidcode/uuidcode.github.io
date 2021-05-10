@@ -1,18 +1,23 @@
 <script>
     import gameStore from './pandemic'
 
-    const cityList = $gameStore.cityList;
-
     export let player;
 
+    let cityList;
+
     $: {
+        cityList = $gameStore.cityList;
+
         player.cityList = player.cityIndexList
             .map(index => cityList.find(city => city.index === index));
     }
 </script>
 
 <div class="{player.class}">
-    <div><img src="{player.image}" width="50" height="50"></div>
+    <div class="player-header">
+        <img src="{player.image}" width="50" height="50">
+        <div class="action">{player.action}</div>
+    </div>
     {#each player.cityList as city}
         <div class="city"
              class:blue={city.blue}
@@ -25,6 +30,21 @@
 </div>
 
 <style>
+    .player-header {
+        display: flex;
+    }
+
+    .action {
+        display: inline-block;
+        font-size: 50px;
+        font-weight: bolder;
+        color: black;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+        text-align: center;
+    }
+
     .city {
         width: 300px;
         height: 50px;

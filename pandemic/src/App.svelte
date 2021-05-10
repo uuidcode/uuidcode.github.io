@@ -2,19 +2,22 @@
     import gameStore from './pandemic'
     import PlayerPanel from "./PlayerPanel.svelte";
 
-    const cityList = $gameStore.cityList;
-    const virusList = $gameStore.virusList;
-    const playerList = $gameStore.playerList;
-
     const handleKeydown = (e) => {
         if (e.keyCode === 68) {
             gameStore.toggleDebug();
         }
     };
 
+    let cityList;
+    let virusList;
+    let playerList;
     let activePlayer;
 
     $: {
+        cityList = $gameStore.cityList;
+        virusList = $gameStore.virusList;
+        playerList = $gameStore.playerList;
+
         activePlayer = playerList.find(player => player.turn);
         console.log('>>> cityList[activePlayer.cityIndex].linkedCityIndexList', cityList[activePlayer.cityIndex].linkedCityIndexList);
     }
@@ -47,16 +50,19 @@
                     {/each}
 
                     {#if gameStore.curable(city)}
-                        <button class="btn btn-success btn-sm">치료</button>
+                        <button on:click={() => gameStore.cure(city)}
+                                class="btn btn-success btn-sm">치료</button>
                     {/if}
 
                     {#if gameStore.movable(city)}
-                        <button class="btn btn-primary btn-sm">이동</button>
+                        <button on:click={() => gameStore.move(city)}
+                                class="btn btn-primary btn-sm">이동</button>
                     {/if}
                 </div>
             </div>
         {/each}
         {#each virusList as virus}
+            {#if virus.active }
             <div class="virus"
                  class:blue={virus.blue}
                  class:yellow={virus.yellow}
@@ -64,6 +70,7 @@
                  class:red={virus.red}
                  style="left:{virus.x}px;top:{virus.y}px">{virus.count}
             </div>
+            {/if}
         {/each}
     </div>
     <PlayerPanel player={playerList[1]}></PlayerPanel>
