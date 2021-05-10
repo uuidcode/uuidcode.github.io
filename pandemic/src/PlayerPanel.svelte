@@ -12,6 +12,7 @@
 </script>
 
 <div class="{player.class}">
+    <div><img src="{player.image}" width="50" height="50"></div>
     {#each player.cityList as city}
         <div class="city"
              class:blue={city.blue}
@@ -26,9 +27,9 @@
 <style>
     .city {
         width: 300px;
-        height: 100px;
+        height: 50px;
         text-align: center;
-        line-height: 100px;
+        line-height: 50px;
         font-size: 30px;
         font-weight: bolder;
         color: white;

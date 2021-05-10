@@ -5,10 +5,20 @@ const gameObject = {
     debug: false,
     playerList: [
         {
-            class: 'left'
+            index: 0,
+            class: 'left',
+            image: 'apeach.png',
+            cityIndex: 12,
+            turn: true,
+            action: 4
         },
         {
-            class: 'right'
+            index: 1,
+            class: 'right',
+            image: 'lion.png',
+            cityIndex: 12,
+            turn: false,
+            action: 4
         }
     ],
     virusList: [
@@ -48,7 +58,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [1, 14, 39, 46]
+            linkedCityIndexList: [1, 14, 39, 46]
         },
         {
             index: 1,
@@ -60,7 +70,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [0, 2, 4, 13, 14]
+            linkedCityIndexList: [0, 2, 4, 13, 14]
         },
         {
             index: 2,
@@ -72,7 +82,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [1, 3, 5]
+            linkedCityIndexList: [1, 3, 5]
         },
         {
             index: 3,
@@ -84,7 +94,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [2, 5, 6, 7]
+            linkedCityIndexList: [2, 5, 6, 7]
         },
         {
             index: 4,
@@ -96,7 +106,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [1, 5, 12]
+            linkedCityIndexList: [1, 5, 12]
         },
         {
             index: 5,
@@ -108,7 +118,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [2, 3, 4, 12]
+            linkedCityIndexList: [2, 3, 4, 12]
         },
         {
             index: 6,
@@ -120,7 +130,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [3, 8, 9, 7]
+            linkedCityIndexList: [3, 8, 9, 7]
         },
         {
             index: 7,
@@ -132,7 +142,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [3, 6, 8, 24]
+            linkedCityIndexList: [3, 6, 8, 24]
         },
         {
             index: 8,
@@ -144,7 +154,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [6, 7, 9, 10, 24]
+            linkedCityIndexList: [6, 7, 9, 10, 24]
         },
         {
             index: 9,
@@ -156,7 +166,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [6, 8, 10, 11]
+            linkedCityIndexList: [6, 8, 10, 11]
         },
         {
             index: 10,
@@ -168,7 +178,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [8, 9, 28]
+            linkedCityIndexList: [8, 9, 28]
         },
         {
             index: 11,
@@ -180,7 +190,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: false,
-            linkedCityListIndex: [9, 28, 31]
+            linkedCityIndexList: [9, 28, 31]
         },
         {
             index: 12,
@@ -192,7 +202,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [4, 5, 13, 15]
+            linkedCityIndexList: [4, 5, 13, 15]
         },
         {
             index: 13,
@@ -204,7 +214,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [12, 14, 15, 16]
+            linkedCityIndexList: [12, 14, 15, 16]
         },
         {
             index: 14,
@@ -216,7 +226,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [0, 1, 13, 47]
+            linkedCityIndexList: [0, 1, 13, 47]
         },
         {
             index: 15,
@@ -228,7 +238,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [12, 13, 16, 18, 19]
+            linkedCityIndexList: [12, 13, 16, 18, 19]
         },
         {
             index: 16,
@@ -240,7 +250,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [13, 15, 17]
+            linkedCityIndexList: [13, 15, 17]
         },
         {
             index: 17,
@@ -252,7 +262,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [16]
+            linkedCityIndexList: [16]
         },
         {
             index: 18,
@@ -264,7 +274,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [15, 19]
+            linkedCityIndexList: [15, 19]
         },
         {
             index: 19,
@@ -276,7 +286,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [7, 15]
+            linkedCityIndexList: [7, 15]
         },
         {
             index: 20,
@@ -288,7 +298,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [19, 21, 22]
+            linkedCityIndexList: [19, 21, 22]
         },
         {
             index: 21,
@@ -300,7 +310,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [20, 22, 23, 25]
+            linkedCityIndexList: [20, 22, 23, 25]
         },
         {
             index: 22,
@@ -312,7 +322,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [20, 21, 23]
+            linkedCityIndexList: [20, 21, 23]
         },
         {
             index: 23,
@@ -324,7 +334,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityListIndex: [21, 22]
+            linkedCityIndexList: [21, 22]
         },
         {
             index: 24,
@@ -336,7 +346,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [7, 8, 25, 28]
+            linkedCityIndexList: [7, 8, 25, 28]
         },
         {
             index: 25,
@@ -348,7 +358,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [21, 24, 26, 27, 28]
+            linkedCityIndexList: [21, 24, 26, 27, 28]
         },
         {
             index: 26,
@@ -360,7 +370,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [25, 27, 30]
+            linkedCityIndexList: [25, 27, 30]
         },
         {
             index: 27,
@@ -372,7 +382,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [25, 26, 28, 30, 32]
+            linkedCityIndexList: [25, 26, 28, 30, 32]
         },
         {
             index: 28,
@@ -384,7 +394,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [10, 11, 24, 25, 27, 31]
+            linkedCityIndexList: [10, 11, 24, 25, 27, 31]
         },
         {
             index: 29,
@@ -396,7 +406,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [30, 33, 35]
+            linkedCityIndexList: [30, 33, 35]
         },
         {
             index: 30,
@@ -408,7 +418,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [26, 27, 29, 32, 33]
+            linkedCityIndexList: [26, 27, 29, 32, 33]
         },
         {
             index: 31,
@@ -420,7 +430,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [11, 28, 32]
+            linkedCityIndexList: [11, 28, 32]
         },
         {
             index: 32,
@@ -432,7 +442,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [27, 30, 31]
+            linkedCityIndexList: [27, 30, 31]
         },
         {
             index: 33,
@@ -444,7 +454,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [29, 30, 32, 34, 35]
+            linkedCityIndexList: [29, 30, 32, 34, 35]
         },
         {
             index: 34,
@@ -456,7 +466,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [33, 35, 40, 43]
+            linkedCityIndexList: [33, 35, 40, 43]
         },
         {
             index: 35,
@@ -468,7 +478,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityListIndex: [29, 33, 34, 40, 41]
+            linkedCityIndexList: [29, 33, 34, 40, 41]
         },
         {
             index: 36,
@@ -480,7 +490,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [37, 38]
+            linkedCityIndexList: [37, 38]
         },
         {
             index: 37,
@@ -492,7 +502,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [36, 38, 39, 43, 45]
+            linkedCityIndexList: [36, 38, 39, 43, 45]
         },
         {
             index: 38,
@@ -504,7 +514,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [36, 37, 39]
+            linkedCityIndexList: [36, 37, 39]
         },
         {
             index: 39,
@@ -516,7 +526,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [37, 38, 44]
+            linkedCityIndexList: [37, 38, 44]
         },
         {
             index: 40,
@@ -528,7 +538,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [34, 35, 41, 42, 43]
+            linkedCityIndexList: [34, 35, 41, 42, 43]
         },
         {
             index: 41,
@@ -540,7 +550,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [35, 40, 42, 47]
+            linkedCityIndexList: [35, 40, 42, 47]
         },
         {
             index: 42,
@@ -552,7 +562,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [40, 41, 43, 46]
+            linkedCityIndexList: [40, 41, 43, 46]
         },
         {
             index: 43,
@@ -564,7 +574,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [34, 37, 40, 42, 45, 46]
+            linkedCityIndexList: [34, 37, 40, 42, 45, 46]
         },
         {
             index: 44,
@@ -576,7 +586,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [39, 45]
+            linkedCityIndexList: [39, 45]
         },
         {
             index: 45,
@@ -588,7 +598,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [37, 43, 44, 46]
+            linkedCityIndexList: [37, 43, 44, 46]
         },
         {
             index: 46,
@@ -600,7 +610,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [43, 43, 45, 47]
+            linkedCityIndexList: [43, 43, 45, 47]
         },
         {
             index: 47,
@@ -612,7 +622,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityListIndex: [14, 41, 46]
+            linkedCityIndexList: [14, 41, 46]
         }
     ]
 };
@@ -690,7 +700,21 @@ const gameStore = {
         });
 
         return game;
-    })
+    }),
+
+    getActivePlayer: () => {
+        const game = get(gameStore);
+        return game.playerList.find(player => player.turn);
+    },
+
+    movable: (currentCity) => {
+        const game = get(gameStore);
+        const activePlayer = gameStore.getActivePlayer();
+
+        return game.cityList
+            .find(city => city.index === activePlayer.cityIndex)
+            .linkedCityIndexList.includes(currentCity.index)
+    }
 };
 
 gameStore.init();

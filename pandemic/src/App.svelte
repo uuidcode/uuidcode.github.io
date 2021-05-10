@@ -1,6 +1,6 @@
 <script>
     import gameStore from './pandemic'
-    import Player from "./Player.svelte";
+    import PlayerPanel from "./PlayerPanel.svelte";
 
     const cityList = $gameStore.cityList;
     const virusList = $gameStore.virusList;
@@ -11,12 +11,19 @@
             gameStore.toggleDebug();
         }
     };
+
+    let activePlayer;
+
+    $: {
+        activePlayer = playerList.find(player => player.turn);
+        console.log('>>> cityList[activePlayer.cityIndex].linkedCityIndexList', cityList[activePlayer.cityIndex].linkedCityIndexList);
+    }
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
 
 <div class="pandemic">
-    <Player player={playerList[0]}></Player>
+    <PlayerPanel player={playerList[0]}></PlayerPanel>
     <div class="board">
         <img src="background.jpg" width="1300">
         {#each cityList as city}
@@ -29,6 +36,24 @@
                 {#if $gameStore.debug}
                 <div class="city-index">{city.index}</div>
                 {/if}
+
+                <div class="player-position">
+                    {#each playerList as player}
+                        {#if city.index === player.cityIndex}
+                            <div class="player">
+                                <img class="player-image" src="{player.image}">
+                            </div>
+                        {/if}
+                    {/each}
+
+                    {#if city.index === activePlayer.cityIndex && city.virusCount > 0}
+                        <button class="btn btn-success btn-sm">치료</button>
+                    {/if}
+
+                    {#if gameStore.movable(city)}
+                        <button class="btn btn-primary btn-sm">이동</button>
+                    {/if}
+                </div>
             </div>
         {/each}
         {#each virusList as virus}
@@ -38,13 +63,10 @@
                  class:black={virus.black}
                  class:red={virus.red}
                  style="left:{virus.x}px;top:{virus.y}px">{virus.count}
-                {#if $gameStore.debug}
-                    <div class="city-index">{city.index}</div>
-                {/if}
             </div>
         {/each}
     </div>
-    <Player player={playerList[1]}></Player>
+    <PlayerPanel player={playerList[1]}></PlayerPanel>
 </div>
 
 <style>
@@ -130,5 +152,33 @@
     .virus.black {
         box-shadow: 1px 1px 2px 2px black;
         background-color: #352F21;
+    }
+
+    .player-position {
+        display: flex;
+        width: 120px;
+    }
+
+    .player {
+        position: relative;
+        width: 34px;
+        height: 34px;
+        border-radius: 17px 17px;
+        border: 2px solid white;
+        background-color: white;
+    }
+
+    .player-image {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 30px;
+        height: 30px;
+    }
+
+    .control-panel {
+        text-align: left;
+        width: 50px;
+        height: 25px;
     }
 </style>
