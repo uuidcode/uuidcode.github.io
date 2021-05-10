@@ -12037,6 +12037,14 @@ var app = (function () {
             return game.cityList
                 .find(city => city.index === activePlayer.cityIndex)
                 .linkedCityIndexList.includes(currentCity.index)
+        },
+
+        curable: (currentCity) => {
+            get_store_value(gameStore);
+            const activePlayer = gameStore.getActivePlayer();
+
+            return currentCity.index === activePlayer.cityIndex &&
+                currentCity.virusCount > 0
         }
     };
 
@@ -12406,7 +12414,7 @@ var app = (function () {
     	return block;
     }
 
-    // (49:20) {#if city.index === activePlayer.cityIndex && city.virusCount > 0}
+    // (49:20) {#if gameStore.curable(city)}
     function create_if_block_1(ctx) {
     	let button;
 
@@ -12415,7 +12423,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "치료";
     			attr_dev(button, "class", "btn btn-success btn-sm");
-    			add_location(button, file$1, 49, 24, 1767);
+    			add_location(button, file$1, 49, 24, 1730);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -12429,7 +12437,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(49:20) {#if city.index === activePlayer.cityIndex && city.virusCount > 0}",
+    		source: "(49:20) {#if gameStore.curable(city)}",
     		ctx
     	});
 
@@ -12445,7 +12453,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "이동";
     			attr_dev(button, "class", "btn btn-primary btn-sm");
-    			add_location(button, file$1, 53, 24, 1923);
+    			add_location(button, file$1, 53, 24, 1886);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -12475,10 +12483,11 @@ var app = (function () {
     	let t2;
     	let div0;
     	let t3;
+    	let show_if_1 = gameStore.curable(/*city*/ ctx[9]);
     	let t4;
     	let show_if = gameStore.movable(/*city*/ ctx[9]);
-    	let if_block0 = /*$gameStore*/ ctx[1].debug && create_if_block_3(ctx);
-    	let each_value_2 = /*playerList*/ ctx[4];
+    	let if_block0 = /*$gameStore*/ ctx[0].debug && create_if_block_3(ctx);
+    	let each_value_2 = /*playerList*/ ctx[3];
     	validate_each_argument(each_value_2);
     	let each_blocks = [];
 
@@ -12486,7 +12495,7 @@ var app = (function () {
     		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
     	}
 
-    	let if_block1 = /*city*/ ctx[9].index === /*activePlayer*/ ctx[0].cityIndex && /*city*/ ctx[9].virusCount > 0 && create_if_block_1(ctx);
+    	let if_block1 = show_if_1 && create_if_block_1(ctx);
     	let if_block2 = show_if && create_if_block(ctx);
 
     	const block = {
@@ -12535,7 +12544,7 @@ var app = (function () {
     			if (if_block2) if_block2.m(div0, null);
     		},
     		p: function update(ctx, dirty) {
-    			if (/*$gameStore*/ ctx[1].debug) {
+    			if (/*$gameStore*/ ctx[0].debug) {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     				} else {
@@ -12548,8 +12557,8 @@ var app = (function () {
     				if_block0 = null;
     			}
 
-    			if (dirty & /*playerList, cityList*/ 20) {
-    				each_value_2 = /*playerList*/ ctx[4];
+    			if (dirty & /*playerList, cityList*/ 10) {
+    				each_value_2 = /*playerList*/ ctx[3];
     				validate_each_argument(each_value_2);
     				let i;
 
@@ -12570,17 +12579,6 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value_2.length;
-    			}
-
-    			if (/*city*/ ctx[9].index === /*activePlayer*/ ctx[0].cityIndex && /*city*/ ctx[9].virusCount > 0) {
-    				if (if_block1) ; else {
-    					if_block1 = create_if_block_1(ctx);
-    					if_block1.c();
-    					if_block1.m(div0, t4);
-    				}
-    			} else if (if_block1) {
-    				if_block1.d(1);
-    				if_block1 = null;
     			}
     		},
     		d: function destroy(detaching) {
@@ -12622,7 +12620,7 @@ var app = (function () {
     			toggle_class(div, "yellow", /*virus*/ ctx[6].yellow);
     			toggle_class(div, "black", /*virus*/ ctx[6].black);
     			toggle_class(div, "red", /*virus*/ ctx[6].red);
-    			add_location(div, file$1, 59, 12, 2111);
+    			add_location(div, file$1, 59, 12, 2074);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -12662,11 +12660,11 @@ var app = (function () {
     	let dispose;
 
     	playerpanel0 = new PlayerPanel({
-    			props: { player: /*playerList*/ ctx[4][0] },
+    			props: { player: /*playerList*/ ctx[3][0] },
     			$$inline: true
     		});
 
-    	let each_value_1 = /*cityList*/ ctx[2];
+    	let each_value_1 = /*cityList*/ ctx[1];
     	validate_each_argument(each_value_1);
     	let each_blocks_1 = [];
 
@@ -12674,7 +12672,7 @@ var app = (function () {
     		each_blocks_1[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
     	}
 
-    	let each_value = /*virusList*/ ctx[3];
+    	let each_value = /*virusList*/ ctx[2];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -12683,7 +12681,7 @@ var app = (function () {
     	}
 
     	playerpanel1 = new PlayerPanel({
-    			props: { player: /*playerList*/ ctx[4][1] },
+    			props: { player: /*playerList*/ ctx[3][1] },
     			$$inline: true
     		});
 
@@ -12742,13 +12740,13 @@ var app = (function () {
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(window, "keydown", /*handleKeydown*/ ctx[5], false, false, false);
+    				dispose = listen_dev(window, "keydown", /*handleKeydown*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*cityList, gameStore, activePlayer, playerList, $gameStore*/ 23) {
-    				each_value_1 = /*cityList*/ ctx[2];
+    			if (dirty & /*cityList, gameStore, playerList, $gameStore*/ 11) {
+    				each_value_1 = /*cityList*/ ctx[1];
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -12771,8 +12769,8 @@ var app = (function () {
     				each_blocks_1.length = each_value_1.length;
     			}
 
-    			if (dirty & /*virusList*/ 8) {
-    				each_value = /*virusList*/ ctx[3];
+    			if (dirty & /*virusList*/ 4) {
+    				each_value = /*virusList*/ ctx[2];
     				validate_each_argument(each_value);
     				let i;
 
@@ -12831,7 +12829,7 @@ var app = (function () {
     function instance$1($$self, $$props, $$invalidate) {
     	let $gameStore;
     	validate_store(gameStore, "gameStore");
-    	component_subscribe($$self, gameStore, $$value => $$invalidate(1, $gameStore = $$value));
+    	component_subscribe($$self, gameStore, $$value => $$invalidate(0, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("App", slots, []);
     	const cityList = $gameStore.cityList;
@@ -12863,7 +12861,7 @@ var app = (function () {
     	});
 
     	$$self.$inject_state = $$props => {
-    		if ("activePlayer" in $$props) $$invalidate(0, activePlayer = $$props.activePlayer);
+    		if ("activePlayer" in $$props) $$invalidate(5, activePlayer = $$props.activePlayer);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -12871,15 +12869,15 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*activePlayer*/ 1) {
+    		if ($$self.$$.dirty & /*activePlayer*/ 32) {
     			{
-    				$$invalidate(0, activePlayer = playerList.find(player => player.turn));
+    				$$invalidate(5, activePlayer = playerList.find(player => player.turn));
     				console.log(">>> cityList[activePlayer.cityIndex].linkedCityIndexList", cityList[activePlayer.cityIndex].linkedCityIndexList);
     			}
     		}
     	};
 
-    	return [activePlayer, $gameStore, cityList, virusList, playerList, handleKeydown];
+    	return [$gameStore, cityList, virusList, playerList, handleKeydown, activePlayer];
     }
 
     class App extends SvelteComponentDev {

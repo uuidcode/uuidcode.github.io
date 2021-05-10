@@ -714,6 +714,14 @@ const gameStore = {
         return game.cityList
             .find(city => city.index === activePlayer.cityIndex)
             .linkedCityIndexList.includes(currentCity.index)
+    },
+
+    curable: (currentCity) => {
+        const game = get(gameStore);
+        const activePlayer = gameStore.getActivePlayer();
+
+        return currentCity.index === activePlayer.cityIndex &&
+            currentCity.virusCount > 0
     }
 };
 

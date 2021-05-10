@@ -46,7 +46,7 @@
                         {/if}
                     {/each}
 
-                    {#if city.index === activePlayer.cityIndex && city.virusCount > 0}
+                    {#if gameStore.curable(city)}
                         <button class="btn btn-success btn-sm">치료</button>
                     {/if}
 
