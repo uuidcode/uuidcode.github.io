@@ -15,7 +15,7 @@
     }
 </script>
 
-<div class="{player.class}">
+<div class="{player.class}" class:turn={player.turn}>
     <div class="player-header">
         <img src="{player.image}" width="50" height="50">
         <div class="action">{player.action}</div>
@@ -38,6 +38,10 @@
 <style>
     .player-header {
         display: flex;
+    }
+
+    .turn {
+        background-color: lightskyblue;
     }
 
     .action {

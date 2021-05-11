@@ -1,5 +1,4 @@
 import jQuery from "jquery";
-import katanStore from "./katan";
 
 export const camelToDash = str => str.replace(/([A-Z])/g, val => `-${val.toLowerCase()}`);
 
@@ -27,6 +26,10 @@ export const shuffle = list => {
     return list.sort(random());
 };
 
+export const cloneAndShuffle = list => {
+    return [...list].sort(random());
+};
+
 export const random = () => {
     return () => Math.random() - 0.5;
 };
@@ -36,6 +39,8 @@ export const sleep = (ms) => {
 };
 
 export const move = (option) => {
+    console.log('>>> move option', option);
+
     return new Promise((resolve => {
         option = Object.assign({
             count: 1,
@@ -44,11 +49,7 @@ export const move = (option) => {
         }, option);
 
         const sourceItem = jQuery('.' + option.sourceClass);
-        const visible = katanStore.isVisible(sourceItem);
-
-        if (!visible) {
-            sourceItem.show();
-        }
+        sourceItem.show();
 
         const targetItem = jQuery('.' + option.targetClass);
         const sourceOffset = sourceItem.offset();
@@ -58,17 +59,15 @@ export const move = (option) => {
         const newResourceItem = sourceItem.clone()
             .removeClass(option.sourceClass);
 
-        newResourceItem.appendTo(body)
-            .css({
-                left: sourceOffset.left + 'px',
-                top: sourceOffset.top + 'px',
-                position: 'absolute',
-                zIndex: 2000
-            });
+        const initCss = Object.assign({
+            left: sourceOffset.left + 'px',
+            top: sourceOffset.top + 'px',
+            position: 'absolute',
+            zIndex: 2000
+        }, option.initCss);
 
-        if (!visible) {
-            sourceItem.hide();
-        }
+        newResourceItem.appendTo(body)
+            .css(initCss);
 
         const animationCss = Object.assign({
             left: targetOffset.left + 'px',

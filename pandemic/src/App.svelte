@@ -12,14 +12,20 @@
     let virusList;
     let playerList;
     let activePlayer;
+    let contagionList;
+    let spreadList;
+    let cardList;
+    let usedCardList;
 
     $: {
         cityList = $gameStore.cityList;
         virusList = $gameStore.virusList;
         playerList = $gameStore.playerList;
-
+        contagionList = $gameStore.contagionList;
+        spreadList = $gameStore.spreadList;
+        cardList = $gameStore.cardList;
+        usedCardList = $gameStore.usedCardList;
         activePlayer = playerList.find(player => player.turn);
-        console.log('>>> cityList[activePlayer.cityIndex].linkedCityIndexList', cityList[activePlayer.cityIndex].linkedCityIndexList);
     }
 </script>
 
@@ -29,21 +35,46 @@
     <PlayerPanel player={playerList[0]}></PlayerPanel>
     <div class="board">
         <img src="background.jpg" width="1300">
+
+        <div class="card-panel">{cardList.length}</div>
+        <div class="card-panel used-card-panel">{usedCardList.length}</div>
+
+        {#each contagionList as contagion}
+            {#if contagion.active}
+                <div class="contagion"
+                     style="left:{contagion.x}px;top:{contagion.y}px"></div>
+            {/if}
+        {/each}
+
+        {#each spreadList as spread}
+            {#if spread.active}
+                <div class="spread"
+                     style="left:{spread.x}px;top:{spread.y}px"></div>
+            {/if}
+        {/each}
+
         {#each cityList as city}
-            <div class="city"
+            <div class="city city-{city.index}"
                  class:blue={city.blue}
                  class:yellow={city.yellow}
                  class:black={city.black}
                  class:red={city.red}
-                 style="left:{city.x}px;top:{city.y}px">{city.displayVirusCount}
+                 class:ripple={city.contagion}
+                 style="left:{city.x}px;top:{city.y}px">
+                {@html city.displayVirusCount}
+
                 {#if $gameStore.debug}
                 <div class="city-index">{city.index}</div>
                 {/if}
 
-                <div class="player-position">
+                <div class:right={city.right}
+                     class:top={city.top}
+                        class="player-position">
                     {#each playerList as player}
                         {#if city.index === player.cityIndex}
-                            <div class="player" class:turn={player.turn}>
+                            <div class="player"
+                                 class:ripple={player.turn}
+                                 class:turn={player.turn}>
                                 <img class="player-image" src="{player.image}">
                             </div>
                         {/if}
@@ -62,21 +93,66 @@
             </div>
         {/each}
         {#each virusList as virus}
-            {#if virus.active }
+            <div class="virus-icon virus-{virus.index}"
+                 style="left:{virus.icon.x}px;top:{virus.icon.y}px;background-image: url({virus.icon.image})">
+            </div>
+
+
             <div class="virus"
                  class:blue={virus.blue}
                  class:yellow={virus.yellow}
                  class:black={virus.black}
                  class:red={virus.red}
-                 style="left:{virus.x}px;top:{virus.y}px">{virus.count}
+                 style="left:{virus.x}px;top:{virus.y}px">
+                {#if virus.active }
+                    {virus.count}
+                {:else}
+                    치료완료
+                {/if}
             </div>
-            {/if}
+
         {/each}
     </div>
     <PlayerPanel player={playerList[1]}></PlayerPanel>
 </div>
 
 <style>
+    .card-panel {
+        position: absolute;
+        left: 795px;
+        top: 680px;
+        width: 145px;
+        height: 200px;
+        color: white;
+        line-height: 300px;
+        font-size: 60px;
+        font-weight: bolder;
+        text-align: center;
+        border: 1px solid white;
+    }
+
+    .used-card-panel {
+        left: 975px !important;
+    }
+
+    .contagion {
+        position: absolute;
+        background-color: red;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px 15px;
+        box-shadow: 2px 2px 2px #cccccc;
+    }
+
+    .spread {
+        position: absolute;
+        background-color: darkorange;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px 15px;
+        box-shadow: 2px 2px 2px #cccccc;
+    }
+
     .city {
         position: absolute;
         z-index: 100;
@@ -127,6 +203,14 @@
         width: 300px;
     }
 
+    .virus-icon {
+        z-index: 100;
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border-radius: 30px 30px;
+    }
+
     .virus {
         z-index: 100;
         position: absolute;
@@ -164,6 +248,22 @@
     .player-position {
         display: flex;
         width: 120px;
+    }
+
+    .player-position.right {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 120px;
+        height: 30px;
+    }
+
+    .player-position.top {
+        position: absolute;
+        left: 0;
+        top: -30px;
+        width: 120px;
+        height: 30px;
     }
 
     .player {
