@@ -36,8 +36,10 @@
     <div class="board">
         <img src="background.jpg" width="1300">
 
+        <div class:ripple={$gameStore.contagionMessageRipple}
+            class="contagion-panel">{@html $gameStore.contagionMessage}</div>
+
         <div class="card-panel">{cardList.length}</div>
-        <div class="card-panel used-card-panel">{usedCardList.length}</div>
 
         {#each contagionList as contagion}
             {#if contagion.active}
@@ -98,25 +100,35 @@
             </div>
 
 
+            {#if virus.active }
             <div class="virus"
                  class:blue={virus.blue}
                  class:yellow={virus.yellow}
                  class:black={virus.black}
                  class:red={virus.red}
                  style="left:{virus.x}px;top:{virus.y}px">
-                {#if virus.active }
-                    {virus.count}
-                {:else}
-                    치료완료
-                {/if}
+                 {virus.count}
             </div>
-
+            {/if}
         {/each}
     </div>
     <PlayerPanel player={playerList[1]}></PlayerPanel>
 </div>
 
 <style>
+    .contagion-panel {
+        position: absolute;
+        left: 788px;
+        top: 18px;
+        width: 480px;
+        height: 150px;
+        color: white;
+        font-size: 30px;
+        text-align: center;
+        border: 2px solid white;
+        background-color: #554A52;
+    }
+
     .card-panel {
         position: absolute;
         left: 795px;

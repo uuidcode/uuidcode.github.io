@@ -1,11 +1,14 @@
+import {tick} from 'svelte'
 import {writable, get} from "svelte/store";
 import {cloneAndShuffle, shuffle, sleep, move} from "./util"
 
 const gameObject = {
+    ready: true,
     debug: false,
     removeCity: false,
     cardList: [],
     usedCardList: [],
+    contagionMessage: '',
     contagionList: [
         {
             index: 0,
@@ -365,7 +368,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityIndexList: [12, 14, 15, 16]
+            linkedCityIndexList: [1, 12, 14, 15, 16]
         },
         {
             index: 14,
@@ -874,11 +877,10 @@ const gameStore = {
         update(game => {
             game.usedCardList = [];
 
-            // game.cardList = [...game.cardList,
-            //     -1, -1, -1, -1, -1, -1];
+            game.cardList = [...game.cardList,
+                -1, -1, -1, -1, -1, -1];
 
-            game.cardList = [...game.cardList];
-
+            // game.cardList = [...game.cardList];
             game.cardList = shuffle(game.cardList);
 
             game.virusList.forEach(virus => {
@@ -922,7 +924,7 @@ const gameStore = {
             return false;
         }
 
-        return game.cityList
+        return game.ready && game.cityList
             .find(city => city.index === activePlayer.cityIndex)
             .linkedCityIndexList.includes(currentCity.index)
     },
@@ -935,14 +937,16 @@ const gameStore = {
             return false;
         }
 
-        return currentCity.index === activePlayer.cityIndex &&
+        return game.ready &&
+            currentCity.index === activePlayer.cityIndex &&
             currentCity.virusCount > 0
     },
 
-    getCity: (count) => {
-        update(game => {
-            const cityIndexList = [];
+    getCity: async (count) => {
+        const cityIndexList = [];
+        const contagion = false;
 
+        update(game => {
             for (let i = 0; i < count; i++) {
                 if (game.cardList.length === 0) {
                     alert('플레이 모두 사용하였습니다.\n게임 종료되었습니다.');
@@ -956,9 +960,7 @@ const gameStore = {
 
             for (let i = 0; i < cityIndexList.length; i++) {
                 if (cityIndexList[i] === -1) {
-                    alert('전염카드');
-                    cityIndexList.pop();
-                    gameStore.contagion();
+                    contagion = true;
                 }
             }
 
@@ -973,6 +975,12 @@ const gameStore = {
 
             return game;
         });
+
+        if (contagion) {
+            await gameStore.showContagionMessage('전염카드');
+            cityIndexList.pop();
+            gameStore.contagion();
+        }
     },
 
     removeCity: () => {
@@ -1064,115 +1072,150 @@ const gameStore = {
            return game;
         });
 
-        const cityList = [];
+        gameStore.contagion3();
+    },
+
+    getVirus: (targetCity) => {
+        const game = get(gameStore);
+        return game.virusList.find(virus => targetCity[virus.type]);
+    },
+
+    setEnable: async () => {
+        update(game => {
+            game.ready = true;
+            return game;
+        });
+
+        await tick();
+    },
+
+    setDisable: async () => {
+        update(game => {
+            game.ready = false;
+            return game;
+        });
+
+        await tick();
+    },
+
+    showContagion: async (targetCity, count) => {
+        await gameStore.setDisable();
+
+        const virus = gameStore.getVirus(targetCity);
 
         update(game => {
-            const targetCity = cloneAndShuffle(game.cityList).pop();
+            game.contagionMessage = `${targetCity.name}`;
+            return game;
+        });
 
-            game.virusList.forEach(virus => {
-                if (targetCity[virus.type]) {
-                    if (virus.active) {
-                        game.cityList = game.cityList
-                            .map(city => {
-                                if (city.index === targetCity.index) {
-                                    cityList.push(city.index);
+        update(game => {
+            game.contagionMessage = `${targetCity.name}`;
+            return game;
+        });
 
-                                    if (city.virusCount === 3) {
-                                        game.cityList = gameStore.spreadCity(game, city);
-                                    } else {
-                                        city.virusCount = 3;
-                                    }
-                                }
+        const speed = 1000;
 
-                                return city;
-                            });
-                    } else {
-                        alert(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
+        await move({
+            sourceClass: `virus-${virus.index}`,
+            targetClass: `city-${targetCity.index}`,
+            initCss: {
+                border: '1px solid white'
+            },
+            speed: speed
+        });
+
+        await sleep(speed);
+
+        let spread = false;
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    if (city.index === targetCity.index) {
+                        city.contagion = true;
+
+                        if (city.virusCount === 3) {
+                            spread = true;
+                        } else {
+                            if (count === 3) {
+                                city.virusCount = count;
+                            } else {
+                                city.virusCount += count;
+                            }
+                        }
                     }
-                }
-            });
+
+                    return city;
+                });
 
             return game;
         });
 
-        gameStore.showContagion(cityList);
-    },
+        gameStore.recompute();
 
-    showContagion: async (cityList) => {
-        console.log('>>> cityList', cityList);
+        await sleep(1500);
 
-        for (let i = 0; i < cityList.length; i++) {
-            const game = get(gameStore);
-            const city = game.cityList[cityList[i]];
-            console.log('>>> city', city);
-
-            const virus = game.virusList.find(virus => city[virus.type]);
-
-            await move({
-                sourceClass: `virus-${virus.index}`,
-                targetClass: `city-${city.index}`,
-                initCss: {
-                    border: '1px solid white'
-                },
-                speed: 1500
-            });
+        if (spread) {
+            await gameStore.showContagionMessage(`${targetCity.name}의 바이러스가 확산 되었습니다.`);
+            gameStore.spread();
 
             update(game => {
-                game.cityList = game.cityList
-                    .map(currentCity => {
-                        if (currentCity.index === city.index) {
-                            currentCity.contagion = true;
-                        }
-
-                        return currentCity;
-                    });
-
+                game.cityList = gameStore.spreadCity(game, targetCity);
                 return game;
             });
+
+            gameStore.recompute();
 
             await sleep(1500);
-
-            update(game => {
-                game.cityList = game.cityList
-                    .map(city => {
-                        city.contagion = false;
-                        return city;
-                    });
-
-                return game;
-            });
-
-            await sleep(500);
         }
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    city.contagion = false;
+                    return city;
+                });
+
+            return game;
+        });
+
+        await sleep(500);
+
+        update(game => {
+            game.contagionMessage = '';
+            game.ready = true;
+            return game;
+        });
+
+        await gameStore.setEnable();
     },
 
     spreadCity: (game, targetCity) => {
-        let spread = false;
+        let spread = true;
 
-        game.cityList = game.cityList
-            .map(city => {
-                if (targetCity.index === city.index) {
-                    if (game.virusList.find(virus => city[virus.type]).active) {
-                        if (city.virusCount === 3) {
-                            spread = true;
-                            gameStore.spread();
-                        } else {
-                            city.virusCount += 1;
-                        }
-                    }
-                }
-
-                return city;
-            });
+        // game.cityList = game.cityList
+        //     .map(city => {
+        //         if (targetCity.index === city.index) {
+        //             if (game.virusList.find(virus => city[virus.type]).active) {
+        //                 if (city.virusCount === 3) {
+        //                     spread = true;
+        //                     gameStore.spread();
+        //                 } else {
+        //                     city.virusCount += 1;
+        //                 }
+        //             }
+        //         }
+        //
+        //         return city;
+        //     });
 
         if (spread) {
-            alert('확산되었습니다.');
-
             game.cityList = game.cityList
                 .map(city => {
                     if (targetCity.linkedCityIndexList.includes(city.index)) {
                         if (game.virusList.find(virus => city[virus.type]).active) {
                             if (city.virusCount !== 3) {
+                                city.contagion = true;
                                 city.virusCount += 1;
                             }
                         }
@@ -1185,33 +1228,65 @@ const gameStore = {
         return game.cityList;
     },
 
-    contagion2: () => {
-        const cityList = [];
-
+    showContagionMessage: async (message) => {
         update(game => {
-            const activeContagionCount = game.contagionList
-                .find(contagion => contagion.active)
-                .count;
-
-            for (let i = 0; i < activeContagionCount; i++) {
-                const targetCity = cloneAndShuffle(game.cityList).pop();
-
-                game.virusList.forEach(virus => {
-                    if (targetCity[virus.type]) {
-                        if (virus.active) {
-                            game.cityList = gameStore.spreadCity(game, targetCity);
-                            cityList.push(targetCity.index);
-                        } else {
-                            alert(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
-                        }
-                    }
-                });
-            }
-
+            game.contagionMessage = message;
+            game.contagionMessageRipple = true;
             return game;
         });
 
-        gameStore.showContagion(cityList);
+        await sleep(1000);
+
+        update(game => {
+            game.contagionMessage = '';
+            game.contagionMessageRipple = false;
+            return game;
+        });
+    },
+
+    contagion2: async () => {
+        const cityList = [];
+        const game = get(gameStore);
+        const activeContagionCount = game.contagionList
+            .find(contagion => contagion.active)
+            .count;
+
+        for (let i = 0; i < activeContagionCount; i++) {
+            const targetCity = cloneAndShuffle(game.cityList).pop();
+
+            for (let j = 0; j < game.virusList.length; j++) {
+                const virus = game.virusList[j];
+
+                if (targetCity[virus.type]) {
+                    if (virus.active) {
+                        await gameStore.showContagion(targetCity, 1);
+                    } else {
+                        gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
+                    }
+
+                    break;
+                }
+            }
+        }
+    },
+
+    contagion3: async () => {
+        const game = get(gameStore);
+        const targetCity = cloneAndShuffle(game.cityList).pop();
+
+        for (let i = 0; i < game.virusList.length; i++) {
+            const virus = game.virusList[i];
+
+            if (targetCity[virus.type]) {
+                if (virus.active) {
+                    await gameStore.showContagion(targetCity, 3);
+                } else {
+                    gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
+                }
+
+                break;
+            }
+        }
     },
 
     turn: async () => {
