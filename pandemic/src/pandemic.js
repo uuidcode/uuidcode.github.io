@@ -3,6 +3,7 @@ import {writable, get} from "svelte/store";
 import {cloneAndShuffle, shuffle, sleep, move} from "./util"
 
 const gameObject = {
+    labCount: 5,
     ready: true,
     debug: false,
     removeCity: false,
@@ -356,7 +357,8 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityIndexList: [4, 5, 13, 15]
+            linkedCityIndexList: [4, 5, 13, 15],
+            lab: true
         },
         {
             index: 13,
@@ -973,6 +975,23 @@ const gameStore = {
         return game.ready && game.cityList
             .find(city => city.index === activePlayer.cityIndex)
             .linkedCityIndexList.includes(currentCity.index)
+    },
+
+    buildable: (currentCity) => {
+        const game = get(gameStore);
+        const activePlayer = gameStore.getActivePlayer();
+
+        if (activePlayer.action === 0) {
+            return false;
+        }
+
+        return game.ready && game.cityList
+            .filter(city => {
+                return !city.lab &&
+                    activePlayer.cityIndexList.includes(city.index) &&
+                    city.index === activePlayer.cityIndex;
+            })
+            .length > 0;
     },
 
     curable: (currentCity) => {

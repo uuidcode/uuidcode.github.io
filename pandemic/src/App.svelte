@@ -42,6 +42,8 @@
         {/if}
 
         <div class="card-panel">{cardList.length}</div>
+        <div class="lab-panel">{$gameStore.labCount}</div>
+        <div class="lab-panel-title">연구소개수</div>
 
         {#each contagionList as contagion}
             {#if contagion.active}
@@ -60,6 +62,7 @@
         {#each cityList as city}
             <div class="city city-{city.index}"
                  class:blue={city.blue}
+                 class:lab={city.lab}
                  class:yellow={city.yellow}
                  class:black={city.black}
                  class:red={city.red}
@@ -69,6 +72,10 @@
 
                 {#if $gameStore.debug}
                 <div class="city-index">{city.index}</div>
+                {/if}
+
+                {#if city.lab}
+                    <div class="lab-title">연구소</div>
                 {/if}
 
                 <div class:right={city.right}
@@ -92,6 +99,11 @@
                     {#if gameStore.movable(city)}
                         <button on:click={() => gameStore.move(city)}
                                 class="btn btn-primary btn-sm">이동</button>
+                    {/if}
+
+                    {#if gameStore.buildable(city)}
+                        <button on:click={() => gameStore.build(city)}
+                        class="btn btn-primary btn-sm">연구소</button>
                     {/if}
                 </div>
             </div>
@@ -118,6 +130,50 @@
 </div>
 
 <style>
+    .lab-panel-title {
+        position: absolute;
+        left: 668px;
+        top: 800px;
+        width: 82px;
+        height: 20px;
+        color: white;
+        background-color: black;
+        font-weight: bolder;
+        font-size: 12px;
+        line-height: 20px;
+        text-align: center;
+    }
+
+    .lab-panel {
+        position: absolute;
+        left: 670px;
+        top: 820px;
+        width: 80px;
+        height: 80px;
+        color: white;
+        border: 2px solid white;
+        font-weight: bolder;
+        font-size: 60px;
+        line-height: 80px;
+        text-align: center;
+    }
+
+    .lab {
+        border: 2px solid white;
+    }
+
+    .lab-title {
+        position: absolute;
+        background-color: black;
+        color: white;
+        left: -2px;
+        top: -20px;
+        width: 40px;
+        height: 20px;
+        line-height: 20px;
+        font-weight: bolder;
+        font-size: 12px;
+    }
     .contagion-panel {
         position: absolute;
         left: 290px;
@@ -131,7 +187,6 @@
         border: 2px solid white;
         background-color: #554A52;
         z-index: 500;
-        text-align: center;
     }
 
     .card-panel {
@@ -179,7 +234,7 @@
         width: 40px;
         height: 40px;
         font-size: 40px;
-        line-height: 40px;
+        line-height: 35px;
         text-align: center;
     }
 
