@@ -440,7 +440,7 @@ const gameObject = {
             red: false,
             yellow: true,
             black: false,
-            linkedCityIndexList: [7, 15]
+            linkedCityIndexList: [7, 15, 18, 20]
         },
         {
             index: 20,
@@ -787,10 +787,32 @@ const gameStore = {
     subscribe,
     set,
     update,
-    recompute : () => {
-        gameStore.turn();
+    recompute : async () => {
+        let message1 = null;
+        let message2 = null;
 
         update(game => {
+            game.playerList = game.playerList
+                .map(player => {
+                    for (let i = 0; i < game.virusList.length; i++) {
+                        const virus = game.virusList[i];
+
+                        const sum = player.cityIndexList
+                            .map(index => game.cityList.find(city => city.index === index))
+                            .map(city => city[virus.type])
+                            .reduce((a, b) => a + b, 0);
+
+
+                        if (sum >= 5 && game.cityList[player.cityIndex].lab) {
+                            player.vaccine = virus.type
+                        } else {
+                            player.vaccine = null;
+                        }
+                    }
+
+                    return player;
+                });
+
             game.cityList.forEach(city => {
                 if (city.virusCount === 0) {
                     city.displayVirusCount = '&nbsp;';
@@ -811,7 +833,7 @@ const gameStore = {
 
                 if (virus.count === 0) {
                     if (virus.active) {
-                        alert(`${virus.type}` + ' 치료완료');
+                        message1 = `${virus.type} 치료완료`;
                     }
 
                     virus.active = false;
@@ -825,11 +847,36 @@ const gameStore = {
                 .reduce((a, b) => a + b);
 
             if (totalVirusCount === 0) {
-                alert('모든 바이러스 치료');
+                message2 = '모든 바이러스 치료';
             }
 
             return game;
         });
+
+        if (message1) {
+            await gameStore.showContagionMessage(message1);
+        }
+
+        if (message2) {
+            await gameStore.showContagionMessage(message2);
+        }
+    },
+
+    removeVirus: async (vaccine) => {
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    if (city[vaccine]) {
+                        city.virusCount = 0;
+                    }
+
+                    return city;
+                });
+
+            return game;
+        });
+
+        await gameStore.recompute();
     },
 
     toggleDebug: () => update(game => {
@@ -877,8 +924,7 @@ const gameStore = {
         update(game => {
             game.usedCardList = [];
 
-            game.cardList = [...game.cardList,
-                -1, -1, -1, -1, -1, -1];
+            game.cardList = [...game.cardList, -1, -1, -1, -1, -1, -1];
 
             // game.cardList = [...game.cardList];
             game.cardList = shuffle(game.cardList);
@@ -944,7 +990,6 @@ const gameStore = {
 
     getCity: async (count) => {
         const cityIndexList = [];
-        const contagion = false;
 
         update(game => {
             for (let i = 0; i < count; i++) {
@@ -954,55 +999,90 @@ const gameStore = {
                 }
 
                 const card = game.cardList.pop();
+                console.log('>>> count', count);
+                console.log('>>> card', card);
                 game.usedCardList = [...game.usedCardList, card];
                 cityIndexList.push(card);
             }
 
-            for (let i = 0; i < cityIndexList.length; i++) {
-                if (cityIndexList[i] === -1) {
-                    contagion = true;
-                }
-            }
-
-            game.playerList.map(player => {
-                if (player.turn) {
-                    player.cityIndexList =
-                        [...cityIndexList, ...player.cityIndexList];
-                }
-
-                return player;
-            });
-
             return game;
         });
 
-        if (contagion) {
-            await gameStore.showContagionMessage('전염카드');
-            cityIndexList.pop();
-            gameStore.contagion();
+        for (let i = 0; i < cityIndexList.length; i++) {
+            if (cityIndexList[i] === -1) {
+                await gameStore.showContagionMessage('전염카드');
+                await gameStore.contagion();
+            } else {
+                update(game => {
+                    game.playerList.map(player => {
+                        if (player.turn) {
+                            player.cityIndexList =
+                                [cityIndexList[i], ...player.cityIndexList];
+                        }
+
+                        return player;
+                    });
+
+                    return game;
+                });
+            }
         }
     },
 
-    removeCity: () => {
+    computeRemoveCity: () => {
         const activePlayer = gameStore.getActivePlayer();
 
-        if (activePlayer.cityIndexList.length > 7 ) {
+        if (activePlayer.cityIndexList.length > 7) {
             update(game => {
                 game.cityList = game.cityList
                     .map(city => {
-                        if (activePlayer.cityIndexList.includes(city.index)) {
-                            city.remove = true;
-                        } else {
-                            city.remove = false;
-                        }
-
+                        city.remove = activePlayer.cityIndexList
+                            .includes(city.index);
                         return city;
                     });
 
                 game.removeCity = true;
                 return game;
             });
+
+            return false;
         }
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    city.remove = false;
+                    return city;
+                });
+
+            game.removeCity = false;
+            return game;
+        });
+
+        return true;
+
+    },
+
+    removeCity: (cityIndex) => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        update(game => {
+            game.playerList = game.playerList
+                .map(player => {
+                    if (player.index === activePlayer.index) {
+                        player.cityIndexList =
+                            player.cityIndexList
+                                .filter(index => index !== cityIndex)
+                    }
+
+                    return player;
+                });
+
+            return game;
+        });
+
+        const removeComplete = gameStore.computeRemoveCity();
+        gameStore.turn(removeComplete);
     },
 
     changePlayer: () => {
@@ -1072,7 +1152,7 @@ const gameStore = {
            return game;
         });
 
-        gameStore.contagion3();
+        await gameStore.contagionCard();
     },
 
     getVirus: (targetCity) => {
@@ -1099,19 +1179,13 @@ const gameStore = {
     },
 
     showContagion: async (targetCity, count) => {
+        console.log('>>> showContagion', targetCity, count);
+
         await gameStore.setDisable();
 
         const virus = gameStore.getVirus(targetCity);
 
-        update(game => {
-            game.contagionMessage = `${targetCity.name}`;
-            return game;
-        });
-
-        update(game => {
-            game.contagionMessage = `${targetCity.name}`;
-            return game;
-        });
+        await gameStore.showContagionMessage(`${targetCity.name} 감염되었습니다.`);
 
         const speed = 1000;
 
@@ -1123,8 +1197,6 @@ const gameStore = {
             },
             speed: speed
         });
-
-        await sleep(speed);
 
         let spread = false;
 
@@ -1151,9 +1223,9 @@ const gameStore = {
             return game;
         });
 
-        gameStore.recompute();
-
         await sleep(1500);
+
+        await gameStore.recompute();
 
         if (spread) {
             await gameStore.showContagionMessage(`${targetCity.name}의 바이러스가 확산 되었습니다.`);
@@ -1164,7 +1236,7 @@ const gameStore = {
                 return game;
             });
 
-            gameStore.recompute();
+            await gameStore.recompute();
 
             await sleep(1500);
         }
@@ -1244,7 +1316,7 @@ const gameStore = {
         });
     },
 
-    contagion2: async () => {
+    contagionTurn: async () => {
         const cityList = [];
         const game = get(gameStore);
         const activeContagionCount = game.contagionList
@@ -1263,14 +1335,12 @@ const gameStore = {
                     } else {
                         gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
                     }
-
-                    break;
                 }
             }
         }
     },
 
-    contagion3: async () => {
+    contagionCard: async () => {
         const game = get(gameStore);
         const targetCity = cloneAndShuffle(game.cityList).pop();
 
@@ -1281,7 +1351,7 @@ const gameStore = {
                 if (virus.active) {
                     await gameStore.showContagion(targetCity, 3);
                 } else {
-                    gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
+                    await gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
                 }
 
                 break;
@@ -1289,24 +1359,39 @@ const gameStore = {
         }
     },
 
-    turn: async () => {
+    isRemoveCity: () => {
+        return get(gameStore).removeCity;
+    },
+
+    turn: async (removeComplete) => {
+        await gameStore.recompute();
+
         const activePlayer = gameStore.getActivePlayer();
 
         if (activePlayer.action === 0) {
-            gameStore.getCity(2);
-            await sleep(1000);
-            gameStore.removeCity();
-            await sleep(1000);
-            gameStore.contagion2();
-
-            const game = get(gameStore);
-
-            if (!game.removeCity) {
-                gameStore.changePlayer();
+            if (gameStore.isRemoveCity()) {
+                return;
             }
 
-            gameStore.recompute();
+            if (!removeComplete) {
+                await gameStore.getCity(2);
+                await sleep(1000);
+
+                gameStore.computeRemoveCity();
+                await tick();
+
+                if (gameStore.isRemoveCity()) {
+                    return;
+                }
+            }
+
+            await gameStore.contagionTurn();
+            gameStore.changePlayer();
         }
+
+        await gameStore.recompute();
+
+        await tick();
     },
 
     move: (currentCity) => {
@@ -1329,7 +1414,7 @@ const gameStore = {
             return game;
         });
 
-        gameStore.recompute();
+        gameStore.turn(false);
     },
 
     action: game => {
@@ -1361,7 +1446,7 @@ const gameStore = {
             return game;
         });
 
-        gameStore.recompute();
+        gameStore.turn(false);
     }
 };
 

@@ -36,8 +36,10 @@
     <div class="board">
         <img src="background.jpg" width="1300">
 
+        {#if $gameStore.contagionMessage !== ''}
         <div class:ripple={$gameStore.contagionMessageRipple}
             class="contagion-panel">{@html $gameStore.contagionMessage}</div>
+        {/if}
 
         <div class="card-panel">{cardList.length}</div>
 
@@ -118,15 +120,18 @@
 <style>
     .contagion-panel {
         position: absolute;
-        left: 788px;
-        top: 18px;
-        width: 480px;
-        height: 150px;
+        left: 290px;
+        top: 358px;
+        width: 700px;
+        height: 100px;
         color: white;
+        line-height: 100px;
         font-size: 30px;
         text-align: center;
         border: 2px solid white;
         background-color: #554A52;
+        z-index: 500;
+        text-align: center;
     }
 
     .card-panel {
@@ -137,7 +142,7 @@
         height: 200px;
         color: white;
         line-height: 300px;
-        font-size: 60px;
+        font-size: 50px;
         font-weight: bolder;
         text-align: center;
         border: 1px solid white;
@@ -264,7 +269,7 @@
 
     .player-position.right {
         position: absolute;
-        right: 0;
+        left: 30px;
         top: 0;
         width: 120px;
         height: 30px;

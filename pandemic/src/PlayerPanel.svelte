@@ -15,10 +15,16 @@
     }
 </script>
 
-<div class="{player.class}" class:turn={player.turn}>
+<div class="{player.class} player-container" class:turn={player.turn}>
     <div class="player-header">
-        <img src="{player.image}" width="50" height="50">
-        <div class="action">{player.action}</div>
+        <div class="player-info"><img src="{player.image}" width="50" height="50"></div>
+        <div class="player-info">남은행동 : {player.action}</div>
+        <div class="player-info">도시카드 : {player.cityIndexList.length}</div>
+        {#if player.vaccine !== null}
+        <div class="player-info">
+            <button on:click={() => gameStore.removeVirus(player.vaccine)}>{player.vaccine} 치료제 개발</button>
+        </div>
+        {/if}
     </div>
     {#each player.cityList as city (city.index)}
         <div animate:flip="{{ duration: 300 }}"
@@ -29,42 +35,43 @@
              class:red={city.red}>
             {city.name}
             {#if city.remove}
-                <button class="btn btn-danger">삭제</button>
+                <button class="btn btn-danger btn-sm" on:click={() => gameStore.removeCity(city.index)}>삭제</button>
             {/if}
         </div>
     {/each}
 </div>
 
 <style>
-    .player-header {
-        display: flex;
+    .player-container {
+        padding-left: 10px;
+        background-color: lightgrey;
     }
 
     .turn {
         background-color: lightskyblue;
     }
 
-    .action {
-        display: inline-block;
-        font-size: 50px;
-        font-weight: bolder;
-        color: black;
-        width: 50px;
+    .player-info {
+        text-align: left;
+        color: white;
         height: 50px;
+        font-size: 30px;
+        font-weight: bolder;
+        width: 300px;
         line-height: 50px;
-        text-align: center;
     }
 
     .city {
-        width: 300px;
+        width: 280px;
         height: 50px;
         text-align: center;
         line-height: 50px;
-        font-size: 30px;
+        font-size: 25px;
         font-weight: bolder;
         color: white;
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
-        border: 1px solid white;
+        border: 1px solid black;
+        box-shadow: 10px 10px 3px 3px grey;
     }
 
     .city.blue {
