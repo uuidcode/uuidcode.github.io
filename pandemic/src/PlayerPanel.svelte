@@ -9,9 +9,6 @@
 
     $: {
         cityList = $gameStore.cityList;
-
-        player.cityList = player.cityIndexList
-            .map(index => cityList.find(city => city.index === index));
     }
 </script>
 
@@ -20,9 +17,11 @@
         <div class="player-info"><img src="{player.image}" width="50" height="50"></div>
         <div class="player-info">남은행동 : {player.action}</div>
         <div class="player-info">도시카드 : {player.cityIndexList.length}</div>
-        {#if player.vaccine !== null}
-        <div class="player-info">
-            <button on:click={() => gameStore.removeVirus(player.vaccine)}>{player.vaccine} 치료제 개발</button>
+        {#if gameStore.vaccinable()}
+        <div class="player-info2">
+            <button class="btn btn-success btn-sm"
+                on:click={() => gameStore.removeVirus(player.vaccine)}>
+            {player.vaccine} 치료제 개발</button>
         </div>
         {/if}
     </div>
@@ -34,8 +33,13 @@
              class:black={city.black}
              class:red={city.red}>
             {city.name}
+            {#if player.action > 0}
+                <button class="btn btn-primary btn-sm"
+                        on:click={() => gameStore.moveCityAndRemoveCard(city.index)}>이동</button>
+            {/if}
             {#if city.remove}
-                <button class="btn btn-danger btn-sm" on:click={() => gameStore.removeCity(city.index)}>삭제</button>
+                <button class="btn btn-danger btn-sm"
+                        on:click={() => gameStore.removeCity(city.index)}>삭제</button>
             {/if}
         </div>
     {/each}
@@ -59,6 +63,11 @@
         font-weight: bolder;
         width: 300px;
         line-height: 50px;
+    }
+
+    .player-info2 {
+        height: 50px;
+        width: 300px;
     }
 
     .city {

@@ -11877,8 +11877,8 @@ var app = (function () {
             {
                 index: 1,
                 name: '시카고',
-                x: 183,
-                y: 245,
+                x: 160,
+                y: 255,
                 virusCount: 0,
                 blue: true,
                 red: false,
@@ -11890,20 +11890,19 @@ var app = (function () {
                 index: 2,
                 name: '몬트리올',
                 x: 280,
-                y: 245,
+                y: 255,
                 virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [1, 3, 5],
-                top: true
+                linkedCityIndexList: [1, 3, 5]
             },
             {
                 index: 3,
                 name: '뉴욕',
                 x: 360,
-                y: 250,
+                y: 255,
                 virusCount: 0,
                 blue: true,
                 red: false,
@@ -11915,31 +11914,33 @@ var app = (function () {
             {
                 index: 4,
                 name: '애틀란타',
-                x: 220,
-                y: 306,
+                x: 190,
+                y: 316,
                 virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [1, 5, 12]
+                linkedCityIndexList: [1, 5, 12],
+                right: true
             },
             {
                 index: 5,
                 name: '위싱턴',
                 x: 324,
-                y: 300,
+                y: 325,
                 virusCount: 0,
                 blue: true,
                 red: false,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [2, 3, 4, 12]
+                linkedCityIndexList: [2, 3, 4, 12],
+                right: true
             },
             {
                 index: 6,
                 name: '런던',
-                x: 530,
+                x: 520,
                 y: 195,
                 virusCount: 0,
                 blue: true,
@@ -11982,7 +11983,8 @@ var app = (function () {
                 red: false,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [6, 8, 10, 11]
+                linkedCityIndexList: [6, 8, 10, 11],
+                top: true
             },
             {
                 index: 10,
@@ -12012,43 +12014,46 @@ var app = (function () {
                 index: 12,
                 name: '마이에미',
                 x: 280,
-                y: 385,
+                y: 375,
                 virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
                 black: false,
                 linkedCityIndexList: [4, 5, 13, 15],
-                lab: true
+                lab: true,
+                right: true
             },
             {
                 index: 13,
                 name: '멕시코 시티',
-                x: 170,
-                y: 400,
+                x: 140,
+                y: 420,
                 virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [1, 12, 14, 15, 16]
+                linkedCityIndexList: [1, 12, 14, 15, 16],
+                top: true
             },
             {
                 index: 14,
                 name: '로스엔젤레스',
-                x: 80,
-                y: 370,
+                x: 60,
+                y: 390,
                 virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [0, 1, 13, 47]
+                linkedCityIndexList: [0, 1, 13, 47],
+                top: true
             },
             {
                 index: 15,
                 name: '보고타',
-                x: 275,
+                x: 265,
                 y: 485,
                 virusCount: 0,
                 blue: false,
@@ -12067,19 +12072,21 @@ var app = (function () {
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [13, 15, 17]
+                linkedCityIndexList: [13, 15, 17],
+                right: true
             },
             {
                 index: 17,
                 name: '산티아고',
-                x: 255,
-                y: 695,
+                x: 235,
+                y: 715,
                 virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [16]
+                linkedCityIndexList: [16],
+                top: true
             },
             {
                 index: 18,
@@ -12091,7 +12098,8 @@ var app = (function () {
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [15, 19]
+                linkedCityIndexList: [15, 19],
+                right: true
             },
             {
                 index: 19,
@@ -12103,12 +12111,13 @@ var app = (function () {
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [7, 15, 18, 20]
+                linkedCityIndexList: [7, 15, 18, 20],
+                right: true
             },
             {
                 index: 20,
                 name: '라고스',
-                x: 600,
+                x: 580,
                 y: 475,
                 virusCount: 0,
                 blue: false,
@@ -12132,14 +12141,15 @@ var app = (function () {
             {
                 index: 22,
                 name: '킨샤샤',
-                x: 650,
-                y: 540,
+                x: 660,
+                y: 560,
                 virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [20, 21, 23]
+                linkedCityIndexList: [20, 21, 23],
+                right: true
             },
             {
                 index: 23,
@@ -12151,7 +12161,8 @@ var app = (function () {
                 red: false,
                 yellow: true,
                 black: false,
-                linkedCityIndexList: [21, 22]
+                linkedCityIndexList: [21, 22],
+                right: true
             },
             {
                 index: 24,
@@ -12259,7 +12270,8 @@ var app = (function () {
                 red: false,
                 yellow: false,
                 black: true,
-                linkedCityIndexList: [27, 30, 31]
+                linkedCityIndexList: [27, 30, 31],
+                right: true
             },
             {
                 index: 33,
@@ -12277,13 +12289,14 @@ var app = (function () {
                 index: 34,
                 name: '콜카타',
                 x: 1010,
-                y: 370,
+                y: 365,
                 virusCount: 0,
                 blue: false,
                 red: false,
                 yellow: false,
                 black: true,
-                linkedCityIndexList: [33, 35, 40, 43]
+                linkedCityIndexList: [33, 35, 40, 43],
+                right: true
             },
             {
                 index: 35,
@@ -12301,7 +12314,7 @@ var app = (function () {
                 index: 36,
                 name: '베이징',
                 x: 1060,
-                y: 260,
+                y: 250,
                 virusCount: 0,
                 blue: false,
                 red: true,
@@ -12312,26 +12325,28 @@ var app = (function () {
             {
                 index: 37,
                 name: '상하이',
-                x: 1060,
-                y: 320,
+                x: 1050,
+                y: 323,
                 virusCount: 0,
                 blue: false,
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [36, 38, 39, 43, 45]
+                linkedCityIndexList: [36, 38, 39, 43, 45],
+                right: true
             },
             {
                 index: 38,
                 name: '서울',
                 x: 1140,
-                y: 260,
+                y: 255,
                 virusCount: 0,
                 blue: false,
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [36, 37, 39]
+                linkedCityIndexList: [36, 37, 39],
+                top: true
             },
             {
                 index: 39,
@@ -12367,7 +12382,8 @@ var app = (function () {
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [35, 40, 42, 47]
+                linkedCityIndexList: [35, 40, 42, 47],
+                right: true
             },
             {
                 index: 42,
@@ -12421,13 +12437,14 @@ var app = (function () {
                 index: 46,
                 name: '마닐라',
                 x: 1165,
-                y: 495,
+                y: 515,
                 virusCount: 0,
                 blue: false,
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [43, 43, 45, 47]
+                linkedCityIndexList: [42, 43, 45, 47],
+                top: true
             },
             {
                 index: 47,
@@ -12439,12 +12456,25 @@ var app = (function () {
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [14, 41, 46]
+                linkedCityIndexList: [14, 41, 46],
+                top: true
             }
         ]
     };
 
     const { subscribe: subscribe$1, set, update: update$1 } = writable(gameObject);
+
+    const startCity = cloneAndShuffle(gameObject.cityList).pop();
+
+    gameObject.playerList.forEach(player => {
+        player.cityIndex = startCity.index;
+    });
+
+    gameObject.cityList.forEach(city => {
+        city.lab = false;
+    });
+
+    gameObject.cityList[startCity.index].lab = true;
 
     const gameStore = {
         subscribe: subscribe$1,
@@ -12457,6 +12487,9 @@ var app = (function () {
             update$1(game => {
                 game.playerList = game.playerList
                     .map(player => {
+                        player.cityList = player.cityIndexList
+                            .map(index => game.cityList.find(city => city.index === index));
+
                         for (let i = 0; i < game.virusList.length; i++) {
                             const virus = game.virusList[i];
 
@@ -12464,7 +12497,6 @@ var app = (function () {
                                 .map(index => game.cityList.find(city => city.index === index))
                                 .map(city => city[virus.type])
                                 .reduce((a, b) => a + b, 0);
-
 
                             if (sum >= 5 && game.cityList[player.cityIndex].lab) {
                                 player.vaccine = virus.type;
@@ -12526,6 +12558,8 @@ var app = (function () {
         },
 
         removeVirus: async (vaccine) => {
+            const activePlayer = gameStore.getActivePlayer();
+
             update$1(game => {
                 game.cityList = game.cityList
                     .map(city => {
@@ -12534,6 +12568,31 @@ var app = (function () {
                         }
 
                         return city;
+                    });
+
+                game.playerList = game.playerList
+                    .map(player => {
+                        if (player.index === activePlayer.index) {
+                            player.vaccine = null;
+
+                            let count = 0;
+
+                            player.cityIndexList = player.cityIndexList
+                                .filter(index => {
+                                    if (count > 5) {
+                                        return true;
+                                    }
+
+                                    if (game.cityList[index][vaccine]) {
+                                        count++;
+                                        return false;
+                                    }
+
+                                    return true;
+                                });
+                        }
+
+                        return player;
                     });
 
                 return game;
@@ -12546,6 +12605,26 @@ var app = (function () {
            game.debug = !game.debug;
            return game;
         }),
+
+        vaccinable: () => {
+            const game = get_store_value(gameStore);
+            const activePlayer = gameStore.getActivePlayer();
+
+            if (!game.cityList[activePlayer.cityIndex].lab) {
+                return false;
+            }
+
+            return game.virusList
+                .filter(virus => virus.active)
+                .filter(virus => {
+                    const sum = activePlayer.cityIndexList
+                        .map(index => game.cityList.find(city => city.index === index))
+                        .map(city => city[virus.type])
+                        .reduce((a, b) => a + b, 0);
+
+                    return sum >= 5;
+                }).length > 0;
+        },
 
         getRandomCityIndex: (virus) => {
             let cityIndex = [];
@@ -12579,9 +12658,10 @@ var app = (function () {
                 return game;
             });
 
-            gameStore.getCity(3);
+            const initCityCount = 3;
+            gameStore.getCity(initCityCount);
             gameStore.changePlayer();
-            gameStore.getCity(3);
+            gameStore.getCity(initCityCount);
             gameStore.changePlayer();
 
             update$1(game => {
@@ -12633,9 +12713,19 @@ var app = (function () {
                 return false;
             }
 
-            return game.ready && game.cityList
+            if (activePlayer.cityIndex === currentCity.index) {
+                return false;
+            }
+
+            if (!game.ready) {
+                return false;
+            }
+
+            return game.cityList
                 .find(city => city.index === activePlayer.cityIndex)
-                .linkedCityIndexList.includes(currentCity.index)
+                .linkedCityIndexList.includes(currentCity.index) ||
+                activePlayer.cityList
+                    .find(city => city.index === currentCity.index);
         },
 
         buildable: (currentCity) => {
@@ -12646,13 +12736,32 @@ var app = (function () {
                 return false;
             }
 
-            return game.ready && game.cityList
-                .filter(city => {
-                    return !city.lab &&
-                        activePlayer.cityIndexList.includes(city.index) &&
-                        city.index === activePlayer.cityIndex;
-                })
-                .length > 0;
+            return game.ready &&
+                game.labCount > 0 &&
+                !game.cityList[currentCity.index].lab &&
+                currentCity.index === activePlayer.cityIndex;
+        },
+
+        build: (currentCity) => {
+            const currentCityIndex = currentCity.index;
+
+            update$1(game => {
+                gameStore.action(game);
+
+                game.labCount -= 1;
+                game.cityList = game.cityList
+                    .map(city => {
+                        if (city.index === currentCityIndex) {
+                            city.lab = true;
+                        }
+
+                        return city;
+                    });
+
+                return game;
+            });
+
+            gameStore.turn(false);
         },
 
         curable: (currentCity) => {
@@ -12679,14 +12788,14 @@ var app = (function () {
                     }
 
                     const card = game.cardList.pop();
-                    console.log('>>> count', count);
-                    console.log('>>> card', card);
                     game.usedCardList = [...game.usedCardList, card];
                     cityIndexList.push(card);
                 }
 
                 return game;
             });
+
+            console.log('>>> getCity cityIndexList', cityIndexList);
 
             for (let i = 0; i < cityIndexList.length; i++) {
                 if (cityIndexList[i] === -1) {
@@ -12705,6 +12814,11 @@ var app = (function () {
 
                         return game;
                     });
+
+                    if (count === 2) {
+                        await gameStore.recompute();
+                        await tick();
+                    }
                 }
             }
         },
@@ -12996,6 +13110,7 @@ var app = (function () {
         },
 
         contagionTurn: async () => {
+            console.log('>>> contagionTurn');
             const game = get_store_value(gameStore);
             const activeContagionCount = game.contagionList
                 .find(contagion => contagion.active)
@@ -13043,7 +13158,6 @@ var app = (function () {
 
         turn: async (removeComplete) => {
             await gameStore.recompute();
-
             const activePlayer = gameStore.getActivePlayer();
 
             if (activePlayer.action === 0) {
@@ -13053,7 +13167,7 @@ var app = (function () {
 
                 if (!removeComplete) {
                     await gameStore.getCity(2);
-                    await sleep(1000);
+                    await sleep(1500);
 
                     gameStore.computeRemoveCity();
                     await tick();
@@ -13070,29 +13184,6 @@ var app = (function () {
             await gameStore.recompute();
 
             await tick();
-        },
-
-        move: (currentCity) => {
-            const currentCityIndex = currentCity.index;
-
-            update$1(game => {
-                gameStore.action(game);
-
-                game.playerList = game.playerList
-                    .map(player => {
-                        if (player.turn) {
-                            player.cityIndex = currentCityIndex;
-                        }
-
-                        return player;
-                    });
-
-                console.log('>>> game.playerList', game.playerList);
-
-                return game;
-            });
-
-            gameStore.turn(false);
         },
 
         action: game => {
@@ -13122,6 +13213,62 @@ var app = (function () {
                     });
 
                 return game;
+            });
+
+            gameStore.turn(false);
+        },
+
+        moveCity: (cityIndex) => {
+            const activePlayer = gameStore.getActivePlayer();
+
+            const neighbor = get_store_value(gameStore).cityList[activePlayer.cityIndex]
+                .linkedCityIndexList.includes(cityIndex);
+
+            if (neighbor) {
+                gameStore.moveCityAndTurn(cityIndex, true);
+            } else {
+                gameStore.moveCityAndRemoveCard(cityIndex);
+            }
+        },
+
+        moveCityAndTurn: (cityIndex, turn) => {
+            update$1(game => {
+                gameStore.action(game);
+
+                game.playerList = game.playerList
+                    .map(player => {
+                        if (player.turn) {
+                            player.cityIndex = cityIndex;
+                        }
+
+                        return player;
+                    });
+
+                return game;
+            });
+
+            if (turn) {
+                gameStore.turn(false);
+            }
+        },
+
+        moveCityAndRemoveCard: (cityIndex) => {
+            gameStore.moveCityAndTurn(cityIndex, false);
+
+            const activePlayer = gameStore.getActivePlayer();
+
+            update$1(game => {
+               game.playerList = game.playerList
+                   .map(player => {
+                       if (player.index === activePlayer.index) {
+                           player.cityIndexList = player.cityIndexList
+                               .filter(index => index !== cityIndex);
+                       }
+
+                       return player;
+                   });
+
+               return game;
             });
 
             gameStore.turn(false);
@@ -13184,12 +13331,12 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
+    	child_ctx[6] = list[i];
     	return child_ctx;
     }
 
-    // (23:8) {#if player.vaccine !== null}
-    function create_if_block_1(ctx) {
+    // (20:8) {#if gameStore.vaccinable()}
+    function create_if_block_2(ctx) {
     	let div;
     	let button;
     	let t0_value = /*player*/ ctx[0].vaccine + "";
@@ -13204,9 +13351,10 @@ var app = (function () {
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = text(" 치료제 개발");
-    			add_location(button, file, 24, 12, 812);
-    			attr_dev(div, "class", "player-info svelte-cp1303");
-    			add_location(div, file, 23, 8, 773);
+    			attr_dev(button, "class", "btn btn-success btn-sm");
+    			add_location(button, file, 21, 12, 689);
+    			attr_dev(div, "class", "player-info2 svelte-xmewp0");
+    			add_location(div, file, 20, 8, 649);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -13215,7 +13363,7 @@ var app = (function () {
     			append_dev(button, t1);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[3], false, false, false);
+    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[2], false, false, false);
     				mounted = true;
     			}
     		},
@@ -13231,31 +13379,31 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1.name,
+    		id: create_if_block_2.name,
     		type: "if",
-    		source: "(23:8) {#if player.vaccine !== null}",
+    		source: "(20:8) {#if gameStore.vaccinable()}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (37:12) {#if city.remove}
-    function create_if_block(ctx) {
+    // (36:12) {#if player.action > 0}
+    function create_if_block_1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[4](/*city*/ ctx[5]);
+    		return /*click_handler_1*/ ctx[3](/*city*/ ctx[6]);
     	}
 
     	const block = {
     		c: function create() {
     			button = element("button");
-    			button.textContent = "삭제";
-    			attr_dev(button, "class", "btn btn-danger btn-sm");
-    			add_location(button, file, 37, 16, 1303);
+    			button.textContent = "이동";
+    			attr_dev(button, "class", "btn btn-primary btn-sm");
+    			add_location(button, file, 36, 16, 1248);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -13277,25 +13425,73 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block.name,
+    		id: create_if_block_1.name,
     		type: "if",
-    		source: "(37:12) {#if city.remove}",
+    		source: "(36:12) {#if player.action > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (29:4) {#each player.cityList as city (city.index)}
+    // (40:12) {#if city.remove}
+    function create_if_block(ctx) {
+    	let button;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler_2() {
+    		return /*click_handler_2*/ ctx[4](/*city*/ ctx[6]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "삭제";
+    			attr_dev(button, "class", "btn btn-danger btn-sm");
+    			add_location(button, file, 40, 16, 1452);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler_2, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(40:12) {#if city.remove}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (28:4) {#each player.cityList as city (city.index)}
     function create_each_block(key_1, ctx) {
     	let div;
-    	let t0_value = /*city*/ ctx[5].name + "";
+    	let t0_value = /*city*/ ctx[6].name + "";
     	let t0;
     	let t1;
     	let t2;
+    	let t3;
     	let rect;
     	let stop_animation = noop;
-    	let if_block = /*city*/ ctx[5].remove && create_if_block(ctx);
+    	let if_block0 = /*player*/ ctx[0].action > 0 && create_if_block_1(ctx);
+    	let if_block1 = /*city*/ ctx[6].remove && create_if_block(ctx);
 
     	const block = {
     		key: key_1,
@@ -13304,54 +13500,71 @@ var app = (function () {
     			div = element("div");
     			t0 = text(t0_value);
     			t1 = space();
-    			if (if_block) if_block.c();
+    			if (if_block0) if_block0.c();
     			t2 = space();
-    			attr_dev(div, "class", "city svelte-cp1303");
-    			toggle_class(div, "blue", /*city*/ ctx[5].blue);
-    			toggle_class(div, "yellow", /*city*/ ctx[5].yellow);
-    			toggle_class(div, "black", /*city*/ ctx[5].black);
-    			toggle_class(div, "red", /*city*/ ctx[5].red);
-    			add_location(div, file, 29, 8, 1010);
+    			if (if_block1) if_block1.c();
+    			t3 = space();
+    			attr_dev(div, "class", "city svelte-xmewp0");
+    			toggle_class(div, "blue", /*city*/ ctx[6].blue);
+    			toggle_class(div, "yellow", /*city*/ ctx[6].yellow);
+    			toggle_class(div, "black", /*city*/ ctx[6].black);
+    			toggle_class(div, "red", /*city*/ ctx[6].red);
+    			add_location(div, file, 28, 8, 949);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     			append_dev(div, t0);
     			append_dev(div, t1);
-    			if (if_block) if_block.m(div, null);
+    			if (if_block0) if_block0.m(div, null);
     			append_dev(div, t2);
+    			if (if_block1) if_block1.m(div, null);
+    			append_dev(div, t3);
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if (dirty & /*player*/ 1 && t0_value !== (t0_value = /*city*/ ctx[5].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*player*/ 1 && t0_value !== (t0_value = /*city*/ ctx[6].name + "")) set_data_dev(t0, t0_value);
 
-    			if (/*city*/ ctx[5].remove) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
+    			if (/*player*/ ctx[0].action > 0) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block(ctx);
-    					if_block.c();
-    					if_block.m(div, t2);
+    					if_block0 = create_if_block_1(ctx);
+    					if_block0.c();
+    					if_block0.m(div, t2);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (/*city*/ ctx[6].remove) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block(ctx);
+    					if_block1.c();
+    					if_block1.m(div, t3);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div, "blue", /*city*/ ctx[5].blue);
+    				toggle_class(div, "blue", /*city*/ ctx[6].blue);
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div, "yellow", /*city*/ ctx[5].yellow);
+    				toggle_class(div, "yellow", /*city*/ ctx[6].yellow);
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div, "black", /*city*/ ctx[5].black);
+    				toggle_class(div, "black", /*city*/ ctx[6].black);
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div, "red", /*city*/ ctx[5].red);
+    				toggle_class(div, "red", /*city*/ ctx[6].red);
     			}
     		},
     		r: function measure() {
@@ -13367,7 +13580,8 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
-    			if (if_block) if_block.d();
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
     		}
     	};
 
@@ -13375,7 +13589,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(29:4) {#each player.cityList as city (city.index)}",
+    		source: "(28:4) {#each player.cityList as city (city.index)}",
     		ctx
     	});
 
@@ -13399,14 +13613,15 @@ var app = (function () {
     	let t5_value = /*player*/ ctx[0].cityIndexList.length + "";
     	let t5;
     	let t6;
+    	let show_if = gameStore.vaccinable();
     	let t7;
     	let each_blocks = [];
     	let each_1_lookup = new Map();
     	let div4_class_value;
-    	let if_block = /*player*/ ctx[0].vaccine !== null && create_if_block_1(ctx);
+    	let if_block = show_if && create_if_block_2(ctx);
     	let each_value = /*player*/ ctx[0].cityList;
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*city*/ ctx[5].index;
+    	const get_key = ctx => /*city*/ ctx[6].index;
     	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -13440,18 +13655,18 @@ var app = (function () {
     			if (img.src !== (img_src_value = /*player*/ ctx[0].image)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "width", "50");
     			attr_dev(img, "height", "50");
-    			add_location(img, file, 19, 33, 529);
-    			attr_dev(div0, "class", "player-info svelte-cp1303");
-    			add_location(div0, file, 19, 8, 504);
-    			attr_dev(div1, "class", "player-info svelte-cp1303");
-    			add_location(div1, file, 20, 8, 594);
-    			attr_dev(div2, "class", "player-info svelte-cp1303");
-    			add_location(div2, file, 21, 8, 657);
+    			add_location(img, file, 16, 33, 406);
+    			attr_dev(div0, "class", "player-info svelte-xmewp0");
+    			add_location(div0, file, 16, 8, 381);
+    			attr_dev(div1, "class", "player-info svelte-xmewp0");
+    			add_location(div1, file, 17, 8, 471);
+    			attr_dev(div2, "class", "player-info svelte-xmewp0");
+    			add_location(div2, file, 18, 8, 534);
     			attr_dev(div3, "class", "player-header");
-    			add_location(div3, file, 18, 4, 467);
-    			attr_dev(div4, "class", div4_class_value = "" + (/*player*/ ctx[0].class + " player-container" + " svelte-cp1303"));
+    			add_location(div3, file, 15, 4, 344);
+    			attr_dev(div4, "class", div4_class_value = "" + (/*player*/ ctx[0].class + " player-container" + " svelte-xmewp0"));
     			toggle_class(div4, "turn", /*player*/ ctx[0].turn);
-    			add_location(div4, file, 17, 0, 391);
+    			add_location(div4, file, 14, 0, 268);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -13484,19 +13699,7 @@ var app = (function () {
 
     			if (dirty & /*player*/ 1 && t2_value !== (t2_value = /*player*/ ctx[0].action + "")) set_data_dev(t2, t2_value);
     			if (dirty & /*player*/ 1 && t5_value !== (t5_value = /*player*/ ctx[0].cityIndexList.length + "")) set_data_dev(t5, t5_value);
-
-    			if (/*player*/ ctx[0].vaccine !== null) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block_1(ctx);
-    					if_block.c();
-    					if_block.m(div3, null);
-    				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
-    			}
+    			if (show_if) if_block.p(ctx, dirty);
 
     			if (dirty & /*player, gameStore*/ 1) {
     				each_value = /*player*/ ctx[0].cityList;
@@ -13507,7 +13710,7 @@ var app = (function () {
     				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
     			}
 
-    			if (dirty & /*player*/ 1 && div4_class_value !== (div4_class_value = "" + (/*player*/ ctx[0].class + " player-container" + " svelte-cp1303"))) {
+    			if (dirty & /*player*/ 1 && div4_class_value !== (div4_class_value = "" + (/*player*/ ctx[0].class + " player-container" + " svelte-xmewp0"))) {
     				attr_dev(div4, "class", div4_class_value);
     			}
 
@@ -13541,7 +13744,7 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let $gameStore;
     	validate_store(gameStore, "gameStore");
-    	component_subscribe($$self, gameStore, $$value => $$invalidate(2, $gameStore = $$value));
+    	component_subscribe($$self, gameStore, $$value => $$invalidate(1, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("PlayerPanel", slots, []);
     	let { player } = $$props;
@@ -13553,7 +13756,8 @@ var app = (function () {
     	});
 
     	const click_handler = () => gameStore.removeVirus(player.vaccine);
-    	const click_handler_1 = city => gameStore.removeCity(city.index);
+    	const click_handler_1 = city => gameStore.moveCityAndRemoveCard(city.index);
+    	const click_handler_2 = city => gameStore.removeCity(city.index);
 
     	$$self.$$set = $$props => {
     		if ("player" in $$props) $$invalidate(0, player = $$props.player);
@@ -13571,7 +13775,7 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ("player" in $$props) $$invalidate(0, player = $$props.player);
-    		if ("cityList" in $$props) $$invalidate(1, cityList = $$props.cityList);
+    		if ("cityList" in $$props) cityList = $$props.cityList;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -13579,15 +13783,14 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$gameStore, player, cityList*/ 7) {
+    		if ($$self.$$.dirty & /*$gameStore*/ 2) {
     			{
-    				$$invalidate(1, cityList = $gameStore.cityList);
-    				$$invalidate(0, player.cityList = player.cityIndexList.map(index => cityList.find(city => city.index === index)), player);
+    				cityList = $gameStore.cityList;
     			}
     		}
     	};
 
-    	return [player, cityList, $gameStore, click_handler, click_handler_1];
+    	return [player, $gameStore, click_handler, click_handler_1, click_handler_2];
     }
 
     class PlayerPanel extends SvelteComponentDev {
@@ -13653,14 +13856,14 @@ var app = (function () {
     }
 
     // (39:8) {#if $gameStore.contagionMessage !== ''}
-    function create_if_block_9(ctx) {
+    function create_if_block_8(ctx) {
     	let div;
     	let raw_value = /*$gameStore*/ ctx[1].contagionMessage + "";
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "contagion-panel svelte-w0518c");
+    			attr_dev(div, "class", "contagion-panel svelte-oglcxx");
     			toggle_class(div, "ripple", /*$gameStore*/ ctx[1].contagionMessageRipple);
     			add_location(div, file$1, 39, 8, 1075);
     		},
@@ -13681,7 +13884,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_9.name,
+    		id: create_if_block_8.name,
     		type: "if",
     		source: "(39:8) {#if $gameStore.contagionMessage !== ''}",
     		ctx
@@ -13691,13 +13894,13 @@ var app = (function () {
     }
 
     // (49:12) {#if contagion.active}
-    function create_if_block_8(ctx) {
+    function create_if_block_7(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "contagion svelte-w0518c");
+    			attr_dev(div, "class", "contagion svelte-oglcxx");
     			set_style(div, "left", /*contagion*/ ctx[25].x + "px");
     			set_style(div, "top", /*contagion*/ ctx[25].y + "px");
     			add_location(div, file$1, 49, 16, 1491);
@@ -13721,7 +13924,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_8.name,
+    		id: create_if_block_7.name,
     		type: "if",
     		source: "(49:12) {#if contagion.active}",
     		ctx
@@ -13733,7 +13936,7 @@ var app = (function () {
     // (48:8) {#each contagionList as contagion}
     function create_each_block_4(ctx) {
     	let if_block_anchor;
-    	let if_block = /*contagion*/ ctx[25].active && create_if_block_8(ctx);
+    	let if_block = /*contagion*/ ctx[25].active && create_if_block_7(ctx);
 
     	const block = {
     		c: function create() {
@@ -13749,7 +13952,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_8(ctx);
+    					if_block = create_if_block_7(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -13776,13 +13979,13 @@ var app = (function () {
     }
 
     // (56:12) {#if spread.active}
-    function create_if_block_7(ctx) {
+    function create_if_block_6(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "spread svelte-w0518c");
+    			attr_dev(div, "class", "spread svelte-oglcxx");
     			set_style(div, "left", /*spread*/ ctx[22].x + "px");
     			set_style(div, "top", /*spread*/ ctx[22].y + "px");
     			add_location(div, file$1, 56, 16, 1718);
@@ -13806,7 +14009,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_7.name,
+    		id: create_if_block_6.name,
     		type: "if",
     		source: "(56:12) {#if spread.active}",
     		ctx
@@ -13818,7 +14021,7 @@ var app = (function () {
     // (55:8) {#each spreadList as spread}
     function create_each_block_3(ctx) {
     	let if_block_anchor;
-    	let if_block = /*spread*/ ctx[22].active && create_if_block_7(ctx);
+    	let if_block = /*spread*/ ctx[22].active && create_if_block_6(ctx);
 
     	const block = {
     		c: function create() {
@@ -13834,7 +14037,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_7(ctx);
+    					if_block = create_if_block_6(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -13861,7 +14064,7 @@ var app = (function () {
     }
 
     // (73:16) {#if $gameStore.debug}
-    function create_if_block_6(ctx) {
+    function create_if_block_5(ctx) {
     	let div;
     	let t_value = /*city*/ ctx[16].index + "";
     	let t;
@@ -13870,7 +14073,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "city-index svelte-w0518c");
+    			attr_dev(div, "class", "city-index svelte-oglcxx");
     			add_location(div, file$1, 73, 16, 2351);
     		},
     		m: function mount(target, anchor) {
@@ -13887,7 +14090,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_6.name,
+    		id: create_if_block_5.name,
     		type: "if",
     		source: "(73:16) {#if $gameStore.debug}",
     		ctx
@@ -13897,14 +14100,14 @@ var app = (function () {
     }
 
     // (77:16) {#if city.lab}
-    function create_if_block_5(ctx) {
+    function create_if_block_4(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
     			div.textContent = "연구소";
-    			attr_dev(div, "class", "lab-title svelte-w0518c");
+    			attr_dev(div, "class", "lab-title svelte-oglcxx");
     			add_location(div, file$1, 77, 20, 2472);
     		},
     		m: function mount(target, anchor) {
@@ -13917,7 +14120,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_5.name,
+    		id: create_if_block_4.name,
     		type: "if",
     		source: "(77:16) {#if city.lab}",
     		ctx
@@ -13927,7 +14130,7 @@ var app = (function () {
     }
 
     // (85:24) {#if city.index === player.cityIndex}
-    function create_if_block_4(ctx) {
+    function create_if_block_3(ctx) {
     	let div;
     	let img;
     	let img_src_value;
@@ -13936,10 +14139,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			img = element("img");
-    			attr_dev(img, "class", "player-image svelte-w0518c");
+    			attr_dev(img, "class", "player-image svelte-oglcxx");
     			if (img.src !== (img_src_value = /*player*/ ctx[19].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$1, 88, 32, 2986);
-    			attr_dev(div, "class", "player svelte-w0518c");
+    			attr_dev(div, "class", "player svelte-oglcxx");
     			toggle_class(div, "ripple", /*player*/ ctx[19].turn);
     			toggle_class(div, "turn", /*player*/ ctx[19].turn);
     			add_location(div, file$1, 85, 28, 2812);
@@ -13968,7 +14171,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_4.name,
+    		id: create_if_block_3.name,
     		type: "if",
     		source: "(85:24) {#if city.index === player.cityIndex}",
     		ctx
@@ -13980,7 +14183,7 @@ var app = (function () {
     // (84:20) {#each playerList as player}
     function create_each_block_2(ctx) {
     	let if_block_anchor;
-    	let if_block = /*city*/ ctx[16].index === /*player*/ ctx[19].cityIndex && create_if_block_4(ctx);
+    	let if_block = /*city*/ ctx[16].index === /*player*/ ctx[19].cityIndex && create_if_block_3(ctx);
 
     	const block = {
     		c: function create() {
@@ -13996,7 +14199,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_4(ctx);
+    					if_block = create_if_block_3(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -14023,7 +14226,7 @@ var app = (function () {
     }
 
     // (94:20) {#if gameStore.curable(city)}
-    function create_if_block_3(ctx) {
+    function create_if_block_2$1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
@@ -14036,7 +14239,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "치료";
-    			attr_dev(button, "class", "btn btn-success btn-sm");
+    			attr_dev(button, "class", "btn btn-success btn-xs svelte-oglcxx");
     			add_location(button, file$1, 94, 24, 3208);
     		},
     		m: function mount(target, anchor) {
@@ -14059,7 +14262,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_3.name,
+    		id: create_if_block_2$1.name,
     		type: "if",
     		source: "(94:20) {#if gameStore.curable(city)}",
     		ctx
@@ -14069,7 +14272,7 @@ var app = (function () {
     }
 
     // (99:20) {#if gameStore.movable(city)}
-    function create_if_block_2(ctx) {
+    function create_if_block_1$1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
@@ -14082,7 +14285,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "이동";
-    			attr_dev(button, "class", "btn btn-primary btn-sm");
+    			attr_dev(button, "class", "btn btn-primary btn-xs svelte-oglcxx");
     			add_location(button, file$1, 99, 24, 3435);
     		},
     		m: function mount(target, anchor) {
@@ -14105,7 +14308,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_2.name,
+    		id: create_if_block_1$1.name,
     		type: "if",
     		source: "(99:20) {#if gameStore.movable(city)}",
     		ctx
@@ -14115,7 +14318,7 @@ var app = (function () {
     }
 
     // (104:20) {#if gameStore.buildable(city)}
-    function create_if_block_1$1(ctx) {
+    function create_if_block$1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
@@ -14127,9 +14330,9 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			button = element("button");
-    			button.textContent = "연구소";
-    			attr_dev(button, "class", "btn btn-primary btn-sm");
-    			add_location(button, file$1, 104, 24, 3664);
+    			button.textContent = "연구";
+    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-oglcxx");
+    			add_location(button, file$1, 104, 24, 3674);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -14151,7 +14354,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$1.name,
+    		id: create_if_block$1.name,
     		type: "if",
     		source: "(104:20) {#if gameStore.buildable(city)}",
     		ctx
@@ -14176,8 +14379,8 @@ var app = (function () {
     	let t5;
     	let show_if = gameStore.buildable(/*city*/ ctx[16]);
     	let div1_class_value;
-    	let if_block0 = /*$gameStore*/ ctx[1].debug && create_if_block_6(ctx);
-    	let if_block1 = /*city*/ ctx[16].lab && create_if_block_5(ctx);
+    	let if_block0 = /*$gameStore*/ ctx[1].debug && create_if_block_5(ctx);
+    	let if_block1 = /*city*/ ctx[16].lab && create_if_block_4(ctx);
     	let each_value_2 = /*playerList*/ ctx[0];
     	validate_each_argument(each_value_2);
     	let each_blocks = [];
@@ -14186,9 +14389,9 @@ var app = (function () {
     		each_blocks[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
     	}
 
-    	let if_block2 = show_if_2 && create_if_block_3(ctx);
-    	let if_block3 = show_if_1 && create_if_block_2(ctx);
-    	let if_block4 = show_if && create_if_block_1$1(ctx);
+    	let if_block2 = show_if_2 && create_if_block_2$1(ctx);
+    	let if_block3 = show_if_1 && create_if_block_1$1(ctx);
+    	let if_block4 = show_if && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -14211,11 +14414,11 @@ var app = (function () {
     			t5 = space();
     			if (if_block4) if_block4.c();
     			html_tag = new HtmlTag(t0);
-    			attr_dev(div0, "class", "player-position svelte-w0518c");
+    			attr_dev(div0, "class", "player-position svelte-oglcxx");
     			toggle_class(div0, "right", /*city*/ ctx[16].right);
     			toggle_class(div0, "top", /*city*/ ctx[16].top);
     			add_location(div0, file$1, 80, 16, 2547);
-    			attr_dev(div1, "class", div1_class_value = "city city-" + /*city*/ ctx[16].index + " svelte-w0518c");
+    			attr_dev(div1, "class", div1_class_value = "city city-" + /*city*/ ctx[16].index + " svelte-oglcxx");
     			set_style(div1, "left", /*city*/ ctx[16].x + "px");
     			set_style(div1, "top", /*city*/ ctx[16].y + "px");
     			toggle_class(div1, "blue", /*city*/ ctx[16].blue);
@@ -14254,7 +14457,7 @@ var app = (function () {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     				} else {
-    					if_block0 = create_if_block_6(ctx);
+    					if_block0 = create_if_block_5(ctx);
     					if_block0.c();
     					if_block0.m(div1, t1);
     				}
@@ -14265,7 +14468,7 @@ var app = (function () {
 
     			if (/*city*/ ctx[16].lab) {
     				if (if_block1) ; else {
-    					if_block1 = create_if_block_5(ctx);
+    					if_block1 = create_if_block_4(ctx);
     					if_block1.c();
     					if_block1.m(div1, t2);
     				}
@@ -14304,7 +14507,7 @@ var app = (function () {
     				if (if_block2) {
     					if_block2.p(ctx, dirty);
     				} else {
-    					if_block2 = create_if_block_3(ctx);
+    					if_block2 = create_if_block_2$1(ctx);
     					if_block2.c();
     					if_block2.m(div0, t4);
     				}
@@ -14319,7 +14522,7 @@ var app = (function () {
     				if (if_block3) {
     					if_block3.p(ctx, dirty);
     				} else {
-    					if_block3 = create_if_block_2(ctx);
+    					if_block3 = create_if_block_1$1(ctx);
     					if_block3.c();
     					if_block3.m(div0, t5);
     				}
@@ -14334,7 +14537,7 @@ var app = (function () {
     				if (if_block4) {
     					if_block4.p(ctx, dirty);
     				} else {
-    					if_block4 = create_if_block_1$1(ctx);
+    					if_block4 = create_if_block$1(ctx);
     					if_block4.c();
     					if_block4.m(div0, null);
     				}
@@ -14351,7 +14554,7 @@ var app = (function () {
     				toggle_class(div0, "top", /*city*/ ctx[16].top);
     			}
 
-    			if (dirty & /*cityList*/ 4 && div1_class_value !== (div1_class_value = "city city-" + /*city*/ ctx[16].index + " svelte-w0518c")) {
+    			if (dirty & /*cityList*/ 4 && div1_class_value !== (div1_class_value = "city city-" + /*city*/ ctx[16].index + " svelte-oglcxx")) {
     				attr_dev(div1, "class", div1_class_value);
     			}
 
@@ -14409,136 +14612,91 @@ var app = (function () {
     	return block;
     }
 
-    // (117:12) {#if virus.active }
-    function create_if_block$1(ctx) {
-    	let div;
-    	let t0_value = /*virus*/ ctx[13].count + "";
-    	let t0;
-    	let t1;
-
-    	const block = {
-    		c: function create() {
-    			div = element("div");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			attr_dev(div, "class", "virus svelte-w0518c");
-    			set_style(div, "left", /*virus*/ ctx[13].x + "px");
-    			set_style(div, "top", /*virus*/ ctx[13].y + "px");
-    			toggle_class(div, "blue", /*virus*/ ctx[13].blue);
-    			toggle_class(div, "yellow", /*virus*/ ctx[13].yellow);
-    			toggle_class(div, "black", /*virus*/ ctx[13].black);
-    			toggle_class(div, "red", /*virus*/ ctx[13].red);
-    			add_location(div, file$1, 117, 12, 4143);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t0);
-    			append_dev(div, t1);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*virusList*/ 8 && t0_value !== (t0_value = /*virus*/ ctx[13].count + "")) set_data_dev(t0, t0_value);
-
-    			if (dirty & /*virusList*/ 8) {
-    				set_style(div, "left", /*virus*/ ctx[13].x + "px");
-    			}
-
-    			if (dirty & /*virusList*/ 8) {
-    				set_style(div, "top", /*virus*/ ctx[13].y + "px");
-    			}
-
-    			if (dirty & /*virusList*/ 8) {
-    				toggle_class(div, "blue", /*virus*/ ctx[13].blue);
-    			}
-
-    			if (dirty & /*virusList*/ 8) {
-    				toggle_class(div, "yellow", /*virus*/ ctx[13].yellow);
-    			}
-
-    			if (dirty & /*virusList*/ 8) {
-    				toggle_class(div, "black", /*virus*/ ctx[13].black);
-    			}
-
-    			if (dirty & /*virusList*/ 8) {
-    				toggle_class(div, "red", /*virus*/ ctx[13].red);
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$1.name,
-    		type: "if",
-    		source: "(117:12) {#if virus.active }",
-    		ctx
-    	});
-
-    	return block;
-    }
-
     // (111:8) {#each virusList as virus}
     function create_each_block$1(ctx) {
-    	let div;
-    	let div_class_value;
-    	let t;
-    	let if_block_anchor;
-    	let if_block = /*virus*/ ctx[13].active && create_if_block$1(ctx);
+    	let div0;
+    	let div0_class_value;
+    	let t0;
+    	let div1;
+    	let t1_value = /*virus*/ ctx[13].count + "";
+    	let t1;
+    	let t2;
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			t = space();
-    			if (if_block) if_block.c();
-    			if_block_anchor = empty();
-    			attr_dev(div, "class", div_class_value = "virus-icon virus-" + /*virus*/ ctx[13].index + " svelte-w0518c");
-    			set_style(div, "left", /*virus*/ ctx[13].icon.x + "px");
-    			set_style(div, "top", /*virus*/ ctx[13].icon.y + "px");
-    			set_style(div, "background-image", "url(" + /*virus*/ ctx[13].icon.image + ")");
-    			add_location(div, file$1, 111, 12, 3917);
+    			div0 = element("div");
+    			t0 = space();
+    			div1 = element("div");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			attr_dev(div0, "class", div0_class_value = "virus-icon virus-" + /*virus*/ ctx[13].index + " svelte-oglcxx");
+    			set_style(div0, "left", /*virus*/ ctx[13].icon.x + "px");
+    			set_style(div0, "top", /*virus*/ ctx[13].icon.y + "px");
+    			set_style(div0, "background-image", "url(" + /*virus*/ ctx[13].icon.image + ")");
+    			add_location(div0, file$1, 111, 12, 3923);
+    			attr_dev(div1, "class", "virus svelte-oglcxx");
+    			set_style(div1, "left", /*virus*/ ctx[13].x + "px");
+    			set_style(div1, "top", /*virus*/ ctx[13].y + "px");
+    			toggle_class(div1, "blue", /*virus*/ ctx[13].blue);
+    			toggle_class(div1, "yellow", /*virus*/ ctx[13].yellow);
+    			toggle_class(div1, "black", /*virus*/ ctx[13].black);
+    			toggle_class(div1, "red", /*virus*/ ctx[13].red);
+    			add_location(div1, file$1, 115, 12, 4114);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			insert_dev(target, t, anchor);
-    			if (if_block) if_block.m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
+    			insert_dev(target, div0, anchor);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, t1);
+    			append_dev(div1, t2);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*virusList*/ 8 && div_class_value !== (div_class_value = "virus-icon virus-" + /*virus*/ ctx[13].index + " svelte-w0518c")) {
-    				attr_dev(div, "class", div_class_value);
+    			if (dirty & /*virusList*/ 8 && div0_class_value !== (div0_class_value = "virus-icon virus-" + /*virus*/ ctx[13].index + " svelte-oglcxx")) {
+    				attr_dev(div0, "class", div0_class_value);
     			}
 
     			if (dirty & /*virusList*/ 8) {
-    				set_style(div, "left", /*virus*/ ctx[13].icon.x + "px");
+    				set_style(div0, "left", /*virus*/ ctx[13].icon.x + "px");
     			}
 
     			if (dirty & /*virusList*/ 8) {
-    				set_style(div, "top", /*virus*/ ctx[13].icon.y + "px");
+    				set_style(div0, "top", /*virus*/ ctx[13].icon.y + "px");
     			}
 
     			if (dirty & /*virusList*/ 8) {
-    				set_style(div, "background-image", "url(" + /*virus*/ ctx[13].icon.image + ")");
+    				set_style(div0, "background-image", "url(" + /*virus*/ ctx[13].icon.image + ")");
     			}
 
-    			if (/*virus*/ ctx[13].active) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block$1(ctx);
-    					if_block.c();
-    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-    				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			if (dirty & /*virusList*/ 8 && t1_value !== (t1_value = /*virus*/ ctx[13].count + "")) set_data_dev(t1, t1_value);
+
+    			if (dirty & /*virusList*/ 8) {
+    				set_style(div1, "left", /*virus*/ ctx[13].x + "px");
+    			}
+
+    			if (dirty & /*virusList*/ 8) {
+    				set_style(div1, "top", /*virus*/ ctx[13].y + "px");
+    			}
+
+    			if (dirty & /*virusList*/ 8) {
+    				toggle_class(div1, "blue", /*virus*/ ctx[13].blue);
+    			}
+
+    			if (dirty & /*virusList*/ 8) {
+    				toggle_class(div1, "yellow", /*virus*/ ctx[13].yellow);
+    			}
+
+    			if (dirty & /*virusList*/ 8) {
+    				toggle_class(div1, "black", /*virus*/ ctx[13].black);
+    			}
+
+    			if (dirty & /*virusList*/ 8) {
+    				toggle_class(div1, "red", /*virus*/ ctx[13].red);
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
-    			if (detaching) detach_dev(t);
-    			if (if_block) if_block.d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
+    			if (detaching) detach_dev(div0);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(div1);
     		}
     	};
 
@@ -14586,7 +14744,7 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	let if_block = /*$gameStore*/ ctx[1].contagionMessage !== "" && create_if_block_9(ctx);
+    	let if_block = /*$gameStore*/ ctx[1].contagionMessage !== "" && create_if_block_8(ctx);
     	let each_value_4 = /*contagionList*/ ctx[4];
     	validate_each_argument(each_value_4);
     	let each_blocks_3 = [];
@@ -14671,15 +14829,15 @@ var app = (function () {
     			if (img.src !== (img_src_value = "background.jpg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "width", "1300");
     			add_location(img, file$1, 36, 8, 974);
-    			attr_dev(div0, "class", "card-panel svelte-w0518c");
+    			attr_dev(div0, "class", "card-panel svelte-oglcxx");
     			add_location(div0, file$1, 43, 8, 1234);
-    			attr_dev(div1, "class", "lab-panel svelte-w0518c");
+    			attr_dev(div1, "class", "lab-panel svelte-oglcxx");
     			add_location(div1, file$1, 44, 8, 1291);
-    			attr_dev(div2, "class", "lab-panel-title svelte-w0518c");
+    			attr_dev(div2, "class", "lab-panel-title svelte-oglcxx");
     			add_location(div2, file$1, 45, 8, 1351);
-    			attr_dev(div3, "class", "board svelte-w0518c");
+    			attr_dev(div3, "class", "board svelte-oglcxx");
     			add_location(div3, file$1, 35, 4, 945);
-    			attr_dev(div4, "class", "pandemic svelte-w0518c");
+    			attr_dev(div4, "class", "pandemic svelte-oglcxx");
     			add_location(div4, file$1, 33, 0, 861);
     		},
     		l: function claim(nodes) {
@@ -14743,7 +14901,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_9(ctx);
+    					if_block = create_if_block_8(ctx);
     					if_block.c();
     					if_block.m(div3, t2);
     				}
@@ -14919,7 +15077,7 @@ var app = (function () {
     	});
 
     	const click_handler = city => gameStore.cure(city);
-    	const click_handler_1 = city => gameStore.move(city);
+    	const click_handler_1 = city => gameStore.moveCity(city.index);
     	const click_handler_2 = city => gameStore.build(city);
 
     	$$self.$capture_state = () => ({

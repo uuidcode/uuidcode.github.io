@@ -93,17 +93,17 @@
 
                     {#if gameStore.curable(city)}
                         <button on:click={() => gameStore.cure(city)}
-                                class="btn btn-success btn-sm">치료</button>
+                                class="btn btn-success btn-xs">치료</button>
                     {/if}
 
                     {#if gameStore.movable(city)}
-                        <button on:click={() => gameStore.move(city)}
-                                class="btn btn-primary btn-sm">이동</button>
+                        <button on:click={() => gameStore.moveCity(city.index)}
+                                class="btn btn-primary btn-xs">이동</button>
                     {/if}
 
                     {#if gameStore.buildable(city)}
                         <button on:click={() => gameStore.build(city)}
-                        class="btn btn-primary btn-sm">연구소</button>
+                        class="btn btn-dark btn-xs">연구</button>
                     {/if}
                 </div>
             </div>
@@ -113,8 +113,6 @@
                  style="left:{virus.icon.x}px;top:{virus.icon.y}px;background-image: url({virus.icon.image})">
             </div>
 
-
-            {#if virus.active }
             <div class="virus"
                  class:blue={virus.blue}
                  class:yellow={virus.yellow}
@@ -123,13 +121,19 @@
                  style="left:{virus.x}px;top:{virus.y}px">
                  {virus.count}
             </div>
-            {/if}
         {/each}
     </div>
     <PlayerPanel player={playerList[1]}></PlayerPanel>
 </div>
 
 <style>
+    .btn-xs {
+        padding: 0px 5px !important;
+        font-size: 11px !important;
+        line-height: 1.5 !important;
+        border-radius: 3px !important;
+    }
+
     .lab-panel-title {
         position: absolute;
         left: 668px;
@@ -226,6 +230,7 @@
     }
 
     .city {
+        /*border: 1px solid white;*/
         position: absolute;
         z-index: 100;
         font-weight: bolder;
@@ -319,23 +324,23 @@
 
     .player-position {
         display: flex;
+        position: absolute;
+        top: 25px;
         width: 120px;
+        height: 30px;
+        /*border: 1px solid white;*/
     }
 
     .player-position.right {
         position: absolute;
-        left: 30px;
-        top: 0;
-        width: 120px;
-        height: 30px;
+        left: 0;
+        top: 25px;
     }
 
     .player-position.top {
         position: absolute;
         left: 0;
-        top: -30px;
-        width: 120px;
-        height: 30px;
+        top: 25px;
     }
 
     .player {
