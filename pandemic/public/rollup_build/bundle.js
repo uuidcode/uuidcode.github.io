@@ -13110,7 +13110,6 @@ var app = (function () {
         },
 
         contagionTurn: async () => {
-            console.log('>>> contagionTurn');
             const game = get_store_value(gameStore);
             const activeContagionCount = game.contagionList
                 .find(contagion => contagion.active)
@@ -13126,7 +13125,8 @@ var app = (function () {
                         if (virus.active) {
                             await gameStore.showContagion(targetCity, 1);
                         } else {
-                            gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
+                            const message = `${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
+                            await gameStore.showContagionMessage(message);
                         }
                     }
                 }

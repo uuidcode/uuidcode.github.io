@@ -652,8 +652,6 @@ const gameStore = {
     },
 
     contagionTurn: async () => {
-        console.log('>>> contagionTurn');
-
         const cityList = [];
         const game = get(gameStore);
         const activeContagionCount = game.contagionList
@@ -670,7 +668,8 @@ const gameStore = {
                     if (virus.active) {
                         await gameStore.showContagion(targetCity, 1);
                     } else {
-                        gameStore.showContagionMessage(`${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`);
+                        const message = `${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
+                        await gameStore.showContagionMessage(message);
                     }
                 }
             }
