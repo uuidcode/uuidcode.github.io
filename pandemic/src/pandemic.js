@@ -180,8 +180,8 @@ const gameStore = {
     },
 
     recompute : async () => {
-        let message1 = null;
-        let message2 = null;
+        let message = null;
+        let complete = false;
 
         update(game => {
             game.playerList = game.playerList
@@ -227,7 +227,7 @@ const gameStore = {
 
                 if (virus.count === 0) {
                     if (virus.active) {
-                        message1 = `${virus.type} 치료완료`;
+                        message = `${virus.type} 치료완료`;
                     }
 
                     virus.active = false;
@@ -241,8 +241,7 @@ const gameStore = {
                 .reduce((a, b) => a + b);
 
             if (totalVirusCount === 0) {
-                message2 = '모든 바이러스 치료';
-                location.reload();
+                complete = true;
             }
 
             return game;
@@ -254,12 +253,13 @@ const gameStore = {
         gameStore.recomputeCure();
         gameStore.recomputeExchange();
 
-        if (message1) {
-            await gameStore.showContagionMessage(message1);
+        if (message) {
+            await gameStore.showContagionMessage(message);
         }
 
-        if (message2) {
-            await gameStore.showContagionMessage(message2);
+        if (complete) {
+            await gameStore.showContagionMessage("모든 바이러스 치료");
+            location.reload();
         }
     },
 
