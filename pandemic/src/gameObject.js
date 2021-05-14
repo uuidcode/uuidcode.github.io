@@ -237,7 +237,7 @@ const gameObject = {
             index: 3,
             name: '뉴욕',
             x: 360,
-            y: 255,
+            y: 262,
             virusCount: 0,
             blue: true,
             red: false,
@@ -605,7 +605,7 @@ const gameObject = {
             red: false,
             yellow: false,
             black: true,
-            linkedCityIndexList: [27, 30, 31],
+            linkedCityIndexList: [27, 30, 31, 33],
             right: true
         },
         {

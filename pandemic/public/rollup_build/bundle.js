@@ -11919,7 +11919,7 @@ var app = (function () {
                 index: 3,
                 name: '뉴욕',
                 x: 360,
-                y: 255,
+                y: 262,
                 virusCount: 0,
                 blue: true,
                 red: false,
@@ -12287,7 +12287,7 @@ var app = (function () {
                 red: false,
                 yellow: false,
                 black: true,
-                linkedCityIndexList: [27, 30, 31],
+                linkedCityIndexList: [27, 30, 31, 33],
                 right: true
             },
             {
@@ -12718,6 +12718,7 @@ var app = (function () {
 
                 if (totalVirusCount === 0) {
                     message2 = '모든 바이러스 치료';
+                    location.reload();
                 }
 
                 return game;

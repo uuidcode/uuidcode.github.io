@@ -242,6 +242,7 @@ const gameStore = {
 
             if (totalVirusCount === 0) {
                 message2 = '모든 바이러스 치료';
+                location.reload();
             }
 
             return game;
