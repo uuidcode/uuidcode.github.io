@@ -486,6 +486,7 @@ const gameStore = {
                 if (game.cardList.length === 0) {
                     alert('플레이 모두 사용하였습니다.\n게임 종료되었습니다.');
                     location.reload();
+                    return game;
                 }
 
                 const card = game.cardList.pop();
@@ -495,8 +496,6 @@ const gameStore = {
 
             return game;
         });
-
-        console.log('>>> getCity cityIndexList', cityIndexList);
 
         for (let i = 0; i < cityIndexList.length; i++) {
             if (cityIndexList[i] === -1) {

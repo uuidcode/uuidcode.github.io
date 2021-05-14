@@ -12369,7 +12369,7 @@ var app = (function () {
                 index: 39,
                 name: '도쿄',
                 x: 1210,
-                y: 290,
+                y: 295,
                 virusCount: 0,
                 blue: false,
                 red: true,
@@ -12962,6 +12962,7 @@ var app = (function () {
                     if (game.cardList.length === 0) {
                         alert('플레이 모두 사용하였습니다.\n게임 종료되었습니다.');
                         location.reload();
+                        return game;
                     }
 
                     const card = game.cardList.pop();
@@ -12971,8 +12972,6 @@ var app = (function () {
 
                 return game;
             });
-
-            console.log('>>> getCity cityIndexList', cityIndexList);
 
             for (let i = 0; i < cityIndexList.length; i++) {
                 if (cityIndexList[i] === -1) {

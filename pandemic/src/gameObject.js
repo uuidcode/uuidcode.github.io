@@ -687,7 +687,7 @@ const gameObject = {
             index: 39,
             name: '도쿄',
             x: 1210,
-            y: 290,
+            y: 295,
             virusCount: 0,
             blue: false,
             red: true,
