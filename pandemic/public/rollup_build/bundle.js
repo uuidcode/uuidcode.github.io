@@ -12030,8 +12030,8 @@ var app = (function () {
             {
                 index: 12,
                 name: '마이에미',
-                x: 280,
-                y: 375,
+                x: 275,
+                y: 405,
                 virusCount: 0,
                 blue: false,
                 red: false,
@@ -12045,7 +12045,7 @@ var app = (function () {
                 index: 13,
                 name: '멕시코 시티',
                 x: 140,
-                y: 420,
+                y: 390,
                 virusCount: 0,
                 blue: false,
                 red: false,
@@ -12058,7 +12058,7 @@ var app = (function () {
                 index: 14,
                 name: '로스엔젤레스',
                 x: 60,
-                y: 380,
+                y: 370,
                 virusCount: 0,
                 blue: false,
                 red: false,
@@ -12381,7 +12381,7 @@ var app = (function () {
                 index: 40,
                 name: '방콕',
                 x: 1015,
-                y: 440,
+                y: 445,
                 virusCount: 0,
                 blue: false,
                 red: true,
@@ -12532,6 +12532,36 @@ var app = (function () {
             });
         },
 
+        recomputeExchange: () => {
+            const activePlayer = gameStore.getActivePlayer();
+            const noneActivePlayer = gameStore.getNoneActivePlayer();
+
+            update$1(game => {
+                game.cityList = game.cityList
+                    .map(city => {
+                        if (activePlayer.cityIndex === noneActivePlayer.cityIndex &&
+                            gameStore.activePlayerIsAction() &&
+                            activePlayer.cityIndexList.includes(city.index)) {
+                            city.sendable = true;
+                        } else {
+                            city.sendable = false;
+                        }
+
+                        if (activePlayer.cityIndex === noneActivePlayer.cityIndex &&
+                            gameStore.activePlayerIsAction() &&
+                            noneActivePlayer.cityIndexList.includes(city.index)) {
+                            city.receivable = true;
+                        } else {
+                            city.receivable = false;
+                        }
+
+                        return city;
+                    });
+
+                return game;
+            });
+        },
+
         recomputeLab: () => {
             const activePlayer = gameStore.getActivePlayer();
 
@@ -12618,8 +12648,6 @@ var app = (function () {
                             city.moveLab ||
                             city.moveEveryWhere;
 
-                        console.log('>>> city', city);
-
                         return city;
                     });
 
@@ -12699,6 +12727,7 @@ var app = (function () {
             gameStore.recomputeVaccine();
             gameStore.recomputeLab();
             gameStore.recomputeCure();
+            gameStore.recomputeExchange();
 
             if (message1) {
                 await gameStore.showContagionMessage(message1);
@@ -12892,6 +12921,11 @@ var app = (function () {
         getActivePlayer: () => {
             const game = get_store_value(gameStore);
             return game.playerList.find(player => player.turn);
+        },
+
+        getNoneActivePlayer: () => {
+            const game = get_store_value(gameStore);
+            return game.playerList.find(player => !player.turn);
         },
 
         findActivePlayer: (game) => {
@@ -13466,7 +13500,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (35:12) {#if activePlayer.index !== player.index}
+    // (35:12) {#if city.receivable}
     function create_if_block_2(ctx) {
     	let div;
     	let input;
@@ -13481,9 +13515,9 @@ var app = (function () {
     			input.value = input_value_value = /*city*/ ctx[7].index;
     			input.checked = true;
     			attr_dev(input, "name", "player-city");
-    			add_location(input, file, 36, 20, 1240);
+    			add_location(input, file, 36, 20, 1220);
     			attr_dev(div, "class", "form-check exchange svelte-1p3531u");
-    			add_location(div, file, 35, 16, 1185);
+    			add_location(div, file, 35, 16, 1165);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -13503,21 +13537,21 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(35:12) {#if activePlayer.index !== player.index}",
+    		source: "(35:12) {#if city.receivable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (55:16) {#if activePlayer.action > 0 && activePlayer.index === player.index}
+    // (55:16) {#if city.sendable}
     function create_if_block_1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[4](/*city*/ ctx[7]);
+    		return /*click_handler_1*/ ctx[3](/*city*/ ctx[7]);
     	}
 
     	const block = {
@@ -13525,7 +13559,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "교환";
     			attr_dev(button, "class", "btn btn-info btn-sm");
-    			add_location(button, file, 55, 20, 1921);
+    			add_location(button, file, 55, 20, 1852);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -13549,7 +13583,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(55:16) {#if activePlayer.action > 0 && activePlayer.index === player.index}",
+    		source: "(55:16) {#if city.sendable}",
     		ctx
     	});
 
@@ -13563,7 +13597,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler_2() {
-    		return /*click_handler_2*/ ctx[5](/*city*/ ctx[7]);
+    		return /*click_handler_2*/ ctx[4](/*city*/ ctx[7]);
     	}
 
     	const block = {
@@ -13571,7 +13605,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "삭제";
     			attr_dev(button, "class", "btn btn-danger btn-sm");
-    			add_location(button, file, 60, 20, 2126);
+    			add_location(button, file, 60, 20, 2057);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -13614,8 +13648,8 @@ var app = (function () {
     	let t4;
     	let rect;
     	let stop_animation = noop;
-    	let if_block0 = /*activePlayer*/ ctx[1].index !== /*player*/ ctx[0].index && create_if_block_2(ctx);
-    	let if_block1 = /*activePlayer*/ ctx[1].action > 0 && /*activePlayer*/ ctx[1].index === /*player*/ ctx[0].index && create_if_block_1(ctx);
+    	let if_block0 = /*city*/ ctx[7].receivable && create_if_block_2(ctx);
+    	let if_block1 = /*city*/ ctx[7].sendable && create_if_block_1(ctx);
     	let if_block2 = /*city*/ ctx[7].remove && create_if_block(ctx);
 
     	const block = {
@@ -13633,7 +13667,7 @@ var app = (function () {
     			if (if_block2) if_block2.c();
     			t4 = space();
     			attr_dev(div0, "class", "city-controller svelte-1p3531u");
-    			add_location(div0, file, 53, 12, 1784);
+    			add_location(div0, file, 53, 12, 1764);
     			attr_dev(div1, "class", "city svelte-1p3531u");
     			toggle_class(div1, "blue", /*city*/ ctx[7].blue);
     			toggle_class(div1, "yellow", /*city*/ ctx[7].yellow);
@@ -13657,7 +13691,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (/*activePlayer*/ ctx[1].index !== /*player*/ ctx[0].index) {
+    			if (/*city*/ ctx[7].receivable) {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     				} else {
@@ -13672,7 +13706,7 @@ var app = (function () {
 
     			if (dirty & /*player*/ 1 && t1_value !== (t1_value = /*city*/ ctx[7].name + "")) set_data_dev(t1, t1_value);
 
-    			if (/*activePlayer*/ ctx[1].action > 0 && /*activePlayer*/ ctx[1].index === /*player*/ ctx[0].index) {
+    			if (/*city*/ ctx[7].sendable) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
@@ -13838,7 +13872,7 @@ var app = (function () {
     			}
 
     			if (!mounted) {
-    				dispose = listen_dev(div0, "click", /*click_handler*/ ctx[3], false, false, false);
+    				dispose = listen_dev(div0, "click", /*click_handler*/ ctx[2], false, false, false);
     				mounted = true;
     			}
     		},
@@ -13854,7 +13888,7 @@ var app = (function () {
     			if (dirty & /*player*/ 1 && t2_value !== (t2_value = /*player*/ ctx[0].action + "")) set_data_dev(t2, t2_value);
     			if (dirty & /*player*/ 1 && t5_value !== (t5_value = /*player*/ ctx[0].cityIndexList.length + "")) set_data_dev(t5, t5_value);
 
-    			if (dirty & /*player, gameStore, activePlayer*/ 3) {
+    			if (dirty & /*player, gameStore*/ 1) {
     				each_value = /*player*/ ctx[0].cityList;
     				validate_each_argument(each_value);
     				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
@@ -13899,7 +13933,7 @@ var app = (function () {
     function instance($$self, $$props, $$invalidate) {
     	let $gameStore;
     	validate_store(gameStore, "gameStore");
-    	component_subscribe($$self, gameStore, $$value => $$invalidate(2, $gameStore = $$value));
+    	component_subscribe($$self, gameStore, $$value => $$invalidate(1, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots("PlayerPanel", slots, []);
     	let { player } = $$props;
@@ -13933,7 +13967,7 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("player" in $$props) $$invalidate(0, player = $$props.player);
     		if ("cityList" in $$props) cityList = $$props.cityList;
-    		if ("activePlayer" in $$props) $$invalidate(1, activePlayer = $$props.activePlayer);
+    		if ("activePlayer" in $$props) activePlayer = $$props.activePlayer;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -13941,22 +13975,15 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$gameStore*/ 4) {
+    		if ($$self.$$.dirty & /*$gameStore*/ 2) {
     			{
     				cityList = $gameStore.cityList;
-    				$$invalidate(1, activePlayer = gameStore.getActivePlayer());
+    				activePlayer = gameStore.getActivePlayer();
     			}
     		}
     	};
 
-    	return [
-    		player,
-    		activePlayer,
-    		$gameStore,
-    		click_handler,
-    		click_handler_1,
-    		click_handler_2
-    	];
+    	return [player, $gameStore, click_handler, click_handler_1, click_handler_2];
     }
 
     class PlayerPanel extends SvelteComponentDev {
@@ -14011,7 +14038,7 @@ var app = (function () {
     			button.textContent = "완치";
     			attr_dev(button, "class", "btn btn-success btn-sm");
     			add_location(button, file$1, 23, 12, 581);
-    			attr_dev(div, "class", "vaccine svelte-oohzkn");
+    			attr_dev(div, "class", "vaccine svelte-qwn20o");
     			add_location(div, file$1, 22, 8, 546);
     		},
     		m: function mount(target, anchor) {
@@ -14052,7 +14079,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "city-index svelte-oohzkn");
+    			attr_dev(div, "class", "city-index svelte-qwn20o");
     			add_location(div, file$1, 31, 4, 798);
     		},
     		m: function mount(target, anchor) {
@@ -14086,7 +14113,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "연구소";
-    			attr_dev(div, "class", "lab-title svelte-oohzkn");
+    			attr_dev(div, "class", "lab-title svelte-qwn20o");
     			add_location(div, file$1, 35, 8, 883);
     		},
     		m: function mount(target, anchor) {
@@ -14119,10 +14146,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			img = element("img");
-    			attr_dev(img, "class", "player-image svelte-oohzkn");
+    			attr_dev(img, "class", "player-image svelte-qwn20o");
     			if (img.src !== (img_src_value = /*player*/ ctx[8].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$1, 46, 20, 1310);
-    			attr_dev(div, "class", div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-oohzkn");
+    			attr_dev(div, "class", div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-qwn20o");
     			toggle_class(div, "ripple", /*player*/ ctx[8].turn);
     			toggle_class(div, "turn", /*player*/ ctx[8].turn);
     			add_location(div, file$1, 43, 16, 1139);
@@ -14136,7 +14163,7 @@ var app = (function () {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*playerList*/ 4 && div_class_value !== (div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-oohzkn")) {
+    			if (dirty & /*playerList*/ 4 && div_class_value !== (div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-qwn20o")) {
     				attr_dev(div, "class", div_class_value);
     			}
 
@@ -14219,7 +14246,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "치료";
-    			attr_dev(button, "class", "btn btn-success btn-xs svelte-oohzkn");
+    			attr_dev(button, "class", "btn btn-success btn-xs svelte-qwn20o");
     			add_location(button, file$1, 52, 12, 1458);
     		},
     		m: function mount(target, anchor) {
@@ -14259,7 +14286,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "이동";
-    			attr_dev(button, "class", "btn btn-xs svelte-oohzkn");
+    			attr_dev(button, "class", "btn btn-xs svelte-qwn20o");
     			toggle_class(button, "btn-primary", /*city*/ ctx[0].moveNext);
     			toggle_class(button, "btn-info", /*city*/ ctx[0].moveDirect);
     			toggle_class(button, "btn-light", /*city*/ ctx[0].moveLab);
@@ -14319,7 +14346,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "연구";
-    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-oohzkn");
+    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-qwn20o");
     			add_location(button, file$1, 66, 12, 1991);
     		},
     		m: function mount(target, anchor) {
@@ -14400,11 +14427,11 @@ var app = (function () {
     			t6 = space();
     			if (if_block5) if_block5.c();
     			html_tag = new HtmlTag(t1);
-    			attr_dev(div0, "class", "player-position svelte-oohzkn");
+    			attr_dev(div0, "class", "player-position svelte-qwn20o");
     			toggle_class(div0, "right", /*city*/ ctx[0].right);
     			toggle_class(div0, "top", /*city*/ ctx[0].top);
     			add_location(div0, file$1, 38, 4, 934);
-    			attr_dev(div1, "class", div1_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-oohzkn");
+    			attr_dev(div1, "class", div1_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-qwn20o");
     			set_style(div1, "left", /*city*/ ctx[0].x + "px");
     			set_style(div1, "top", /*city*/ ctx[0].y + "px");
     			toggle_class(div1, "blue", /*city*/ ctx[0].blue);
@@ -14552,7 +14579,7 @@ var app = (function () {
     				toggle_class(div0, "top", /*city*/ ctx[0].top);
     			}
 
-    			if (dirty & /*city*/ 1 && div1_class_value !== (div1_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-oohzkn")) {
+    			if (dirty & /*city*/ 1 && div1_class_value !== (div1_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-qwn20o")) {
     				attr_dev(div1, "class", div1_class_value);
     			}
 

@@ -56,6 +56,36 @@ const gameStore = {
         });
     },
 
+    recomputeExchange: () => {
+        const activePlayer = gameStore.getActivePlayer();
+        const noneActivePlayer = gameStore.getNoneActivePlayer();
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    if (activePlayer.cityIndex === noneActivePlayer.cityIndex &&
+                        gameStore.activePlayerIsAction() &&
+                        activePlayer.cityIndexList.includes(city.index)) {
+                        city.sendable = true;
+                    } else {
+                        city.sendable = false;
+                    }
+
+                    if (activePlayer.cityIndex === noneActivePlayer.cityIndex &&
+                        gameStore.activePlayerIsAction() &&
+                        noneActivePlayer.cityIndexList.includes(city.index)) {
+                        city.receivable = true;
+                    } else {
+                        city.receivable = false;
+                    }
+
+                    return city;
+                });
+
+            return game;
+        });
+    },
+
     recomputeLab: () => {
         const activePlayer = gameStore.getActivePlayer();
 
@@ -142,8 +172,6 @@ const gameStore = {
                         city.moveLab ||
                         city.moveEveryWhere;
 
-                    console.log('>>> city', city);
-
                     return city;
                 });
 
@@ -223,6 +251,7 @@ const gameStore = {
         gameStore.recomputeVaccine();
         gameStore.recomputeLab();
         gameStore.recomputeCure();
+        gameStore.recomputeExchange();
 
         if (message1) {
             await gameStore.showContagionMessage(message1);
@@ -416,6 +445,11 @@ const gameStore = {
     getActivePlayer: () => {
         const game = get(gameStore);
         return game.playerList.find(player => player.turn);
+    },
+
+    getNoneActivePlayer: () => {
+        const game = get(gameStore);
+        return game.playerList.find(player => !player.turn);
     },
 
     findActivePlayer: (game) => {

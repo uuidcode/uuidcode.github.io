@@ -32,7 +32,7 @@
              class:black={city.black}
              class:red={city.red}>
 
-            {#if activePlayer.index !== player.index}
+            {#if city.receivable}
                 <div class="form-check exchange">
                     <input class="form-check-input city-exchange"
                            type="radio"
@@ -52,7 +52,7 @@
 <!--            {/if}-->
 
             <div class="city-controller">
-                {#if activePlayer.action > 0 && activePlayer.index === player.index}
+                {#if city.sendable}
                     <button class="btn btn-info btn-sm"
                             on:click={()=> gameStore.exchange(city.index)}>교환</button>
                 {/if}

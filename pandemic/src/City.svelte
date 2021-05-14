@@ -124,16 +124,17 @@
 
     .lab-title {
         position: absolute;
-        background-color: black;
         color: white;
+        background-color: rgba(0, 0, 0, 0.4);
         left: -2px;
-        top: -20px;
+        top: -10px;
         width: 40px;
         height: 20px;
         line-height: 20px;
         font-weight: bolder;
         font-size: 12px;
         text-shadow: 0 0 0 black, 0 0 0 black, 0 0 0 black, 0 0 0 black;
+        border: 1px solid white;
     }
 
     .city {
