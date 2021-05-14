@@ -14,16 +14,13 @@
 
 <div class="{player.class} player-container" class:turn={player.turn}>
     <div class="player-header">
-        <div class="player-info"><img src="{player.image}" width="50" height="50"></div>
+        <div on:click={() => gameStore.showPlayer(player.index)}
+            class="player-info clickable">
+        <img class="player-icon-{player.index}"
+                src="{player.image}" width="50" height="50">
+    </div>
         <div class="player-info">남은행동 : {player.action}</div>
         <div class="player-info">도시카드 : {player.cityIndexList.length}</div>
-        {#if gameStore.vaccinable()}
-        <div class="player-info2">
-            <button class="btn btn-success btn-sm"
-                on:click={() => gameStore.removeVirus(player.vaccine)}>
-            {player.vaccine} 치료제 개발</button>
-        </div>
-        {/if}
     </div>
     {#each player.cityList as city (city.index)}
         <div animate:flip="{{ duration: 300 }}"
@@ -33,8 +30,8 @@
              class:black={city.black}
              class:red={city.red}>
             {city.name}
-            {#if player.action > 0}
-                <button class="btn btn-primary btn-sm"
+            {#if city.moveDirect}
+                <button class="btn btn-info btn-sm"
                         on:click={() => gameStore.moveCityAndRemoveCard(city.index)}>이동</button>
             {/if}
             {#if city.remove}
@@ -46,6 +43,10 @@
 </div>
 
 <style>
+    .clickable {
+        cursor: pointer;
+    }
+
     .player-container {
         padding-left: 10px;
         background-color: lightgrey;

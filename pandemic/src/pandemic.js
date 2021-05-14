@@ -21,6 +21,136 @@ const gameStore = {
     subscribe,
     set,
     update,
+
+    isReady: () => {
+        return get(gameStore).ready;
+    },
+
+    isNotReady: () => {
+        return !gameStore.isReady();
+    },
+
+    activePlayerIsNoAction: () => {
+        return gameStore.getActivePlayer().action === 0;
+    },
+
+    activePlayerIsAction: () => {
+        return gameStore.getActivePlayer().action > 0;
+    },
+
+    recomputeCure: () => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    city.cure =
+                        gameStore.activePlayerIsAction() &&
+                        city.index === activePlayer.cityIndex &&
+                        city.virusCount > 0;
+
+                    return city;
+                });
+
+            return game;
+        });
+    },
+
+    recomputeLab: () => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    city.buildLab =
+                        gameStore.activePlayerIsAction() &&
+                        game.labCount > 0 &&
+                        !city.lab &&
+                        city.index === activePlayer.cityIndex &&
+                        activePlayer.cityIndexList.includes(city.index);
+
+                    return city;
+                });
+
+            return game;
+        });
+    },
+
+    recomputeVaccine: () => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    city.vaccine =
+                        gameStore.activePlayerIsAction() &&
+                        city.index === activePlayer.cityIndex &&
+                        city.lab &&
+                        game.virusList
+                        .filter(virus => virus.active)
+                        .find(virus => {
+                            const sum = activePlayer.cityIndexList
+                                .map(index => game.cityList.find(city => city.index === index))
+                                .map(city => city[virus.type])
+                                .reduce((a, b) => a + b, 0);
+
+                            return sum >= 5;
+                        });
+
+                    return city;
+                });
+
+            return game;
+        });
+    },
+
+    recomputeMoveCity: () => {
+        const activePlayer = gameStore.getActivePlayer();
+
+        update(game => {
+            game.cityList = game.cityList
+                .map(city => {
+                    city.moveNext = gameStore.activePlayerIsAction() &&
+                        game.cityList
+                        .find(city => city.index === activePlayer.cityIndex)
+                        .linkedCityIndexList.includes(city.index);
+
+                    city.moveDirect =
+                        gameStore.activePlayerIsAction() &&
+                        city.moveNext === false &&
+                        !activePlayer.cityIndexList.includes(activePlayer.cityIndex) &&
+                        activePlayer.cityIndexList.includes(city.index);
+
+                    city.moveLab =
+                        gameStore.activePlayerIsAction() &&
+                        city.moveNext === false &&
+                        city.moveDirect === false &&
+                        city.lab &&
+                        game.cityList[activePlayer.cityIndex].lab &&
+                        activePlayer.cityIndex !== city.index;
+
+                    city.moveEveryWhere =
+                        gameStore.activePlayerIsAction() &&
+                        city.moveNext === false &&
+                        city.moveDirect === false &&
+                        city.moveLab === false &&
+                        activePlayer.cityIndexList.includes(activePlayer.cityIndex) &&
+                        activePlayer.cityIndex !== city.index;
+
+                    city.movable = city.moveNext ||
+                        city.moveDirect ||
+                        city.moveLab ||
+                        city.moveEveryWhere;
+
+                    console.log('>>> city', city);
+
+                    return city;
+                });
+
+            return game;
+        });
+    },
+
     recompute : async () => {
         let message1 = null;
         let message2 = null;
@@ -89,6 +219,11 @@ const gameStore = {
             return game;
         });
 
+        gameStore.recomputeMoveCity();
+        gameStore.recomputeVaccine();
+        gameStore.recomputeLab();
+        gameStore.recomputeCure();
+
         if (message1) {
             await gameStore.showContagionMessage(message1);
         }
@@ -98,13 +233,22 @@ const gameStore = {
         }
     },
 
+    showPlayer: async (index) => {
+        await move({
+            sourceClass: `player-icon-${index}`,
+            targetClass: `player-board-icon-${index}`
+        })
+    },
+
     removeVirus: async (vaccine) => {
         const activePlayer = gameStore.getActivePlayer();
 
         update(game => {
+            gameStore.action(game);
+
             game.cityList = game.cityList
                 .map(city => {
-                    if (city[vaccine]) {
+                    if (city[vaccine.type]) {
                         city.virusCount = 0;
                     }
 
@@ -124,7 +268,7 @@ const gameStore = {
                                     return true;
                                 }
 
-                                if (game.cityList[index][vaccine]) {
+                                if (game.cityList[index][vaccine.type]) {
                                     count++;
                                     return false;
                                 }
@@ -201,9 +345,9 @@ const gameStore = {
 
         const initCityCount = 3;
         gameStore.getCity(initCityCount);
-        gameStore.changePlayer();
+        gameStore.changePlayer(false);
         gameStore.getCity(initCityCount);
-        gameStore.changePlayer();
+        gameStore.changePlayer(false);
 
         update(game => {
             game.usedCardList = [];
@@ -246,43 +390,6 @@ const gameStore = {
         return game.playerList.find(player => player.turn);
     },
 
-    movable: (currentCity) => {
-        const game = get(gameStore);
-        const activePlayer = gameStore.getActivePlayer();
-
-        if (activePlayer.action === 0) {
-            return false;
-        }
-
-        if (activePlayer.cityIndex === currentCity.index) {
-            return false;
-        }
-
-        if (!game.ready) {
-            return false;
-        }
-
-        return game.cityList
-            .find(city => city.index === activePlayer.cityIndex)
-            .linkedCityIndexList.includes(currentCity.index) ||
-            activePlayer.cityList
-                .find(city => city.index === currentCity.index);
-    },
-
-    buildable: (currentCity) => {
-        const game = get(gameStore);
-        const activePlayer = gameStore.getActivePlayer();
-
-        if (activePlayer.action === 0) {
-            return false;
-        }
-
-        return game.ready &&
-            game.labCount > 0 &&
-            !game.cityList[currentCity.index].lab &&
-            currentCity.index === activePlayer.cityIndex;
-    },
-
     build: (currentCity) => {
         const currentCityIndex = currentCity.index;
 
@@ -303,19 +410,6 @@ const gameStore = {
         });
 
         gameStore.turn(false);
-    },
-
-    curable: (currentCity) => {
-        const game = get(gameStore);
-        const activePlayer = gameStore.getActivePlayer();
-
-        if (activePlayer.action === 0) {
-            return false;
-        }
-
-        return game.ready &&
-            currentCity.index === activePlayer.cityIndex &&
-            currentCity.virusCount > 0
     },
 
     getCity: async (count) => {
@@ -420,7 +514,7 @@ const gameStore = {
         gameStore.turn(removeComplete);
     },
 
-    changePlayer: () => {
+    changePlayer: async (animation) => {
         update(game => {
             game.playerList = game.playerList
                 .map(player => {
@@ -437,6 +531,11 @@ const gameStore = {
 
             return game;
         });
+
+        if (animation) {
+            const activePlayer = gameStore.getActivePlayer();
+            await gameStore.showPlayer(activePlayer.index);
+        }
     },
 
     spread: () => {
@@ -598,39 +697,19 @@ const gameStore = {
     },
 
     spreadCity: (game, targetCity) => {
-        let spread = true;
-
-        // game.cityList = game.cityList
-        //     .map(city => {
-        //         if (targetCity.index === city.index) {
-        //             if (game.virusList.find(virus => city[virus.type]).active) {
-        //                 if (city.virusCount === 3) {
-        //                     spread = true;
-        //                     gameStore.spread();
-        //                 } else {
-        //                     city.virusCount += 1;
-        //                 }
-        //             }
-        //         }
-        //
-        //         return city;
-        //     });
-
-        if (spread) {
-            game.cityList = game.cityList
-                .map(city => {
-                    if (targetCity.linkedCityIndexList.includes(city.index)) {
-                        if (game.virusList.find(virus => city[virus.type]).active) {
-                            if (city.virusCount !== 3) {
-                                city.contagion = true;
-                                city.virusCount += 1;
-                            }
+        game.cityList = game.cityList
+            .map(city => {
+                if (targetCity.linkedCityIndexList.includes(city.index)) {
+                    if (game.virusList.find(virus => city[virus.type]).active) {
+                        if (city.virusCount !== 3) {
+                            city.contagion = true;
+                            city.virusCount += 1;
                         }
                     }
+                }
 
-                    return city;
-                });
-        }
+                return city;
+            });
 
         return game.cityList;
     },
@@ -721,7 +800,7 @@ const gameStore = {
             }
 
             await gameStore.contagionTurn();
-            gameStore.changePlayer();
+            await gameStore.changePlayer(true);
         }
 
         await gameStore.recompute();
