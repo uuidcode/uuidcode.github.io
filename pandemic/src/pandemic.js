@@ -283,7 +283,39 @@ const gameStore = {
             return game;
         });
 
-        await gameStore.recompute();
+        gameStore.turn(false);
+    },
+
+    exchange: async (cityIndex) => {
+        const activePlayer = gameStore.getActivePlayer();
+        const exchangeCityIndex = parseInt(document.querySelector('.city-exchange:checked').value);
+
+        console.log('>>> exchangeCityIndex', exchangeCityIndex);
+
+        update(game => {
+            gameStore.action(game);
+
+            game.playerList = game.playerList
+                .map(player => {
+                    if (player.index === activePlayer.index) {
+                        player.cityIndexList = player.cityIndexList
+                            .filter(index => index !== cityIndex);
+
+                        player.cityIndexList = [exchangeCityIndex, ...player.cityIndexList];
+                    } else {
+                        player.cityIndexList = player.cityIndexList
+                            .filter(index => index !== exchangeCityIndex);
+
+                        player.cityIndexList = [cityIndex, ...player.cityIndexList];
+                    }
+
+                    return player;
+                });
+
+            return game;
+        });
+
+        gameStore.turn(false);
     },
 
     toggleDebug: () => update(game => {
@@ -419,7 +451,7 @@ const gameStore = {
             for (let i = 0; i < count; i++) {
                 if (game.cardList.length === 0) {
                     alert('플레이 모두 사용하였습니다.\n게임 종료되었습니다.');
-                    return game;
+                    location.reload();
                 }
 
                 const card = game.cardList.pop();
@@ -545,7 +577,7 @@ const gameStore = {
 
             if (activeSpread.end) {
                 alert('확산이 너무 많이 되었습니다.\n게임 종료되었습니다.');
-                return game;
+                location.reload();
             }
 
             game.spreadList = game.spreadList
@@ -612,14 +644,16 @@ const gameStore = {
         await tick();
     },
 
-    showContagion: async (targetCity, count) => {
-        console.log('>>> showContagion', targetCity, count);
-
+    showContagion: async (targetCity, count, contagionIndex, totalContagionCount) => {
         await gameStore.setDisable();
 
         const virus = gameStore.getVirus(targetCity);
 
-        await gameStore.showContagionMessage(`${targetCity.name} 감염되었습니다.`);
+        if (count === 3) {
+            await gameStore.showContagionMessage(`${targetCity.name} 전염 되었습니다.`);
+        } else {
+            await gameStore.showContagionMessage(`[${contagionIndex}/${totalContagionCount}] ${targetCity.name} 감염 되었습니다.`);
+        }
 
         const speed = 1000;
 
@@ -745,7 +779,7 @@ const gameStore = {
 
                 if (targetCity[virus.type]) {
                     if (virus.active) {
-                        await gameStore.showContagion(targetCity, 1);
+                        await gameStore.showContagion(targetCity, 1, i + 1, activeContagionCount);
                     } else {
                         const message = `${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
                         await gameStore.showContagionMessage(message);

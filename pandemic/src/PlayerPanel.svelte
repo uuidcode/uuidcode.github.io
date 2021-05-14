@@ -6,15 +6,17 @@
     export let player;
 
     let cityList;
+    let activePlayer;
 
     $: {
         cityList = $gameStore.cityList;
+        activePlayer = gameStore.getActivePlayer();
     }
 </script>
 
 <div class="{player.class} player-container" class:turn={player.turn}>
     <div class="player-header">
-        <div on:click={() => gameStore.showPlayer(player.index)}
+        <div on:click={()=> gameStore.showPlayer(player.index)}
             class="player-info clickable">
         <img class="player-icon-{player.index}"
                 src="{player.image}" width="50" height="50">
@@ -29,20 +31,58 @@
              class:yellow={city.yellow}
              class:black={city.black}
              class:red={city.red}>
+
+            {#if activePlayer.index !== player.index}
+                <div class="form-check exchange">
+                    <input class="form-check-input city-exchange"
+                           type="radio"
+                           value="{city.index}"
+                           checked
+                           name="player-city">
+                </div>
+            {/if}
+
             {city.name}
-            {#if city.moveDirect}
-                <button class="btn btn-info btn-sm"
-                        on:click={() => gameStore.moveCityAndRemoveCard(city.index)}>이동</button>
-            {/if}
-            {#if city.remove}
-                <button class="btn btn-danger btn-sm"
-                        on:click={() => gameStore.removeCity(city.index)}>삭제</button>
-            {/if}
+
+
+
+<!--            {#if city.moveDirect}-->
+<!--                <button class="btn btn-info btn-sm"-->
+<!--                        on:click={() => gameStore.moveCityAndRemoveCard(city.index)}>이동</button>-->
+<!--            {/if}-->
+
+            <div class="city-controller">
+                {#if activePlayer.action > 0 && activePlayer.index === player.index}
+                    <button class="btn btn-info btn-sm"
+                            on:click={()=> gameStore.exchange(city.index)}>교환</button>
+                {/if}
+
+                {#if city.remove}
+                    <button class="btn btn-danger btn-sm"
+                            on:click={()=> gameStore.removeCity(city.index)}>삭제</button>
+                {/if}
+            </div>
         </div>
     {/each}
 </div>
 
 <style>
+    .exchange {
+        position: absolute;
+        left: 10px;
+        top: 5px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .city-controller {
+        position: absolute;
+        left: 220px;
+        top: -5px   ;
+        width: 60px;
+        height: 50px;
+    }
+
     .clickable {
         cursor: pointer;
     }
@@ -72,6 +112,7 @@
     }
 
     .city {
+        position: relative;
         width: 280px;
         height: 50px;
         text-align: center;
