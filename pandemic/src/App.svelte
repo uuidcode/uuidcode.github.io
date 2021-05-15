@@ -39,7 +39,7 @@
 
         {#if $gameStore.contagionMessage !== ''}
         <div class:ripple={$gameStore.contagionMessageRipple}
-            class="contagion-panel">{@html $gameStore.contagionMessage}</div>
+            class="contagion-panel">{@html $gameStore.contagionMessage}11</div>
         {/if}
 
         <div class="card-panel">{cardList.length}</div>
@@ -132,9 +132,9 @@
 
     .contagion-panel {
         position: absolute;
-        left: 290px;
+        left: 220px;
         top: 358px;
-        width: 700px;
+        width: 850px;
         height: 100px;
         color: white;
         line-height: 100px;
