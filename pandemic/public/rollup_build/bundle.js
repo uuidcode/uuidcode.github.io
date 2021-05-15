@@ -11688,6 +11688,7 @@ var app = (function () {
         cardList: [],
         usedCardList: [],
         contagionMessage: '',
+        contagionCount: 0,
         contagionList: [
             {
                 index: 0,
@@ -12375,7 +12376,7 @@ var app = (function () {
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [37, 38, 44]
+                linkedCityIndexList: [0, 37, 38, 44]
             },
             {
                 index: 40,
@@ -12460,7 +12461,7 @@ var app = (function () {
                 red: true,
                 yellow: false,
                 black: false,
-                linkedCityIndexList: [42, 43, 45, 47],
+                linkedCityIndexList: [0, 42, 43, 45, 47],
                 top: true
             },
             {
@@ -12976,7 +12977,15 @@ var app = (function () {
 
             for (let i = 0; i < cityIndexList.length; i++) {
                 if (cityIndexList[i] === -1) {
-                    await gameStore.showContagionMessage('전염카드');
+                    let contagionCount = 0;
+
+                    update$1(game => {
+                        game.contagionCount = game.contagionCount + 1;
+                        contagionCount = game.contagionCount;
+                        return game;
+                    });
+
+                    await gameStore.showContagionMessage(`${contagionCount}번째 전염카드`);
                     await gameStore.contagion();
                 } else {
                     update$1(game => {
@@ -13265,7 +13274,7 @@ var app = (function () {
                 return game;
             });
 
-            await sleep(1000);
+            await sleep(1500);
 
             update$1(game => {
                 game.contagionMessage = '';
@@ -13290,7 +13299,7 @@ var app = (function () {
                         if (virus.active) {
                             await gameStore.showContagion(targetCity, 1, i + 1, activeContagionCount);
                         } else {
-                            const message = `${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
+                            const message = `[${i + 1}/${activeContagionCount}] ${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
                             await gameStore.showContagionMessage(message);
                         }
                     }
@@ -14761,27 +14770,21 @@ var app = (function () {
     // (40:8) {#if $gameStore.contagionMessage !== ''}
     function create_if_block_2$2(ctx) {
     	let div;
-    	let html_tag;
     	let raw_value = /*$gameStore*/ ctx[1].contagionMessage + "";
-    	let t;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			t = text("11");
-    			html_tag = new HtmlTag(t);
     			attr_dev(div, "class", "contagion-panel svelte-le1a0q");
     			toggle_class(div, "ripple", /*$gameStore*/ ctx[1].contagionMessageRipple);
     			add_location(div, file$2, 40, 8, 1114);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			html_tag.m(raw_value, div);
-    			append_dev(div, t);
+    			div.innerHTML = raw_value;
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$gameStore*/ 2 && raw_value !== (raw_value = /*$gameStore*/ ctx[1].contagionMessage + "")) html_tag.p(raw_value);
-
+    			if (dirty & /*$gameStore*/ 2 && raw_value !== (raw_value = /*$gameStore*/ ctx[1].contagionMessage + "")) div.innerHTML = raw_value;
     			if (dirty & /*$gameStore*/ 2) {
     				toggle_class(div, "ripple", /*$gameStore*/ ctx[1].contagionMessageRipple);
     			}
@@ -14812,7 +14815,7 @@ var app = (function () {
     			attr_dev(div, "class", "contagion svelte-le1a0q");
     			set_style(div, "left", /*contagion*/ ctx[19].x + "px");
     			set_style(div, "top", /*contagion*/ ctx[19].y + "px");
-    			add_location(div, file$2, 50, 16, 1532);
+    			add_location(div, file$2, 50, 16, 1530);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -14897,7 +14900,7 @@ var app = (function () {
     			attr_dev(div, "class", "spread svelte-le1a0q");
     			set_style(div, "left", /*spread*/ ctx[16].x + "px");
     			set_style(div, "top", /*spread*/ ctx[16].y + "px");
-    			add_location(div, file$2, 57, 16, 1759);
+    			add_location(div, file$2, 57, 16, 1757);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -15041,7 +15044,7 @@ var app = (function () {
     			set_style(div0, "left", /*virus*/ ctx[10].icon.x + "px");
     			set_style(div0, "top", /*virus*/ ctx[10].icon.y + "px");
     			set_style(div0, "background-image", "url(" + /*virus*/ ctx[10].icon.image + ")");
-    			add_location(div0, file$2, 67, 12, 2024);
+    			add_location(div0, file$2, 67, 12, 2022);
     			attr_dev(div1, "class", "virus svelte-le1a0q");
     			set_style(div1, "left", /*virus*/ ctx[10].x + "px");
     			set_style(div1, "top", /*virus*/ ctx[10].y + "px");
@@ -15049,7 +15052,7 @@ var app = (function () {
     			toggle_class(div1, "yellow", /*virus*/ ctx[10].yellow);
     			toggle_class(div1, "black", /*virus*/ ctx[10].black);
     			toggle_class(div1, "red", /*virus*/ ctx[10].red);
-    			add_location(div1, file$2, 71, 12, 2215);
+    			add_location(div1, file$2, 71, 12, 2213);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div0, anchor);
@@ -15242,11 +15245,11 @@ var app = (function () {
     			attr_dev(img, "width", "1300");
     			add_location(img, file$2, 37, 8, 1013);
     			attr_dev(div0, "class", "card-panel svelte-le1a0q");
-    			add_location(div0, file$2, 44, 8, 1275);
+    			add_location(div0, file$2, 44, 8, 1273);
     			attr_dev(div1, "class", "lab-panel svelte-le1a0q");
-    			add_location(div1, file$2, 45, 8, 1332);
+    			add_location(div1, file$2, 45, 8, 1330);
     			attr_dev(div2, "class", "lab-panel-title svelte-le1a0q");
-    			add_location(div2, file$2, 46, 8, 1392);
+    			add_location(div2, file$2, 46, 8, 1390);
     			attr_dev(div3, "class", "board svelte-le1a0q");
     			add_location(div3, file$2, 36, 4, 984);
     			attr_dev(div4, "class", "pandemic svelte-le1a0q");

@@ -500,7 +500,15 @@ const gameStore = {
 
         for (let i = 0; i < cityIndexList.length; i++) {
             if (cityIndexList[i] === -1) {
-                await gameStore.showContagionMessage('전염카드');
+                let contagionCount = 0;
+
+                update(game => {
+                    game.contagionCount = game.contagionCount + 1;
+                    contagionCount = game.contagionCount;
+                    return game;
+                });
+
+                await gameStore.showContagionMessage(`${contagionCount}번째 전염카드`);
                 await gameStore.contagion();
             } else {
                 update(game => {
@@ -789,7 +797,7 @@ const gameStore = {
             return game;
         });
 
-        await sleep(1000);
+        await sleep(1500);
 
         update(game => {
             game.contagionMessage = '';
@@ -815,7 +823,7 @@ const gameStore = {
                     if (virus.active) {
                         await gameStore.showContagion(targetCity, 1, i + 1, activeContagionCount);
                     } else {
-                        const message = `${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
+                        const message = `[${i + 1}/${activeContagionCount}] ${targetCity.name}의 ${virus.type} 바이러스는 이미 치료되었습니다.`;
                         await gameStore.showContagionMessage(message);
                     }
                 }

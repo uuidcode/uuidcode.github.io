@@ -6,6 +6,7 @@ const gameObject = {
     cardList: [],
     usedCardList: [],
     contagionMessage: '',
+    contagionCount: 0,
     contagionList: [
         {
             index: 0,
@@ -693,7 +694,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityIndexList: [37, 38, 44]
+            linkedCityIndexList: [0, 37, 38, 44]
         },
         {
             index: 40,
@@ -778,7 +779,7 @@ const gameObject = {
             red: true,
             yellow: false,
             black: false,
-            linkedCityIndexList: [42, 43, 45, 47],
+            linkedCityIndexList: [0, 42, 43, 45, 47],
             top: true
         },
         {
