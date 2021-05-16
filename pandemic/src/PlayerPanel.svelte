@@ -37,19 +37,12 @@
                     <input class="form-check-input city-exchange"
                            type="radio"
                            value="{city.index}"
-                           checked
+                           bind:group={$gameStore.checkedCityIndex}
                            name="player-city">
                 </div>
             {/if}
 
             {city.name}
-
-
-
-<!--            {#if city.moveDirect}-->
-<!--                <button class="btn btn-info btn-sm"-->
-<!--                        on:click={() => gameStore.moveCityAndRemoveCard(city.index)}>이동</button>-->
-<!--            {/if}-->
 
             <div class="city-controller">
                 {#if city.sendable}

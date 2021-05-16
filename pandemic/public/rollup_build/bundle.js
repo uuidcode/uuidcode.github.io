@@ -11681,6 +11681,7 @@ var app = (function () {
     };
 
     const gameObject = {
+        checkedCityIndex: null,
         labCount: 5,
         ready: true,
         debug: false,
@@ -12552,6 +12553,7 @@ var app = (function () {
                             gameStore.activePlayerIsAction() &&
                             noneActivePlayer.cityIndexList.includes(city.index)) {
                             city.receivable = true;
+                            game.checkedCityIndex = city.index;
                         } else {
                             city.receivable = false;
                         }
@@ -12793,9 +12795,13 @@ var app = (function () {
             gameStore.turn(false);
         },
 
+        getCheckedCityIndex: () => {
+            return get_store_value(gameStore).checkedCityIndex;
+        },
+
         exchange: async (cityIndex) => {
             const activePlayer = gameStore.getActivePlayer();
-            const exchangeCityIndex = parseInt(document.querySelector('.city-exchange:checked').value);
+            const exchangeCityIndex = gameStore.getCheckedCityIndex();
 
             console.log('>>> exchangeCityIndex', exchangeCityIndex);
 
@@ -13505,7 +13511,7 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
+    	child_ctx[9] = list[i];
     	return child_ctx;
     }
 
@@ -13514,6 +13520,8 @@ var app = (function () {
     	let div;
     	let input;
     	let input_value_value;
+    	let mounted;
+    	let dispose;
 
     	const block = {
     		c: function create() {
@@ -13521,9 +13529,10 @@ var app = (function () {
     			input = element("input");
     			attr_dev(input, "class", "form-check-input city-exchange");
     			attr_dev(input, "type", "radio");
-    			input.value = input_value_value = /*city*/ ctx[7].index;
-    			input.checked = true;
+    			input.__value = input_value_value = /*city*/ ctx[9].index;
+    			input.value = input.__value;
     			attr_dev(input, "name", "player-city");
+    			/*$$binding_groups*/ ctx[4][0].push(input);
     			add_location(input, file, 36, 20, 1220);
     			attr_dev(div, "class", "form-check exchange svelte-1p3531u");
     			add_location(div, file, 35, 16, 1165);
@@ -13531,14 +13540,28 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     			append_dev(div, input);
+    			input.checked = input.__value === /*$gameStore*/ ctx[1].checkedCityIndex;
+
+    			if (!mounted) {
+    				dispose = listen_dev(input, "change", /*input_change_handler*/ ctx[3]);
+    				mounted = true;
+    			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*player*/ 1 && input_value_value !== (input_value_value = /*city*/ ctx[7].index)) {
-    				prop_dev(input, "value", input_value_value);
+    			if (dirty & /*player*/ 1 && input_value_value !== (input_value_value = /*city*/ ctx[9].index)) {
+    				prop_dev(input, "__value", input_value_value);
+    				input.value = input.__value;
+    			}
+
+    			if (dirty & /*$gameStore*/ 2) {
+    				input.checked = input.__value === /*$gameStore*/ ctx[1].checkedCityIndex;
     			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
+    			/*$$binding_groups*/ ctx[4][0].splice(/*$$binding_groups*/ ctx[4][0].indexOf(input), 1);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -13553,14 +13576,14 @@ var app = (function () {
     	return block;
     }
 
-    // (55:16) {#if city.sendable}
+    // (48:16) {#if city.sendable}
     function create_if_block_1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[3](/*city*/ ctx[7]);
+    		return /*click_handler_1*/ ctx[5](/*city*/ ctx[9]);
     	}
 
     	const block = {
@@ -13568,7 +13591,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "교환";
     			attr_dev(button, "class", "btn btn-info btn-sm");
-    			add_location(button, file, 55, 20, 1852);
+    			add_location(button, file, 48, 20, 1646);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -13592,21 +13615,21 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(55:16) {#if city.sendable}",
+    		source: "(48:16) {#if city.sendable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (60:16) {#if city.remove}
+    // (53:16) {#if city.remove}
     function create_if_block(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler_2() {
-    		return /*click_handler_2*/ ctx[4](/*city*/ ctx[7]);
+    		return /*click_handler_2*/ ctx[6](/*city*/ ctx[9]);
     	}
 
     	const block = {
@@ -13614,7 +13637,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "삭제";
     			attr_dev(button, "class", "btn btn-danger btn-sm");
-    			add_location(button, file, 60, 20, 2057);
+    			add_location(button, file, 53, 20, 1851);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -13638,7 +13661,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(60:16) {#if city.remove}",
+    		source: "(53:16) {#if city.remove}",
     		ctx
     	});
 
@@ -13649,7 +13672,7 @@ var app = (function () {
     function create_each_block(key_1, ctx) {
     	let div1;
     	let t0;
-    	let t1_value = /*city*/ ctx[7].name + "";
+    	let t1_value = /*city*/ ctx[9].name + "";
     	let t1;
     	let t2;
     	let div0;
@@ -13657,9 +13680,9 @@ var app = (function () {
     	let t4;
     	let rect;
     	let stop_animation = noop;
-    	let if_block0 = /*city*/ ctx[7].receivable && create_if_block_2(ctx);
-    	let if_block1 = /*city*/ ctx[7].sendable && create_if_block_1(ctx);
-    	let if_block2 = /*city*/ ctx[7].remove && create_if_block(ctx);
+    	let if_block0 = /*city*/ ctx[9].receivable && create_if_block_2(ctx);
+    	let if_block1 = /*city*/ ctx[9].sendable && create_if_block_1(ctx);
+    	let if_block2 = /*city*/ ctx[9].remove && create_if_block(ctx);
 
     	const block = {
     		key: key_1,
@@ -13676,12 +13699,12 @@ var app = (function () {
     			if (if_block2) if_block2.c();
     			t4 = space();
     			attr_dev(div0, "class", "city-controller svelte-1p3531u");
-    			add_location(div0, file, 53, 12, 1764);
+    			add_location(div0, file, 46, 12, 1558);
     			attr_dev(div1, "class", "city svelte-1p3531u");
-    			toggle_class(div1, "blue", /*city*/ ctx[7].blue);
-    			toggle_class(div1, "yellow", /*city*/ ctx[7].yellow);
-    			toggle_class(div1, "black", /*city*/ ctx[7].black);
-    			toggle_class(div1, "red", /*city*/ ctx[7].red);
+    			toggle_class(div1, "blue", /*city*/ ctx[9].blue);
+    			toggle_class(div1, "yellow", /*city*/ ctx[9].yellow);
+    			toggle_class(div1, "black", /*city*/ ctx[9].black);
+    			toggle_class(div1, "red", /*city*/ ctx[9].red);
     			add_location(div1, file, 27, 8, 891);
     			this.first = div1;
     		},
@@ -13700,7 +13723,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
 
-    			if (/*city*/ ctx[7].receivable) {
+    			if (/*city*/ ctx[9].receivable) {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     				} else {
@@ -13713,9 +13736,9 @@ var app = (function () {
     				if_block0 = null;
     			}
 
-    			if (dirty & /*player*/ 1 && t1_value !== (t1_value = /*city*/ ctx[7].name + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*player*/ 1 && t1_value !== (t1_value = /*city*/ ctx[9].name + "")) set_data_dev(t1, t1_value);
 
-    			if (/*city*/ ctx[7].sendable) {
+    			if (/*city*/ ctx[9].sendable) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
@@ -13728,7 +13751,7 @@ var app = (function () {
     				if_block1 = null;
     			}
 
-    			if (/*city*/ ctx[7].remove) {
+    			if (/*city*/ ctx[9].remove) {
     				if (if_block2) {
     					if_block2.p(ctx, dirty);
     				} else {
@@ -13742,19 +13765,19 @@ var app = (function () {
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div1, "blue", /*city*/ ctx[7].blue);
+    				toggle_class(div1, "blue", /*city*/ ctx[9].blue);
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div1, "yellow", /*city*/ ctx[7].yellow);
+    				toggle_class(div1, "yellow", /*city*/ ctx[9].yellow);
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div1, "black", /*city*/ ctx[7].black);
+    				toggle_class(div1, "black", /*city*/ ctx[9].black);
     			}
 
     			if (dirty & /*player*/ 1) {
-    				toggle_class(div1, "red", /*city*/ ctx[7].red);
+    				toggle_class(div1, "red", /*city*/ ctx[9].red);
     			}
     		},
     		r: function measure() {
@@ -13812,7 +13835,7 @@ var app = (function () {
     	let dispose;
     	let each_value = /*player*/ ctx[0].cityList;
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*city*/ ctx[7].index;
+    	const get_key = ctx => /*city*/ ctx[9].index;
     	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -13897,7 +13920,7 @@ var app = (function () {
     			if (dirty & /*player*/ 1 && t2_value !== (t2_value = /*player*/ ctx[0].action + "")) set_data_dev(t2, t2_value);
     			if (dirty & /*player*/ 1 && t5_value !== (t5_value = /*player*/ ctx[0].cityIndexList.length + "")) set_data_dev(t5, t5_value);
 
-    			if (dirty & /*player, gameStore*/ 1) {
+    			if (dirty & /*player, gameStore, $gameStore*/ 3) {
     				each_value = /*player*/ ctx[0].cityList;
     				validate_each_argument(each_value);
     				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
@@ -13954,7 +13977,14 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<PlayerPanel> was created with unknown prop '${key}'`);
     	});
 
+    	const $$binding_groups = [[]];
     	const click_handler = () => gameStore.showPlayer(player.index);
+
+    	function input_change_handler() {
+    		$gameStore.checkedCityIndex = this.__value;
+    		gameStore.set($gameStore);
+    	}
+
     	const click_handler_1 = city => gameStore.exchange(city.index);
     	const click_handler_2 = city => gameStore.removeCity(city.index);
 
@@ -13992,7 +14022,15 @@ var app = (function () {
     		}
     	};
 
-    	return [player, $gameStore, click_handler, click_handler_1, click_handler_2];
+    	return [
+    		player,
+    		$gameStore,
+    		click_handler,
+    		input_change_handler,
+    		$$binding_groups,
+    		click_handler_1,
+    		click_handler_2
+    	];
     }
 
     class PlayerPanel extends SvelteComponentDev {

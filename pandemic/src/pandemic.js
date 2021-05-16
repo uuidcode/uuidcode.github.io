@@ -75,6 +75,7 @@ const gameStore = {
                         gameStore.activePlayerIsAction() &&
                         noneActivePlayer.cityIndexList.includes(city.index)) {
                         city.receivable = true;
+                        game.checkedCityIndex = city.index;
                     } else {
                         city.receivable = false;
                     }
@@ -316,9 +317,13 @@ const gameStore = {
         gameStore.turn(false);
     },
 
+    getCheckedCityIndex: () => {
+        return get(gameStore).checkedCityIndex;
+    },
+
     exchange: async (cityIndex) => {
         const activePlayer = gameStore.getActivePlayer();
-        const exchangeCityIndex = parseInt(document.querySelector('.city-exchange:checked').value);
+        const exchangeCityIndex = gameStore.getCheckedCityIndex();
 
         console.log('>>> exchangeCityIndex', exchangeCityIndex);
 

@@ -1,4 +1,5 @@
 const gameObject = {
+    checkedCityIndex: null,
     labCount: 5,
     ready: true,
     debug: false,
