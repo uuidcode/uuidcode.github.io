@@ -12624,27 +12624,27 @@ var app = (function () {
                             .find(city => city.index === activePlayer.cityIndex)
                             .linkedCityIndexList.includes(city.index);
 
-                        city.moveDirect =
-                            gameStore.activePlayerIsAction() &&
-                            city.moveNext === false &&
-                            !activePlayer.cityIndexList.includes(activePlayer.cityIndex) &&
-                            activePlayer.cityIndexList.includes(city.index);
-
                         city.moveLab =
                             gameStore.activePlayerIsAction() &&
                             city.moveNext === false &&
-                            city.moveDirect === false &&
                             city.lab &&
                             game.cityList[activePlayer.cityIndex].lab &&
                             activePlayer.cityIndex !== city.index;
+
+                        city.moveDirect =
+                            gameStore.activePlayerIsAction() &&
+                            city.moveNext === false &&
+                            city.moveLab === false &&
+                            activePlayer.cityIndex !== city.index &&
+                            activePlayer.cityIndexList.includes(city.index);
 
                         city.moveEveryWhere =
                             gameStore.activePlayerIsAction() &&
                             city.moveNext === false &&
                             city.moveDirect === false &&
                             city.moveLab === false &&
-                            activePlayer.cityIndexList.includes(activePlayer.cityIndex) &&
-                            activePlayer.cityIndex !== city.index;
+                            activePlayer.cityIndex !== city.index &&
+                            activePlayer.cityIndexList.includes(activePlayer.cityIndex);
 
                         city.movable = city.moveNext ||
                             city.moveDirect ||
@@ -12803,8 +12803,6 @@ var app = (function () {
             const activePlayer = gameStore.getActivePlayer();
             const exchangeCityIndex = gameStore.getCheckedCityIndex();
 
-            console.log('>>> exchangeCityIndex', exchangeCityIndex);
-
             update$1(game => {
                 gameStore.action(game);
 
@@ -12812,14 +12810,22 @@ var app = (function () {
                     .map(player => {
                         if (player.index === activePlayer.index) {
                             player.cityIndexList = player.cityIndexList
-                                .filter(index => index !== cityIndex);
-
-                            player.cityIndexList = [exchangeCityIndex, ...player.cityIndexList];
+                                .map(index => {
+                                    if (index !== cityIndex) {
+                                        return index;
+                                    } else {
+                                        return exchangeCityIndex;
+                                    }
+                                });
                         } else {
                             player.cityIndexList = player.cityIndexList
-                                .filter(index => index !== exchangeCityIndex);
-
-                            player.cityIndexList = [cityIndex, ...player.cityIndexList];
+                                .map(index => {
+                                    if (index !== exchangeCityIndex) {
+                                        return index;
+                                    } else {
+                                        return cityIndex;
+                                    }
+                                });
                         }
 
                         return player;
@@ -12941,6 +12947,7 @@ var app = (function () {
         },
 
         build: (currentCity) => {
+            gameStore.removeCity(currentCity.index);
             const currentCityIndex = currentCity.index;
 
             update$1(game => {
@@ -13050,23 +13057,24 @@ var app = (function () {
         },
 
         removeCity: (cityIndex) => {
-            const activePlayer = gameStore.getActivePlayer();
+            gameStore.getActivePlayer();
 
             update$1(game => {
                 game.playerList = game.playerList
                     .map(player => {
-                        if (player.index === activePlayer.index) {
-                            player.cityIndexList =
-                                player.cityIndexList
-                                    .filter(index => index !== cityIndex);
-                        }
+                        player.cityIndexList =
+                            player.cityIndexList
+                                .filter(index => index !== cityIndex);
 
                         return player;
                     });
 
                 return game;
             });
+        },
 
+        removeCityAndTurn: (cityIndex) => {
+            gameStore.removeCity(cityIndex);
             const removeComplete = gameStore.computeRemoveCity();
             gameStore.turn(removeComplete);
         },
@@ -13399,13 +13407,12 @@ var app = (function () {
         },
 
         moveCity: (cityIndex) => {
-            const activePlayer = gameStore.getActivePlayer();
+            gameStore.getActivePlayer();
 
-            const neighbor = get_store_value(gameStore).cityList[activePlayer.cityIndex]
-                .linkedCityIndexList.includes(cityIndex);
+            const city = get_store_value(gameStore).cityList[cityIndex];
 
-            if (neighbor) {
-                gameStore.moveCityAndTurn(cityIndex, true);
+            if (city.moveNext || city.moveLab) {
+                gameStore.moveCityAndTurn(cityIndex);
             } else {
                 gameStore.moveCityAndRemoveCard(cityIndex);
             }
@@ -13427,31 +13434,29 @@ var app = (function () {
                 return game;
             });
 
-            if (turn) {
-                gameStore.turn(false);
-            }
+            gameStore.turn(false);
         },
 
         moveCityAndRemoveCard: (cityIndex) => {
-            gameStore.moveCityAndTurn(cityIndex, false);
-
+            const city = get_store_value(gameStore).cityList[cityIndex];
             const activePlayer = gameStore.getActivePlayer();
 
             update$1(game => {
-               game.playerList = game.playerList
-                   .map(player => {
-                       if (player.index === activePlayer.index) {
-                           player.cityIndexList = player.cityIndexList
-                               .filter(index => index !== cityIndex);
-                       }
+                game.playerList = game.playerList
+                    .map(player => {
+                        if (city.moveDirect) {
+                            gameStore.removeCity(cityIndex);
+                        } else if (city.moveEveryWhere) {
+                            gameStore.removeCity(activePlayer.cityIndex);
+                        }
 
-                       return player;
-                   });
+                        return player;
+                    });
 
-               return game;
+                return game;
             });
 
-            gameStore.turn(false);
+            gameStore.moveCityAndTurn(cityIndex);
         }
     };
 
