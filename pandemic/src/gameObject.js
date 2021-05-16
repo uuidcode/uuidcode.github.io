@@ -1,4 +1,5 @@
 const gameObject = {
+    startCityIndex: null,
     checkedCityIndex: null,
     labCount: 5,
     ready: true,
@@ -301,7 +302,7 @@ const gameObject = {
         {
             index: 8,
             name: '파리',
-            x: 600,
+            x: 595,
             y: 245,
             virusCount: 0,
             blue: true,
@@ -576,8 +577,8 @@ const gameObject = {
         {
             index: 30,
             name: '카라치',
-            x: 875,
-            y: 365,
+            x: 870,
+            y: 370,
             virusCount: 0,
             blue: false,
             red: false,
@@ -613,8 +614,8 @@ const gameObject = {
         {
             index: 33,
             name: '델리',
-            x: 945,
-            y: 350,
+            x: 930,
+            y: 340,
             virusCount: 0,
             blue: false,
             red: false,
@@ -662,7 +663,7 @@ const gameObject = {
         {
             index: 37,
             name: '상하이',
-            x: 1050,
+            x: 1070,
             y: 323,
             virusCount: 0,
             blue: false,
@@ -749,7 +750,7 @@ const gameObject = {
         {
             index: 44,
             name: '오사카',
-            x: 1225,
+            x: 1215,
             y: 360,
             virusCount: 0,
             blue: false,

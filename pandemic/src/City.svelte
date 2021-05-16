@@ -49,28 +49,41 @@
             {/if}
         {/each}
 
-        {#if city.cure}
-            <button on:click={() => gameStore.cure(city)}
+        <div class="move-button-panel">
+            {#if city.cure}
+                <button on:click={() => gameStore.cure(city)}
                 class="btn btn-success btn-xs">치료</button>
-        {/if}
+            {/if}
 
-        {#if city.movable}
-            <button on:click={() => gameStore.moveCity(city.index)}
+            {#if city.movable}
+                <button on:click={() => gameStore.moveCity(city.index)}
                 class:btn-primary={city.moveNext}
                 class:btn-info={city.moveDirect}
                 class:btn-light={city.moveLab}
                 class:btn-warning={city.moveEveryWhere}
                 class="btn btn-xs">이동</button>
-        {/if}
+            {/if}
 
-        {#if city.buildLab}
-            <button on:click={() => gameStore.build(city)}
-            class="btn btn-dark btn-xs">연구</button>
-        {/if}
+            {#if city.buildLab}
+                <button on:click={() => gameStore.build(city)}
+                class="btn btn-dark btn-xs">연구</button>
+            {/if}
+        </div>
     </div>
 </div>
 
 <style>
+    .move-button-panel {
+        position: absolute;
+        display: flex;
+        left: 0;
+        top: 0;
+        width: 90px;
+        height: 20px;
+        text-align: left;
+        z-index: 200;
+        opacity: .7;
+    }
     .vaccine {
         position: absolute;
         left: 0;
@@ -81,7 +94,7 @@
     }
 
     .btn-xs {
-        padding: 2px 2px !important;
+        padding: 1px 1px !important;
         font-size: 11px !important;
         line-height: 1.5 !important;
         border-radius: 3px !important;
@@ -190,8 +203,9 @@
         display: flex;
         position: absolute;
         top: 25px;
-        width: 120px;
+        width: 90px;
         height: 30px;
+        z-index: 120;
     }
 
     .player-position.right {

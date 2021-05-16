@@ -11681,6 +11681,7 @@ var app = (function () {
     };
 
     const gameObject = {
+        startCityIndex: null,
         checkedCityIndex: null,
         labCount: 5,
         ready: true,
@@ -11983,7 +11984,7 @@ var app = (function () {
             {
                 index: 8,
                 name: '파리',
-                x: 600,
+                x: 595,
                 y: 245,
                 virusCount: 0,
                 blue: true,
@@ -12258,8 +12259,8 @@ var app = (function () {
             {
                 index: 30,
                 name: '카라치',
-                x: 875,
-                y: 365,
+                x: 870,
+                y: 370,
                 virusCount: 0,
                 blue: false,
                 red: false,
@@ -12295,8 +12296,8 @@ var app = (function () {
             {
                 index: 33,
                 name: '델리',
-                x: 945,
-                y: 350,
+                x: 930,
+                y: 340,
                 virusCount: 0,
                 blue: false,
                 red: false,
@@ -12344,7 +12345,7 @@ var app = (function () {
             {
                 index: 37,
                 name: '상하이',
-                x: 1050,
+                x: 1070,
                 y: 323,
                 virusCount: 0,
                 blue: false,
@@ -12431,7 +12432,7 @@ var app = (function () {
             {
                 index: 44,
                 name: '오사카',
-                x: 1225,
+                x: 1215,
                 y: 360,
                 virusCount: 0,
                 blue: false,
@@ -12484,16 +12485,21 @@ var app = (function () {
     const { subscribe: subscribe$1, set, update: update$1 } = writable(gameObject);
 
     const startCity = cloneAndShuffle(gameObject.cityList).pop();
+    let startCityIndex = startCity.index;
+
+    if (gameObject.startCityIndex != null) {
+        startCityIndex = gameObject.startCityIndex;
+    }
 
     gameObject.playerList.forEach(player => {
-        player.cityIndex = startCity.index;
+        player.cityIndex = startCityIndex;
     });
 
     gameObject.cityList.forEach(city => {
         city.lab = false;
     });
 
-    gameObject.cityList[startCity.index].lab = true;
+    gameObject.cityList[startCityIndex].lab = true;
 
     const gameStore = {
         subscribe: subscribe$1,
@@ -12863,6 +12869,12 @@ var app = (function () {
         },
 
         getRandomCityIndex: (virus) => {
+            const game = get_store_value(gameStore);
+
+            if (game.debug) {
+                return gameStore.getRandomCityIndex2();
+            }
+
             let cityIndex = [];
 
             for (let i = 0; i < 12; i++) {
@@ -12871,10 +12883,22 @@ var app = (function () {
 
             cityIndex = shuffle(cityIndex).slice(0, 3);
 
-            return get_store_value(gameStore).cityList
+            return game.cityList
                 .filter(city => city[virus.type])
                 .filter((city, index) => cityIndex.includes(index))
                 .map(city => city.index);
+        },
+
+        getRandomCityIndex2: (virus) => {
+            if (virus.black) {
+                return [31, 32, 33, 34];
+            } else if (virus.red) {
+                return [36, 37, 38, 39];
+            } else if (virus.yellow) {
+                return [20, 21, 22, 23];
+            } else if (virus.blue) {
+                return [0, 1, 2, 3];
+            }
         },
 
         init: () => {
@@ -12904,8 +12928,6 @@ var app = (function () {
                 game.usedCardList = [];
 
                 game.cardList = [...game.cardList, -1, -1, -1, -1, -1, -1];
-
-                // game.cardList = [...game.cardList];
                 game.cardList = shuffle(game.cardList);
 
                 game.virusList.forEach(virus => {
@@ -14090,7 +14112,7 @@ var app = (function () {
     			button.textContent = "완치";
     			attr_dev(button, "class", "btn btn-success btn-sm");
     			add_location(button, file$1, 23, 12, 581);
-    			attr_dev(div, "class", "vaccine svelte-qwn20o");
+    			attr_dev(div, "class", "vaccine svelte-1kkhxff");
     			add_location(div, file$1, 22, 8, 546);
     		},
     		m: function mount(target, anchor) {
@@ -14131,7 +14153,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "city-index svelte-qwn20o");
+    			attr_dev(div, "class", "city-index svelte-1kkhxff");
     			add_location(div, file$1, 31, 4, 798);
     		},
     		m: function mount(target, anchor) {
@@ -14165,7 +14187,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "연구소";
-    			attr_dev(div, "class", "lab-title svelte-qwn20o");
+    			attr_dev(div, "class", "lab-title svelte-1kkhxff");
     			add_location(div, file$1, 35, 8, 883);
     		},
     		m: function mount(target, anchor) {
@@ -14198,10 +14220,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			img = element("img");
-    			attr_dev(img, "class", "player-image svelte-qwn20o");
+    			attr_dev(img, "class", "player-image svelte-1kkhxff");
     			if (img.src !== (img_src_value = /*player*/ ctx[8].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$1, 46, 20, 1310);
-    			attr_dev(div, "class", div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-qwn20o");
+    			attr_dev(div, "class", div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-1kkhxff");
     			toggle_class(div, "ripple", /*player*/ ctx[8].turn);
     			toggle_class(div, "turn", /*player*/ ctx[8].turn);
     			add_location(div, file$1, 43, 16, 1139);
@@ -14215,7 +14237,7 @@ var app = (function () {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*playerList*/ 4 && div_class_value !== (div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-qwn20o")) {
+    			if (dirty & /*playerList*/ 4 && div_class_value !== (div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-1kkhxff")) {
     				attr_dev(div, "class", div_class_value);
     			}
 
@@ -14288,7 +14310,7 @@ var app = (function () {
     	return block;
     }
 
-    // (52:8) {#if city.cure}
+    // (53:12) {#if city.cure}
     function create_if_block_2$1(ctx) {
     	let button;
     	let mounted;
@@ -14298,8 +14320,8 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "치료";
-    			attr_dev(button, "class", "btn btn-success btn-xs svelte-qwn20o");
-    			add_location(button, file$1, 52, 12, 1458);
+    			attr_dev(button, "class", "btn btn-success btn-xs svelte-1kkhxff");
+    			add_location(button, file$1, 53, 16, 1507);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -14321,14 +14343,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(52:8) {#if city.cure}",
+    		source: "(53:12) {#if city.cure}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (57:8) {#if city.movable}
+    // (58:12) {#if city.movable}
     function create_if_block_1$1(ctx) {
     	let button;
     	let mounted;
@@ -14338,12 +14360,12 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "이동";
-    			attr_dev(button, "class", "btn btn-xs svelte-qwn20o");
+    			attr_dev(button, "class", "btn btn-xs svelte-1kkhxff");
     			toggle_class(button, "btn-primary", /*city*/ ctx[0].moveNext);
     			toggle_class(button, "btn-info", /*city*/ ctx[0].moveDirect);
     			toggle_class(button, "btn-light", /*city*/ ctx[0].moveLab);
     			toggle_class(button, "btn-warning", /*city*/ ctx[0].moveEveryWhere);
-    			add_location(button, file$1, 57, 12, 1622);
+    			add_location(button, file$1, 58, 16, 1683);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -14381,14 +14403,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(57:8) {#if city.movable}",
+    		source: "(58:12) {#if city.movable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (66:8) {#if city.buildLab}
+    // (67:12) {#if city.buildLab}
     function create_if_block$1(ctx) {
     	let button;
     	let mounted;
@@ -14398,8 +14420,8 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "연구";
-    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-qwn20o");
-    			add_location(button, file$1, 66, 12, 1991);
+    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-1kkhxff");
+    			add_location(button, file$1, 67, 16, 2064);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -14421,7 +14443,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(66:8) {#if city.buildLab}",
+    		source: "(67:12) {#if city.buildLab}",
     		ctx
     	});
 
@@ -14429,18 +14451,19 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let div1;
+    	let div2;
     	let t0;
     	let html_tag;
     	let raw_value = /*city*/ ctx[0].displayVirusCount + "";
     	let t1;
     	let t2;
     	let t3;
-    	let div0;
+    	let div1;
     	let t4;
+    	let div0;
     	let t5;
     	let t6;
-    	let div1_class_value;
+    	let div2_class_value;
     	let if_block0 = /*city*/ ctx[0].vaccine && create_if_block_6(ctx);
     	let if_block1 = /*$gameStore*/ ctx[1].debug && create_if_block_5(ctx);
     	let if_block2 = /*city*/ ctx[0].lab && create_if_block_4(ctx);
@@ -14458,7 +14481,7 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div1 = element("div");
+    			div2 = element("div");
     			if (if_block0) if_block0.c();
     			t0 = space();
     			t1 = space();
@@ -14466,54 +14489,58 @@ var app = (function () {
     			t2 = space();
     			if (if_block2) if_block2.c();
     			t3 = space();
-    			div0 = element("div");
+    			div1 = element("div");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
     			t4 = space();
+    			div0 = element("div");
     			if (if_block3) if_block3.c();
     			t5 = space();
     			if (if_block4) if_block4.c();
     			t6 = space();
     			if (if_block5) if_block5.c();
     			html_tag = new HtmlTag(t1);
-    			attr_dev(div0, "class", "player-position svelte-qwn20o");
-    			toggle_class(div0, "right", /*city*/ ctx[0].right);
-    			toggle_class(div0, "top", /*city*/ ctx[0].top);
-    			add_location(div0, file$1, 38, 4, 934);
-    			attr_dev(div1, "class", div1_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-qwn20o");
-    			set_style(div1, "left", /*city*/ ctx[0].x + "px");
-    			set_style(div1, "top", /*city*/ ctx[0].y + "px");
-    			toggle_class(div1, "blue", /*city*/ ctx[0].blue);
-    			toggle_class(div1, "lab", /*city*/ ctx[0].lab);
-    			toggle_class(div1, "yellow", /*city*/ ctx[0].yellow);
-    			toggle_class(div1, "black", /*city*/ ctx[0].black);
-    			toggle_class(div1, "red", /*city*/ ctx[0].red);
-    			toggle_class(div1, "ripple", /*city*/ ctx[0].contagion);
-    			add_location(div1, file$1, 13, 0, 248);
+    			attr_dev(div0, "class", "move-button-panel svelte-1kkhxff");
+    			add_location(div0, file$1, 51, 8, 1429);
+    			attr_dev(div1, "class", "player-position svelte-1kkhxff");
+    			toggle_class(div1, "right", /*city*/ ctx[0].right);
+    			toggle_class(div1, "top", /*city*/ ctx[0].top);
+    			add_location(div1, file$1, 38, 4, 934);
+    			attr_dev(div2, "class", div2_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-1kkhxff");
+    			set_style(div2, "left", /*city*/ ctx[0].x + "px");
+    			set_style(div2, "top", /*city*/ ctx[0].y + "px");
+    			toggle_class(div2, "blue", /*city*/ ctx[0].blue);
+    			toggle_class(div2, "lab", /*city*/ ctx[0].lab);
+    			toggle_class(div2, "yellow", /*city*/ ctx[0].yellow);
+    			toggle_class(div2, "black", /*city*/ ctx[0].black);
+    			toggle_class(div2, "red", /*city*/ ctx[0].red);
+    			toggle_class(div2, "ripple", /*city*/ ctx[0].contagion);
+    			add_location(div2, file$1, 13, 0, 248);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div1, anchor);
-    			if (if_block0) if_block0.m(div1, null);
-    			append_dev(div1, t0);
-    			html_tag.m(raw_value, div1);
-    			append_dev(div1, t1);
-    			if (if_block1) if_block1.m(div1, null);
-    			append_dev(div1, t2);
-    			if (if_block2) if_block2.m(div1, null);
-    			append_dev(div1, t3);
-    			append_dev(div1, div0);
+    			insert_dev(target, div2, anchor);
+    			if (if_block0) if_block0.m(div2, null);
+    			append_dev(div2, t0);
+    			html_tag.m(raw_value, div2);
+    			append_dev(div2, t1);
+    			if (if_block1) if_block1.m(div2, null);
+    			append_dev(div2, t2);
+    			if (if_block2) if_block2.m(div2, null);
+    			append_dev(div2, t3);
+    			append_dev(div2, div1);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div0, null);
+    				each_blocks[i].m(div1, null);
     			}
 
-    			append_dev(div0, t4);
+    			append_dev(div1, t4);
+    			append_dev(div1, div0);
     			if (if_block3) if_block3.m(div0, null);
     			append_dev(div0, t5);
     			if (if_block4) if_block4.m(div0, null);
@@ -14527,7 +14554,7 @@ var app = (function () {
     				} else {
     					if_block0 = create_if_block_6(ctx);
     					if_block0.c();
-    					if_block0.m(div1, t0);
+    					if_block0.m(div2, t0);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -14542,7 +14569,7 @@ var app = (function () {
     				} else {
     					if_block1 = create_if_block_5(ctx);
     					if_block1.c();
-    					if_block1.m(div1, t2);
+    					if_block1.m(div2, t2);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
@@ -14553,7 +14580,7 @@ var app = (function () {
     				if (if_block2) ; else {
     					if_block2 = create_if_block_4(ctx);
     					if_block2.c();
-    					if_block2.m(div1, t3);
+    					if_block2.m(div2, t3);
     				}
     			} else if (if_block2) {
     				if_block2.d(1);
@@ -14573,7 +14600,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block$1(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div0, t4);
+    						each_blocks[i].m(div1, t4);
     					}
     				}
 
@@ -14624,53 +14651,53 @@ var app = (function () {
     			}
 
     			if (dirty & /*city*/ 1) {
-    				toggle_class(div0, "right", /*city*/ ctx[0].right);
+    				toggle_class(div1, "right", /*city*/ ctx[0].right);
     			}
 
     			if (dirty & /*city*/ 1) {
-    				toggle_class(div0, "top", /*city*/ ctx[0].top);
+    				toggle_class(div1, "top", /*city*/ ctx[0].top);
     			}
 
-    			if (dirty & /*city*/ 1 && div1_class_value !== (div1_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-qwn20o")) {
-    				attr_dev(div1, "class", div1_class_value);
-    			}
-
-    			if (dirty & /*city*/ 1) {
-    				set_style(div1, "left", /*city*/ ctx[0].x + "px");
+    			if (dirty & /*city*/ 1 && div2_class_value !== (div2_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-1kkhxff")) {
+    				attr_dev(div2, "class", div2_class_value);
     			}
 
     			if (dirty & /*city*/ 1) {
-    				set_style(div1, "top", /*city*/ ctx[0].y + "px");
+    				set_style(div2, "left", /*city*/ ctx[0].x + "px");
+    			}
+
+    			if (dirty & /*city*/ 1) {
+    				set_style(div2, "top", /*city*/ ctx[0].y + "px");
     			}
 
     			if (dirty & /*city, city*/ 1) {
-    				toggle_class(div1, "blue", /*city*/ ctx[0].blue);
+    				toggle_class(div2, "blue", /*city*/ ctx[0].blue);
     			}
 
     			if (dirty & /*city, city*/ 1) {
-    				toggle_class(div1, "lab", /*city*/ ctx[0].lab);
+    				toggle_class(div2, "lab", /*city*/ ctx[0].lab);
     			}
 
     			if (dirty & /*city, city*/ 1) {
-    				toggle_class(div1, "yellow", /*city*/ ctx[0].yellow);
+    				toggle_class(div2, "yellow", /*city*/ ctx[0].yellow);
     			}
 
     			if (dirty & /*city, city*/ 1) {
-    				toggle_class(div1, "black", /*city*/ ctx[0].black);
+    				toggle_class(div2, "black", /*city*/ ctx[0].black);
     			}
 
     			if (dirty & /*city, city*/ 1) {
-    				toggle_class(div1, "red", /*city*/ ctx[0].red);
+    				toggle_class(div2, "red", /*city*/ ctx[0].red);
     			}
 
     			if (dirty & /*city, city*/ 1) {
-    				toggle_class(div1, "ripple", /*city*/ ctx[0].contagion);
+    				toggle_class(div2, "ripple", /*city*/ ctx[0].contagion);
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div1);
+    			if (detaching) detach_dev(div2);
     			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
     			if (if_block2) if_block2.d();

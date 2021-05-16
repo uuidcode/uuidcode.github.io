@@ -6,16 +6,21 @@ import gameObject from "./gameObject"
 const { subscribe, set, update } = writable(gameObject);
 
 const startCity = cloneAndShuffle(gameObject.cityList).pop();
+let startCityIndex = startCity.index;
+
+if (gameObject.startCityIndex != null) {
+    startCityIndex = gameObject.startCityIndex;
+}
 
 gameObject.playerList.forEach(player => {
-    player.cityIndex = startCity.index;
+    player.cityIndex = startCityIndex;
 });
 
 gameObject.cityList.forEach(city => {
     city.lab = false;
 });
 
-gameObject.cityList[startCity.index].lab = true;
+gameObject.cityList[startCityIndex].lab = true;
 
 const gameStore = {
     subscribe,
@@ -385,6 +390,12 @@ const gameStore = {
     },
 
     getRandomCityIndex: (virus) => {
+        const game = get(gameStore);
+
+        if (game.debug) {
+            return gameStore.getRandomCityIndex2();
+        }
+
         let cityIndex = [];
 
         for (let i = 0; i < 12; i++) {
@@ -393,10 +404,22 @@ const gameStore = {
 
         cityIndex = shuffle(cityIndex).slice(0, 3);
 
-        return get(gameStore).cityList
+        return game.cityList
             .filter(city => city[virus.type])
             .filter((city, index) => cityIndex.includes(index))
             .map(city => city.index);
+    },
+
+    getRandomCityIndex2: (virus) => {
+        if (virus.black) {
+            return [31, 32, 33, 34];
+        } else if (virus.red) {
+            return [36, 37, 38, 39];
+        } else if (virus.yellow) {
+            return [20, 21, 22, 23];
+        } else if (virus.blue) {
+            return [0, 1, 2, 3];
+        }
     },
 
     init: () => {
@@ -426,8 +449,6 @@ const gameStore = {
             game.usedCardList = [];
 
             game.cardList = [...game.cardList, -1, -1, -1, -1, -1, -1];
-
-            // game.cardList = [...game.cardList];
             game.cardList = shuffle(game.cardList);
 
             game.virusList.forEach(virus => {
