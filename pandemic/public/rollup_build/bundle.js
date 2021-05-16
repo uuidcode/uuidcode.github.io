@@ -12210,7 +12210,7 @@ var app = (function () {
             {
                 index: 26,
                 name: '리야드',
-                x: 795,
+                x: 780,
                 y: 405,
                 virusCount: 0,
                 blue: false,
@@ -13991,7 +13991,7 @@ var app = (function () {
     	}
 
     	const click_handler_1 = city => gameStore.exchange(city.index);
-    	const click_handler_2 = city => gameStore.removeCity(city.index);
+    	const click_handler_2 = city => gameStore.removeCityAndTurn(city.index);
 
     	$$self.$$set = $$props => {
     		if ("player" in $$props) $$invalidate(0, player = $$props.player);

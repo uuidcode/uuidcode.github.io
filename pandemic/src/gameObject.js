@@ -528,7 +528,7 @@ const gameObject = {
         {
             index: 26,
             name: '리야드',
-            x: 795,
+            x: 780,
             y: 405,
             virusCount: 0,
             blue: false,

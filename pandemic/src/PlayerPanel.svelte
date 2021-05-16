@@ -52,7 +52,7 @@
 
                 {#if city.remove}
                     <button class="btn btn-danger btn-sm"
-                            on:click={()=> gameStore.removeCity(city.index)}>삭제</button>
+                            on:click={()=> gameStore.removeCityAndTurn(city.index)}>삭제</button>
                 {/if}
             </div>
         </div>
