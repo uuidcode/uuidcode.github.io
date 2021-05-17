@@ -13230,6 +13230,10 @@ var app = (function () {
                                 spread = true;
                             } else {
                                 if (count === 3) {
+                                    if (city.virusCount > 0) {
+                                        spread = true;
+                                    }
+
                                     city.virusCount = count;
                                 } else {
                                     city.virusCount += count;
