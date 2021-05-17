@@ -823,16 +823,6 @@ const gameStore = {
                 return city;
             });
 
-
-
-
-
-
-
-
-
-
-
         return game.cityList;
     },
 
