@@ -729,16 +729,16 @@ const gameStore = {
             await gameStore.showContagionMessage(`[${contagionIndex}/${totalContagionCount}] ${targetCity.name} 감염 되었습니다.`);
         }
 
-        // const speed = 1000;
-        //
-        // await move({
-        //     sourceClass: `virus-${virus.index}`,
-        //     targetClass: `city-${targetCity.index}`,
-        //     initCss: {
-        //         border: '1px solid white'
-        //     },
-        //     speed: speed
-        // });
+        const speed = 1000;
+
+        await move({
+            sourceClass: `virus-${virus.index}`,
+            targetClass: `city-${targetCity.index}`,
+            initCss: {
+                border: '1px solid white'
+            },
+            speed: speed
+        });
 
         let spread = false;
 

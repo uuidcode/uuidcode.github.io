@@ -13200,7 +13200,7 @@ var app = (function () {
         showContagion: async (targetCity, count, contagionIndex, totalContagionCount) => {
             await gameStore.setDisable();
 
-            gameStore.getVirus(targetCity);
+            const virus = gameStore.getVirus(targetCity);
 
             if (count === 3) {
                 await gameStore.showContagionMessage(`${targetCity.name} 전염 되었습니다.`);
@@ -13208,16 +13208,16 @@ var app = (function () {
                 await gameStore.showContagionMessage(`[${contagionIndex}/${totalContagionCount}] ${targetCity.name} 감염 되었습니다.`);
             }
 
-            // const speed = 1000;
-            //
-            // await move({
-            //     sourceClass: `virus-${virus.index}`,
-            //     targetClass: `city-${targetCity.index}`,
-            //     initCss: {
-            //         border: '1px solid white'
-            //     },
-            //     speed: speed
-            // });
+            const speed = 1000;
+
+            await move({
+                sourceClass: `virus-${virus.index}`,
+                targetClass: `city-${targetCity.index}`,
+                initCss: {
+                    border: '1px solid white'
+                },
+                speed: speed
+            });
 
             let spread = false;
 
@@ -14124,7 +14124,7 @@ var app = (function () {
     			button.textContent = "완치";
     			attr_dev(button, "class", "btn btn-success btn-sm");
     			add_location(button, file$1, 23, 12, 581);
-    			attr_dev(div, "class", "vaccine svelte-1kkhxff");
+    			attr_dev(div, "class", "vaccine svelte-1eyd33h");
     			add_location(div, file$1, 22, 8, 546);
     		},
     		m: function mount(target, anchor) {
@@ -14165,7 +14165,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			t = text(t_value);
-    			attr_dev(div, "class", "city-index svelte-1kkhxff");
+    			attr_dev(div, "class", "city-index svelte-1eyd33h");
     			add_location(div, file$1, 31, 4, 798);
     		},
     		m: function mount(target, anchor) {
@@ -14199,7 +14199,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			div.textContent = "연구소";
-    			attr_dev(div, "class", "lab-title svelte-1kkhxff");
+    			attr_dev(div, "class", "lab-title svelte-1eyd33h");
     			add_location(div, file$1, 35, 8, 883);
     		},
     		m: function mount(target, anchor) {
@@ -14232,10 +14232,10 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			img = element("img");
-    			attr_dev(img, "class", "player-image svelte-1kkhxff");
+    			attr_dev(img, "class", "player-image svelte-1eyd33h");
     			if (img.src !== (img_src_value = /*player*/ ctx[8].image)) attr_dev(img, "src", img_src_value);
     			add_location(img, file$1, 46, 20, 1310);
-    			attr_dev(div, "class", div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-1kkhxff");
+    			attr_dev(div, "class", div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-1eyd33h");
     			toggle_class(div, "ripple", /*player*/ ctx[8].turn);
     			toggle_class(div, "turn", /*player*/ ctx[8].turn);
     			add_location(div, file$1, 43, 16, 1139);
@@ -14249,7 +14249,7 @@ var app = (function () {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*playerList*/ 4 && div_class_value !== (div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-1kkhxff")) {
+    			if (dirty & /*playerList*/ 4 && div_class_value !== (div_class_value = "player player-board-icon-" + /*player*/ ctx[8].index + " svelte-1eyd33h")) {
     				attr_dev(div, "class", div_class_value);
     			}
 
@@ -14332,7 +14332,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "치료";
-    			attr_dev(button, "class", "btn btn-success btn-xs svelte-1kkhxff");
+    			attr_dev(button, "class", "btn btn-success btn-xs svelte-1eyd33h");
     			add_location(button, file$1, 53, 16, 1507);
     		},
     		m: function mount(target, anchor) {
@@ -14372,7 +14372,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "이동";
-    			attr_dev(button, "class", "btn btn-xs svelte-1kkhxff");
+    			attr_dev(button, "class", "btn btn-xs svelte-1eyd33h");
     			toggle_class(button, "btn-primary", /*city*/ ctx[0].moveNext);
     			toggle_class(button, "btn-info", /*city*/ ctx[0].moveDirect);
     			toggle_class(button, "btn-light", /*city*/ ctx[0].moveLab);
@@ -14432,7 +14432,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "연구";
-    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-1kkhxff");
+    			attr_dev(button, "class", "btn btn-dark btn-xs svelte-1eyd33h");
     			add_location(button, file$1, 67, 16, 2064);
     		},
     		m: function mount(target, anchor) {
@@ -14515,13 +14515,13 @@ var app = (function () {
     			t6 = space();
     			if (if_block5) if_block5.c();
     			html_tag = new HtmlTag(t1);
-    			attr_dev(div0, "class", "move-button-panel svelte-1kkhxff");
+    			attr_dev(div0, "class", "move-button-panel svelte-1eyd33h");
     			add_location(div0, file$1, 51, 8, 1429);
-    			attr_dev(div1, "class", "player-position svelte-1kkhxff");
+    			attr_dev(div1, "class", "player-position svelte-1eyd33h");
     			toggle_class(div1, "right", /*city*/ ctx[0].right);
     			toggle_class(div1, "top", /*city*/ ctx[0].top);
     			add_location(div1, file$1, 38, 4, 934);
-    			attr_dev(div2, "class", div2_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-1kkhxff");
+    			attr_dev(div2, "class", div2_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-1eyd33h");
     			set_style(div2, "left", /*city*/ ctx[0].x + "px");
     			set_style(div2, "top", /*city*/ ctx[0].y + "px");
     			toggle_class(div2, "blue", /*city*/ ctx[0].blue);
@@ -14670,7 +14670,7 @@ var app = (function () {
     				toggle_class(div1, "top", /*city*/ ctx[0].top);
     			}
 
-    			if (dirty & /*city*/ 1 && div2_class_value !== (div2_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-1kkhxff")) {
+    			if (dirty & /*city*/ 1 && div2_class_value !== (div2_class_value = "city city-" + /*city*/ ctx[0].index + " svelte-1eyd33h")) {
     				attr_dev(div2, "class", div2_class_value);
     			}
 

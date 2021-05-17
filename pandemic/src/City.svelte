@@ -224,8 +224,8 @@
         position: relative;
         width: 32px;
         height: 32px;
-        border-radius: 16px 16px;
         background-color: white;
+        box-shadow: 1px 1px 1px 1px black;
     }
 
     .player-image {
