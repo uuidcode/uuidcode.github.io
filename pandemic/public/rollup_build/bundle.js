@@ -14845,7 +14845,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "contagion-panel svelte-le1a0q");
+    			attr_dev(div, "class", "contagion-panel svelte-k2jkkj");
     			toggle_class(div, "ripple", /*$gameStore*/ ctx[1].contagionMessageRipple);
     			add_location(div, file$2, 40, 8, 1114);
     		},
@@ -14882,7 +14882,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "contagion svelte-le1a0q");
+    			attr_dev(div, "class", "contagion svelte-k2jkkj");
     			set_style(div, "left", /*contagion*/ ctx[19].x + "px");
     			set_style(div, "top", /*contagion*/ ctx[19].y + "px");
     			add_location(div, file$2, 50, 16, 1530);
@@ -14967,7 +14967,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			attr_dev(div, "class", "spread svelte-le1a0q");
+    			attr_dev(div, "class", "spread svelte-k2jkkj");
     			set_style(div, "left", /*spread*/ ctx[16].x + "px");
     			set_style(div, "top", /*spread*/ ctx[16].y + "px");
     			add_location(div, file$2, 57, 16, 1757);
@@ -15110,12 +15110,12 @@ var app = (function () {
     			div1 = element("div");
     			t1 = text(t1_value);
     			t2 = space();
-    			attr_dev(div0, "class", div0_class_value = "virus-icon virus-" + /*virus*/ ctx[10].index + " svelte-le1a0q");
+    			attr_dev(div0, "class", div0_class_value = "virus-icon virus-" + /*virus*/ ctx[10].index + " svelte-k2jkkj");
     			set_style(div0, "left", /*virus*/ ctx[10].icon.x + "px");
     			set_style(div0, "top", /*virus*/ ctx[10].icon.y + "px");
     			set_style(div0, "background-image", "url(" + /*virus*/ ctx[10].icon.image + ")");
     			add_location(div0, file$2, 67, 12, 2022);
-    			attr_dev(div1, "class", "virus svelte-le1a0q");
+    			attr_dev(div1, "class", "virus svelte-k2jkkj");
     			set_style(div1, "left", /*virus*/ ctx[10].x + "px");
     			set_style(div1, "top", /*virus*/ ctx[10].y + "px");
     			toggle_class(div1, "blue", /*virus*/ ctx[10].blue);
@@ -15132,7 +15132,7 @@ var app = (function () {
     			append_dev(div1, t2);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*virusList*/ 8 && div0_class_value !== (div0_class_value = "virus-icon virus-" + /*virus*/ ctx[10].index + " svelte-le1a0q")) {
+    			if (dirty & /*virusList*/ 8 && div0_class_value !== (div0_class_value = "virus-icon virus-" + /*virus*/ ctx[10].index + " svelte-k2jkkj")) {
     				attr_dev(div0, "class", div0_class_value);
     			}
 
@@ -15314,15 +15314,15 @@ var app = (function () {
     			if (img.src !== (img_src_value = "background.jpg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "width", "1300");
     			add_location(img, file$2, 37, 8, 1013);
-    			attr_dev(div0, "class", "card-panel svelte-le1a0q");
+    			attr_dev(div0, "class", "card-panel svelte-k2jkkj");
     			add_location(div0, file$2, 44, 8, 1273);
-    			attr_dev(div1, "class", "lab-panel svelte-le1a0q");
+    			attr_dev(div1, "class", "lab-panel svelte-k2jkkj");
     			add_location(div1, file$2, 45, 8, 1330);
-    			attr_dev(div2, "class", "lab-panel-title svelte-le1a0q");
+    			attr_dev(div2, "class", "lab-panel-title svelte-k2jkkj");
     			add_location(div2, file$2, 46, 8, 1390);
-    			attr_dev(div3, "class", "board svelte-le1a0q");
+    			attr_dev(div3, "class", "board svelte-k2jkkj");
     			add_location(div3, file$2, 36, 4, 984);
-    			attr_dev(div4, "class", "pandemic svelte-le1a0q");
+    			attr_dev(div4, "class", "pandemic svelte-k2jkkj");
     			add_location(div4, file$2, 34, 0, 900);
     		},
     		l: function claim(nodes) {
