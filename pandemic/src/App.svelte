@@ -83,25 +83,6 @@
 </div>
 
 <style>
-    .vaccine {
-        position: absolute;
-        left: 0;
-        top: -10px;
-        width: 50px;
-        height: 50px;
-        z-index: 1000;
-    }
-
-    .btn-xs {
-        padding: 2px 2px !important;
-        font-size: 11px !important;
-        line-height: 1.5 !important;
-        border-radius: 3px !important;
-        height: 22px;
-        font-weight: bolder;
-        z-index: 1000;
-    }
-
     .lab-panel-title {
         position: absolute;
         left: 668px;
@@ -132,9 +113,9 @@
 
     .contagion-panel {
         position: absolute;
-        left: 220px;
+        left: 200px;
         top: 358px;
-        width: 850px;
+        width: 900px;
         height: 100px;
         color: white;
         line-height: 100px;
@@ -183,16 +164,8 @@
         height: 100vh;
     }
 
-    .left {
-        width: 300px;
-    }
-
     .board {
         position: relative;
-    }
-
-    .right {
-        width: 300px;
     }
 
     .virus-icon {
