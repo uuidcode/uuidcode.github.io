@@ -12931,10 +12931,7 @@ var app = (function () {
                 game.cardList = shuffle(game.cardList);
 
                 game.virusList.forEach(virus => {
-                    virus.black = virus.type === 'black';
-                    virus.red = virus.type === 'red';
-                    virus.blue = virus.type === 'blue';
-                    virus.yellow = virus.type === 'yellow';
+                    virus[virus.type] = true;
 
                     const cityIndexList = gameStore.getRandomCityIndex(virus);
 
@@ -13202,7 +13199,7 @@ var app = (function () {
         showContagion: async (targetCity, count, contagionIndex, totalContagionCount) => {
             await gameStore.setDisable();
 
-            const virus = gameStore.getVirus(targetCity);
+            gameStore.getVirus(targetCity);
 
             if (count === 3) {
                 await gameStore.showContagionMessage(`${targetCity.name} 전염 되었습니다.`);
@@ -13210,16 +13207,16 @@ var app = (function () {
                 await gameStore.showContagionMessage(`[${contagionIndex}/${totalContagionCount}] ${targetCity.name} 감염 되었습니다.`);
             }
 
-            const speed = 1000;
-
-            await move({
-                sourceClass: `virus-${virus.index}`,
-                targetClass: `city-${targetCity.index}`,
-                initCss: {
-                    border: '1px solid white'
-                },
-                speed: speed
-            });
+            // const speed = 1000;
+            //
+            // await move({
+            //     sourceClass: `virus-${virus.index}`,
+            //     targetClass: `city-${targetCity.index}`,
+            //     initCss: {
+            //         border: '1px solid white'
+            //     },
+            //     speed: speed
+            // });
 
             let spread = false;
 
