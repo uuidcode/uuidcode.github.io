@@ -461,6 +461,7 @@ const gameStore = {
 
                     if (indexOf >= 0) {
                         city.virusCount = indexOf + 1;
+                        city.virusCount = 3;
                         virus.count += city.virusCount;
                     }
 
@@ -821,6 +822,16 @@ const gameStore = {
 
                 return city;
             });
+
+
+
+
+
+
+
+
+
+
 
         return game.cityList;
     },
