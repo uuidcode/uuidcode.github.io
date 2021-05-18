@@ -8,8 +8,8 @@ const { subscribe, set, update } = writable(gameObject);
 const startCity = cloneAndShuffle(gameObject.cityList).pop();
 let startCityIndex = startCity.index;
 
-if (gameObject.startCityIndex != null) {
-    startCityIndex = gameObject.startCityIndex;
+if (gameObject.debug) {
+    startCityIndex = gameObject.debugStartCityIndex;
 }
 
 gameObject.playerList.forEach(player => {
@@ -393,7 +393,7 @@ const gameStore = {
         const game = get(gameStore);
 
         if (game.debug) {
-            return gameStore.getRandomCityIndex2();
+            return gameStore.getRandomCityIndex2(virus);
         }
 
         let cityIndex = [];
@@ -412,13 +412,13 @@ const gameStore = {
 
     getRandomCityIndex2: (virus) => {
         if (virus.black) {
-            return [31, 32, 33, 34];
+            return [31, 32, 33];
         } else if (virus.red) {
-            return [36, 37, 38, 39];
+            return [36, 37, 38];
         } else if (virus.yellow) {
-            return [20, 21, 22, 23];
+            return [20, 21, 22];
         } else if (virus.blue) {
-            return [0, 1, 2, 3];
+            return [0, 1, 2];
         }
     },
 
@@ -448,12 +448,15 @@ const gameStore = {
         update(game => {
             game.usedCardList = [];
 
-            game.cardList = [...game.cardList, -1, -1, -1, -1, -1, -1];
-            game.cardList = shuffle(game.cardList);
+            if (game.debug) {
+                game.cardList = [...game.cardList, -1, -1, -1, -1, -1, -1];
+            } else {
+                game.cardList = [...game.cardList, -1, -1, -1, -1, -1, -1];
+                game.cardList = shuffle(game.cardList);
+            }
+
 
             game.virusList.forEach(virus => {
-                virus[virus.type] = true;
-
                 const cityIndexList = gameStore.getRandomCityIndex(virus);
 
                 game.cityList = game.cityList.map(city => {
@@ -869,7 +872,11 @@ const gameStore = {
 
     contagionCard: async () => {
         const game = get(gameStore);
-        const targetCity = cloneAndShuffle(game.cityList).pop();
+        let targetCity = cloneAndShuffle(game.cityList).pop();
+
+        if (game.debug) {
+            targetCity = game.cityList[game.debugCityIndexList.shift()];
+        }
 
         for (let i = 0; i < game.virusList.length; i++) {
             const virus = game.virusList[i];
