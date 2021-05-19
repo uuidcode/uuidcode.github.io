@@ -412,15 +412,7 @@ const gameStore = {
     },
 
     getRandomCityIndex2: (virus) => {
-        if (virus.black) {
-            return [31, 32, 33];
-        } else if (virus.red) {
-            return [36, 37, 38];
-        } else if (virus.yellow) {
-            return [20, 21, 22];
-        } else if (virus.blue) {
-            return [0, 1, 2];
-        }
+        return get(gameStore).debugInitCity[virus.type];
     },
 
     init: () => {

@@ -2,6 +2,12 @@ const gameObject = {
     debug: false,
     debugStartCityIndex: 0,
     debugCityIndexList: [0, 1, 2, 3, 4, 5],
+    debugInitCity: {
+        blue : [0, 1, 2],
+        yellow : [20, 21, 22],
+        black : [31, 32, 33],
+        red : [36, 37, 38]
+    },
     checkedCityIndex: null,
     initVirusCountList: [3, 3, 3, 3],
     labCount: 5,

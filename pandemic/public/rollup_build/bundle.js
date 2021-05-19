@@ -11684,6 +11684,12 @@ var app = (function () {
         debug: false,
         debugStartCityIndex: 0,
         debugCityIndexList: [0, 1, 2, 3, 4, 5],
+        debugInitCity: {
+            blue : [0, 1, 2],
+            yellow : [20, 21, 22],
+            black : [31, 32, 33],
+            red : [36, 37, 38]
+        },
         checkedCityIndex: null,
         initVirusCountList: [3, 3, 3, 3],
         labCount: 5,
@@ -12656,15 +12662,7 @@ var app = (function () {
         },
 
         getRandomCityIndex2: (virus) => {
-            if (virus.black) {
-                return [31, 32, 33];
-            } else if (virus.red) {
-                return [36, 37, 38];
-            } else if (virus.yellow) {
-                return [20, 21, 22];
-            } else if (virus.blue) {
-                return [0, 1, 2];
-            }
+            return get_store_value(gameStore).debugInitCity[virus.type];
         },
 
         init: () => {
