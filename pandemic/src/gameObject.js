@@ -9,7 +9,7 @@ const gameObject = {
         red : [36, 37, 38]
     },
     checkedCityIndex: null,
-    initVirusCountList: [3, 3, 3],
+    initVirusCountList: [3, 3, 3, 3],
     labCount: 5,
     ready: true,
     removeCity: false,

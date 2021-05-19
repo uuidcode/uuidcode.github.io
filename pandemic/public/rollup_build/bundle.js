@@ -11691,7 +11691,7 @@ var app = (function () {
             red : [36, 37, 38]
         },
         checkedCityIndex: null,
-        initVirusCountList: [3, 3, 3],
+        initVirusCountList: [3, 3, 3, 3],
         labCount: 5,
         ready: true,
         removeCity: false,
@@ -13122,6 +13122,7 @@ var app = (function () {
 
             for (let i = 0; i < game.virusList.length; i++) {
                 const virus = game.virusList[i];
+
 
                 if (targetCity[virus.type]) {
                     if (virus.active) {

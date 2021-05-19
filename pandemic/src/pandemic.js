@@ -874,6 +874,7 @@ const gameStore = {
         for (let i = 0; i < game.virusList.length; i++) {
             const virus = game.virusList[i];
 
+
             if (targetCity[virus.type]) {
                 if (virus.active) {
                     await gameStore.showContagion(targetCity, 3);
