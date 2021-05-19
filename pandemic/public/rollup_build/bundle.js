@@ -11685,6 +11685,7 @@ var app = (function () {
         debugStartCityIndex: 0,
         debugCityIndexList: [0, 1, 2, 3, 4, 5],
         checkedCityIndex: null,
+        initVirusCountList: [3, 3, 3, 3],
         labCount: 5,
         ready: true,
         removeCity: false,
@@ -12645,7 +12646,8 @@ var app = (function () {
                 cityIndex[i] = i;
             }
 
-            cityIndex = shuffle(cityIndex).slice(0, 3);
+            cityIndex = shuffle(cityIndex)
+                .slice(0, game.initVirusCountList.length);
 
             return game.cityList
                 .filter(city => city[virus.type])
@@ -12701,13 +12703,13 @@ var app = (function () {
 
                 game.virusList.forEach(virus => {
                     const cityIndexList = gameStore.getRandomCityIndex(virus);
+                    const shuffledInitVirusCountList = cloneAndShuffle(game.initVirusCountList);
 
                     game.cityList = game.cityList.map(city => {
                         const indexOf = cityIndexList.indexOf(city.index);
 
                         if (indexOf >= 0) {
-                            city.virusCount = indexOf + 1;
-                            city.virusCount = 3;
+                            city.virusCount = shuffledInitVirusCountList.pop();
                             virus.count += city.virusCount;
                         }
 

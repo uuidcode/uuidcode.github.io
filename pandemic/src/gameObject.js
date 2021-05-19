@@ -3,6 +3,7 @@ const gameObject = {
     debugStartCityIndex: 0,
     debugCityIndexList: [0, 1, 2, 3, 4, 5],
     checkedCityIndex: null,
+    initVirusCountList: [3, 3, 3, 3],
     labCount: 5,
     ready: true,
     removeCity: false,
