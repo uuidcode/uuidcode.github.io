@@ -23,6 +23,7 @@ const gameObject = {
             count: 2,
             x: 843,
             y: 180,
+
             active: true,
             end: false
         },
