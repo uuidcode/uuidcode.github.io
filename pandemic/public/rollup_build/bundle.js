@@ -11691,7 +11691,7 @@ var app = (function () {
             red : [36, 37, 38]
         },
         checkedCityIndex: null,
-        initVirusCountList: [1, 2, 3, 1, 2, 3],
+        initVirusCountList: [3, 3, 3, 3],
         labCount: 5,
         ready: true,
         removeCity: false,
