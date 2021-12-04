@@ -5,3 +5,4 @@ atlassian-ide-plugin.xml
 node_modules
 .cache
 dist
+DeleteFile.java
