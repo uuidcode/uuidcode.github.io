@@ -27,8 +27,7 @@ public class Generator {
         fileList.add(new File("generateAssertJ/index.html"));
         fileList.add(new File("redux/index.html"));
 
-        fileList
-            .stream()
+        fileList.stream()
             .filter(file -> file.getName().endsWith(".html"))
             .forEach(file -> {
                 try {
