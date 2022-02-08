@@ -1,5 +1,6 @@
 <script>
     import gameStore from "./gameStore";
+    import Player from "./Player.svelte";
 </script>
 <table>
     <tr>
@@ -13,9 +14,9 @@
         <td width="400"></td>
     </tr>
     <tr>
-        <td width="400">테드</td>
+        <td width="400"><Player playerIndex="0"></Player></td>
         <td width="800"></td>
-        <td width="400">다은</td>
+        <td width="400"><Player playerIndex="1"></Player></td>
     </tr>
 </table>
 <main>

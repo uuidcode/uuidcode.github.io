@@ -8,8 +8,24 @@ const gameStore = {
     subscribe,
     set,
     update,
+
     plusRound: () => update(game => {
         game.round = game.round + 1;
+        return game;
+    }),
+
+    minusRound: () => update(game => {
+        game.round = game.round - 1;
+        return game;
+    }),
+
+    plusMoral: () => update(game => {
+        game.moral = game.moral + 1;
+        return game;
+    }),
+
+    minusMoral: () => update(game => {
+        game.moral = game.moral - 1;
         return game;
     })
 }
