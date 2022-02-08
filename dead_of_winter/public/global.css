@@ -6,3 +6,8 @@ td.active {
     background: lightblue;
 }
 
+div.card {
+    width: 100px;
+    height: 100px;
+}
+
