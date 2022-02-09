@@ -8,13 +8,13 @@
     let player;
     let playerList;
     let survivorIndexList;
-    let cardIndexList;
+    let itemCardIndexList;
 
     $: {
         playerList = $gameStore.playerList;
         player = playerList[playerIndex];
         survivorIndexList = player.survivorIndexList;
-        cardIndexList = player.cardIndexList;
+        itemCardIndexList = player.itemCardIndexList;
     }
 </script>
 
@@ -34,8 +34,8 @@
     <tr>
         <td class="active">카드</td>
         <td>
-            {#each cardIndexList as cardIndex}
-                <Card cardIndex={cardIndex}></Card>
+            {#each itemCardIndexList as itemCardIndex}
+                <Card itemCardIndex={itemCardIndex}></Card>
             {/each}
         </td>
     </tr>

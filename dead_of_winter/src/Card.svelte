@@ -1,14 +1,14 @@
 <script>
     import gameStore from "./gameStore";
 
-    export let cardIndex;
+    export let itemCardIndex;
 
     let cardList;
     let card
 
     $: {
         cardList = $gameStore.cardList;
-        card = $gameStore.cardList[cardIndex];
+        card = $gameStore.itemCardList[itemCardIndex];
     }
 </script>
 

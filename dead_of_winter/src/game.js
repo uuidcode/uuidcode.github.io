@@ -1,16 +1,9 @@
+import itemCardList from './itemCardList'
+
 const game = {
     round: 6,
     moral: 6,
-    cardList: [
-        {
-            index: 0,
-            type: '약'
-        },
-        {
-            index: 1,
-            type: '식량'
-        }
-    ],
+    itemCardList: itemCardList,
     placeList: [
         {
             name: '피난기지'
@@ -22,10 +15,54 @@ const game = {
             name: '마트'
         },
         {
-            name: '학교'
+            name: '학교',
+            cardList: [
+                "잡동사니",
+                "야구방망이",
+                "가위",
+                "확성기",
+                "약",
+                "약",
+                "약",
+                "학교 청사진",
+                "바리게이트",
+                "리더십",
+                "격투기",
+                "식량1",
+                "식량1",
+                "식량1",
+                "식량2",
+                "식량2",
+                "식량2",
+                "외부인2",
+                "외부인2",
+                "외부인3"
+            ]
         },
         {
-            name: '도서관'
+            name: '도서관',
+            cardList: [
+                "독서등",
+                "잡동사니",
+                "신나는 재즈 에어로빅",
+                "생존 요리법",
+                "경찰서 청사진",
+                "병원 청사진",
+                "마트 청사진",
+                "주유소 청사진",
+                "도서관 청사진",
+                "연료",
+                "연료",
+                "연료",
+                "연료",
+                "식량1",
+                "식량1",
+                "식량1",
+                "식량1",
+                "외부인1",
+                "외부인2",
+                "외부인2",
+            ]
         },
         {
             name: '병원'
@@ -383,12 +420,12 @@ const game = {
         {
             name: '테드',
             survivorIndexList: [0, 3],
-            cardIndexList:[0]
+            itemCardIndexList:[0]
         },
         {
             name: '다은',
             survivorIndexList: [1, 2],
-            cardIndexList:[1]
+            itemCardIndexList:[1]
         }
     ]
 }
