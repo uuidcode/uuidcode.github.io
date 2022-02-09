@@ -11,14 +11,24 @@ const game = {
             type: '식량'
         }
     ],
-    siteList: [
+    placeList: [
         {
-            index: 0,
+            name: '경찰서'
+        },
+        {
+            name: '마트'
+        },
+        {
+            name: '학교'
+        },
+        {
+            name: '도서관'
+        },
+        {
             name: '병원'
         },
         {
-            index: 1,
-            name: '경찰서'
+            name: '주유소'
         }
     ],
     survivorList: [
@@ -30,8 +40,7 @@ const game = {
             search: 4,
             ability: {
                 name: '라운드마다 한 번, 미사용 행동 주사위 1개의 결과값을 1 높일 수 있습니다.',
-                type: 'plusPower',
-                once: true
+                type: 'plusPower'
             }
         },
         {
@@ -41,10 +50,8 @@ const game = {
             attack: 1,
             search: 3,
             ability: {
-                name: '라운드마다 한 번, 좀비 2구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
-                type: 'killZombie',
-                targetCount: 2,
-                once: true
+                name: '라운드마다 한 번, 현재 장소에서 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie'
             }
         },
         {
@@ -54,7 +61,7 @@ const game = {
             attack: 2,
             search: 2,
             ability: {
-                name: '이동하지만 위험 노출 주사위를 굴리지 않습니다.',
+                name: '라운드마다 한 번, 이동하지만 위험 노출 주사위를 굴리지 않습니다.',
                 type: 'move'
             }
         },
@@ -67,8 +74,6 @@ const game = {
             ability: {
                 name: '라운드마다 한 번, 올리바아와 같은 장소의 생존자(올리비아 포함) 중 한 명에게서 부상 토근 1개 제거합니다.',
                 type: 'care',
-                targetCount: 1,
-                useType: 1
             }
         },
         {
@@ -79,9 +84,7 @@ const game = {
             search: 4,
             ability: {
                 name: '라운드마다 한 번, 현재 장소의 아이템 카드 1장 가져갑니다.',
-                type: 'get',
-                targetCount: 1,
-                useType: 1
+                type: 'get'
             }
         },
         {
@@ -92,8 +95,7 @@ const game = {
             search: 4,
             ability: {
                 name: '라운드마다 한 번, 식량 창고에 식량 토큰 2개 추가합니다.',
-                type: 'food',
-                useType: 1
+                type: 'food'
             }
         },
         {
@@ -104,8 +106,8 @@ const game = {
             search: 3,
             ability: {
                 name: '라운드마다 한 번, 마트에 있을때, 아이템 카드 1장 가져갑니다.',
-                type: 'getMart',
-                useType: 1
+                type: 'get',
+                place: '마트'
             }
         },
         {
@@ -116,9 +118,7 @@ const game = {
             search: 1,
             ability: {
                 name: '라운드마다 한 번, 현재 장소의 아이템 카드 1장 가져깁니다.',
-                type: 'get',
-                targetCount: 1,
-                useType: 1
+                type: 'get'
             }
         },
         {
@@ -139,10 +139,9 @@ const game = {
             attack: 4,
             search: 3,
             ability: {
-                name: '라운드마다 한 번, 현재 장소의 아이템 카드 2장을 가져갑니다.',
-                type: 'get',
-                targetCount: 2,
-                useType: 1
+                name: '라운드마다 한 번, 현재 장소에서 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie',
+                place: '도서관'
             }
         },
         {
@@ -152,10 +151,8 @@ const game = {
             attack: 3,
             search: 5,
             ability: {
-                name: '라운드마다 한 번, 현재 장소의 아이템 카드 1장을 가져갑니다..',
-                type: 'get',
-                targetCount: 1,
-                useType: 1
+                name: '라운드마다 한 번, 현재 장소의 아이템 카드 1장을 가져갑니다.',
+                type: 'get'
             }
         },
         {
@@ -165,10 +162,9 @@ const game = {
             attack: 4,
             search: 3,
             ability: {
-                name: '라운드마다 한 번, 좀비 2구 처치힙니다. 이 때 위험노출 주사위를 굴리지 않습니다.',
+                name: '라운드마다 한 번, 주유소에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
                 type: 'killZombie',
-                targetCount: 2,
-                useType: 1
+                place: '주유소'
             }
         },
         {
@@ -179,9 +175,8 @@ const game = {
             search: 4,
             ability: {
                 name: '라운드마다 한 번, 도서관에 있을때 아이템 카드 1장을 가져갑니다.',
-                type: 'getLibrary',
-                targetCount: 1,
-                useType: 1
+                type: 'get',
+                place: '도서관'
             }
         },
         {
@@ -191,10 +186,9 @@ const game = {
             attack: 4,
             search: 2,
             ability: {
-                name: '라운드마다 한 번, 학교에 있을때 좀비 1구 처치합니다. 위험노출 주사위 굴리지 않습니다.',
-                type: 'killZombieSchool',
-                targetCount: 1,
-                useType: 1
+                name: '라운드마다 한 번, 학교에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie',
+                place: '학교'
             }
         },
         {
@@ -204,10 +198,9 @@ const game = {
             attack: 4,
             search: 1,
             ability: {
-                name: '라운드마다 한 번, 다른 생존자를 위치를 변경할 수 있습니다. 이때 위험 노출 주사위을 굴리지 않습니다.',
-                type: 'move',
-                targetCount: 1,
-                useType: 1
+                name: '라운드마다 한 번, 경창서에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie',
+                place: '경찰서'
             }
         },
         {
@@ -218,8 +211,7 @@ const game = {
             search: 3,
             ability: {
                 name: '라운드마다 한 번, 현재 장소의 아이템 카드 맨위 4장의 카드를 확인하고 외부인 카드가 있으면 외부인 카드 1장 가져갑니다.',
-                type: 'help',
-                useType: 1
+                type: 'rescue'
             }
         },
         {
@@ -230,8 +222,7 @@ const game = {
             search: 3,
             ability: {
                 name: '라운드마다 한 번, 현재 장소의 아이템 카드를 1장을 가져갑니다.',
-                type: 'get',
-                useType: 1
+                type: 'get'
             }
         },
         {
@@ -242,8 +233,7 @@ const game = {
             search: 4,
             ability: {
                 name: '라운드마다 한 번, 쓰레기 카드 5장 처분합니다.',
-                type: 'clean',
-                useType: 1
+                type: 'clean'
             }
         },
         {
@@ -253,9 +243,9 @@ const game = {
             attack: 2,
             search: 4,
             ability: {
-                name: '라운드마다 한 번, 피난기지에 노약자 토근이 있을 경우, 피난기지에서 좀비 2구 처치합니다. 이때 위험 노출 주사위 굴리지 않습니다.',
-                type: 'killZombieCamp',
-                useType: 1
+                name: '라운드마다 한 번, 피난기지에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위 굴리지 않습니다.',
+                type: 'killZombie',
+                place: '피난기지'
             }
         },
         {
@@ -265,9 +255,9 @@ const game = {
             attack: 2,
             search: 4,
             ability: {
-                name: '자신의 부상 토큰이 1개 제거합니다.',
-                type: 'removeWound',
-                useType: 1
+                name: '라운드마다 한 번, 마트에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie',
+                place: '마트'
             }
         },
         {
@@ -278,8 +268,7 @@ const game = {
             search: 2,
             ability: {
                 name: '라운드마다 한 번, 현재 장소의 아이템 카드를 1장을 가져갑니다.',
-                type: 'get',
-                useType: 1
+                type: 'get'
             }
         },
         {
@@ -289,10 +278,9 @@ const game = {
             attack: 3,
             search: 3,
             ability: {
-                name: '라운드마다 한 번, 현재 장소에 좀비 3구를 유인합니다.',
-                type: 'invite',
-                targetCount: 3,
-                useType: 1
+                name: '라운드마다 한 번, 주유소에 있을때 아이템 카드를 1장을 가져갑니다.',
+                type: 'get',
+                place: '주유소'
             }
         },
         {
@@ -303,8 +291,8 @@ const game = {
             search: 4,
             ability: {
                 name: '라운드마다 한 번, 병원에 있을때 아이템 카드 1장 가져갑니다.',
-                type: 'getHospital',
-                useType: 1
+                type: 'get',
+                place: '병원'
             }
         },
         {
@@ -314,9 +302,9 @@ const game = {
             attack: 4,
             search: 2,
             ability: {
-                name: '라운드마다 한 번, 어서가 학교에 있을때 아이템 카드 1장 가져갑니다.',
-                type: 'getSchool',
-                useType: 1
+                name: '라운드마다 한 번, 학교에 있을때 아이템 카드 1장 가져갑니다.',
+                type: 'get',
+                place: '학교'
             }
         },
         {
@@ -326,9 +314,8 @@ const game = {
             attack: 2,
             search: 4,
             ability: {
-                name: '마이크가 공격할 때에는 위험 노출 주사위를 굴리지 않습니다.',
-                type: 'attack',
-                dangerDice: 0,
+                name: '라운드마다 한 번, 현재 장소에서 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie'
             }
         },
         {
@@ -339,9 +326,7 @@ const game = {
             search: 3,
             ability: {
                 name: '라운드마다 한 번, 현재 장소에 바리케이트 2개 설치합니다.',
-                type: 'barricade',
-                targetCount: 2,
-                useType: 1
+                type: 'barricade'
             }
         },
         {
@@ -351,10 +336,9 @@ const game = {
             attack: 6,
             search: 3,
             ability: {
-                name: '라운드마다 한 번, 현재 장소에 좀비 3구를 유인합니다.',
-                type: 'invite',
-                targetCount: 3,
-                useType: 1
+                name: '라운드마다 한 번, 병원에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie',
+                place: '병원'
             }
         },
         {
@@ -366,8 +350,7 @@ const game = {
             ability: {
                 name: '라운드마다 한 번, 경찰서에 있을때 아이템 카드 1장 가져갑니다.',
                 type: 'get',
-                targetCount: 1,
-                useType: 1
+                place: '경찰서'
             }
         },
         {
@@ -378,9 +361,7 @@ const game = {
             search: 5,
             ability: {
                 name: '라운드마다 한 번, 현재 장소에 바리케이트 2개 설치합니다.',
-                type: 'barricade',
-                targetCount: 2,
-                useType: 1
+                type: 'barricade'
             }
         },
         {
@@ -390,11 +371,8 @@ const game = {
             attack: 2,
             search: 5,
             ability: {
-                name: '라운드마다 한 번, 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
-                type: 'killZombie',
-                targetCount: 1,
-                dangerDice: 0,
-                useType: 1
+                name: '라운드마다 한 번, 현재 장소에서 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie'
             }
         }
     ],
@@ -416,8 +394,9 @@ const groupByType = game.survivorList
     .reduce((group, survivor) => {
         const { ability } = survivor;
 
-        group[ability.type] = group[ability.type] ?? 0;
-        group[ability.type]++;
+        const key = `${ability.type}-${ability.place}`;
+        group[key] = group[key] ?? 0;
+        group[key]++;
 
         return group;
     }, {});

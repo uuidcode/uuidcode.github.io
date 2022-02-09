@@ -1,12 +1,12 @@
 <script>
     import gameStore from "./gameStore";
     import Player from "./Player.svelte";
-    import Site from "./Site.svelte";
+    import Place from "./Place.svelte";
 
-    let siteList;
+    let placeList;
 
     $: {
-        siteList = $gameStore.siteList;
+        placeList = $gameStore.placeList;
     }
 </script>
 <table>
@@ -23,8 +23,8 @@
                     <td>{$gameStore.moral}</td>
                 </tr>
                 <tr>
-                    {#each siteList as site}
-                        <Site siteIndex={site.index}></Site>
+                    {#each placeList as place, i}
+                        <Place placeIndex={i}></Place>
                     {/each}
                 </tr>
             </table>
