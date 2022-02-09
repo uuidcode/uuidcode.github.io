@@ -15,7 +15,7 @@
         <td width="800">
             <table width="800">
                 <tr>
-                    <td class="active" width="100">라운든</td>
+                    <td class="active" width="100">라운드</td>
                     <td>{$gameStore.round}</td>
                 </tr>
                 <tr>

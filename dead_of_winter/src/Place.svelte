@@ -15,7 +15,7 @@
 
 <table width="800">
     <tr>
-        <td colspan="2" class="active">{place.name}</td>
+        <td colspan="2" class="active place">{place.name}</td>
     </tr>
     <tr>
         <td class="active">생존자</td>

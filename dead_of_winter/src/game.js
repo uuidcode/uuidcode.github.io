@@ -13,6 +13,9 @@ const game = {
     ],
     placeList: [
         {
+            name: '피난기지'
+        },
+        {
             name: '경찰서'
         },
         {
