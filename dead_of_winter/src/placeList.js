@@ -1,9 +1,57 @@
 const placeList = [
     {
-        name: '피난기지'
+        name: '피난기지',
+        maxSurviveCount: 24,
+        survivorIndexList: [],
+        foodCount: 0,
+        starvingTokenCount: 0,
+        weakTokenCount: 0,
+        trashCount: 0,
+        entranceList: [
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            },
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            },
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            },
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            },
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            },
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ]
     },
     {
         name: '병원',
+        entranceList: [
+            {
+                maxZombieCount: 4,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        maxSurviveCount: 4,
+        survivorIndexList: [],
+        noiseTokenCount: 0,
         cardList: [
             "잡동사니",
             "대걸레",
@@ -29,6 +77,16 @@ const placeList = [
     },
     {
         name: '마트',
+        maxSurviveCount: 3,
+        entranceList: [
+            {
+                maxZombieCount: 4,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        survivorIndexList: [],
+        noiseTokenCount: 0,
         cardList: [
             "잡동사니",
             "라이터",
@@ -54,6 +112,16 @@ const placeList = [
     },
     {
         name: '학교',
+        entranceList: [
+            {
+                maxZombieCount: 4,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        maxSurviveCount: 4,
+        survivorIndexList: [],
+        noiseTokenCount: 0,
         cardList: [
             "잡동사니",
             "야구방망이",
@@ -79,6 +147,17 @@ const placeList = [
     },
     {
         name: '도서관',
+        entranceList: [
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        maxSurviveCount: 3,
+        survivorIndexList: [],
+        barricadeCount: 0,
+        noiseTokenCount: 0,
         cardList: [
             "독서등",
             "잡동사니",
@@ -104,6 +183,16 @@ const placeList = [
     },
     {
         name: '경찰서',
+        entranceList: [
+            {
+                maxZombieCount: 4,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        maxSurviveCount: 3,
+        survivorIndexList: [],
+        noiseTokenCount: 0,
         cardList: [
             "무전기",
             "잡동사니",
@@ -129,6 +218,16 @@ const placeList = [
     },
     {
         name: '주유소',
+        entranceList: [
+            {
+                maxZombieCount: 3,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        maxSurviveCount: 2,
+        survivorIndexList: [],
+        noiseTokenCount: 0,
         cardList: [
             "산탄총",
             "주머니칼",
