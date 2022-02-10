@@ -6,10 +6,16 @@ const itemCardList = [
         feature: 'care'
     },
     {
+        name: '주사기',
+        category: '약',
+        type: 'execute',
+        feature: 'care2'
+    },
+    {
         name: '야구방망이',
         category: '잡동사니',
         type: 'attach',
-        feature: 'doubleAttack'
+        feature: 'hardAttack1'
     },
     {
         name: '식량1',
@@ -39,13 +45,13 @@ const itemCardList = [
         name: '격투기',
         category: '교육',
         type: 'attach',
-        feature: 'safeAttack'
+        feature: 'softAttack1'
     },
     {
         name: '가위',
         category: '도구',
         type: 'execute',
-        feature: 'safeAttack'
+        feature: 'softAttack1'
     },
     {
         name: '확성기',
@@ -124,7 +130,7 @@ const itemCardList = [
         feature: 'act'
     },
     {
-        name: '신나는 재즈 에어로빅',
+        name: '백과사전',
         category: '교육',
         type: 'execute',
         feature: 'act'
@@ -139,7 +145,73 @@ const itemCardList = [
         name: '독서등',
         category: '도구',
         type: 'execute',
-        feature: 'extraAttack'
+        feature: 'hardAttack1'
+    },
+    {
+        name: '무전기',
+        category: '도구',
+        type: 'execute',
+        feature: 'softAttack1'
+    },
+    {
+        name: '산탄총',
+        category: '총',
+        type: 'execute',
+        feature: 'hardAttack2'
+    },
+    {
+        name: '소총',
+        category: '총',
+        type: 'execute',
+        feature: 'softAttack2'
+    },
+    {
+        name: '권총',
+        category: '총',
+        type: 'execute',
+        feature: 'softAttack1'
+    },
+    {
+        name: '주머니칼',
+        category: '총',
+        type: 'execute',
+        feature: 'softAttack1'
+    },
+    {
+        name: '라이터',
+        category: '총',
+        type: 'execute',
+        feature: 'attackWithFuel'
+    },
+    {
+        name: '야시경',
+        category: '도구',
+        type: 'execute',
+        feature: 'sofAttack1'
+    },
+    {
+        name: '자물쇠',
+        category: '도구',
+        type: 'execute',
+        feature: 'barricade'
+    },
+    {
+        name: '망치',
+        category: '도구',
+        type: 'execute',
+        feature: 'barricade'
+    },
+    {
+        name: '대걸레',
+        category: '도구',
+        type: 'execute',
+        feature: 'clean5'
+    },
+    {
+        name: '손전등',
+        category: '도구',
+        type: 'execute',
+        feature: 'search3'
     }
 ];
 
