@@ -31,6 +31,12 @@ td.place {
     height: 40px
 }
 
+.player-item-card {
+    margin-bottom: 10px;
+    border: 1px solid darkgray;
+    box-shadow: 4px 4px 2px 1px darkgray;
+}
+
 .item-card {
     background: lightseagreen;
     width: 40px;

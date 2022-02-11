@@ -27,7 +27,7 @@
             <table>
                 {#each survivorIndexList as survivorIndex}
                 <tr>
-                    <td><Survivor survivorIndex={survivorIndex}></Survivor></td>
+                    <td width="300"><Survivor survivorIndex={survivorIndex}></Survivor></td>
                 </tr>
                 {/each}
             </table>

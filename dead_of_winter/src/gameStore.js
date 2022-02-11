@@ -44,6 +44,8 @@ const gameStore = {
                     } else {
                         previousValue.push({
                             name: currentValue,
+                            description: game.itemCardList
+                                .find(item => item.name === currentValue).description,
                             count: 1
                         });
                     }
