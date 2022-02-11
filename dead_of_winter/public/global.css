@@ -1,3 +1,7 @@
+* {
+    font-size: 12px;
+}
+
 td {
     padding: 5px;
 }
@@ -13,4 +17,27 @@ div.card {
 
 td.place {
     background: #00CCFF;
+}
+
+.survivor-area {
+    background: lightgreen;
+    width: 40px;
+    height: 40px
+}
+
+.zombie-area {
+    background: lightcoral;
+    width: 40px;
+    height: 40px
+}
+
+.item-card {
+    background: lightseagreen;
+    width: 40px;
+    height: 40px
+}
+
+.survivor {
+    border: 1px solid darkgray;
+    box-shadow: 4px 4px 2px 1px darkgray;
 }

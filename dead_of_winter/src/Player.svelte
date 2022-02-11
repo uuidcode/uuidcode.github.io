@@ -8,34 +8,33 @@
     let player;
     let playerList;
     let survivorIndexList;
-    let itemCardIndexList;
+    let itemCardTable;
 
     $: {
         playerList = $gameStore.playerList;
         player = playerList[playerIndex];
         survivorIndexList = player.survivorIndexList;
-        itemCardIndexList = player.itemCardIndexList;
+        itemCardTable = player.itemCardTable;
     }
 </script>
 
 <table>
     <tr>
-        <td class="active">플레이어 이름</td>
-        <td>{player.name}</td>
+        <td class="active" colspan="2">{player.name}</td>
     </tr>
     <tr>
-        <td class="active">생존자</td>
-        <td>
-            {#each survivorIndexList as survivorIndex}
-                <Survivor survivorIndex={survivorIndex}></Survivor>
-            {/each}
+        <td valign="top">
+            <table>
+                {#each survivorIndexList as survivorIndex}
+                <tr>
+                    <td><Survivor survivorIndex={survivorIndex}></Survivor></td>
+                </tr>
+                {/each}
+            </table>
         </td>
-    </tr>
-    <tr>
-        <td class="active">카드</td>
-        <td>
-            {#each itemCardIndexList as itemCardIndex}
-                <Card itemCardIndex={itemCardIndex}></Card>
+        <td valign="top">
+            {#each itemCardTable as itemCardRow}
+                <Card itemCardRow={itemCardRow}></Card>
             {/each}
         </td>
     </tr>

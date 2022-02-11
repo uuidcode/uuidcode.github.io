@@ -1,5 +1,6 @@
 const survivorList = [
     {
+        index: 0,
         name: '브라이언 리',
         job: '시장',
         power: 68,
@@ -8,9 +9,11 @@ const survivorList = [
         ability: {
             name: '라운드마다 한 번, 미사용 행동 주사위 1개의 결과값을 1 높일 수 있습니다.',
             type: 'plusPower'
-        }
+        },
+        placeName: '피난기지'
     },
     {
+        index: 1,
         name: '토머스 하트',
         job: '군인',
         power: 64,
@@ -19,9 +22,11 @@ const survivorList = [
         ability: {
             name: '라운드마다 한 번, 현재 장소에서 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
             type: 'killZombie'
-        }
+        },
+        placeName: '마트'
     },
     {
+        index: 2,
         name: '스파키',
         job: '스턴트견',
         power: 10,
@@ -33,6 +38,7 @@ const survivorList = [
         }
     },
     {
+        index: 3,
         name: '올리비아 브라운',
         job: '의사',
         power: 56,
@@ -44,6 +50,7 @@ const survivorList = [
         }
     },
     {
+        index: 4,
         name: '그레이 비어드',
         job: '해적',
         power: 16,
@@ -55,6 +62,7 @@ const survivorList = [
         }
     },
     {
+        index: 5,
         name: '로레타 클레이',
         job: '요리사',
         power: 20,
@@ -66,6 +74,7 @@ const survivorList = [
         }
     },
     {
+        index: 6,
         name: '앤드류 에반스',
         job: '농부',
         power: 12,
@@ -78,6 +87,7 @@ const survivorList = [
         }
     },
     {
+        index: 7,
         name: '탈리아 존스',
         job: '점술가',
         power: 28,
@@ -89,6 +99,7 @@ const survivorList = [
         }
     },
     {
+        index: 8,
         name: '포레스트 플럼',
         job: '쇼핑몰 직원',
         power: 14,
@@ -100,6 +111,7 @@ const survivorList = [
         }
     },
     {
+        index: 9,
         name: '데이비드 가르시아',
         job: '회계사',
         power: 50,
@@ -112,6 +124,7 @@ const survivorList = [
         }
     },
     {
+        index: 10,
         name: '존 프라이스',
         job: '학생',
         power: 18,
@@ -123,6 +136,7 @@ const survivorList = [
         }
     },
     {
+        index: 11,
         name: '에드워드 화이트',
         job: '화학자',
         power: 44,
@@ -135,6 +149,7 @@ const survivorList = [
         }
     },
     {
+        index: 12,
         name: '알렉시스 그레이',
         job: '사서',
         power: 46,
@@ -147,6 +162,7 @@ const survivorList = [
         }
     },
     {
+        index: 13,
         name: '마리아 로페즈',
         job: '교사',
         power: 48,
@@ -159,6 +175,7 @@ const survivorList = [
         }
     },
     {
+        index: 14,
         name: '소피 로빈슨',
         job: '항공기 조종사',
         power: 58,
@@ -171,6 +188,7 @@ const survivorList = [
         }
     },
     {
+        index: 15,
         name: '가브리엘 디아즈',
         job: '소방관',
         power: 60,
@@ -182,6 +200,7 @@ const survivorList = [
         }
     },
     {
+        index: 16,
         name: '제니 클라크',
         job: '웨이트리스',
         power: 24,
@@ -193,6 +212,7 @@ const survivorList = [
         }
     },
     {
+        index: 17,
         name: '브랜든 케인',
         job: '건물 관리인',
         power: 26,
@@ -204,6 +224,7 @@ const survivorList = [
         }
     },
     {
+        index: 18,
         name: '배브 러셀',
         job: '어머니',
         power: 34,
@@ -216,6 +237,7 @@ const survivorList = [
         }
     },
     {
+        index: 19,
         name: '버디 데이비스',
         job: '헬스 트레이너',
         power: 36,
@@ -228,6 +250,7 @@ const survivorList = [
         }
     },
     {
+        index: 20,
         name: '애널리 첸',
         job: '변호사',
         power: 38,
@@ -239,6 +262,7 @@ const survivorList = [
         }
     },
     {
+        index: 21,
         name: '로드 밀러',
         job: '트럭 운전기사',
         power: 40,
@@ -251,6 +275,7 @@ const survivorList = [
         }
     },
     {
+        index: 22,
         name: '자넷 타일러',
         job: '간호사',
         power: 42,
@@ -263,6 +288,7 @@ const survivorList = [
         }
     },
     {
+        index: 23,
         name: '어서 서스턴',
         job: '교장',
         power: 62,
@@ -275,6 +301,7 @@ const survivorList = [
         }
     },
     {
+        index: 24,
         name: '마이크 조',
         job: '닌자',
         power: 30,
@@ -286,6 +313,7 @@ const survivorList = [
         }
     },
     {
+        index: 25,
         name: '하먼 브록스',
         job: '공원 관리인',
         power: 32,
@@ -297,6 +325,7 @@ const survivorList = [
         }
     },
     {
+        index: 26,
         name: '제임스 마이어스',
         job: '정신과 의사',
         power: 54,
@@ -309,6 +338,7 @@ const survivorList = [
         }
     },
     {
+        index: 27,
         name: '카를라 톰슨',
         job: '경찰 지령요원',
         power: 22,
@@ -321,6 +351,7 @@ const survivorList = [
         }
     },
     {
+        index: 28,
         name: '에슐리 로스',
         job: '건설 노동자',
         power: 52,
@@ -332,6 +363,7 @@ const survivorList = [
         }
     },
     {
+        index: 29,
         name: '다니엘 스미스',
         job: '보안관',
         power: 66,

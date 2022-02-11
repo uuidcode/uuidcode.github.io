@@ -7,6 +7,7 @@ const placeList = [
         starvingTokenCount: 0,
         weakTokenCount: 0,
         trashCount: 0,
+        cardList: [],
         entranceList: [
             {
                 maxZombieCount: 3,
@@ -42,6 +43,7 @@ const placeList = [
     },
     {
         name: '병원',
+        itemCardIndexList: [],
         entranceList: [
             {
                 maxZombieCount: 4,

@@ -1,15 +1,13 @@
 <script>
     import gameStore from "./gameStore";
 
-    export let itemCardIndex;
-
-    let cardList;
-    let card
+    export let itemCardRow;
 
     $: {
-        cardList = $gameStore.cardList;
-        card = $gameStore.itemCardList[itemCardIndex];
     }
 </script>
 
-<div class="card">{card.type}</div>
+<tr>
+    <td class="active">{itemCardRow.name}</td>
+    <td>{itemCardRow.count}</td>
+</tr>

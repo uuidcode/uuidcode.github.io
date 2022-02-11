@@ -14,7 +14,7 @@ const itemCardList = [
     {
         name: '야구방망이',
         category: '잡동사니',
-        type: 'attach',
+        type: 'execute',
         feature: 'hardAttack1'
     },
     {
@@ -44,7 +44,7 @@ const itemCardList = [
     {
         name: '격투기',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'softAttack1'
     },
     {
@@ -62,64 +62,64 @@ const itemCardList = [
     {
         name: '외부인1',
         category: '외부인',
-        type: 'execute'
+        type: 'event'
     },
     {
         name: '외부인2',
         category: '외부인',
-        type: 'execute'
+        type: 'event'
     },
     {
         name: '외부인3',
         category: '외부인',
-        type: 'execute'
+        type: 'event'
     },
     {
         name: '학교 청사진',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'search',
         place: '학교'
     },
     {
         name: '경찰서 청사진',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'search',
         place: '경찰서'
     },
     {
         name: '주유소 청사진',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'search',
         place: '주유소'
     },
     {
         name: '마트 청사진',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'search',
         place: '마트'
     },
     {
         name: '병원 청사진',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'search',
         place: '병원'
     },
     {
         name: '도서관 청사진',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'search',
         place: '도서관'
     },
     {
         name: '생존 요리법',
         category: '교육',
-        type: 'attach',
+        type: 'execute',
         feature: 'food',
         place: '피난기지'
     },
@@ -155,31 +155,31 @@ const itemCardList = [
     },
     {
         name: '산탄총',
-        category: '총',
+        category: '무기',
         type: 'execute',
         feature: 'hardAttack2'
     },
     {
         name: '소총',
-        category: '총',
+        category: '무기',
         type: 'execute',
         feature: 'softAttack2'
     },
     {
         name: '권총',
-        category: '총',
+        category: '무기',
         type: 'execute',
         feature: 'softAttack1'
     },
     {
         name: '주머니칼',
-        category: '총',
+        category: '무기',
         type: 'execute',
         feature: 'softAttack1'
     },
     {
         name: '라이터',
-        category: '총',
+        category: '무기',
         type: 'execute',
         feature: 'attackWithFuel'
     },

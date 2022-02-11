@@ -27,6 +27,45 @@ const gameStore = {
     minusMoral: () => update(game => {
         game.moral = game.moral - 1;
         return game;
+    }),
+
+    updateAll: () => update(game => {
+        game.survivorCount = game.placeList
+            .map(player => player.survivorIndexList.length)
+            .reduce((a, b) => a + b, 0);
+
+        game.playerList.forEach(player => {
+            player.itemCardTable = player.itemCardList
+                .reduce((previousValue, currentValue) => {
+                    const row = previousValue.find(value => value.name === currentValue);
+
+                    if (row) {
+                        row.count++;
+                    } else {
+                        previousValue.push({
+                            name: currentValue,
+                            count: 1
+                        });
+                    }
+
+                    return previousValue;
+                }, [])
+                .sort((a, b) => {
+                    if (a.name > b.name) {
+                        return 1;
+                    }
+
+                    if (a.name < b.name) {
+                        return -1;
+                    }
+
+                    return 0;
+                });
+
+            console.log('>>> player.itemCardTable', player.itemCardTable);
+        });
+
+        return game;
     })
 }
 

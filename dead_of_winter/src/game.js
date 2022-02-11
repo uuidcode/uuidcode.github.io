@@ -6,6 +6,7 @@ import riskCardList from "./riskCardList";
 const game = {
     round: 6,
     moral: 6,
+    survivorCount: 0,
     riskCardList: riskCardList,
     itemCardList: itemCardList,
     placeList: placeList,
@@ -14,12 +15,12 @@ const game = {
         {
             name: '테드',
             survivorIndexList: [0, 3],
-            itemCardIndexList:[0]
+            itemCardList:['권총', "약", "잡동사니", "약", "약", "잡동사니"]
         },
         {
             name: '다은',
             survivorIndexList: [1, 2],
-            itemCardIndexList:[1]
+            itemCardList:['주사기']
         }
     ]
 }
