@@ -21,16 +21,18 @@
 </script>
 
 <table>
-    <tr>
-        <table class="player-header">
-            <tr>
-                <td>{player.name}</td>
-                <td class="active">생존자</td>
-                <td>{survivorList.length}</td>
-                <td class="active">아이템</td>
-                <td>{itemCardList.length}</td>
-            </tr>
-        </table>
+    <tr style="background-color: {player.color}">
+        <td colspan="2">
+            <table class="player-header">
+                <tr>
+                    <td>{player.name}</td>
+                    <td class="active">생존자</td>
+                    <td>{survivorList.length}</td>
+                    <td class="active">아이템</td>
+                    <td>{itemCardList.length}</td>
+                </tr>
+            </table>
+        </td>
     </tr>
     <tr>
         <td valign="top" width="260">

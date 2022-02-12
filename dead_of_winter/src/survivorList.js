@@ -378,6 +378,7 @@ const survivorList = [
 
 survivorList.forEach(survivor => {
     survivor.wound = 0;
+    survivor.playerIndex = 0;
 });
 
 export default survivorList;

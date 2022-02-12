@@ -9,26 +9,14 @@
     let placeList;
     let place
     let survivorList;
+    let survivorLocationList;
     let survivorAreaTable = [];
 
     $: {
         placeList = $gameStore.placeList;
         place = placeList[placeIndex];
-
-        let survivorAreaRow = [];
-
-        console.log('>>> place', place);
-
-        [...Array(place.maxSurviveCount).keys()].forEach((_, index) => {
-            if (index % survivorCountPerRow === 0) {
-                survivorAreaRow = [];
-                survivorAreaTable.push(survivorAreaRow);
-            }
-
-            survivorAreaRow.push(index);
-        });
-
-        console.log('>>> survivorAreaTable', survivorAreaTable);
+        survivorList = place.survivorList;
+        survivorLocationList = place.survivorLocationList;
     }
 </script>
 
@@ -52,12 +40,17 @@
             </table>
         </td>
         <td class="active" style="width: 50px">생존자</td>
-        <td>
+        <td style="width: 200px">
             <table>
-                {#each survivorAreaTable as survivorAreaRow}
+                {#each survivorLocationList as row}
                     <tr>
-                        {#each survivorAreaRow as survivorAreaIndex}
-                            <td class="survivor-area"></td>
+                        {#each row as survivor}
+                            <td class="survivor-area">
+                                {#if survivor}
+                                    <div class="current-survivor-area"
+                                         style="background-color: {gameStore.getPlayerColor(survivor)}">{survivor.index}</div>
+                                {/if}
+                            </td>
                         {/each}
                     </tr>
                 {/each}

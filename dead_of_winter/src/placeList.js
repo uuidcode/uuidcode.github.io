@@ -2,7 +2,8 @@ const placeList = [
     {
         name: '피난기지',
         maxSurviveCount: 24,
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         foodCount: 0,
         starvingTokenCount: 0,
         weakTokenCount: 0,
@@ -52,7 +53,8 @@ const placeList = [
             }
         ],
         maxSurviveCount: 4,
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         noiseTokenCount: 0,
         cardList: [
             "잡동사니",
@@ -87,7 +89,8 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         noiseTokenCount: 0,
         cardList: [
             "잡동사니",
@@ -122,7 +125,8 @@ const placeList = [
             }
         ],
         maxSurviveCount: 4,
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         noiseTokenCount: 0,
         cardList: [
             "잡동사니",
@@ -157,7 +161,8 @@ const placeList = [
             }
         ],
         maxSurviveCount: 3,
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         barricadeCount: 0,
         noiseTokenCount: 0,
         cardList: [
@@ -193,7 +198,8 @@ const placeList = [
             }
         ],
         maxSurviveCount: 3,
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         noiseTokenCount: 0,
         cardList: [
             "무전기",
@@ -228,7 +234,8 @@ const placeList = [
             }
         ],
         maxSurviveCount: 2,
-        survivorIndexList: [],
+        survivorList: [],
+        survivorLocationList: [],
         noiseTokenCount: 0,
         cardList: [
             "산탄총",

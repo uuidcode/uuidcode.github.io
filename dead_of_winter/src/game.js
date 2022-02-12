@@ -7,7 +7,10 @@ const game = {
     round: 6,
     moral: 6,
     survivorCount: 0,
+    deadSurvivorCount: 0,
     zombieCount: 0,
+    zombieTokenCount: 0,
+    deadZombieCount: 0,
     itemCardCount: 0,
     riskCardList: riskCardList,
     itemCardList: itemCardList,
@@ -22,12 +25,16 @@ const game = {
     survivorList: survivorList,
     playerList: [
         {
+            index: 0,
             name: '테드',
+            color: '#D98880 ',
             survivorList: [],
             itemCardList:[]
         },
         {
+            index: 1,
             name: '다은',
+            color: '#7FB3D5 ',
             survivorList: [],
             itemCardList:[]
         }

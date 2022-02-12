@@ -39,19 +39,25 @@ gameStore = {
                 .slice(0, 7)
                 .map(name => game.itemCardList.find(item => item.name === name));
         });
+    },
 
-        gameStore.updateSurvivor(game);
+    getPlayerColor: (survivor) => {
+        return get(gameStore).playerList
+            .find(player => player.index === survivor.playerIndex)
+            .color;
     },
 
     initSurvivor: function (game) {
-        game.playerList.forEach(player => {
+        game.playerList.forEach((player, playerIndex) => {
             game.survivorList
                 .sort((a, b) => 0.5 - Math.random());
 
             const survivorList = [];
 
             for (let i = 0; i < 4; i++) {
-                survivorList.push(game.survivorList.pop());
+                const survivor = game.survivorList.pop();
+                survivor.playerIndex = playerIndex;
+                survivorList.push(survivor);
             }
 
             survivorList.sort((a, b) => b.power - a.power);
@@ -60,13 +66,37 @@ gameStore = {
 
             game.survivorList = [...game.survivorList];
         });
+    },
 
-        gameStore.updateSurvivor(game);
+   updatePlace: function (game) {
+        game.placeList.forEach(place => {
+            place.survivorLocationList = place.entranceList
+                .map(entrance => {
+                    return [...Array(entrance.maxZombieCount).keys()]
+                        .map(i => place.survivorList.pop());
+                });
+        });
+    },
+
+    getCamp: (game) => {
+        return game.placeList.find(place => place.name === '피난기지');
+    },
+
+    getSurvivorList: (game) => {
+        return game.playerList.flatMap(player => player.survivorList);
+    },
+
+    initCamp: function (game) {
+        const survivorList = gameStore.getSurvivorList(game);
+        console.log('>>> survivorList', survivorList);
+        const camp = gameStore.getCamp(game);
+        camp.survivorList = survivorList;
     },
 
     init: () => update(game => {
         gameStore.initItemCard(game);
         gameStore.initSurvivor(game);
+        gameStore.initCamp(game);
         return game;
     }),
 
@@ -119,20 +149,22 @@ gameStore = {
 
                     return 0;
                 });
-
-            console.log('>>> player.itemCardTable', player.itemCardTable);
         });
     },
 
-    updateAll: () => update(game => {
+    updateSurvivorCount: game => {
         game.survivorCount = game.placeList
-            .map(player => player.survivorIndexList.length)
+            .map(player => player.survivorList.length)
             .reduce((a, b) => a + b, 0);
+    },
 
+    updateAll: () => update(game => {
+        gameStore.updateSurvivorCount(game);
         gameStore.updateItemCardTable(game);
         gameStore.updateSurvivor(game);
         gameStore.updateItemCard(game);
         gameStore.updateZombie(game);
+        gameStore.updatePlace(game);
 
         return game;
     })

@@ -29,6 +29,16 @@
                     <td width="100">{$gameStore.itemCardCount}</td>
                 </tr>
                 <tr>
+                    <td class="active" width="100">죽은 생존자</td>
+                    <td width="100">{$gameStore.deadSurvivorCount}</td>
+                    <td class="active" width="100">죽은 좀비</td>
+                    <td width="100">{$gameStore.deadZombieCount}</td>
+                    <td class="active" width="100">좀비 토큰</td>
+                    <td width="100">{$gameStore.zombieTokenCount}</td>
+                    <td class="active" width="100">외부인</td>
+                    <td width="100">{$gameStore.survivorList.length}</td>
+                </tr>
+                <tr>
                     <td colspan="10">
                         <table>
                             {#each placeList as place, i}
