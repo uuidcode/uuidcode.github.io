@@ -76,6 +76,13 @@ gameStore = {
             .reduce((a, b) => a + b, 0);
     },
 
+    updateZombie: game => {
+        game.zombieCount = game.placeList
+            .flatMap(player => player.entranceList)
+            .map(entrance => entrance.currentZombieCount)
+            .reduce((a, b) => a + b, 0);
+    },
+
     updateItemCard: game => {
         game.itemCardCount = game.playerList
             .map(player => player.itemCardList.length)
@@ -125,6 +132,7 @@ gameStore = {
         gameStore.updateItemCardTable(game);
         gameStore.updateSurvivor(game);
         gameStore.updateItemCard(game);
+        gameStore.updateZombie(game);
 
         return game;
     })

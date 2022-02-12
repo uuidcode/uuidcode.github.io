@@ -7,6 +7,7 @@ const game = {
     round: 6,
     moral: 6,
     survivorCount: 0,
+    zombieCount: 0,
     itemCardCount: 0,
     riskCardList: riskCardList,
     itemCardList: itemCardList,

@@ -23,11 +23,13 @@
                     <td width="100">{$gameStore.moral}</td>
                     <td class="active" width="100">생존자</td>
                     <td width="100">{$gameStore.survivorCount}</td>
+                    <td class="active" width="100">좀비</td>
+                    <td width="100">{$gameStore.zombieCount}</td>
                     <td class="active" width="100">아이템</td>
                     <td width="100">{$gameStore.itemCardCount}</td>
                 </tr>
                 <tr>
-                    <td colspan="8">
+                    <td colspan="10">
                         <table>
                             {#each placeList as place, i}
                                 <Place placeIndex={i}></Place>

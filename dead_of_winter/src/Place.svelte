@@ -41,7 +41,11 @@
                 {#each place.entranceList as entrance}
                     <tr>
                         {#each Array(entrance.maxZombieCount) as _, zombieIndex}
-                            <td class="zombie-area"></td>
+                            <td class="zombie-area">
+                                {#if zombieIndex < entrance.currentZombieCount}
+                                    좀비
+                                 {/if}
+                            </td>
                         {/each}
                     </tr>
                 {/each}
