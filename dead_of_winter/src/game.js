@@ -26,17 +26,19 @@ const game = {
     playerList: [
         {
             index: 0,
-            name: '테드',
-            color: '#D98880 ',
+            name: '다은',
+            color: '#CCD1D1',
             survivorList: [],
-            itemCardList:[]
+            itemCardList:[],
+            actionDiceList: [1, 1, 1, 1, 1]
         },
         {
             index: 1,
-            name: '다은',
+            name: '테드',
             color: '#7FB3D5 ',
             survivorList: [],
-            itemCardList:[]
+            itemCardList:[],
+            actionDiceList: [1, 1, 1, 1, 1]
         }
     ]
 }

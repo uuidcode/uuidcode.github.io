@@ -60,7 +60,7 @@ gameStore = {
                 survivorList.push(survivor);
             }
 
-            survivorList.sort((a, b) => b.power - a.power);
+            survivorList.sort((a, b) => a.index - b.index);
 
             player.survivorList = survivorList;
 
@@ -73,7 +73,7 @@ gameStore = {
             place.survivorLocationList = place.entranceList
                 .map(entrance => {
                     return [...Array(entrance.maxZombieCount).keys()]
-                        .map(i => place.survivorList.pop());
+                        .map(i => place.survivorList.shift());
                 });
         });
     },
@@ -88,7 +88,6 @@ gameStore = {
 
     initCamp: function (game) {
         const survivorList = gameStore.getSurvivorList(game);
-        console.log('>>> survivorList', survivorList);
         const camp = gameStore.getCamp(game);
         camp.survivorList = survivorList;
     },

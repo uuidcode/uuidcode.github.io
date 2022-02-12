@@ -1,5 +1,5 @@
 * {
-    font-size: 14px;
+    font-size: 13px;
 }
 
 td {
@@ -32,10 +32,15 @@ td.place {
 }
 
 .player-item-card {
+    border-spacing: 0;
     width: 250px;
     margin-bottom: 10px;
     border: 1px solid darkgray;
     box-shadow: 4px 4px 2px 1px darkgray;
+}
+
+.player-item-card td {
+    border: 1px solid black;
 }
 
 .item-card {
@@ -44,15 +49,25 @@ td.place {
     height: 40px;
 }
 
-.survivor {
+.player-survivor {
+    border-spacing: 0;
     width: 250px;
     margin-bottom: 10px;
     border: 1px solid darkgray;
     box-shadow: 4px 4px 2px 1px darkgray;
 }
 
+.player-survivor td {
+    border: 1px solid black;
+}
+
 .player-header {
+    border-spacing: 0;
     border: 1px solid lightblue;
+}
+
+.player-header td {
+    border: 1px solid black;
 }
 
 .current-survivor-area {

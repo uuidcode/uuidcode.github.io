@@ -30,6 +30,16 @@
                     <td>{survivorList.length}</td>
                     <td class="active">아이템</td>
                     <td>{itemCardList.length}</td>
+                    <td>행동주사위</td>
+                    <td>
+                        <table>
+                            <tr>
+                                {#each player.actionDiceList as dice}
+                                <td>{dice}</td>
+                                {/each}
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             </table>
         </td>
