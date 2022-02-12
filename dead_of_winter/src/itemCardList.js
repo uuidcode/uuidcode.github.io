@@ -204,7 +204,7 @@ const itemCardList = [
     },
     {
         name: '라이터',
-        description: "연로카드도 같이 사용해서 좀비를 4구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
+        description: "연료카드도 같이 사용해서 좀비를 4구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
         feature: 'attackWithFuel'

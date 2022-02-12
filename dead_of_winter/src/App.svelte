@@ -13,7 +13,7 @@
 </script>
 <table>
     <tr>
-        <td width="400" valign="top"><Player playerIndex="0"></Player></td>
+        <td width="520" valign="top"><Player playerIndex="0"></Player></td>
         <td width="800">
             <table width="800">
                 <tr>
@@ -23,9 +23,11 @@
                     <td width="100">{$gameStore.moral}</td>
                     <td class="active" width="100">생존자</td>
                     <td width="100">{$gameStore.survivorCount}</td>
+                    <td class="active" width="100">아이템</td>
+                    <td width="100">{$gameStore.itemCardCount}</td>
                 </tr>
                 <tr>
-                    <td colspan="6">
+                    <td colspan="8">
                         <table>
                             {#each placeList as place, i}
                                 <Place placeIndex={i}></Place>
@@ -35,9 +37,6 @@
                 </tr>
             </table>
         </td>
-        <td width="400" valign="top"><Player playerIndex="1"></Player></td>
+        <td width="520" valign="top"><Player playerIndex="1"></Player></td>
     </tr>
 </table>
-<style>
-
-</style>

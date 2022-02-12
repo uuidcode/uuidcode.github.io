@@ -7,20 +7,28 @@ const game = {
     round: 6,
     moral: 6,
     survivorCount: 0,
+    itemCardCount: 0,
     riskCardList: riskCardList,
     itemCardList: itemCardList,
+    initItemCardList: [
+        "식량1", "식량1", "식량1", "식량1", "식량1",
+        "식량1", "식량1", "식량1", "식량1", "식량1",
+        '약',  '약', '약', '약', '약',
+        "잡동사니", "잡동사니", "잡동사니", "잡동사니", "잡동사니",
+        "연료", "연료", "연료","연료","연료"
+    ],
     placeList: placeList,
     survivorList: survivorList,
     playerList: [
         {
             name: '테드',
-            survivorIndexList: [0, 3],
-            itemCardList:['권총', "약", "잡동사니", "약", "약", "잡동사니"]
+            survivorList: [],
+            itemCardList:[]
         },
         {
             name: '다은',
-            survivorIndexList: [1, 2],
-            itemCardList:['주사기']
+            survivorList: [],
+            itemCardList:[]
         }
     ]
 }
@@ -35,8 +43,6 @@ const groupByType = game.survivorList
 
         return group;
     }, {});
-
-console.log('>>> groupByType', groupByType);
 
 game.survivorList.forEach(survivor => {
     return survivor.woundedCount = 0;

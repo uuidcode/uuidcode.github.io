@@ -1,9 +1,9 @@
 * {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 td {
-    padding: 5px;
+    padding: 2px;
 }
 
 td.active {
@@ -32,6 +32,7 @@ td.place {
 }
 
 .player-item-card {
+    width: 250px;
     margin-bottom: 10px;
     border: 1px solid darkgray;
     box-shadow: 4px 4px 2px 1px darkgray;
@@ -44,6 +45,12 @@ td.place {
 }
 
 .survivor {
+    width: 250px;
+    margin-bottom: 10px;
     border: 1px solid darkgray;
     box-shadow: 4px 4px 2px 1px darkgray;
+}
+
+.player-header {
+    border: 1px solid lightblue;
 }

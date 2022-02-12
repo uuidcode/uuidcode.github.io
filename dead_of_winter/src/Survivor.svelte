@@ -1,28 +1,23 @@
 <script>
     import gameStore from "./gameStore";
 
-    export let survivorIndex;
+    export let survivor;
 
-    let survivor;
-    let survivorList;
-
-    $: {
-        survivorList = $gameStore.survivorList;
-        survivor = survivorList[survivorIndex];
-    }
 </script>
 
 <table class="survivor">
     <tr>
-        <td class="active" width="40">이름</td>
-        <td colspan="5">{survivor.name}</td>
+        <td class="active" width="30">이름</td>
+        <td colspan="3">{survivor.name}</td>
+        <td class="active">부상</td>
+        <td>{survivor.wound}</td>
     </tr>
     <tr>
-        <td class="active">능력</td>
+        <td class="active" width="30">능력</td>
         <td>{survivor.power}</td>
-        <td class="active">공격</td>
+        <td class="active" width="30">공격</td>
         <td>{survivor.attack}</td>
-        <td class="active">검색</td>
+        <td class="active" width="30">검색</td>
         <td>{survivor.search}</td>
     </tr>
     <tr>
