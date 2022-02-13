@@ -4,7 +4,7 @@
     let currentPlayer;
 
     $: {
-        currentPlayer = $gameStore.playerList[$gameStore.turn % 2];
+        currentPlayer = gameStore.getCurrentPlayer($gameStore);
     }
 </script>
 <table class="action-panel" style="background-color: {currentPlayer.color}">

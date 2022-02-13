@@ -96,8 +96,8 @@ gameStore = {
         return game.playerList.flatMap(player => player.survivorList);
     },
 
-    getCurrentPlayer: () => {
-        const game = get(gameStore);
+    getCurrentPlayer: (game) => {
+        game = game ?? get(gameStore);
         const playerList = game.playerList;
         return playerList[game.turn % 2];
     },
@@ -201,7 +201,8 @@ gameStore = {
         const player = game.playerList[game.turn % 2];
 
         player.actionDiceList = player.actionDiceList
-            .map(i => 1 + Math.floor(Math.random() * 6));
+            .map(i => 1 + Math.floor(Math.random() * 6))
+            .sort((a, b) => b - a);
 
        return game;
     })
