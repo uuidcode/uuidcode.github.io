@@ -1,3 +1,5 @@
+import survivorList from "./survivorList";
+
 const placeList = [
     {
         name: '피난기지',
@@ -261,5 +263,9 @@ const placeList = [
         ]
     }
 ];
+
+survivorList.forEach(survivor => {
+    survivor.activieSurvive = null;
+});
 
 export default placeList;

@@ -4,6 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
+    turn:0,
     round: 6,
     moral: 6,
     survivorCount: 0,
@@ -35,7 +36,7 @@ const game = {
         {
             index: 1,
             name: '테드',
-            color: '#7FB3D5 ',
+            color: '#FCF3CF  ',
             survivorList: [],
             itemCardList:[],
             actionDiceList: [1, 1, 1, 1, 1]

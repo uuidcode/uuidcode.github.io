@@ -2,6 +2,7 @@
     import gameStore from "./gameStore";
     import Player from "./Player.svelte";
     import Place from "./Place.svelte";
+    import Action from "./Action.svelte";
 
     let placeList;
 
@@ -13,7 +14,15 @@
 </script>
 <table>
     <tr>
-        <td width="520" valign="top"><Player playerIndex="0"></Player></td>
+        <td width="520" valign="top" rowspan="2"
+            style="background-color: {gameStore.getPlayerColor(0)}"><Player playerIndex="0"></Player></td>
+        <td width="800">
+           <Action></Action>
+        </td>
+        <td width="520" valign="top" rowspan="2"
+            style="background-color: {gameStore.getPlayerColor(1)}"><Player playerIndex="1"></Player></td>
+    </tr>
+    <tr>
         <td width="800">
             <table width="800">
                 <tr>
@@ -29,16 +38,6 @@
                     <td width="100">{$gameStore.itemCardCount}</td>
                 </tr>
                 <tr>
-                    <td class="active" width="100">죽은 생존자</td>
-                    <td width="100">{$gameStore.deadSurvivorCount}</td>
-                    <td class="active" width="100">죽은 좀비</td>
-                    <td width="100">{$gameStore.deadZombieCount}</td>
-                    <td class="active" width="100">좀비 토큰</td>
-                    <td width="100">{$gameStore.zombieTokenCount}</td>
-                    <td class="active" width="100">외부인</td>
-                    <td width="100">{$gameStore.survivorList.length}</td>
-                </tr>
-                <tr>
                     <td colspan="10">
                         <table>
                             {#each placeList as place, i}
@@ -49,6 +48,5 @@
                 </tr>
             </table>
         </td>
-        <td width="520" valign="top"><Player playerIndex="1"></Player></td>
     </tr>
 </table>

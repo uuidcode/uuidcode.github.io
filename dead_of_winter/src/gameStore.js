@@ -41,7 +41,7 @@ gameStore = {
         });
     },
 
-    getPlayerColor: (survivor) => {
+    getPlayerColorForSurvivor: (survivor) => {
         return get(gameStore).playerList
             .find(player => player.index === survivor.playerIndex)
             .color;
@@ -68,12 +68,22 @@ gameStore = {
         });
     },
 
-   updatePlace: function (game) {
+    updatePlace: function (game) {
         game.placeList.forEach(place => {
             place.survivorLocationList = place.entranceList
                 .map(entrance => {
                     return [...Array(entrance.maxZombieCount).keys()]
-                        .map(i => place.survivorList.shift());
+                        .map(i => {
+                            const survivor = place.survivorList.shift();
+
+                            if (survivor) {
+                                if (survivor.active) {
+                                    place.activeSurvivor = survivor;
+                                }
+                            }
+
+                            return survivor;
+                        });
                 });
         });
     },
@@ -84,6 +94,20 @@ gameStore = {
 
     getSurvivorList: (game) => {
         return game.playerList.flatMap(player => player.survivorList);
+    },
+
+    getCurrentPlayer: () => {
+        const game = get(gameStore);
+        const playerList = game.playerList;
+        return playerList[game.turn % 2];
+    },
+
+    getCurrentPlayerColor: () => {
+        return get(gameStore).getCurrentPlayer().color;
+    },
+
+    getPlayerColor: (index) => {
+        return get(gameStore).playerList[index].color;
     },
 
     initCamp: function (game) {
@@ -103,6 +127,11 @@ gameStore = {
         game.survivorCount = game.playerList
             .map(player => player.survivorList.length)
             .reduce((a, b) => a + b, 0);
+
+        game.playerList = game.playerList.map(player => {
+            player.active = false;
+            return player;
+        });
     },
 
     updateZombie: game => {
@@ -166,6 +195,15 @@ gameStore = {
         gameStore.updatePlace(game);
 
         return game;
+    }),
+
+    rollActionDice: () => update(game => {
+        const player = game.playerList[game.turn % 2];
+
+        player.actionDiceList = player.actionDiceList
+            .map(i => 1 + Math.floor(Math.random() * 6));
+
+       return game;
     })
 }
 

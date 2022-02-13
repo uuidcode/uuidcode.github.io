@@ -41,6 +41,9 @@
         </td>
         <td class="active" style="width: 50px">생존자</td>
         <td style="width: 200px">
+            {#if place.activeSurvivor != null}
+                <Survivor survivor={place.activeSurvivor}></Survivor>
+            {/if}
             <table>
                 {#each survivorLocationList as row}
                     <tr>
@@ -48,7 +51,7 @@
                             <td class="survivor-area">
                                 {#if survivor}
                                     <div class="current-survivor-area"
-                                         style="background-color: {gameStore.getPlayerColor(survivor)}">{survivor.index}</div>
+                                         style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">{survivor.index}</div>
                                 {/if}
                             </td>
                         {/each}
