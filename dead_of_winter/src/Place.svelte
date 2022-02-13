@@ -45,10 +45,13 @@
                 <Survivor survivor={place.activeSurvivor}></Survivor>
             {/if}
             <table>
-                {#each survivorLocationList as row}
-                    <tr>
-                        {#each row as survivor}
-                            <td class="survivor-area">
+                {#each survivorLocationList as row, rowIndex}
+                    <tr on:drop|preventDefault={event => gameStore.drop(event, place.name)}
+                        on:dragover|preventDefault={(event) => {}}>
+                        {#each row as survivor, survivorIndex (rowIndex * row.length + survivorIndex)}
+                            <td class="survivor-area"
+                                draggable={true}
+                                on:dragstart={event => gameStore.drag(event, survivor.index, place.name)}>
                                 {#if survivor}
                                     <div class="current-survivor-area"
                                          style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">{survivor.index}</div>

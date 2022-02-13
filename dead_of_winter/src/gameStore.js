@@ -70,11 +70,13 @@ gameStore = {
 
     updatePlace: function (game) {
         game.placeList.forEach(place => {
+            const currentSurvivorList = [...place.survivorList];
+
             place.survivorLocationList = place.entranceList
                 .map(entrance => {
                     return [...Array(entrance.maxZombieCount).keys()]
                         .map(i => {
-                            const survivor = place.survivorList.shift();
+                            const survivor = currentSurvivorList.shift();
 
                             if (survivor) {
                                 if (survivor.active) {
@@ -120,6 +122,7 @@ gameStore = {
         gameStore.initItemCard(game);
         gameStore.initSurvivor(game);
         gameStore.initCamp(game);
+
         return game;
     }),
 
@@ -205,9 +208,55 @@ gameStore = {
             .sort((a, b) => b - a);
 
        return game;
-    })
+    }),
+
+    drag: (event, survivorIndex, oldPlaceName) => {
+        console.log('>>> drag survivorIndex', survivorIndex);
+        console.log('>>> drag oldPlaceName', oldPlaceName);
+
+        const data = {
+            survivorIndex,
+            oldPlaceName
+        };
+
+        event.dataTransfer.setData('text/plain', JSON.stringify(data));
+    },
+
+    drop: (event, newPlaceName) => {
+        update(game => {
+            event.preventDefault();
+            const json = event.dataTransfer.getData("text/plain");
+            const data = JSON.parse(json);
+            const {survivorIndex, oldPlaceName} = data;
+
+            const oldPlace = game.placeList.find(place => place.name === oldPlaceName);
+            const newPlace = game.placeList.find(place => place.name === newPlaceName);
+
+            console.log('>>> oldPlace', oldPlace);
+            console.log('>>> newPlace', newPlace);
+
+            let currentSurvivor = null;
+
+            oldPlace.survivorList = oldPlace.survivorList
+                .filter(survivor => {
+                    if (survivor.index === survivorIndex) {
+                        currentSurvivor = survivor;
+                        return false;
+                    }
+
+                    return true;
+                });
+
+            newPlace.survivorList = [...newPlace.survivorList, currentSurvivor];
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    }
 }
 
 gameStore.init();
+
 
 export default gameStore;
