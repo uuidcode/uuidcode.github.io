@@ -12,7 +12,7 @@
         placeList = $gameStore.placeList;
     }
 </script>
-<table>
+<table cellspacing="0" cellpadding="0">
     <tr>
         <td width="520" valign="top" rowspan="2"
             style="background-color: {gameStore.getPlayerColor(0)}"><Player playerIndex="0"></Player></td>
@@ -24,7 +24,7 @@
     </tr>
     <tr>
         <td width="800">
-            <table width="800">
+            <table width="800" cellspacing="0">
                 <tr>
                     <td class="active" width="100">라운드</td>
                     <td width="100">{$gameStore.round}</td>

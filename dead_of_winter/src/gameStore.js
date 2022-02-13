@@ -72,6 +72,18 @@ gameStore = {
         game.placeList.forEach(place => {
             const currentSurvivorList = [...place.survivorList];
 
+            place.currentZombieCount = place.entranceList
+                .map(entrance => entrance.currentZombieCount)
+                .reduce((a, b) => a + b, 0);
+
+            place.maxZombieCount = place.entranceList
+                .map(entrance => entrance.maxZombieCount)
+                .reduce((a, b) => a + b, 0);
+
+            place.currentBarricadeCount = place.entranceList
+                .map(entrance => entrance.barricadeCount)
+                .reduce((a, b) => a + b, 0);
+
             place.survivorLocationList = place.entranceList
                 .map(entrance => {
                     return [...Array(entrance.maxZombieCount).keys()]
@@ -79,6 +91,8 @@ gameStore = {
                             const survivor = currentSurvivorList.shift();
 
                             if (survivor) {
+                                survivor.place = place;
+
                                 if (survivor.active) {
                                     place.activeSurvivor = survivor;
                                 }
@@ -189,6 +203,30 @@ gameStore = {
             .reduce((a, b) => a + b, 0);
     },
 
+    updateActionTable: (game) => {
+        const currentPlayer = gameStore.getCurrentPlayer(game);
+
+        currentPlayer.actionTable = currentPlayer.actionDiceList
+            .map(dice => {
+                return {
+                    dice,
+                    attackSurvivorList: currentPlayer.survivorList
+                        .filter(survivor => survivor.attack <= dice)
+                        .filter(survivor => survivor.place.currentZombieCount > 0),
+                    searchSurvivorList: currentPlayer.survivorList
+                        .filter(survivor => survivor.search >= dice)
+                        .filter(survivor => survivor.place.cardList.length > 0),
+                    barricadeSurvivorList: currentPlayer.survivorList
+                        .filter(survivor => survivor.place.maxZombieCount > survivor.place.currentZombieCount),
+                    trashSurvivorList: currentPlayer.survivorList
+                        .filter(survivor => survivor.place.name === '피난기지')
+                        .filter(survivor => survivor.place.trashCount > 0),
+                    inviteZombieSurvivorList: currentPlayer.survivorList
+                        .filter(survivor => survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount)
+                }
+            });
+    },
+
     updateAll: () => update(game => {
         gameStore.updateSurvivorCount(game);
         gameStore.updateItemCardTable(game);
@@ -196,24 +234,26 @@ gameStore = {
         gameStore.updateItemCard(game);
         gameStore.updateZombie(game);
         gameStore.updatePlace(game);
+        gameStore.updateActionTable(game);
 
         return game;
     }),
 
-    rollActionDice: () => update(game => {
-        const player = game.playerList[game.turn % 2];
+    rollActionDice: () => {
+        update(game => {
+            const player = game.playerList[game.turn % 2];
 
-        player.actionDiceList = player.actionDiceList
-            .map(i => 1 + Math.floor(Math.random() * 6))
-            .sort((a, b) => b - a);
+            player.actionDiceList = player.actionDiceList
+                .map(i => 1 + Math.floor(Math.random() * 6))
+                .sort((a, b) => b - a);
 
-       return game;
-    }),
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
 
     drag: (event, survivorIndex, oldPlaceName) => {
-        console.log('>>> drag survivorIndex', survivorIndex);
-        console.log('>>> drag oldPlaceName', oldPlaceName);
-
         const data = {
             survivorIndex,
             oldPlaceName
@@ -248,6 +288,7 @@ gameStore = {
                 });
 
             newPlace.survivorList = [...newPlace.survivorList, currentSurvivor];
+            currentSurvivor.place = newPlace;
 
             return game;
         });

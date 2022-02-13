@@ -14,7 +14,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                currentZombieCount: 1,
                 barricadeCount: 0
             },
             {
@@ -266,6 +266,12 @@ const placeList = [
 
 survivorList.forEach(survivor => {
     survivor.activieSurvive = null;
+});
+
+placeList.forEach(place => {
+    place.currentZombieCount = 0;
+    place.currentBarricadeCount = 0;
+    place.maxZombieCount = 0;
 });
 
 export default placeList;

@@ -31,7 +31,8 @@ const game = {
             color: '#CCD1D1',
             survivorList: [],
             itemCardList:[],
-            actionDiceList: [1, 1, 1, 1, 1]
+            actionDiceList: [1, 1, 1, 1, 1],
+            actionTable: []
         },
         {
             index: 1,
@@ -39,7 +40,8 @@ const game = {
             color: '#FCF3CF  ',
             survivorList: [],
             itemCardList:[],
-            actionDiceList: [1, 1, 1, 1, 1]
+            actionDiceList: [1, 1, 1, 1, 1],
+            actionTable: []
         }
     ]
 }
