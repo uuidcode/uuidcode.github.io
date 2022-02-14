@@ -1,9 +1,18 @@
+body {
+    margin: 0;
+    pading: 9
+}
+
+table {
+    border-collapse: collapse;
+}
+
 * {
     font-size: 13px;
 }
 
 td {
-    padding: 2px;
+    padding: 0;
 }
 
 td.active {
@@ -28,7 +37,9 @@ td.place {
 .zombie-area {
     background: lightcoral;
     width: 40px;
-    height: 40px
+    height: 40px;
+    padding: 1px;
+    border: 1px solid black;
 }
 
 .player-item-card {
@@ -128,3 +139,4 @@ td.place {
 .game-info > tr > td {
     border: 1px solid black;
 }
+

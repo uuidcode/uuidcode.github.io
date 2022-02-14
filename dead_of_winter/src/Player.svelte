@@ -22,7 +22,7 @@
 
 <table>
     <tr style="background-color: {player.color}">
-        <td colspan="2">
+        <td>
             <table class="player-header">
                 <tr>
                     <td>{player.name}</td>
@@ -35,11 +35,6 @@
         </td>
     </tr>
     <tr>
-        <td valign="top" width="260">
-            {#each survivorList as survivor}
-                <Survivor survivor={survivor}></Survivor>
-            {/each}
-        </td>
         <td valign="top" width="260">
             {#each itemCardTable as itemCardRow}
                 <ItemCard itemCardRow={itemCardRow}></ItemCard>

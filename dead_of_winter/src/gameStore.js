@@ -84,23 +84,16 @@ gameStore = {
                 .map(entrance => entrance.barricadeCount)
                 .reduce((a, b) => a + b, 0);
 
-            place.survivorLocationList = place.entranceList
-                .map(entrance => {
-                    return [...Array(entrance.maxZombieCount).keys()]
-                        .map(i => {
-                            const survivor = currentSurvivorList.shift();
+            place.survivorLocationList = [...Array(place.maxSurviveCount).keys()]
+                .map(index => {
+                    if (place.survivorList.length > index) {
+                        return place.survivorList[index];
+                    }
 
-                            if (survivor) {
-                                survivor.place = place;
-
-                                if (survivor.active) {
-                                    place.activeSurvivor = survivor;
-                                }
-                            }
-
-                            return survivor;
-                        });
+                    return null;
                 });
+
+            console.log('>>> place.survivorLocationList', place.survivorLocationList);
         });
     },
 
