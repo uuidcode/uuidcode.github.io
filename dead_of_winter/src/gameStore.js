@@ -123,6 +123,7 @@ gameStore = {
         const survivorList = gameStore.getSurvivorList(game);
         const camp = gameStore.getCamp(game);
         camp.survivorList = survivorList;
+        camp.survivorList.forEach(survivor => survivor.place = camp);
     },
 
     init: () => update(game => {
@@ -199,8 +200,6 @@ gameStore = {
     updateActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
 
-        console.log('>>> currentPlayer.actionDiceList', currentPlayer.actionDiceList);
-
         currentPlayer.actionTable = currentPlayer.actionDiceList
             .map(dice => {
                 return {
@@ -215,22 +214,19 @@ gameStore = {
                             .filter(survivor => survivor.place.itemCardList.length > 0),
                     barricadeSurvivorList: currentPlayer.survivorList
                             .filter(survivor => dice.done === false)
-                            .filter(survivor => survivor.place.maxZombieCount >= survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 1),
+                            .filter(survivor => {
+                                console.log('>>> survivor', survivor);
+                                return survivor.place.maxZombieCount >= survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 1;
+                            }),
                     trashSurvivorList: currentPlayer.survivorList
                             .filter(survivor => dice.done === false)
                             .filter(survivor => survivor.place.name === '피난기지')
                             .filter(survivor => survivor.place.trashCount > 0),
                     inviteZombieSurvivorList: currentPlayer.survivorList
                             .filter(survivor => dice.done === false)
-                            .filter(survivor => survivor.place.maxZombieCount >= survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2),
-                    abilitySurvivorList: currentPlayer.survivorList
-                            .filter(survivor => dice.done === false)
-                            .filter(survivor => gameStore.canUseAbility(survivor))
+                            .filter(survivor => survivor.place.maxZombieCount >= survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2)
                 }
             });
-        
-        console.log('>>> currentPlayer.actionTable', currentPlayer.actionTable);
-        
     },
 
     updateAll: () => update(game => {

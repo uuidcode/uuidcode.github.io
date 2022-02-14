@@ -35,7 +35,7 @@
         </td>
     </tr>
     <tr>
-        <td valign="top" width="260">
+        <td valign="top">
             {#each itemCardTable as itemCardRow}
                 <ItemCard itemCardRow={itemCardRow}></ItemCard>
             {/each}

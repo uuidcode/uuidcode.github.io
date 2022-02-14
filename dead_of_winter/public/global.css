@@ -1,6 +1,5 @@
 body {
     margin: 0;
-    pading: 9
 }
 
 table {
@@ -44,7 +43,7 @@ td.place {
 
 .player-item-card {
     border-spacing: 0;
-    width: 250px;
+    width: 160px;
     margin-bottom: 10px;
     border: 1px solid darkgray;
     box-shadow: 4px 4px 2px 1px darkgray;
@@ -68,13 +67,11 @@ td.place {
 .player-survivor {
     border-spacing: 0;
     width: 250px;
-    margin-bottom: 10px;
-    border: 1px solid darkgray;
+    margin-bottom: 4px;
     box-shadow: 4px 4px 2px 1px darkgray;
 }
 
 .player-survivor td {
-    border: 1px solid black;
     background: white;
 }
 
@@ -140,3 +137,16 @@ td.place {
     border: 1px solid black;
 }
 
+.power1 {
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    padding: 1px 2px 1px 2px;
+}
+
+.attack1 {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    padding: 1px 2px 1px 2px;
+}

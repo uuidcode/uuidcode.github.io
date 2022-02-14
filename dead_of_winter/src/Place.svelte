@@ -20,29 +20,39 @@
     }
 </script>
 
-<table style="width: 198px">
+<table style="width: 220px">
     <tr>
-        <td class="active place" style="text-align: center; border: 1px solid black">{place.name}</td>
+        <td class="active place" style="text-align: center;">{place.name}</td>
     </tr>
     <tr>
-        <td align="center" style="border: 1px solid black">
-            <table style="width: {place.entranceList.length * 33}px">
+        <td align="center">
+            <table>
                 <tr>
-                {#each place.entranceList as entrance}
-                    <td>
-                        <table>
-                        {#each Array(entrance.maxZombieCount) as _, zombieIndex}
-                            <tr>
-                                <td class="zombie-area" style="width:33px">
-                                    {#if zombieIndex < entrance.currentZombieCount}
-                                        좀비
-                                     {/if}
-                                </td>
-                            </tr>
-                        {/each}
-                        </table>
-                    </td>
-                {/each}
+                {#if place.entranceList.length > 1}
+                    {#each place.entranceList as entrance}
+                        <td>
+                            <table>
+                            {#each Array(entrance.maxZombieCount) as _, zombieIndex}
+                                <tr>
+                                    <td class="zombie-area" style="width:33px">
+                                        {#if zombieIndex < entrance.currentZombieCount}
+                                            좀비
+                                         {/if}
+                                    </td>
+                                </tr>
+                            {/each}
+                            </table>
+                        </td>
+                    {/each}
+                {:else}
+                    {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
+                        <td class="zombie-area" style="width:33px">
+                            {#if zombieIndex < place.entranceList[0].currentZombieCount}
+                                좀비
+                            {/if}
+                        </td>
+                    {/each}
+                {/if}
                 </tr>
             </table>
             <table style="width: 100%">
@@ -54,14 +64,20 @@
                             {#each place.survivorLocationList as survivor}
                                 <tr draggable={survivor!==null}
                                     on:dragstart={event => gameStore.drag(event, survivor.index, place.name)}>
-                                    <td style="height:50px;border: 1px solid black;">
+                                    <td  style="height:50px;background-color: lightgreen;border:1px solid black">
                                         {#if survivor}
-                                        <table width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid black">
+                                        <table class="player-survivor" style="width:100%">
                                             <tr>
-                                                <td style="height:25px;background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">{survivor.index}</td>
+                                                <td style="padding: 2px;background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
+                                                    {survivor.name}
+                                                    <span class="power">P:{survivor.power}</span>
+                                                    <span class="attack">A:{survivor.attack}</span>
+                                                    S:{survivor.search}
+                                                    W:{survivor.wound}
+                                                </td>
                                             </tr>
                                             <tr>
-                                                <td style="height:25px;background-color: lightskyblue">이동</td>
+                                                <td style="padding: 2px;height:25px;background-color: white">{survivor.ability.name}</td>
                                             </tr>
                                         </table>
                                         {/if}
