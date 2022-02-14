@@ -24,7 +24,7 @@
     </tr>
     <tr>
         <td width="800">
-            <table width="800" cellspacing="0">
+            <table width="800" cellspacing="0" class="game-info">
                 <tr>
                     <td class="active" width="100">라운드</td>
                     <td width="100">{$gameStore.round}</td>

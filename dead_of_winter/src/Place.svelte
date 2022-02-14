@@ -53,8 +53,14 @@
                                 draggable={true}
                                 on:dragstart={event => gameStore.drag(event, survivor.index, place.name)}>
                                 {#if survivor}
-                                    <div class="current-survivor-area"
-                                         style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">{survivor.index}</div>
+                                    <table width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid black">
+                                        <tr>
+                                            <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">{survivor.index}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="background-color: lightskyblue">이동</td>
+                                        </tr>
+                                    </table>
                                 {/if}
                             </td>
                         {/each}
@@ -63,7 +69,7 @@
             </table>
         </td>
         <td class="active" style="width: 70px">아이템</td>
-        <td class="item-card">{place.cardList.length}</td>
+        <td class="item-card">{place.itemCardList.length}</td>
     </tr>
 </table>
 

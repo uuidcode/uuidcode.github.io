@@ -22,13 +22,15 @@ const itemCardList = [
         description: "식량창고에 식량토큰을 하나를 추가합니다.",
         category: '식량',
         type: 'execute',
-        feature: 'food1'
+        feature: 'food1',
+        targetCount: 1
     },
     {
         name: '식량2',
         description: "식량창고에 식량토큰을 두개를 추가합니다.",
         category: '식량',
-        type: 'execute'
+        type: 'execute',
+        targetCount: 2
     },
     {
         name: '바리게이트',
@@ -69,19 +71,22 @@ const itemCardList = [
         name: '외부인1',
         description: "외부인 1명을 피난기지로 보냅니다.",
         category: '외부인',
-        type: 'event'
+        type: 'event',
+        targetCount: 1
     },
     {
         name: '외부인2',
         description: "외부인 2명을 피난기지로 보냅니다.",
         category: '외부인',
-        type: 'event'
+        type: 'event',
+        targetCount: 2
     },
     {
         name: '외부인3',
         description: "외부인 3명을 피난기지로 보냅니다.",
         category: '외부인',
-        type: 'event'
+        type: 'event',
+        targetCount: 3
     },
     {
         name: '학교 청사진',

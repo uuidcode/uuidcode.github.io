@@ -28,10 +28,10 @@ const game = {
         {
             index: 0,
             name: '다은',
-            color: '#CCD1D1',
+            color: '#e3befa',
             survivorList: [],
             itemCardList:[],
-            actionDiceList: [1, 1, 1, 1, 1],
+            actionDiceList: [],
             actionTable: []
         },
         {
@@ -40,7 +40,7 @@ const game = {
             color: '#FCF3CF  ',
             survivorList: [],
             itemCardList:[],
-            actionDiceList: [1, 1, 1, 1, 1],
+            actionDiceList: [],
             actionTable: []
         }
     ]

@@ -10,7 +10,7 @@ const placeList = [
         starvingTokenCount: 0,
         weakTokenCount: 0,
         trashCount: 0,
-        cardList: [],
+        itemCardList: [],
         entranceList: [
             {
                 maxZombieCount: 3,
@@ -46,7 +46,6 @@ const placeList = [
     },
     {
         name: '병원',
-        itemCardIndexList: [],
         entranceList: [
             {
                 maxZombieCount: 4,
@@ -58,7 +57,7 @@ const placeList = [
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
-        cardList: [
+        itemCardList: [
             "잡동사니",
             "대걸레",
             "손전등",
@@ -94,7 +93,7 @@ const placeList = [
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
-        cardList: [
+        itemCardList: [
             "잡동사니",
             "라이터",
             "주머니칼",
@@ -130,7 +129,7 @@ const placeList = [
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
-        cardList: [
+        itemCardList: [
             "잡동사니",
             "야구방망이",
             "가위",
@@ -167,7 +166,7 @@ const placeList = [
         survivorLocationList: [],
         barricadeCount: 0,
         noiseTokenCount: 0,
-        cardList: [
+        itemCardList: [
             "독서등",
             "잡동사니",
             "백과사전",
@@ -203,7 +202,7 @@ const placeList = [
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
-        cardList: [
+        itemCardList: [
             "무전기",
             "잡동사니",
             "야시경",
@@ -239,7 +238,7 @@ const placeList = [
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
-        cardList: [
+        itemCardList: [
             "산탄총",
             "주머니칼",
             "주머니칼",
