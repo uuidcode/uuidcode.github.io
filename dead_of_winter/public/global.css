@@ -83,7 +83,7 @@ div {
 
 .place {
     width: 480px;
-    margin: 10px;
+    margin: 5px;
     box-shadow: 4px 4px 2px 1px darkgray;
 }
 
@@ -127,8 +127,10 @@ div {
 }
 
 .place-name {
-    padding: 10px;
     background-color: lightblue;
+    flex-grow: 1;
+    line-height: 40px;
+    text-align: center;
 }
 
 .survivor-ability-name {

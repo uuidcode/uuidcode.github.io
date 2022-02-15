@@ -21,26 +21,26 @@
 </script>
 
 <div class="place place-part">
-    <div class="flex">
-        <div class="place-name text-align-center width-100-percent">{place.name}</div>
-    </div>
-    <div class="flex">
         {#if place.entranceList.length > 1}
+            <div class="flex">
+                <div class="place-name">{place.name}</div>
+            </div>
             <div class="flex flex-space-around width-100-percent">
             {#each place.entranceList as entrance}
                 <div class="flex-column width-50">
-                {#each Array(entrance.maxZombieCount) as _, zombieIndex}
-                    <div class="zombie-position">
-                        {#if zombieIndex < entrance.currentZombieCount}
-                            좀비
-                        {/if}
-                    </div>
-                {/each}
+                    {#each Array(entrance.maxZombieCount) as _, zombieIndex}
+                        <div class="zombie-position">
+                            {#if zombieIndex < entrance.currentZombieCount}
+                                좀비
+                            {/if}
+                        </div>
+                    {/each}
                     <div class="front-door">문</div>
                 </div>
             {/each}
             </div>
         {:else}
+            <div class="flex">
             {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
                 <div class="zombie-position">
                     {#if zombieIndex < place.entranceList[0].currentZombieCount}
@@ -49,8 +49,10 @@
                 </div>
             {/each}
             <div class="side-door">문</div>
+            <div class="place-name">{place.name}</div>
+            </div>
         {/if}
-    </div>
+
     <div class="flex-column"
          on:drop|preventDefault={event => gameStore.drop(event, place.name)}
          on:dragover|preventDefault={(event) => {}}>
