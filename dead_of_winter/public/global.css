@@ -38,14 +38,14 @@ td.place {
     width: 40px;
     height: 40px;
     padding: 1px;
-    border: 1px solid black;
+    border: 1px solid white;
 }
 
 .player-item-card {
     border-spacing: 0;
     width: 160px;
     margin-bottom: 10px;
-    border: 1px solid darkgray;
+    border: 1px solid white;
     box-shadow: 4px 4px 2px 1px darkgray;
 }
 
@@ -149,4 +149,19 @@ td.place {
     color: white;
     border-radius: 5px;
     padding: 1px 2px 1px 2px;
+}
+
+.zombie-section {
+    box-shadow: 4px 4px 2px 1px darkgray;
+}
+
+.place-section-td {
+    vertical-align: top;
+}
+
+.place-section {
+    border: 1px solid darkgray;
+    vertical-align: top;
+    box-shadow: 4px 4px 2px 1px darkgray;
+    margin: 10px;
 }

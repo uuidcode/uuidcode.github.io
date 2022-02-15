@@ -20,18 +20,19 @@
     }
 </script>
 
-<table style="width: 220px">
+<div class="place-section">
+<table style="width: 370px">
     <tr>
         <td class="active place" style="text-align: center;">{place.name}</td>
     </tr>
     <tr>
         <td align="center">
-            <table>
-                <tr>
-                {#if place.entranceList.length > 1}
+            {#if place.entranceList.length > 1}
+                <table>
+                    <tr>
                     {#each place.entranceList as entrance}
                         <td>
-                            <table>
+                            <table class="zombie-section" style="margin: 2px;">
                             {#each Array(entrance.maxZombieCount) as _, zombieIndex}
                                 <tr>
                                     <td class="zombie-area" style="width:33px">
@@ -44,7 +45,11 @@
                             </table>
                         </td>
                     {/each}
-                {:else}
+                    </tr>
+                </table>
+            {:else}
+                <table class="zombie-section" style="margin-bottom: 5px;">
+                    <tr>
                     {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
                         <td class="zombie-area" style="width:33px">
                             {#if zombieIndex < place.entranceList[0].currentZombieCount}
@@ -52,9 +57,10 @@
                             {/if}
                         </td>
                     {/each}
-                {/if}
-                </tr>
-            </table>
+                    </tr>
+                </table>
+            {/if}
+
             <table style="width: 100%">
                 <tr>
                     <td colspan="{place.entranceList.length}" valign="top">
@@ -91,4 +97,4 @@
         </td>
     </tr>
 </table>
-
+</div>

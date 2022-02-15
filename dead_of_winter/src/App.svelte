@@ -18,17 +18,36 @@
         <td>
             <table style="width: 1550px">
                 <tr>
-                    {#each placeList as place, i}
-                        <td valign="top"><Place placeIndex={i}></Place></td>
-                    {/each}
+                    <td style="vertical-align: top">
+                        <table>
+                            <tr><td><Place placeIndex={0}></Place></td></tr>
+                        </table>
+                    </td>
+                    <td style="vertical-align: top">
+                        <table >
+                            <tr>
+                                <td class="place-section-td"><Place placeIndex={1}></Place></td>
+                                <td class="place-section-td"><Place placeIndex={2}></Place></td>
+                                <td class="place-section-td"><Place placeIndex={3}></Place></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 20px"></td>
+                            </tr>
+                            <tr>
+                                <td class="place-section-td"><Place placeIndex={4}></Place></td>
+                                <td class="place-section-td"><Place placeIndex={5}></Place></td>
+                                <td class="place-section-td"><Place placeIndex={6}></Place></td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             </table>
         </td>
         <td style="vertical-align: top;background-color: {gameStore.getPlayerColor(1)}"><Player playerIndex="1"></Player></td>
     </tr>
 </table>
-<div style="position: absolute;left:400px;top:300px;">
+<!--<div style="position: absolute;left:400px;top:300px;">-->
 
-<Action></Action>
+<!--<Action></Action>-->
 
-</div>
+<!--</div>-->
