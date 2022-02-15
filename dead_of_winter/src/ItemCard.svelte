@@ -7,14 +7,14 @@
     }
 </script>
 
-<table class="player-item-card">
-    <tr>
-        <td class="active" width="40">{itemCardRow.name}</td>
-        <td width="40">{itemCardRow.count}</td>
-        <td class="active" width="40">유형</td>
-        <td width="40">{itemCardRow.category}</td>
-    </tr>
-    <tr>
-        <td colspan="4">{itemCardRow.description}</td>
-    </tr>
-</table>
+<div class="player-card">
+    <div class="flex">
+        <div class="player-card-item player-card-item-first player-card-item-label player-card-name">{itemCardRow.name}</div>
+        <div class="player-card-item player-card-count">{itemCardRow.count}</div>
+        <div class="player-card-item player-card-item-label player-card-category-label">유형</div>
+        <div class="player-card-item player-card-category">{itemCardRow.category}</div>
+    </div>
+    <div class="flex">
+        <div class="player-card-item player-card-description">{itemCardRow.description}</div>
+    </div>
+</div>

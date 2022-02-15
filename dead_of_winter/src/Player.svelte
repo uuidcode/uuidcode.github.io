@@ -20,7 +20,13 @@
     }
 </script>
 
-<table>
+<div class="player-card-list-section">
+{#each itemCardTable as itemCardRow}
+    <ItemCard itemCardRow={itemCardRow}></ItemCard>
+{/each}
+</div>
+
+<table style="display: none">
     <tr style="background-color: {player.color}">
         <td>
             <table class="player-header">

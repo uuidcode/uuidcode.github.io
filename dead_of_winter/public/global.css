@@ -2,166 +2,152 @@ body {
     margin: 0;
 }
 
-table {
-    border-collapse: collapse;
-}
-
 * {
     font-size: 13px;
 }
 
-td {
-    padding: 0;
+div {
+    box-sizing: border-box;
 }
 
-td.active {
-    background: lightblue;
+.board-item-section {
+    border: 1px solid darkgray;
 }
 
-div.card {
-    width: 100px;
-    height: 100px;
+.board-player-section {
+    width: 200px;
 }
 
-td.place {
-    background: #00CCFF;
+.board-content-section {
+    width: 1510px;
 }
 
-.survivor-area {
-    background: lightgreen;
+.flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-space-around {
+    justify-content: space-around;
+}
+
+.player-card {
+    box-shadow: 4px 4px 2px 1px darkgray;
+    margin: 10px;
+    border: 1px solid darkgray;
+}
+
+.player-card-item {
+    padding: 4px;
+    width: 50px;
+    border-bottom: 1px solid darkgray;
+    border-left: 1px solid darkgray;
+}
+
+.player-card-item-first {
+    border-bottom: 1px solid darkgray;
+    border-left: 0 solid darkgray;
+}
+
+.player-card-name {
+    width: 70px;
+}
+
+.player-card-count {
+    width: 30px;
+}
+
+.player-card-item-label {
+    background-color: aliceblue;
+}
+
+.player-card-category-label {
     width: 40px;
-    height: 40px
 }
 
-.zombie-area {
-    background: lightcoral;
+.player-card-category {
     width: 40px;
-    height: 40px;
-    padding: 1px;
-    border: 1px solid white;
 }
 
-.player-item-card {
-    border-spacing: 0;
-    width: 160px;
-    margin-bottom: 10px;
-    border: 1px solid white;
+.player-card-description {
+    width: 180px;
+    border-left: 0 solid darkgray;
+}
+
+.place-part {
+    border: 1px solid darkgray;
+}
+
+.place {
+    width: 480px;
+    margin: 10px;
     box-shadow: 4px 4px 2px 1px darkgray;
 }
 
-.player-item-card td {
-    border: 1px solid black;
-    background: white;
-}
-
-.player-item-card td.active {
-    background: lightblue;
-}
-
-.item-card {
-    background: lightseagreen;
+.zombie-position {
     width: 40px;
     height: 40px;
+    border: 1px solid darkgray;
+    text-align: center;
 }
 
-.player-survivor {
-    border-spacing: 0;
-    width: 250px;
-    margin-bottom: 4px;
-    box-shadow: 4px 4px 2px 1px darkgray;
+.text-align-center {
+    text-align: center;
 }
 
-.player-survivor td {
-    background: white;
+.width-100-percent {
+    width: 100%;
 }
 
-.player-survivor td.active {
-    background: lightblue;
+.width-200 {
+    width: 200px;
 }
 
-.player-header {
-    border-spacing: 0;
-    border: 1px solid lightblue;
+.width-50 {
+    width: 50px;
 }
 
-.player-header td {
-    border: 1px solid black;
-}
-
-.current-survivor-area {
-    position: relative;
-    border: 1px solid darkcyan;
-    border-radius: 20px;
-    width: 40px;
+.side-door {
+    width: 20px;
     height: 40px;
     text-align: center;
+    border: 1px solid darkgray;
+    line-height: 40px;
+}
+
+.front-door {
+    width: 40px;
+    height: 20px;
+    text-align: center;
+    border: 1px solid darkgray;
     line-height: 20px;
 }
 
-.action-panel {
-    width: 800px;
-    border-spacing: 0;
-    margin-bottom: 10px;
-    border: 1px solid darkgray;
-    box-shadow: 4px 4px 2px 1px darkgray;
+.place-name {
+    padding: 10px;
+    background-color: lightblue;
 }
 
-.action-panel td.action-panel {
-    background-color: lightsalmon;
+.survivor-ability-name {
+    padding: 5px;
+    background-color: white;
 }
 
-.action-panel td.no-action-panel {
-    background-color: lightskyblue;
-}
-
-.action-panel td {
-    border: 1px solid black;
-}
-
-.game-button {
+.survivor-name {
     padding: 5px;
 }
 
-.player-move {
-    background-color: lightskyblue;
-    position: absolute;
-    left: 5px;
-    top: 18px;
-    width: 30px;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 10px;
+.survivor-position {
+    min-height: 50px;
+    background-color: lightgreen;
+    padding: 4px;
+    margin: 4px;
 }
 
-.game-info > tr > td {
-    border: 1px solid black;
-}
-
-.power1 {
-    background-color: black;
-    color: white;
-    border-radius: 5px;
-    padding: 1px 2px 1px 2px;
-}
-
-.attack1 {
-    background-color: red;
-    color: white;
-    border-radius: 5px;
-    padding: 1px 2px 1px 2px;
-}
-
-.zombie-section {
+.survivor {
     box-shadow: 4px 4px 2px 1px darkgray;
-}
-
-.place-section-td {
-    vertical-align: top;
-}
-
-.place-section {
-    border: 1px solid darkgray;
-    vertical-align: top;
-    box-shadow: 4px 4px 2px 1px darkgray;
-    margin: 10px;
+    margin: 4px;
 }
