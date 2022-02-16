@@ -3,7 +3,7 @@ import survivorList from "./survivorList";
 const placeList = [
     {
         name: '피난기지',
-        maxSurviveCount: 24,
+        maxSurvivorCount: 24,
         survivorList: [],
         survivorLocationList: [],
         foodCount: 0,
@@ -53,7 +53,7 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        maxSurviveCount: 4,
+        maxSurvivorCount: 4,
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
@@ -89,7 +89,7 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        maxSurviveCount: 2,
+        maxSurvivorCount: 2,
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
@@ -125,7 +125,7 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        maxSurviveCount: 4,
+        maxSurvivorCount: 4,
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
@@ -161,7 +161,7 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        maxSurviveCount: 3,
+        maxSurvivorCount: 3,
         survivorList: [],
         survivorLocationList: [],
         barricadeCount: 0,
@@ -198,7 +198,7 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        maxSurviveCount: 4,
+        maxSurvivorCount: 3,
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
@@ -227,7 +227,7 @@ const placeList = [
     },
     {
         name: '마트',
-        maxSurviveCount: 3,
+        maxSurvivorCount: 3,
         entranceList: [
             {
                 maxZombieCount: 4,
