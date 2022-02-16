@@ -87,6 +87,57 @@ div {
     box-shadow: 4px 4px 2px 1px darkgray;
 }
 
+.place-left {
+    margin-top: 200px;
+}
+
+.place-right {
+    margin-top: 200px;
+}
+
+.entrance {
+
+}
+
+.entrance {
+    position: absolute;
+    width: 140px;
+    height: 40px;
+    z-index: 100;
+    background-color: white;
+}
+
+.entrance_0 {
+    top: 0;
+    left: -140px;
+}
+
+.entrance_1 {
+    top: 60px;
+    left: -140px;
+}
+
+.entrance_2 {
+    top: 120px;
+    left: -140px;
+}
+
+.entrance_3 {
+    top: 0;
+    right: -140px;
+}
+
+.entrance_4 {
+    top: 60px;
+    right: -140px;
+}
+
+.entrance_5 {
+    top: 120px;
+    right: -140px;
+}
+
+
 .zombie-position {
     width: 40px;
     height: 40px;
@@ -152,4 +203,5 @@ div {
 .survivor {
     box-shadow: 4px 4px 2px 1px darkgray;
     margin: 4px;
+    height: 200px;
 }

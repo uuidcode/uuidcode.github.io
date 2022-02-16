@@ -22,34 +22,37 @@
 
 <div class="place place-part">
         {#if place.entranceList.length > 1}
-            <div class="flex">
+            <div class="flex" style="position: relative">
                 <div class="place-name">{place.name}</div>
-            </div>
-            <div class="flex flex-space-around width-100-percent">
-            {#each place.entranceList as entrance}
-                <div class="flex-column width-50">
-                    {#each Array(entrance.maxZombieCount) as _, zombieIndex}
-                        <div class="zombie-position">
-                            {#if zombieIndex < entrance.currentZombieCount}
-                                좀비
-                            {/if}
-                        </div>
-                    {/each}
-                    <div class="front-door">문</div>
-                </div>
-            {/each}
+                {#each place.entranceList as entrance, entranceIndex}
+                    <div class="flex entrance entrance_{entranceIndex}">
+                        {#if entranceIndex > 2}
+                            <div class="side-door">문</div>
+                        {/if}
+                        {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
+                            <div class="zombie-position">
+                                {#if zombieIndex < place.entranceList[0].currentZombieCount}
+                                    좀비
+                                {/if}
+                            </div>
+                        {/each}
+                        {#if entranceIndex <= 2}
+                            <div class="side-door">문</div>
+                        {/if}
+                    </div>
+                {/each}
             </div>
         {:else}
             <div class="flex">
-            {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
-                <div class="zombie-position">
-                    {#if zombieIndex < place.entranceList[0].currentZombieCount}
-                        좀비
-                    {/if}
-                </div>
-            {/each}
-            <div class="side-door">문</div>
-            <div class="place-name">{place.name}</div>
+                {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
+                    <div class="zombie-position">
+                        {#if zombieIndex < place.entranceList[0].currentZombieCount}
+                            좀비
+                        {/if}
+                    </div>
+                {/each}
+                <div class="side-door">문</div>
+                <div class="place-name">{place.name}</div>
             </div>
         {/if}
 

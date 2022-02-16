@@ -198,7 +198,7 @@ const placeList = [
                 barricadeCount: 0
             }
         ],
-        maxSurviveCount: 3,
+        maxSurviveCount: 4,
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
