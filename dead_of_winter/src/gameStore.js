@@ -1,6 +1,7 @@
 import {tick} from 'svelte'
 import {writable, get} from "svelte/store";
 import game from "./game"
+import survivorList from "./survivorList";
 
 const { subscribe, set, update } = writable(game);
 
@@ -132,7 +133,26 @@ gameStore = {
         camp.survivorList.forEach(survivor => survivor.place = camp);
     },
 
-    move: (event) => {
+    move: (currentSurvivor, placeName) => {
+        update(game => {
+            game.placeList.forEach(place => {
+                if (place.name === placeName) {
+                    place.survivorList = [...place.survivorList, currentSurvivor];
+                } else {
+                    place.survivorList = place.survivorList
+                        .filter(survivor => survivor.index !== currentSurvivor.index);
+                }
+            })
+
+            game.currentPlaceName = placeName;
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    changePlace: (event) => {
         update(game => {
             console.log('>>> event.keyCode', event.keyCode);
 
@@ -229,6 +249,14 @@ gameStore = {
             .reduce((a, b) => a + b, 0);
     },
 
+    setDisabled: (value) => {
+        if (value === true) {
+            return '';
+        }
+
+        return 'disabled';
+    },
+
     updateSurvivorActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
 
@@ -236,15 +264,25 @@ gameStore = {
             survivor.actionTable = currentPlayer
                 .actionDiceList.map(dice => {
                     return {
-                        dice: dice
+                        dice: dice,
+                        food: dice.power < 6,
+                        attack: survivor.place.currentZombieCount > 0,
+                        search: survivor.place.itemCardList.length > 0,
+                        barricade: survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount,
+                        clean: survivor.place.name === '피난기지' && survivor.place.trashCount >= 3,
+                        invite: survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2
                     };
                 });
-
-            console.log('>>> survivor.actionTable', survivor.actionTable);
-
         });
 
         return game;
+    },
+
+    isCurrentPlayerOfSurvivor: (currentSurvivor) => {
+        return gameStore.getCurrentPlayer()
+            .survivorList
+            .filter(survivor => survivor.name === currentSurvivor.name)
+            .length > 0;
     },
 
     updateActionTable: (game) => {
@@ -405,6 +443,14 @@ gameStore = {
             return currentPlace.maxZombieCount >
                 currentPlace.currentZombieCount + currentPlace.currentBarricadeCount;
         }
+    },
+
+    getPlaceClassName: (currentPlace) => {
+        if (currentPlace.name === get(gameStore).currentPlaceName) {
+            return "current-place";
+        }
+
+        return '';
     }
 }
 

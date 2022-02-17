@@ -7,30 +7,32 @@
     const survivorCountPerRow = 4;
 
     let placeList;
-    let place
+    let currentPlace;
     let survivorList;
     let survivorLocationList;
     let survivorAreaTable = [];
+    let currentPlayer;
 
     $: {
+        currentPlayer = gameStore.getCurrentPlayer();
         placeList = $gameStore.placeList;
-        place = placeList[placeIndex];
-        survivorList = place.survivorList;
-        survivorLocationList = place.survivorLocationList;
+        currentPlace = placeList[placeIndex];
+        survivorList = currentPlace.survivorList;
+        survivorLocationList = currentPlace.survivorLocationList;
     }
 </script>
 
 <div class="place place-part">
-    <div class="place-name">{place.name} {place.index + 1}</div>
+    <div class="place-name">{currentPlace.name} {currentPlace.index + 1}</div>
     <div>
-        {#if place.entranceList.length > 0}
+        {#if currentPlace.entranceList.length > 0}
             <div class="flex" style="justify-content: space-evenly; align-content: flex-start;margin: 10px">
-                {#each place.entranceList as entrance, entranceIndex}
+                {#each currentPlace.entranceList as entrance, entranceIndex}
                     <table class="game-table zombie-line">
                         <tr>
-                            {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
+                            {#each Array(currentPlace.entranceList[0].maxZombieCount) as _, zombieIndex}
                                 <td class="zombie-position">
-                                    {#if zombieIndex < place.entranceList[0].currentZombieCount}
+                                    {#if zombieIndex < currentPlace.entranceList[0].currentZombieCount}
                                         좀비
                                     {/if}
                                 </td>
@@ -41,9 +43,9 @@
             </div>
         {:else}
             <div class="flex">
-                {#each Array(place.entranceList[0].maxZombieCount) as _, zombieIndex}
+                {#each Array(currentPlace.entranceList[0].maxZombieCount) as _, zombieIndex}
                     <div class="zombie-position">
-                        {#if zombieIndex < place.entranceList[0].currentZombieCount}
+                        {#if zombieIndex < currentPlace.entranceList[0].currentZombieCount}
                             좀비
                         {/if}
                     </div>
@@ -54,12 +56,12 @@
     </div>
 
     <div class="flex survivor-container"
-         on:drop|preventDefault={event => gameStore.drop(event, place.name)}
+         on:drop|preventDefault={event => gameStore.drop(event, currentPlace.name)}
          on:dragover|preventDefault={(event) => {}}>
-        {#each place.survivorLocationList as survivor}
+        {#each currentPlace.survivorLocationList as survivor}
             <div draggable={survivor!==null}
                  style="background-color: lightgreen; border: 1px solid white"
-                on:dragstart={event => gameStore.drag(event, survivor.index, place.name)}>
+                on:dragstart={event => gameStore.drag(event, survivor.index, currentPlace.name)}>
                 <div class="survivor-position">
                     {#if survivor}
                         <div class="survivor flex-column">
@@ -75,15 +77,22 @@
                                     {#each survivor.actionTable as action}
                                         <tr>
                                             <td style="width: 30px;text-align:center">{action.dice.power}</td>
-                                            <td><button>식사</button></td>
-                                            <td><button>공격</button></td>
-                                            <td><button>검색</button></td>
-                                            <td><button>바리케이트 설치</button></td>
-                                            <td><button>쓰레기 처분</button></td>
-                                            <td><button>좀비유인</button></td>
+                                            <td><button disabled={!action.food}>식사</button></td>
+                                            <td><button disabled={!action.attack}>공격</button></td>
+                                            <td><button disabled={!action.search}>검색</button></td>
+                                            <td><button disabled={!action.barricade}>바리케이트 설치</button></td>
+                                            <td><button disabled={!action.clean}>쓰레기 처분</button></td>
+                                            <td><button disabled={!action.invite}>좀비유인</button></td>
                                         </tr>
                                     {/each}
                                 </table>
+                                {#if gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
+                                    {#each placeList as place}
+                                        {#if currentPlace.name != place.name}
+                                            <button on:click={gameStore.move(survivor, place.name)}>{place.name}</button>
+                                        {/if}
+                                    {/each}
+                                {/if}
                             </div>
                         </div>
                     {/if}

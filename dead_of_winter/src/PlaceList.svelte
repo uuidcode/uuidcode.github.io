@@ -14,9 +14,9 @@
 </script>
 
 <div class="flex-column">
-    <div class="flex">
+    <div class="flex" style="padding: 10px">
     {#each placeList as place, placeIndex}
-        <div class="flex place-header">
+        <div class="flex place-header {gameStore.getPlaceClassName(place)}">
             <table>
                 <tr>
                     <td colspan="2">{place.name}</td>

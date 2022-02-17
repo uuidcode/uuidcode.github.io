@@ -255,3 +255,8 @@ div {
 
 .game-button {
 }
+
+.current-place {
+    border: 3px solid lightblue;
+    box-shadow: rgb(0 0 0 / 10%) 0 4px 6px, rgb(0 0 0 / 15%) 0 8px 30px, rgb(255 255 255 / 20%) 0 0 0 1px inset;
+}
