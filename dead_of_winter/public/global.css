@@ -82,9 +82,9 @@ div {
 }
 
 .place {
-    width: 480px;
-    margin: 5px;
-    box-shadow: 4px 4px 2px 1px darkgray;
+    width: 1500px;
+    /*margin: 5px;*/
+    /*box-shadow: 4px 4px 2px 1px darkgray;*/
 }
 
 .place-left {
@@ -193,8 +193,14 @@ div {
     padding: 5px;
 }
 
+.survivor-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .survivor-position {
     min-height: 50px;
+    width: 480px;
     background-color: lightgreen;
     padding: 4px;
     margin: 4px;
@@ -203,7 +209,6 @@ div {
 .survivor {
     box-shadow: 4px 4px 2px 1px darkgray;
     margin: 4px;
-    height: 200px;
 }
 
 .place-header td {
@@ -227,4 +232,26 @@ div {
 
 .place-container.inactive {
     display: none;
+}
+
+.game-table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.zombie-line {
+
+}
+
+.game-table td {
+    border: 1px solid darkgray;
+    padding: 2px;
+}
+
+.zombie-line {
+    margin-right: 20px;
+}
+
+.game-button {
 }

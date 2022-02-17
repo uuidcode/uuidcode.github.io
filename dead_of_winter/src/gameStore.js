@@ -72,6 +72,12 @@ gameStore = {
         game.placeList.forEach(place => {
             const currentSurvivorList = [...place.survivorList];
 
+            if (place.name === game.currentPlaceName) {
+                place.activeClassName = 'active';
+            } else {
+                place.activeClassName = 'inactive';
+            }
+
             place.currentZombieCount = place.entranceList
                 .map(entrance => entrance.currentZombieCount)
                 .reduce((a, b) => a + b, 0);
@@ -84,7 +90,7 @@ gameStore = {
                 .map(entrance => entrance.barricadeCount)
                 .reduce((a, b) => a + b, 0);
 
-            place.survivorLocationList = [...Array(place.maxSurviveCount).keys()]
+            place.survivorLocationList = [...Array(place.maxSurvivorCount).keys()]
                 .map(index => {
                     if (place.survivorList.length > index) {
                         return place.survivorList[index];
@@ -124,6 +130,32 @@ gameStore = {
         const camp = gameStore.getCamp(game);
         camp.survivorList = survivorList;
         camp.survivorList.forEach(survivor => survivor.place = camp);
+    },
+
+    move: (event) => {
+        update(game => {
+            console.log('>>> event.keyCode', event.keyCode);
+
+            if (event.keyCode === 49 || event.keyCode === 97) {
+                game.currentPlaceName = '피난기지';
+            } else if (event.keyCode === 50 || event.keyCode === 98) {
+                game.currentPlaceName = '경찰서';
+            } else if (event.keyCode === 51 || event.keyCode === 99) {
+                game.currentPlaceName = '병원';
+            } else if (event.keyCode === 52 || event.keyCode === 100) {
+                game.currentPlaceName = '학교';
+            } else if (event.keyCode === 53 || event.keyCode === 101) {
+                game.currentPlaceName = '마트';
+            } else if (event.keyCode === 54 || event.keyCode === 102) {
+                game.currentPlaceName = '도서관';
+            } else if (event.keyCode === 55 || event.keyCode === 103) {
+                game.currentPlaceName = '주유소';
+            }
+
+            return game;
+        });
+
+        gameStore.updateAll();
     },
 
     init: () => update(game => {
@@ -197,6 +229,24 @@ gameStore = {
             .reduce((a, b) => a + b, 0);
     },
 
+    updateSurvivorActionTable: (game) => {
+        const currentPlayer = gameStore.getCurrentPlayer(game);
+
+        currentPlayer.survivorList.forEach(survivor => {
+            survivor.actionTable = currentPlayer
+                .actionDiceList.map(dice => {
+                    return {
+                        dice: dice
+                    };
+                });
+
+            console.log('>>> survivor.actionTable', survivor.actionTable);
+
+        });
+
+        return game;
+    },
+
     updateActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
 
@@ -237,6 +287,7 @@ gameStore = {
         gameStore.updateZombie(game);
         gameStore.updatePlace(game);
         gameStore.updateActionTable(game);
+        gameStore.updateSurvivorActionTable(game);
 
         return game;
     }),

@@ -22,6 +22,10 @@
                     <td colspan="2">{place.name}</td>
                 </tr>
                 <tr>
+                    <td>장소번호</td>
+                    <td>{place.index + 1}</td>
+                </tr>
+                <tr>
                     <td>좀비수</td>
                     <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
                 </tr>
@@ -36,6 +40,9 @@
             </table>
         </div>
     {/each}
+
+        <button class="game-button dice"
+                on:click={()=>gameStore.rollActionDice()}>행동 주사기 굴리기</button>
     </div>
 
     <div class="place-container">

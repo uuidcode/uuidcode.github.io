@@ -391,6 +391,7 @@ survivorList.forEach(survivor => {
     survivor.active = false;
     survivor.place = null
     survivor.ability.done = false;
+    survivor.actionTable = [];
 });
 
 export default survivorList;

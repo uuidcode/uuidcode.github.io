@@ -45,6 +45,42 @@ const placeList = [
         ]
     },
     {
+        name: '경찰서',
+        entranceList: [
+            {
+                maxZombieCount: 4,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        maxSurvivorCount: 3,
+        survivorList: [],
+        survivorLocationList: [],
+        noiseTokenCount: 0,
+        itemCardList: [
+            "무전기",
+            "잡동사니",
+            "야시경",
+            "자물쇠",
+            "산탄총",
+            "권총",
+            "권총",
+            "권총",
+            "소총",
+            "소총",
+            "연료",
+            "연료",
+            "연료",
+            "연료",
+            "식량1",
+            "식량1",
+            "식량1",
+            "외부인1",
+            "외부인2",
+            "외부인2",
+        ]
+    },
+    {
         name: '병원',
         entranceList: [
             {
@@ -76,42 +112,6 @@ const placeList = [
             "식량2",
             "식량2",
             "외부인2",
-            "외부인2",
-            "외부인2",
-        ]
-    },
-    {
-        name: '주유소',
-        entranceList: [
-            {
-                maxZombieCount: 3,
-                currentZombieCount: 0,
-                barricadeCount: 0
-            }
-        ],
-        maxSurvivorCount: 2,
-        survivorList: [],
-        survivorLocationList: [],
-        noiseTokenCount: 0,
-        itemCardList: [
-            "산탄총",
-            "주머니칼",
-            "주머니칼",
-            "라이터",
-            "라이터",
-            "약",
-            "약",
-            "약",
-            "연료",
-            "연료",
-            "연료",
-            "연료",
-            "연료",
-            "연료",
-            "식량1",
-            "식량1",
-            "식량1",
-            "외부인1",
             "외부인2",
             "외부인2",
         ]
@@ -153,6 +153,42 @@ const placeList = [
         ]
     },
     {
+        name: '마트',
+        maxSurvivorCount: 3,
+        entranceList: [
+            {
+                maxZombieCount: 4,
+                currentZombieCount: 0,
+                barricadeCount: 0
+            }
+        ],
+        survivorList: [],
+        survivorLocationList: [],
+        noiseTokenCount: 0,
+        itemCardList: [
+            "잡동사니",
+            "라이터",
+            "주머니칼",
+            "망치",
+            "연료",
+            "약",
+            "약",
+            "약",
+            "약",
+            "약",
+            "약",
+            "식량1",
+            "식량1",
+            "식량2",
+            "식량2",
+            "식량3",
+            "식량3",
+            "외부인1",
+            "외부인2",
+            "외부인2",
+        ]
+    },
+    {
         name: '도서관',
         entranceList: [
             {
@@ -190,72 +226,36 @@ const placeList = [
         ]
     },
     {
-        name: '경찰서',
+        name: '주유소',
         entranceList: [
             {
-                maxZombieCount: 4,
+                maxZombieCount: 3,
                 currentZombieCount: 0,
                 barricadeCount: 0
             }
         ],
-        maxSurvivorCount: 3,
+        maxSurvivorCount: 2,
         survivorList: [],
         survivorLocationList: [],
         noiseTokenCount: 0,
         itemCardList: [
-            "무전기",
-            "잡동사니",
-            "야시경",
-            "자물쇠",
             "산탄총",
-            "권총",
-            "권총",
-            "권총",
-            "소총",
-            "소총",
-            "연료",
-            "연료",
-            "연료",
-            "연료",
-            "식량1",
-            "식량1",
-            "식량1",
-            "외부인1",
-            "외부인2",
-            "외부인2",
-        ]
-    },
-    {
-        name: '마트',
-        maxSurvivorCount: 3,
-        entranceList: [
-            {
-                maxZombieCount: 4,
-                currentZombieCount: 0,
-                barricadeCount: 0
-            }
-        ],
-        survivorList: [],
-        survivorLocationList: [],
-        noiseTokenCount: 0,
-        itemCardList: [
-            "잡동사니",
-            "라이터",
             "주머니칼",
-            "망치",
+            "주머니칼",
+            "라이터",
+            "라이터",
+            "약",
+            "약",
+            "약",
             "연료",
-            "약",
-            "약",
-            "약",
-            "약",
-            "약",
-            "약",
+            "연료",
+            "연료",
+            "연료",
+            "연료",
+            "연료",
             "식량1",
             "식량1",
-            "식량2",
-            "식량2",
-            "식량3",
-            "식량3",
+            "식량1",
             "외부인1",
             "외부인2",
             "외부인2",
@@ -268,6 +268,7 @@ survivorList.forEach(survivor => {
 });
 
 placeList.forEach((place, index) => {
+    place.index = index;
     place.currentZombieCount = 0;
     place.currentBarricadeCount = 0;
     place.maxZombieCount = 0;

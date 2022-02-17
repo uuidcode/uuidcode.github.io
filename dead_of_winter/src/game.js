@@ -4,6 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
+    currentPlaceName: '피난기지',
     turn:0,
     round: 6,
     moral: 6,

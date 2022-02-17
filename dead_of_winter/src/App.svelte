@@ -14,6 +14,8 @@
     }
 </script>
 
+<svelte:window on:keydown={gameStore.move}/>
+
 <div class="board flex">
     <div class="board-item-section board-player-section"><Player playerIndex={0}></Player></div>
     <div class="board-item-section board-content-section"><PlaceList></PlaceList></div>
