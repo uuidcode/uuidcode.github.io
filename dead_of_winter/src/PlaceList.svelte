@@ -4,6 +4,7 @@
     import PlaceLeft from "./PlaceLeft.svelte";
     import PlaceRight from "./PlaceRight.svelte";
     import PlaceCenter from "./PlaceCenter.svelte";
+    import Place from "./Place.svelte";
 
     let placeList;
 
@@ -12,7 +13,8 @@
     }
 </script>
 
-<div class="flex">
+<div class="flex-column">
+    <div class="flex">
     {#each placeList as place, placeIndex}
         <div class="flex place-header">
             <table>
@@ -27,7 +29,20 @@
                     <td>생존자수</td>
                     <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
                 </tr>
+                <tr>
+                    <td>아이템카드수</td>
+                    <td>{place.itemCardList.length}</td>
+                </tr>
             </table>
         </div>
     {/each}
+    </div>
+
+    <div class="place-container">
+    {#each placeList as place, placeIndex}
+        <div class="place-container {place.activeClassName}">
+            <Place placeIndex={placeIndex}></Place>
+        </div>
+    {/each}
+    </div>
 </div>

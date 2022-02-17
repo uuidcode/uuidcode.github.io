@@ -267,10 +267,16 @@ survivorList.forEach(survivor => {
     survivor.activieSurvive = null;
 });
 
-placeList.forEach(place => {
+placeList.forEach((place, index) => {
     place.currentZombieCount = 0;
     place.currentBarricadeCount = 0;
     place.maxZombieCount = 0;
+
+    if (index === 0) {
+        place.activeClassName = 'active';
+    } else {
+        place.activeClassName = 'inactive';
+    }
 });
 
 export default placeList;

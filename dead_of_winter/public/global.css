@@ -215,3 +215,16 @@ div {
     border-spacing: 0;
     border-collapse: collapse;
 }
+
+.place-container {
+    width: 1500px;
+    border: 1px solid darkgray;
+}
+
+.place-container.active {
+    display: block;
+}
+
+.place-container.inactive {
+    display: none;
+}
