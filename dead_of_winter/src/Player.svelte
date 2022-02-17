@@ -20,32 +20,12 @@
     }
 </script>
 
-<div class="player-card-list-section">
-{#each itemCardTable as itemCardRow}
-    <ItemCard itemCardRow={itemCardRow}></ItemCard>
-{/each}
+<div class="flex-column player-card-list-section" style="background-color: {gameStore.getCurrentPlayerColor()}">
+    <table class="game-table" style="margin: 10px">
+        <tr><td>{player.name}</td></tr>
+    </table>
+    {#each itemCardTable as itemCardRow}
+        <ItemCard itemCardRow={itemCardRow}></ItemCard>
+    {/each}
 </div>
-
-<table style="display: none">
-    <tr style="background-color: {player.color}">
-        <td>
-            <table class="player-header">
-                <tr>
-                    <td>{player.name}</td>
-                    <td class="active">생존자</td>
-                    <td>{survivorList.length}</td>
-                    <td class="active">아이템</td>
-                    <td>{itemCardList.length}</td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td valign="top">
-            {#each itemCardTable as itemCardRow}
-                <ItemCard itemCardRow={itemCardRow}></ItemCard>
-            {/each}
-        </td>
-    </tr>
-</table>
 

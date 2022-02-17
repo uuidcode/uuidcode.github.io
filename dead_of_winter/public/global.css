@@ -203,7 +203,6 @@ div {
     width: 480px;
     background-color: lightgreen;
     padding: 4px;
-    margin: 4px;
 }
 
 .survivor {
@@ -213,6 +212,7 @@ div {
 
 .place-header td {
     border: 1px solid darkgray;
+    cursor: pointer;
 }
 
 .place-header table {
@@ -249,6 +249,10 @@ div {
     padding: 2px;
 }
 
+.game-table td.active {
+    background-color: #f0f8ff;
+}
+
 .zombie-line {
     margin-right: 20px;
 }
@@ -258,5 +262,9 @@ div {
 
 .current-place {
     border: 3px solid lightblue;
+    box-shadow: rgb(0 0 0 / 10%) 0 4px 6px, rgb(0 0 0 / 15%) 0 8px 30px, rgb(255 255 255 / 20%) 0 0 0 1px inset;
+}
+
+.box {
     box-shadow: rgb(0 0 0 / 10%) 0 4px 6px, rgb(0 0 0 / 15%) 0 8px 30px, rgb(255 255 255 / 20%) 0 0 0 1px inset;
 }

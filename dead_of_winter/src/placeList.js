@@ -14,7 +14,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 3,
-                currentZombieCount: 1,
+                currentZombieCount: 0,
                 barricadeCount: 0
             },
             {

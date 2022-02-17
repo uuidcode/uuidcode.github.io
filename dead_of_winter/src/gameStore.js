@@ -119,7 +119,7 @@ gameStore = {
     },
 
     getCurrentPlayerColor: () => {
-        return get(gameStore).getCurrentPlayer().color;
+        return gameStore.getCurrentPlayer().color;
     },
 
     getPlayerColor: (index) => {
@@ -152,30 +152,48 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    changePlace: (event) => {
+    changePlaceByName: (currentPlaceName) => {
+        if (currentPlaceName === null) {
+            return;
+        }
+
         update(game => {
-            console.log('>>> event.keyCode', event.keyCode);
-
-            if (event.keyCode === 49 || event.keyCode === 97) {
-                game.currentPlaceName = '피난기지';
-            } else if (event.keyCode === 50 || event.keyCode === 98) {
-                game.currentPlaceName = '경찰서';
-            } else if (event.keyCode === 51 || event.keyCode === 99) {
-                game.currentPlaceName = '병원';
-            } else if (event.keyCode === 52 || event.keyCode === 100) {
-                game.currentPlaceName = '학교';
-            } else if (event.keyCode === 53 || event.keyCode === 101) {
-                game.currentPlaceName = '마트';
-            } else if (event.keyCode === 54 || event.keyCode === 102) {
-                game.currentPlaceName = '도서관';
-            } else if (event.keyCode === 55 || event.keyCode === 103) {
-                game.currentPlaceName = '주유소';
-            }
-
+            game.currentPlaceName = currentPlaceName;
             return game;
         });
 
         gameStore.updateAll();
+    },
+
+    turn: () => {
+        update(game => {
+            game.turen = game.turn++;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    changePlace: (event) => {
+        let currentPlaceName = null;
+
+        if (event.keyCode === 49 || event.keyCode === 97) {
+            currentPlaceName = '피난기지';
+        } else if (event.keyCode === 50 || event.keyCode === 98) {
+            currentPlaceName = '경찰서';
+        } else if (event.keyCode === 51 || event.keyCode === 99) {
+            currentPlaceName = '병원';
+        } else if (event.keyCode === 52 || event.keyCode === 100) {
+            currentPlaceName = '학교';
+        } else if (event.keyCode === 53 || event.keyCode === 101) {
+            currentPlaceName = '마트';
+        } else if (event.keyCode === 54 || event.keyCode === 102) {
+            currentPlaceName = '도서관';
+        } else if (event.keyCode === 55 || event.keyCode === 103) {
+            currentPlaceName = '주유소';
+        }
+
+        gameStore.changePlaceByName(currentPlaceName);
     },
 
     init: () => update(game => {
@@ -344,6 +362,7 @@ gameStore = {
                 })
                 .sort((a, b) => b.power - a.power);
 
+            game.rollDice = true;
             return game;
         });
 
