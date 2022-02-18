@@ -149,8 +149,9 @@ gameStore = {
                 }
             })
 
+            game.currentSurvivor = currentSurvivor;
             game.currentPlaceName = placeName;
-
+            game.dangerDice= true;
             return game;
         });
 
@@ -290,15 +291,19 @@ gameStore = {
                 .actionDiceList.map(dice => {
                     return {
                         dice: dice,
-                        food: !dice.done && dice.power < 6 && gameStore.getCamp(game).food > 0,
-                        attack: !dice.done && survivor.place.currentZombieCount > 0,
-                        search: !dice.done && survivor.place.itemCardList.length > 0,
-                        barricade: !dice.done && survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount,
-                        clean: !dice.done && survivor.place.name === '피난기지' && survivor.place.trashCount >= 3,
-                        invite: !dice.done && survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2
+                        food: !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
+                        attack: !dice.done && !game.dangerDice&& survivor.place.currentZombieCount > 0,
+                        search: !dice.done && !game.dangerDice&& survivor.place.itemCardList.length > 0,
+                        barricade: !dice.done && !game.dangerDice&& survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount,
+                        clean: !dice.done && !game.dangerDice&& survivor.place.name === '피난기지' && survivor.place.trashCount >= 3,
+                        invite: !dice.done && !game.dangerDice&& survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2
                     };
                 });
         });
+
+        if (currentPlayer.actionDiceList.filter(dice => dice.done).length === currentPlayer.actionDiceList.length) {
+            game.canTurn = true;
+        }
 
         return game;
     },
@@ -355,7 +360,38 @@ gameStore = {
         return game;
     }),
 
-    createBarricade: (currentSurvivor, currentPlace, actionIndex) => {
+    plusPower: (currentPlace, actionIndex) => {
+        update(game => {
+            const currentPlayer = gameStore.getCurrentPlayer(game);
+            currentPlayer.actionDiceList[actionIndex].power++;
+            gameStore.getCamp(game).foodCount--;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    attack: (currentSurvivor, currentPlace, actionIndex) => {
+        update(game => {
+            const currentPlayer = gameStore.getCurrentPlayer(game);
+            currentPlayer.actionDiceList[actionIndex].done = true;
+
+            const currentEntrance = currentPlace.entranceList
+                .filter(entrance => entrance.zombieCount > 0)
+                .sort((a, b) => Math.random() - 0.5)[0];
+
+            currentEntrance.zombieCount--;
+            game.deadZombieCount++;
+            game.dangerDice = true;
+            game.currentSurvivor = currentSurvivor;
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    createBarricade: (currentPlace, actionIndex) => {
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
             currentPlayer.actionDiceList[actionIndex].done = true;
@@ -366,7 +402,26 @@ gameStore = {
 
             currentEntrance.barricadeCount = currentEntrance.barricadeCount + 1;
 
-            console.log('>>> currentPlace', currentPlace);
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    inviteZombie: (currentPlace, actionIndex) => {
+        update(game => {
+            const currentPlayer = gameStore.getCurrentPlayer(game);
+            console.log('>>> currentPlayer', currentPlayer);
+            console.log('>>> actionIndex', actionIndex);
+            currentPlayer.actionDiceList[actionIndex].done = true;
+
+            for (let i = 0; i < 2; i++) {
+                const currentEntrance = currentPlace.entranceList
+                    .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
+                    .sort((a, b) => Math.random() - 0.5)[0];
+
+                currentEntrance.zombieCount = currentEntrance.zombieCount + 1;
+            }
 
             return game;
         });
@@ -395,7 +450,7 @@ gameStore = {
 
     rollActionDice: () => {
         update(game => {
-            const player = game.playerList[game.turn % 2];
+            const player = gameStore.getCurrentPlayer(game);
 
             player.actionDiceList = [...Array(player.survivorList.length + 1).keys()]
                 .map(i => {
@@ -408,7 +463,72 @@ gameStore = {
                 .sort((a, b) => b.power - a.power);
 
             game.rollDice = false;
-            game.canTurn = true;
+            game.canTurn = false;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    dead: () => {
+        let oldMoral = 0;
+        let newMoral = 0;
+        let currentSurvivorName = '';
+
+        update(game => {
+            game.deadSurvivorCount++;
+            game.placeList.forEach(place => {
+                place.survivorList = place.survivorList
+                    .filter(survivor => survivor !== game.currentSurvivor)
+            })
+
+            oldMoral = game.moral;
+            game.moral--;
+            newMoral = game.moral;
+
+            currentSurvivorName = game.currentSurvivor.name;
+            game.currentSurvivor = null;
+
+            return game;
+        });
+
+        alert(`${currentSurvivorName} 죽었습니다.`);
+        alert(`사기가 ${oldMoral}에서 ${newMoral}로 떨어졌습니다.`);
+    },
+
+    wound: () => {
+        update(game => {
+            game.currentSurvivor.wound++;
+
+            alert(get(gameStore).currentSurvivor.name + ' 부상을 입었습니다.');
+
+            if (game.currentSurvivor.wound >= 3) {
+                alert(get(gameStore).currentSurvivor.name + ' 부상을 3차례 입었습니다.');
+                gameStore.dead();
+            }
+
+            game.currentSurvivor = null;
+            return game;
+        });
+    },
+
+    rollDangerActionDice: () => {
+        update(game => {
+            // const dangerDice = ['','','','','','','부상','부상','부상','부상','부상', '연쇄물림']
+            const dangerDice = ['연쇄물림']
+            const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
+
+            if (result === '') {
+                alert('아무런 일이 일어나지 않았습니다.');
+            } else if (result === '부상') {
+                alert('부상을 당하였습니다.');
+                gameStore.wound();
+            } else if (result === '연쇄물림') {
+                alert('연쇄물림이 발생하였습니다.');
+                gameStore.dead();
+            }
+
+            game.dangerDice = false;
             return game;
         });
 

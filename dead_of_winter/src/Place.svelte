@@ -12,10 +12,12 @@
     let survivorLocationList;
     let survivorAreaTable = [];
     let currentPlayer;
+    let dangerDice;
 
     $: {
         currentPlayer = gameStore.getCurrentPlayer();
         placeList = $gameStore.placeList;
+        dangerDice = $gameStore.dangerDice;
         currentPlace = placeList[placeIndex];
         survivorList = currentPlace.survivorList;
         survivorLocationList = currentPlace.survivorLocationList;
@@ -33,7 +35,7 @@
                         {#each Array(currentPlace.entranceList[entranceIndex].maxZombieCount) as _, zombieIndex}
                             <td class="zombie-position">
                                 {#if zombieIndex < currentPlace.entranceList[entranceIndex].zombieCount}
-                                    좀비
+                                    <div style="width:100%;height:100%;background-color: darkred"></div>
                                 {:else if currentPlace.entranceList[entranceIndex].maxZombieCount - zombieIndex <= currentPlace.entranceList[entranceIndex].barricadeCount}
                                     <div style="width:100%;height:100%;background-color: lightgray"></div>
                                 {/if}
@@ -63,7 +65,10 @@
                                     <td>
                                         {#each placeList as place}
                                             {#if currentPlace.name != place.name}
-                                                <button on:click={gameStore.move(survivor, place.name)}>{place.name}</button>
+                                                <button class="none-action-dice-button"
+                                                        disabled={dangerDice}
+                                                        style="margin-right: 5px"
+                                                        on:click={gameStore.move(survivor, place.name)}>{place.name}</button>
                                             {/if}
                                         {/each}
                                         로 이동
@@ -78,13 +83,41 @@
                                             {#each survivor.actionTable as action, actionIndex}
                                                 <tr>
                                                     <td style="width: 30px;text-align:center">{action.dice.power}</td>
-                                                    <td><button disabled={!action.food}>식사</button></td>
-                                                    <td><button disabled={!action.attack}>공격</button></td>
-                                                    <td><button disabled={!action.search}>검색</button></td>
-                                                    <td><button disabled={!action.search}>능력</button></td>
-                                                    <td><button disabled={!action.barricade} on:click={() => gameStore.createBarricade(survivor, currentPlace, actionIndex)}>바리케이트</button></td>
-                                                    <td><button disabled={!action.clean}>청소</button></td>
-                                                    <td><button disabled={!action.invite}>유인</button></td>
+                                                    <td>
+                                                        <button class="none-action-dice-button"
+                                                            disabled={!action.food}
+                                                            on:click={() => gameStore.plusPower(currentPlace, actionIndex)}>
+                                                            식사</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="action-dice-button"
+                                                                disabled={!action.attack}
+                                                            on:click={() => gameStore.attack(survivor, currentPlace, actionIndex)}>
+                                                            공격</button>
+                                                    </td>
+                                                    <td><button
+                                                            class="action-dice-button"
+                                                            disabled={!action.search}>검색</button></td>
+                                                    <td><button
+                                                            class="action-dice-button"
+                                                            disabled={!action.search}>능력</button></td>
+                                                    <td>
+                                                        <button
+                                                            class="action-dice-button"
+                                                            disabled={!action.barricade}
+                                                            on:click={() => gameStore.createBarricade(currentPlace, actionIndex)}>
+                                                        바리케이트</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="action-dice-button"
+                                                            disabled={!action.invite}
+                                                            on:click={() => gameStore.inviteZombie(currentPlace, actionIndex)}>
+                                                            유인</button>
+                                                    </td>
+                                                    <td><button
+                                                            class="action-dice-button"
+                                                            disabled={!action.clean}>청소</button></td>
+
                                                 </tr>
                                             {/each}
                                         </table>

@@ -272,3 +272,21 @@ div {
 .action-button:enabled {
     background-color: aliceblue;
 }
+
+.none-action-dice-button {
+    background-color: lightgreen;
+    border: 1px solid lightseagreen;
+}
+
+.none-action-dice-button:hover {
+    background-color: lightseagreen;
+}
+
+.action-dice-button {
+    background-color: lightsalmon;
+    border: 1px solid lightcoral;
+}
+
+.action-dice-button:hover, .action-dice-button:focus {
+    background-color: lightcoral;
+}

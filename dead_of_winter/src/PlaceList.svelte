@@ -8,10 +8,12 @@
 
     let placeList;
     let currentRiskCard;
+    let successRiskCardCount;
 
     $: {
         placeList = $gameStore.placeList;
         currentRiskCard = $gameStore.currentRiskCard;
+        successRiskCardCount = $gameStore.successRiskCardCount;
     }
 </script>
 
@@ -50,57 +52,78 @@
     <div class="flex" style="padding: 10px;justify-content: space-evenly">
         {#each placeList as place, placeIndex}
             <div class="flex place-header {gameStore.getPlaceClassName(place)}" on:click={gameStore.changePlaceByName(place.name)}>
-                <table>
-                    <tr>
-                        <td colspan="2">{place.name}</td>
-                    </tr>
-                    <tr>
-                        <td>장소번호</td>
-                        <td>{place.index + 1}</td>
-                    </tr>
-                    <tr>
-                        <td>좀비수</td>
-                        <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
-                    </tr>
-                    <tr>
-                        <td>바리케이트수</td>
-                        <td>{place.currentBarricadeCount}/{place.maxZombieCount}</td>
-                    </tr>
-                    <tr>
-                        <td>생존자수</td>
-                        <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
-                    </tr>
-                    {#if place.name == '피난기지'}
+                {#if place.name == '피난기지'}
+                    <table>
                         <tr>
+                            <td colspan="4">{place.name} {place.index + 1}</td>
+                        </tr>
+                        <tr>
+                            <td>좀비수</td>
+                            <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
+                            <td>바리케이트수</td>
+                            <td>{place.currentBarricadeCount}/{place.maxZombieCount}</td>
+                        </tr>
+                        <tr>
+                            <td>생존자수</td>
+                            <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
                             <td>식량</td>
                             <td>{place.foodCount}</td>
                         </tr>
-                    {:else}
+                        <tr>
+                            <td>굶주림 토큰</td>
+                            <td>{place.starvingTokenCount}</td>
+                            <td>쓰레기</td>
+                            <td>{place.trashCount}</td>
+                        </tr>
+                    </table>
+                {:else}
+                    <table>
+                        <tr>
+                            <td colspan="2">{place.name} {place.index + 1}</td>
+                        </tr>
+                        <tr>
+                            <td>좀비수</td>
+                            <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
+                        </tr>
+                        <tr>
+                            <td>바리케이트수</td>
+                            <td>{place.currentBarricadeCount}/{place.maxZombieCount}</td>
+                        </tr>
+                        <tr>
+                            <td>생존자수</td>
+                            <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
+                        </tr>
                         <tr>
                             <td>아이템카드수</td>
                             <td>{place.itemCardList.length}</td>
                         </tr>
-                    {/if}
-
-                </table>
+                    </table>
+                {/if}
             </div>
         {/each}
 
         <button class="game-button dice action-button" disabled={!$gameStore.riskCard}
+                style="width: 100px"
                 on:click={()=>gameStore.choiceRiskCard()}>
                 위기사항카드
         </button>
 
-        <button class="game-button dice action-button"  disabled={!$gameStore.rollDice}
-                on:click={()=>gameStore.rollActionDice()}>행동 주사기</button>
+        <button class="game-button dice action-button" disabled={!$gameStore.rollDice}
+                style="width: 100px"
+                on:click={()=>gameStore.rollActionDice()}>행동 주사위</button>
+
+        <button class="game-button dice action-button" disabled={!$gameStore.dangerDice}
+                style="width: 100px"
+                on:click={()=>gameStore.rollDangerActionDice()}>위험 노출<br/>주사위</button>
 
         <button class="game-button action-button" disabled={!$gameStore.canTurn}
+                style="width: 100px"
                 on:click={()=>gameStore.turn()}>완료</button>
 
     </div>
     {#if currentRiskCard != null}
         <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white">
-        <div style="font-size: 20px;">{currentRiskCard.name}</div>
+        <div style="font-size: 20px;">{currentRiskCard.name} {successRiskCardCount}</div>
         </div>
     {/if}
 
