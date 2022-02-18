@@ -7,14 +7,16 @@
     import Place from "./Place.svelte";
 
     let placeList;
+    let currentRiskCard;
 
     $: {
         placeList = $gameStore.placeList;
+        currentRiskCard = $gameStore.currentRiskCard;
     }
 </script>
 
 <div class="flex-column">
-    <div>
+    <div style="display: flex;justify-content: space-evenly">
         <table class="game-table" style="margin: 10px 10px 0 10px">
             <tr>
                 <td class="active">횟수</td>
@@ -35,8 +37,17 @@
                 <td>{$gameStore.deadZombieCount}</td>
             </tr>
         </table>
+
+        <table class="game-table" style="margin: 10px 10px 0 10px">
+            <tr>
+                <td>위기상항카드</td>
+                <td>행동주사위</td>
+                <td>공격, 검색, 능력 사용, 바리케이트 설치, 쓰레기 처분, 좀비 유인, 식사, 이동, 위기대응, 카드사용</td>
+                <td>완료</td>
+            </tr>
+        </table>
     </div>
-    <div class="flex" style="padding: 10px">
+    <div class="flex" style="padding: 10px;justify-content: space-evenly">
         {#each placeList as place, placeIndex}
             <div class="flex place-header {gameStore.getPlaceClassName(place)}" on:click={gameStore.changePlaceByName(place.name)}>
                 <table>
@@ -62,13 +73,24 @@
                 </table>
             </div>
         {/each}
-        <button class="game-button dice"  disabled={$gameStore.rollDice}
-                on:click={()=>gameStore.rollActionDice()}>행동 주사기 굴리기</button>
 
-            <button className="game-button" disabled={!$gameStore.canTurn} style="margin-left: 10px"
-                    on:click={()=>gameStore.turn()}>완료
-            </button>
+        <button class="game-button dice action-button" disabled={!$gameStore.riskCard}
+                on:click={()=>gameStore.choiceRiskCard()}>
+                위기사항카드
+        </button>
+
+        <button class="game-button dice action-button"  disabled={!$gameStore.rollDice}
+                on:click={()=>gameStore.rollActionDice()}>행동 주사기</button>
+
+        <button class="game-button action-button" disabled={!$gameStore.canTurn}
+                on:click={()=>gameStore.turn()}>완료</button>
+
     </div>
+    {#if currentRiskCard != null}
+        <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white">
+        <div style="font-size: 20px;">{currentRiskCard.name}</div>
+        </div>
+    {/if}
 
     <div class="place-container">
     {#each placeList as place, placeIndex}

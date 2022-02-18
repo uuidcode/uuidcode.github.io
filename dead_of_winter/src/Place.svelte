@@ -79,9 +79,10 @@
                                                     <td><button disabled={!action.food}>식사</button></td>
                                                     <td><button disabled={!action.attack}>공격</button></td>
                                                     <td><button disabled={!action.search}>검색</button></td>
-                                                    <td><button disabled={!action.barricade}>바리케이트 설치</button></td>
-                                                    <td><button disabled={!action.clean}>쓰레기 처분</button></td>
-                                                    <td><button disabled={!action.invite}>좀비유인</button></td>
+                                                    <td><button disabled={!action.search}>능력</button></td>
+                                                    <td><button disabled={!action.barricade}>바리케이트</button></td>
+                                                    <td><button disabled={!action.clean}>청소</button></td>
+                                                    <td><button disabled={!action.invite}>유인</button></td>
                                                 </tr>
                                             {/each}
                                         </table>

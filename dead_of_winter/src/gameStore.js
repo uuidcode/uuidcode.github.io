@@ -33,6 +33,11 @@ gameStore = {
         return game;
     }),
 
+    initRiskCard: function (game) {
+        game.riskCardList = game.riskCardList
+            .sort((a, b) => 0.5 - Math.random());
+    },
+
     initItemCard: function (game) {
         game.playerList.forEach(player => {
             player.itemCardList = game.initItemCardList
@@ -197,6 +202,7 @@ gameStore = {
     },
 
     init: () => update(game => {
+        gameStore.initRiskCard(game);
         gameStore.initItemCard(game);
         gameStore.initSurvivor(game);
         gameStore.initCamp(game);
@@ -348,6 +354,25 @@ gameStore = {
         return game;
     }),
 
+    choiceRiskCard: () => {
+        console.log('>>> choiceRiskCard');
+
+        update(game => {
+            game.currentRiskCard = game.riskCardList.pop();
+            game.riskCardList = [...game.riskCardList, game.currentRiskCard];
+
+            if (game.turn % 20 === 0) {
+                gameStore.initRiskCard(game);
+            }
+
+            game.riskCard = false;
+            game.rollDice = true;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
     rollActionDice: () => {
         update(game => {
             const player = game.playerList[game.turn % 2];
@@ -362,7 +387,8 @@ gameStore = {
                 })
                 .sort((a, b) => b.power - a.power);
 
-            game.rollDice = true;
+            game.rollDice = false;
+            game.canTurn = true;
             return game;
         });
 

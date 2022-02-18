@@ -1,6 +1,6 @@
 const riskCardList = [
     {
-        name: '낭비',
+        name: '식량 2개를 모아라. 실패시 사기 1 하락',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -13,7 +13,7 @@ const riskCardList = [
         }
     },
     {
-        name: '죽음의 군단',
+        name: '연료 2개를 모아라. 실패시 피난기지에 좀비 12구 출현',
         condition: {
             itemCardList: ['연료'],
             fail: {
@@ -28,7 +28,7 @@ const riskCardList = [
         }
     },
     {
-        name: '탈진',
+        name: '약 2개를 모아라. 실패시 5번의 부상',
         condition: {
             itemCardList: ['약'],
             fail: {
@@ -42,7 +42,7 @@ const riskCardList = [
         }
     },
     {
-        name: '그들이 지켜본다',
+        name: '약/도구 2개를 모아라. 실패시 도서관과 마트에 좀비 3구 출현',
         condition: {
             itemCardList: ['약', '도구'],
             fail: {
@@ -57,7 +57,7 @@ const riskCardList = [
         }
     },
     {
-        name: '우박 폭풍',
+        name: '약/도구 2개를 모아라. 실패시 바리케이드 모두 제거, 1번의 부상',
         condition: {
             itemCardList: ['약', '도구'],
             fail: {
@@ -75,7 +75,7 @@ const riskCardList = [
         }
     },
     {
-        name: '연료 부족',
+        name: '연료 2개를 모아라. 실패시 사기 2 저하, 1번의 부상',
         condition: {
             itemCardList: ['연료'],
             fail: {
@@ -93,7 +93,7 @@ const riskCardList = [
         }
     },
     {
-        name: '식량 고갈',
+        name: '식량 2개를 모아라. 실패시 굶주림 토큰 1개, 사기 1 저하',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -111,7 +111,7 @@ const riskCardList = [
         }
     },
     {
-        name: '식량 부패',
+        name: '식량 2개를 모아라. 실패시 굶주림 토큰 1개, 사기 1 저하',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -129,7 +129,7 @@ const riskCardList = [
         }
     },
     {
-        name: '밀려드는 좀비',
+        name: '도구 2개를 모아라. 실패시 피난기지에 좀비 6구 촐몰, 다른 모든 장소에는 좀비 1구 출몰',
         condition: {
             itemCardList: ['도구'],
             fail: {
@@ -149,7 +149,7 @@ const riskCardList = [
         }
     },
     {
-        name: '질병',
+        name: '약 2개를 모아라. 실패시 모든 생존자 1번의 부상, 사기 1 저하',
         condition: {
             itemCardList: ['약'],
             fail: {
@@ -167,7 +167,7 @@ const riskCardList = [
         }
     },
     {
-        name: '공포에 휩싸인 밤',
+        name: '식량 2개를 모아라. 실패시 사기 2 저하',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -181,7 +181,7 @@ const riskCardList = [
         }
     },
     {
-        name: '살인 본능',
+        name: '식량/약 2개를 모아라. 실패시 병원, 주유소에 좀비 3구 출몰',
         condition: {
             itemCardList: ['식량', '약'],
             fail: {
@@ -196,7 +196,7 @@ const riskCardList = [
         }
     },
     {
-        name: '죽은자의 괴력',
+        name: '연료 2개를 모아라. 실패시 모든 바리케이트 제거',
         condition: {
             itemCardList: ['연료'],
             fail: {
@@ -210,7 +210,7 @@ const riskCardList = [
         }
     },
     {
-        name: '눈보라',
+        name: '연료 2개를 모아라. 실패시 바리케이트 1개 제거, 1번의 부상, 사기 1 저하',
         condition: {
             itemCardList: ['연료'],
             fail: {
@@ -232,7 +232,7 @@ const riskCardList = [
         }
     },
     {
-        name: '죽음의 파도',
+        name: '도구 2개를 모아라. 실패시 피난기지에 좀비 8구 출몰, 사기 1 저하',
         condition: {
             itemCardList: ['도구'],
             fail: {
@@ -251,7 +251,7 @@ const riskCardList = [
         }
     },
     {
-        name: '절망',
+        name: '약 2개를 모아라. 실패시 사기 2 저하',
         condition: {
             itemCardList: ['약'],
             fail: {
@@ -265,7 +265,7 @@ const riskCardList = [
         }
     },
     {
-        name: '인구 포화',
+        name: '식량 2개를 모아라. 실패시 생존자 2명 죽음',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -279,7 +279,7 @@ const riskCardList = [
         }
     },
     {
-        name: '떼강도',
+        name: '식량 2개를 모아라. 실패시 생존자 1명 죽음, 사기 1 저하',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -297,7 +297,7 @@ const riskCardList = [
         }
     },
     {
-        name: '매수공작',
+        name: '도구 2개를 모아라. 실패시 피난기지의 식량 3개 제거, 사기 1 저하',
         condition: {
             itemCardList: ['도구'],
             fail: {
@@ -315,7 +315,7 @@ const riskCardList = [
         }
     },
     {
-        name: '망자들의 행진',
+        name: '도구/연료 2개를 모아라. 실패시 학교, 경찰서에 각각 좀비 1구 출몰',
         condition: {
             itemCardList: ['도구', '연료'],
             fail: {
@@ -323,7 +323,7 @@ const riskCardList = [
                     {
                         name: 'zombie',
                         placeList: ['학교', '경찰서'],
-                        targetCount: 8
+                        targetCount: 1
                     }
                 ]
             }

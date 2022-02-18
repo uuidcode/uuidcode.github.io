@@ -5,6 +5,8 @@ import riskCardList from "./riskCardList";
 
 const game = {
     currentPlaceName: '피난기지',
+    currentRiskCard: null,
+    riskCard: true,
     canTurn: false,
     rollDice: false,
     turn:0,
