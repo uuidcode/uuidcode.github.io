@@ -85,7 +85,7 @@ gameStore = {
             }
 
             place.currentZombieCount = place.entranceList
-                .map(entrance => entrance.currentZombieCount)
+                .map(entrance => entrance.zombieCount)
                 .reduce((a, b) => a + b, 0);
 
             place.maxZombieCount = place.entranceList
@@ -224,7 +224,7 @@ gameStore = {
     updateZombie: game => {
         game.zombieCount = game.placeList
             .flatMap(player => player.entranceList)
-            .map(entrance => entrance.currentZombieCount)
+            .map(entrance => entrance.zombieCount)
             .reduce((a, b) => a + b, 0);
     },
 
@@ -281,6 +281,7 @@ gameStore = {
         return 'disabled';
     },
 
+
     updateSurvivorActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
 
@@ -289,12 +290,12 @@ gameStore = {
                 .actionDiceList.map(dice => {
                     return {
                         dice: dice,
-                        food: dice.power < 6,
-                        attack: survivor.place.currentZombieCount > 0,
-                        search: survivor.place.itemCardList.length > 0,
-                        barricade: survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount,
-                        clean: survivor.place.name === '피난기지' && survivor.place.trashCount >= 3,
-                        invite: survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2
+                        food: !dice.done && dice.power < 6 && gameStore.getCamp(game).food > 0,
+                        attack: !dice.done && survivor.place.currentZombieCount > 0,
+                        search: !dice.done && survivor.place.itemCardList.length > 0,
+                        barricade: !dice.done && survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount,
+                        clean: !dice.done && survivor.place.name === '피난기지' && survivor.place.trashCount >= 3,
+                        invite: !dice.done && survivor.place.maxZombieCount > survivor.place.currentZombieCount + survivor.place.currentBarricadeCount + 2
                     };
                 });
         });
@@ -353,6 +354,25 @@ gameStore = {
 
         return game;
     }),
+
+    createBarricade: (currentSurvivor, currentPlace, actionIndex) => {
+        update(game => {
+            const currentPlayer = gameStore.getCurrentPlayer(game);
+            currentPlayer.actionDiceList[actionIndex].done = true;
+
+            const currentEntrance = currentPlace.entranceList
+                .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
+                .sort((a, b) => Math.random() - 0.5)[0];
+
+            currentEntrance.barricadeCount = currentEntrance.barricadeCount + 1;
+
+            console.log('>>> currentPlace', currentPlace);
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
 
     choiceRiskCard: () => {
         console.log('>>> choiceRiskCard');

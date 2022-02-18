@@ -32,8 +32,10 @@
                     <tr>
                         {#each Array(currentPlace.entranceList[entranceIndex].maxZombieCount) as _, zombieIndex}
                             <td class="zombie-position">
-                                {#if zombieIndex < currentPlace.entranceList[entranceIndex].currentZombieCount}
+                                {#if zombieIndex < currentPlace.entranceList[entranceIndex].zombieCount}
                                     좀비
+                                {:else if currentPlace.entranceList[entranceIndex].maxZombieCount - zombieIndex <= currentPlace.entranceList[entranceIndex].barricadeCount}
+                                    <div style="width:100%;height:100%;background-color: lightgray"></div>
                                 {/if}
                             </td>
                         {/each}
@@ -73,14 +75,14 @@
                                 <tr>
                                     <td>
                                         <table class="game-table" style="width: 100%">
-                                            {#each survivor.actionTable as action}
+                                            {#each survivor.actionTable as action, actionIndex}
                                                 <tr>
                                                     <td style="width: 30px;text-align:center">{action.dice.power}</td>
                                                     <td><button disabled={!action.food}>식사</button></td>
                                                     <td><button disabled={!action.attack}>공격</button></td>
                                                     <td><button disabled={!action.search}>검색</button></td>
                                                     <td><button disabled={!action.search}>능력</button></td>
-                                                    <td><button disabled={!action.barricade}>바리케이트</button></td>
+                                                    <td><button disabled={!action.barricade} on:click={() => gameStore.createBarricade(survivor, currentPlace, actionIndex)}>바리케이트</button></td>
                                                     <td><button disabled={!action.clean}>청소</button></td>
                                                     <td><button disabled={!action.invite}>유인</button></td>
                                                 </tr>

@@ -63,6 +63,10 @@
                         <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
                     </tr>
                     <tr>
+                        <td>바리케이트수</td>
+                        <td>{place.currentBarricadeCount}/{place.maxZombieCount}</td>
+                    </tr>
+                    <tr>
                         <td>생존자수</td>
                         <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
                     </tr>

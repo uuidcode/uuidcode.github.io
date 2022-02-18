@@ -14,32 +14,32 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             },
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             },
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             },
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             },
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             },
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ]
@@ -49,7 +49,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 4,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ],
@@ -85,7 +85,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 4,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ],
@@ -121,7 +121,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 4,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ],
@@ -158,7 +158,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 4,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ],
@@ -193,7 +193,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ],
@@ -230,7 +230,7 @@ const placeList = [
         entranceList: [
             {
                 maxZombieCount: 3,
-                currentZombieCount: 0,
+                zombieCount: 0,
                 barricadeCount: 0
             }
         ],
