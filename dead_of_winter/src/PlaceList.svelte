@@ -66,10 +66,18 @@
                         <td>생존자수</td>
                         <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
                     </tr>
-                    <tr>
-                        <td>아이템카드수</td>
-                        <td>{place.itemCardList.length}</td>
-                    </tr>
+                    {#if place.name == '피난기지'}
+                        <tr>
+                            <td>식량</td>
+                            <td>{place.foodCount}</td>
+                        </tr>
+                    {:else}
+                        <tr>
+                            <td>아이템카드수</td>
+                            <td>{place.itemCardList.length}</td>
+                        </tr>
+                    {/if}
+
                 </table>
             </div>
         {/each}
