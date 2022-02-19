@@ -1,6 +1,5 @@
 <script>
     import gameStore from "./gameStore";
-    import ItemCard from "./ItemCard.svelte";
     import Place from "./Place.svelte";
 
     $: {

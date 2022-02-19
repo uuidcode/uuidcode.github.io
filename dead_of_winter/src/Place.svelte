@@ -13,11 +13,13 @@
     let survivorAreaTable = [];
     let currentPlayer;
     let dangerDice;
+    let selectedItemCardFeature;
 
     $: {
         currentPlayer = gameStore.getCurrentPlayer();
         placeList = $gameStore.placeList;
         dangerDice = $gameStore.dangerDice;
+        dangerDice = $gameStore.selectedItemCardFeature;
         currentPlace = placeList[placeIndex];
         survivorList = currentPlace.survivorList;
         survivorLocationList = currentPlace.survivorLocationList;
@@ -64,7 +66,7 @@
                                 <tr>
                                     <td>
                                         {#each placeList as place}
-                                            {#if currentPlace.name != place.name}
+                                            {#if currentPlace.name != place.name && selectedItemCardFeature == null}
                                                 <button class="none-action-dice-button"
                                                         disabled={dangerDice}
                                                         style="margin-right: 5px"
@@ -82,12 +84,18 @@
                                         <table class="game-table" style="width: 100%">
                                             {#each survivor.actionTable as action, actionIndex}
                                                 <tr>
-                                                    <td style="width: 30px;text-align:center">{action.dice.power}</td>
+                                                    <td style="width: 20px;text-align:center">{action.dice.power}</td>
                                                     <td>
                                                         <button class="none-action-dice-button"
                                                             disabled={!action.food}
                                                             on:click={() => gameStore.plusPower(currentPlace, actionIndex)}>
-                                                            식사</button>
+                                                            식사+1</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="none-action-dice-button"
+                                                                disabled={!action.itemFood}
+                                                                on:click={() => gameStore.selectItemCard(currentPlace, actionIndex)}>
+                                                            아이템+1</button>
                                                     </td>
                                                     <td>
                                                         <button class="action-dice-button"

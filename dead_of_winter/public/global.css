@@ -200,9 +200,9 @@ div {
 
 .survivor-position {
     min-height: 50px;
-    width: 480px;
+    width: 495px;
     background-color: lightgreen;
-    padding: 4px;
+    padding: 2px;
 }
 
 .survivor {

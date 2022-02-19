@@ -254,12 +254,14 @@ gameStore = {
             });
 
             game.currentPlayer.itemCardList.forEach((itemCard) => {
-                itemCard.canAction = game.canAction;
+                itemCard.canAction = game.canAction === true &&
+                    game.selectedItemCardFeature === itemCard.feature;
             });
 
             if (game.currentRiskCard) {
                 game.currentPlayer.itemCardList.forEach((itemCard) => {
                     itemCard.canPreventRisk =
+                        game.selectedItemCardFeature === null &&
                         game.successRiskCardCount < 2 &&
                         game.canAction &&
                         game.currentRiskCard.condition.itemCardList
@@ -348,14 +350,14 @@ gameStore = {
 
                     return {
                         dice: dice,
-                        food: !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
-                        attack: !dice.done && !game.dangerDice&& currentPlace.currentZombieCount > 0,
-                        search: !dice.done && !game.dangerDice&& currentPlace.itemCardList.length > 0,
-                        barricade: !dice.done && !game.dangerDice&& currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
-                        clean: !dice.done && !game.dangerDice&& currentPlace.name === '피난기지' && currentPlace.trashCount >= 3,
-                        invite: !dice.done && !game.dangerDice&& currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
-                        move: !dice.done && currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
-                        itemFood: !dice.done && !game.dangerDice && dice.power < 6 &&
+                        food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
+                        attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.currentZombieCount > 0,
+                        search: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.itemCardList.length > 0,
+                        barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
+                        clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.name === '피난기지' && currentPlace.trashCount >= 3,
+                        invite: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
+                        move: game.selectedItemCardFeature === null &&!dice.done && currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
+                        itemFood: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power < 6 &&
                             currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'power').length > 0,
                         attackItemList,
                         searchItemList,
@@ -449,12 +451,34 @@ gameStore = {
         gameStore.updateAll();
     },
 
+    selectItemCard: (currentPlace, actionIndex) => {
+        update(game => {
+            game.selectedItemCardFeature = 'power';
+            game.selectedActionIndex = actionIndex;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
     preventRisk: (currentItemCard) => {
         update(game => {
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index)
 
             game.successRiskCardCount++;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    use: (currentItemCard) => {
+        update(game => {
+            game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
+                .filter(itemCard => itemCard.index !== currentItemCard.index);
+            game.currentPlayer.actionDiceList[game.selectedActionIndex].power++;
+            game.selectedItemCardFeature = null;
             return game;
         });
 

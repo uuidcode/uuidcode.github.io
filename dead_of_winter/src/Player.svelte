@@ -3,7 +3,6 @@
     import { flip } from 'svelte/animate';
     import gameStore from "./gameStore";
     import Survivor from "./Survivor.svelte";
-    import ItemCard from "./ItemCard.svelte";
 
     export let playerIndex;
 
@@ -45,7 +44,7 @@
 
                         {#if itemCard.canAction == true}
                             <button class="none-action-dice-button"
-                                    on:click={()=>gameStore.preventRisk(itemCard)}>사용</button>
+                                    on:click={()=>gameStore.use(itemCard)}>사용</button>
                         {/if}
                     </td>
                 </tr>
