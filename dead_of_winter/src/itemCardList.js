@@ -3,18 +3,20 @@ const itemCardList = [
         name: '약',
         description: "부상 토큰을 하나 제거합니다.",
         category: '약',
-        type: 'execute'
+        type: 'execute',
+        feature: 'care'
     },
     {
         name: '주사기',
         description: "부상 토큰을 두개를 제거합니다.",
         category: '약',
-        type: 'execute'
+        type: 'execute',
+        feature: 'care'
     },
     {
         name: '야구방망이',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴립니다.",
-        category: '잡동사니',
+        category: '도구',
         type: 'execute'
     },
     {
@@ -22,7 +24,7 @@ const itemCardList = [
         description: "식량창고에 식량토큰을 하나를 추가합니다.",
         category: '식량',
         type: 'execute',
-        feature: 'food1',
+        feature: 'food',
         targetCount: 1
     },
     {
@@ -30,6 +32,7 @@ const itemCardList = [
         description: "식량창고에 식량토큰을 두개를 추가합니다.",
         category: '식량',
         type: 'execute',
+        feature: 'food',
         targetCount: 2
     },
     {
@@ -38,13 +41,6 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'barricade'
-    },
-    {
-        name: '리더십',
-        category: '교육',
-        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
-        type: 'execute',
-        feature: 'power'
     },
     {
         name: '격투기',
@@ -94,7 +90,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '학교'
+        placeList: ['학교']
     },
     {
         name: '경찰서 청사진',
@@ -102,7 +98,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '경찰서'
+        placeList: ['경찰서']
     },
     {
         name: '주유소 청사진',
@@ -110,7 +106,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '주유소'
+        placeList: ['주유소']
     },
     {
         name: '마트 청사진',
@@ -118,7 +114,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '마트'
+        placeList: ['마트']
     },
     {
         name: '병원 청사진',
@@ -126,7 +122,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '병원'
+        placeList: ['병원']
     },
     {
         name: '도서관 청사진',
@@ -134,7 +130,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '도서관'
+        placeList: ['도서관']
     },
     {
         name: '생존 요리법',
@@ -145,18 +141,25 @@ const itemCardList = [
         place: '피난기지'
     },
     {
+        name: '리더십',
+        category: '교육',
+        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
+        type: 'execute',
+        feature: 'power'
+    },
+    {
         name: '잡동사니',
-        description: "미사용 행동 주사위 하나를 다시 굴립니다.",
+        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
         category: '도구',
         type: 'execute',
-        feature: 'act'
+        feature: 'power'
     },
     {
         name: '백과사전',
-        description: "미사용 행동 주사위 하나를 다시 굴립니다.",
+        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
         category: '교육',
         type: 'execute',
-        feature: 'act'
+        feature: 'power'
     },
     {
         name: '연료',
@@ -181,10 +184,10 @@ const itemCardList = [
     },
     {
         name: '산탄총',
-        description: "좀비를 2구를 제거합니다. 위험 노출 주사를 한번 굴립니다.",
+        description: "좀비를 2구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'hardAttack2'
+        feature: 'softAttack2'
     },
     {
         name: '소총',
@@ -240,14 +243,15 @@ const itemCardList = [
         description: "쓰레기 5개를 치웁니다.",
         category: '도구',
         type: 'execute',
-        feature: 'clean5'
+        feature: 'clean'
     },
     {
         name: '손전등',
         description: "아무 장소의 아이템 카드 3장을 획득합니다.",
         category: '도구',
         type: 'execute',
-        feature: 'search3'
+        feature: 'search',
+        laceList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
     }
 ];
 

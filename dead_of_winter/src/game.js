@@ -4,6 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
+    actionTable: [],
     currentPlaceName: '피난기지',
     currentRiskCard: null,
     riskCard: true,
