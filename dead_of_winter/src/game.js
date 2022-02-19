@@ -10,6 +10,7 @@ const game = {
     dangerDice: false,
     currentSurvivor: null,
     successRiskCardCount: 0,
+    currentPlayer: null,
     canTurn: false,
     canAction: false,
     rollDice: false,

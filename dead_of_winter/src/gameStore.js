@@ -43,7 +43,12 @@ gameStore = {
             player.itemCardList = game.initItemCardList
                 .sort((a, b) => 0.5 - Math.random())
                 .slice(0, 7)
-                .map(name => game.itemCardList.find(item => item.name === name));
+                .map(name => game.itemCardList.find(item => item.name === name))
+                .map(itemCard => {
+                    return {
+                        ...itemCard
+                    };
+                });
         });
     },
 
@@ -234,12 +239,32 @@ gameStore = {
             .map(player => player.itemCardList.length)
             .reduce((a, b) => a + b, 0);
 
+        let itemCardIndex = 0;
+
         game.playerList.forEach(player => {
-            if (game.currentRiskCard) {
+            player.itemCardList.forEach(itemCard => {
+                itemCard.index = itemCardIndex++;
+            });
+
+            game.playerList.forEach(player => {
                 player.itemCardList.forEach(itemCard => {
-                    itemCard.canPreventRisk = game.canAction && game.currentRiskCard.condition.itemCardList
-                        .filter(name => name === itemCard.category)
-                        .length > 0;
+                    itemCard.canAction = false;
+                    itemCard.canPreventRisk = false;
+                })
+            });
+
+            game.currentPlayer.itemCardList.forEach((itemCard) => {
+                itemCard.canAction = game.canAction;
+            });
+
+            if (game.currentRiskCard) {
+                game.currentPlayer.itemCardList.forEach((itemCard) => {
+                    itemCard.canPreventRisk =
+                        game.successRiskCardCount < 2 &&
+                        game.canAction &&
+                        game.currentRiskCard.condition.itemCardList
+                            .filter(name => name === itemCard.category)
+                            .length > 0;
                 });
             }
         })
@@ -358,6 +383,7 @@ gameStore = {
     },
 
     updateAll: () => update(game => {
+        game.currentPlayer = game.playerList[game.turn % 2];
         gameStore.updateSurvivorCount(game);
         gameStore.updateItemCardTable(game);
         gameStore.updateSurvivor(game);
@@ -375,6 +401,18 @@ gameStore = {
             const currentPlayer = gameStore.getCurrentPlayer(game);
             currentPlayer.actionDiceList[actionIndex].power++;
             gameStore.getCamp(game).foodCount--;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    preventRisk: (currentItemCard) => {
+        update(game => {
+            game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
+                .filter(itemCard => itemCard.index !== currentItemCard.index)
+
+            game.successRiskCardCount++;
             return game;
         });
 
