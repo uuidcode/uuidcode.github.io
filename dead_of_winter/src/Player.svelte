@@ -24,8 +24,8 @@
     <table class="game-table" style="margin: 10px">
         <tr><td>{player.name}</td></tr>
     </table>
-    {#each itemCardTable as itemCardRow}
-        <ItemCard itemCardRow={itemCardRow}></ItemCard>
+    {#each itemCardList as itemCard}
+        <ItemCard itemCard={itemCard}></ItemCard>
     {/each}
 </div>
 

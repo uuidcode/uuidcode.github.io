@@ -11,6 +11,7 @@ const game = {
     currentSurvivor: null,
     successRiskCardCount: 0,
     canTurn: false,
+    canAction: false,
     rollDice: false,
     turn:0,
     round: 6,

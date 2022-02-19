@@ -123,7 +123,7 @@
     </div>
     {#if currentRiskCard != null}
         <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white">
-        <div style="font-size: 20px;">{currentRiskCard.name} {successRiskCardCount}</div>
+        <div style="font-size: 20px;">{currentRiskCard.name} 처리된 카드수 : {successRiskCardCount}</div>
         </div>
     {/if}
 

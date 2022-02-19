@@ -251,4 +251,9 @@ const itemCardList = [
     }
 ];
 
+itemCardList.forEach(itemCard => {
+    itemCard.canPreventRisk = false;
+    itemCard.canExecute = false;
+});
+
 export default itemCardList;

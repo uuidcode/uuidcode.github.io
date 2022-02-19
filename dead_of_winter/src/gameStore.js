@@ -233,6 +233,16 @@ gameStore = {
         game.itemCardCount = game.playerList
             .map(player => player.itemCardList.length)
             .reduce((a, b) => a + b, 0);
+
+        game.playerList.forEach(player => {
+            if (game.currentRiskCard) {
+                player.itemCardList.forEach(itemCard => {
+                    itemCard.canPreventRisk = game.canAction && game.currentRiskCard.condition.itemCardList
+                        .filter(name => name === itemCard.category)
+                        .length > 0;
+                });
+            }
+        })
     },
 
     updateItemCardTable: game => {
@@ -463,6 +473,7 @@ gameStore = {
                 .sort((a, b) => b.power - a.power);
 
             game.rollDice = false;
+            game.canAction = true;
             game.canTurn = false;
             return game;
         });
