@@ -9,6 +9,7 @@
 
     let player;
     let playerList;
+    let currentPlayer;
     let survivorList;
     let itemCardTable;
     let itemCardList;
@@ -16,6 +17,7 @@
 
     $: {
         playerList = $gameStore.playerList;
+        currentPlayer = $gameStore.currentPlayer;
         selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         player = playerList[playerIndex];
         survivorList = player.survivorList;
@@ -24,8 +26,9 @@
     }
 </script>
 
-<div class="flex-column player-card-list-section" style="background-color: {gameStore.getCurrentPlayerColor()}">
-    <table class="game-table" style="margin: 10px">
+<div class="flex-column player-card-list-section"
+     style="background-color: {currentPlayer.index === player.index ? gameStore.getCurrentPlayerColor() : 'white'}">
+    <table class="game-table">
         <tr><td>{player.name}</td></tr>
     </table>
     <div>

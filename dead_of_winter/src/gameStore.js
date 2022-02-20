@@ -185,7 +185,20 @@ gameStore = {
 
     turn: () => {
         update(game => {
-            game.turen = game.turn++;
+            game.currentPlayer.actionTable = [];
+
+            game.survivorList.forEach(survivor => survivor.actionTable = []);
+
+            game.placeList.forEach(place => {
+                place.survivorList.forEach(survivorList => survivorList.actionTable = []);
+            });
+
+            game.playerList.forEach(player => player.actionDiceList = []);
+
+            game.turn++;
+            game.canAction = false;
+            game.canTurn = false;
+            game.rollDice = true;
             return game;
         });
 
@@ -380,7 +393,9 @@ gameStore = {
                 });
         });
 
-        if (currentPlayer.actionDiceList.filter(dice => dice.done).length === currentPlayer.actionDiceList.length) {
+        const doneLength = currentPlayer.actionDiceList.filter(dice => dice.done).length;
+
+        if (doneLength !== 0 && doneLength === currentPlayer.actionDiceList.length) {
             game.canTurn = true;
         }
 
