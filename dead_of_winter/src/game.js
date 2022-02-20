@@ -12,7 +12,7 @@ const game = {
     riskCard: true,
     dangerDice: false,
     currentSurvivor: null,
-    successRiskCardCount: 0,
+    successRiskCardList: [],
     currentPlayer: null,
     canTurn: false,
     canAction: false,

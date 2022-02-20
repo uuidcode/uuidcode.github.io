@@ -262,7 +262,7 @@ gameStore = {
                 game.currentPlayer.itemCardList.forEach((itemCard) => {
                     itemCard.canPreventRisk =
                         game.selectedItemCardFeature === null &&
-                        game.successRiskCardCount < 2 &&
+                        game.successRiskCardList.length < 2 &&
                         game.canAction &&
                         game.currentRiskCard.condition.itemCardList
                             .filter(name => name === itemCard.category)
@@ -466,7 +466,7 @@ gameStore = {
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index)
 
-            game.successRiskCardCount++;
+            game.successRiskCardList = [...game.successRiskCardList, currentItemCard];
             return game;
         });
 

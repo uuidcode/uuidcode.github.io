@@ -1,8 +1,8 @@
 <script>
-    import { fade, fly } from 'svelte/transition';
-    import { flip } from 'svelte/animate';
     import gameStore from "./gameStore";
-    import Survivor from "./Survivor.svelte";
+    import {flip} from 'svelte/animate';
+    import {crossfade} from './itemCardCrossFade';
+    const [send, receive] = crossfade;
 
     export let playerIndex;
 
@@ -26,8 +26,11 @@
         <tr><td>{player.name}</td></tr>
     </table>
     <div>
-        {#each itemCardList as itemCard (itemCard.index)}
+        {#each itemCardList as itemCard (itemCard)}
             <table class="game-table box"
+                   animate:flip
+                   in:receive={{key: itemCard}}
+                   out:send={{key: itemCard}}
                    style="width: 100%; margin: 0 0 4px 0;">
                 <tr>
                     <td class="active">이름</td>
