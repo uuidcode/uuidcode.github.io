@@ -2,20 +2,26 @@
     import gameStore from "./gameStore";
     import Place from "./Place.svelte";
     import {flip} from 'svelte/animate';
-    import {itemCardCrossfade, foodCrossfade} from './animation';
+    import {itemCardCrossfade, trashCrossfade, foodCrossfade, deadSurvivorCrossfade} from './animation';
     const [send, receive] = itemCardCrossfade;
+    const [trashSend, trashReceive] = trashCrossfade;
     const [foodSend, foodReceive] = foodCrossfade;
+    const [deadSurvivorSend, deadSurvivorReceive] = deadSurvivorCrossfade;
 
     let placeList;
+    let deadSurvivorList;
     let currentRiskCard;
     let successRiskCardList;
     let camp;
+    let actionTable;
 
     $: {
         placeList = $gameStore.placeList;
+        deadSurvivorList = $gameStore.deadSurvivorList;
         currentRiskCard = $gameStore.currentRiskCard;
         successRiskCardList = $gameStore.successRiskCardList;
         camp = $gameStore.placeList.find(place => place.name === '피난기지');
+        actionTable = $gameStore.actionTable;
     }
 </script>
 
@@ -32,7 +38,16 @@
                 <td class="active">생존자</td>
                 <td>{$gameStore.survivorCount}</td>
                 <td class="active">죽은 생존자</td>
-                <td>{$gameStore.deadSurvivorCount}</td>
+                <td>{$gameStore.deadSurvivorCount}
+                    <div style="display: flex;width:50px;flex-wrap: wrap;margin-left: 5px">
+                        {#each deadSurvivorList as surviror (surviror)}
+                            <div in:deadSurvivorReceive={{key: surviror}}
+                                 out:deadSurvivorSend={{key: surviror}}>
+                                <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
+                            </div>
+                        {/each}
+                    </div>
+                </td>
                 <td class="active">좀비</td>
                 <td>{$gameStore.zombieCount}</td>
                 <td class="active">좀비토큰</td>
@@ -44,10 +59,9 @@
 
         <table class="game-table" style="margin: 10px 10px 0 10px">
             <tr>
-                <td>위기상항카드</td>
-                <td>행동주사위</td>
-                <td>공격, 검색, 능력 사용, 바리케이트 설치, 쓰레기 처분, 좀비 유인, 식사, 이동, 위기대응, 카드사용</td>
-                <td>완료</td>
+                {#each actionTable as action}
+                    <td class="active">{action.name}</td><td>{action.count}</td>
+                {/each}
             </tr>
         </table>
     </div>
@@ -74,8 +88,8 @@
                                     <div style="display: flex;width:50px;flex-wrap: wrap">
                                         {#each camp.foodList as food, index (food)}
                                             <div animate:flip
-                                             in:foodReceive={{key: food}}
-                                             out:foodSend={{key: food}}>
+                                                 in:foodReceive={{key: food}}
+                                                 out:foodSend={{key: food}}>
                                                 <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
                                             </div>
                                         {/each}
@@ -87,7 +101,19 @@
                             <td>굶주림 토큰</td>
                             <td>{place.starvingTokenCount}</td>
                             <td>쓰레기</td>
-                            <td>{place.trashCount}</td>
+                            <td>{place.trashCount}
+                                <div>
+                                    <div style="display: flex;width:50px;flex-wrap: wrap">
+                                        {#each camp.trashList as trash, index (trash)}
+                                            <div animate:flip
+                                                 in:trashReceive={{key: trash}}
+                                                 out:trashSend={{key: trash}}>
+                                                <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 {:else}

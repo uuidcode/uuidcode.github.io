@@ -9,7 +9,7 @@ const placeList = [
         foodCount: 10,
         starvingTokenCount: 0,
         weakTokenCount: 0,
-        trashCount: 0,
+        trashCount: 10,
         itemCardList: [],
         entranceList: [
             {

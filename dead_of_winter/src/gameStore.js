@@ -142,8 +142,12 @@ gameStore = {
 
         camp.survivorList = survivorList;
         camp.survivorList.forEach(survivor => survivor.place = camp);
+
         camp.foodList = [...Array(camp.foodCount).keys()]
             .map(index => game.campFoodIndex++);
+
+        camp.trashList = [...Array(camp.trashCount).keys()]
+            .map(index => game.campTrashIndex++);
     },
 
     move: (currentSurvivor, placeName) => {
@@ -220,6 +224,12 @@ gameStore = {
     }),
 
     updateSurvivor: game => {
+        game.playerList.forEach(player => {
+            player.survivorList = game.placeList
+                .flatMap(place => place.survivorList)
+                .filter(survivor => survivor.playerIndex === player.index);
+        });
+
         game.survivorCount = game.playerList
             .map(player => player.survivorList.length)
             .reduce((a, b) => a + b, 0);
@@ -322,7 +332,6 @@ gameStore = {
         return 'disabled';
     },
 
-
     updateSurvivorActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
 
@@ -354,11 +363,11 @@ gameStore = {
                     return {
                         dice: dice,
                         food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
-                        attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.currentZombieCount > 0,
-                        search: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.itemCardList.length > 0,
-                        barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
-                        clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.name === '피난기지' && currentPlace.trashCount >= 3,
-                        invite: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice&& currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
+                        attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power >= survivor.attack  && currentPlace.currentZombieCount > 0,
+                        search: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.itemCardList.length > 0,
+                        barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
+                        clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.name === '피난기지' && currentPlace.trashCount >= 3,
+                        invite: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
                         move: game.selectedItemCardFeature === null &&!dice.done && currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
                         itemFood: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power < 6 &&
                             currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'power').length > 0,
@@ -375,47 +384,49 @@ gameStore = {
             game.canTurn = true;
         }
 
+        console.log('>>> currentPlayer.survivorList', currentPlayer.survivorList);
+
         game.actionTable = [
             {
                 name: '공격',
                 dice: true,
                 count: currentPlayer.survivorList
-                    .filter(survivor => survivor.actionTable.attack)
+                    .filter(survivor => survivor.actionTable.filter(action => action.attack).length > 0)
                     .length
             },
             {
                 name: '검색',
                 dice: true,
                 count: currentPlayer.survivorList
-                    .filter(survivor => survivor.actionTable.search)
+                    .filter(survivor => survivor.actionTable.filter(action => action.search).length > 0)
                     .length
             },
             {
                 name: '바리게이트',
                 dice: true,
                 count: currentPlayer.survivorList
-                    .filter(survivor => survivor.actionTable.barricade)
+                    .filter(survivor => survivor.actionTable.filter(action => action.barricade).length > 0)
                     .length
             },
             {
                 name: '청소',
                 dice: true,
                 count: currentPlayer.survivorList
-                    .filter(survivor => survivor.actionTable.clean)
+                    .filter(survivor => survivor.actionTable.filter(action => action.clean).length > 0)
                     .length
             },
             {
                 name: '유인',
                 dice: true,
                 count: currentPlayer.survivorList
-                    .filter(survivor => survivor.actionTable.food)
+                    .filter(survivor => survivor.actionTable.filter(action => action.invite).length > 0)
                     .length
             },
             {
                 name: '식사',
                 dice: false,
                 count: currentPlayer.survivorList
-                    .filter(survivor => survivor.actionTable.invite)
+                    .filter(survivor => survivor.actionTable.filter(action => action.food).length > 0)
                     .length
             }
         ];
@@ -477,6 +488,7 @@ gameStore = {
                 .filter(itemCard => itemCard.index !== currentItemCard.index)
 
             game.successRiskCardList = [...game.successRiskCardList, currentItemCard];
+
             return game;
         });
 
@@ -487,7 +499,24 @@ gameStore = {
         update(game => {
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index);
+
             game.currentPlayer.actionDiceList[game.selectedActionIndex].power++;
+
+            const camp = gameStore.getCamp(game);
+            camp.trashList = [...camp.trashList, currentItemCard];
+            camp.trashCount = camp.trashList.length;
+            game.campTrashIndex++
+
+            game.selectedItemCardFeature = null;
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    cancel: (currentItemCard) => {
+        update(game => {
             game.selectedItemCardFeature = null;
             return game;
         });
@@ -601,7 +630,9 @@ gameStore = {
         let currentSurvivorName = '';
 
         update(game => {
-            game.deadSurvivorCount++;
+            game.deadSurvivorCount++
+            game.deadSurvivorList.push(game.currentSurvivor);
+
             game.placeList.forEach(place => {
                 place.survivorList = place.survivorList
                     .filter(survivor => survivor !== game.currentSurvivor)

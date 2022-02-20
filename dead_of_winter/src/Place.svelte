@@ -1,8 +1,9 @@
 <script>
     import gameStore from "./gameStore";
-    import {foodCrossfade} from "./animation";
     import {flip} from 'svelte/animate';
+    import {foodCrossfade, deadSurvivorCrossfade} from './animation';
     const [foodSend, foodReceive] = foodCrossfade;
+    const [deadSurvivorSend, deadSurvivorReceive] = deadSurvivorCrossfade;
 
     export let placeIndex;
 
@@ -21,7 +22,7 @@
         currentPlayer = gameStore.getCurrentPlayer();
         placeList = $gameStore.placeList;
         dangerDice = $gameStore.dangerDice;
-        dangerDice = $gameStore.selectedItemCardFeature;
+        selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         currentPlace = placeList[placeIndex];
         survivorList = currentPlace.survivorList;
         survivorLocationList = currentPlace.survivorLocationList;
@@ -51,20 +52,22 @@
         </div>
     </div>
     <div class="flex survivor-container">
-        {#each currentPlace.survivorLocationList as survivor}
-            <div style="background-color: lightgreen; border: 1px solid white">
+        {#each currentPlace.survivorLocationList as survivor, index (survivor??index)}
+            <div in:deadSurvivorReceive={{key: survivor}}
+                 out:deadSurvivorSend={{key: survivor}}
+                 style="background-color: lightgreen; border: 1px solid white">
                 <div class="survivor-position">
                     {#if survivor}
                         <table class="game-table" style="width: 100%">
                             <tr>
                                 <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
                                     <div style="display:flex">
-                                        <div>{survivor.name}</div>
-                                        <div>P:{survivor.power}</div>
-                                        <div>A:{survivor.attack}</div>
-                                        <div>S:{survivor.search}</div>
-                                        <div>W:{survivor.wound}</div>
-                                        <div style="display: flex;margin-left:5px">
+                                        <div style="margin-right: 10px">{survivor.name}</div>
+                                        <div style="margin-right: 10px">P : {survivor.power}</div>
+                                        <div style="margin-right: 10px">A : {survivor.attack}</div>
+                                        <div style="margin-right: 10px">S : {survivor.search}</div>
+                                        <div style="margin-right: 10px">W : {survivor.wound}</div>
+                                        <div style="display: flex;">
                                             {#each survivor.foodList as food, index (food)}
                                                 <div animate:flip
                                                      in:foodReceive={{key: food}}
@@ -99,7 +102,7 @@
                                         <table class="game-table" style="width: 100%">
                                             {#each survivor.actionTable as action, actionIndex}
                                                 <tr>
-                                                    <td style="width: 20px;text-align:center">{action.dice.power}</td>
+                                                    <td style="width: 20px;text-align:center;background-color: {action.dice.done ? 'lightgray' : 'lightgreen'}">{action.dice.power}</td>
                                                     <td>
                                                         <button class="none-action-dice-button"
                                                             disabled={!action.food}

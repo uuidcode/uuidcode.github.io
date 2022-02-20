@@ -5,6 +5,7 @@ import riskCardList from "./riskCardList";
 
 const game = {
     campFoodIndex: 0,
+    campTrashIndex: 0,
     selectedItemCardFeature: null,
     selectedActionIndex: 0,
     actionTable: [],
@@ -18,11 +19,12 @@ const game = {
     canTurn: false,
     canAction: false,
     rollDice: false,
-    turn:0,
+    turn: 0,
     round: 6,
     moral: 6,
     survivorCount: 0,
     deadSurvivorCount: 0,
+    deadSurvivorList: [],
     zombieCount: 0,
     zombieTokenCount: 0,
     deadZombieCount: 0,
