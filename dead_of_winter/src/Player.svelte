@@ -1,8 +1,8 @@
 <script>
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
-    import {crossfade} from './itemCardCrossFade';
-    const [send, receive] = crossfade;
+    import {itemCardCrossfade} from './animation';
+    const [send, receive] = itemCardCrossfade;
 
     export let playerIndex;
 

@@ -1,6 +1,8 @@
 <script>
     import gameStore from "./gameStore";
-    import Survivor from "./Survivor.svelte";
+    import {foodCrossfade} from "./animation";
+    import {flip} from 'svelte/animate';
+    const [foodSend, foodReceive] = foodCrossfade;
 
     export let placeIndex;
 
@@ -54,13 +56,26 @@
                 <div class="survivor-position">
                     {#if survivor}
                         <table class="game-table" style="width: 100%">
-                            <tr><td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
-                                {survivor.name}
-                                P:{survivor.power}
-                                A:{survivor.attack}
-                                S:{survivor.search}
-                                W:{survivor.wound}
-                            </td></tr>
+                            <tr>
+                                <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
+                                    <div style="display:flex">
+                                        <div>{survivor.name}</div>
+                                        <div>P:{survivor.power}</div>
+                                        <div>A:{survivor.attack}</div>
+                                        <div>S:{survivor.search}</div>
+                                        <div>W:{survivor.wound}</div>
+                                        <div style="display: flex;margin-left:5px">
+                                            {#each survivor.foodList as food, index (food)}
+                                                <div animate:flip
+                                                     in:foodReceive={{key: food}}
+                                                     out:foodSend={{key: food}}>
+                                                    <div style="margin-top: 3px;width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow;"></div>
+                                                </div>
+                                            {/each}
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
                             <tr><td>{survivor.ability.name}</td></tr>
                             {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
                                 <tr>
@@ -88,7 +103,7 @@
                                                     <td>
                                                         <button class="none-action-dice-button"
                                                             disabled={!action.food}
-                                                            on:click={() => gameStore.plusPower(currentPlace, actionIndex)}>
+                                                            on:click={() => gameStore.plusPower(survivor, currentPlace, actionIndex)}>
                                                             식사+1</button>
                                                     </td>
                                                     <td>

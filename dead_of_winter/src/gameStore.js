@@ -139,8 +139,11 @@ gameStore = {
     initCamp: function (game) {
         const survivorList = gameStore.getSurvivorList(game);
         const camp = gameStore.getCamp(game);
+
         camp.survivorList = survivorList;
         camp.survivorList.forEach(survivor => survivor.place = camp);
+        camp.foodList = [...Array(camp.foodCount).keys()]
+            .map(index => game.campFoodIndex++);
     },
 
     move: (currentSurvivor, placeName) => {
@@ -440,11 +443,18 @@ gameStore = {
         return game;
     }),
 
-    plusPower: (currentPlace, actionIndex) => {
+    plusPower: (currentSurvivor, currentPlace, actionIndex) => {
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
             currentPlayer.actionDiceList[actionIndex].power++;
-            gameStore.getCamp(game).foodCount--;
+
+            const camp = gameStore.getCamp(game);
+            camp.foodCount--;
+
+            const food = camp.foodList.pop();
+            camp.foodList = [...camp.foodList];
+            currentSurvivor.foodList = [...currentSurvivor.foodList, food];
+
             return game;
         });
 

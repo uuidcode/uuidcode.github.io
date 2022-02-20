@@ -2,17 +2,20 @@
     import gameStore from "./gameStore";
     import Place from "./Place.svelte";
     import {flip} from 'svelte/animate';
-    import {crossfade} from './itemCardCrossFade';
-    const [send, receive] = crossfade;
+    import {itemCardCrossfade, foodCrossfade} from './animation';
+    const [send, receive] = itemCardCrossfade;
+    const [foodSend, foodReceive] = foodCrossfade;
 
     let placeList;
     let currentRiskCard;
     let successRiskCardList;
+    let camp;
 
     $: {
         placeList = $gameStore.placeList;
         currentRiskCard = $gameStore.currentRiskCard;
         successRiskCardList = $gameStore.successRiskCardList;
+        camp = $gameStore.placeList.find(place => place.name === '피난기지');
     }
 </script>
 
@@ -66,7 +69,19 @@
                             <td>생존자수</td>
                             <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
                             <td>식량</td>
-                            <td>{place.foodCount}</td>
+                            <td>{place.foodCount}
+                                <div>
+                                    <div style="display: flex;width:50px;flex-wrap: wrap">
+                                        {#each camp.foodList as food, index (food)}
+                                            <div animate:flip
+                                             in:foodReceive={{key: food}}
+                                             out:foodSend={{key: food}}>
+                                                <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>굶주림 토큰</td>
