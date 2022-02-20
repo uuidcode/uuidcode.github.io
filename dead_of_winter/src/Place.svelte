@@ -62,12 +62,20 @@
                             <tr>
                                 <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
                                     <div style="display:flex">
-                                        <div style="margin-right: 10px">{survivor.name}</div>
-                                        <div style="margin-right: 10px">P : {survivor.power}</div>
-                                        <div style="margin-right: 10px">A : {survivor.attack}</div>
-                                        <div style="margin-right: 10px">S : {survivor.search}</div>
-                                        <div style="margin-right: 10px">W : {survivor.wound}</div>
-                                        <div style="display: flex;">
+                                        <div style=" display: flex;align-items: center;">{survivor.name}</div>
+                                        <table class="game-table" style="margin-left: 5px">
+                                            <tr>
+                                                <td>파워</td>
+                                                <td>{survivor.power}</td>
+                                                <td>공격</td>
+                                                <td>{survivor.attack}</td>
+                                                <td>검색</td>
+                                                <td>{survivor.search}</td>
+                                                <td>부상</td>
+                                                <td>{survivor.wound}</td>
+                                            </tr>
+                                        </table>
+                                        <div style="display: flex">
                                             {#each survivor.foodList as food, index (food)}
                                                 <div animate:flip
                                                      in:foodReceive={{key: food}}
