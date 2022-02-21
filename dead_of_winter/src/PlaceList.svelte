@@ -90,7 +90,7 @@
                                             <div animate:flip
                                                  in:foodReceive={{key: food}}
                                                  out:foodSend={{key: food}}>
-                                                <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
+                                                <div style="width: 10px;height:10px;background-color:#ffdc7a;border:1px solid #f7ce59"></div>
                                             </div>
                                         {/each}
                                     </div>

@@ -282,6 +282,24 @@ div {
     background-color: lightseagreen;
 }
 
+.card-action-dice-button {
+    background-color: lightblue;
+    border: 1px solid lightskyblue;
+}
+
+.card-action-dice-button:hover {
+    background-color: lightskyblue;
+}
+
+.food-action-dice-button {
+    background-color: #ffdc7a;
+    border: 1px solid #f7ce59;
+}
+
+.food-action-dice-button:hover {
+    background-color: #f7ce59;
+}
+
 .action-dice-button {
     background-color: lightsalmon;
     border: 1px solid lightcoral;

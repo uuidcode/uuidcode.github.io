@@ -379,7 +379,7 @@ gameStore = {
                         attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power >= survivor.attack  && currentPlace.currentZombieCount > 0,
                         search: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.itemCardList.length > 0,
                         barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
-                        clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.name === '피난기지' && currentPlace.trashCount >= 3,
+                        clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.name === '피난기지' && currentPlace.trashCount > 0,
                         invite: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
                         move: game.selectedItemCardFeature === null &&!dice.done && currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
                         itemFood: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power < 6 &&
@@ -579,8 +579,6 @@ gameStore = {
     inviteZombie: (currentPlace, actionIndex) => {
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
-            console.log('>>> currentPlayer', currentPlayer);
-            console.log('>>> actionIndex', actionIndex);
             currentPlayer.actionDiceList[actionIndex].done = true;
 
             for (let i = 0; i < 2; i++) {
@@ -590,6 +588,27 @@ gameStore = {
 
                 currentEntrance.zombieCount = currentEntrance.zombieCount + 1;
             }
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    clean: (currentPlace, actionIndex) => {
+        update(game => {
+            const camp = gameStore.getCamp(game);
+
+            for (let i = 0; i < 3; i++) {
+                camp.trashList.pop();
+                camp.trashCount = camp.trashList.length;
+
+                if (camp.trashCount === 0) {
+                    break;
+                }
+            }
+
+            game.currentPlayer.actionDiceList[actionIndex].done = true;
 
             return game;
         });
@@ -724,9 +743,6 @@ gameStore = {
 
             const oldPlace = game.placeList.find(place => place.name === oldPlaceName);
             const newPlace = game.placeList.find(place => place.name === newPlaceName);
-
-            console.log('>>> oldPlace', oldPlace);
-            console.log('>>> newPlace', newPlace);
 
             let currentSurvivor = null;
 

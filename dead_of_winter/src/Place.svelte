@@ -112,13 +112,11 @@
                                                 <tr>
                                                     <td style="width: 20px;text-align:center;background-color: {action.dice.done ? 'lightgray' : 'lightgreen'}">{action.dice.power}</td>
                                                     <td>
-                                                        <button class="none-action-dice-button"
+                                                        <button class="food-action-dice-button"
                                                             disabled={!action.food}
                                                             on:click={() => gameStore.plusPower(survivor, currentPlace, actionIndex)}>
                                                             식사+1</button>
-                                                    </td>
-                                                    <td>
-                                                        <button class="none-action-dice-button"
+                                                        <button class="card-action-dice-button"
                                                                 disabled={!action.itemFood}
                                                                 on:click={() => gameStore.selectItemCard(currentPlace, actionIndex)}>
                                                             아이템+1</button>
@@ -150,10 +148,33 @@
                                                     </td>
                                                     <td><button
                                                             class="action-dice-button"
+                                                            on:click={() => gameStore.clean(currentPlace, actionIndex)}
                                                             disabled={!action.clean}>청소</button></td>
 
                                                 </tr>
                                             {/each}
+                                            <tr>
+                                                <td></td>
+                                                <td><button class="card-action-dice-button"
+                                                            on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                    식량공급</button></td>
+                                                <td><button class="card-action-dice-button"
+                                                              on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                    공격</button></td>
+                                                <td><button class="card-action-dice-button"
+                                                            on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                    검색</button></td>
+                                                <td><button class="card-action-dice-button"
+                                                            on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                    치료</button></td>
+                                                <td><button class="card-action-dice-button"
+                                                            on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                    바리케이트</button></td>
+                                                <td></td>
+                                                <td><button class="card-action-dice-button"
+                                                            on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                    청소</button></td>
+                                            </tr>
                                         </table>
                                     </td>
                                 </tr>
