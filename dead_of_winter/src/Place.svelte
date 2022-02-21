@@ -148,7 +148,7 @@
                                                     </td>
                                                     <td><button
                                                             class="action-dice-button"
-                                                            on:click={() => gameStore.clean(currentPlace, actionIndex)}
+                                                            on:click={() => gameStore.clean(actionIndex, 3)}
                                                             disabled={!action.clean}>청소</button></td>
 
                                                 </tr>
@@ -178,7 +178,8 @@
                                                         바리케이트</button></td>
                                                     <td></td>
                                                     <td><button class="card-action-dice-button"
-                                                                on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                                disabled={!survivor.actionItemCard.clean}
+                                                                on:click={() => gameStore.selectItemCardWithoutDice('clean')}>
                                                         청소</button></td>
                                                 </tr>
                                             {/if}

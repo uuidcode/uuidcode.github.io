@@ -241,7 +241,7 @@ const itemCardList = [
     },
     {
         name: '대걸레',
-        description: "쓰레기 5개를 치웁니다.",
+        description: "쓰레기 3개를 치웁니다.",
         category: '도구',
         type: 'execute',
         feature: 'clean'

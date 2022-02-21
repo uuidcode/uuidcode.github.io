@@ -347,12 +347,12 @@ gameStore = {
 
     updateSurvivorActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
-
+        const camp = gameStore.getCamp(game);
         currentPlayer.survivorList.forEach(survivor => {
+            let currentPlace = survivor.place;
+
             survivor.actionTable = currentPlayer
                 .actionDiceList.map(dice => {
-                    let currentPlace = survivor.place;
-
                     const attackItemList = currentPlayer.itemCardList
                         .filter(itemCard => itemCard.feature === 'attack')
                         .filter(itemCard => currentPlace.maxZombieCount > currentPlace.zombieCount + currentPlace.barricadeCount)
@@ -392,8 +392,6 @@ gameStore = {
                     };
                 });
 
-            let currentPlace = survivor.place;
-
             const attackItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'attack')
                 .filter(itemCard => currentPlace.maxZombieCount > currentPlace.zombieCount + currentPlace.barricadeCount)
@@ -407,6 +405,10 @@ gameStore = {
                 .filter(itemCard => itemCard.feature === 'care')
                 .filter(itemCard => survivor.wound > 0)
 
+            const cleanItemList =  currentPlayer.itemCardList
+                .filter(itemCard => itemCard.feature === 'clean')
+                .filter(itemCard => camp.trashCount > 0)
+
             const foodItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'food')
 
@@ -419,7 +421,8 @@ gameStore = {
                 search: game.selectedItemCardFeature === null && searchItemList.length > 0,
                 care: game.selectedItemCardFeature === null && careItemList.length > 0,
                 food: game.selectedItemCardFeature === null && foodItemList.length > 0,
-                barricade: game.selectedItemCardFeature === null && barricadeItemList.length > 0
+                barricade: game.selectedItemCardFeature === null && barricadeItemList.length > 0,
+                clean: game.selectedItemCardFeature === null && cleanItemList.length > 0
             };
 
             survivor.actionItemCard.enabled = Object.values(survivor.actionItemCard)
@@ -577,6 +580,8 @@ gameStore = {
                 game.currentPlayer.actionDiceList[game.selectedActionIndex].power++;
             } else if (currentItemCard.feature === 'food') {
                 gameStore.plusFood(game, camp, currentItemCard.targetCount);
+            } else if (currentItemCard.feature === 'clean') {
+                gameStore.clean(4);
             }
 
             camp.trashList = [...camp.trashList, currentItemCard];
@@ -656,11 +661,11 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    clean: (currentPlace, actionIndex) => {
+    clean: (trashCount, actionIndex) => {
         update(game => {
             const camp = gameStore.getCamp(game);
 
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < trashCount; i++) {
                 camp.trashList.pop();
                 camp.trashCount = camp.trashList.length;
 
@@ -669,7 +674,9 @@ gameStore = {
                 }
             }
 
-            game.currentPlayer.actionDiceList[actionIndex].done = true;
+            if (actionIndex) {
+                game.currentPlayer.actionDiceList[actionIndex].done = true;
+            }
 
             return game;
         });
