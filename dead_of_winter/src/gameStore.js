@@ -391,6 +391,39 @@ gameStore = {
                         barricadeItemList
                     };
                 });
+
+            let currentPlace = survivor.place;
+
+            const attackItemList = currentPlayer.itemCardList
+                .filter(itemCard => itemCard.feature === 'attack')
+                .filter(itemCard => currentPlace.maxZombieCount > currentPlace.zombieCount + currentPlace.barricadeCount)
+
+            const searchItemList = currentPlayer.itemCardList
+                .filter(itemCard => itemCard.feature === 'search')
+                .filter(itemCard => currentPlace.itemCardList.length > 0)
+                .filter(itemCard => itemCard.placeList.filter(place => place === currentPlace.name).length > 0);
+
+            const careItemList =  currentPlayer.itemCardList
+                .filter(itemCard => itemCard.feature === 'care')
+                .filter(itemCard => survivor.wound > 0)
+
+            const foodItemList = currentPlayer.itemCardList
+                .filter(itemCard => itemCard.feature === 'food')
+
+            const barricadeItemList = currentPlayer.itemCardList
+                .filter(itemCard => itemCard.feature === 'barricade')
+                .filter(itemCard => currentPlace.maxZombieCount > currentPlace.zombieCount + currentPlace.barricadeCount)
+
+            survivor.actionItemCard = {
+                attack: game.selectedItemCardFeature === null && attackItemList.length > 0,
+                search: game.selectedItemCardFeature === null && searchItemList.length > 0,
+                care: game.selectedItemCardFeature === null && careItemList.length > 0,
+                food: game.selectedItemCardFeature === null && foodItemList.length > 0,
+                barricade: game.selectedItemCardFeature === null && barricadeItemList.length > 0
+            };
+
+            survivor.actionItemCard.enabled = Object.values(survivor.actionItemCard)
+                .filter(item => item).length > 0;
         });
 
         const doneLength = currentPlayer.actionDiceList.filter(dice => dice.done).length;
@@ -475,22 +508,45 @@ gameStore = {
             currentPlayer.actionDiceList[actionIndex].power++;
 
             const camp = gameStore.getCamp(game);
-            camp.foodCount--;
 
-            const food = camp.foodList.pop();
-            camp.foodList = [...camp.foodList];
-            currentSurvivor.foodList = [...currentSurvivor.foodList, food];
-
+            gameStore.minusFood(camp, currentSurvivor);
             return game;
         });
 
         gameStore.updateAll();
     },
 
+    minusFood: (camp, survivor) => {
+        const food = camp.foodList.pop();
+        camp.foodList = [...camp.foodList];
+        camp.foodCount = camp.foodList.length;
+
+        if (survivor) {
+            survivor.foodList = [...survivor.foodList, food];
+        }
+    },
+
+    plusFood: (game, camp, targetCount) => {
+        for (let i = 0; i < targetCount; i++) {
+            camp.foodList.push(game.campFoodIndex++);
+        }
+
+        camp.foodCount = camp.foodList.length;
+    },
+
     selectItemCard: (currentPlace, actionIndex) => {
         update(game => {
             game.selectedItemCardFeature = 'power';
             game.selectedActionIndex = actionIndex;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    selectItemCardWithoutDice: (feature) => {
+        update(game => {
+            game.selectedItemCardFeature = feature;
             return game;
         });
 
@@ -515,9 +571,14 @@ gameStore = {
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index);
 
-            game.currentPlayer.actionDiceList[game.selectedActionIndex].power++;
-
             const camp = gameStore.getCamp(game);
+
+            if (currentItemCard.feature === 'power') {
+                game.currentPlayer.actionDiceList[game.selectedActionIndex].power++;
+            } else if (currentItemCard.feature === 'food') {
+                gameStore.plusFood(game, camp, currentItemCard.targetCount);
+            }
+
             camp.trashList = [...camp.trashList, currentItemCard];
             camp.trashCount = camp.trashList.length;
             game.campTrashIndex++

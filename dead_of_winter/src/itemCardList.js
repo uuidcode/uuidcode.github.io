@@ -138,7 +138,8 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'food',
-        place: '피난기지'
+        place: '피난기지',
+        targetCount: 1
     },
     {
         name: '리더십',
