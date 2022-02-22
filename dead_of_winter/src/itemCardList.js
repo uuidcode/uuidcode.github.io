@@ -176,56 +176,63 @@ const itemCardList = [
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴립니다.",
         category: '도구',
         type: 'execute',
-        feature: 'hardAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '무전기',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '도구',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '산탄총',
         description: "좀비를 2구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack2'
+        feature: 'attack',
+        targetCount: 2
     },
     {
         name: '소총',
         description: "좀비를 2구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack2'
+        feature: 'attack',
+        targetCount: 2
     },
     {
         name: '권총',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '주머니칼',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
-    {
-        name: '라이터',
-        description: "연료카드도 같이 사용해서 좀비를 4구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
-        category: '무기',
-        type: 'execute',
-        feature: 'attackWithFuel'
-    },
+    // {
+    //     name: '라이터',
+    //     description: "연료카드도 같이 사용해서 좀비를 4구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
+    //     category: '무기',
+    //     type: 'execute',
+    //     feature: 'attackWithFuel'
+    // },
     {
         name: '야시경',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '도구',
         type: 'execute',
-        feature: 'sofAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '자물쇠',
@@ -254,7 +261,7 @@ const itemCardList = [
         category: '도구',
         type: 'execute',
         feature: 'search',
-        laceList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
+        placeList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
     }
 ];
 

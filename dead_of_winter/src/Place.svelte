@@ -169,11 +169,11 @@
                                                         식량공급</button></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.attack}
-                                                                on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                                on:click={() => gameStore.selectItemCardWithoutDice(currentPlace, survivor, 'attack')}>
                                                         공격</button></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.search}
-                                                                on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                                on:click={() => gameStore.selectItemCardWithoutDice(currentPlace, survivor, 'search')}>
                                                         검색</button></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.care}

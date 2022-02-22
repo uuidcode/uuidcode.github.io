@@ -33,7 +33,7 @@ const game = {
     riskCardList: riskCardList,
     itemCardList: itemCardList,
     initItemCardList: [
-        '망치', '망치', '망치', '망치', '망치',
+        '야시경', '야시경', '야시경', '야시경', '야시경',
         '식량1', '식량1', "식량1", "식량1", "식량1",
         "식량1", "식량1", "식량1", "식량1", "식량1",
         '약',  '약', '약', '약', '약',

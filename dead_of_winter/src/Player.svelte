@@ -1,6 +1,7 @@
 <script>
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
+    import {fly} from 'svelte/transition';
     import {itemCardCrossfade, trashCrossfade} from './animation';
     const [send, receive] = itemCardCrossfade;
     const [trashSend, trashReceive] = trashCrossfade
@@ -28,9 +29,9 @@
 
 <div class="flex-column player-card-list-section"
      style="background-color: {currentPlayer.index === player.index ? gameStore.getCurrentPlayerColor() : 'white'}">
-    <table class="game-table">
-        <tr><td>{player.name}</td></tr>
-    </table>
+    <div>
+        {player.name} 아이템 카드 : {player.itemCardList.length}
+    </div>
     <div>
         {#if selectedItemCardFeature != null }
             {#each itemCardList as itemCard (itemCard)}

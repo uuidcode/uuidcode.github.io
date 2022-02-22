@@ -43,13 +43,16 @@ gameStore = {
             player.itemCardList = game.initItemCardList
                 .sort((a, b) => 0.5 - Math.random())
                 .slice(0, 7)
-                .map(name => game.itemCardList.find(item => item.name === name))
-                .map(itemCard => {
-                    return {
-                        ...itemCard
-                    };
-                });
+                .map(name => gameStore.createNewItemCard(name));
         });
+    },
+
+    createNewItemCard: (name) => {
+        let itemCard = game.itemCardList.find(item => item.name === name);
+
+        return {
+            ...itemCard
+        };
     },
 
     getPlayerColorForSurvivor: (survivor) => {
@@ -162,6 +165,7 @@ gameStore = {
             })
 
             game.currentSurvivor = currentSurvivor;
+            game.currentSurvivor.place = game.placeList.find(place => place.name === placeName);
             game.currentPlaceName = placeName;
             game.dangerDice= true;
             return game;
@@ -354,6 +358,7 @@ gameStore = {
     updateSurvivorActionTable: (game) => {
         const currentPlayer = gameStore.getCurrentPlayer(game);
         const camp = gameStore.getCamp(game);
+
         currentPlayer.survivorList.forEach(survivor => {
             let currentPlace = survivor.place;
 
@@ -361,12 +366,13 @@ gameStore = {
                 .actionDiceList.map(dice => {
                     const attackItemList = currentPlayer.itemCardList
                         .filter(itemCard => itemCard.feature === 'attack')
-                        .filter(itemCard => currentPlace.maxZombieCount > currentPlace.zombieCount + currentPlace.barricadeCount)
+                        .filter(itemCard => currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount)
+                        .filter(itemCard => currentPlace.currentZombieCount > 0)
 
                     const searchItemList = currentPlayer.itemCardList
                         .filter(itemCard => itemCard.feature === 'search')
                         .filter(itemCard => currentPlace.itemCardList.length > 0)
-                        .filter(itemCard => itemCard.placeList.filter(place => place === currentPlace.name).length > 0);
+                        .filter(itemCard => itemCard.placeList.filter(placeName => placeName === currentPlace.name).length > 0);
 
                     const careItemList =  currentPlayer.itemCardList
                         .filter(itemCard => itemCard.feature === 'care')
@@ -383,7 +389,10 @@ gameStore = {
                         dice: dice,
                         food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
                         attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power >= survivor.attack  && currentPlace.currentZombieCount > 0,
-                        search: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.itemCardList.length > 0,
+                        search: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            !game.dangerDice &&
+                            currentPlace.itemCardList.length > 0,
                         barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
                         clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.name === '피난기지' && currentPlace.trashCount > 0,
                         invite: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
@@ -400,12 +409,13 @@ gameStore = {
 
             const attackItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'attack')
-                .filter(itemCard => currentPlace.maxZombieCount > currentPlace.zombieCount + currentPlace.barricadeCount)
+                .filter(itemCard => currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount)
+                .filter(itemCard => currentPlace.currentZombieCount > 0);
 
             const searchItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'search')
                 .filter(itemCard => currentPlace.itemCardList.length > 0)
-                .filter(itemCard => itemCard.placeList.filter(place => place === currentPlace.name).length > 0);
+                .filter(itemCard => itemCard.placeList.filter(placeName => placeName === currentPlace.name).length > 0);
 
             const careItemList =  currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'care')
@@ -425,12 +435,6 @@ gameStore = {
                         .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
                         .length > 0
                 });
-
-            console.log('>>> barricadeItemList', barricadeItemList);
-            console.log('>>> currentPlayer.itemCardList', currentPlayer.itemCardList);
-            console.log('>>> currentPlace.maxZombieCount', currentPlace.maxZombieCount);
-            console.log('>>> currentPlace.zombieCount', currentPlace.zombieCount);
-            console.log('>>> currentPlace.barricadeCount', currentPlace.barricadeCount);
 
             survivor.actionItemCard = {
                 attack: game.selectedItemCardFeature === null && attackItemList.length > 0,
@@ -585,7 +589,12 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    use: (currentItemCard) => {
+    search: (game) => {
+        let itemCardName = game.currentPlace.itemCardList.pop();
+        game.currentPlayer.itemCardList.push(gameStore.createNewItemCard(itemCardName));
+    },
+
+    use:  async (currentItemCard) => {
         update(game => {
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index);
@@ -598,6 +607,14 @@ gameStore = {
                 gameStore.plusFood(game, camp, currentItemCard.targetCount);
             } else if (currentItemCard.feature === 'clean') {
                 gameStore.clean(4);
+            } else if (currentItemCard.feature === 'search') {
+                gameStore.search(game);
+            } else if (currentItemCard.feature === 'attack') {
+                console.log('>>> currentItemCard.targetCount', currentItemCard.targetCount);
+
+                for (let i = 0; i < currentItemCard.targetCount; i++) {
+                    gameStore.attackWithGame(game, game.currentSurvivor, game.currentPlace)
+                }
             } else if (currentItemCard.feature === 'barricade') {
                 gameStore.createBarricade(game.currentPlace);
             } else if (currentItemCard.feature === 'care') {
@@ -610,6 +627,13 @@ gameStore = {
                 }
             }
 
+            return game;
+        });
+
+        await tick();
+
+        update(game => {
+            const camp = gameStore.getCamp(game);
             camp.trashList = [...camp.trashList, currentItemCard];
             camp.trashCount = camp.trashList.length;
             game.campTrashIndex++
@@ -634,22 +658,34 @@ gameStore = {
 
     attack: (currentSurvivor, currentPlace, actionIndex) => {
         update(game => {
+            gameStore.attackWithGame(game, currentSurvivor, currentPlace, actionIndex);
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    attackWithGame: (game, currentSurvivor, currentPlace, actionIndex) => {
+        if (currentPlace.currentZombieCount > 0) {
             const currentPlayer = gameStore.getCurrentPlayer(game);
-            currentPlayer.actionDiceList[actionIndex].done = true;
+
+            if (actionIndex) {
+                currentPlayer.actionDiceList[actionIndex].done = true;
+            }
 
             const currentEntrance = currentPlace.entranceList
                 .filter(entrance => entrance.zombieCount > 0)
                 .sort((a, b) => Math.random() - 0.5)[0];
 
             currentEntrance.zombieCount--;
+            currentPlace.currentZombieCount--;
             game.deadZombieCount++;
-            game.dangerDice = true;
-            game.currentSurvivor = currentSurvivor;
 
-            return game;
-        });
-
-        gameStore.updateAll();
+            if (actionIndex) {
+                game.dangerDice = true;
+                game.currentSurvivor = currentSurvivor;
+            }
+        }
     },
 
     createBarricade: (currentPlace, actionIndex) => {
