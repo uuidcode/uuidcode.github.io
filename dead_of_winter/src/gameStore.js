@@ -187,6 +187,24 @@ gameStore = {
         gameStore.updateAll();
     },
 
+    sleep: (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    },
+
+    showMessage: async (message) => {
+        update(game => {
+            game.message = message;
+            return game;
+        });
+
+        await gameStore.sleep(2000);
+
+        update(game => {
+            game.message = null;
+            return game;
+        });
+    },
+
     turn: () => {
         update(game => {
             game.currentPlayer.actionTable = [];
@@ -207,6 +225,12 @@ gameStore = {
         });
 
         gameStore.updateAll();
+
+        const turn = get(gameStore).turn;
+
+        if (turn > 0 && turn % 2 === 0) {
+            gameStore.showMessage('기지단계시작')
+        }
     },
 
     changePlace: (event) => {
@@ -692,7 +716,7 @@ gameStore = {
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
 
-            if (actionIndex) {
+            if (actionIndex !== undefined) {
                 currentPlayer.actionDiceList[actionIndex].done = true;
             }
 
