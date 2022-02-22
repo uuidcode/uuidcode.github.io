@@ -84,6 +84,10 @@ gameStore = {
 
     updatePlace: function (game) {
         game.placeList.forEach(place => {
+            if (place.name === '피난기지') {
+                place.trashCount = place.trashList.length;
+            }
+
             const currentSurvivorList = [...place.survivorList];
 
             if (place.name === game.currentPlaceName) {
@@ -112,8 +116,6 @@ gameStore = {
 
                     return null;
                 });
-
-            console.log('>>> place.survivorLocationList', place.survivorLocationList);
         });
     },
 
@@ -191,18 +193,13 @@ gameStore = {
         return new Promise(resolve => setTimeout(resolve, ms))
     },
 
-    showMessage: async (message) => {
+    showMessage: async (messageList) => {
         update(game => {
-            game.message = message;
+            game.messageList = messageList;
             return game;
         });
 
         await gameStore.sleep(2000);
-
-        update(game => {
-            game.message = null;
-            return game;
-        });
     },
 
     turn: () => {
@@ -229,8 +226,46 @@ gameStore = {
         const turn = get(gameStore).turn;
 
         if (turn > 0 && turn % 2 === 0) {
-            gameStore.showMessage('기지단계시작')
+            const messageList = [];
+            const camp = gameStore.getCamp(game);
+
+            if (camp.survivorList.length >= 2) {
+                const foodCount = camp.survivorList.length / 2;
+                messageList.push(`식량을 ${foodCount}개 소모합니다.`);
+                gameStore.showMessage(messageList);
+
+                for (let i = 0; i < foodCount; i++) {
+                    update(game => {
+                        const camp = gameStore.getCamp(game);
+                        gameStore.minusFood(camp);
+                        return game;
+                    });
+                }
+            }
+
+            if (camp.trashList.length >= 10) {
+                const minusMoral = camp.trashList.length / 10;
+
+                messageList.push(`쓰레기가 ${camp.trashList.length}에서 ${camp.trashList.length - (minusMoral * 10)}로 줄어들었으며 사기는 ${minusMoral} 하락합니다.`);
+                gameStore.showMessage(messageList);
+
+                update(game => {
+                    for (let i = 0; i < minusMoral; i++) {
+                        gameStore.minusMoral(game);
+                    }
+
+                    const camp = gameStore.getCamp(game);
+
+                    for (let i = 0; i < minusMoral * 10; i++) {
+                        camp.trashList.pop();
+                    }
+
+                    return game;
+                });
+            }
         }
+
+        gameStore.updateAll();
     },
 
     changePlace: (event) => {
@@ -566,7 +601,7 @@ gameStore = {
         camp.foodList = [...camp.foodList];
         camp.foodCount = camp.foodList.length;
 
-        if (survivor) {
+        if (survivor !== undefined) {
             survivor.foodList = [...survivor.foodList, food];
         }
     },

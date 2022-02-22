@@ -14,11 +14,11 @@
     let successRiskCardList;
     let camp;
     let actionTable;
-    let message;
+    let messageList;
 
     $: {
         placeList = $gameStore.placeList;
-        message = $gameStore.message;
+        messageList = $gameStore.messageList;
         deadSurvivorList = $gameStore.deadSurvivorList;
         currentRiskCard = $gameStore.currentRiskCard;
         successRiskCardList = $gameStore.successRiskCardList;
@@ -177,9 +177,11 @@
         </div>
     {/if}
 
-    {#if message != null}
-        <div style="display: flex;justify-content: center;margin: 10px;">
-            <div><h1>{message}</h1></div>
+    {#if messageList.length > 0}
+        <div style="display: flex;flex-direction: column;justify-content: center;margin: 10px 300px;">
+            {#each messageList as message, index}
+                <div>{index + 1} {message}</div>
+            {/each}
         </div>
     {/if}
 

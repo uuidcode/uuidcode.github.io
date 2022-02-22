@@ -4,6 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
+    messageList: [],
     campFoodIndex: 0,
     campTrashIndex: 0,
     selectedItemCardFeature: null,
