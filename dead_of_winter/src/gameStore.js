@@ -263,6 +263,41 @@ gameStore = {
                     return game;
                 });
             }
+
+            const game = get(gameStore);
+
+            if (game.successRiskCardList.length < 2) {
+                game.currentRiskCard.condition.fail.actionList.forEach(action => {
+                    if (action.name === 'minusMoral') {
+                        gameStore.minusMoral();
+                        messageList.push(`사기 1 하락합니다.`);
+                        gameStore.showMessage(messageList);
+                    } else if (action.name === 'zombie') {
+                        action.placeList
+                            .map(placeName => game.placeList.find(place => place.name === placeName))
+                            .forEach(place => {
+                                gameStore.inviteZombie(place, undefined, action.targetCount);
+                            });
+                    } else if (action.name === 'wound') {
+                        const survivorList = game.playerList
+                            .flatMap(player => player.survivorList)
+                            .sort((a, b) => Math.random() - 0.5);
+
+                        for (let i = 0; i < action.targetCount; i++) {
+                            const survivor = survivorList.pop();
+
+                            update(game => {
+                                game.currentSurvivor = survivor;
+                                return game;
+                            })
+
+                            gameStore.wound();
+                        }
+                    } else if (action.name === 'barricade') {
+
+                    }
+                });
+            }
         }
 
         gameStore.updateAll();
@@ -767,12 +802,17 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    inviteZombie: (currentPlace, actionIndex) => {
+    inviteZombie: (currentPlace, actionIndex, zombieCount) => {
+        zombieCount = zombieCount || 2;
+
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
-            currentPlayer.actionDiceList[actionIndex].done = true;
 
-            for (let i = 0; i < 2; i++) {
+            if (actionIndex !== undefined) {
+                currentPlayer.actionDiceList[actionIndex].done = true;
+            }
+
+            for (let i = 0; i < zombieCount; i++) {
                 const currentEntrance = currentPlace.entranceList
                     .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
                     .sort((a, b) => Math.random() - 0.5)[0];
