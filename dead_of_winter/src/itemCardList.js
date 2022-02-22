@@ -4,14 +4,16 @@ const itemCardList = [
         description: "부상 토큰을 하나 제거합니다.",
         category: '약',
         type: 'execute',
-        feature: 'care'
+        feature: 'care',
+        targetCount: 1
     },
     {
         name: '주사기',
         description: "부상 토큰을 두개를 제거합니다.",
         category: '약',
         type: 'execute',
-        feature: 'care'
+        feature: 'care',
+        targetCount: 2
     },
     {
         name: '야구방망이',

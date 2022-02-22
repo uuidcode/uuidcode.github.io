@@ -386,7 +386,7 @@ const survivorList = [
 ];
 
 survivorList.forEach(survivor => {
-    survivor.wound = 0;
+    survivor.wound = 1;
     survivor.playerIndex = 0;
     survivor.active = false;
     survivor.place = null

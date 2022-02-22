@@ -81,17 +81,11 @@
                                 <button class="none-action-dice-button"
                                         on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
                             {/if}
-
-                            {#if itemCard.canAction == true}
-                                <button class="none-action-dice-button"
-                                        on:click={()=>gameStore.use(itemCard)}>사용</button>
-                            {/if}
                         </td>
                     </tr>
                 </table>
             {/each}
         {/if}
-
     </div>
 </div>
 

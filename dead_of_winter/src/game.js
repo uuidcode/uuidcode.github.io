@@ -9,6 +9,7 @@ const game = {
     selectedItemCardFeature: null,
     selectedActionIndex: 0,
     actionTable: [],
+    currentPlace: null,
     currentPlaceName: '피난기지',
     currentRiskCard: null,
     riskCard: true,
@@ -32,6 +33,7 @@ const game = {
     riskCardList: riskCardList,
     itemCardList: itemCardList,
     initItemCardList: [
+        '망치', '망치', '망치', '망치', '망치',
         '식량1', '식량1', "식량1", "식량1", "식량1",
         "식량1", "식량1", "식량1", "식량1", "식량1",
         '약',  '약', '약', '약', '약',

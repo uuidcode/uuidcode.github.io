@@ -72,7 +72,14 @@
                                                 <td>검색</td>
                                                 <td>{survivor.search}</td>
                                                 <td>부상</td>
-                                                <td>{survivor.wound}</td>
+                                                <td>
+                                                    <div style="display: flex;align-items: center;justify-content: center;">
+                                                        <div>{survivor.wound}</div>
+                                                        {#each survivor.woundList as wound, woundIndex}
+                                                            <div style="width:10px;height:10px;border-radius:10px;background-color: lightsalmon;border:1px solid red"></div>
+                                                        {/each}
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </table>
                                         <div style="display: flex">
@@ -158,7 +165,7 @@
                                                     <td></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.food}
-                                                                on:click={() => gameStore.selectItemCardWithoutDice('food')}>
+                                                                on:click={() => gameStore.selectItemCardWithoutDice(currentPlace, survivor, 'food')}>
                                                         식량공급</button></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.attack}
@@ -170,16 +177,16 @@
                                                         검색</button></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.care}
-                                                                on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                                on:click={() => gameStore.selectItemCardWithoutDice(currentPlace, survivor, 'care')}>
                                                         치료</button></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.barricade}
-                                                                on:click={() => gameStore.selectItemCard(currentPlace, 1)}>
+                                                                on:click={() => gameStore.selectItemCardWithoutDice(currentPlace, survivor, 'barricade')}>
                                                         바리케이트</button></td>
                                                     <td></td>
                                                     <td><button class="card-action-dice-button"
                                                                 disabled={!survivor.actionItemCard.clean}
-                                                                on:click={() => gameStore.selectItemCardWithoutDice('clean')}>
+                                                                on:click={() => gameStore.selectItemCardWithoutDice(currentPlace, survivor, 'clean')}>
                                                         청소</button></td>
                                                 </tr>
                                             {/if}
