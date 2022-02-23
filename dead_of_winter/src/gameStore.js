@@ -46,6 +46,11 @@ gameStore = {
                 .slice(0, 7)
                 .map(name => gameStore.createNewItemCard(name));
         });
+
+        game.placeList.forEach(place => {
+            place.itemCardList = place.itemCardList
+                .sort((a, b) => 0.5 - Math.random());
+        });
     },
 
     createNewItemCard: (name) => {
@@ -88,6 +93,8 @@ gameStore = {
             if (place.name === '피난기지') {
                 place.trashCount = place.trashList.length;
             }
+
+            place.survivorList.sort((a, b) => a.playerIndex - b.playerIndex);
 
             const currentSurvivorList = [...place.survivorList];
 
@@ -546,10 +553,11 @@ gameStore = {
 
                     return {
                         dice: dice,
-                        ability: gameStore.canUseAbility(survivor),
+                        ability: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && gameStore.canUseAbility(survivor),
                         food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
                         attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power >= survivor.attack  && currentPlace.currentZombieCount > 0,
                         search: game.selectedItemCardFeature === null &&
+                            dice.power >= survivor.search &&
                             !dice.done &&
                             !game.dangerDice &&
                             currentPlace.itemCardList.length > 0,
@@ -756,8 +764,21 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    search: (game, actionIndex) => {
-        const itemCardName = game.currentPlace.itemCardList.pop();
+    search: (game, currentPlace, actionIndex) => {
+        if (game === null) {
+            update(game => {
+                gameStore.searchInternal(game, currentPlace, actionIndex);
+                return game;
+            });
+
+            gameStore.updateAll();
+        } else {
+            gameStore.searchInternal(game, currentPlace, actionIndex);
+        }
+    },
+
+    searchInternal: (game, currentPlace, actionIndex) => {
+        const itemCardName = currentPlace.itemCardList.pop();
         const newItemCard = gameStore.createNewItemCard(itemCardName);
 
         if (newItemCard.category === '외부인') {
@@ -765,6 +786,8 @@ gameStore = {
 
             for (let i = 0; i < newItemCard.targetCount; i++) {
                 const newSurvivor = game.survivorList.pop();
+                newSurvivor.playerIndex = game.currentPlayer.index;
+                newSurvivor.place = gameStore.getCamp(game);
 
                 game.placeList
                     .find(place => place.name === '피난기지')
@@ -775,12 +798,12 @@ gameStore = {
             game.currentPlayer.itemCardList.push(newItemCard);
         }
 
-        if (actionIndex) {
+        if (actionIndex !== undefined) {
             game.currentPlayer.actionDiceList[actionIndex].done = true;
         }
     },
 
-    useAbitltiy: (survivor, currentPlace, actionIndex) => {
+    useAbility: (survivor, currentPlace, actionIndex) => {
         const currentPlaceName = currentPlace.name;
         const placeNameList = survivor.ability.placeNameList;
         const currentPlayer = gameStore.getCurrentPlayer();
@@ -830,11 +853,6 @@ gameStore = {
         }
     },
 
-    searchWithDice: (actionIndex) => update(game => {
-        gameStore.search(game, actionIndex);
-        return game;
-    }),
-
     use:  async (currentItemCard) => {
         update(game => {
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
@@ -849,10 +867,11 @@ gameStore = {
             } else if (currentItemCard.feature === 'clean') {
                 gameStore.clean(4);
             } else if (currentItemCard.feature === 'search') {
-                gameStore.search(game);
-            } else if (currentItemCard.feature === 'attack') {
-                console.log('>>> currentItemCard.targetCount', currentItemCard.targetCount);
+                const currentPlace = game.placeList
+                    .find(place => place.name === currentItemCard.placeList[0]);
 
+                gameStore.search(game, currentPlace);
+            } else if (currentItemCard.feature === 'attack') {
                 for (let i = 0; i < currentItemCard.targetCount; i++) {
                     gameStore.killZombieWithGame(game, game.currentSurvivor, game.currentPlace)
                 }
@@ -912,7 +931,7 @@ gameStore = {
         if (currentPlace.currentZombieCount > 0) {
             const currentPlayer = gameStore.getCurrentPlayer(game);
 
-            if (actionIndex) {
+            if (actionIndex !== undefined) {
                 currentPlayer.actionDiceList[actionIndex].done = true;
             }
 
@@ -928,7 +947,7 @@ gameStore = {
                 alert('목표를 완수하였습니다.');
             }
 
-            if (actionIndex) {
+            if (actionIndex !== undefined) {
                 game.dangerDice = true;
                 game.currentSurvivor = currentSurvivor;
             }

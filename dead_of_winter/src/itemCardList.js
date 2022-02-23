@@ -254,15 +254,16 @@ const itemCardList = [
         category: '도구',
         type: 'execute',
         feature: 'clean'
-    },
-    {
-        name: '손전등',
-        description: "아무 장소의 아이템 카드 3장을 획득합니다.",
-        category: '도구',
-        type: 'execute',
-        feature: 'search',
-        placeList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
     }
+    // ,
+    // {
+    //     name: '손전등',
+    //     description: "아무 장소의 아이템 카드 3장을 획득합니다.",
+    //     category: '도구',
+    //     type: 'execute',
+    //     feature: 'search',
+    //     placeList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
+    // }
 ];
 
 itemCardList.forEach(itemCard => {
