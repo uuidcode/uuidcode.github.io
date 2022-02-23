@@ -265,7 +265,7 @@ const riskCardList = [
         }
     },
     {
-        name: '식량 2개를 모아라. 실패시 생존자 2명 죽음',
+        name: '식량 2개를 모아라. 실패시 생존자 2명 죽음, 사기는 저하되지 않습니다.',
         condition: {
             itemCardList: ['식량'],
             fail: {
@@ -330,7 +330,5 @@ const riskCardList = [
         }
     }
 ];
-
-console.log('>>> riskList', riskCardList.length);
 
 export default riskCardList;

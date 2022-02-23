@@ -6,10 +6,10 @@ const placeList = [
         maxSurvivorCount: 24,
         survivorList: [],
         survivorLocationList: [],
-        foodCount: 10,
+        foodCount: 0,
         starvingTokenCount: 0,
         weakTokenCount: 0,
-        trashCount: 10,
+        trashCount: 0,
         itemCardList: [],
         entranceList: [
             {

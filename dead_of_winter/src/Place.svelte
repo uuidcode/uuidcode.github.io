@@ -136,10 +136,12 @@
                                                     </td>
                                                     <td><button
                                                             class="action-dice-button"
-                                                            disabled={!action.search}>검색</button></td>
+                                                            disabled={!action.search}
+                                                            on:click={() => gameStore.search(survivor, currentPlace, actionIndex)}>검색</button></td>
                                                     <td><button
                                                             class="action-dice-button"
-                                                            disabled={!action.search}>능력</button></td>
+                                                            disabled={!action.ability}
+                                                            on:click={() => gameStore.useAbility(currentPlace, actionIndex)}>능력</button></td>
                                                     <td>
                                                         <button
                                                             class="action-dice-button"

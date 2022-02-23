@@ -2,6 +2,7 @@ import {tick} from 'svelte'
 import {writable, get} from "svelte/store";
 import game from "./game"
 import survivorList from "./survivorList";
+import placeList from "./placeList";
 
 const { subscribe, set, update } = writable(game);
 
@@ -237,7 +238,7 @@ gameStore = {
                 for (let i = 0; i < foodCount; i++) {
                     update(game => {
                         const camp = gameStore.getCamp(game);
-                        gameStore.minusFood(camp);
+                        gameStore.removeFood(camp);
                         return game;
                     });
                 }
@@ -267,16 +268,25 @@ gameStore = {
             const game = get(gameStore);
 
             if (game.successRiskCardList.length < 2) {
+                messageList.push('위기상황을 해결하지 못하였습니다.');
+                gameStore.showMessage(messageList);
+
                 game.currentRiskCard.condition.fail.actionList.forEach(action => {
                     if (action.name === 'minusMoral') {
-                        gameStore.minusMoral();
-                        messageList.push(`사기 1 하락합니다.`);
+                        for (let i = 0; i < action.targetCount; i++) {
+                            gameStore.minusMoral();
+                        }
+
+                        messageList.push(`사기 ${action.targetCount} 하락합니다.`);
                         gameStore.showMessage(messageList);
                     } else if (action.name === 'zombie') {
                         action.placeList
-                            .map(placeName => game.placeList.find(place => place.name === placeName))
+                            .map(placeName => game.placeList
+                                .filter(place => place.name === placeName))
                             .forEach(place => {
                                 gameStore.inviteZombie(place, undefined, action.targetCount);
+                                messageList.push(`좀비가 ${place.name}에 ${action.targetCount}구 나타났습니다.`);
+                                gameStore.showMessage(messageList);
                             });
                     } else if (action.name === 'wound') {
                         const survivorList = game.playerList
@@ -289,18 +299,68 @@ gameStore = {
                             update(game => {
                                 game.currentSurvivor = survivor;
                                 return game;
-                            })
+                            });
 
-                            gameStore.wound();
+                            gameStore.wound(messageList);
                         }
                     } else if (action.name === 'barricade') {
+                        gameStore.removeAllBarricade(messageList);
+                    } else if (action.name === 'dead') {
+                        const survivorList = game.playerList
+                            .flatMap(player => player.survivorList)
+                            .sort((a, b) => Math.random() - 0.5);
 
+                        for (let i = 0; i < action.targetCount; i++) {
+                            const survivor = survivorList.pop();
+
+                            update(game => {
+                                game.currentSurvivor = survivor;
+                                return game;
+                            });
+
+                            gameStore.dead(false, messageList);
+                        }
+                    } else if (action.name === 'food') {
+                        for (let i = 0; i < action.targetCount; i++) {
+                            update(game => {
+                                const camp = gameStore.getCamp(game);
+                                gameStore.removeFood(camp);
+                                return game;
+                            });
+                        }
+
+                        messageList.push(`피난기지의 식량 ${action.targetCount}개가 제거되었습니다.`);
+                        gameStore.showMessage(messageList);
                     }
                 });
+            } else {
+                messageList.push('위기상황을 해결하였습니다.');
+                gameStore.showMessage(messageList);
             }
+
+            gameStore.showZombie(messageList)
+
+            update(game => {
+                game.round--;
+                return game;
+            })
         }
+    },
+
+    removeAllBarricade: (messageList) => {
+        update(game => {
+            game.placeList
+                .flatMap(place => place.entranceList)
+                .forEach(entrance => {
+                    entrance.barricadeCount = 0;
+                })
+            return game;
+        });
 
         gameStore.updateAll();
+
+        messageList.push('바라케이트가 제거되었습니다.');
+        gameStore.showMessage(messageList);
     },
 
     changePlace: (event) => {
@@ -391,6 +451,7 @@ gameStore = {
             if (game.currentRiskCard) {
                 game.currentPlayer.itemCardList.forEach((itemCard) => {
                     itemCard.canPreventRisk =
+                        game.dangerDice === false &&
                         game.selectedItemCardFeature === null &&
                         game.successRiskCardList.length < 2 &&
                         game.canAction &&
@@ -439,6 +500,10 @@ gameStore = {
         game.survivorCount = game.placeList
             .map(player => player.survivorList.length)
             .reduce((a, b) => a + b, 0);
+
+        if (game.survivorCount === 0) {
+            alert('실패');
+        }
     },
 
     setDisabled: (value) => {
@@ -481,6 +546,7 @@ gameStore = {
 
                     return {
                         dice: dice,
+                        ability: gameStore.canUseAbility(survivor),
                         food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
                         attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power >= survivor.attack  && currentPlace.currentZombieCount > 0,
                         search: game.selectedItemCardFeature === null &&
@@ -604,7 +670,14 @@ gameStore = {
             .length > 0;
     },
 
+    check: (game) => {
+        if (game.moral === 0 || game.round === 0) {
+            alert('실패');
+        }
+    },
+
     updateAll: () => update(game => {
+        gameStore.check(game);
         game.currentPlayer = game.playerList[game.turn % 2];
         gameStore.updateSurvivorCount(game);
         gameStore.updateItemCardTable(game);
@@ -624,14 +697,14 @@ gameStore = {
 
             const camp = gameStore.getCamp(game);
 
-            gameStore.minusFood(camp, currentSurvivor);
+            gameStore.removeFood(camp, currentSurvivor);
             return game;
         });
 
         gameStore.updateAll();
     },
 
-    minusFood: (camp, survivor) => {
+    removeFood: (camp, survivor) => {
         const food = camp.foodList.pop();
         camp.foodList = [...camp.foodList];
         camp.foodCount = camp.foodList.length;
@@ -641,7 +714,7 @@ gameStore = {
         }
     },
 
-    plusFood: (game, camp, targetCount) => {
+    addFood: (game, camp, targetCount) => {
         for (let i = 0; i < targetCount; i++) {
             camp.foodList.push(game.campFoodIndex++);
         }
@@ -683,10 +756,84 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    search: (game) => {
-        let itemCardName = game.currentPlace.itemCardList.pop();
-        game.currentPlayer.itemCardList.push(gameStore.createNewItemCard(itemCardName));
+    search: (game, actionIndex) => {
+        const itemCardName = game.currentPlace.itemCardList.pop();
+        const newItemCard = gameStore.createNewItemCard(itemCardName);
+
+        if (newItemCard.category === '외부인') {
+            alert(`외부인 ${newItemCard.targetCount}명을 피난기지에 합류합니다.`);
+
+            for (let i = 0; i < newItemCard.targetCount; i++) {
+                const newSurvivor = game.survivorList.pop();
+
+                game.placeList
+                    .find(place => place.name === '피난기지')
+                    .survivorList
+                    .push(newSurvivor);
+            }
+        } else {
+            game.currentPlayer.itemCardList.push(newItemCard);
+        }
+
+        if (actionIndex) {
+            game.currentPlayer.actionDiceList[actionIndex].done = true;
+        }
     },
+
+    useAbitltiy: (survivor, currentPlace, actionIndex) => {
+        const currentPlaceName = currentPlace.name;
+        const placeNameList = survivor.ability.placeNameList;
+        const currentPlayer = gameStore.getCurrentPlayer();
+
+        if (survivor.ability.type === 'killZombie') {
+            update(game => {
+                gameStore.killZombieWithGame(game, survivor, currentPlace, actionIndex);
+                return game;
+            });
+        } else if (survivor.ability.type === 'get') {
+            update(game => {
+                const camp = gameStore.getCamp(game);
+                gameStore.addFood(game, camp, 2);
+                return game;
+            });
+        } else if (survivor.ability.type === 'plusPower') {
+            if (currentPlayer.actionTable) {
+                const diceCount = currentPlayer.actionDiceList
+                    .filter(dice => dice.power <= 5)
+                    .filter(dice => dice.done === false).length;
+
+                return true;
+            }
+
+            return false;
+        } else if (survivor.ability.type === 'move') {
+            return get(gameStore).placeList
+                .filter(place => place.name !== survivor.place.name)
+                .filter(place => place.maxSurviveCount > place.survivorList.length)
+                .length > 0
+        } else if (survivor.ability.type === 'care') {
+            return currentPlace.survivorList
+                .filter(survivor => survivor.wound > 0)
+                .length > 0;
+        } else if (survivor.ability.type === 'food') {
+            return true;
+        } else if (survivor.ability.type === 'plusMoral') {
+            return true;
+        } else if (survivor.ability.type === 'rescue') {
+            return currentPlace.itemCardList
+                .filter(item => item.name.startsWith("외부인")).length > 0;
+        } else if (survivor.ability.type === 'clean') {
+            return true;
+        } else if (survivor.ability.type === 'barricade') {
+            return currentPlace.maxZombieCount >
+                currentPlace.currentZombieCount + currentPlace.currentBarricadeCount;
+        }
+    },
+
+    searchWithDice: (actionIndex) => update(game => {
+        gameStore.search(game, actionIndex);
+        return game;
+    }),
 
     use:  async (currentItemCard) => {
         update(game => {
@@ -698,7 +845,7 @@ gameStore = {
             if (currentItemCard.feature === 'power') {
                 game.currentPlayer.actionDiceList[game.selectedActionIndex].power++;
             } else if (currentItemCard.feature === 'food') {
-                gameStore.plusFood(game, camp, currentItemCard.targetCount);
+                gameStore.addFood(game, camp, currentItemCard.targetCount);
             } else if (currentItemCard.feature === 'clean') {
                 gameStore.clean(4);
             } else if (currentItemCard.feature === 'search') {
@@ -707,7 +854,7 @@ gameStore = {
                 console.log('>>> currentItemCard.targetCount', currentItemCard.targetCount);
 
                 for (let i = 0; i < currentItemCard.targetCount; i++) {
-                    gameStore.attackWithGame(game, game.currentSurvivor, game.currentPlace)
+                    gameStore.killZombieWithGame(game, game.currentSurvivor, game.currentPlace)
                 }
             } else if (currentItemCard.feature === 'barricade') {
                 gameStore.createBarricade(game.currentPlace);
@@ -723,6 +870,8 @@ gameStore = {
 
             return game;
         });
+
+        gameStore.updateAll();
 
         await tick();
 
@@ -752,14 +901,14 @@ gameStore = {
 
     attack: (currentSurvivor, currentPlace, actionIndex) => {
         update(game => {
-            gameStore.attackWithGame(game, currentSurvivor, currentPlace, actionIndex);
+            gameStore.killZombieWithGame(game, currentSurvivor, currentPlace, actionIndex);
             return game;
         });
 
         gameStore.updateAll();
     },
 
-    attackWithGame: (game, currentSurvivor, currentPlace, actionIndex) => {
+    killZombieWithGame: (game, currentSurvivor, currentPlace, actionIndex) => {
         if (currentPlace.currentZombieCount > 0) {
             const currentPlayer = gameStore.getCurrentPlayer(game);
 
@@ -774,6 +923,10 @@ gameStore = {
             currentEntrance.zombieCount--;
             currentPlace.currentZombieCount--;
             game.deadZombieCount++;
+
+            if (game.deadZombieCount === 10) {
+                alert('목표를 완수하였습니다.');
+            }
 
             if (actionIndex) {
                 game.dangerDice = true;
@@ -794,7 +947,7 @@ gameStore = {
                 .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
                 .sort((a, b) => Math.random() - 0.5)[0];
 
-            currentEntrance.barricadeCount = currentEntrance.barricadeCount + 1;
+            currentEntrance.barricadeCount++;
 
             return game;
         });
@@ -826,6 +979,41 @@ gameStore = {
         gameStore.updateAll();
     },
 
+    showZombie: (messageList) => {
+        update(game => {
+            game.playerList.forEach(place => {
+                let zombieCount = place.survivorList.length;
+
+                if (place.name === '피난기지') {
+                    zombieCount = place.foodCount;
+                }
+
+                for (let i = 0; i < zombieCount; i++) {
+                    const currentEntrance = place.entranceList
+                        .sort((a, b) => Math.random() - 0.5)[0];
+
+                    currentEntrance.zombieCount++;
+
+                    if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
+                        if (currentEntrance.barricadeCount > 0) {
+                            currentEntrance.barricadeCount--;
+                        } else {
+                            currentEntrance.zombieCount--;
+
+                            if (place.survivorList.length > 0) {
+                                gameStore.dead(true, messageList, place);
+                            }
+                        }
+                    }
+                }
+            })
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
     clean: (trashCount, actionIndex) => {
         update(game => {
             const camp = gameStore.getCamp(game);
@@ -850,8 +1038,6 @@ gameStore = {
     },
 
     choiceRiskCard: () => {
-        console.log('>>> choiceRiskCard');
-
         update(game => {
             game.currentRiskCard = game.riskCardList.pop();
             game.riskCardList = [...game.riskCardList, game.currentRiskCard];
@@ -891,7 +1077,7 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    dead: () => {
+    dead: (minusMoral, messageList, currentPlace) => {
         let oldMoral = 0;
         let newMoral = 0;
         let currentSurvivorName = '';
@@ -900,14 +1086,24 @@ gameStore = {
             game.deadSurvivorCount++
             game.deadSurvivorList.push(game.currentSurvivor);
 
-            game.placeList.forEach(place => {
-                place.survivorList = place.survivorList
-                    .filter(survivor => survivor !== game.currentSurvivor)
-            })
+            game.placeList
+                .filter(place => {
+                    if (currentPlace === undefined) {
+                        return true;
+                    }
 
-            oldMoral = game.moral;
-            game.moral--;
-            newMoral = game.moral;
+                    return place.name === currentPlace.name;
+                })
+                .forEach(place => {
+                    place.survivorList = place.survivorList
+                        .filter(survivor => survivor !== game.currentSurvivor)
+                });
+
+            if (minusMoral === true) {
+                oldMoral = game.moral;
+                game.moral--;
+                newMoral = game.moral;
+            }
 
             currentSurvivorName = game.currentSurvivor.name;
             game.currentSurvivor = null;
@@ -915,19 +1111,51 @@ gameStore = {
             return game;
         });
 
-        alert(`${currentSurvivorName} 죽었습니다.`);
-        alert(`사기가 ${oldMoral}에서 ${newMoral}로 떨어졌습니다.`);
+        const message = `${currentSurvivorName} 죽었습니다.`;
+
+        if (messageList !== undefined) {
+            messageList.push(message);
+            gameStore.showMessage(messageList);
+        } else {
+            alert(message);
+        }
+
+        if (minusMoral === true) {
+            const message = `사기가 ${oldMoral}에서 ${newMoral}로 떨어졌습니다.`;
+
+            if (messageList !== undefined) {
+                messageList.push(message);
+                gameStore.showMessage(messageList);
+            } else {
+                alert(message);
+            }
+        }
     },
 
-    wound: () => {
+    wound: (messageList) => {
         update(game => {
             game.currentSurvivor.wound++;
 
-            alert(get(gameStore).currentSurvivor.name + ' 부상을 입었습니다.');
+            const message = `${game.currentSurvivor.name} 부상을 입었습니다.`;
+
+            if (messageList !== undefined) {
+                messageList.push(message);
+                gameStore.showMessage(messageList);
+            } else {
+                alert(message);
+            }
 
             if (game.currentSurvivor.wound >= 3) {
-                alert(get(gameStore).currentSurvivor.name + ' 부상을 3차례 입었습니다.');
-                gameStore.dead();
+                const message = `${game.currentSurvivor.name} 부상을 3차례 입었습니다.'`;
+
+                if (messageList !== undefined) {
+                    messageList.push(message);
+                    gameStore.showMessage(messageList);
+                } else {
+                    alert(message);
+                }
+
+                gameStore.dead(true);
             }
 
             game.currentSurvivor = null;
@@ -938,8 +1166,7 @@ gameStore = {
 
     rollDangerActionDice: () => {
         update(game => {
-            // const dangerDice = ['','','','','','','부상','부상','부상','부상','부상', '연쇄물림']
-            const dangerDice = ['연쇄물림']
+            const dangerDice = ['','','','','','','부상','부상','부상','부상','부상', '죽음']
             const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
 
             if (result === '') {
@@ -947,9 +1174,9 @@ gameStore = {
             } else if (result === '부상') {
                 alert('부상을 당하였습니다.');
                 gameStore.wound();
-            } else if (result === '연쇄물림') {
-                alert('연쇄물림이 발생하였습니다.');
-                gameStore.dead();
+            } else if (result === '죽음') {
+                alert('좀비가 물렸습니다.');
+                gameStore.dead(true);
             }
 
             game.dangerDice = false;

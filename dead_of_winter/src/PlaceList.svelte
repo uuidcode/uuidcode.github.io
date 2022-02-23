@@ -54,8 +54,6 @@
                 <td>{$gameStore.zombieCount}</td>
                 <td class="active">좀비토큰</td>
                 <td>{$gameStore.zombieTokenCount}</td>
-                <td class="active">죽은 좀비토큰</td>
-                <td>{$gameStore.deadZombieCount}</td>
             </tr>
         </table>
 
@@ -165,7 +163,7 @@
 
     {#if currentRiskCard != null}
         <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white">
-            <div style="font-size: 20px;">{currentRiskCard.name}, 처리된 카드수 : {successRiskCardList.length}</div>
+            <div style="font-size: 20px;">{currentRiskCard.name}, 지금까지 모은 아이템수 : {successRiskCardList.length}</div>
             <div style="display:flex;margin-left: 10px">
                 {#each successRiskCardList as successRiskCard (successRiskCard)}
                     <div style="width:25px;height:25px;border-radius:25px;background-color:lightgreen;border:1px solid greenyellow;margin-right: 5px"
