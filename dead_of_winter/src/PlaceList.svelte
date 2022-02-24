@@ -58,8 +58,8 @@
                 </td>
                 <td class="active">좀비</td>
                 <td>{$gameStore.zombieCount}</td>
-                <td class="active">좀비토큰</td>
-                <td>{$gameStore.zombieTokenCount}</td>
+                <td class="active">죽은 좀비</td>
+                <td>{$gameStore.deadZombieCount}</td>
             </tr>
         </table>
 

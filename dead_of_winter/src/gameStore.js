@@ -815,7 +815,7 @@ gameStore = {
 
     useAbility: (survivor, currentPlace, actionIndex) => {
         const currentPlaceName = currentPlace.name;
-        const placeNameList = survivor.ability.placeNameList;
+        const placeNameList = survivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
 
         if (survivor.ability.type === 'killZombie') {
@@ -1258,7 +1258,7 @@ gameStore = {
     canUseAbility: (survivor) => {
         const currentPlace = survivor.place;
         const currentPlaceName = currentPlace.name;
-        const placeNameList = survivor.ability.placeNameList;
+        const placeNameList = survivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
 
         if (survivor.ability.type === 'killZombie') {
