@@ -4,7 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
-    goal: '좀비 10구를 잡아라',
+    goal: '좀비 20구를 잡아라',
     messageList: [],
     campFoodIndex: 0,
     campTrashIndex: 0,

@@ -14,10 +14,14 @@ let gameStore = {
 
 gameStore = {
     ...gameStore,
-    plusRound: () => update(game => {
-        game.round = game.round + 1;
-        return game;
-    }),
+    plusRound: () => {
+        update(game => {
+            game.round++;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
 
     minusRound: () => update(game => {
         game.round = game.round - 1;
@@ -212,6 +216,151 @@ gameStore = {
         await gameStore.sleep(2000);
     },
 
+    processFood: (messageList) => {
+        const game = get(gameStore);
+        const camp = gameStore.getCamp(game);
+
+        if (camp.survivorList.length >= 2) {
+            const foodCount = camp.survivorList.length / 2;
+
+            if (foodCount > camp.foodCount) {
+                update(game => {
+                    camp.starvingTokenCount++;
+                    return game;
+                });
+
+                gameStore.updateAll();
+
+                messageList.push(`식량이 부족하여 굶주림 토큰이 추가되었습니다.`);
+            } else {
+                for (let i = 0; i < foodCount; i++) {
+                    update(game => {
+                        const camp = gameStore.getCamp(game);
+                        gameStore.removeFood(camp);
+                        return game;
+                    });
+
+                    gameStore.updateAll();
+                }
+
+                messageList.push(`식량을 ${foodCount}개 소모합니다.`);
+            }
+
+            gameStore.showMessage(messageList);
+        }
+    },
+
+    processTrash: (messageList) => {
+        const game = get(gameStore);
+        const camp = gameStore.getCamp(game);
+
+        if (camp.trashList.length < 10) {
+            return;
+        }
+
+        const minusMoral = camp.trashList.length / 10;
+        messageList.push(`쓰레기가 ${camp.trashList.length}에서 ${camp.trashList.length - (minusMoral * 10)}로 줄어들었으며 사기는 ${minusMoral} 하락합니다.`);
+        gameStore.showMessage(messageList);
+
+        update(game => {
+            for (let i = 0; i < minusMoral; i++) {
+                gameStore.minusMoral(game);
+            }
+
+            const currentCamp = gameStore.getCamp(game);
+
+            for (let i = 0; i < minusMoral * 10; i++) {
+                currentCamp.trashList.pop();
+            }
+
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
+    processRisk: (messageList) => {
+        const game = get(gameStore);
+
+        if (game.successRiskCardList.length < 2) {
+            messageList.push('위기상황을 해결하지 못하였습니다.');
+            gameStore.showMessage(messageList);
+
+            game.currentRiskCard.condition.fail.actionList.forEach(action => {
+                if (action.name === 'minusMoral') {
+                    for (let i = 0; i < action.targetCount; i++) {
+                        gameStore.minusMoral();
+                    }
+
+                    messageList.push(`사기 ${action.targetCount} 하락합니다.`);
+                    gameStore.showMessage(messageList);
+                } else if (action.name === 'zombie') {
+                    action.placeList
+                        .map(placeName => game.placeList
+                            .filter(place => place.name === placeName))
+                        .forEach(place => {
+                            gameStore.inviteZombie(place, undefined, action.targetCount);
+                            messageList.push(`좀비가 ${place.name}에 ${action.targetCount}구 나타났습니다.`);
+                            gameStore.showMessage(messageList);
+                        });
+                } else if (action.name === 'wound') {
+                    const survivorList = game.playerList
+                        .flatMap(player => player.survivorList)
+                        .sort((a, b) => Math.random() - 0.5);
+
+                    for (let i = 0; i < action.targetCount; i++) {
+                        const survivor = survivorList.pop();
+
+                        update(game => {
+                            game.currentSurvivor = survivor;
+                            return game;
+                        });
+
+                        gameStore.wound(messageList);
+                    }
+                } else if (action.name === 'barricade') {
+                    gameStore.removeAllBarricade(messageList);
+                } else if (action.name === 'dead') {
+                    const survivorList = game.playerList
+                        .flatMap(player => player.survivorList)
+                        .sort((a, b) => Math.random() - 0.5);
+
+                    for (let i = 0; i < action.targetCount; i++) {
+                        const survivor = survivorList.pop();
+
+                        update(game => {
+                            game.currentSurvivor = survivor;
+                            return game;
+                        });
+
+                        gameStore.dead(false, messageList);
+                    }
+                } else if (action.name === 'food') {
+                    for (let i = 0; i < action.targetCount; i++) {
+                        update(game => {
+                            const camp = gameStore.getCamp(game);
+                            gameStore.removeFood(camp);
+                            return game;
+                        });
+                    }
+
+                    messageList.push(`피난기지의 식량 ${action.targetCount}개가 제거되었습니다.`);
+                    gameStore.showMessage(messageList);
+                }
+            });
+        } else {
+            messageList.push('위기상황을 해결하였습니다.');
+            gameStore.showMessage(messageList);
+        }
+
+        update(game => {
+            game.successRiskCardList = [];
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
     turn: () => {
         update(game => {
             game.currentPlayer.actionTable = [];
@@ -228,6 +377,7 @@ gameStore = {
             game.canAction = false;
             game.canTurn = false;
             game.rollDice = true;
+
             return game;
         });
 
@@ -237,121 +387,9 @@ gameStore = {
 
         if (turn > 0 && turn % 2 === 0) {
             const messageList = [];
-            const camp = gameStore.getCamp(game);
-
-            if (camp.survivorList.length >= 2) {
-                const foodCount = camp.survivorList.length / 2;
-                messageList.push(`식량을 ${foodCount}개 소모합니다.`);
-                gameStore.showMessage(messageList);
-
-                for (let i = 0; i < foodCount; i++) {
-                    update(game => {
-                        const camp = gameStore.getCamp(game);
-                        gameStore.removeFood(camp);
-                        return game;
-                    });
-                }
-            }
-
-            if (camp.trashList.length >= 10) {
-                const minusMoral = camp.trashList.length / 10;
-
-                messageList.push(`쓰레기가 ${camp.trashList.length}에서 ${camp.trashList.length - (minusMoral * 10)}로 줄어들었으며 사기는 ${minusMoral} 하락합니다.`);
-                gameStore.showMessage(messageList);
-
-                update(game => {
-                    for (let i = 0; i < minusMoral; i++) {
-                        gameStore.minusMoral(game);
-                    }
-
-                    const camp = gameStore.getCamp(game);
-
-                    for (let i = 0; i < minusMoral * 10; i++) {
-                        camp.trashList.pop();
-                    }
-
-                    return game;
-                });
-            }
-
-            const game = get(gameStore);
-
-            if (game.successRiskCardList.length < 2) {
-                messageList.push('위기상황을 해결하지 못하였습니다.');
-                gameStore.showMessage(messageList);
-
-                game.currentRiskCard.condition.fail.actionList.forEach(action => {
-                    if (action.name === 'minusMoral') {
-                        for (let i = 0; i < action.targetCount; i++) {
-                            gameStore.minusMoral();
-                        }
-
-                        messageList.push(`사기 ${action.targetCount} 하락합니다.`);
-                        gameStore.showMessage(messageList);
-                    } else if (action.name === 'zombie') {
-                        action.placeList
-                            .map(placeName => game.placeList
-                                .filter(place => place.name === placeName))
-                            .forEach(place => {
-                                gameStore.inviteZombie(place, undefined, action.targetCount);
-                                messageList.push(`좀비가 ${place.name}에 ${action.targetCount}구 나타났습니다.`);
-                                gameStore.showMessage(messageList);
-                            });
-                    } else if (action.name === 'wound') {
-                        const survivorList = game.playerList
-                            .flatMap(player => player.survivorList)
-                            .sort((a, b) => Math.random() - 0.5);
-
-                        for (let i = 0; i < action.targetCount; i++) {
-                            const survivor = survivorList.pop();
-
-                            update(game => {
-                                game.currentSurvivor = survivor;
-                                return game;
-                            });
-
-                            gameStore.wound(messageList);
-                        }
-                    } else if (action.name === 'barricade') {
-                        gameStore.removeAllBarricade(messageList);
-                    } else if (action.name === 'dead') {
-                        const survivorList = game.playerList
-                            .flatMap(player => player.survivorList)
-                            .sort((a, b) => Math.random() - 0.5);
-
-                        for (let i = 0; i < action.targetCount; i++) {
-                            const survivor = survivorList.pop();
-
-                            update(game => {
-                                game.currentSurvivor = survivor;
-                                return game;
-                            });
-
-                            gameStore.dead(false, messageList);
-                        }
-                    } else if (action.name === 'food') {
-                        for (let i = 0; i < action.targetCount; i++) {
-                            update(game => {
-                                const camp = gameStore.getCamp(game);
-                                gameStore.removeFood(camp);
-                                return game;
-                            });
-                        }
-
-                        messageList.push(`피난기지의 식량 ${action.targetCount}개가 제거되었습니다.`);
-                        gameStore.showMessage(messageList);
-                    }
-                });
-            } else {
-                messageList.push('위기상황을 해결하였습니다.');
-                gameStore.showMessage(messageList);
-            }
-
-            update(game => {
-                game.successRiskCardList = [];
-                return game;
-            });
-
+            gameStore.processFood(messageList);
+            gameStore.processTrash(messageList)
+            gameStore.processRisk(messageList);
             gameStore.showZombie(messageList)
             gameStore.plusRound();
         }
@@ -623,6 +661,21 @@ gameStore = {
 
             survivor.actionItemCard.enabled = Object.values(survivor.actionItemCard)
                 .filter(item => item).length > 0;
+
+            survivor.targetPlaceList = game.placeList
+                .map(place => {
+                    return {
+                        ...place,
+                        disabled: false
+                    }
+                })
+                .map(targetPlace => {
+                    targetPlace.disabled = game.dangerDice ||
+                        currentPlace.name === targetPlace.name ||
+                        targetPlace.survivorList.length >= targetPlace.maxSurvivorCount;
+
+                    return targetPlace;
+                })
         });
 
         const doneLength = currentPlayer.actionDiceList.filter(dice => dice.done).length;
@@ -953,7 +1006,7 @@ gameStore = {
             currentPlace.currentZombieCount--;
             game.deadZombieCount++;
 
-            if (game.deadZombieCount === 10) {
+            if (game.deadZombieCount === 20) {
                 alert('목표를 완수하였습니다.');
             }
 
@@ -1010,12 +1063,15 @@ gameStore = {
 
     showZombie: (messageList) => {
         update(game => {
-            game.playerList.forEach(place => {
+            game.placeList.forEach(place => {
                 let zombieCount = place.survivorList.length;
 
                 if (place.name === '피난기지') {
                     zombieCount = place.foodCount;
                 }
+
+                const message = `${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
+                gameStore.showMessage(messageList);
 
                 for (let i = 0; i < zombieCount; i++) {
                     const currentEntrance = place.entranceList
@@ -1026,6 +1082,9 @@ gameStore = {
                     if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
                         if (currentEntrance.barricadeCount > 0) {
                             currentEntrance.barricadeCount--;
+
+                            const message = `${place.name}에 바리케이트가 제거되었습니다.`;
+                            gameStore.showMessage(messageList);
                         } else {
                             currentEntrance.zombieCount--;
 
@@ -1140,7 +1199,7 @@ gameStore = {
             return game;
         });
 
-        const message = `${currentSurvivorName} 죽었습니다.`;
+        const message = `${currentSurvivorName} 생존자가 죽었습니다.`;
 
         if (messageList !== undefined) {
             messageList.push(message);
@@ -1195,7 +1254,7 @@ gameStore = {
 
     rollDangerActionDice: () => {
         update(game => {
-            const dangerDice = ['','','','','','','부상','부상','부상','부상','부상', '죽음']
+            const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '죽음']
             const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
 
             if (result === '') {

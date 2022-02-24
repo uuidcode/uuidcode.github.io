@@ -105,13 +105,11 @@
                             {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
                                 <tr>
                                     <td>
-                                        {#each placeList as place}
-                                            {#if currentPlace.name != place.name && selectedItemCardFeature == null}
-                                                <button class="none-action-dice-button"
-                                                        disabled={dangerDice}
-                                                        style="margin-right: 5px"
-                                                        on:click={gameStore.move(survivor, place.name)}>{place.name}</button>
-                                            {/if}
+                                        {#each survivor.targetPlaceList as place}
+                                            <button class="none-action-dice-button"
+                                                    disabled={place.disabled}
+                                                    style="margin-right: 5px"
+                                                    on:click={gameStore.move(survivor, place.name)}>{place.name}</button>
                                         {/each}
                                         로 이동
                                     </td>
