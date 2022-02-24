@@ -159,8 +159,10 @@ gameStore = {
         camp.foodList = [...Array(camp.foodCount).keys()]
             .map(index => game.campFoodIndex++);
 
-        camp.trashList = [...Array(camp.trashCount).keys()]
-            .map(index => game.campTrashIndex++);
+        // camp.trashList = [...Array(camp.trashCount).keys()]
+        //     .map(index => game.campTrashIndex++);
+
+        camp.trashList = [];
     },
 
     move: (currentSurvivor, placeName) => {
@@ -555,7 +557,10 @@ gameStore = {
                         dice: dice,
                         ability: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && gameStore.canUseAbility(survivor),
                         food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
-                        attack: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power >= survivor.attack  && currentPlace.currentZombieCount > 0,
+                        attack: game.selectedItemCardFeature === null &&
+                            !dice.done && !game.dangerDice &&
+                            dice.power >= survivor.attack  &&
+                            currentPlace.currentZombieCount > 0,
                         search: game.selectedItemCardFeature === null &&
                             dice.power >= survivor.search &&
                             !dice.done &&
@@ -890,9 +895,9 @@ gameStore = {
             return game;
         });
 
-        gameStore.updateAll();
-
-        await tick();
+        // gameStore.updateAll();
+        //
+        // await tick();
 
         update(game => {
             const camp = gameStore.getCamp(game);

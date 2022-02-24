@@ -104,10 +104,10 @@
                             <td>{place.trashCount}
                                 <div>
                                     <div style="display: flex;width:50px;flex-wrap: wrap">
-                                        {#each camp.trashList as trash, index (trash)}
+                                        {#each camp.trashList as itemCard (itemCard)}
                                             <div animate:flip
-                                                 in:trashReceive={{key: trash}}
-                                                 out:trashSend={{key: trash}}>
+                                                 in:trashReceive={{key: itemCard}}
+                                                 out:trashSend={{key: itemCard}}>
                                                 <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
                                             </div>
                                         {/each}

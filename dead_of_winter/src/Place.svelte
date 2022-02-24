@@ -17,11 +17,13 @@
     let currentPlayer;
     let dangerDice;
     let selectedItemCardFeature;
+    let itemCardList;
 
     $: {
         currentPlayer = gameStore.getCurrentPlayer();
         placeList = $gameStore.placeList;
         dangerDice = $gameStore.dangerDice;
+        itemCardList = $gameStore.itemCardList;
         selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         currentPlace = placeList[placeIndex];
         survivorList = currentPlace.survivorList;
@@ -30,6 +32,11 @@
 </script>
 
 <div class="place place-part">
+    <div style="display: flex">
+        {#each itemCardList as itemCard (itemCard)}
+            <div style="width:1px;height:1px"></div>
+        {/each}
+    </div>
     <div class="place-name">{currentPlace.name} {currentPlace.index + 1}</div>
     <div>
         <div class="flex"

@@ -1,9 +1,8 @@
 <script>
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
-    import {fly} from 'svelte/transition';
     import {itemCardCrossfade, trashCrossfade} from './animation';
-    const [send, receive] = itemCardCrossfade;
+    const [itemSend, itemReceive] = itemCardCrossfade;
     const [trashSend, trashReceive] = trashCrossfade
 
     export let playerIndex;
@@ -15,6 +14,8 @@
     let itemCardTable;
     let itemCardList;
     let selectedItemCardFeature;
+    let send = itemSend;
+    let receive = itemReceive;
 
     $: {
         playerList = $gameStore.playerList;
@@ -24,6 +25,14 @@
         survivorList = player.survivorList;
         itemCardTable = player.itemCardTable;
         itemCardList = player.itemCardList;
+
+        if (selectedItemCardFeature != null) {
+            send = trashSend;
+            receive = trashReceive;
+        } else {
+            send = itemSend;
+            receive = itemReceive;
+        }
     }
 </script>
 
@@ -33,60 +42,35 @@
         {player.name} 아이템 카드 : {player.itemCardList.length}
     </div>
     <div>
-        {#if selectedItemCardFeature != null }
-            {#each itemCardList as itemCard (itemCard)}
-                <table class="game-table box"
-                       animate:flip
-                       in:trashReceive={{key: itemCard}}
-                       out:trashSend={{key: itemCard}}
-                       style="width: 100%; margin: 0 0 4px 0;">
-                    <tr>
-                        <td class="active">이름</td>
-                        <td class="active">{itemCard.name}</td>
-                        <td class="active">유형</td>
-                        <td>{itemCard.category}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">{itemCard.description}
-                            {#if itemCard.canPreventRisk == true}
-                                <button class="none-action-dice-button"
-                                        on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
-                            {/if}
+        {#each itemCardList as itemCard (itemCard)}
+            <table class="game-table box"
+                   animate:flip
+                   in:receive={{key: itemCard}}
+                   out:send={{key: itemCard}}
+                   style="width: 100%; margin: 0 0 4px 0;">
+                <tr>
+                    <td class="active">이름</td>
+                    <td class="active">{itemCard.name}</td>
+                    <td class="active">유형</td>
+                    <td>{itemCard.category}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">{itemCard.description}
+                        {#if itemCard.canPreventRisk == true}
+                            <button class="none-action-dice-button"
+                                    on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
+                        {/if}
 
-                            {#if itemCard.canAction == true}
-                                <button class="none-action-dice-button"
-                                        on:click={()=>gameStore.use(itemCard)}>사용</button>
-                                <button class="none-action-dice-button"
-                                        on:click={()=>gameStore.cancel(itemCard)}>취소</button>
-                            {/if}
-                        </td>
-                    </tr>
-                </table>
-            {/each}
-        {:else}
-            {#each itemCardList as itemCard (itemCard)}
-                <table class="game-table box"
-                       animate:flip
-                       in:receive={{key: itemCard}}
-                       out:send={{key: itemCard}}
-                       style="width: 100%; margin: 0 0 4px 0;">
-                    <tr>
-                        <td class="active">이름</td>
-                        <td class="active">{itemCard.name}</td>
-                        <td class="active">유형</td>
-                        <td>{itemCard.category}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4">{itemCard.description}
-                            {#if itemCard.canPreventRisk == true}
-                                <button class="none-action-dice-button"
-                                        on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
-                            {/if}
-                        </td>
-                    </tr>
-                </table>
-            {/each}
-        {/if}
+                        {#if itemCard.canAction == true}
+                            <button class="none-action-dice-button"
+                                    on:click={()=>gameStore.use(itemCard)}>사용</button>
+                            <button class="none-action-dice-button"
+                                    on:click={()=>gameStore.cancel(itemCard)}>취소</button>
+                        {/if}
+                    </td>
+                </tr>
+            </table>
+        {/each}
     </div>
 </div>
 
