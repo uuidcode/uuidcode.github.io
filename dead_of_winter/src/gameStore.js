@@ -347,12 +347,13 @@ gameStore = {
                 gameStore.showMessage(messageList);
             }
 
-            gameStore.showZombie(messageList)
-
             update(game => {
-                game.round--;
+                game.successRiskCardList = [];
                 return game;
-            })
+            });
+
+            gameStore.showZombie(messageList)
+            gameStore.plusRound();
         }
     },
 
@@ -568,7 +569,9 @@ gameStore = {
                             currentPlace.itemCardList.length > 0,
                         barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
                         clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.name === '피난기지' && currentPlace.trashCount > 0,
-                        invite: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
+                        invite: game.selectedItemCardFeature === null &&
+                            !dice.done && !game.dangerDice &&
+                            currentPlace.maxZombieCount >= currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
                         move: game.selectedItemCardFeature === null &&!dice.done && currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
                         itemFood: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power < 6 &&
                             currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'power').length > 0,
@@ -624,7 +627,9 @@ gameStore = {
 
         const doneLength = currentPlayer.actionDiceList.filter(dice => dice.done).length;
 
-        if (doneLength !== 0 && doneLength === currentPlayer.actionDiceList.length) {
+        if (doneLength !== 0 &&
+            doneLength === currentPlayer.actionDiceList.length &&
+            game.dangerDice === false) {
             game.canTurn = true;
         }
 
@@ -800,7 +805,7 @@ gameStore = {
                     .push(newSurvivor);
             }
         } else {
-            game.currentPlayer.itemCardList.push(newItemCard);
+            game.currentPlayer.itemCardList = [newItemCard, ...game.currentPlayer.itemCardList];
         }
 
         if (actionIndex !== undefined) {

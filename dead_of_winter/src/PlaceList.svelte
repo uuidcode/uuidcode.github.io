@@ -15,9 +15,11 @@
     let camp;
     let actionTable;
     let messageList;
+    let goal;
 
     $: {
         placeList = $gameStore.placeList;
+        goal = $gameStore.goal;
         messageList = $gameStore.messageList;
         deadSurvivorList = $gameStore.deadSurvivorList;
         currentRiskCard = $gameStore.currentRiskCard;
@@ -28,11 +30,15 @@
 </script>
 
 <div class="flex-column">
+    <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white;">
+        <div style="height:30px;line-height: 30px">{goal}</div>
+    </div>
+
     <div style="display: flex;justify-content: space-evenly">
         <table class="game-table" style="margin: 10px 10px 0 10px">
             <tr>
                 <td class="active">횟수</td>
-                <td>{$gameStore.turn}</td>
+                <td>{$gameStore.turn + 1}</td>
                 <td class="active">라운드</td>
                 <td>{$gameStore.round}</td>
                 <td class="active">사기</td>
