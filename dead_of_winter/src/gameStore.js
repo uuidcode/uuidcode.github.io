@@ -183,7 +183,7 @@ gameStore = {
             game.currentSurvivor = currentSurvivor;
             game.currentSurvivor.place = game.placeList.find(place => place.name === placeName);
             game.currentPlaceName = placeName;
-            game.dangerDice= true;
+
             return game;
         });
 
@@ -214,6 +214,20 @@ gameStore = {
         });
 
         await gameStore.sleep(2000);
+    },
+
+    showToastMessage: async (message) => {
+        update(game => {
+            game.toastMessage = message;
+            return game;
+        });
+
+        await gameStore.sleep(2000);
+
+        update(game => {
+            game.toastMessage = null;
+            return game;
+        });
     },
 
     processFood: (messageList) => {
@@ -1222,6 +1236,8 @@ gameStore = {
 
     wound: (messageList) => {
         update(game => {
+            console.log('>>> game.currentSurvivor', game.currentSurvivor);
+
             game.currentSurvivor.wound++;
 
             const message = `${game.currentSurvivor.name} 부상을 입었습니다.`;
@@ -1252,22 +1268,38 @@ gameStore = {
         });
     },
 
-    rollDangerActionDice: () => {
+    rollDangerActionDice: async (survivor) => {
+        if (survivor == null) {
+            return;
+        }
+
+        const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '죽음']
+        const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
+
+        console.log('>>> result', result);
+
+        const messageList = [];
+
+        if (result === '') {
+            messageList.push('아무런 일이 일어나지 않았습니다.');
+            await gameStore.showMessage(messageList);
+        } else if (result === '부상') {
+            messageList.push('부상을 당하였습니다.');
+            await gameStore.showMessage(messageList);
+            gameStore.wound(messageList);
+        } else if (result === '죽음') {
+            messageList.push('좀비에게 물려서 죽었습니다.');
+            await gameStore.showMessage(messageList);
+            gameStore.dead(true, messageList);
+        }
+
         update(game => {
-            const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '죽음']
-            const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
-
-            if (result === '') {
-                alert('아무런 일이 일어나지 않았습니다.');
-            } else if (result === '부상') {
-                alert('부상을 당하였습니다.');
-                gameStore.wound();
-            } else if (result === '죽음') {
-                alert('좀비가 물렸습니다.');
-                gameStore.dead(true);
-            }
-
             game.dangerDice = false;
+            return game;
+        });
+
+        update(game => {
+            game.messageList = [];
             return game;
         });
 

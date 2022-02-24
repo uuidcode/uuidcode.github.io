@@ -16,9 +16,11 @@
     let actionTable;
     let messageList;
     let goal;
+    let toastMessage;
 
     $: {
         placeList = $gameStore.placeList;
+        toastMessage = $gameStore.toastMessage;
         goal = $gameStore.goal;
         messageList = $gameStore.messageList;
         deadSurvivorList = $gameStore.deadSurvivorList;
@@ -158,10 +160,6 @@
                 style="width: 100px"
                 on:click={()=>gameStore.rollActionDice()}>행동 주사위</button>
 
-        <button class="game-button dice action-button" disabled={!$gameStore.dangerDice}
-                style="width: 100px"
-                on:click={()=>gameStore.rollDangerActionDice()}>위험 노출<br/>주사위</button>
-
         <button class="game-button action-button" disabled={!$gameStore.canTurn}
                 style="width: 100px"
                 on:click={()=>gameStore.turn()}>완료</button>
@@ -182,10 +180,16 @@
     {/if}
 
     {#if messageList.length > 0}
-        <div style="display: flex;flex-direction: column;justify-content: center;margin: 10px 300px;">
+        <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white">
             {#each messageList as message, index}
-                <div>{index + 1} {message}</div>
+                <div style="font-size: 20px;">{index + 1} {message}</div>
             {/each}
+        </div>
+    {/if}
+
+    {#if toastMessage != null}
+        <div style="display: flex;justify-content: center;margin: 10px;background-color: #0f6674;color:white">
+            <div>{toastMessage}</div>
         </div>
     {/if}
 
