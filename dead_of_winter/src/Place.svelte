@@ -18,16 +18,22 @@
     let dangerDice;
     let selectedItemCardFeature;
     let itemCardList;
+    let messageList;
+    let currentSurvivor;
 
     $: {
         currentPlayer = gameStore.getCurrentPlayer();
         placeList = $gameStore.placeList;
+        messageList = $gameStore.messageList;
+        currentSurvivor = $gameStore.currentSurvivor;
         dangerDice = $gameStore.dangerDice;
         itemCardList = $gameStore.itemCardList;
         selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         currentPlace = placeList[placeIndex];
         survivorList = currentPlace.survivorList;
         survivorLocationList = currentPlace.survivorLocationList;
+
+        console.log('>>> currentSurvivor', currentSurvivor);
     }
 </script>
 
@@ -67,6 +73,15 @@
                 <div class="survivor-position">
                     {#if survivor}
                         <table class="game-table" style="width: 100%">
+                            <!--{#if (currentSurvivor??{name: ''}.name == survivor.name) && (messageList.length > 0)}-->
+                            <!--    <tr>-->
+                            <!--        <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">-->
+                            <!--            {#each messageList as message}-->
+                            <!--                <div>{message}</div>-->
+                            <!--            {/each}-->
+                            <!--        </td>-->
+                            <!--    </tr>-->
+                            <!--{/if}-->
                             <tr>
                                 <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
                                     <div style="display:flex">

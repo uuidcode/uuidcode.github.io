@@ -996,15 +996,15 @@ gameStore = {
     },
 
     attack: (currentSurvivor, currentPlace, actionIndex) => {
-        update(game => {
-            gameStore.killZombieWithGame(game, currentSurvivor, currentPlace, actionIndex);
+        update(async game => {
+            await gameStore.killZombieWithGame(game, currentSurvivor, currentPlace, actionIndex);
             return game;
         });
 
         gameStore.updateAll();
     },
 
-    killZombieWithGame: (game, currentSurvivor, currentPlace, actionIndex) => {
+    killZombieWithGame: async (game, currentSurvivor, currentPlace, actionIndex) => {
         if (currentPlace.currentZombieCount > 0) {
             const currentPlayer = gameStore.getCurrentPlayer(game);
 
@@ -1028,6 +1028,8 @@ gameStore = {
                 game.dangerDice = true;
                 game.currentSurvivor = currentSurvivor;
             }
+
+            await gameStore.rollDangerActionDice(currentSurvivor);
         }
     },
 
@@ -1273,10 +1275,13 @@ gameStore = {
             return;
         }
 
+        update(game => {
+            game.dangerDice = false;
+            return game;
+        });
+
         const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '죽음']
         const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
-
-        console.log('>>> result', result);
 
         const messageList = [];
 
