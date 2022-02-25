@@ -185,7 +185,7 @@ const survivorList = [
         attack: 4,
         search: 1,
         ability: {
-            name: '라운드마다 한 번, 경창서에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+            name: '라운드마다 한 번, 경찰서에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
             type: 'killZombie',
             placeNameList: ['경찰서']
         }
@@ -393,6 +393,8 @@ survivorList.forEach(survivor => {
     survivor.ability.done = false;
     survivor.actionTable = [];
     survivor.foodList = [];
+    survivor.noRollDangerDice = false;
+    survivor.canUseAbility = true;
 });
 
 export default survivorList;

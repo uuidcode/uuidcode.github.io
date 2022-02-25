@@ -210,14 +210,13 @@ const riskCardList = [
         }
     },
     {
-        name: '연료 2개를 모아라. 실패시 바리케이트 1개 제거, 1번의 부상, 사기 1 저하',
+        name: '연료 2개를 모아라. 실패시 바리케이트 제거, 1번의 부상, 사기 1 저하',
         condition: {
             itemCardList: ['연료'],
             fail: {
                 actionList: [
                     {
-                        name: 'barricade',
-                        targetCount: 1
+                        name: 'barricade'
                     },
                     {
                         name: 'wound',

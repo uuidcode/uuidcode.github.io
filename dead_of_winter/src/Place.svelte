@@ -37,7 +37,12 @@
             <div style="width:1px;height:1px"></div>
         {/each}
     </div>
-    <div class="place-name">{currentPlace.name} {currentPlace.index + 1}</div>
+    {#if currentPlace.name == '피난기지'}
+        <div class="place-name">{currentPlace.name}, {currentPlace.survivorList.length / 2}개의 식량이 필요합니다.</div>
+    {:else}
+        <div class="place-name">{currentPlace.name}</div>
+    {/if}
+
     <div>
         <div class="flex"
              style="justify-content: space-evenly; align-content: flex-start; margin: 10px">
@@ -102,7 +107,15 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr><td>{survivor.ability.name}</td></tr>
+                            <tr>
+                                <td>
+                                    {survivor.ability.name}
+
+                                    {#if survivor.canUseAbility == false}
+                                        <span style="background-color: lightgreen">능력을 사용하였습니다.</span>
+                                    {/if}
+                                </td>
+                            </tr>
                             {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
                                 <tr>
                                     <td>
@@ -148,7 +161,7 @@
                                                     <td><button
                                                             class="action-dice-button"
                                                             disabled={!action.ability}
-                                                            on:click={() => gameStore.useAbility(currentPlace, actionIndex)}>능력</button></td>
+                                                            on:click={() => gameStore.useAbility(survivor, currentPlace, actionIndex)}>능력</button></td>
                                                     <td>
                                                         <button
                                                             class="action-dice-button"

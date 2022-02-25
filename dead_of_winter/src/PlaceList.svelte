@@ -9,6 +9,7 @@
     const [deadSurvivorSend, deadSurvivorReceive] = deadSurvivorCrossfade;
 
     let placeList;
+    let playerList;
     let deadSurvivorList;
     let currentRiskCard;
     let successRiskCardList;
@@ -19,6 +20,7 @@
 
     $: {
         placeList = $gameStore.placeList;
+        playerList = $gameStore.playerList;
         goal = $gameStore.goal;
         messageList = $gameStore.messageList;
         deadSurvivorList = $gameStore.deadSurvivorList;
@@ -77,7 +79,9 @@
                 {#if place.name == '피난기지'}
                     <table>
                         <tr>
-                            <td colspan="4">{place.name} {place.index + 1}</td>
+                            <td colspan="4">{place.name}<br>
+                                <span style="background-color: lightgreen">{Math.floor(place.survivorList.length / 2)}개의 식량이 필요합니다.</span>
+                            </td>
                         </tr>
                         <tr>
                             <td>좀비수</td>
@@ -87,7 +91,14 @@
                         </tr>
                         <tr>
                             <td>생존자수</td>
-                            <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
+                            <td>
+                                <div style="display: flex; flex-direction: column">
+                                    <div>{place.survivorList.length}/{place.maxSurvivorCount}</div>
+                                    {#each playerList as player}
+                                        <div>{player.name} : {place.playerSurvivorMap[player.name].length}</div>
+                                    {/each}
+                                </div>
+                            </td>
                             <td>식량</td>
                             <td>{place.foodCount}
                                 <div>
@@ -125,7 +136,7 @@
                 {:else}
                     <table>
                         <tr>
-                            <td colspan="2">{place.name} {place.index + 1}</td>
+                            <td colspan="2">{place.name}</td>
                         </tr>
                         <tr>
                             <td>좀비수</td>
@@ -137,7 +148,14 @@
                         </tr>
                         <tr>
                             <td>생존자수</td>
-                            <td>{place.survivorList.length}/{place.maxSurvivorCount}</td>
+                            <td>
+                                <div style="display: flex; flex-direction: column">
+                                    <div>{place.survivorList.length}/{place.maxSurvivorCount}</div>
+                                    {#each playerList as player}
+                                        <div>{player.name} : {place.playerSurvivorMap[player.name].length}</div>
+                                    {/each}
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>아이템카드수</td>
@@ -149,21 +167,21 @@
         {/each}
 
         <button class="game-button dice action-button" disabled={!$gameStore.riskCard}
-                style="width: 100px"
+                style="width: 70px"
                 on:click={()=>gameStore.choiceRiskCard()}>
-                위기사항카드
+                위기<br/>사항카드
         </button>
 
         <button class="game-button dice action-button" disabled={!$gameStore.rollDice}
-                style="width: 100px"
-                on:click={()=>gameStore.rollActionDice()}>행동 주사위</button>
+                style="width: 70px"
+                on:click={()=>gameStore.rollActionDice()}>행동<br/>주사위</button>
 
 <!--        <button class="game-button dice action-button" disabled={!$gameStore.dangerDice}-->
 <!--                style="width: 100px"-->
 <!--                on:click={()=>gameStore.rollDangerActionDice()}>위험 노출<br/>주사위</button>-->
 
         <button class="game-button action-button" disabled={!$gameStore.canTurn}
-                style="width: 100px"
+                style="width: 60px"
                 on:click={()=>gameStore.turn()}>완료</button>
     </div>
 

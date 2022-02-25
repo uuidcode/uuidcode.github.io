@@ -56,7 +56,8 @@ gameStore = {
 
         game.placeList.forEach(place => {
             place.itemCardList = place.itemCardList
-                .sort((a, b) => 0.5 - Math.random());
+                .sort((a, b) => 0.5 - Math.random())
+                .map(name => gameStore.createNewItemCard(name));
         });
     },
 
@@ -102,6 +103,21 @@ gameStore = {
             }
 
             place.survivorList.sort((a, b) => a.playerIndex - b.playerIndex);
+
+            const initPlayerSurvivorMap = {}
+
+            game.playerList.forEach(player => {
+                initPlayerSurvivorMap[player.name] = [];
+            });
+
+            place.playerSurvivorMap = place.survivorList.reduce((group, survivor) => {
+                const playerName = game.playerList[survivor.playerIndex].name;
+                group[playerName] = group[playerName] ?? [];
+                group[playerName].push(survivor);
+                return group;
+            }, initPlayerSurvivorMap);
+
+            console.log('>>> place.playerSurvivorMap', place.playerSurvivorMap);
 
             const currentSurvivorList = [...place.survivorList];
 
@@ -388,10 +404,15 @@ gameStore = {
         update(game => {
             game.currentPlayer.actionTable = [];
 
-            game.survivorList.forEach(survivor => survivor.actionTable = []);
+            game.survivorList.forEach(survivor => {
+                survivor.actionTable = [];
+            });
 
             game.placeList.forEach(place => {
-                place.survivorList.forEach(survivorList => survivorList.actionTable = []);
+                place.survivorList.forEach(survivor => {
+                    survivor.actionTable = [];
+                    survivor.canUseAbility = true;
+                });
             });
 
             game.playerList.forEach(player => player.actionDiceList = []);
@@ -617,7 +638,10 @@ gameStore = {
 
                     return {
                         dice: dice,
-                        ability: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && gameStore.canUseAbility(survivor),
+                        ability: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            !game.dangerDice &&
+                            gameStore.canUseAbility(survivor),
                         food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
                         attack: game.selectedItemCardFeature === null &&
                             !dice.done && !game.dangerDice &&
@@ -768,6 +792,12 @@ gameStore = {
         if (game.moral === 0 || game.round === 0) {
             alert('실패');
         }
+
+        game.playerList.forEach(player => {
+            if (player.survivorList.length === 0) {
+                alert('실패');
+            }
+        });
     },
 
     updateAll: () => update(game => {
@@ -864,8 +894,7 @@ gameStore = {
     },
 
     searchInternal: (game, currentPlace, actionIndex) => {
-        const itemCardName = currentPlace.itemCardList.pop();
-        const newItemCard = gameStore.createNewItemCard(itemCardName);
+        const newItemCard = currentPlace.itemCardList.pop();
 
         if (newItemCard.category === '외부인') {
             alert(`외부인 ${newItemCard.targetCount}명을 피난기지에 합류합니다.`);
@@ -893,12 +922,17 @@ gameStore = {
         const currentPlaceName = currentPlace.name;
         const placeNameList = survivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
+        survivor.noRollDangerDice = true;
 
         if (survivor.ability.type === 'killZombie') {
             update(game => {
                 gameStore.killZombieWithGame(game, survivor, currentPlace, actionIndex);
+                survivor.noRollDangerDice = false;
+                survivor.canUseAbility = false;
                 return game;
             });
+
+            gameStore.updateAll();
         } else if (survivor.ability.type === 'get') {
             update(game => {
                 const camp = gameStore.getCamp(game);
@@ -1031,6 +1065,10 @@ gameStore = {
 
             if (game.deadZombieCount === 20) {
                 alert('목표를 완수하였습니다.');
+            }
+
+            if (currentSurvivor.noRollDangerDice === true) {
+                return;
             }
 
             if (actionIndex !== undefined) {
@@ -1358,7 +1396,8 @@ gameStore = {
 
         if (survivor.ability.type === 'killZombie') {
             if (placeNameList.find(name => name === currentPlaceName)) {
-                return currentPlace.currentZombieCount > 0;
+                return survivor.canUseAbility === true &&
+                    currentPlace.currentZombieCount > 0;
             }
 
             return false;
