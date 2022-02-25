@@ -34,7 +34,10 @@ gameStore = {
     }),
 
     minusMoral: () => update(game => {
-        game.moral = game.moral - 1;
+        if (game.moral > 0) {
+            game.moral--;
+        }
+
         return game;
     }),
 
@@ -169,7 +172,7 @@ gameStore = {
         camp.trashList = [];
     },
 
-    move: (currentSurvivor, placeName) => {
+    move: async (currentSurvivor, placeName) => {
         update(game => {
             game.placeList.forEach(place => {
                 if (place.name === placeName) {
@@ -183,7 +186,7 @@ gameStore = {
             game.currentSurvivor = currentSurvivor;
             game.currentSurvivor.place = game.placeList.find(place => place.name === placeName);
             game.currentPlaceName = placeName;
-            game.dangerDice= true;
+            // game.dangerDice= true;
             return game;
         });
 
@@ -224,14 +227,34 @@ gameStore = {
             const foodCount = camp.survivorList.length / 2;
 
             if (foodCount > camp.foodCount) {
+                let starvingTokenCount = 0;
+                let oldMoral = 0;
+
                 update(game => {
+                    oldMoral = game.moral;
                     camp.starvingTokenCount++;
+                    starvingTokenCount = camp.starvingTokenCount;
                     return game;
                 });
 
                 gameStore.updateAll();
 
                 messageList.push(`식량이 부족하여 굶주림 토큰이 추가되었습니다.`);
+
+                if (starvingTokenCount > 0) {
+                    for (let i = 0; i < starvingTokenCount; i++) {
+                        gameStore.minusMoral();
+                    }
+
+                    let newMoral = 0;
+
+                    update(game => {
+                        newMoral = game.moral;
+                        return game;
+                    });
+
+                    messageList.push(`굶주림 토큰이 ${starvingTokenCount}개가 있어서 사기가 ${oldMoral}에서 ${newMoral}로 하락 하였습니다.`);
+                }
             } else {
                 for (let i = 0; i < foodCount; i++) {
                     update(game => {
@@ -1011,8 +1034,8 @@ gameStore = {
             }
 
             if (actionIndex !== undefined) {
-                game.dangerDice = true;
                 game.currentSurvivor = currentSurvivor;
+                gameStore.rollDangerActionDice(currentSurvivor);
             }
         }
     },
@@ -1070,33 +1093,35 @@ gameStore = {
                     zombieCount = place.foodCount;
                 }
 
-                const message = `${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
-                messageList.push(message);
-                gameStore.showMessage(messageList);
+                if (zombieCount > 0) {
+                    const message = `${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
+                    messageList.push(message);
+                    gameStore.showMessage(messageList);
 
-                for (let i = 0; i < zombieCount; i++) {
-                    const currentEntrance = place.entranceList
-                        .sort((a, b) => Math.random() - 0.5)[0];
+                    for (let i = 0; i < zombieCount; i++) {
+                        const currentEntrance = place.entranceList
+                            .sort((a, b) => Math.random() - 0.5)[0];
 
-                    currentEntrance.zombieCount++;
+                        currentEntrance.zombieCount++;
 
-                    if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
-                        if (currentEntrance.barricadeCount > 0) {
-                            currentEntrance.barricadeCount--;
+                        if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
+                            if (currentEntrance.barricadeCount > 0) {
+                                currentEntrance.barricadeCount--;
 
-                            const message = `${place.name}에 바리케이트가 제거되었습니다.`;
-                            messageList.push(message);
-                            gameStore.showMessage(messageList);
-                        } else {
-                            currentEntrance.zombieCount--;
+                                const message = `${place.name}에 바리케이트가 제거되었습니다.`;
+                                messageList.push(message);
+                                gameStore.showMessage(messageList);
+                            } else {
+                                currentEntrance.zombieCount--;
 
-                            if (place.survivorList.length > 0) {
-                                gameStore.dead(true, messageList, place);
+                                if (place.survivorList.length > 0) {
+                                    gameStore.dead(true, messageList, place);
+                                }
                             }
                         }
                     }
                 }
-            })
+            });
 
             return game;
         });
@@ -1254,7 +1279,16 @@ gameStore = {
         });
     },
 
-    rollDangerActionDice: () => {
+    rollDangerActionDice: (survivor) => {
+        let currentSurvivor = get(gameStore).currentSurvivor;
+
+        if (currentSurvivor === null || survivor == null ||
+            currentSurvivor.name !== survivor.name) {
+            return;
+        }
+
+        alert('위험노출 주사위를 던집니다.');
+
         update(game => {
             const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '죽음']
             const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();

@@ -158,9 +158,9 @@
                 style="width: 100px"
                 on:click={()=>gameStore.rollActionDice()}>행동 주사위</button>
 
-        <button class="game-button dice action-button" disabled={!$gameStore.dangerDice}
-                style="width: 100px"
-                on:click={()=>gameStore.rollDangerActionDice()}>위험 노출<br/>주사위</button>
+<!--        <button class="game-button dice action-button" disabled={!$gameStore.dangerDice}-->
+<!--                style="width: 100px"-->
+<!--                on:click={()=>gameStore.rollDangerActionDice()}>위험 노출<br/>주사위</button>-->
 
         <button class="game-button action-button" disabled={!$gameStore.canTurn}
                 style="width: 100px"

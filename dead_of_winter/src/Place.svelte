@@ -62,6 +62,7 @@
         {#each currentPlace.survivorLocationList as survivor, index (survivor??index)}
             <div in:deadSurvivorReceive={{key: survivor}}
                  out:deadSurvivorSend={{key: survivor}}
+                 on:introend={() => gameStore.rollDangerActionDice(survivor)}
                  style="background-color: lightgreen; border: 1px solid white">
                 <div class="survivor-position">
                     {#if survivor}
