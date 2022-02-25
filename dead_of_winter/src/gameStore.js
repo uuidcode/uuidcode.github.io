@@ -1071,6 +1071,7 @@ gameStore = {
                 }
 
                 const message = `${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
+                messageList.push(message);
                 gameStore.showMessage(messageList);
 
                 for (let i = 0; i < zombieCount; i++) {
@@ -1084,6 +1085,7 @@ gameStore = {
                             currentEntrance.barricadeCount--;
 
                             const message = `${place.name}에 바리케이트가 제거되었습니다.`;
+                            messageList.push(message);
                             gameStore.showMessage(messageList);
                         } else {
                             currentEntrance.zombieCount--;
