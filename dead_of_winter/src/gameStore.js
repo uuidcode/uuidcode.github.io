@@ -435,6 +435,12 @@ gameStore = {
             gameStore.processTrash(messageList)
             gameStore.processRisk(messageList);
             gameStore.showZombie(messageList)
+
+            update(game => {
+                game.messageList = messageList;
+                return game;
+            });
+
             gameStore.plusRound();
         }
     },
@@ -496,7 +502,8 @@ gameStore = {
                 .flatMap(place => place.survivorList)
                 .forEach(survivor => {
                     survivor.woundList = [...Array(survivor.wound).keys()];
-                })
+                    survivor.playerName = game.playerList[survivor.playerIndex].name;
+                });
         });
 
         game.survivorCount = game.playerList
@@ -1134,7 +1141,6 @@ gameStore = {
                 if (zombieCount > 0) {
                     const message = `${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
                     messageList.push(message);
-                    gameStore.showMessage(messageList);
 
                     for (let i = 0; i < zombieCount; i++) {
                         const currentEntrance = place.entranceList
@@ -1148,7 +1154,6 @@ gameStore = {
 
                                 const message = `${place.name}에 바리케이트가 제거되었습니다.`;
                                 messageList.push(message);
-                                gameStore.showMessage(messageList);
                             } else {
                                 currentEntrance.zombieCount--;
 
@@ -1208,6 +1213,11 @@ gameStore = {
     },
 
     rollActionDice: () => {
+        update(game => {
+            game.messageList = [];
+            return game;
+        });
+
         update(game => {
             const player = gameStore.getCurrentPlayer(game);
 

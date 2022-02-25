@@ -11,7 +11,7 @@ div {
 }
 
 .board-item-section {
-    border: 1px solid darkgray;
+    /*border: 1px solid darkgray;*/
 }
 
 .board-player-section {
@@ -78,7 +78,7 @@ div {
 }
 
 .place-part {
-    border: 1px solid darkgray;
+    /*border: 1px solid darkgray;*/
 }
 
 .place {
@@ -139,8 +139,8 @@ div {
 
 
 .zombie-position {
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     border: 1px solid darkgray;
     text-align: center;
 }
@@ -179,9 +179,11 @@ div {
 
 .place-name {
     background-color: lightblue;
-    flex-grow: 1;
-    line-height: 40px;
     text-align: center;
+    width: 60px;
+    display: table-cell;
+    vertical-align: middle;
+    margin-left: 10px;
 }
 
 .survivor-ability-name {
@@ -202,7 +204,7 @@ div {
     min-height: 50px;
     width: 495px;
     background-color: lightgreen;
-    padding: 2px;
+    padding: 1px;
 }
 
 .survivor {
@@ -216,7 +218,7 @@ div {
 }
 
 .place-header table {
-    margin: 10px;
+    margin: 2px;
     border-spacing: 0;
     border-collapse: collapse;
 }
@@ -307,4 +309,12 @@ div {
 
 .action-dice-button:hover, .action-dice-button:focus {
     background-color: lightcoral;
+}
+
+.game-title {
+    padding:4px;
+    border-radius: 30px;
+    border: 1px solid darkgray;
+    background-color: #cef7c3;
+    color: black
 }

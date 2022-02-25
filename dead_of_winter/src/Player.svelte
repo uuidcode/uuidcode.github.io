@@ -38,8 +38,9 @@
 
 <div class="flex-column player-card-list-section"
      style="background-color: {currentPlayer.index === player.index ? gameStore.getCurrentPlayerColor() : 'white'}">
-    <div style="padding: 10px 5px">
-        {player.name} 아이템 카드 : {player.itemCardList.length}, 생존자 : {player.survivorList.length}
+    <div style="display:flex;flex-direction:column;padding: 10px 5px">
+        <div style="padding:5px 10px;border-radius: 10px;border:1px solid darkgray;text-align: center">{player.name}</div>
+        <div style="margin-top: 5px">아이템 카드 : {player.itemCardList.length}, 생존자 : {player.survivorList.length}</div>
     </div>
     <div>
         {#each itemCardList as itemCard (itemCard)}

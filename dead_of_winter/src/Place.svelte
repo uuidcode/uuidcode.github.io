@@ -4,7 +4,6 @@
     import {foodCrossfade, deadSurvivorCrossfade} from './animation';
     const [foodSend, foodReceive] = foodCrossfade;
     const [deadSurvivorSend, deadSurvivorReceive] = deadSurvivorCrossfade;
-
     export let placeIndex;
 
     const survivorCountPerRow = 4;
@@ -18,6 +17,7 @@
     let dangerDice;
     let selectedItemCardFeature;
     let itemCardList;
+    let deadSurvivorList;
 
     $: {
         currentPlayer = gameStore.getCurrentPlayer();
@@ -28,6 +28,7 @@
         currentPlace = placeList[placeIndex];
         survivorList = currentPlace.survivorList;
         survivorLocationList = currentPlace.survivorLocationList;
+        deadSurvivorList = $gameStore.deadSurvivorList;
     }
 </script>
 
@@ -37,30 +38,74 @@
             <div style="width:1px;height:1px"></div>
         {/each}
     </div>
-    {#if currentPlace.name == '피난기지'}
-        <div class="place-name">{currentPlace.name}, {currentPlace.survivorList.length / 2}개의 식량이 필요합니다.</div>
-    {:else}
-        <div class="place-name">{currentPlace.name}</div>
-    {/if}
-
     <div>
-        <div class="flex"
-             style="justify-content: space-evenly; align-content: flex-start; margin: 10px">
-            {#each currentPlace.entranceList as entrance, entranceIndex}
-                <table class="game-table zombie-line">
-                    <tr>
-                        {#each Array(currentPlace.entranceList[entranceIndex].maxZombieCount) as _, zombieIndex}
-                            <td class="zombie-position">
-                                {#if zombieIndex < currentPlace.entranceList[entranceIndex].zombieCount}
-                                    <div style="width:100%;height:100%;background-color: darkred"></div>
-                                {:else if currentPlace.entranceList[entranceIndex].maxZombieCount - zombieIndex <= currentPlace.entranceList[entranceIndex].barricadeCount}
-                                    <div style="width:100%;height:100%;background-color: lightgray"></div>
-                                {/if}
+        <div style="display: flex">
+                <div style="display: flex">
+                    <table class="game-table">
+                        <tr>
+                            <td class="active">횟수</td>
+                            <td>{$gameStore.turn + 1}</td>
+                            <td class="active">라운드</td>
+                            <td>{$gameStore.round}</td>
+                            <td class="active">사기</td>
+                            <td>{$gameStore.moral}</td>
+                            <td class="active">생존자</td>
+                            <td>{$gameStore.survivorCount}</td>
+                            <td class="active">죽은 생존자</td>
+                            <td>{$gameStore.deadSurvivorCount}
+                                <div style="display: flex;width:50px;flex-wrap: wrap;margin-left: 5px">
+                                    {#each deadSurvivorList as surviror (surviror)}
+                                        <div in:deadSurvivorReceive={{key: surviror}}
+                                             out:deadSurvivorSend={{key: surviror}}>
+                                            <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
+                                        </div>
+                                    {/each}
+                                </div>
                             </td>
-                        {/each}
-                    </tr>
-                </table>
-            {/each}
+                            <td class="active">좀비</td>
+                            <td>{$gameStore.zombieCount}</td>
+                            <td class="active">죽은 좀비</td>
+                            <td>{$gameStore.deadZombieCount}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-left: 20px">
+                        <button class="game-button dice action-button" disabled={!$gameStore.riskCard}
+                                style="height: 30px"
+                                on:click={()=>gameStore.choiceRiskCard()}>
+                            위기상황카드
+                        </button>
+
+                        <button class="game-button dice action-button" disabled={!$gameStore.rollDice}
+                                style="height: 30px"
+                                on:click={()=>gameStore.rollActionDice()}>행동 주사위</button>
+
+                        <button class="game-button action-button" disabled={!$gameStore.canTurn}
+                                style="height: 30px"
+                                on:click={()=>gameStore.turn()}>완료</button>
+                    </div>
+                </div>
+            <div style="display: table;margin-left: 10px">
+            <div class="place-name">{currentPlace.name}</div>
+            </div>
+            <div class="flex"
+                 style="justify-content: space-evenly; align-content: flex-start; margin: 2px">
+                {#each currentPlace.entranceList as entrance, entranceIndex}
+                    <table class="game-table zombie-line">
+                        <tr>
+                            {#each Array(currentPlace.entranceList[entranceIndex].maxZombieCount) as _, zombieIndex}
+                                <td class="zombie-position">
+                                    {#if zombieIndex < currentPlace.entranceList[entranceIndex].zombieCount}
+                                        <div style="width:100%;height:100%;background-color: darkred"></div>
+                                    {:else if currentPlace.entranceList[entranceIndex].maxZombieCount - zombieIndex <= currentPlace.entranceList[entranceIndex].barricadeCount}
+                                        <div style="width:100%;height:100%;background-color: lightgray"></div>
+                                    {/if}
+                                </td>
+                            {/each}
+                        </tr>
+                    </table>
+                {/each}
+            </div>
         </div>
     </div>
     <div class="flex survivor-container">
@@ -75,7 +120,10 @@
                             <tr>
                                 <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
                                     <div style="display:flex">
-                                        <div style=" display: flex;align-items: center;">{survivor.name}</div>
+                                        <div style=" display: flex;align-items: center;">
+                                            <span style="padding:2px 10px;border-radius: 10px;border:1px solid darkgray">{survivor.playerName}</span>
+                                            <div style="display: inline-block;margin-left: 4px">{survivor.name}</div>
+                                        </div>
                                         <table class="game-table" style="margin-left: 5px">
                                             <tr>
                                                 <td>파워</td>
