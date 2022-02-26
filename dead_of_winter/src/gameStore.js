@@ -240,7 +240,7 @@ gameStore = {
         const camp = gameStore.getCamp(game);
 
         if (camp.survivorList.length >= 2) {
-            const foodCount = camp.survivorList.length / 2;
+            const foodCount = Math.floor(camp.survivorList.length / 2);
 
             if (foodCount > camp.foodCount) {
                 let starvingTokenCount = 0;
@@ -925,28 +925,39 @@ gameStore = {
         }
     },
 
-    useAbility: (survivor, currentPlace, actionIndex) => {
-        const currentPlaceName = currentPlace.name;
-        const placeNameList = survivor.ability.placeNameList ?? [];
-        const currentPlayer = gameStore.getCurrentPlayer();
-        survivor.noRollDangerDice = true;
+    setUseAbility: (game, currentSurvivor) => {
+        const targetSurvivor = game.placeList.flatMap(place => place.survivorList)
+            .find(survivor => survivor.index === currentSurvivor.index);
 
-        if (survivor.ability.type === 'killZombie') {
+        targetSurvivor.canUseAbility = false;
+
+        return targetSurvivor;
+    },
+
+    useAbility: (currentSurvivor, currentPlace, actionIndex) => {
+        const currentPlaceName = currentPlace.name;
+        const placeNameList = currentSurvivor.ability.placeNameList ?? [];
+        const currentPlayer = gameStore.getCurrentPlayer();
+        currentSurvivor.noRollDangerDice = true;
+
+        if (currentSurvivor.ability.type === 'killZombie') {
             update(game => {
-                gameStore.killZombieWithGame(game, survivor, currentPlace, actionIndex);
-                survivor.noRollDangerDice = false;
-                survivor.canUseAbility = false;
+                gameStore.killZombieWithGame(game, currentSurvivor, currentPlace, actionIndex);
+                const targetSurvivor = gameStore.setUseAbility(game, currentSurvivor);
+                targetSurvivor.noRollDangerDice = false;
                 return game;
             });
 
             gameStore.updateAll();
-        } else if (survivor.ability.type === 'get') {
+        } else if (currentSurvivor.ability.type === 'get') {
             update(game => {
-                const camp = gameStore.getCamp(game);
-                gameStore.addFood(game, camp, 2);
+                gameStore.searchInternal(game, currentPlace, actionIndex);
+                gameStore.setUseAbility(game, currentSurvivor);
                 return game;
             });
-        } else if (survivor.ability.type === 'plusPower') {
+
+            gameStore.updateAll();
+        } else if (currentSurvivor.ability.type === 'plusPower') {
             if (currentPlayer.actionTable) {
                 const diceCount = currentPlayer.actionDiceList
                     .filter(dice => dice.power <= 5)
@@ -956,25 +967,30 @@ gameStore = {
             }
 
             return false;
-        } else if (survivor.ability.type === 'move') {
+        } else if (currentSurvivor.ability.type === 'move') {
             return get(gameStore).placeList
-                .filter(place => place.name !== survivor.place.name)
+                .filter(place => place.name !== currentSurvivor.place.name)
                 .filter(place => place.maxSurviveCount > place.survivorList.length)
                 .length > 0
-        } else if (survivor.ability.type === 'care') {
+        } else if (currentSurvivor.ability.type === 'care') {
             return currentPlace.survivorList
                 .filter(survivor => survivor.wound > 0)
                 .length > 0;
-        } else if (survivor.ability.type === 'food') {
+        } else if (currentSurvivor.ability.type === 'food') {
+            update(game => {
+                const camp = gameStore.getCamp(game);
+                gameStore.addFood(game, camp, 2);
+                currentSurvivor.canUseAbility = false;
+                return game;
+            });
+        } else if (currentSurvivor.ability.type === 'plusMoral') {
             return true;
-        } else if (survivor.ability.type === 'plusMoral') {
-            return true;
-        } else if (survivor.ability.type === 'rescue') {
+        } else if (currentSurvivor.ability.type === 'rescue') {
             return currentPlace.itemCardList
                 .filter(item => item.name.startsWith("외부인")).length > 0;
-        } else if (survivor.ability.type === 'clean') {
+        } else if (currentSurvivor.ability.type === 'clean') {
             return true;
-        } else if (survivor.ability.type === 'barricade') {
+        } else if (currentSurvivor.ability.type === 'barricade') {
             return currentPlace.maxZombieCount >
                 currentPlace.currentZombieCount + currentPlace.currentBarricadeCount;
         }
@@ -1441,6 +1457,10 @@ gameStore = {
         const currentPlaceName = currentPlace.name;
         const placeNameList = survivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
+
+        if (survivor.canUseAbility === false) {
+            return false;
+        }
 
         if (survivor.ability.type === 'killZombie') {
             if (placeNameList.find(name => name === currentPlaceName)) {
