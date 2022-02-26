@@ -1262,6 +1262,8 @@ gameStore = {
                         .filter(survivor => survivor !== game.currentSurvivor)
                 });
 
+            minusMoral = minusMoral && game.moral > 0;
+
             if (minusMoral === true) {
                 oldMoral = game.moral;
                 game.moral--;
