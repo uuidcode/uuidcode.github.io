@@ -58,7 +58,7 @@
                 <tr>
                     <td colspan="4">{itemCard.description}
                         {#if itemCard.canPreventRisk == true}
-                            <button class="none-action-dice-button"
+                            <button class="card-action-dice-button"
                                     on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
                         {/if}
 

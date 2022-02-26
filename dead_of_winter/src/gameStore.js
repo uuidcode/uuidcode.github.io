@@ -3,6 +3,7 @@ import {writable, get} from "svelte/store";
 import game from "./game"
 import survivorList from "./survivorList";
 import placeList from "./placeList";
+import itemCardList from "./itemCardList";
 
 const { subscribe, set, update } = writable(game);
 
@@ -188,7 +189,7 @@ gameStore = {
         camp.trashList = [];
     },
 
-    move: async (currentSurvivor, placeName) => {
+    move: (currentSurvivor, placeName) => {
         update(game => {
             game.placeList.forEach(place => {
                 if (place.name === placeName) {
@@ -197,12 +198,11 @@ gameStore = {
                     place.survivorList = place.survivorList
                         .filter(survivor => survivor.index !== currentSurvivor.index);
                 }
-            })
+            });
 
             game.currentSurvivor = currentSurvivor;
             game.currentSurvivor.place = game.placeList.find(place => place.name === placeName);
             game.currentPlaceName = placeName;
-            // game.dangerDice= true;
             return game;
         });
 
@@ -1332,6 +1332,42 @@ gameStore = {
 
         if (currentSurvivor === null || survivor == null ||
             currentSurvivor.name !== survivor.name) {
+            return;
+        }
+
+        const saveMoveCount = get(gameStore).currentPlayer.itemCardList
+            .filter(itemCard => itemCard.feature === 'safeMove')
+            .length;
+
+        let rollDangerDice = true;
+
+        if (saveMoveCount > 0) {
+            rollDangerDice = !confirm(`연료 아이템이 ${saveMoveCount}개가 있으며 하나를 사용하여 위험노출 주사위를 굴리지 않고 이동할까요?`);
+        }
+
+        if (!rollDangerDice) {
+            update(game => {
+                let use = false;
+
+                game.playerList
+                    .filter(player => player.index === game.currentPlayer.index)
+                    .forEach(player => {
+                        player.itemCardList = player.itemCardList
+                            .filter(itemCard => {
+                                if (use === false && itemCard.feature === 'safeMove') {
+                                    use = true;
+                                    return false;
+                                }
+
+                                return true;
+                            });
+                    });
+
+                return game;
+            });
+
+            gameStore.updateAll();
+
             return;
         }
 
