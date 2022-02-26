@@ -49,14 +49,16 @@ const itemCardList = [
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '교육',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '가위',
         category: '도구',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '확성기',
