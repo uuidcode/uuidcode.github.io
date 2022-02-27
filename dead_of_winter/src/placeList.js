@@ -96,7 +96,7 @@ const placeList = [
         itemCardList: [
             "잡동사니",
             "대걸레",
-            "손전등",
+            "약",
             "약",
             "약",
             "약",
@@ -167,7 +167,7 @@ const placeList = [
         noiseTokenCount: 0,
         itemCardList: [
             "잡동사니",
-            "라이터",
+            "잡동사니",
             "주머니칼",
             "망치",
             "연료",
