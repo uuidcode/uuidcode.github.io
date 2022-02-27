@@ -9,6 +9,7 @@
     let modalType;
     let modalClass;
     let currentSurvivor;
+    let woundSurvivorList = [];
 
     gameStore.updateAll();
 
@@ -17,6 +18,15 @@
         modalType = $gameStore.modalType;
         modalClass = $gameStore.modalClass;
         currentSurvivor = $gameStore.currentSurvivor;
+
+        if ($gameStore.currentPlace) {
+            woundSurvivorList = $gameStore.currentPlace
+                .survivorList
+                .filter(survivor => survivor.wound > 0);
+        }
+
+        console.log('>>> modalType', modalType);
+        console.log('>>> woundSurvivorList', woundSurvivorList);
     }
 </script>
 
@@ -39,6 +49,17 @@
                         {/each}
                     </div>
                     <div style="display: flex;margin-top: 10px">위험노출 주사위 없이 이동</div>
+                    <div style="display: flex;flex-direction: row-reverse;">
+                        <button>취소</button>
+                    </div>
+                </div>
+            {:else if modalType == 'care'}
+                <div style="display: flex;flex-direction: column">
+                    {#each woundSurvivorList as woundSurvivor}
+                        <div style="display: flex;margin-top: 10px">
+                            <button on:click={()=>gameStore.care(woundSurvivor)}>{woundSurvivor.name} 치료</button>
+                        </div>
+                    {/each}
                     <div style="display: flex;flex-direction: row-reverse;">
                         <button>취소</button>
                     </div>

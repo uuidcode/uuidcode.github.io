@@ -95,11 +95,11 @@ gameStore = {
                 survivorList.push(survivor);
             }
 
-            const testSurvivor = gameStore.getSurvivor(game, 'move');
-
-            if (testSurvivor) {
-                survivorList.push(testSurvivor);
-            }
+            // const testSurvivor = gameStore.getSurvivor(game, 'plusPower');
+            //
+            // if (testSurvivor) {
+            //     survivorList.push(testSurvivor);
+            // }
 
             survivorList.sort((a, b) => a.index - b.index);
 
@@ -201,10 +201,30 @@ gameStore = {
         camp.trashList = [];
     },
 
+    care: (woundSurvivor) => {
+        update(game => {
+            game.currentSurvivor.canUseAbility = false;
+
+            if (game.currentActionIndex >= 0) {
+                game.currentPlayer.actionDiceList[game.currentActionIndex].done = true;
+            }
+
+            woundSurvivor.wound--;
+            game.modalClass = '';
+            game.modalType = '';
+            return game;
+        });
+
+        gameStore.updateAll();
+
+        alert(`${woundSurvivor.name} 부상토큰 하나가 제거되었습니다.`);
+    },
+
     move: (currentSurvivor, placeName) => {
         update(game => {
             game.modalClass = '';
             game.modalType = '';
+            game.actionType = 'move';
             return game;
         });
 
@@ -359,7 +379,7 @@ gameStore = {
                 } else if (action.name === 'zombie') {
                     action.placeList
                         .map(placeName => game.placeList
-                            .filter(place => place.name === placeName))
+                            .find(place => place.name === placeName))
                         .forEach(place => {
                             gameStore.inviteZombie(place, undefined, action.targetCount);
                             messageList.push(`좀비가 ${place.name}에 ${action.targetCount}구 나타났습니다.`);
@@ -464,7 +484,7 @@ gameStore = {
                 return game;
             });
 
-            gameStore.plusRound();
+            gameStore.minusRound();
         }
     },
 
@@ -923,22 +943,26 @@ gameStore = {
         }
     },
 
+    addSurvivor: (game, itemCard) => {
+        alert(`외부인 ${itemCard.targetCount}명을 피난기지에 합류합니다.`);
+
+        for (let i = 0; i < itemCard.targetCount; i++) {
+            const newSurvivor = game.survivorList.pop();
+            newSurvivor.playerIndex = game.currentPlayer.index;
+            newSurvivor.place = gameStore.getCamp(game);
+
+            game.placeList
+                .find(place => place.name === '피난기지')
+                .survivorList
+                .push(newSurvivor);
+        }
+    },
+
     searchInternal: (game, currentPlace, actionIndex) => {
         const newItemCard = currentPlace.itemCardList.pop();
 
         if (newItemCard.category === '외부인') {
-            alert(`외부인 ${newItemCard.targetCount}명을 피난기지에 합류합니다.`);
-
-            for (let i = 0; i < newItemCard.targetCount; i++) {
-                const newSurvivor = game.survivorList.pop();
-                newSurvivor.playerIndex = game.currentPlayer.index;
-                newSurvivor.place = gameStore.getCamp(game);
-
-                game.placeList
-                    .find(place => place.name === '피난기지')
-                    .survivorList
-                    .push(newSurvivor);
-            }
+            gameStore.addSurvivor(game, newItemCard);
         } else {
             game.currentPlayer.itemCardList = [newItemCard, ...game.currentPlayer.itemCardList];
         }
@@ -958,6 +982,8 @@ gameStore = {
     },
 
     useAbility: (currentSurvivor, currentPlace, actionIndex) => {
+        console.log('>>> currentSurvivor.ability.type', currentSurvivor.ability.type);
+
         const currentPlaceName = currentPlace.name;
         const placeNameList = currentSurvivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
@@ -981,6 +1007,11 @@ gameStore = {
 
             gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'plusPower') {
+            update(game => {
+                currentSurvivor.canUseAbility = false;
+                return game;
+            });
+
             gameStore.plusPower(currentSurvivor, currentPlace, actionIndex);
         } else if (currentSurvivor.ability.type === 'move') {
             update(game => {
@@ -995,7 +1026,11 @@ gameStore = {
             gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'care') {
             update(game => {
-                game.currentSurvivor.wound--;
+                game.currentSurvivor = currentSurvivor;
+                game.currentPlace = currentPlace;
+                game.modalClass = 'show';
+                game.modalType = 'care';
+                game.currentActionIndex = actionIndex;
                 return game;
             });
 
@@ -1005,18 +1040,70 @@ gameStore = {
                 const camp = gameStore.getCamp(game);
                 gameStore.addFood(game, camp, 2);
                 currentSurvivor.canUseAbility = false;
+                game.currentPlayer.actionDiceList[actionIndex].done = true;
                 return game;
             });
+
+            gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'plusMoral') {
-            return true;
+            update(game => {
+                game.currentSurvivor = currentSurvivor;
+                currentSurvivor.canUseAbility = false;
+                game.currentPlayer.actionDiceList[actionIndex].done = true;
+                return game;
+            });
+
+            gameStore.dead(false, undefined, currentPlace);
+            gameStore.plusMoral();
+            gameStore.updateAll();
+
+            alert('사기가 상승하였습니다.');
         } else if (currentSurvivor.ability.type === 'rescue') {
-            return currentPlace.itemCardList
-                .filter(item => item.name.startsWith("외부인")).length > 0;
+            update(game => {
+                const targetPlace = game.placeList
+                    .find(place => place.name === currentPlace.name);
+
+                let rescued = false;
+                let rescueItemCard = null;
+
+                targetPlace.itemCardList =
+                    targetPlace.itemCardList
+                        .filter(itemCard => {
+                            if (rescued === false && itemCard.category === '외부인') {
+                                rescueItemCard = itemCard;
+                                rescued = true;
+                                return false;
+                            }
+
+                            return true;
+                        });
+
+                gameStore.addSurvivor(game, rescueItemCard)
+                game.currentSurvivor = currentSurvivor;
+                currentSurvivor.canUseAbility = false;
+                game.currentPlayer.actionDiceList[actionIndex].done = true;
+                return game;
+            });
+
+            gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'clean') {
-            return true;
+            update(game => {
+                game.currentSurvivor = currentSurvivor;
+                game.currentSurvivor.canUseAbility = false;
+                return game;
+            });
+
+            gameStore.clean(5, actionIndex);
         } else if (currentSurvivor.ability.type === 'barricade') {
-            return currentPlace.maxZombieCount >
-                currentPlace.currentZombieCount + currentPlace.currentBarricadeCount;
+            update(game => {
+                game.currentSurvivor = currentSurvivor;
+                game.currentSurvivor.canUseAbility = false;
+                return game;
+            });
+
+            for (let i = 0; i < 2; i++) {
+                gameStore.createBarricade(currentPlace, actionIndex);
+            }
         }
     },
 
@@ -1086,6 +1173,11 @@ gameStore = {
     },
 
     attack: (currentSurvivor, currentPlace, actionIndex) => {
+        update(game => {
+            gameStore.actionType = 'attack';
+            return game;
+        });
+
         update(game => {
             gameStore.killZombieWithGame(game, currentSurvivor, currentPlace, actionIndex);
             return game;
@@ -1370,6 +1462,10 @@ gameStore = {
     },
 
     rollDangerActionDice: (survivor) => {
+        if(get(gameStore).actionType !== 'move') {
+            return;
+        }
+
         const currentSurvivor = get(gameStore).currentSurvivor;
 
         if (currentSurvivor === null || survivor == null ||

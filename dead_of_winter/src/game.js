@@ -6,7 +6,8 @@ import riskCardList from "./riskCardList";
 const game = {
     modalClass: '',
     modalType: '',
-    currentActionIndex: 0,
+    actionType: '',
+    currentActionIndex: -1,
     goal: '좀비 20구를 잡아라',
     messageList: [],
     campFoodIndex: 0,
