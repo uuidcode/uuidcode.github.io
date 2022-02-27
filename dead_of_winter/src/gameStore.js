@@ -546,6 +546,7 @@ gameStore = {
                 .forEach(survivor => {
                     survivor.woundList = [...Array(survivor.wound).keys()];
                     survivor.playerName = game.playerList[survivor.playerIndex].name;
+                    survivor.noRollDangerDice = false;
                 });
         });
 
@@ -726,7 +727,7 @@ gameStore = {
             const searchItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'search')
                 .filter(itemCard => currentPlace.itemCardList.length > 0)
-                .filter(itemCard => itemCard.placeList.filter(placeName => placeName === currentPlace.name).length > 0);
+                .filter(itemCard => itemCard.placeNameList.filter(placeName => placeName === currentPlace.name).length > 0);
 
             const careItemList =  currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'care')
