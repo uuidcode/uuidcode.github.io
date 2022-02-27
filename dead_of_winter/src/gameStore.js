@@ -1213,7 +1213,7 @@ gameStore = {
 
             if (actionIndex !== undefined) {
                 game.currentSurvivor = currentSurvivor;
-                gameStore.rollDangerActionDice(currentSurvivor);
+                gameStore.rollDangerActionDice(currentSurvivor, true);
             }
         }
     },
@@ -1462,11 +1462,7 @@ gameStore = {
         });
     },
 
-    rollDangerActionDice: (survivor) => {
-        if(get(gameStore).actionType !== 'move') {
-            return;
-        }
-
+    rollDangerActionDice: (survivor, killZombie) => {
         const currentSurvivor = get(gameStore).currentSurvivor;
 
         if (currentSurvivor === null || survivor == null ||
@@ -1493,7 +1489,7 @@ gameStore = {
 
         let rollDangerDice = true;
 
-        if (saveMoveCount > 0) {
+        if (killZombie === undefined && saveMoveCount > 0) {
             rollDangerDice = !confirm(`연료 아이템이 ${saveMoveCount}개가 있으며 하나를 사용하여 위험노출 주사위를 굴리지 않고 이동할까요?`);
         }
 
