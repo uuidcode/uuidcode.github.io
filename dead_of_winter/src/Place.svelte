@@ -209,7 +209,8 @@
                                                     <td><button
                                                             class="action-dice-button"
                                                             disabled={!action.ability}
-                                                            on:click={() => gameStore.useAbility(survivor, currentPlace, actionIndex)}>능력</button></td>
+                                                            on:click={() => gameStore.useAbility(survivor, currentPlace, actionIndex)}>
+                                                        능력</button></td>
                                                     <td>
                                                         <button
                                                             class="action-dice-button"

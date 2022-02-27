@@ -76,6 +76,12 @@ gameStore = {
             .color;
     },
 
+    getSurvivor: (game, type) => {
+        const survivor = game.survivorList.find(survivor => survivor.ability.type === type);
+        game.survivorList = game.survivorList.filter(survivor => survivor.ability.type !== type);
+        return survivor;
+    },
+
     initSurvivor: function (game) {
         game.playerList.forEach((player, playerIndex) => {
             game.survivorList
@@ -87,6 +93,12 @@ gameStore = {
                 const survivor = game.survivorList.pop();
                 survivor.playerIndex = playerIndex;
                 survivorList.push(survivor);
+            }
+
+            const testSurvivor = gameStore.getSurvivor(game, 'move');
+
+            if (testSurvivor) {
+                survivorList.push(testSurvivor);
             }
 
             survivorList.sort((a, b) => a.index - b.index);
@@ -191,6 +203,12 @@ gameStore = {
 
     move: (currentSurvivor, placeName) => {
         update(game => {
+            game.modalClass = '';
+            game.modalType = '';
+            return game;
+        });
+
+        update(game => {
             game.placeList.forEach(place => {
                 if (place.name === placeName) {
                     place.survivorList = [...place.survivorList, currentSurvivor];
@@ -203,6 +221,11 @@ gameStore = {
             game.currentSurvivor = currentSurvivor;
             game.currentSurvivor.place = game.placeList.find(place => place.name === placeName);
             game.currentPlaceName = placeName;
+
+            if (game.currentActionIndex >= 0) {
+                game.currentPlayer.actionDiceList[game.currentActionIndex].done = true;
+            }
+
             return game;
         });
 
@@ -958,24 +981,25 @@ gameStore = {
 
             gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'plusPower') {
-            if (currentPlayer.actionTable) {
-                const diceCount = currentPlayer.actionDiceList
-                    .filter(dice => dice.power <= 5)
-                    .filter(dice => dice.done === false).length;
-
-                return true;
-            }
-
-            return false;
+            gameStore.plusPower(currentSurvivor, currentPlace, actionIndex);
         } else if (currentSurvivor.ability.type === 'move') {
-            return get(gameStore).placeList
-                .filter(place => place.name !== currentSurvivor.place.name)
-                .filter(place => place.maxSurviveCount > place.survivorList.length)
-                .length > 0
+            update(game => {
+                game.modalClass = 'show';
+                game.modalType = 'move';
+                game.currentSurvivor = currentSurvivor;
+                game.currentActionIndex = actionIndex;
+                currentSurvivor.canUseAbility = false;
+                return game;
+            });
+
+            gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'care') {
-            return currentPlace.survivorList
-                .filter(survivor => survivor.wound > 0)
-                .length > 0;
+            update(game => {
+                game.currentSurvivor.wound--;
+                return game;
+            });
+
+            gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'food') {
             update(game => {
                 const camp = gameStore.getCamp(game);
@@ -1346,10 +1370,23 @@ gameStore = {
     },
 
     rollDangerActionDice: (survivor) => {
-        let currentSurvivor = get(gameStore).currentSurvivor;
+        const currentSurvivor = get(gameStore).currentSurvivor;
 
         if (currentSurvivor === null || survivor == null ||
             currentSurvivor.name !== survivor.name) {
+            return;
+        }
+
+        const currentActionIndex = get(gameStore).currentActionIndex;
+
+        console.log('>>> currentActionIndex', currentActionIndex);
+
+        if (currentActionIndex >= 0) {
+            update(game => {
+                game.currentActionIndex = -1;
+                return game;
+            });
+
             return;
         }
 
@@ -1488,7 +1525,7 @@ gameStore = {
         } else if (survivor.ability.type === 'move') {
             return get(gameStore).placeList
                 .filter(place => place.name !== survivor.place.name)
-                .filter(place => place.maxSurviveCount > place.survivorList.length)
+                .filter(place => place.maxSurvivorCount > place.survivorList.length)
                 .length > 0
         } else if (survivor.ability.type === 'care') {
             return currentPlace.survivorList
