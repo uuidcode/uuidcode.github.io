@@ -113,7 +113,7 @@
             <div in:deadSurvivorReceive={{key: survivor}}
                  out:deadSurvivorSend={{key: survivor}}
                  on:introend={() => gameStore.rollDangerActionDice(survivor)}
-                 style="background-color: lightgreen; border: 1px solid white">
+                 style="border: 1px solid lightgreen">
                 <div class="survivor-position">
                     {#if survivor}
                         <table class="game-table" style="width: 100%">

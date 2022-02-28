@@ -38,6 +38,14 @@ const itemCardList = [
         targetCount: 2
     },
     {
+        name: '식량3',
+        description: "식량창고에 식량토큰을 세개를 추가합니다.",
+        category: '식량',
+        type: 'execute',
+        feature: 'food',
+        targetCount: 3
+    },
+    {
         name: '바리게이트',
         description: "바리게이트를 설치합니다.",
         category: '교육',

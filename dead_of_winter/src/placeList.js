@@ -242,8 +242,8 @@ const placeList = [
             "산탄총",
             "주머니칼",
             "주머니칼",
-            "라이터",
-            "라이터",
+            "바리게이트",
+            "잡동사니",
             "약",
             "약",
             "약",
@@ -272,6 +272,7 @@ placeList.forEach((place, index) => {
     place.currentZombieCount = 0;
     place.currentBarricadeCount = 0;
     place.maxZombieCount = 0;
+    place.currentZombieList = [];
 
     if (index === 0) {
         place.activeClassName = 'active';

@@ -10,6 +10,7 @@ const game = {
     currentActionIndex: -1,
     goal: '좀비 20구를 잡아라',
     messageList: [],
+    zombieIndex: 0,
     campFoodIndex: 0,
     campTrashIndex: 0,
     selectedItemCardFeature: null,

@@ -144,6 +144,12 @@ gameStore = {
                 .map(entrance => entrance.zombieCount)
                 .reduce((a, b) => a + b, 0);
 
+            place.currentZombieList = [];
+
+            for (let i = 0; i < place.currentZombieCount; i++) {
+                place.currentZombieList.push(game.zombieIndex++);
+            }
+
             place.maxZombieCount = place.entranceList
                 .map(entrance => entrance.maxZombieCount)
                 .reduce((a, b) => a + b, 0);
@@ -340,7 +346,7 @@ gameStore = {
             return;
         }
 
-        const minusMoral = camp.trashList.length / 10;
+        const minusMoral = Math.floor(camp.trashList.length / 10);
         messageList.push(`쓰레기가 ${camp.trashList.length}에서 ${camp.trashList.length - (minusMoral * 10)}로 줄어들었으며 사기는 ${minusMoral} 하락합니다.`);
         gameStore.showMessage(messageList);
 
@@ -382,7 +388,7 @@ gameStore = {
                             .find(place => place.name === placeName))
                         .forEach(place => {
                             gameStore.inviteZombie(place, undefined, action.targetCount);
-                            messageList.push(`좀비가 ${place.name}에 ${action.targetCount}구 나타났습니다.`);
+                            messageList.push(`좀비가 ${place.name}에 ${action.targetCount}구 출몰하였습니다.`);
                             gameStore.showMessage(messageList);
                         });
                 } else if (action.name === 'wound') {
@@ -434,13 +440,6 @@ gameStore = {
             messageList.push('위기상황을 해결하였습니다.');
             gameStore.showMessage(messageList);
         }
-
-        update(game => {
-            game.successRiskCardList = [];
-            return game;
-        });
-
-        gameStore.updateAll();
     },
 
     turn: () => {
@@ -480,6 +479,8 @@ gameStore = {
             gameStore.showZombie(messageList)
 
             update(game => {
+                game.riskCard = true;
+                game.rollDice = false;
                 game.messageList = messageList;
                 return game;
             });
@@ -1263,6 +1264,8 @@ gameStore = {
     },
 
     showZombie: (messageList) => {
+        let showZombieCount = 0;
+
         update(game => {
             game.placeList.forEach(place => {
                 let zombieCount = place.survivorList.length;
@@ -1272,7 +1275,12 @@ gameStore = {
                 }
 
                 if (zombieCount > 0) {
-                    const message = `${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
+                    if (showZombieCount === 0) {
+                        messageList.push('라운드가 종료될때 마다 좀비가 타나납니다.');
+                        showZombieCount++;
+                    }
+
+                    const message = `좀비가 ${place.name}에 ${zombieCount}구가 출몰하였습니다.`;
                     messageList.push(message);
 
                     for (let i = 0; i < zombieCount; i++) {
@@ -1330,6 +1338,7 @@ gameStore = {
 
     choiceRiskCard: () => {
         update(game => {
+            game.successRiskCardList = [];
             game.currentRiskCard = game.riskCardList.pop();
             game.riskCardList = [...game.riskCardList, game.currentRiskCard];
 

@@ -67,7 +67,15 @@
                         </tr>
                         <tr>
                             <td>좀비수</td>
-                            <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
+                            <td>{place.currentZombieCount}/{place.maxZombieCount}
+                                <div>
+                                    <div style="display: flex;width:50px;flex-wrap: wrap">
+                                        {#each place.currentZombieList as zombie (zombie)}
+                                            <div animate:flip style="width: 10px;height:10px;background-color:lightsalmon;border:1px solid red"></div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </td>
                             <td>바리케이트수</td>
                             <td>{place.currentBarricadeCount}/{place.maxZombieCount}</td>
                         </tr>
@@ -124,7 +132,15 @@
                         </tr>
                         <tr>
                             <td>좀비수</td>
-                            <td>{place.currentZombieCount}/{place.maxZombieCount}</td>
+                            <td>{place.currentZombieCount}/{place.maxZombieCount}
+                                <div>
+                                    <div style="display: flex;width:50px;flex-wrap: wrap">
+                                        {#each place.currentZombieList as zombie (zombie)}
+                                            <div animate:flip style="width: 10px;height:10px;background-color:lightsalmon;border:1px solid red"></div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
                             <td>바리케이트수</td>
