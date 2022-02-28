@@ -646,7 +646,7 @@ gameStore = {
             .reduce((a, b) => a + b, 0);
 
         if (game.survivorCount === 0) {
-            alert('실패');
+            alert('생존자가 모두 죽었습니다. 실패하였습니다.');
         }
     },
 
@@ -841,13 +841,20 @@ gameStore = {
     },
 
     check: (game) => {
-        if (game.moral === 0 || game.round === 0) {
-            alert('실패');
+        if (game.moral === 0) {
+            alert('사기가 0입니다. 실패하였습니다.');
+            return;
+        }
+
+        if (game.round === 0) {
+            alert('라운드가 0입니다. 실패하였습니다.');
+            return;
         }
 
         game.playerList.forEach(player => {
             if (player.survivorList.length === 0) {
-                alert('실패');
+                alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
+                return;
             }
         });
     },
