@@ -854,9 +854,13 @@ gameStore = {
         game.playerList.forEach(player => {
             if (player.survivorList.length === 0) {
                 alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
-                return;
+                break;
             }
         });
+
+        if (game.deadZombieCount === 20) {
+            alert('목표를 완수하였습니다.');
+        }
     },
 
     updateAll: () => update(game => {
@@ -1210,10 +1214,6 @@ gameStore = {
             currentEntrance.zombieCount--;
             currentPlace.currentZombieCount--;
             game.deadZombieCount++;
-
-            if (game.deadZombieCount === 20) {
-                alert('목표를 완수하였습니다.');
-            }
 
             if (currentSurvivor.noRollDangerDice === true) {
                 return;
