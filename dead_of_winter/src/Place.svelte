@@ -226,7 +226,7 @@
                                                     </td>
                                                     <td><button
                                                             class="action-dice-button"
-                                                            on:click={() => gameStore.clean(actionIndex, 3)}
+                                                            on:click={() => gameStore.clean(3, actionIndex)}
                                                             disabled={!action.clean}>청소</button></td>
 
                                                 </tr>

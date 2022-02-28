@@ -854,7 +854,6 @@ gameStore = {
         game.playerList.forEach(player => {
             if (player.survivorList.length === 0) {
                 alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
-                break;
             }
         });
 
