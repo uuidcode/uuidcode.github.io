@@ -102,7 +102,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        placeList: ['학교']
+        placeNameList: ['학교']
     },
     {
         name: '경찰서 청사진',
@@ -110,7 +110,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        placeList: ['경찰서']
+        placeNameList: ['경찰서']
     },
     {
         name: '주유소 청사진',
@@ -118,7 +118,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        placeList: ['주유소']
+        placeNameList: ['주유소']
     },
     {
         name: '마트 청사진',
@@ -126,7 +126,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        placeList: ['마트']
+        placeNameList: ['마트']
     },
     {
         name: '병원 청사진',
@@ -134,7 +134,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        placeList: ['병원']
+        placeNameList: ['병원']
     },
     {
         name: '도서관 청사진',
@@ -142,7 +142,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        placeList: ['도서관']
+        placeNameList: ['도서관']
     },
     {
         name: '생존 요리법',
@@ -272,7 +272,7 @@ const itemCardList = [
     //     category: '도구',
     //     type: 'execute',
     //     feature: 'search',
-    //     placeList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
+    //     placeNameList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
     // }
 ];
 

@@ -536,11 +536,15 @@ gameStore = {
         return game;
     }),
 
+    getPlayerSurvivorList: (game, player) => {
+        return game.placeList
+            .flatMap(place => place.survivorList)
+            .filter(survivor => survivor.playerIndex === player.index);
+    },
+
     updateSurvivor: game => {
         game.playerList.forEach(player => {
-            player.survivorList = game.placeList
-                .flatMap(place => place.survivorList)
-                .filter(survivor => survivor.playerIndex === player.index);
+            player.survivorList = gameStore.getPlayerSurvivorList(game, player);
 
             game.placeList
                 .flatMap(place => place.survivorList)
@@ -852,7 +856,7 @@ gameStore = {
         }
 
         game.playerList.forEach(player => {
-            if (player.survivorList.length === 0) {
+            if (gameStore.getPlayerSurvivorList(game, player).length === 0) {
                 alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
                 return false;
             }
