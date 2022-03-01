@@ -52,7 +52,7 @@
         </div>
     </div>
 
-    <div class="flex" style="padding: 3px;justify-content: space-evenly">
+    <div class="flex" style="padding: 10px;justify-content: space-evenly">
         {#each placeList as place, placeIndex}
             <div class="flex place-header {gameStore.getPlaceClassName(place)}" on:click={gameStore.changePlaceByName(place.name)}>
                 {#if place.name == '피난기지'}

@@ -202,9 +202,11 @@ div {
 
 .survivor-position {
     min-height: 50px;
-    width: 495px;
+    width: 480px;
     background-color: #edffed;
     padding: 1px;
+    margin: 5px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 .survivor {
@@ -224,6 +226,7 @@ div {
 }
 
 .place-container {
+    margin-top: 10px;
     width: 1500px;
     border: 1px solid darkgray;
 }
@@ -263,8 +266,7 @@ div {
 }
 
 .current-place {
-    border: 3px solid lightblue;
-    box-shadow: rgb(0 0 0 / 10%) 0 4px 6px, rgb(0 0 0 / 15%) 0 8px 30px, rgb(255 255 255 / 20%) 0 0 0 1px inset;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 .box {
@@ -344,5 +346,12 @@ div {
     background-color: rgb(255, 255, 255);
     border-radius: 10px;
     box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
-    transform: translateX(-50%) translateY(-50%); }
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.game-info {
+    width: 30px;
+    text-align: center;
+    font-weight: bolder;
+}
 

@@ -44,15 +44,15 @@
                     <table class="game-table">
                         <tr>
                             <td class="active">횟수</td>
-                            <td>{$gameStore.turn + 1}</td>
+                            <td class="game-info">{$gameStore.turn + 1}</td>
                             <td class="active">라운드</td>
-                            <td>{$gameStore.round}</td>
+                            <td class="game-info">{$gameStore.round}</td>
                             <td class="active">사기</td>
-                            <td>{$gameStore.moral}</td>
+                            <td class="game-info">{$gameStore.moral}</td>
                             <td class="active">생존자</td>
-                            <td>{$gameStore.survivorCount}</td>
+                            <td class="game-info">{$gameStore.survivorCount}</td>
                             <td class="active">죽은 생존자</td>
-                            <td>{$gameStore.deadSurvivorCount}
+                            <td class="game-info>{$gameStore.deadSurvivorCount}
                                 <div style="display: flex;width:50px;flex-wrap: wrap;margin-left: 5px">
                                     {#each deadSurvivorList as surviror (surviror)}
                                         <div in:deadSurvivorReceive={{key: surviror}}
@@ -63,9 +63,9 @@
                                 </div>
                             </td>
                             <td class="active">좀비</td>
-                            <td>{$gameStore.zombieCount}</td>
+                            <td class="game-info">{$gameStore.zombieCount}</td>
                             <td class="active">죽은 좀비</td>
-                            <td>{$gameStore.deadZombieCount}</td>
+                            <td class="game-info">{$gameStore.deadZombieCount}</td>
                         </tr>
                     </table>
 
