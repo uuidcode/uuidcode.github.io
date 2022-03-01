@@ -42,13 +42,13 @@
         <div style="padding:5px 10px;border-radius: 10px;border:1px solid darkgray;text-align: center">{player.name}</div>
         <div style="margin-top: 5px">아이템 카드 : {player.itemCardList.length}, 생존자 : {player.survivorList.length}</div>
     </div>
-    <div>
+    <div style="height:100vh">
         {#each itemCardList as itemCard (itemCard)}
             <table class="game-table box"
                    animate:flip
                    in:receive={{key: itemCard}}
                    out:send={{key: itemCard}}
-                   style="width: 100%; margin: 0 0 4px 0;">
+                   style="width: 190px;margin: 5px">
                 <tr>
                     <td class="active">이름</td>
                     <td class="active">{itemCard.name}</td>

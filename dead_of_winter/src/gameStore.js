@@ -843,27 +843,36 @@ gameStore = {
     check: (game) => {
         if (game.moral === 0) {
             alert('사기가 0입니다. 실패하였습니다.');
-            return;
+            return false;
         }
 
         if (game.round === 0) {
             alert('라운드가 0입니다. 실패하였습니다.');
-            return;
+            return false;
         }
 
         game.playerList.forEach(player => {
             if (player.survivorList.length === 0) {
                 alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
+                return false;
             }
         });
 
         if (game.deadZombieCount === 20) {
             alert('목표를 완수하였습니다.');
+            return false;
         }
+
+        return true
     },
 
     updateAll: () => update(game => {
-        gameStore.check(game);
+        const ok = gameStore.check(game);
+
+        if (!ok) {
+            return game;
+        }
+
         game.currentPlayer = game.playerList[game.turn % 2];
         gameStore.updateSurvivorCount(game);
         gameStore.updateItemCardTable(game);

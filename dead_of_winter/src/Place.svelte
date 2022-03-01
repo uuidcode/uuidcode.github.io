@@ -52,8 +52,8 @@
                             <td class="active">생존자</td>
                             <td class="game-info">{$gameStore.survivorCount}</td>
                             <td class="active">죽은 생존자</td>
-                            <td class="game-info>{$gameStore.deadSurvivorCount}
-                                <div style="display: flex;width:50px;flex-wrap: wrap;margin-left: 5px">
+                            <td class="game-info">{$gameStore.deadSurvivorCount}
+                                <div style="display:flex; width:50px; flex-wrap: wrap; margin-left: 5px">
                                     {#each deadSurvivorList as surviror (surviror)}
                                         <div in:deadSurvivorReceive={{key: surviror}}
                                              out:deadSurvivorSend={{key: surviror}}>
