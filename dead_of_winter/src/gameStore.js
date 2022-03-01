@@ -1341,8 +1341,8 @@ gameStore = {
                 }
             }
 
-            if (actionIndex) {
-                game.currentPlayer.actionDiceList[actionIndex].done = true;
+            if (actionIndex !== undefined) {
+                game.playerList[game.turn % 2].actionDiceList[actionIndex].done = true;
             }
 
             return game;
