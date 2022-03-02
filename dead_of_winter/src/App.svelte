@@ -3,50 +3,74 @@
     import Player from "./Player.svelte";
     import Place from "./Place.svelte";
     import Action from "./Action.svelte";
+    import PlaceList from "./PlaceList.svelte";
 
     let placeList;
+    let modalType;
+    let modalClass;
+    let currentSurvivor;
+    let woundSurvivorList = [];
 
     gameStore.updateAll();
 
     $: {
         placeList = $gameStore.placeList;
+        modalType = $gameStore.modalType;
+        modalClass = $gameStore.modalClass;
+        currentSurvivor = $gameStore.currentSurvivor;
+
+        if ($gameStore.currentPlace) {
+            woundSurvivorList = $gameStore.currentPlace
+                .survivorList
+                .filter(survivor => survivor.wound > 0);
+        }
+
+        console.log('>>> modalType', modalType);
+        console.log('>>> woundSurvivorList', woundSurvivorList);
     }
 </script>
-<table cellspacing="0" cellpadding="0">
-    <tr>
-        <td width="520" valign="top" rowspan="2"
-            style="background-color: {gameStore.getPlayerColor(0)}"><Player playerIndex="0"></Player></td>
-        <td width="800">
-           <Action></Action>
-        </td>
-        <td width="520" valign="top" rowspan="2"
-            style="background-color: {gameStore.getPlayerColor(1)}"><Player playerIndex="1"></Player></td>
-    </tr>
-    <tr>
-        <td width="800">
-            <table width="800" cellspacing="0" class="game-info">
-                <tr>
-                    <td class="active" width="100">라운드</td>
-                    <td width="100">{$gameStore.round}</td>
-                    <td class="active" width="100">사기</td>
-                    <td width="100">{$gameStore.moral}</td>
-                    <td class="active" width="100">생존자</td>
-                    <td width="100">{$gameStore.survivorCount}</td>
-                    <td class="active" width="100">좀비</td>
-                    <td width="100">{$gameStore.zombieCount}</td>
-                    <td class="active" width="100">아이템</td>
-                    <td width="100">{$gameStore.itemCardCount}</td>
-                </tr>
-                <tr>
-                    <td colspan="10">
-                        <table>
-                            {#each placeList as place, i}
-                                <Place placeIndex={i}></Place>
-                            {/each}
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+
+<svelte:window on:keydown={gameStore.changePlace}/>
+
+<div class="modal {modalClass}">
+    <div class="modal_body">
+        {#if currentSurvivor != null}
+            {#if modalType == 'move'}
+                <div style="display: flex;flex-direction: column">
+                    <div style="display: flex;margin-top: 10px">
+                        <strong>{currentSurvivor.name}</strong>
+                    </div>
+                    <div style="display: flex;margin-top: 10px">
+                        {#each currentSurvivor.targetPlaceList as place}
+                            <button class="none-action-dice-button"
+                                    disabled={place.disabled}
+                                    style="margin-right: 5px"
+                                    on:click={gameStore.move(currentSurvivor, place.name)}>{place.name}</button>
+                        {/each}
+                    </div>
+                    <div style="display: flex;margin-top: 10px">위험노출 주사위 없이 이동</div>
+                    <div style="display: flex;flex-direction: row-reverse;">
+                        <button>취소</button>
+                    </div>
+                </div>
+            {:else if modalType == 'care'}
+                <div style="display: flex;flex-direction: column">
+                    {#each woundSurvivorList as woundSurvivor}
+                        <div style="display: flex;margin-top: 10px">
+                            <button on:click={()=>gameStore.care(woundSurvivor)}>{woundSurvivor.name} 치료</button>
+                        </div>
+                    {/each}
+                    <div style="display: flex;flex-direction: row-reverse;">
+                        <button>취소</button>
+                    </div>
+                </div>
+            {/if}
+        {/if}
+    </div>
+</div>
+
+<div class="board flex">
+    <div class="board-item-section board-player-section"><Player playerIndex={0}></Player></div>
+    <div class="board-item-section board-content-section"><PlaceList></PlaceList></div>
+    <div class="board-item-section board-player-section"><Player playerIndex={1}></Player></div>
+</div>

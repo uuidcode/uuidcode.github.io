@@ -3,18 +3,22 @@ const itemCardList = [
         name: '약',
         description: "부상 토큰을 하나 제거합니다.",
         category: '약',
-        type: 'execute'
+        type: 'execute',
+        feature: 'care',
+        targetCount: 1
     },
     {
         name: '주사기',
         description: "부상 토큰을 두개를 제거합니다.",
         category: '약',
-        type: 'execute'
+        type: 'execute',
+        feature: 'care',
+        targetCount: 2
     },
     {
         name: '야구방망이',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴립니다.",
-        category: '잡동사니',
+        category: '도구',
         type: 'execute'
     },
     {
@@ -22,7 +26,7 @@ const itemCardList = [
         description: "식량창고에 식량토큰을 하나를 추가합니다.",
         category: '식량',
         type: 'execute',
-        feature: 'food1',
+        feature: 'food',
         targetCount: 1
     },
     {
@@ -30,7 +34,16 @@ const itemCardList = [
         description: "식량창고에 식량토큰을 두개를 추가합니다.",
         category: '식량',
         type: 'execute',
+        feature: 'food',
         targetCount: 2
+    },
+    {
+        name: '식량3',
+        description: "식량창고에 식량토큰을 세개를 추가합니다.",
+        category: '식량',
+        type: 'execute',
+        feature: 'food',
+        targetCount: 3
     },
     {
         name: '바리게이트',
@@ -40,25 +53,20 @@ const itemCardList = [
         feature: 'barricade'
     },
     {
-        name: '리더십',
-        category: '교육',
-        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
-        type: 'execute',
-        feature: 'power'
-    },
-    {
         name: '격투기',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '교육',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '가위',
         category: '도구',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '확성기',
@@ -94,7 +102,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '학교'
+        placeNameList: ['학교']
     },
     {
         name: '경찰서 청사진',
@@ -102,7 +110,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '경찰서'
+        placeNameList: ['경찰서']
     },
     {
         name: '주유소 청사진',
@@ -110,7 +118,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '주유소'
+        placeNameList: ['주유소']
     },
     {
         name: '마트 청사진',
@@ -118,7 +126,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '마트'
+        placeNameList: ['마트']
     },
     {
         name: '병원 청사진',
@@ -126,7 +134,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '병원'
+        placeNameList: ['병원']
     },
     {
         name: '도서관 청사진',
@@ -134,7 +142,7 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'search',
-        place: '도서관'
+        placeNameList: ['도서관']
     },
     {
         name: '생존 요리법',
@@ -142,21 +150,29 @@ const itemCardList = [
         category: '교육',
         type: 'execute',
         feature: 'food',
-        place: '피난기지'
+        place: '피난기지',
+        targetCount: 1
+    },
+    {
+        name: '리더십',
+        category: '교육',
+        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
+        type: 'execute',
+        feature: 'power'
     },
     {
         name: '잡동사니',
-        description: "미사용 행동 주사위 하나를 다시 굴립니다.",
+        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
         category: '도구',
         type: 'execute',
-        feature: 'act'
+        feature: 'power'
     },
     {
         name: '백과사전',
-        description: "미사용 행동 주사위 하나를 다시 굴립니다.",
+        description: "미사용 행동 주사위의 결과값을 1 증가시킵니다.",
         category: '교육',
         type: 'execute',
-        feature: 'act'
+        feature: 'power'
     },
     {
         name: '연료',
@@ -170,56 +186,63 @@ const itemCardList = [
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴립니다.",
         category: '도구',
         type: 'execute',
-        feature: 'hardAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '무전기',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '도구',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '산탄총',
-        description: "좀비를 2구를 제거합니다. 위험 노출 주사를 한번 굴립니다.",
+        description: "좀비를 2구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'hardAttack2'
+        feature: 'attack',
+        targetCount: 2
     },
     {
         name: '소총',
         description: "좀비를 2구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack2'
+        feature: 'attack',
+        targetCount: 2
     },
     {
         name: '권총',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '주머니칼',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '무기',
         type: 'execute',
-        feature: 'softAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
-    {
-        name: '라이터',
-        description: "연료카드도 같이 사용해서 좀비를 4구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
-        category: '무기',
-        type: 'execute',
-        feature: 'attackWithFuel'
-    },
+    // {
+    //     name: '라이터',
+    //     description: "연료카드도 같이 사용해서 좀비를 4구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
+    //     category: '무기',
+    //     type: 'execute',
+    //     feature: 'attackWithFuel'
+    // },
     {
         name: '야시경',
         description: "좀비를 1구를 제거합니다. 위험 노출 주사를 굴리지 않습니다.",
         category: '도구',
         type: 'execute',
-        feature: 'sofAttack1'
+        feature: 'attack',
+        targetCount: 1
     },
     {
         name: '자물쇠',
@@ -237,18 +260,25 @@ const itemCardList = [
     },
     {
         name: '대걸레',
-        description: "쓰레기 5개를 치웁니다.",
+        description: "쓰레기 3개를 치웁니다.",
         category: '도구',
         type: 'execute',
-        feature: 'clean5'
-    },
-    {
-        name: '손전등',
-        description: "아무 장소의 아이템 카드 3장을 획득합니다.",
-        category: '도구',
-        type: 'execute',
-        feature: 'search3'
+        feature: 'clean'
     }
+    // ,
+    // {
+    //     name: '손전등',
+    //     description: "아무 장소의 아이템 카드 3장을 획득합니다.",
+    //     category: '도구',
+    //     type: 'execute',
+    //     feature: 'search',
+    //     placeNameList: ['학교', '병원', '경찰서', '마트', '도서관', '주유소']
+    // }
 ];
+
+itemCardList.forEach(itemCard => {
+    itemCard.canPreventRisk = false;
+    itemCard.canExecute = false;
+});
 
 export default itemCardList;

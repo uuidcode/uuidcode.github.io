@@ -1,130 +1,357 @@
+body {
+    margin: 0;
+}
+
 * {
     font-size: 13px;
 }
 
-td {
-    padding: 2px;
+div {
+    box-sizing: border-box;
 }
 
-td.active {
-    background: lightblue;
+.board-item-section {
+    /*border: 1px solid darkgray;*/
 }
 
-div.card {
-    width: 100px;
-    height: 100px;
+.board-player-section {
+    width: 200px;
 }
 
-td.place {
-    background: #00CCFF;
+.board-content-section {
+    width: 1510px;
 }
 
-.survivor-area {
-    background: lightgreen;
-    width: 40px;
-    height: 40px
+.flex {
+    display: flex;
 }
 
-.zombie-area {
-    background: lightcoral;
-    width: 40px;
-    height: 40px
+.flex-column {
+    flex-direction: column;
 }
 
-.player-item-card {
-    border-spacing: 0;
-    width: 250px;
-    margin-bottom: 10px;
-    border: 1px solid darkgray;
+.flex-space-around {
+    justify-content: space-around;
+}
+
+.player-card {
     box-shadow: 4px 4px 2px 1px darkgray;
+    margin: 10px;
+    border: 1px solid darkgray;
 }
 
-.player-item-card td {
-    border: 1px solid black;
-    background: white;
+.player-card-item {
+    padding: 4px;
+    width: 50px;
+    border-bottom: 1px solid darkgray;
+    border-left: 1px solid darkgray;
 }
 
-.player-item-card td.active {
-    background: lightblue;
+.player-card-item-first {
+    border-bottom: 1px solid darkgray;
+    border-left: 0 solid darkgray;
 }
 
-.item-card {
-    background: lightseagreen;
+.player-card-name {
+    width: 70px;
+}
+
+.player-card-count {
+    width: 30px;
+}
+
+.player-card-item-label {
+    background-color: aliceblue;
+}
+
+.player-card-category-label {
     width: 40px;
+}
+
+.player-card-category {
+    width: 40px;
+}
+
+.player-card-description {
+    width: 180px;
+    border-left: 0 solid darkgray;
+}
+
+.place-part {
+    /*border: 1px solid darkgray;*/
+}
+
+.place {
+    width: 1500px;
+    /*margin: 5px;*/
+    /*box-shadow: 4px 4px 2px 1px darkgray;*/
+}
+
+.place-left {
+    margin-top: 200px;
+}
+
+.place-right {
+    margin-top: 200px;
+}
+
+.entrance {
+
+}
+
+.entrance {
+    position: absolute;
+    width: 140px;
     height: 40px;
+    z-index: 100;
+    background-color: white;
 }
 
-.player-survivor {
-    border-spacing: 0;
-    width: 250px;
-    margin-bottom: 10px;
+.entrance_0 {
+    top: 0;
+    left: -140px;
+}
+
+.entrance_1 {
+    top: 60px;
+    left: -140px;
+}
+
+.entrance_2 {
+    top: 120px;
+    left: -140px;
+}
+
+.entrance_3 {
+    top: 0;
+    right: -140px;
+}
+
+.entrance_4 {
+    top: 60px;
+    right: -140px;
+}
+
+.entrance_5 {
+    top: 120px;
+    right: -140px;
+}
+
+
+.zombie-position {
+    width: 20px;
+    height: 20px;
     border: 1px solid darkgray;
-    box-shadow: 4px 4px 2px 1px darkgray;
+    text-align: center;
 }
 
-.player-survivor td {
-    border: 1px solid black;
-    background: white;
+.text-align-center {
+    text-align: center;
 }
 
-.player-survivor td.active {
-    background: lightblue;
+.width-100-percent {
+    width: 100%;
 }
 
-.player-header {
-    border-spacing: 0;
-    border: 1px solid lightblue;
+.width-200 {
+    width: 200px;
 }
 
-.player-header td {
-    border: 1px solid black;
+.width-50 {
+    width: 50px;
 }
 
-.current-survivor-area {
-    position: relative;
-    border: 1px solid darkcyan;
-    border-radius: 20px;
-    width: 40px;
+.side-door {
+    width: 20px;
     height: 40px;
     text-align: center;
+    border: 1px solid darkgray;
+    line-height: 40px;
+}
+
+.front-door {
+    width: 40px;
+    height: 20px;
+    text-align: center;
+    border: 1px solid darkgray;
     line-height: 20px;
 }
 
-.action-panel {
-    width: 800px;
-    border-spacing: 0;
-    margin-bottom: 10px;
-    border: 1px solid darkgray;
-    box-shadow: 4px 4px 2px 1px darkgray;
+.place-name {
+    background-color: lightblue;
+    text-align: center;
+    width: 60px;
+    display: table-cell;
+    vertical-align: middle;
+    margin-left: 10px;
 }
 
-.action-panel td.action-panel {
-    background-color: lightsalmon;
+.survivor-ability-name {
+    padding: 5px;
+    background-color: white;
 }
 
-.action-panel td.no-action-panel {
-    background-color: lightskyblue;
-}
-
-.action-panel td {
-    border: 1px solid black;
-}
-
-.game-button {
+.survivor-name {
     padding: 5px;
 }
 
-.player-move {
-    background-color: lightskyblue;
-    position: absolute;
-    left: 5px;
-    top: 18px;
-    width: 30px;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 10px;
+.survivor-container {
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.game-info > tr > td {
-    border: 1px solid black;
+.survivor-position {
+    min-height: 50px;
+    width: 480px;
+    background-color: #edffed;
+    padding: 1px;
+    margin: 5px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
+
+.survivor {
+    box-shadow: 4px 4px 2px 1px darkgray;
+    margin: 4px;
+}
+
+.place-header td {
+    border: 1px solid darkgray;
+    cursor: pointer;
+}
+
+.place-header table {
+    margin: 2px;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.place-container {
+    margin-top: 10px;
+    width: 1500px;
+    border: 1px solid darkgray;
+}
+
+.place-container.active {
+    display: block;
+}
+
+.place-container.inactive {
+    display: none;
+}
+
+.game-table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.zombie-line {
+
+}
+
+.game-table td {
+    border: 1px solid darkgray;
+    padding: 2px;
+}
+
+.game-table td.active {
+    background-color: #f0f8ff;
+}
+
+.zombie-line {
+    margin-right: 20px;
+}
+
+.game-button {
+}
+
+.current-place {
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.box {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 15px 25px, rgba(0, 0, 0, 0.05) 0px 5px 10px;
+}
+
+.action-button:enabled {
+    background-color: aliceblue;
+}
+
+.none-action-dice-button {
+    background-color: lightgreen;
+    border: 1px solid lightseagreen;
+}
+
+.none-action-dice-button:hover {
+    background-color: lightseagreen;
+}
+
+.card-action-dice-button {
+    background-color: lightblue;
+    border: 1px solid lightskyblue;
+}
+
+.card-action-dice-button:hover {
+    background-color: lightskyblue;
+}
+
+.food-action-dice-button {
+    background-color: #ffdc7a;
+    border: 1px solid #f7ce59;
+}
+
+.food-action-dice-button:hover {
+    background-color: #f7ce59;
+}
+
+.action-dice-button {
+    background-color: lightsalmon;
+    border: 1px solid lightcoral;
+}
+
+.action-dice-button:hover, .action-dice-button:focus {
+    background-color: lightcoral;
+}
+
+.game-title {
+    padding:4px;
+    border-radius: 30px;
+    border: 1px solid darkgray;
+    background-color: #cef7c3;
+    color: black
+}
+
+.modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal_body {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    min-height: 200px;
+    padding: 20px;
+    text-align: center;
+    background-color: rgb(255, 255, 255);
+    border-radius: 10px;
+    box-shadow: 0 2px 3px 0 rgba(34, 36, 38, 0.15);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.game-info {
+    width: 20px;
+    text-align: center;
+    font-weight: bolder;
+}
+

@@ -1,50 +1,85 @@
 <script>
     import gameStore from "./gameStore";
-    import Survivor from "./Survivor.svelte";
-    import ItemCard from "./ItemCard.svelte";
+    import {flip} from 'svelte/animate';
+    import {itemCardCrossfade, trashCrossfade, placeItemCardCrossfade} from './animation';
+    const [itemCardSend, itemCardReceive] = itemCardCrossfade;
+    const [placeItemCardSend, placeItemCardReceive] = placeItemCardCrossfade;
+    const [trashSend, trashReceive] = trashCrossfade
 
     export let playerIndex;
 
     let player;
     let playerList;
+    let currentPlayer;
     let survivorList;
     let itemCardTable;
     let itemCardList;
+    let selectedItemCardFeature;
+    let itemCardAnimationType;
+    let send = itemCardSend;
+    let receive = itemCardReceive;
 
     $: {
         playerList = $gameStore.playerList;
+        itemCardAnimationType = $gameStore.itemCardAnimationType;
+        currentPlayer = $gameStore.currentPlayer;
+        selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         player = playerList[playerIndex];
         survivorList = player.survivorList;
         itemCardTable = player.itemCardTable;
         itemCardList = player.itemCardList;
+
+        if (selectedItemCardFeature != null) {
+            send = trashSend;
+            receive = trashReceive;
+        } else {
+            if (itemCardAnimationType === 'risk') {
+                send = itemCardSend;
+                receive = itemCardReceive;
+            } else if (itemCardAnimationType === 'get') {
+                send = placeItemCardSend;
+                receive = placeItemCardReceive;
+            }
+        }
     }
 </script>
 
-<table>
-    <tr style="background-color: {player.color}">
-        <td colspan="2">
-            <table class="player-header">
+<div class="flex-column player-card-list-section"
+     style="background-color: {currentPlayer.index === player.index ? gameStore.getCurrentPlayerColor() : 'white'}">
+    <div style="display:flex;flex-direction:column;padding: 10px 5px">
+        <div style="padding:5px 10px;border-radius: 10px;border:1px solid darkgray;text-align: center">{player.name}</div>
+        <div style="margin-top: 5px">아이템 카드 : {player.itemCardList.length}, 생존자 : {player.survivorList.length}</div>
+    </div>
+    <div style="height:100vh">
+        {#each itemCardList as itemCard (itemCard)}
+            <table class="game-table box"
+                   animate:flip
+                   in:receive={{key: itemCard}}
+                   out:send={{key: itemCard}}
+                   style="width: 190px;margin: 5px">
                 <tr>
-                    <td>{player.name}</td>
-                    <td class="active">생존자</td>
-                    <td>{survivorList.length}</td>
-                    <td class="active">아이템</td>
-                    <td>{itemCardList.length}</td>
+                    <td class="active">이름</td>
+                    <td class="active">{itemCard.name}</td>
+                    <td class="active">유형</td>
+                    <td>{itemCard.category}</td>
+                </tr>
+                <tr>
+                    <td colspan="4">{itemCard.description}
+                        {#if itemCard.canPreventRisk == true}
+                            <button class="card-action-dice-button"
+                                    on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
+                        {/if}
+
+                        {#if itemCard.canAction == true}
+                            <button class="none-action-dice-button"
+                                    on:click={()=>gameStore.use(itemCard)}>사용</button>
+                            <button class="none-action-dice-button"
+                                    on:click={()=>gameStore.cancel(itemCard)}>취소</button>
+                        {/if}
+                    </td>
                 </tr>
             </table>
-        </td>
-    </tr>
-    <tr>
-        <td valign="top" width="260">
-            {#each survivorList as survivor}
-                <Survivor survivor={survivor}></Survivor>
-            {/each}
-        </td>
-        <td valign="top" width="260">
-            {#each itemCardTable as itemCardRow}
-                <ItemCard itemCardRow={itemCardRow}></ItemCard>
-            {/each}
-        </td>
-    </tr>
-</table>
+        {/each}
+    </div>
+</div>
 
