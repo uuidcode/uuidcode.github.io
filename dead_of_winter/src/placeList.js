@@ -274,6 +274,10 @@ placeList.forEach((place, index) => {
     place.maxZombieCount = 0;
     place.currentZombieList = [];
 
+    place.entranceList.forEach(entrance => {
+        entrance.zombieList = [];
+    });
+
     if (index === 0) {
         place.activeClassName = 'active';
     } else {

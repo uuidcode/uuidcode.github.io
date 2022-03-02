@@ -709,7 +709,11 @@ gameStore = {
                             !game.dangerDice &&
                             currentPlace.itemCardList.length > 0,
                         barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
-                        clean: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.name === '피난기지' && currentPlace.trashCount > 0,
+                        clean: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            !game.dangerDice &&
+                            currentPlace.name === '피난기지' &&
+                            currentPlace.trashCount > 0,
                         invite: game.selectedItemCardFeature === null &&
                             !dice.done && !game.dangerDice &&
                             currentPlace.maxZombieCount >= currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
@@ -889,6 +893,16 @@ gameStore = {
         return game;
     }),
 
+    done: (currentSurvivor, actionIndex) => {
+        update(game => {
+            const currentPlayer = gameStore.getCurrentPlayer(game);
+            currentPlayer.actionDiceList[actionIndex].done = true;
+            return game;
+        });
+
+        gameStore.updateAll();
+    },
+
     plusPower: (currentSurvivor, currentPlace, actionIndex) => {
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
@@ -943,7 +957,13 @@ gameStore = {
     },
 
     preventRisk: (currentItemCard) => {
+        // update(game => {
+        //     game.itemCardAnimationType = 'risk';
+        //     return game;
+        // });
+
         update(game => {
+            game.itemCardAnimationType = 'risk';
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index)
 
@@ -984,6 +1004,8 @@ gameStore = {
     },
 
     searchInternal: (game, currentPlace, actionIndex) => {
+        game.itemCardAnimationType = 'get';
+
         const newItemCard = currentPlace.itemCardList.pop();
 
         if (newItemCard.category === '외부인') {
@@ -1226,6 +1248,7 @@ gameStore = {
             currentEntrance.zombieCount--;
             currentPlace.currentZombieCount--;
             game.deadZombieCount++;
+            game.deadZombieList.push(game.deadZombieCount);
 
             if (currentSurvivor.noRollDangerDice === true) {
                 return;
@@ -1273,7 +1296,8 @@ gameStore = {
                     .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
                     .sort((a, b) => Math.random() - 0.5)[0];
 
-                currentEntrance.zombieCount = currentEntrance.zombieCount + 1;
+                currentEntrance.zombieCount += 1;
+                currentEntrance.zombieList.push(game.entranceZombieIndex++);
             }
 
             return game;
@@ -1307,6 +1331,8 @@ gameStore = {
                             .sort((a, b) => Math.random() - 0.5)[0];
 
                         currentEntrance.zombieCount++;
+                        let currentZombieCount = currentEntrance.zombieCount;
+
 
                         if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
                             if (currentEntrance.barricadeCount > 0) {
@@ -1321,6 +1347,10 @@ gameStore = {
                                     gameStore.dead(true, messageList, place);
                                 }
                             }
+                        }
+
+                        if (currentZombieCount > currentEntrance.zombieCount ) {
+                            currentEntrance.zombieList.push(game.entranceZombieIndex++);
                         }
                     }
                 }

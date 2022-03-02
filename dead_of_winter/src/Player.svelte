@@ -1,8 +1,9 @@
 <script>
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
-    import {itemCardCrossfade, trashCrossfade} from './animation';
-    const [itemSend, itemReceive] = itemCardCrossfade;
+    import {itemCardCrossfade, trashCrossfade, placeItemCardCrossfade} from './animation';
+    const [itemCardSend, itemCardReceive] = itemCardCrossfade;
+    const [placeItemCardSend, placeItemCardReceive] = placeItemCardCrossfade;
     const [trashSend, trashReceive] = trashCrossfade
 
     export let playerIndex;
@@ -14,11 +15,13 @@
     let itemCardTable;
     let itemCardList;
     let selectedItemCardFeature;
-    let send = itemSend;
-    let receive = itemReceive;
+    let itemCardAnimationType;
+    let send = itemCardSend;
+    let receive = itemCardReceive;
 
     $: {
         playerList = $gameStore.playerList;
+        itemCardAnimationType = $gameStore.itemCardAnimationType;
         currentPlayer = $gameStore.currentPlayer;
         selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         player = playerList[playerIndex];
@@ -30,8 +33,13 @@
             send = trashSend;
             receive = trashReceive;
         } else {
-            send = itemSend;
-            receive = itemReceive;
+            if (itemCardAnimationType === 'risk') {
+                send = itemCardSend;
+                receive = itemCardReceive;
+            } else if (itemCardAnimationType === 'get') {
+                send = placeItemCardSend;
+                receive = placeItemCardReceive;
+            }
         }
     }
 </script>

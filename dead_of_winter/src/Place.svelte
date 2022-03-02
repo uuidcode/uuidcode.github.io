@@ -1,9 +1,10 @@
 <script>
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
-    import {foodCrossfade, deadSurvivorCrossfade} from './animation';
+    import {foodCrossfade, deadSurvivorCrossfade, deadZombieCrossfade} from './animation';
     const [foodSend, foodReceive] = foodCrossfade;
     const [deadSurvivorSend, deadSurvivorReceive] = deadSurvivorCrossfade;
+    const [deadZombieSend, deadZombieReceive] = deadZombieCrossfade;
     export let placeIndex;
 
     const survivorCountPerRow = 4;
@@ -18,6 +19,7 @@
     let selectedItemCardFeature;
     let itemCardList;
     let deadSurvivorList;
+    let deadZombieList;
 
     $: {
         currentPlayer = gameStore.getCurrentPlayer();
@@ -29,6 +31,7 @@
         survivorList = currentPlace.survivorList;
         survivorLocationList = currentPlace.survivorLocationList;
         deadSurvivorList = $gameStore.deadSurvivorList;
+        deadZombieList = $gameStore.deadZombieList;
     }
 </script>
 
@@ -65,7 +68,16 @@
                             <td class="active">좀비</td>
                             <td class="game-info">{$gameStore.zombieCount}</td>
                             <td class="active">죽은 좀비</td>
-                            <td class="game-info">{$gameStore.deadZombieCount}</td>
+                            <td class="game-info">{$gameStore.deadZombieCount}
+                                <div style="display:flex; width:50px; flex-wrap: wrap; margin-left: 5px">
+                                    {#each deadZombieList as deadZombie (deadZombie)}
+                                        <div in:deadZombieReceive={{key: deadZombie}}
+                                             out:deadZombieSend={{key: deadZombie}}>
+                                            <div style="width: 10px;height:10px;background-color: lightsalmon;border:1px solid red"></div>
+                                        </div>
+                                    {/each}
+                                </div>
+                            </td>
                         </tr>
                     </table>
 
@@ -96,7 +108,9 @@
                             {#each Array(currentPlace.entranceList[entranceIndex].maxZombieCount) as _, zombieIndex}
                                 <td class="zombie-position">
                                     {#if zombieIndex < currentPlace.entranceList[entranceIndex].zombieCount}
-                                        <div style="width:100%;height:100%;background-color: darkred"></div>
+                                        <div in:deadZombieReceive={{key: currentPlace.entranceList[entranceIndex].zombieList[zombieIndex]}}
+                                             out:deadZombieSend={{key: currentPlace.entranceList[entranceIndex].zombieList[zombieIndex]}}
+                                             style="width:100%;height:100%;background-color: darkred"></div>
                                     {:else if currentPlace.entranceList[entranceIndex].maxZombieCount - zombieIndex <= currentPlace.entranceList[entranceIndex].barricadeCount}
                                         <div style="width:100%;height:100%;background-color: lightgray"></div>
                                     {/if}
@@ -184,7 +198,9 @@
                                         <table class="game-table" style="width: 100%">
                                             {#each survivor.actionTable as action, actionIndex}
                                                 <tr>
-                                                    <td style="width: 20px;text-align:center;background-color: {action.dice.done ? 'lightgray' : 'lightgreen'}">{action.dice.power}</td>
+                                                    <td style="width: 20px;text-align:center;background-color: {action.dice.done ? 'lightgray' : 'lightgreen'}">
+                                                        <span style="cursor: pointer" on:click|preventDefault={() => gameStore.done(survivor, actionIndex)} alt="행동주사위 포기">{action.dice.power}</span>
+                                                    </td>
                                                     <td>
                                                         <button class="food-action-dice-button"
                                                             disabled={!action.food}

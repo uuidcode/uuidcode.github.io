@@ -4,6 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
+    itemCardAnimationType: 'risk',
     modalClass: '',
     modalType: '',
     actionType: '',
@@ -11,6 +12,7 @@ const game = {
     goal: '좀비 20구를 잡아라',
     messageList: [],
     zombieIndex: 0,
+    entranceZombieIndex: 0,
     campFoodIndex: 0,
     campTrashIndex: 0,
     selectedItemCardFeature: null,
@@ -36,6 +38,7 @@ const game = {
     zombieCount: 0,
     zombieTokenCount: 0,
     deadZombieCount: 0,
+    deadZombieList: [],
     itemCardCount: 0,
     riskCardList: riskCardList,
     itemCardList: itemCardList,

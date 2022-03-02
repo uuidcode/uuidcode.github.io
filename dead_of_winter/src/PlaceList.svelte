@@ -2,8 +2,9 @@
     import gameStore from "./gameStore";
     import Place from "./Place.svelte";
     import {flip} from 'svelte/animate';
-    import {itemCardCrossfade, trashCrossfade, foodCrossfade, deadSurvivorCrossfade} from './animation';
-    const [send, receive] = itemCardCrossfade;
+    import {itemCardCrossfade, trashCrossfade, foodCrossfade, deadSurvivorCrossfade, placeItemCardCrossfade} from './animation';
+    const [itemCardSend, itemCardReceive] = itemCardCrossfade;
+    const [placeItemCardSend, placeItemCardReceive] = placeItemCardCrossfade;
     const [trashSend, trashReceive] = trashCrossfade;
     const [foodSend, foodReceive] = foodCrossfade;
     const [deadSurvivorSend, deadSurvivorReceive] = deadSurvivorCrossfade;
@@ -44,8 +45,8 @@
                     {#each successRiskCardList as successRiskCard (successRiskCard)}
                         <div style="width:25px;height:25px;border-radius:25px;background-color:lightgreen;border:1px solid greenyellow;margin-right: 5px"
                              animate:flip
-                             in:receive={{key: successRiskCard}}
-                             out:send={{key: successRiskCard}}></div>
+                             in:itemCardReceive={{key: successRiskCard}}
+                             out:itemCardSend={{key: successRiskCard}}></div>
                     {/each}
                 </div>
             {/if}
@@ -156,7 +157,17 @@
                         </tr>
                         <tr>
                             <td>아이템카드수</td>
-                            <td>{place.itemCardList.length}</td>
+                            <td>{place.itemCardList.length}
+                                <div>
+                                    <div style="display: flex;width:25px;flex-wrap: wrap">
+                                        {#each place.itemCardList as itemCard (itemCard)}
+                                            <div animate:flip style="width: 1px;height:1px;"
+                                                in:placeItemCardReceive={{key: itemCard}}
+                                                out:placeItemCardSend={{key: itemCard}}></div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 {/if}
