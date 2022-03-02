@@ -55,27 +55,33 @@
                             <td class="active">생존자</td>
                             <td class="game-info">{$gameStore.survivorCount}</td>
                             <td class="active">죽은 생존자</td>
-                            <td class="game-info">{$gameStore.deadSurvivorCount}
-                                <div style="display:flex; width:50px; flex-wrap: wrap; margin-left: 5px">
-                                    {#each deadSurvivorList as surviror (surviror)}
-                                        <div in:deadSurvivorReceive={{key: surviror}}
-                                             out:deadSurvivorSend={{key: surviror}}>
-                                            <div style="width: 10px;height:10px;background-color: lightgreen;border:1px solid greenyellow"></div>
-                                        </div>
-                                    {/each}
+                            <td class="game-info">
+                                <div style="display: flex">
+                                    <div>{$gameStore.deadSurvivorCount}</div>
+                                    <div style="display:flex; width:50px; flex-wrap: wrap; margin-left: 5px">
+                                        {#each deadSurvivorList as surviror (surviror)}
+                                            <div in:deadSurvivorReceive={{key: surviror}}
+                                                 out:deadSurvivorSend={{key: surviror}}>
+                                                <div style="width: 5px;height:5px;background-color: lightgreen;border:1px solid greenyellow"></div>
+                                            </div>
+                                        {/each}
+                                    </div>
                                 </div>
                             </td>
                             <td class="active">좀비</td>
                             <td class="game-info">{$gameStore.zombieCount}</td>
                             <td class="active">죽은 좀비</td>
-                            <td class="game-info">{$gameStore.deadZombieCount}
-                                <div style="display:flex; width:50px; flex-wrap: wrap; margin-left: 5px">
-                                    {#each deadZombieList as deadZombie (deadZombie)}
-                                        <div in:deadZombieReceive={{key: deadZombie}}
-                                             out:deadZombieSend={{key: deadZombie}}>
-                                            <div style="width: 10px;height:10px;background-color: lightsalmon;border:1px solid red"></div>
-                                        </div>
-                                    {/each}
+                            <td class="game-info">
+                                <div style="display: flex">
+                                    <div>{$gameStore.deadZombieCount}</div>
+                                    <div style="display:flex; width:50px; flex-wrap: wrap; margin-left: 5px">
+                                        {#each deadZombieList as deadZombie (deadZombie)}
+                                            <div in:deadZombieReceive={{key: deadZombie}}
+                                                 out:deadZombieSend={{key: deadZombie}}>
+                                                <div style="width: 5px;height:5px;background-color: lightsalmon;border:1px solid red"></div>
+                                            </div>
+                                        {/each}
+                                    </div>
                                 </div>
                             </td>
                         </tr>

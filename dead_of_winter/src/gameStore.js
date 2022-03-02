@@ -679,7 +679,7 @@ gameStore = {
                     const searchItemList = currentPlayer.itemCardList
                         .filter(itemCard => itemCard.feature === 'search')
                         .filter(itemCard => currentPlace.itemCardList.length > 0)
-                        .filter(itemCard => itemCard.placeList.filter(placeName => placeName === currentPlace.name).length > 0);
+                        .filter(itemCard => itemCard.placeNameList.filter(placeName => placeName === currentPlace.name).length > 0);
 
                     const careItemList =  currentPlayer.itemCardList
                         .filter(itemCard => itemCard.feature === 'care')
@@ -698,7 +698,11 @@ gameStore = {
                             !dice.done &&
                             !game.dangerDice &&
                             gameStore.canUseAbility(survivor),
-                        food: game.selectedItemCardFeature === null && !dice.done && !game.dangerDice && dice.power < 6 && gameStore.getCamp(game).foodCount > 0,
+                        food: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            !game.dangerDice &&
+                            dice.power < 6 &&
+                            gameStore.getCamp(game).foodCount > 0,
                         attack: game.selectedItemCardFeature === null &&
                             !dice.done && !game.dangerDice &&
                             dice.power >= survivor.attack  &&
@@ -708,7 +712,10 @@ gameStore = {
                             !dice.done &&
                             !game.dangerDice &&
                             currentPlace.itemCardList.length > 0,
-                        barricade: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
+                        barricade: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            !game.dangerDice &&
+                            currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount,
                         clean: game.selectedItemCardFeature === null &&
                             !dice.done &&
                             !game.dangerDice &&
@@ -717,8 +724,13 @@ gameStore = {
                         invite: game.selectedItemCardFeature === null &&
                             !dice.done && !game.dangerDice &&
                             currentPlace.maxZombieCount >= currentPlace.currentZombieCount + currentPlace.currentBarricadeCount + 2,
-                        move: game.selectedItemCardFeature === null &&!dice.done && currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
-                        itemFood: game.selectedItemCardFeature === null &&!dice.done && !game.dangerDice && dice.power < 6 &&
+                        move: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'safeMove'),
+                        itemFood: game.selectedItemCardFeature === null &&
+                            !dice.done &&
+                            !game.dangerDice &&
+                            dice.power < 6 &&
                             currentPlayer.itemCardList.filter(itemCard => itemCard.feature === 'power').length > 0,
                         attackItemList,
                         searchItemList,
@@ -866,7 +878,7 @@ gameStore = {
             }
         });
 
-        if (game.deadZombieCount === 20) {
+        if (game.deadZombieCount === 30) {
             alert('목표를 완수하였습니다.');
             return false;
         }
@@ -1665,11 +1677,9 @@ gameStore = {
             return false;
         } else if (survivor.ability.type === 'plusPower') {
             if (currentPlayer.actionTable) {
-                const diceCount = currentPlayer.actionDiceList
+                return currentPlayer.actionDiceList
                     .filter(dice => dice.power <= 5)
-                    .filter(dice => dice.done === false).length;
-
-                return true;
+                    .filter(dice => dice.done === false).length > 0;
             }
 
             return false;
