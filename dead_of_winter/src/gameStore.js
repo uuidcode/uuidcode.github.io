@@ -399,12 +399,14 @@ gameStore = {
                     for (let i = 0; i < action.targetCount; i++) {
                         const survivor = survivorList.pop();
 
-                        update(game => {
-                            game.currentSurvivor = survivor;
-                            return game;
-                        });
+                        if (survivor) {
+                            update(game => {
+                                game.currentSurvivor = survivor;
+                                return game;
+                            });
 
-                        gameStore.wound(messageList);
+                            gameStore.wound(messageList);
+                        }
                     }
                 } else if (action.name === 'barricade') {
                     gameStore.removeAllBarricade(messageList);
@@ -742,7 +744,7 @@ gameStore = {
 
             const attackItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'attack')
-                .filter(itemCard => currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount)
+                // .filter(itemCard => currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount)
                 .filter(itemCard => currentPlace.currentZombieCount > 0);
 
             const searchItemList = currentPlayer.itemCardList
