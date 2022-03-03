@@ -1403,9 +1403,7 @@ gameStore = {
             game.currentRiskCard = game.riskCardList.pop();
             game.riskCardList = [...game.riskCardList, game.currentRiskCard];
 
-            if (game.turn % 20 === 0) {
-                gameStore.initRiskCard(game);
-            }
+            gameStore.initRiskCard(game);
 
             game.riskCard = false;
             game.rollDice = true;
