@@ -554,17 +554,21 @@ gameStore = {
         });
     },
 
+    sum: (a, b) => {
+        return a + b;
+    },
+
     updateZombie: game => {
         game.zombieCount = game.placeList
             .flatMap(player => player.entranceList)
             .map(entrance => entrance.zombieCount)
-            .reduce((a, b) => a + b, 0);
+            .reduce(gameStore.sum);
     },
 
     updateItemCard: game => {
         game.itemCardCount = game.playerList
             .map(player => player.itemCardList.length)
-            .reduce((a, b) => a + b, 0);
+            .reduce(gameStore.sum);
 
         let itemCardIndex = 0;
 
