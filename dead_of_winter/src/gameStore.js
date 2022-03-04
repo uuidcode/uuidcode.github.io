@@ -791,7 +791,8 @@ gameStore = {
                     }
                 })
                 .map(targetPlace => {
-                    targetPlace.disabled = game.dangerDice ||
+                    targetPlace.disabled = game.selectedItemCardFeature != null ||
+                        game.dangerDice ||
                         currentPlace.name === targetPlace.name ||
                         targetPlace.survivorList.length >= targetPlace.maxSurvivorCount;
 
@@ -1542,8 +1543,6 @@ gameStore = {
 
         const currentActionIndex = get(gameStore).currentActionIndex;
 
-        console.log('>>> currentActionIndex', currentActionIndex);
-
         if (currentActionIndex >= 0) {
             update(game => {
                 game.currentActionIndex = -1;
@@ -1592,7 +1591,7 @@ gameStore = {
         alert('위험노출 주사위를 던집니다.');
 
         update(game => {
-            const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '죽음']
+            const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '연쇄물림']
             const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
 
             if (result === '') {
@@ -1600,9 +1599,17 @@ gameStore = {
             } else if (result === '부상') {
                 alert('부상을 당하였습니다.');
                 gameStore.wound();
-            } else if (result === '죽음') {
-                alert('좀비가 물렸습니다.');
+            } else if (result === '연쇄물림') {
+                alert('연쇄물림이 발생하였습니다.');
+
+                const currentPlace = currentSurvivor.place;
+
                 gameStore.dead(true);
+
+                currentPlace.survivorList.forEach(survivor => {
+                    game.currentSurvivor = survivor;
+                    gameStore.wound();
+                })
             }
 
             game.dangerDice = false;
