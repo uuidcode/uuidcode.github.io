@@ -1,9 +1,5 @@
-import {tick} from 'svelte'
 import {writable, get} from "svelte/store";
 import game from "./game"
-import survivorList from "./survivorList";
-import placeList from "./placeList";
-import itemCardList from "./itemCardList";
 
 const { subscribe, set, update } = writable(game);
 
@@ -94,12 +90,6 @@ gameStore = {
                 survivor.playerIndex = playerIndex;
                 survivorList.push(survivor);
             }
-
-            // const testSurvivor = gameStore.getSurvivor(game, 'plusPower');
-            //
-            // if (testSurvivor) {
-            //     survivorList.push(testSurvivor);
-            // }
 
             survivorList.sort((a, b) => a.index - b.index);
 
@@ -200,9 +190,6 @@ gameStore = {
 
         camp.foodList = [...Array(camp.foodCount).keys()]
             .map(index => game.campFoodIndex++);
-
-        // camp.trashList = [...Array(camp.trashCount).keys()]
-        //     .map(index => game.campTrashIndex++);
 
         camp.trashList = [];
     },
@@ -751,7 +738,6 @@ gameStore = {
 
             const attackItemList = currentPlayer.itemCardList
                 .filter(itemCard => itemCard.feature === 'attack')
-                // .filter(itemCard => currentPlace.maxZombieCount > currentPlace.currentZombieCount + currentPlace.currentBarricadeCount)
                 .filter(itemCard => currentPlace.currentZombieCount > 0);
 
             const searchItemList = currentPlayer.itemCardList
@@ -980,11 +966,6 @@ gameStore = {
     },
 
     preventRisk: (currentItemCard) => {
-        // update(game => {
-        //     game.itemCardAnimationType = 'risk';
-        //     return game;
-        // });
-
         update(game => {
             game.itemCardAnimationType = 'risk';
             game.currentPlayer.itemCardList = game.currentPlayer.itemCardList
@@ -1215,10 +1196,6 @@ gameStore = {
 
             return game;
         });
-
-        // gameStore.updateAll();
-        //
-        // await tick();
 
         update(game => {
             const camp = gameStore.getCamp(game);
@@ -1623,46 +1600,6 @@ gameStore = {
             }
 
             game.dangerDice = false;
-            return game;
-        });
-
-        gameStore.updateAll();
-    },
-
-    drag: (event, survivorIndex, oldPlaceName) => {
-        const data = {
-            survivorIndex,
-            oldPlaceName
-        };
-
-        event.dataTransfer.setData('text/plain', JSON.stringify(data));
-    },
-
-    drop: (event, newPlaceName) => {
-        update(game => {
-            event.preventDefault();
-            const json = event.dataTransfer.getData("text/plain");
-            const data = JSON.parse(json);
-            const {survivorIndex, oldPlaceName} = data;
-
-            const oldPlace = game.placeList.find(place => place.name === oldPlaceName);
-            const newPlace = game.placeList.find(place => place.name === newPlaceName);
-
-            let currentSurvivor = null;
-
-            oldPlace.survivorList = oldPlace.survivorList
-                .filter(survivor => {
-                    if (survivor.index === survivorIndex) {
-                        currentSurvivor = survivor;
-                        return false;
-                    }
-
-                    return true;
-                });
-
-            newPlace.survivorList = [...newPlace.survivorList, currentSurvivor];
-            currentSurvivor.place = newPlace;
-
             return game;
         });
 
