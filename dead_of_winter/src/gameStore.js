@@ -40,20 +40,20 @@ gameStore = {
 
     initRiskCard: function (game) {
         game.riskCardList = game.riskCardList
-            .sort((a, b) => 0.5 - Math.random());
+            .sort(gameStore.random);
     },
 
     initItemCard: function (game) {
         game.playerList.forEach(player => {
             player.itemCardList = game.initItemCardList
-                .sort((a, b) => 0.5 - Math.random())
+                .sort(gameStore.random)
                 .slice(0, 7)
                 .map(name => gameStore.createNewItemCard(name));
         });
 
         game.placeList.forEach(place => {
             place.itemCardList = place.itemCardList
-                .sort((a, b) => 0.5 - Math.random())
+                .sort(gameStore.random)
                 .map(name => gameStore.createNewItemCard(name));
         });
     },
@@ -81,7 +81,7 @@ gameStore = {
     initSurvivor: function (game) {
         game.playerList.forEach((player, playerIndex) => {
             game.survivorList
-                .sort((a, b) => 0.5 - Math.random());
+                .sort(gameStore.random);
 
             const survivorList = [];
 
@@ -381,7 +381,7 @@ gameStore = {
                 } else if (action.name === 'wound') {
                     const survivorList = game.playerList
                         .flatMap(player => player.survivorList)
-                        .sort((a, b) => Math.random() - 0.5);
+                        .sort(gameStore.random);
 
                     for (let i = 0; i < action.targetCount; i++) {
                         const survivor = survivorList.pop();
@@ -400,7 +400,7 @@ gameStore = {
                 } else if (action.name === 'dead') {
                     const survivorList = game.playerList
                         .flatMap(player => player.survivorList)
-                        .sort((a, b) => Math.random() - 0.5);
+                        .sort(gameStore.random);
 
                     for (let i = 0; i < action.targetCount; i++) {
                         const survivor = survivorList.pop();
@@ -1235,6 +1235,10 @@ gameStore = {
         gameStore.updateAll();
     },
 
+    random: (a, b) => {
+        return Math.random() - 0.5;
+    },
+    
     killZombieWithGame: (game, currentSurvivor, currentPlace, actionIndex) => {
         if (currentPlace.currentZombieCount > 0) {
             const currentPlayer = gameStore.getCurrentPlayer(game);
@@ -1245,7 +1249,7 @@ gameStore = {
 
             const currentEntrance = currentPlace.entranceList
                 .filter(entrance => entrance.zombieCount > 0)
-                .sort((a, b) => Math.random() - 0.5)[0];
+                .sort(gameStore.random)[0];
 
             currentEntrance.zombieCount--;
             currentPlace.currentZombieCount--;
@@ -1273,7 +1277,7 @@ gameStore = {
 
             const currentEntrance = currentPlace.entranceList
                 .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
-                .sort((a, b) => Math.random() - 0.5)[0];
+                .sort(gameStore.random)[0];
 
             currentEntrance.barricadeCount++;
 
@@ -1296,7 +1300,7 @@ gameStore = {
             for (let i = 0; i < zombieCount; i++) {
                 const currentEntrance = currentPlace.entranceList
                     .filter(entrance => entrance.maxZombieCount > entrance.zombieCount + entrance.barricadeCount)
-                    .sort((a, b) => Math.random() - 0.5)[0];
+                    .sort(gameStore.random)[0];
 
                 currentEntrance.zombieCount += 1;
                 currentEntrance.zombieList.push(game.entranceZombieIndex++);
@@ -1313,11 +1317,7 @@ gameStore = {
 
         update(game => {
             game.placeList.forEach(place => {
-                let zombieCount = place.survivorList.length;
-
-                if (place.name === '피난기지') {
-                    zombieCount = place.foodCount;
-                }
+                const zombieCount = place.survivorList.length;
 
                 if (zombieCount > 0) {
                     if (showZombieCount === 0) {
@@ -1330,7 +1330,7 @@ gameStore = {
 
                     for (let i = 0; i < zombieCount; i++) {
                         const currentEntrance = place.entranceList
-                            .sort((a, b) => Math.random() - 0.5)[0];
+                            .sort(gameStore.random)[0];
 
                         currentEntrance.zombieCount++;
                         let currentZombieCount = currentEntrance.zombieCount;
@@ -1579,7 +1579,7 @@ gameStore = {
 
         update(game => {
             const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '연쇄물림']
-            const result = dangerDice.sort((a, b) => Math.random() - 0.5).pop();
+            const result = dangerDice.sort(gameStore.random).pop();
 
             if (result === '') {
                 alert('아무런 일이 일어나지 않았습니다.');
