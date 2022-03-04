@@ -596,7 +596,7 @@ gameStore = {
             game.currentPlayer.itemCardList.forEach((itemCard) => {
                 let placeMatch = true;
 
-                if (itemCard.placeNameList) {
+                if (itemCard.placeNameList && itemCard.feature === 'search') {
                     placeMatch = game.currentSurvivor.place.name === itemCard.placeNameList[0];
                 }
 
@@ -972,6 +972,7 @@ gameStore = {
             game.currentPlace = currentPlace;
             game.selectedItemCardFeature = feature;
             game.currentSurvivor = survivor
+            game.currentSurvivor.place = currentPlace;
             return game;
         });
 
@@ -997,16 +998,16 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    search: (game, currentPlace, actionIndex) => {
+    search: (game, survivor, currentPlace, actionIndex) => {
         if (game === null) {
             update(game => {
-                gameStore.searchInternal(game, currentPlace, actionIndex);
+                gameStore.searchInternal(game, survivor, currentPlace, actionIndex);
                 return game;
             });
 
             gameStore.updateAll();
         } else {
-            gameStore.searchInternal(game, currentPlace, actionIndex);
+            gameStore.searchInternal(game, survivor, currentPlace, actionIndex);
         }
     },
 
@@ -1025,8 +1026,10 @@ gameStore = {
         }
     },
 
-    searchInternal: (game, currentPlace, actionIndex) => {
+    searchInternal: (game, currentSurvivor, currentPlace, actionIndex) => {
         game.itemCardAnimationType = 'get';
+        game.currentSurvivor = currentSurvivor;
+        game.currentSurvivor.place = currentPlace;
 
         const newItemCard = currentPlace.itemCardList.pop();
 
@@ -1069,7 +1072,7 @@ gameStore = {
             gameStore.updateAll();
         } else if (currentSurvivor.ability.type === 'get') {
             update(game => {
-                gameStore.searchInternal(game, currentPlace, actionIndex);
+                gameStore.searchInternal(game, currentSurvivor, currentPlace, actionIndex);
                 gameStore.setUseAbility(game, currentSurvivor);
                 return game;
             });
@@ -1193,7 +1196,7 @@ gameStore = {
                 const currentPlace = game.placeList
                     .find(place => place.name === currentItemCard.placeNameList[0]);
 
-                gameStore.search(game, currentPlace);
+                gameStore.search(game, game.currentSurvivor, currentPlace);
             } else if (currentItemCard.feature === 'attack') {
                 for (let i = 0; i < currentItemCard.targetCount; i++) {
                     gameStore.killZombieWithGame(game, game.currentSurvivor, game.currentPlace)

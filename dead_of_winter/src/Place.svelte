@@ -226,7 +226,7 @@
                                                     <td><button
                                                             class="action-dice-button"
                                                             disabled={!action.search}
-                                                            on:click={() => gameStore.search(null, currentPlace, actionIndex)}>
+                                                            on:click={() => gameStore.search(null, survivor, currentPlace, actionIndex)}>
                                                         검색</button></td>
                                                     <td><button
                                                             class="action-dice-button"
