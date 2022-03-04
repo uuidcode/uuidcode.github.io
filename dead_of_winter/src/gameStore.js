@@ -594,8 +594,15 @@ gameStore = {
             });
 
             game.currentPlayer.itemCardList.forEach((itemCard) => {
+                let placeMatch = true;
+
+                if (itemCard.placeNameList) {
+                    placeMatch = game.currentSurvivor.place.name === itemCard.placeNameList[0];
+                }
+
                 itemCard.canAction = game.canAction === true &&
-                    game.selectedItemCardFeature === itemCard.feature;
+                    game.selectedItemCardFeature === itemCard.feature &&
+                    placeMatch;
             });
 
             if (game.currentRiskCard) {
@@ -1184,7 +1191,7 @@ gameStore = {
                 gameStore.clean(4);
             } else if (currentItemCard.feature === 'search') {
                 const currentPlace = game.placeList
-                    .find(place => place.name === currentItemCard.placeList[0]);
+                    .find(place => place.name === currentItemCard.placeNameList[0]);
 
                 gameStore.search(game, currentPlace);
             } else if (currentItemCard.feature === 'attack') {
