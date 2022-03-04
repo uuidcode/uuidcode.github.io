@@ -9,7 +9,7 @@ const game = {
     modalType: '',
     actionType: '',
     currentActionIndex: -1,
-    goal: '좀비 30구를 잡아라',
+    goal: '좀비 40구를 잡아라',
     messageList: [],
     zombieIndex: 0,
     entranceZombieIndex: 0,

@@ -888,7 +888,7 @@ gameStore = {
             }
         });
 
-        if (game.deadZombieCount === 30) {
+        if (game.deadZombieCount === 40) {
             alert('목표를 완수하였습니다.');
             return false;
         }
