@@ -915,14 +915,16 @@ gameStore = {
         gameStore.updateAll();
     },
 
-    plusPower: (currentSurvivor, currentPlace, actionIndex) => {
+    plusPower: (currentSurvivor, currentPlace, actionIndex, useFood) => {
         update(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
             currentPlayer.actionDiceList[actionIndex].power++;
 
-            const camp = gameStore.getCamp(game);
+            if (useFood) {
+                const camp = gameStore.getCamp(game);
+                gameStore.removeFood(camp, currentSurvivor);
+            }
 
-            gameStore.removeFood(camp, currentSurvivor);
             return game;
         });
 
@@ -1069,7 +1071,7 @@ gameStore = {
                 return game;
             });
 
-            gameStore.plusPower(currentSurvivor, currentPlace, actionIndex);
+            gameStore.plusPower(currentSurvivor, currentPlace, actionIndex, false);
         } else if (currentSurvivor.ability.type === 'move') {
             update(game => {
                 game.modalClass = 'show';

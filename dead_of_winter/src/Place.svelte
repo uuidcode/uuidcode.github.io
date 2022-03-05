@@ -210,7 +210,7 @@
                                                     <td>
                                                         <button class="food-action-dice-button"
                                                             disabled={!action.food}
-                                                            on:click={() => gameStore.plusPower(survivor, currentPlace, actionIndex)}>
+                                                            on:click={() => gameStore.plusPower(survivor, currentPlace, actionIndex, true)}>
                                                             식사+1</button>
                                                         <button class="card-action-dice-button"
                                                                 disabled={!action.itemFood}
