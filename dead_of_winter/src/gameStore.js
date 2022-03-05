@@ -1,14 +1,15 @@
-import {writable, get} from "svelte/store";
+import {get, writable} from "svelte/store";
 import game from "./game"
 
 const { subscribe, set, update } = writable(game);
 
 let updateAll = () => {};
-let g = null;
+let g = game;
 
 const u2 = (callback) => {
     update(game => {
         g = game;
+        console.log('>>> g', g);
         callback(game);
         return game;
     });
@@ -31,16 +32,16 @@ gameStore = {
     ...gameStore,
 
     minusRound: () => u(game => {
-        game.round = game.round - 1;
+        g.round -= 1;
     }),
 
     plusMoral: () => u(game => {
-        game.moral = game.moral + 1;
+        g.moral += 1
     }),
 
     minusMoral: () => u(game => {
-        if (game.moral > 0) {
-            game.moral--;
+        if (g.moral > 0) {
+            g.moral--;
         }
     }),
 
@@ -192,34 +193,27 @@ gameStore = {
     },
 
     care: (woundSurvivor) => {
-        update(game => {
-            game.currentSurvivor.canUseAbility = false;
+        u(game => {
+            g.currentSurvivor.canUseAbility = false;
 
-            if (game.currentActionIndex >= 0) {
-                game.currentPlayer.actionDiceList[game.currentActionIndex].done = true;
+            if (g.currentActionIndex >= 0) {
+                g.currentPlayer.actionDiceList[g.currentActionIndex].done = true;
             }
 
             woundSurvivor.wound--;
-            game.modalClass = '';
-            game.modalType = '';
-            return game;
+            g.modalClass = '';
+            g.modalType = '';
         });
-
-        gameStore.updateAll();
 
         alert(`${woundSurvivor.name} 부상토큰 하나가 제거되었습니다.`);
     },
 
     move: (currentSurvivor, placeName) => {
-        update(game => {
-            game.modalClass = '';
-            game.modalType = '';
-            game.actionType = 'move';
-            return game;
-        });
-
-        update(game => {
-            game.placeList.forEach(place => {
+        u(game => {
+            g.modalClass = '';
+            g.modalType = '';
+            g.actionType = 'move';
+            g.placeList.forEach(place => {
                 if (place.name === placeName) {
                     place.survivorList = [...place.survivorList, currentSurvivor];
                 } else {
@@ -228,18 +222,18 @@ gameStore = {
                 }
             });
 
-            game.currentSurvivor = currentSurvivor;
-            game.currentSurvivor.place = game.placeList.find(place => place.name === placeName);
-            game.currentPlaceName = placeName;
+            g.currentSurvivor = currentSurvivor;
+            g.currentSurvivor.place = g.placeList.find(place => place.name === placeName);
 
-            if (game.currentActionIndex >= 0) {
-                game.currentPlayer.actionDiceList[game.currentActionIndex].done = true;
+            console.log('>>> currentSurvivor', currentSurvivor);
+            console.log('>>> g.currentSurvivor', g.currentSurvivor);
+
+            g.currentPlaceName = placeName;
+
+            if (g.currentActionIndex >= 0) {
+                g.currentPlayer.actionDiceList[g.currentActionIndex].done = true;
             }
-
-            return game;
         });
-
-        gameStore.updateAll();
     },
 
     changePlaceByName: (currentPlaceName) => {
@@ -255,8 +249,7 @@ gameStore = {
     },
 
     processFood: (messageList) => {
-        const game = get(gameStore);
-        const camp = gameStore.getCamp(game);
+        const camp = gameStore.getCamp();
 
         if (camp.survivorList.length >= 2) {
             const foodCount = Math.floor(camp.survivorList.length / 2);
@@ -265,14 +258,11 @@ gameStore = {
                 let starvingTokenCount = 0;
                 let oldMoral = 0;
 
-                update(game => {
-                    oldMoral = game.moral;
+                u(game => {
+                    oldMoral = g.moral;
                     camp.starvingTokenCount++;
                     starvingTokenCount = camp.starvingTokenCount;
-                    return game;
                 });
-
-                gameStore.updateAll();
 
                 messageList.push(`식량이 부족하여 굶주림 토큰이 추가되었습니다.`);
 
@@ -283,22 +273,18 @@ gameStore = {
 
                     let newMoral = 0;
 
-                    update(game => {
-                        newMoral = game.moral;
-                        return game;
+                    u(game => {
+                        newMoral = g.moral;
                     });
 
                     messageList.push(`굶주림 토큰이 ${starvingTokenCount}개가 있어서 사기가 ${oldMoral}에서 ${newMoral}로 하락 하였습니다.`);
                 }
             } else {
                 for (let i = 0; i < foodCount; i++) {
-                    update(game => {
-                        const camp = gameStore.getCamp(game);
+                    u(game => {
+                        const camp = gameStore.getCamp();
                         gameStore.removeFood(camp);
-                        return game;
                     });
-
-                    gameStore.updateAll();
                 }
 
                 messageList.push(`식량을 ${foodCount}개 소모합니다.`);
@@ -309,8 +295,7 @@ gameStore = {
     },
 
     processTrash: (messageList) => {
-        const game = get(gameStore);
-        const camp = gameStore.getCamp(game);
+        const camp = gameStore.getCamp();
 
         if (camp.trashList.length < 10) {
             return;
@@ -494,6 +479,8 @@ gameStore = {
             currentPlaceName = '도서관';
         } else if (event.keyCode === 55 || event.keyCode === 103) {
             currentPlaceName = '주유소';
+        } else if (event.keyCode === 56) {
+            console.log(g);
         }
 
         gameStore.changePlaceByName(currentPlaceName);
@@ -1255,8 +1242,8 @@ gameStore = {
     },
 
     createBarricade: (currentPlace, actionIndex) => {
-        update(game => {
-            const currentPlayer = gameStore.getCurrentPlayer(game);
+        u(game => {
+            const currentPlayer = gameStore.getCurrentPlayer(g);
 
             if (actionIndex !== undefined) {
                 currentPlayer.actionDiceList[actionIndex].done = true;
@@ -1267,17 +1254,13 @@ gameStore = {
                 .sort(gameStore.random)[0];
 
             currentEntrance.barricadeCount++;
-
-            return game;
         });
-
-        gameStore.updateAll();
     },
 
     inviteZombie: (currentPlace, actionIndex, zombieCount) => {
         zombieCount = zombieCount || 2;
 
-        update(game => {
+        u(game => {
             const currentPlayer = gameStore.getCurrentPlayer(game);
 
             if (actionIndex !== undefined) {
@@ -1290,21 +1273,17 @@ gameStore = {
                     .sort(gameStore.random)[0];
 
                 currentEntrance.zombieCount += 1;
-                currentEntrance.zombieList.push(game.entranceZombieIndex++);
+                currentEntrance.zombieList.push(g.entranceZombieIndex++);
             }
-
-            return game;
         });
-
-        gameStore.updateAll();
     },
 
     showZombie: (messageList) => {
         let showZombieCount = 0;
 
-        update(game => {
-            game.placeList.forEach(place => {
-                const zombieCount = place.survivorList.length;
+        u(game => {
+            g.placeList.forEach(place => {
+                const zombieCount = g.survivorList.length;
 
                 if (zombieCount > 0) {
                     if (showZombieCount === 0) {
@@ -1322,7 +1301,6 @@ gameStore = {
                         currentEntrance.zombieCount++;
                         let currentZombieCount = currentEntrance.zombieCount;
 
-
                         if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
                             if (currentEntrance.barricadeCount > 0) {
                                 currentEntrance.barricadeCount--;
@@ -1333,8 +1311,8 @@ gameStore = {
                                 currentEntrance.zombieCount--;
 
                                 if (place.survivorList.length > 0) {
-                                    const currentSurvivor = place.survivorList[Math.floor(Math.random() * place.survivorList.length)];
-                                    game.currentSurvivor = currentSurvivor;
+                                    const randomIndex = Math.floor(Math.random() * place.survivorList.length);
+                                    g.currentSurvivor = place.survivorList[randomIndex];
                                     gameStore.dead(true, messageList, place);
                                 }
                             }
@@ -1346,16 +1324,12 @@ gameStore = {
                     }
                 }
             });
-
-            return game;
         });
-
-        gameStore.updateAll();
     },
 
     clean: (trashCount, actionIndex) => {
-        update(game => {
-            const camp = gameStore.getCamp(game);
+        u(game => {
+            const camp = gameStore.getCamp(g);
 
             for (let i = 0; i < trashCount; i++) {
                 camp.trashList.pop();
@@ -1367,39 +1341,31 @@ gameStore = {
             }
 
             if (actionIndex !== undefined) {
-                game.playerList[game.turn % 2].actionDiceList[actionIndex].done = true;
+                g.playerList[g.turn % 2].actionDiceList[actionIndex].done = true;
             }
-
-            return game;
         });
-
-        gameStore.updateAll();
     },
 
     choiceRiskCard: () => {
-        update(game => {
-            game.successRiskCardList = [];
-            game.currentRiskCard = game.riskCardList.pop();
-            game.riskCardList = [...game.riskCardList, game.currentRiskCard];
+        u(game => {
+            g.successRiskCardList = [];
+            g.currentRiskCard = g.riskCardList.pop();
+            g.riskCardList = [...g.riskCardList, g.currentRiskCard];
 
             gameStore.initRiskCard();
 
-            game.riskCard = false;
+            g.riskCard = false;
             game.rollDice = true;
-            return game;
         });
-
-        gameStore.updateAll();
     },
 
     rollActionDice: () => {
-        update(game => {
+        u(game => {
             game.messageList = [];
-            return game;
         });
 
-        update(game => {
-            const player = gameStore.getCurrentPlayer(game);
+        u(game => {
+            const player = gameStore.getCurrentPlayer(g);
 
             player.actionDiceList = [...Array(player.survivorList.length + 1).keys()]
                 .map(i => {
@@ -1407,17 +1373,13 @@ gameStore = {
                         power: 1 + Math.floor(Math.random() * 6),
                         done: false
                     };
-
                 })
                 .sort((a, b) => b.power - a.power);
 
-            game.rollDice = false;
-            game.canAction = true;
-            game.canTurn = false;
-            return game;
+            g.rollDice = false;
+            g.canAction = true;
+            g.canTurn = false;
         });
-
-        gameStore.updateAll();
     },
 
     dead: (minusMoral, messageList, currentPlace) => {
@@ -1425,11 +1387,11 @@ gameStore = {
         let newMoral = 0;
         let currentSurvivorName = '';
 
-        update(game => {
-            game.deadSurvivorCount++
-            game.deadSurvivorList.push(game.currentSurvivor);
+        u(game => {
+            g.deadSurvivorCount++
+            g.deadSurvivorList.push(g.currentSurvivor);
 
-            game.placeList
+            g.placeList
                 .filter(place => {
                     if (currentPlace === undefined) {
                         return true;
@@ -1451,9 +1413,7 @@ gameStore = {
             }
 
             currentSurvivorName = game.currentSurvivor.name;
-            game.currentSurvivor = null;
-
-            return game;
+            g.currentSurvivor = null;
         });
 
         const message = `${currentSurvivorName} 생존자가 죽었습니다.`;
@@ -1478,10 +1438,10 @@ gameStore = {
     },
 
     wound: (messageList) => {
-        update(game => {
-            game.currentSurvivor.wound++;
+        u(game => {
+            g.currentSurvivor.wound++;
 
-            const message = `${game.currentSurvivor.name} 부상을 입었습니다.`;
+            const message = `${g.currentSurvivor.name} 부상을 입었습니다.`;
 
             if (messageList !== undefined) {
                 messageList.push(message);
@@ -1490,8 +1450,8 @@ gameStore = {
                 alert(message);
             }
 
-            if (game.currentSurvivor.wound >= 3) {
-                const message = `${game.currentSurvivor.name} 부상을 3차례 입었습니다.'`;
+            if (g.currentSurvivor.wound >= 3) {
+                const message = `${g.currentSurvivor.name} 부상을 3차례 입었습니다.'`;
 
                 if (messageList !== undefined) {
                     messageList.push(message);
@@ -1503,9 +1463,7 @@ gameStore = {
                 gameStore.dead(true);
             }
 
-            game.currentSurvivor = null;
-
-            return game;
+            g.currentSurvivor = null;
         });
     },
 
@@ -1520,9 +1478,8 @@ gameStore = {
         const currentActionIndex = get(gameStore).currentActionIndex;
 
         if (currentActionIndex >= 0) {
-            update(game => {
-                game.currentActionIndex = -1;
-                return game;
+            u(game => {
+                g.currentActionIndex = -1;
             });
 
             return;
@@ -1539,11 +1496,11 @@ gameStore = {
         }
 
         if (!rollDangerDice) {
-            update(game => {
+            u(game => {
                 let use = false;
 
-                game.playerList
-                    .filter(player => player.index === game.currentPlayer.index)
+                g.playerList
+                    .filter(player => player.index === g.currentPlayer.index)
                     .forEach(player => {
                         player.itemCardList = player.itemCardList
                             .filter(itemCard => {
@@ -1555,18 +1512,14 @@ gameStore = {
                                 return true;
                             });
                     });
-
-                return game;
             });
-
-            gameStore.updateAll();
 
             return;
         }
 
         alert('위험노출 주사위를 던집니다.');
 
-        update(game => {
+        u(game => {
             const dangerDice = ['', '', '', '', '', '', '부상', '부상', '부상', '부상', '부상', '연쇄물림']
             const result = dangerDice.sort(gameStore.random).pop();
 
@@ -1583,16 +1536,13 @@ gameStore = {
                 gameStore.dead(true);
 
                 currentPlace.survivorList.forEach(survivor => {
-                    game.currentSurvivor = survivor;
+                    g.currentSurvivor = survivor;
                     gameStore.wound();
                 })
             }
 
-            game.dangerDice = false;
-            return game;
+            g.dangerDice = false;
         });
-
-        gameStore.updateAll();
     },
 
     canUseAbility: (survivor) => {
@@ -1647,16 +1597,6 @@ gameStore = {
         } else if (survivor.ability.type === 'barricade') {
             return currentPlace.maxZombieCount >
                 currentPlace.currentZombieCount + currentPlace.currentBarricadeCount;
-        }
-    },
-
-    canUseItemCard: (itemCared) => {
-        if (itemCared.name === '약') {
-            return game.survivorList
-                .filter(survivor => survivor.wound > 0).length > 0;
-        } else if (survivor.ability.type === '주사기') {
-            return game.survivorList
-                .filter(survivor => survivor.wound > 0).length > 0;
         }
     },
 
