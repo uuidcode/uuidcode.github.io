@@ -3,6 +3,24 @@ import game from "./game"
 
 const { subscribe, set, update } = writable(game);
 
+let updateAll = () => {};
+let g = null;
+
+const u2 = (callback) => {
+    update(game => {
+        g = game;
+        callback(game);
+        return game;
+    });
+};
+
+const u = (callback) => {
+    u2(callback);
+
+    updateAll();
+};
+
+
 let gameStore = {
     subscribe,
     set,
@@ -11,47 +29,35 @@ let gameStore = {
 
 gameStore = {
     ...gameStore,
-    plusRound: () => {
-        update(game => {
-            game.round++;
-            return game;
-        });
 
-        gameStore.updateAll();
-    },
-
-    minusRound: () => update(game => {
+    minusRound: () => u(game => {
         game.round = game.round - 1;
-        return game;
     }),
 
-    plusMoral: () => update(game => {
+    plusMoral: () => u(game => {
         game.moral = game.moral + 1;
-        return game;
     }),
 
-    minusMoral: () => update(game => {
+    minusMoral: () => u(game => {
         if (game.moral > 0) {
             game.moral--;
         }
-
-        return game;
     }),
 
-    initRiskCard: function (game) {
-        game.riskCardList = game.riskCardList
+    initRiskCard: () => {
+        g.riskCardList = g.riskCardList
             .sort(gameStore.random);
     },
 
-    initItemCard: function (game) {
-        game.playerList.forEach(player => {
+    initItemCard: () => {
+        g.playerList.forEach(player => {
             player.itemCardList = game.initItemCardList
                 .sort(gameStore.random)
                 .slice(0, 7)
                 .map(name => gameStore.createNewItemCard(name));
         });
 
-        game.placeList.forEach(place => {
+        g.placeList.forEach(place => {
             place.itemCardList = place.itemCardList
                 .sort(gameStore.random)
                 .map(name => gameStore.createNewItemCard(name));
@@ -59,7 +65,7 @@ gameStore = {
     },
 
     createNewItemCard: (name) => {
-        let itemCard = game.itemCardList.find(item => item.name === name);
+        let itemCard = g.itemCardList.find(item => item.name === name);
 
         return {
             ...itemCard
@@ -67,26 +73,20 @@ gameStore = {
     },
 
     getPlayerColorForSurvivor: (survivor) => {
-        return get(gameStore).playerList
+        return g.playerList
             .find(player => player.index === survivor.playerIndex)
             .color;
     },
 
-    getSurvivor: (game, type) => {
-        const survivor = game.survivorList.find(survivor => survivor.ability.type === type);
-        game.survivorList = game.survivorList.filter(survivor => survivor.ability.type !== type);
-        return survivor;
-    },
-
-    initSurvivor: function (game) {
-        game.playerList.forEach((player, playerIndex) => {
-            game.survivorList
+    initSurvivor: (game) => {
+        g.playerList.forEach((player, playerIndex) => {
+            g.survivorList
                 .sort(gameStore.random);
 
             const survivorList = [];
 
             for (let i = 0; i < 4; i++) {
-                const survivor = game.survivorList.pop();
+                const survivor = g.survivorList.pop();
                 survivor.playerIndex = playerIndex;
                 survivorList.push(survivor);
             }
@@ -95,12 +95,12 @@ gameStore = {
 
             player.survivorList = survivorList;
 
-            game.survivorList = [...game.survivorList];
+            g.survivorList = [...g.survivorList];
         });
     },
 
-    updatePlace: function (game) {
-        game.placeList.forEach(place => {
+    updatePlace: () => {
+        g.placeList.forEach(place => {
             if (place.name === '피난기지') {
                 place.trashCount = place.trashList.length;
             }
@@ -109,22 +109,20 @@ gameStore = {
 
             const initPlayerSurvivorMap = {}
 
-            game.playerList.forEach(player => {
+            g.playerList.forEach(player => {
                 initPlayerSurvivorMap[player.name] = [];
             });
 
             place.playerSurvivorMap = place.survivorList.reduce((group, survivor) => {
-                const playerName = game.playerList[survivor.playerIndex].name;
+                const playerName = g.playerList[survivor.playerIndex].name;
                 group[playerName] = group[playerName] ?? [];
                 group[playerName].push(survivor);
                 return group;
             }, initPlayerSurvivorMap);
 
-            console.log('>>> place.playerSurvivorMap', place.playerSurvivorMap);
-
             const currentSurvivorList = [...place.survivorList];
 
-            if (place.name === game.currentPlaceName) {
+            if (place.name === g.currentPlaceName) {
                 place.activeClassName = 'active';
             } else {
                 place.activeClassName = 'inactive';
@@ -159,18 +157,17 @@ gameStore = {
         });
     },
 
-    getCamp: (game) => {
-        return game.placeList.find(place => place.name === '피난기지');
+    getCamp: () => {
+        return g.placeList.find(place => place.name === '피난기지');
     },
 
-    getSurvivorList: (game) => {
-        return game.playerList.flatMap(player => player.survivorList);
+    getSurvivorList: () => {
+        return g.playerList.flatMap(player => player.survivorList);
     },
 
-    getCurrentPlayer: (game) => {
-        game = game ?? get(gameStore);
-        const playerList = game.playerList;
-        return playerList[game.turn % 2];
+    getCurrentPlayer: () => {
+        const playerList = g.playerList;
+        return playerList[g.turn % 2];
     },
 
     getCurrentPlayerColor: () => {
@@ -178,18 +175,18 @@ gameStore = {
     },
 
     getPlayerColor: (index) => {
-        return get(gameStore).playerList[index].color;
+        return g.playerList[index].color;
     },
 
-    initCamp: function (game) {
-        const survivorList = gameStore.getSurvivorList(game);
-        const camp = gameStore.getCamp(game);
+    initCamp: () => {
+        const survivorList = gameStore.getSurvivorList();
+        const camp = gameStore.getCamp();
 
         camp.survivorList = survivorList;
         camp.survivorList.forEach(survivor => survivor.place = camp);
 
         camp.foodList = [...Array(camp.foodCount).keys()]
-            .map(index => game.campFoodIndex++);
+            .map(index => g.campFoodIndex++);
 
         camp.trashList = [];
     },
@@ -250,25 +247,11 @@ gameStore = {
             return;
         }
 
-        update(game => {
-            game.currentPlaceName = currentPlaceName;
-            return game;
-        });
-
-        gameStore.updateAll();
+        u(game => game.currentPlaceName = currentPlaceName);
     },
 
-    sleep: (ms) => {
-        return new Promise(resolve => setTimeout(resolve, ms))
-    },
-
-    showMessage: async (messageList) => {
-        update(game => {
-            game.messageList = messageList;
-            return game;
-        });
-
-        await gameStore.sleep(2000);
+    showMessage: (messageList) => {
+        u(game => game.messageList = messageList);
     },
 
     processFood: (messageList) => {
@@ -516,13 +499,11 @@ gameStore = {
         gameStore.changePlaceByName(currentPlaceName);
     },
 
-    init: () => update(game => {
-        gameStore.initRiskCard(game);
-        gameStore.initItemCard(game);
-        gameStore.initSurvivor(game);
-        gameStore.initCamp(game);
-
-        return game;
+    init: () => u(game => {
+        gameStore.initRiskCard();
+        gameStore.initItemCard();
+        gameStore.initSurvivor();
+        gameStore.initCamp();
     }),
 
     getPlayerSurvivorList: (game, player) => {
@@ -644,7 +625,7 @@ gameStore = {
         });
     },
 
-    updateSurvivorCount: game => {
+    updateSurvivorCount: () => {
         game.survivorCount = game.placeList
             .map(player => player.survivorList.length)
             .reduce((a, b) => a + b, 0);
@@ -886,11 +867,11 @@ gameStore = {
         return true
     },
 
-    updateAll: () => update(game => {
+    updateAll: () => u2(game => {
         const ok = gameStore.check(game);
 
         if (!ok) {
-            return game;
+            return;
         }
 
         game.currentPlayer = game.playerList[game.turn % 2];
@@ -899,7 +880,7 @@ gameStore = {
         gameStore.updateSurvivor(game);
         gameStore.updateItemCard(game);
         gameStore.updateZombie(game);
-        gameStore.updatePlace(game);
+        gameStore.updatePlace();
         gameStore.updateSurvivorActionTable(game);
 
         return game;
@@ -1352,6 +1333,8 @@ gameStore = {
                                 currentEntrance.zombieCount--;
 
                                 if (place.survivorList.length > 0) {
+                                    const currentSurvivor = place.survivorList[Math.floor(Math.random() * place.survivorList.length)];
+                                    game.currentSurvivor = currentSurvivor;
                                     gameStore.dead(true, messageList, place);
                                 }
                             }
@@ -1399,7 +1382,7 @@ gameStore = {
             game.currentRiskCard = game.riskCardList.pop();
             game.riskCardList = [...game.riskCardList, game.currentRiskCard];
 
-            gameStore.initRiskCard(game);
+            gameStore.initRiskCard();
 
             game.riskCard = false;
             game.rollDice = true;
@@ -1685,6 +1668,8 @@ gameStore = {
         return '';
     }
 }
+
+updateAll = gameStore.updateAll;
 
 gameStore.init();
 
