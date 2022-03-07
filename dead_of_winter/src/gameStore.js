@@ -1342,7 +1342,7 @@ gameStore = {
             g.currentSurvivor = null;
         });
 
-        const message = `${currentSurvivorName} 생존자가 죽었습니다.`;
+        const message = `${currentPlace.name}에 있던 ${currentSurvivorName} 생존자가 죽었습니다.`;
 
         if (messageList !== undefined) {
             messageList.push(message);
