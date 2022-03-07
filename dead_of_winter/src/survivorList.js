@@ -7,10 +7,10 @@ const survivorList = [
         attack: 3,
         search: 4,
         ability: {
-            name: '미사용 행동 주사위 1개의 결과값을 1 높일 수 있습니다.',
-            type: 'plusPower'
-        },
-        placeName: '피난기지'
+            name: '도서관에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+            type: 'killZombie',
+            placeNameList: ['도서관']
+        }
     },
     {
         index: 1,

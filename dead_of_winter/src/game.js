@@ -4,6 +4,7 @@ import survivorList from "./survivorList";
 import riskCardList from "./riskCardList";
 
 const game = {
+    fail: false,
     itemCardAnimationType: 'risk',
     modalClass: '',
     modalType: '',

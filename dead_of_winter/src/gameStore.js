@@ -809,25 +809,29 @@ gameStore = {
             .length > 0;
     },
 
-    check: (game) => {
-        if (game.moral === 0) {
+    check: () => {
+        if (g.fail === true) {
+            return false;
+        }
+
+        if (g.moral === 0) {
             alert('사기가 0입니다. 실패하였습니다.');
             return false;
         }
 
-        if (game.round === 0) {
+        if (g.round === 0) {
             alert('라운드가 0입니다. 실패하였습니다.');
             return false;
         }
 
-        game.playerList.forEach(player => {
-            if (gameStore.getPlayerSurvivorList(game, player).length === 0) {
+        g.playerList.forEach(player => {
+            if (gameStore.getPlayerSurvivorList(g, player).length === 0) {
                 alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
                 return false;
             }
         });
 
-        if (game.deadZombieCount === 40) {
+        if (g.deadZombieCount === 40) {
             alert('목표를 완수하였습니다.');
             return false;
         }
@@ -836,9 +840,10 @@ gameStore = {
     },
 
     updateAll: () => u2(game => {
-        const ok = gameStore.check(g);
+        const ok = gameStore.check();
 
         if (!ok) {
+            g.fail = true;
             return;
         }
 
@@ -859,15 +864,12 @@ gameStore = {
         });
     },
 
-    plusPower: (currentSurvivor, currentPlace, actionIndex, useFood) => {
+    plusPower: (currentSurvivor, currentPlace, actionIndex) => {
         u(game => {
             const currentPlayer = gameStore.getCurrentPlayer();
             currentPlayer.actionDiceList[actionIndex].power++;
-
-            if (useFood) {
-                const camp = gameStore.getCamp();
-                gameStore.removeFood(camp, currentSurvivor);
-            }
+            const camp = gameStore.getCamp();
+            gameStore.removeFood(camp, currentSurvivor);
         });
     },
 
@@ -986,13 +988,6 @@ gameStore = {
                 gameStore.searchInternal(g, currentSurvivor, currentPlace, actionIndex);
                 gameStore.setUseAbility(g, currentSurvivor);
             });
-        } else if (currentSurvivor.ability.type === 'plusPower') {
-            update(game => {
-                currentSurvivor.canUseAbility = false;
-                return game;
-            });
-
-            gameStore.plusPower(currentSurvivor, currentPlace, actionIndex, false);
         } else if (currentSurvivor.ability.type === 'move') {
             u(game => {
                 g.modalClass = 'show';

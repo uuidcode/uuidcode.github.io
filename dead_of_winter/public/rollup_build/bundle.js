@@ -1,5 +1,5 @@
 
-(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35733/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
+(function(l, r) { if (!l || l.getElementById('livereloadscript')) return; r = l.createElement('script'); r.async = 1; r.src = '//' + (self.location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1'; r.id = 'livereloadscript'; l.getElementsByTagName('head')[0].appendChild(r) })(self.document);
 var app = (function () {
     'use strict';
 
@@ -1219,10 +1219,10 @@ var app = (function () {
             attack: 3,
             search: 4,
             ability: {
-                name: '미사용 행동 주사위 1개의 결과값을 1 높일 수 있습니다.',
-                type: 'plusPower'
-            },
-            placeName: '피난기지'
+                name: '도서관에 있을때 좀비 1구 처치합니다. 이때 위험 노출 주사위를 굴리지 않습니다.',
+                type: 'killZombie',
+                placeNameList: ['도서관']
+            }
         },
         {
             index: 1,
@@ -2228,6 +2228,7 @@ var app = (function () {
     ];
 
     const game = {
+        fail: false,
         itemCardAnimationType: 'risk',
         modalClass: '',
         modalType: '',
@@ -3120,25 +3121,29 @@ var app = (function () {
                 .length > 0;
         },
 
-        check: (game) => {
-            if (game.moral === 0) {
+        check: () => {
+            if (g.fail === true) {
+                return false;
+            }
+
+            if (g.moral === 0) {
                 alert('사기가 0입니다. 실패하였습니다.');
                 return false;
             }
 
-            if (game.round === 0) {
+            if (g.round === 0) {
                 alert('라운드가 0입니다. 실패하였습니다.');
                 return false;
             }
 
-            game.playerList.forEach(player => {
-                if (gameStore.getPlayerSurvivorList(game, player).length === 0) {
+            g.playerList.forEach(player => {
+                if (gameStore.getPlayerSurvivorList(g, player).length === 0) {
                     alert(`${player.name}의 생존자가 모두 죽었습니다. 실패하였습니다.`);
                     return false;
                 }
             });
 
-            if (game.deadZombieCount === 40) {
+            if (g.deadZombieCount === 40) {
                 alert('목표를 완수하였습니다.');
                 return false;
             }
@@ -3147,9 +3152,10 @@ var app = (function () {
         },
 
         updateAll: () => u2(game => {
-            const ok = gameStore.check(g);
+            const ok = gameStore.check();
 
             if (!ok) {
+                g.fail = true;
                 return;
             }
 
@@ -3170,15 +3176,12 @@ var app = (function () {
             });
         },
 
-        plusPower: (currentSurvivor, currentPlace, actionIndex, useFood) => {
+        plusPower: (currentSurvivor, currentPlace, actionIndex) => {
             u(game => {
                 const currentPlayer = gameStore.getCurrentPlayer();
                 currentPlayer.actionDiceList[actionIndex].power++;
-
-                if (useFood) {
-                    const camp = gameStore.getCamp();
-                    gameStore.removeFood(camp, currentSurvivor);
-                }
+                const camp = gameStore.getCamp();
+                gameStore.removeFood(camp, currentSurvivor);
             });
         },
 
@@ -3297,13 +3300,6 @@ var app = (function () {
                     gameStore.searchInternal(g, currentSurvivor, currentPlace, actionIndex);
                     gameStore.setUseAbility(g, currentSurvivor);
                 });
-            } else if (currentSurvivor.ability.type === 'plusPower') {
-                update(game => {
-                    currentSurvivor.canUseAbility = false;
-                    return game;
-                });
-
-                gameStore.plusPower(currentSurvivor, currentPlace, actionIndex, false);
             } else if (currentSurvivor.ability.type === 'move') {
                 u(game => {
                     g.modalClass = 'show';
@@ -6008,32 +6004,32 @@ var app = (function () {
     			add_location(button0, file$3, 210, 56, 12620);
     			attr_dev(button1, "class", "card-action-dice-button");
     			button1.disabled = button1_disabled_value = !/*action*/ ctx[41].itemFood;
-    			add_location(button1, file$3, 214, 56, 13019);
+    			add_location(button1, file$3, 214, 56, 13013);
     			add_location(td1, file$3, 209, 52, 12558);
     			attr_dev(button2, "class", "action-dice-button");
     			button2.disabled = button2_disabled_value = !/*action*/ ctx[41].attack;
-    			add_location(button2, file$3, 220, 56, 13537);
-    			add_location(td2, file$3, 219, 52, 13475);
+    			add_location(button2, file$3, 220, 56, 13531);
+    			add_location(td2, file$3, 219, 52, 13469);
     			attr_dev(button3, "class", "action-dice-button");
     			button3.disabled = button3_disabled_value = !/*action*/ ctx[41].search;
-    			add_location(button3, file$3, 225, 56, 13985);
-    			add_location(td3, file$3, 225, 52, 13981);
+    			add_location(button3, file$3, 225, 56, 13979);
+    			add_location(td3, file$3, 225, 52, 13975);
     			attr_dev(button4, "class", "action-dice-button");
     			button4.disabled = button4_disabled_value = !/*action*/ ctx[41].ability;
-    			add_location(button4, file$3, 230, 56, 14438);
-    			add_location(td4, file$3, 230, 52, 14434);
+    			add_location(button4, file$3, 230, 56, 14432);
+    			add_location(td4, file$3, 230, 52, 14428);
     			attr_dev(button5, "class", "action-dice-button");
     			button5.disabled = button5_disabled_value = !/*action*/ ctx[41].barricade;
-    			add_location(button5, file$3, 236, 56, 14948);
-    			add_location(td5, file$3, 235, 52, 14886);
+    			add_location(button5, file$3, 236, 56, 14942);
+    			add_location(td5, file$3, 235, 52, 14880);
     			attr_dev(button6, "class", "action-dice-button");
     			button6.disabled = button6_disabled_value = !/*action*/ ctx[41].invite;
-    			add_location(button6, file$3, 243, 56, 15512);
-    			add_location(td6, file$3, 242, 52, 15450);
+    			add_location(button6, file$3, 243, 56, 15506);
+    			add_location(td6, file$3, 242, 52, 15444);
     			attr_dev(button7, "class", "action-dice-button");
     			button7.disabled = button7_disabled_value = !/*action*/ ctx[41].clean;
-    			add_location(button7, file$3, 248, 56, 15952);
-    			add_location(td7, file$3, 248, 52, 15948);
+    			add_location(button7, file$3, 248, 56, 15946);
+    			add_location(td7, file$3, 248, 52, 15942);
     			add_location(tr, file$3, 205, 48, 12080);
     		},
     		m: function mount(target, anchor) {
@@ -6242,33 +6238,33 @@ var app = (function () {
     			td7 = element("td");
     			button5 = element("button");
     			t12 = text("청소");
-    			add_location(td0, file$3, 257, 52, 16561);
+    			add_location(td0, file$3, 257, 52, 16555);
     			attr_dev(button0, "class", "card-action-dice-button");
     			button0.disabled = button0_disabled_value = !/*survivor*/ ctx[38].actionItemCard.food;
-    			add_location(button0, file$3, 258, 56, 16628);
-    			add_location(td1, file$3, 258, 52, 16624);
+    			add_location(button0, file$3, 258, 56, 16622);
+    			add_location(td1, file$3, 258, 52, 16618);
     			attr_dev(button1, "class", "card-action-dice-button");
     			button1.disabled = button1_disabled_value = !/*survivor*/ ctx[38].actionItemCard.attack;
-    			add_location(button1, file$3, 262, 56, 17058);
-    			add_location(td2, file$3, 262, 52, 17054);
+    			add_location(button1, file$3, 262, 56, 17052);
+    			add_location(td2, file$3, 262, 52, 17048);
     			attr_dev(button2, "class", "card-action-dice-button");
     			button2.disabled = button2_disabled_value = !/*survivor*/ ctx[38].actionItemCard.search;
-    			add_location(button2, file$3, 266, 56, 17490);
-    			add_location(td3, file$3, 266, 52, 17486);
+    			add_location(button2, file$3, 266, 56, 17484);
+    			add_location(td3, file$3, 266, 52, 17480);
     			attr_dev(button3, "class", "card-action-dice-button");
     			button3.disabled = button3_disabled_value = !/*survivor*/ ctx[38].actionItemCard.care;
-    			add_location(button3, file$3, 270, 56, 17922);
-    			add_location(td4, file$3, 270, 52, 17918);
+    			add_location(button3, file$3, 270, 56, 17916);
+    			add_location(td4, file$3, 270, 52, 17912);
     			attr_dev(button4, "class", "card-action-dice-button");
     			button4.disabled = button4_disabled_value = !/*survivor*/ ctx[38].actionItemCard.barricade;
-    			add_location(button4, file$3, 274, 56, 18350);
-    			add_location(td5, file$3, 274, 52, 18346);
-    			add_location(td6, file$3, 278, 52, 18787);
+    			add_location(button4, file$3, 274, 56, 18344);
+    			add_location(td5, file$3, 274, 52, 18340);
+    			add_location(td6, file$3, 278, 52, 18781);
     			attr_dev(button5, "class", "card-action-dice-button");
     			button5.disabled = button5_disabled_value = !/*survivor*/ ctx[38].actionItemCard.clean;
-    			add_location(button5, file$3, 279, 56, 18854);
-    			add_location(td7, file$3, 279, 52, 18850);
-    			add_location(tr, file$3, 256, 48, 16503);
+    			add_location(button5, file$3, 279, 56, 18848);
+    			add_location(td7, file$3, 279, 52, 18844);
+    			add_location(tr, file$3, 256, 48, 16497);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -7103,7 +7099,7 @@ var app = (function () {
     	const click_handler_1 = () => gameStore$1.rollActionDice();
     	const click_handler_2 = () => gameStore$1.turn();
     	const click_handler_3 = (survivor, actionIndex) => gameStore$1.done(survivor, actionIndex);
-    	const click_handler_4 = (survivor, actionIndex) => gameStore$1.plusPower(survivor, currentPlace, actionIndex, true);
+    	const click_handler_4 = (survivor, actionIndex) => gameStore$1.plusPower(survivor, currentPlace, actionIndex);
     	const click_handler_5 = actionIndex => gameStore$1.selectItemCard(currentPlace, actionIndex);
     	const click_handler_6 = (survivor, actionIndex) => gameStore$1.attack(survivor, currentPlace, actionIndex);
     	const click_handler_7 = (survivor, actionIndex) => gameStore$1.search(null, survivor, currentPlace, actionIndex);
