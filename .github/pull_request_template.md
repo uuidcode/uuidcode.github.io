@@ -2,7 +2,15 @@
 
 <details>
   <summary>Click to expand</summary>
-  whatever
+<pre>
+// bad
+if (ok) return true;
+
+// good
+if (ok) {
+    return true;
+}
+</pre>
 </details>
 
 ## jira
