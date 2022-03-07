@@ -6,6 +6,5 @@
 </details>
 
 ## jira
-https://jira.daumkakao.com/browse/
 
 
