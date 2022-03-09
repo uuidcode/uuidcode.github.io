@@ -223,9 +223,6 @@ gameStore = {
             g.currentSurvivor = currentSurvivor;
             g.currentSurvivor.place = g.placeList.find(place => place.name === placeName);
 
-            console.log('>>> currentSurvivor', currentSurvivor);
-            console.log('>>> g.currentSurvivor', g.currentSurvivor);
-
             g.currentPlaceName = placeName;
 
             if (g.currentActionIndex >= 0) {
@@ -970,8 +967,6 @@ gameStore = {
     },
 
     useAbility: (currentSurvivor, currentPlace, actionIndex) => {
-        console.log('>>> currentSurvivor.ability.type', currentSurvivor.ability.type);
-
         const currentPlaceName = currentPlace.name;
         const placeNameList = currentSurvivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
@@ -993,12 +988,14 @@ gameStore = {
                 g.modalClass = 'show';
                 g.modalType = 'move';
                 g.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.place = currentPlace;
                 g.currentActionIndex = actionIndex;
                 currentSurvivor.canUseAbility = false;
             });
         } else if (currentSurvivor.ability.type === 'care') {
             u(game => {
                 g.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.place = currentPlace;
                 g.currentPlace = currentPlace;
                 g.modalClass = 'show';
                 g.modalType = 'care';
@@ -1015,6 +1012,7 @@ gameStore = {
         } else if (currentSurvivor.ability.type === 'plusMoral') {
             u(game => {
                 g.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.place = currentPlace;
                 currentSurvivor.canUseAbility = false;
                 g.currentPlayer.actionDiceList[actionIndex].done = true;
             });
@@ -1045,12 +1043,14 @@ gameStore = {
 
                 gameStore.addSurvivor(g, rescueItemCard)
                 g.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.place = currentPlace;
                 currentSurvivor.canUseAbility = false;
                 g.currentPlayer.actionDiceList[actionIndex].done = true;
             });
         } else if (currentSurvivor.ability.type === 'clean') {
             update(game => {
                 game.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.place = currentPlace;
                 game.currentSurvivor.canUseAbility = false;
                 return game;
             });
@@ -1059,6 +1059,7 @@ gameStore = {
         } else if (currentSurvivor.ability.type === 'barricade') {
             update(game => {
                 game.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.place = currentPlace;
                 game.currentSurvivor.canUseAbility = false;
                 return game;
             });
@@ -1158,6 +1159,7 @@ gameStore = {
 
             if (actionIndex !== undefined) {
                 game.currentSurvivor = currentSurvivor;
+                game.currentSurvivor.place = currentPlace;
                 gameStore.rollDangerActionDice(currentSurvivor, true);
             }
         }
@@ -1239,6 +1241,7 @@ gameStore = {
                                 if (place.survivorList.length > 0) {
                                     const randomIndex = Math.floor(Math.random() * place.survivorList.length);
                                     g.currentSurvivor = place.survivorList[randomIndex];
+                                    g.currentSurvivor.place = place;
                                     gameStore.dead(true, messageList, place);
                                 }
                             }
@@ -1463,6 +1466,7 @@ gameStore = {
 
                 currentPlace.survivorList.forEach(survivor => {
                     g.currentSurvivor = survivor;
+                    g.currentSurvivor.place = currentPlace;
                     gameStore.wound();
                 })
             }

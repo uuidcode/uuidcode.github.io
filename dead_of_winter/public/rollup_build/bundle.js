@@ -2543,9 +2543,6 @@ var app = (function () {
                 g.currentSurvivor = currentSurvivor;
                 g.currentSurvivor.place = g.placeList.find(place => place.name === placeName);
 
-                console.log('>>> currentSurvivor', currentSurvivor);
-                console.log('>>> g.currentSurvivor', g.currentSurvivor);
-
                 g.currentPlaceName = placeName;
 
                 if (g.currentActionIndex >= 0) {
@@ -3290,8 +3287,6 @@ var app = (function () {
         },
 
         useAbility: (currentSurvivor, currentPlace, actionIndex) => {
-            console.log('>>> currentSurvivor.ability.type', currentSurvivor.ability.type);
-
             currentPlace.name;
             currentSurvivor.ability.placeNameList ?? [];
             gameStore.getCurrentPlayer();
@@ -3313,12 +3308,14 @@ var app = (function () {
                     g.modalClass = 'show';
                     g.modalType = 'move';
                     g.currentSurvivor = currentSurvivor;
+                    g.currentSurvivor.place = currentPlace;
                     g.currentActionIndex = actionIndex;
                     currentSurvivor.canUseAbility = false;
                 });
             } else if (currentSurvivor.ability.type === 'care') {
                 u(game => {
                     g.currentSurvivor = currentSurvivor;
+                    g.currentSurvivor.place = currentPlace;
                     g.currentPlace = currentPlace;
                     g.modalClass = 'show';
                     g.modalType = 'care';
@@ -3335,6 +3332,7 @@ var app = (function () {
             } else if (currentSurvivor.ability.type === 'plusMoral') {
                 u(game => {
                     g.currentSurvivor = currentSurvivor;
+                    g.currentSurvivor.place = currentPlace;
                     currentSurvivor.canUseAbility = false;
                     g.currentPlayer.actionDiceList[actionIndex].done = true;
                 });
@@ -3365,12 +3363,14 @@ var app = (function () {
 
                     gameStore.addSurvivor(g, rescueItemCard);
                     g.currentSurvivor = currentSurvivor;
+                    g.currentSurvivor.place = currentPlace;
                     currentSurvivor.canUseAbility = false;
                     g.currentPlayer.actionDiceList[actionIndex].done = true;
                 });
             } else if (currentSurvivor.ability.type === 'clean') {
                 update(game => {
                     game.currentSurvivor = currentSurvivor;
+                    g.currentSurvivor.place = currentPlace;
                     game.currentSurvivor.canUseAbility = false;
                     return game;
                 });
@@ -3379,6 +3379,7 @@ var app = (function () {
             } else if (currentSurvivor.ability.type === 'barricade') {
                 update(game => {
                     game.currentSurvivor = currentSurvivor;
+                    g.currentSurvivor.place = currentPlace;
                     game.currentSurvivor.canUseAbility = false;
                     return game;
                 });
@@ -3478,6 +3479,7 @@ var app = (function () {
 
                 if (actionIndex !== undefined) {
                     game.currentSurvivor = currentSurvivor;
+                    game.currentSurvivor.place = currentPlace;
                     gameStore.rollDangerActionDice(currentSurvivor, true);
                 }
             }
@@ -3559,6 +3561,7 @@ var app = (function () {
                                     if (place.survivorList.length > 0) {
                                         const randomIndex = Math.floor(Math.random() * place.survivorList.length);
                                         g.currentSurvivor = place.survivorList[randomIndex];
+                                        g.currentSurvivor.place = place;
                                         gameStore.dead(true, messageList, place);
                                     }
                                 }
@@ -3783,6 +3786,7 @@ var app = (function () {
 
                     currentPlace.survivorList.forEach(survivor => {
                         g.currentSurvivor = survivor;
+                        g.currentSurvivor.place = currentPlace;
                         gameStore.wound();
                     });
                 }
