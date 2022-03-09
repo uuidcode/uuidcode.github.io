@@ -5684,6 +5684,7 @@ var app = (function () {
     			}
 
     			t = text("\r\n                                        로 이동");
+    			attr_dev(td, "colspan", "2");
     			add_location(td, file$3, 191, 36, 11278);
     			add_location(tr, file$3, 190, 32, 11236);
     		},
@@ -5755,7 +5756,7 @@ var app = (function () {
     			attr_dev(button, "class", "none-action-dice-button");
     			button.disabled = button_disabled_value = /*place*/ ctx[44].disabled;
     			set_style(button, "margin-right", "5px");
-    			add_location(button, file$3, 193, 44, 11411);
+    			add_location(button, file$3, 193, 44, 11423);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -5832,9 +5833,10 @@ var app = (function () {
     			if (if_block) if_block.c();
     			attr_dev(table, "class", "game-table");
     			set_style(table, "width", "100%");
-    			add_location(table, file$3, 206, 40, 12134);
-    			add_location(td, file$3, 205, 36, 12088);
-    			add_location(tr, file$3, 204, 32, 12046);
+    			add_location(table, file$3, 206, 40, 12158);
+    			attr_dev(td, "colspan", "2");
+    			add_location(td, file$3, 205, 36, 12100);
+    			add_location(tr, file$3, 204, 32, 12058);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -6028,7 +6030,7 @@ var app = (function () {
     			t16 = text("청소");
     			set_style(span, "cursor", "pointer");
     			attr_dev(span, "alt", "행동주사위 포기");
-    			add_location(span, file$3, 210, 56, 12551);
+    			add_location(span, file$3, 210, 56, 12575);
     			set_style(td0, "width", "20px");
     			set_style(td0, "text-align", "center");
 
@@ -6036,39 +6038,39 @@ var app = (function () {
     			? 'lightgray'
     			: 'lightgreen');
 
-    			add_location(td0, file$3, 209, 52, 12385);
+    			add_location(td0, file$3, 209, 52, 12409);
     			attr_dev(button0, "class", "food-action-dice-button");
     			button0.disabled = button0_disabled_value = !/*action*/ ctx[41].food;
-    			add_location(button0, file$3, 213, 56, 12867);
+    			add_location(button0, file$3, 213, 56, 12891);
     			attr_dev(button1, "class", "card-action-dice-button");
     			button1.disabled = button1_disabled_value = !/*action*/ ctx[41].itemFood;
-    			add_location(button1, file$3, 217, 56, 13260);
-    			add_location(td1, file$3, 212, 52, 12805);
+    			add_location(button1, file$3, 217, 56, 13284);
+    			add_location(td1, file$3, 212, 52, 12829);
     			attr_dev(button2, "class", "action-dice-button");
     			button2.disabled = button2_disabled_value = !/*action*/ ctx[41].attack;
-    			add_location(button2, file$3, 223, 56, 13778);
-    			add_location(td2, file$3, 222, 52, 13716);
+    			add_location(button2, file$3, 223, 56, 13802);
+    			add_location(td2, file$3, 222, 52, 13740);
     			attr_dev(button3, "class", "action-dice-button");
     			button3.disabled = button3_disabled_value = !/*action*/ ctx[41].search;
-    			add_location(button3, file$3, 228, 56, 14226);
-    			add_location(td3, file$3, 228, 52, 14222);
+    			add_location(button3, file$3, 228, 56, 14250);
+    			add_location(td3, file$3, 228, 52, 14246);
     			attr_dev(button4, "class", "action-dice-button");
     			button4.disabled = button4_disabled_value = !/*action*/ ctx[41].ability;
-    			add_location(button4, file$3, 233, 56, 14679);
-    			add_location(td4, file$3, 233, 52, 14675);
+    			add_location(button4, file$3, 233, 56, 14703);
+    			add_location(td4, file$3, 233, 52, 14699);
     			attr_dev(button5, "class", "action-dice-button");
     			button5.disabled = button5_disabled_value = !/*action*/ ctx[41].barricade;
-    			add_location(button5, file$3, 239, 56, 15189);
-    			add_location(td5, file$3, 238, 52, 15127);
+    			add_location(button5, file$3, 239, 56, 15213);
+    			add_location(td5, file$3, 238, 52, 15151);
     			attr_dev(button6, "class", "action-dice-button");
     			button6.disabled = button6_disabled_value = !/*action*/ ctx[41].invite;
-    			add_location(button6, file$3, 246, 56, 15753);
-    			add_location(td6, file$3, 245, 52, 15691);
+    			add_location(button6, file$3, 246, 56, 15777);
+    			add_location(td6, file$3, 245, 52, 15715);
     			attr_dev(button7, "class", "action-dice-button");
     			button7.disabled = button7_disabled_value = !/*action*/ ctx[41].clean;
-    			add_location(button7, file$3, 251, 56, 16193);
-    			add_location(td7, file$3, 251, 52, 16189);
-    			add_location(tr, file$3, 208, 48, 12327);
+    			add_location(button7, file$3, 251, 56, 16217);
+    			add_location(td7, file$3, 251, 52, 16213);
+    			add_location(tr, file$3, 208, 48, 12351);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -6276,33 +6278,33 @@ var app = (function () {
     			td7 = element("td");
     			button5 = element("button");
     			t12 = text("청소");
-    			add_location(td0, file$3, 260, 52, 16802);
+    			add_location(td0, file$3, 260, 52, 16826);
     			attr_dev(button0, "class", "card-action-dice-button");
     			button0.disabled = button0_disabled_value = !/*survivor*/ ctx[38].actionItemCard.food;
-    			add_location(button0, file$3, 261, 56, 16869);
-    			add_location(td1, file$3, 261, 52, 16865);
+    			add_location(button0, file$3, 261, 56, 16893);
+    			add_location(td1, file$3, 261, 52, 16889);
     			attr_dev(button1, "class", "card-action-dice-button");
     			button1.disabled = button1_disabled_value = !/*survivor*/ ctx[38].actionItemCard.attack;
-    			add_location(button1, file$3, 265, 56, 17299);
-    			add_location(td2, file$3, 265, 52, 17295);
+    			add_location(button1, file$3, 265, 56, 17323);
+    			add_location(td2, file$3, 265, 52, 17319);
     			attr_dev(button2, "class", "card-action-dice-button");
     			button2.disabled = button2_disabled_value = !/*survivor*/ ctx[38].actionItemCard.search;
-    			add_location(button2, file$3, 269, 56, 17731);
-    			add_location(td3, file$3, 269, 52, 17727);
+    			add_location(button2, file$3, 269, 56, 17755);
+    			add_location(td3, file$3, 269, 52, 17751);
     			attr_dev(button3, "class", "card-action-dice-button");
     			button3.disabled = button3_disabled_value = !/*survivor*/ ctx[38].actionItemCard.care;
-    			add_location(button3, file$3, 273, 56, 18163);
-    			add_location(td4, file$3, 273, 52, 18159);
+    			add_location(button3, file$3, 273, 56, 18187);
+    			add_location(td4, file$3, 273, 52, 18183);
     			attr_dev(button4, "class", "card-action-dice-button");
     			button4.disabled = button4_disabled_value = !/*survivor*/ ctx[38].actionItemCard.barricade;
-    			add_location(button4, file$3, 277, 56, 18591);
-    			add_location(td5, file$3, 277, 52, 18587);
-    			add_location(td6, file$3, 281, 52, 19028);
+    			add_location(button4, file$3, 277, 56, 18615);
+    			add_location(td5, file$3, 277, 52, 18611);
+    			add_location(td6, file$3, 281, 52, 19052);
     			attr_dev(button5, "class", "card-action-dice-button");
     			button5.disabled = button5_disabled_value = !/*survivor*/ ctx[38].actionItemCard.clean;
-    			add_location(button5, file$3, 282, 56, 19095);
-    			add_location(td7, file$3, 282, 52, 19091);
-    			add_location(tr, file$3, 259, 48, 16744);
+    			add_location(button5, file$3, 282, 56, 19119);
+    			add_location(td7, file$3, 282, 52, 19115);
+    			add_location(tr, file$3, 259, 48, 16768);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);

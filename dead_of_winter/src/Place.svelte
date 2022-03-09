@@ -189,7 +189,7 @@
                             </tr>
                             {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
                                 <tr>
-                                    <td>
+                                    <td colspan="2">
                                         {#each survivor.targetPlaceList as place}
                                             <button class="none-action-dice-button"
                                                     disabled={place.disabled}
@@ -203,7 +203,7 @@
 
                             {#if survivor.actionTable.length > 0}
                                 <tr>
-                                    <td>
+                                    <td colspan="2">
                                         <table class="game-table" style="width: 100%">
                                             {#each survivor.actionTable as action, actionIndex}
                                                 <tr>
