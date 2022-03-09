@@ -139,7 +139,7 @@
                         <table class="game-table" style="width: 100%">
                             <tr>
                                 <td rowspan="2" style="width:40px;" valign="top">
-                                    <img src="image/{survivor.index}.png" style="width: 60px;height:60px">
+                                    <img src="image/{survivor.index}.png" style="width: 60px;height:60px" alt="">
                                 </td>
                                 <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
                                     <div style="display:flex">
