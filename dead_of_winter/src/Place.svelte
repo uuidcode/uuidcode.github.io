@@ -138,6 +138,9 @@
                     {#if survivor}
                         <table class="game-table" style="width: 100%">
                             <tr>
+                                <td rowspan="2" style="width:40px;" valign="top">
+                                    <img src="image/{survivor.index}.png" style="width: 60px;height:60px">
+                                </td>
                                 <td style="background-color: {gameStore.getPlayerColorForSurvivor(survivor)}">
                                     <div style="display:flex">
                                         <div style=" display: flex;align-items: center;">
@@ -177,7 +180,7 @@
                             </tr>
                             <tr>
                                 <td>
-                                    {survivor.ability.name}
+                                    {survivor.job} : {survivor.ability.name}
 
                                     {#if survivor.canUseAbility == false}
                                         <span style="background-color: lightgreen">능력을 사용하였습니다.</span>

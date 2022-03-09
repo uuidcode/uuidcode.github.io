@@ -31,6 +31,14 @@ var app = (function () {
     function safe_not_equal(a, b) {
         return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
     }
+    let src_url_equal_anchor;
+    function src_url_equal(element_src, url) {
+        if (!src_url_equal_anchor) {
+            src_url_equal_anchor = document.createElement('a');
+        }
+        src_url_equal_anchor.href = url;
+        return element_src === src_url_equal_anchor.href;
+    }
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
@@ -1441,7 +1449,7 @@ var app = (function () {
         },
         {
             index: 18,
-            name: '배브 러셀',
+            name: '베브 러셀',
             job: '어머니',
             power: 34,
             attack: 2,
@@ -1506,7 +1514,7 @@ var app = (function () {
         },
         {
             index: 23,
-            name: '어서 서스턴',
+            name: '아서 서스턴',
             job: '교장',
             power: 62,
             attack: 4,
@@ -3654,7 +3662,7 @@ var app = (function () {
                 g.currentSurvivor = null;
             });
 
-            const message = `${currentSurvivorName} 생존자가 죽었습니다.`;
+            const message = `${currentPlace.name}에 있던 ${currentSurvivorName} 생존자가 죽었습니다.`;
 
             if (messageList !== undefined) {
                 messageList.push(message);
@@ -5112,58 +5120,65 @@ var app = (function () {
     function create_if_block$2(ctx) {
     	let table1;
     	let tr1;
-    	let td8;
+    	let td0;
+    	let img;
+    	let img_src_value;
+    	let t0;
+    	let td9;
     	let div5;
     	let div1;
     	let span;
-    	let t0_value = /*survivor*/ ctx[38].playerName + "";
-    	let t0;
+    	let t1_value = /*survivor*/ ctx[38].playerName + "";
     	let t1;
-    	let div0;
-    	let t2_value = /*survivor*/ ctx[38].name + "";
     	let t2;
+    	let div0;
+    	let t3_value = /*survivor*/ ctx[38].name + "";
     	let t3;
+    	let t4;
     	let table0;
     	let tr0;
-    	let td0;
-    	let t5;
     	let td1;
-    	let t6_value = /*survivor*/ ctx[38].power + "";
     	let t6;
-    	let t7;
     	let td2;
-    	let t9;
+    	let t7_value = /*survivor*/ ctx[38].power + "";
+    	let t7;
+    	let t8;
     	let td3;
-    	let t10_value = /*survivor*/ ctx[38].attack + "";
     	let t10;
-    	let t11;
     	let td4;
-    	let t13;
+    	let t11_value = /*survivor*/ ctx[38].attack + "";
+    	let t11;
+    	let t12;
     	let td5;
-    	let t14_value = /*survivor*/ ctx[38].search + "";
     	let t14;
-    	let t15;
     	let td6;
-    	let t17;
+    	let t15_value = /*survivor*/ ctx[38].search + "";
+    	let t15;
+    	let t16;
     	let td7;
+    	let t18;
+    	let td8;
     	let div3;
     	let div2;
-    	let t18_value = /*survivor*/ ctx[38].wound + "";
-    	let t18;
+    	let t19_value = /*survivor*/ ctx[38].wound + "";
     	let t19;
     	let t20;
+    	let t21;
     	let div4;
     	let each_blocks = [];
     	let each1_lookup = new Map();
-    	let t21;
-    	let tr2;
-    	let td9;
-    	let t22_value = /*survivor*/ ctx[38].ability.name + "";
     	let t22;
+    	let tr2;
+    	let td10;
+    	let t23_value = /*survivor*/ ctx[38].job + "";
     	let t23;
     	let t24;
-    	let show_if = /*survivor*/ ctx[38].actionTable.length > 0 && gameStore$1.isCurrentPlayerOfSurvivor(/*survivor*/ ctx[38]) == true;
+    	let t25_value = /*survivor*/ ctx[38].ability.name + "";
     	let t25;
+    	let t26;
+    	let t27;
+    	let show_if = /*survivor*/ ctx[38].actionTable.length > 0 && gameStore$1.isCurrentPlayerOfSurvivor(/*survivor*/ ctx[38]) == true;
+    	let t28;
     	let current;
     	let each_value_4 = /*survivor*/ ctx[38].woundList;
     	validate_each_argument(each_value_4);
@@ -5192,101 +5207,114 @@ var app = (function () {
     		c: function create() {
     			table1 = element("table");
     			tr1 = element("tr");
-    			td8 = element("td");
+    			td0 = element("td");
+    			img = element("img");
+    			t0 = space();
+    			td9 = element("td");
     			div5 = element("div");
     			div1 = element("div");
     			span = element("span");
-    			t0 = text(t0_value);
-    			t1 = space();
+    			t1 = text(t1_value);
+    			t2 = space();
     			div0 = element("div");
-    			t2 = text(t2_value);
-    			t3 = space();
+    			t3 = text(t3_value);
+    			t4 = space();
     			table0 = element("table");
     			tr0 = element("tr");
-    			td0 = element("td");
-    			td0.textContent = "파워";
-    			t5 = space();
     			td1 = element("td");
-    			t6 = text(t6_value);
-    			t7 = space();
+    			td1.textContent = "파워";
+    			t6 = space();
     			td2 = element("td");
-    			td2.textContent = "공격";
-    			t9 = space();
+    			t7 = text(t7_value);
+    			t8 = space();
     			td3 = element("td");
-    			t10 = text(t10_value);
-    			t11 = space();
+    			td3.textContent = "공격";
+    			t10 = space();
     			td4 = element("td");
-    			td4.textContent = "검색";
-    			t13 = space();
+    			t11 = text(t11_value);
+    			t12 = space();
     			td5 = element("td");
-    			t14 = text(t14_value);
-    			t15 = space();
+    			td5.textContent = "검색";
+    			t14 = space();
     			td6 = element("td");
-    			td6.textContent = "부상";
-    			t17 = space();
+    			t15 = text(t15_value);
+    			t16 = space();
     			td7 = element("td");
+    			td7.textContent = "부상";
+    			t18 = space();
+    			td8 = element("td");
     			div3 = element("div");
     			div2 = element("div");
-    			t18 = text(t18_value);
-    			t19 = space();
+    			t19 = text(t19_value);
+    			t20 = space();
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t20 = space();
+    			t21 = space();
     			div4 = element("div");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t21 = space();
+    			t22 = space();
     			tr2 = element("tr");
-    			td9 = element("td");
-    			t22 = text(t22_value);
-    			t23 = space();
+    			td10 = element("td");
+    			t23 = text(t23_value);
+    			t24 = text(" : ");
+    			t25 = text(t25_value);
+    			t26 = space();
     			if (if_block0) if_block0.c();
-    			t24 = space();
+    			t27 = space();
     			if (if_block1) if_block1.c();
-    			t25 = space();
+    			t28 = space();
     			if (if_block2) if_block2.c();
+    			if (!src_url_equal(img.src, img_src_value = "image/" + /*survivor*/ ctx[38].index + ".png")) attr_dev(img, "src", img_src_value);
+    			set_style(img, "width", "60px");
+    			set_style(img, "height", "60px");
+    			add_location(img, file$3, 141, 36, 7656);
+    			attr_dev(td0, "rowspan", "2");
+    			set_style(td0, "width", "40px");
+    			attr_dev(td0, "valign", "top");
+    			add_location(td0, file$3, 140, 32, 7569);
     			set_style(span, "padding", "2px 10px");
     			set_style(span, "border-radius", "10px");
     			set_style(span, "border", "1px solid darkgray");
-    			add_location(span, file$3, 143, 44, 7848);
+    			add_location(span, file$3, 146, 44, 8078);
     			set_style(div0, "display", "inline-block");
     			set_style(div0, "margin-left", "4px");
-    			add_location(div0, file$3, 144, 44, 7999);
+    			add_location(div0, file$3, 147, 44, 8229);
     			set_style(div1, "display", "flex");
     			set_style(div1, "align-items", "center");
-    			add_location(div1, file$3, 142, 40, 7753);
-    			add_location(td0, file$3, 148, 48, 8313);
-    			add_location(td1, file$3, 149, 48, 8374);
-    			add_location(td2, file$3, 150, 48, 8449);
-    			add_location(td3, file$3, 151, 48, 8510);
-    			add_location(td4, file$3, 152, 48, 8586);
-    			add_location(td5, file$3, 153, 48, 8647);
-    			add_location(td6, file$3, 154, 48, 8723);
-    			add_location(div2, file$3, 157, 56, 8972);
+    			add_location(div1, file$3, 145, 40, 7983);
+    			add_location(td1, file$3, 151, 48, 8543);
+    			add_location(td2, file$3, 152, 48, 8604);
+    			add_location(td3, file$3, 153, 48, 8679);
+    			add_location(td4, file$3, 154, 48, 8740);
+    			add_location(td5, file$3, 155, 48, 8816);
+    			add_location(td6, file$3, 156, 48, 8877);
+    			add_location(td7, file$3, 157, 48, 8953);
+    			add_location(div2, file$3, 160, 56, 9202);
     			set_style(div3, "display", "flex");
     			set_style(div3, "align-items", "center");
     			set_style(div3, "justify-content", "center");
-    			add_location(div3, file$3, 156, 52, 8842);
-    			add_location(td7, file$3, 155, 48, 8784);
-    			add_location(tr0, file$3, 147, 44, 8259);
+    			add_location(div3, file$3, 159, 52, 9072);
+    			add_location(td8, file$3, 158, 48, 9014);
+    			add_location(tr0, file$3, 150, 44, 8489);
     			attr_dev(table0, "class", "game-table");
     			set_style(table0, "margin-left", "5px");
-    			add_location(table0, file$3, 146, 40, 8162);
+    			add_location(table0, file$3, 149, 40, 8392);
     			set_style(div4, "display", "flex");
-    			add_location(div4, file$3, 165, 40, 9601);
+    			add_location(div4, file$3, 168, 40, 9831);
     			set_style(div5, "display", "flex");
-    			add_location(div5, file$3, 141, 36, 7685);
-    			set_style(td8, "background-color", gameStore$1.getPlayerColorForSurvivor(/*survivor*/ ctx[38]));
-    			add_location(td8, file$3, 140, 32, 7569);
+    			add_location(div5, file$3, 144, 36, 7915);
+    			set_style(td9, "background-color", gameStore$1.getPlayerColorForSurvivor(/*survivor*/ ctx[38]));
+    			add_location(td9, file$3, 143, 32, 7799);
     			add_location(tr1, file$3, 139, 28, 7531);
-    			add_location(td9, file$3, 178, 32, 10468);
-    			add_location(tr2, file$3, 177, 28, 10430);
+    			add_location(td10, file$3, 181, 32, 10698);
+    			add_location(tr2, file$3, 180, 28, 10660);
     			attr_dev(table1, "class", "game-table");
     			set_style(table1, "width", "100%");
     			add_location(table1, file$3, 138, 24, 7455);
@@ -5294,70 +5322,79 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, table1, anchor);
     			append_dev(table1, tr1);
-    			append_dev(tr1, td8);
-    			append_dev(td8, div5);
+    			append_dev(tr1, td0);
+    			append_dev(td0, img);
+    			append_dev(tr1, t0);
+    			append_dev(tr1, td9);
+    			append_dev(td9, div5);
     			append_dev(div5, div1);
     			append_dev(div1, span);
-    			append_dev(span, t0);
-    			append_dev(div1, t1);
+    			append_dev(span, t1);
+    			append_dev(div1, t2);
     			append_dev(div1, div0);
-    			append_dev(div0, t2);
-    			append_dev(div5, t3);
+    			append_dev(div0, t3);
+    			append_dev(div5, t4);
     			append_dev(div5, table0);
     			append_dev(table0, tr0);
-    			append_dev(tr0, td0);
-    			append_dev(tr0, t5);
     			append_dev(tr0, td1);
-    			append_dev(td1, t6);
-    			append_dev(tr0, t7);
+    			append_dev(tr0, t6);
     			append_dev(tr0, td2);
-    			append_dev(tr0, t9);
+    			append_dev(td2, t7);
+    			append_dev(tr0, t8);
     			append_dev(tr0, td3);
-    			append_dev(td3, t10);
-    			append_dev(tr0, t11);
+    			append_dev(tr0, t10);
     			append_dev(tr0, td4);
-    			append_dev(tr0, t13);
+    			append_dev(td4, t11);
+    			append_dev(tr0, t12);
     			append_dev(tr0, td5);
-    			append_dev(td5, t14);
-    			append_dev(tr0, t15);
+    			append_dev(tr0, t14);
     			append_dev(tr0, td6);
-    			append_dev(tr0, t17);
+    			append_dev(td6, t15);
+    			append_dev(tr0, t16);
     			append_dev(tr0, td7);
-    			append_dev(td7, div3);
+    			append_dev(tr0, t18);
+    			append_dev(tr0, td8);
+    			append_dev(td8, div3);
     			append_dev(div3, div2);
-    			append_dev(div2, t18);
-    			append_dev(div3, t19);
+    			append_dev(div2, t19);
+    			append_dev(div3, t20);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(div3, null);
     			}
 
-    			append_dev(div5, t20);
+    			append_dev(div5, t21);
     			append_dev(div5, div4);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(div4, null);
     			}
 
-    			append_dev(table1, t21);
+    			append_dev(table1, t22);
     			append_dev(table1, tr2);
-    			append_dev(tr2, td9);
-    			append_dev(td9, t22);
-    			append_dev(td9, t23);
-    			if (if_block0) if_block0.m(td9, null);
-    			append_dev(table1, t24);
+    			append_dev(tr2, td10);
+    			append_dev(td10, t23);
+    			append_dev(td10, t24);
+    			append_dev(td10, t25);
+    			append_dev(td10, t26);
+    			if (if_block0) if_block0.m(td10, null);
+    			append_dev(table1, t27);
     			if (if_block1) if_block1.m(table1, null);
-    			append_dev(table1, t25);
+    			append_dev(table1, t28);
     			if (if_block2) if_block2.m(table1, null);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t0_value !== (t0_value = /*survivor*/ ctx[38].playerName + "")) set_data_dev(t0, t0_value);
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t2_value !== (t2_value = /*survivor*/ ctx[38].name + "")) set_data_dev(t2, t2_value);
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t6_value !== (t6_value = /*survivor*/ ctx[38].power + "")) set_data_dev(t6, t6_value);
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t10_value !== (t10_value = /*survivor*/ ctx[38].attack + "")) set_data_dev(t10, t10_value);
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t14_value !== (t14_value = /*survivor*/ ctx[38].search + "")) set_data_dev(t14, t14_value);
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t18_value !== (t18_value = /*survivor*/ ctx[38].wound + "")) set_data_dev(t18, t18_value);
+    			if (!current || dirty[0] & /*currentPlace*/ 1 && !src_url_equal(img.src, img_src_value = "image/" + /*survivor*/ ctx[38].index + ".png")) {
+    				attr_dev(img, "src", img_src_value);
+    			}
+
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t1_value !== (t1_value = /*survivor*/ ctx[38].playerName + "")) set_data_dev(t1, t1_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t3_value !== (t3_value = /*survivor*/ ctx[38].name + "")) set_data_dev(t3, t3_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t7_value !== (t7_value = /*survivor*/ ctx[38].power + "")) set_data_dev(t7, t7_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t11_value !== (t11_value = /*survivor*/ ctx[38].attack + "")) set_data_dev(t11, t11_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t15_value !== (t15_value = /*survivor*/ ctx[38].search + "")) set_data_dev(t15, t15_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t19_value !== (t19_value = /*survivor*/ ctx[38].wound + "")) set_data_dev(t19, t19_value);
 
     			if (dirty[0] & /*currentPlace*/ 1) {
     				const old_length = each_value_4.length;
@@ -5394,16 +5431,17 @@ var app = (function () {
     			}
 
     			if (!current || dirty[0] & /*currentPlace*/ 1) {
-    				set_style(td8, "background-color", gameStore$1.getPlayerColorForSurvivor(/*survivor*/ ctx[38]));
+    				set_style(td9, "background-color", gameStore$1.getPlayerColorForSurvivor(/*survivor*/ ctx[38]));
     			}
 
-    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t22_value !== (t22_value = /*survivor*/ ctx[38].ability.name + "")) set_data_dev(t22, t22_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t23_value !== (t23_value = /*survivor*/ ctx[38].job + "")) set_data_dev(t23, t23_value);
+    			if ((!current || dirty[0] & /*currentPlace*/ 1) && t25_value !== (t25_value = /*survivor*/ ctx[38].ability.name + "")) set_data_dev(t25, t25_value);
 
     			if (/*survivor*/ ctx[38].canUseAbility == false) {
     				if (if_block0) ; else {
     					if_block0 = create_if_block_4(ctx);
     					if_block0.c();
-    					if_block0.m(td9, null);
+    					if_block0.m(td10, null);
     				}
     			} else if (if_block0) {
     				if_block0.d(1);
@@ -5418,7 +5456,7 @@ var app = (function () {
     				} else {
     					if_block1 = create_if_block_3(ctx);
     					if_block1.c();
-    					if_block1.m(table1, t25);
+    					if_block1.m(table1, t28);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
@@ -5479,7 +5517,7 @@ var app = (function () {
     	return block;
     }
 
-    // (159:56) {#each survivor.woundList as wound, woundIndex}
+    // (162:56) {#each survivor.woundList as wound, woundIndex}
     function create_each_block_4$2(ctx) {
     	let div;
 
@@ -5491,7 +5529,7 @@ var app = (function () {
     			set_style(div, "border-radius", "10px");
     			set_style(div, "background-color", "lightsalmon");
     			set_style(div, "border", "1px solid red");
-    			add_location(div, file$3, 159, 60, 9166);
+    			add_location(div, file$3, 162, 60, 9396);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -5505,14 +5543,14 @@ var app = (function () {
     		block,
     		id: create_each_block_4$2.name,
     		type: "each",
-    		source: "(159:56) {#each survivor.woundList as wound, woundIndex}",
+    		source: "(162:56) {#each survivor.woundList as wound, woundIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (167:44) {#each survivor.foodList as food, index (food)}
+    // (170:44) {#each survivor.foodList as food, index (food)}
     function create_each_block_3$2(key_1, ctx) {
     	let div1;
     	let div0;
@@ -5535,8 +5573,8 @@ var app = (function () {
     			set_style(div0, "height", "10px");
     			set_style(div0, "background-color", "lightgreen");
     			set_style(div0, "border", "1px solid greenyellow");
-    			add_location(div0, file$3, 170, 52, 10007);
-    			add_location(div1, file$3, 167, 48, 9771);
+    			add_location(div0, file$3, 173, 52, 10237);
+    			add_location(div1, file$3, 170, 48, 10001);
     			this.first = div1;
     		},
     		m: function mount(target, anchor) {
@@ -5586,14 +5624,14 @@ var app = (function () {
     		block,
     		id: create_each_block_3$2.name,
     		type: "each",
-    		source: "(167:44) {#each survivor.foodList as food, index (food)}",
+    		source: "(170:44) {#each survivor.foodList as food, index (food)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (182:36) {#if survivor.canUseAbility == false}
+    // (185:36) {#if survivor.canUseAbility == false}
     function create_if_block_4(ctx) {
     	let span;
 
@@ -5602,7 +5640,7 @@ var app = (function () {
     			span = element("span");
     			span.textContent = "능력을 사용하였습니다.";
     			set_style(span, "background-color", "lightgreen");
-    			add_location(span, file$3, 182, 40, 10652);
+    			add_location(span, file$3, 185, 40, 10899);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5616,14 +5654,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(182:36) {#if survivor.canUseAbility == false}",
+    		source: "(185:36) {#if survivor.canUseAbility == false}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (187:28) {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
+    // (190:28) {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}
     function create_if_block_3(ctx) {
     	let tr;
     	let td;
@@ -5646,8 +5684,8 @@ var app = (function () {
     			}
 
     			t = text("\r\n                                        로 이동");
-    			add_location(td, file$3, 188, 36, 11031);
-    			add_location(tr, file$3, 187, 32, 10989);
+    			add_location(td, file$3, 191, 36, 11278);
+    			add_location(tr, file$3, 190, 32, 11236);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -5694,14 +5732,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(187:28) {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}",
+    		source: "(190:28) {#if survivor.actionTable.length > 0 && gameStore.isCurrentPlayerOfSurvivor(survivor) == true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (190:40) {#each survivor.targetPlaceList as place}
+    // (193:40) {#each survivor.targetPlaceList as place}
     function create_each_block_2$2(ctx) {
     	let button;
     	let t_value = /*place*/ ctx[44].name + "";
@@ -5717,7 +5755,7 @@ var app = (function () {
     			attr_dev(button, "class", "none-action-dice-button");
     			button.disabled = button_disabled_value = /*place*/ ctx[44].disabled;
     			set_style(button, "margin-right", "5px");
-    			add_location(button, file$3, 190, 44, 11164);
+    			add_location(button, file$3, 193, 44, 11411);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -5757,14 +5795,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2$2.name,
     		type: "each",
-    		source: "(190:40) {#each survivor.targetPlaceList as place}",
+    		source: "(193:40) {#each survivor.targetPlaceList as place}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (201:28) {#if survivor.actionTable.length > 0}
+    // (204:28) {#if survivor.actionTable.length > 0}
     function create_if_block_1$2(ctx) {
     	let tr;
     	let td;
@@ -5794,9 +5832,9 @@ var app = (function () {
     			if (if_block) if_block.c();
     			attr_dev(table, "class", "game-table");
     			set_style(table, "width", "100%");
-    			add_location(table, file$3, 203, 40, 11887);
-    			add_location(td, file$3, 202, 36, 11841);
-    			add_location(tr, file$3, 201, 32, 11799);
+    			add_location(table, file$3, 206, 40, 12134);
+    			add_location(td, file$3, 205, 36, 12088);
+    			add_location(tr, file$3, 204, 32, 12046);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -5859,14 +5897,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(201:28) {#if survivor.actionTable.length > 0}",
+    		source: "(204:28) {#if survivor.actionTable.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (205:44) {#each survivor.actionTable as action, actionIndex}
+    // (208:44) {#each survivor.actionTable as action, actionIndex}
     function create_each_block_1$3(ctx) {
     	let tr;
     	let td0;
@@ -5990,7 +6028,7 @@ var app = (function () {
     			t16 = text("청소");
     			set_style(span, "cursor", "pointer");
     			attr_dev(span, "alt", "행동주사위 포기");
-    			add_location(span, file$3, 207, 56, 12304);
+    			add_location(span, file$3, 210, 56, 12551);
     			set_style(td0, "width", "20px");
     			set_style(td0, "text-align", "center");
 
@@ -5998,39 +6036,39 @@ var app = (function () {
     			? 'lightgray'
     			: 'lightgreen');
 
-    			add_location(td0, file$3, 206, 52, 12138);
+    			add_location(td0, file$3, 209, 52, 12385);
     			attr_dev(button0, "class", "food-action-dice-button");
     			button0.disabled = button0_disabled_value = !/*action*/ ctx[41].food;
-    			add_location(button0, file$3, 210, 56, 12620);
+    			add_location(button0, file$3, 213, 56, 12867);
     			attr_dev(button1, "class", "card-action-dice-button");
     			button1.disabled = button1_disabled_value = !/*action*/ ctx[41].itemFood;
-    			add_location(button1, file$3, 214, 56, 13013);
-    			add_location(td1, file$3, 209, 52, 12558);
+    			add_location(button1, file$3, 217, 56, 13260);
+    			add_location(td1, file$3, 212, 52, 12805);
     			attr_dev(button2, "class", "action-dice-button");
     			button2.disabled = button2_disabled_value = !/*action*/ ctx[41].attack;
-    			add_location(button2, file$3, 220, 56, 13531);
-    			add_location(td2, file$3, 219, 52, 13469);
+    			add_location(button2, file$3, 223, 56, 13778);
+    			add_location(td2, file$3, 222, 52, 13716);
     			attr_dev(button3, "class", "action-dice-button");
     			button3.disabled = button3_disabled_value = !/*action*/ ctx[41].search;
-    			add_location(button3, file$3, 225, 56, 13979);
-    			add_location(td3, file$3, 225, 52, 13975);
+    			add_location(button3, file$3, 228, 56, 14226);
+    			add_location(td3, file$3, 228, 52, 14222);
     			attr_dev(button4, "class", "action-dice-button");
     			button4.disabled = button4_disabled_value = !/*action*/ ctx[41].ability;
-    			add_location(button4, file$3, 230, 56, 14432);
-    			add_location(td4, file$3, 230, 52, 14428);
+    			add_location(button4, file$3, 233, 56, 14679);
+    			add_location(td4, file$3, 233, 52, 14675);
     			attr_dev(button5, "class", "action-dice-button");
     			button5.disabled = button5_disabled_value = !/*action*/ ctx[41].barricade;
-    			add_location(button5, file$3, 236, 56, 14942);
-    			add_location(td5, file$3, 235, 52, 14880);
+    			add_location(button5, file$3, 239, 56, 15189);
+    			add_location(td5, file$3, 238, 52, 15127);
     			attr_dev(button6, "class", "action-dice-button");
     			button6.disabled = button6_disabled_value = !/*action*/ ctx[41].invite;
-    			add_location(button6, file$3, 243, 56, 15506);
-    			add_location(td6, file$3, 242, 52, 15444);
+    			add_location(button6, file$3, 246, 56, 15753);
+    			add_location(td6, file$3, 245, 52, 15691);
     			attr_dev(button7, "class", "action-dice-button");
     			button7.disabled = button7_disabled_value = !/*action*/ ctx[41].clean;
-    			add_location(button7, file$3, 248, 56, 15946);
-    			add_location(td7, file$3, 248, 52, 15942);
-    			add_location(tr, file$3, 205, 48, 12080);
+    			add_location(button7, file$3, 251, 56, 16193);
+    			add_location(td7, file$3, 251, 52, 16189);
+    			add_location(tr, file$3, 208, 48, 12327);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -6138,14 +6176,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1$3.name,
     		type: "each",
-    		source: "(205:44) {#each survivor.actionTable as action, actionIndex}",
+    		source: "(208:44) {#each survivor.actionTable as action, actionIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (256:44) {#if survivor.actionItemCard.enabled}
+    // (259:44) {#if survivor.actionItemCard.enabled}
     function create_if_block_2$2(ctx) {
     	let tr;
     	let td0;
@@ -6238,33 +6276,33 @@ var app = (function () {
     			td7 = element("td");
     			button5 = element("button");
     			t12 = text("청소");
-    			add_location(td0, file$3, 257, 52, 16555);
+    			add_location(td0, file$3, 260, 52, 16802);
     			attr_dev(button0, "class", "card-action-dice-button");
     			button0.disabled = button0_disabled_value = !/*survivor*/ ctx[38].actionItemCard.food;
-    			add_location(button0, file$3, 258, 56, 16622);
-    			add_location(td1, file$3, 258, 52, 16618);
+    			add_location(button0, file$3, 261, 56, 16869);
+    			add_location(td1, file$3, 261, 52, 16865);
     			attr_dev(button1, "class", "card-action-dice-button");
     			button1.disabled = button1_disabled_value = !/*survivor*/ ctx[38].actionItemCard.attack;
-    			add_location(button1, file$3, 262, 56, 17052);
-    			add_location(td2, file$3, 262, 52, 17048);
+    			add_location(button1, file$3, 265, 56, 17299);
+    			add_location(td2, file$3, 265, 52, 17295);
     			attr_dev(button2, "class", "card-action-dice-button");
     			button2.disabled = button2_disabled_value = !/*survivor*/ ctx[38].actionItemCard.search;
-    			add_location(button2, file$3, 266, 56, 17484);
-    			add_location(td3, file$3, 266, 52, 17480);
+    			add_location(button2, file$3, 269, 56, 17731);
+    			add_location(td3, file$3, 269, 52, 17727);
     			attr_dev(button3, "class", "card-action-dice-button");
     			button3.disabled = button3_disabled_value = !/*survivor*/ ctx[38].actionItemCard.care;
-    			add_location(button3, file$3, 270, 56, 17916);
-    			add_location(td4, file$3, 270, 52, 17912);
+    			add_location(button3, file$3, 273, 56, 18163);
+    			add_location(td4, file$3, 273, 52, 18159);
     			attr_dev(button4, "class", "card-action-dice-button");
     			button4.disabled = button4_disabled_value = !/*survivor*/ ctx[38].actionItemCard.barricade;
-    			add_location(button4, file$3, 274, 56, 18344);
-    			add_location(td5, file$3, 274, 52, 18340);
-    			add_location(td6, file$3, 278, 52, 18781);
+    			add_location(button4, file$3, 277, 56, 18591);
+    			add_location(td5, file$3, 277, 52, 18587);
+    			add_location(td6, file$3, 281, 52, 19028);
     			attr_dev(button5, "class", "card-action-dice-button");
     			button5.disabled = button5_disabled_value = !/*survivor*/ ctx[38].actionItemCard.clean;
-    			add_location(button5, file$3, 279, 56, 18848);
-    			add_location(td7, file$3, 279, 52, 18844);
-    			add_location(tr, file$3, 256, 48, 16497);
+    			add_location(button5, file$3, 282, 56, 19095);
+    			add_location(td7, file$3, 282, 52, 19091);
+    			add_location(tr, file$3, 259, 48, 16744);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -6347,7 +6385,7 @@ var app = (function () {
     		block,
     		id: create_if_block_2$2.name,
     		type: "if",
-    		source: "(256:44) {#if survivor.actionItemCard.enabled}",
+    		source: "(259:44) {#if survivor.actionItemCard.enabled}",
     		ctx
     	});
 

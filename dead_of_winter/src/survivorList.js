@@ -229,7 +229,7 @@ const survivorList = [
     },
     {
         index: 18,
-        name: '배브 러셀',
+        name: '베브 러셀',
         job: '어머니',
         power: 34,
         attack: 2,
@@ -294,7 +294,7 @@ const survivorList = [
     },
     {
         index: 23,
-        name: '어서 서스턴',
+        name: '아서 서스턴',
         job: '교장',
         power: 62,
         attack: 4,
