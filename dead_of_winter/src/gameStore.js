@@ -360,12 +360,17 @@ gameStore = {
 
                     for (let i = 0; i < action.targetCount; i++) {
                         const survivor = survivorList.pop();
+                        let currentPlace = null;
 
                         u(game => {
                             g.currentSurvivor = survivor;
+                            currentPlace = g.placeList.find(place => {
+                                return place.survivorList.filter(currentSurvivor => currentSurvivor.index === survivor.index) > 0;
+                            });
                         });
 
-                        gameStore.dead(false, messageList);
+
+                        gameStore.dead(false, messageList, currentPlace);
                     }
                 } else if (action.name === 'food') {
                     for (let i = 0; i < action.targetCount; i++) {
@@ -1389,7 +1394,7 @@ gameStore = {
                     alert(message);
                 }
 
-                gameStore.dead(true);
+                gameStore.dead(true, undefined, g.currentSurvivor.place);
             }
 
             g.currentSurvivor = null;
@@ -1462,7 +1467,7 @@ gameStore = {
 
                 const currentPlace = currentSurvivor.place;
 
-                gameStore.dead(true);
+                gameStore.dead(true, undefined, currentPlace);
 
                 currentPlace.survivorList.forEach(survivor => {
                     g.currentSurvivor = survivor;
