@@ -975,13 +975,13 @@ gameStore = {
         const currentPlaceName = currentPlace.name;
         const placeNameList = currentSurvivor.ability.placeNameList ?? [];
         const currentPlayer = gameStore.getCurrentPlayer();
-        currentSurvivor.noRollDangerDice = true;
 
         if (currentSurvivor.ability.type === 'killZombie') {
             u(game => {
+                g.currentSurvivor = currentSurvivor;
+                g.currentSurvivor.noRollDangerDice = true;
                 gameStore.killZombieWithGame(currentSurvivor, currentPlace, actionIndex);
                 const targetSurvivor = gameStore.setUseAbility(g, currentSurvivor);
-                targetSurvivor.noRollDangerDice = false;
             });
         } else if (currentSurvivor.ability.type === 'get') {
             u(game => {
@@ -1237,6 +1237,7 @@ gameStore = {
                         if (currentEntrance.maxZombieCount < currentEntrance.zombieCount + currentEntrance.barricadeCount) {
                             if (currentEntrance.barricadeCount > 0) {
                                 currentEntrance.barricadeCount--;
+                                currentEntrance.zombieCount--;
 
                                 const message = `${place.name}에 바리케이트가 제거되었습니다.`;
                                 messageList.push(message);

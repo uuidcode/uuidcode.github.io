@@ -6,7 +6,8 @@ const riskCardList = [
             fail: {
                 actionList: [
                     {
-                        name: 'minusMoral'
+                        name: 'minusMoral',
+                        targetCount: 1
                     }
                 ]
             }
