@@ -4,8 +4,7 @@
     import {
         itemCardCrossfade,
         trashCrossfade,
-        placeItemCardCrossfade,
-        foodCrossfade
+        placeItemCardCrossfade
     } from './animation';
     const [itemCardSend, itemCardReceive] = itemCardCrossfade;
     const [placeItemCardSend, placeItemCardReceive] = placeItemCardCrossfade;
