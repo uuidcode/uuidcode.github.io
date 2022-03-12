@@ -2529,9 +2529,14 @@ var app = (function () {
 
         move: (currentSurvivor, placeName) => {
             u(game => {
+                if (g.modalClass !== '') {
+                    g.currentSurvivor.canUseAbility = false;
+                }
+
                 g.modalClass = '';
                 g.modalType = '';
                 g.actionType = 'move';
+
                 g.placeList.forEach(place => {
                     if (place.name === placeName) {
                         place.survivorList = [...place.survivorList, currentSurvivor];
@@ -3316,7 +3321,6 @@ var app = (function () {
                     g.currentSurvivor = currentSurvivor;
                     g.currentSurvivor.place = currentPlace;
                     g.currentActionIndex = actionIndex;
-                    currentSurvivor.canUseAbility = false;
                 });
             } else if (currentSurvivor.ability.type === 'care') {
                 u(game => {
@@ -3396,8 +3400,9 @@ var app = (function () {
             }
         },
 
-        use:  async (currentItemCard) => {
+        use:  (currentItemCard) => {
             u(game => {
+                g.itemCardAnimationType = '';
                 g.currentPlayer.itemCardList = g.currentPlayer.itemCardList
                     .filter(itemCard => itemCard.index !== currentItemCard.index);
 
@@ -3429,22 +3434,28 @@ var app = (function () {
                         }
                     }
                 }
-            });
 
-            u(game => {
-                const camp = gameStore.getCamp();
-                camp.trashList = [...camp.trashList, currentItemCard];
-                camp.trashCount = camp.trashList.length;
-                g.campTrashIndex++;
-
-                g.selectedItemCardFeature = null;
-                g.currentPlace = null;
+                gameStore.throwItemCard(currentItemCard);
             });
+        },
+
+        throwItemCard: (currentItemCard) => {
+            const camp = gameStore.getCamp();
+            camp.trashList = [...camp.trashList, currentItemCard];
+            camp.trashCount = camp.trashList.length;
+            g.campTrashIndex++;
         },
 
         cancel: (currentItemCard) => {
             u(game => {
                 g.selectedItemCardFeature = null;
+            });
+        },
+
+        cancelAbility: (currentSurvivor) => {
+            u(game => {
+                g.modalClass = '';
+                g.modalType = '';
             });
         },
 
@@ -3753,7 +3764,9 @@ var app = (function () {
 
             if (!rollDangerDice) {
                 u(game => {
+                    g.itemCardAnimationType = '';
                     let use = false;
+                    let targetItemCard = null;
 
                     g.playerList
                         .filter(player => player.index === g.currentPlayer.index)
@@ -3761,6 +3774,7 @@ var app = (function () {
                             player.itemCardList = player.itemCardList
                                 .filter(itemCard => {
                                     if (use === false && itemCard.feature === 'safeMove') {
+                                        targetItemCard = itemCard;
                                         use = true;
                                         return false;
                                     }
@@ -3768,6 +3782,8 @@ var app = (function () {
                                     return true;
                                 });
                         });
+
+                    gameStore.throwItemCard(targetItemCard);
                 });
 
                 return;
@@ -3992,14 +4008,14 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (68:24) {#if itemCard.canPreventRisk == true}
+    // (73:24) {#if itemCard.canPreventRisk == true}
     function create_if_block_1$3(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[10](/*itemCard*/ ctx[21]);
+    		return /*click_handler*/ ctx[8](/*itemCard*/ ctx[21]);
     	}
 
     	const block = {
@@ -4007,7 +4023,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "위기사항처리";
     			attr_dev(button, "class", "card-action-dice-button");
-    			add_location(button, file$4, 68, 28, 2805);
+    			add_location(button, file$4, 73, 28, 2897);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -4031,14 +4047,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$3.name,
     		type: "if",
-    		source: "(68:24) {#if itemCard.canPreventRisk == true}",
+    		source: "(73:24) {#if itemCard.canPreventRisk == true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (73:24) {#if itemCard.canAction == true}
+    // (78:24) {#if itemCard.canAction == true}
     function create_if_block$3(ctx) {
     	let button0;
     	let t1;
@@ -4047,11 +4063,11 @@ var app = (function () {
     	let dispose;
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[11](/*itemCard*/ ctx[21]);
+    		return /*click_handler_1*/ ctx[9](/*itemCard*/ ctx[21]);
     	}
 
     	function click_handler_2() {
-    		return /*click_handler_2*/ ctx[12](/*itemCard*/ ctx[21]);
+    		return /*click_handler_2*/ ctx[10](/*itemCard*/ ctx[21]);
     	}
 
     	const block = {
@@ -4062,9 +4078,9 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "취소";
     			attr_dev(button0, "class", "none-action-dice-button");
-    			add_location(button0, file$4, 73, 28, 3065);
+    			add_location(button0, file$4, 78, 28, 3157);
     			attr_dev(button1, "class", "none-action-dice-button");
-    			add_location(button1, file$4, 75, 28, 3222);
+    			add_location(button1, file$4, 80, 28, 3314);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -4096,14 +4112,14 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(73:24) {#if itemCard.canAction == true}",
+    		source: "(78:24) {#if itemCard.canAction == true}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (54:8) {#each itemCardList as itemCard (itemCard)}
+    // (59:8) {#each itemCardList as itemCard (itemCard)}
     function create_each_block$4(key_1, ctx) {
     	let table;
     	let tr0;
@@ -4161,20 +4177,20 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			t11 = space();
     			attr_dev(td0, "class", "active");
-    			add_location(td0, file$4, 60, 20, 2422);
+    			add_location(td0, file$4, 65, 20, 2514);
     			attr_dev(td1, "class", "active");
-    			add_location(td1, file$4, 61, 20, 2470);
+    			add_location(td1, file$4, 66, 20, 2562);
     			attr_dev(td2, "class", "active");
-    			add_location(td2, file$4, 62, 20, 2531);
-    			add_location(td3, file$4, 63, 20, 2579);
-    			add_location(tr0, file$4, 59, 16, 2396);
+    			add_location(td2, file$4, 67, 20, 2623);
+    			add_location(td3, file$4, 68, 20, 2671);
+    			add_location(tr0, file$4, 64, 16, 2488);
     			attr_dev(td4, "colspan", "4");
-    			add_location(td4, file$4, 66, 20, 2674);
-    			add_location(tr1, file$4, 65, 16, 2648);
+    			add_location(td4, file$4, 71, 20, 2766);
+    			add_location(tr1, file$4, 70, 16, 2740);
     			attr_dev(table, "class", "game-table box");
     			set_style(table, "width", "190px");
     			set_style(table, "margin", "5px");
-    			add_location(table, file$4, 54, 12, 2166);
+    			add_location(table, file$4, 59, 12, 2258);
     			this.first = table;
     		},
     		m: function mount(target, anchor) {
@@ -4272,7 +4288,7 @@ var app = (function () {
     		block,
     		id: create_each_block$4.name,
     		type: "each",
-    		source: "(54:8) {#each itemCardList as itemCard (itemCard)}",
+    		source: "(59:8) {#each itemCardList as itemCard (itemCard)}",
     		ctx
     	});
 
@@ -4332,22 +4348,22 @@ var app = (function () {
     			set_style(div0, "border-radius", "10px");
     			set_style(div0, "border", "1px solid darkgray");
     			set_style(div0, "text-align", "center");
-    			add_location(div0, file$4, 49, 8, 1823);
+    			add_location(div0, file$4, 54, 8, 1915);
     			set_style(div1, "margin-top", "5px");
-    			add_location(div1, file$4, 50, 8, 1947);
+    			add_location(div1, file$4, 55, 8, 2039);
     			set_style(div2, "display", "flex");
     			set_style(div2, "flex-direction", "column");
     			set_style(div2, "padding", "10px 5px");
-    			add_location(div2, file$4, 48, 4, 1747);
+    			add_location(div2, file$4, 53, 4, 1839);
     			set_style(div3, "height", "100vh");
-    			add_location(div3, file$4, 52, 4, 2073);
+    			add_location(div3, file$4, 57, 4, 2165);
     			attr_dev(div4, "class", "flex-column player-card-list-section");
 
     			set_style(div4, "background-color", /*currentPlayer*/ ctx[1].index === /*player*/ ctx[0].index
     			? gameStore$1.getCurrentPlayerColor()
     			: 'white');
 
-    			add_location(div4, file$4, 46, 0, 1574);
+    			add_location(div4, file$4, 51, 0, 1666);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4433,7 +4449,7 @@ var app = (function () {
     function instance$4($$self, $$props, $$invalidate) {
     	let $gameStore;
     	validate_store(gameStore$1, 'gameStore');
-    	component_subscribe($$self, gameStore$1, $$value => $$invalidate(9, $gameStore = $$value));
+    	component_subscribe($$self, gameStore$1, $$value => $$invalidate(7, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Player', slots, []);
     	const [itemCardSend, itemCardReceive] = itemCardCrossfade;
@@ -4448,8 +4464,27 @@ var app = (function () {
     	let itemCardList;
     	let selectedItemCardFeature;
     	let itemCardAnimationType;
-    	let send = itemCardSend;
-    	let receive = itemCardReceive;
+
+    	const send = (node, args) => {
+    		if (itemCardAnimationType === 'risk') {
+    			itemCardSend(node, args);
+    		} else if (itemCardAnimationType === 'get') {
+    			placeItemCardSend(node, args);
+    		} else {
+    			trashSend(node, args);
+    		}
+    	};
+
+    	const receive = (node, args) => {
+    		if (itemCardAnimationType === 'risk') {
+    			itemCardReceive(node, args);
+    		} else if (itemCardAnimationType === 'get') {
+    			placeItemCardReceive(node, args);
+    		} else {
+    			trashReceive(node, args);
+    		}
+    	};
+
     	const writable_props = ['playerIndex'];
 
     	Object.keys($$props).forEach(key => {
@@ -4498,10 +4533,8 @@ var app = (function () {
     		if ('survivorList' in $$props) survivorList = $$props.survivorList;
     		if ('itemCardTable' in $$props) itemCardTable = $$props.itemCardTable;
     		if ('itemCardList' in $$props) $$invalidate(2, itemCardList = $$props.itemCardList);
-    		if ('selectedItemCardFeature' in $$props) $$invalidate(7, selectedItemCardFeature = $$props.selectedItemCardFeature);
-    		if ('itemCardAnimationType' in $$props) $$invalidate(8, itemCardAnimationType = $$props.itemCardAnimationType);
-    		if ('send' in $$props) $$invalidate(3, send = $$props.send);
-    		if ('receive' in $$props) $$invalidate(4, receive = $$props.receive);
+    		if ('selectedItemCardFeature' in $$props) selectedItemCardFeature = $$props.selectedItemCardFeature;
+    		if ('itemCardAnimationType' in $$props) itemCardAnimationType = $$props.itemCardAnimationType;
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -4509,29 +4542,16 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$gameStore, playerList, playerIndex, player, selectedItemCardFeature, itemCardAnimationType*/ 993) {
+    		if ($$self.$$.dirty & /*$gameStore, playerList, playerIndex, player*/ 225) {
     			{
     				$$invalidate(6, playerList = $gameStore.playerList);
-    				$$invalidate(8, itemCardAnimationType = $gameStore.itemCardAnimationType);
+    				itemCardAnimationType = $gameStore.itemCardAnimationType;
     				$$invalidate(1, currentPlayer = $gameStore.currentPlayer);
-    				$$invalidate(7, selectedItemCardFeature = $gameStore.selectedItemCardFeature);
+    				selectedItemCardFeature = $gameStore.selectedItemCardFeature;
     				$$invalidate(0, player = playerList[playerIndex]);
     				survivorList = player.survivorList;
     				itemCardTable = player.itemCardTable;
     				$$invalidate(2, itemCardList = player.itemCardList);
-
-    				if (selectedItemCardFeature != null) {
-    					$$invalidate(3, send = trashSend);
-    					$$invalidate(4, receive = trashReceive);
-    				} else {
-    					if (itemCardAnimationType === 'risk') {
-    						$$invalidate(3, send = itemCardSend);
-    						$$invalidate(4, receive = itemCardReceive);
-    					} else if (itemCardAnimationType === 'get') {
-    						$$invalidate(3, send = placeItemCardSend);
-    						$$invalidate(4, receive = placeItemCardReceive);
-    					}
-    				}
     			}
     		}
     	};
@@ -4544,8 +4564,6 @@ var app = (function () {
     		receive,
     		playerIndex,
     		playerList,
-    		selectedItemCardFeature,
-    		itemCardAnimationType,
     		$gameStore,
     		click_handler,
     		click_handler_1,
@@ -10553,6 +10571,8 @@ var app = (function () {
     	let t0;
     	let div0;
     	let button;
+    	let mounted;
+    	let dispose;
     	let each_value_1 = /*woundSurvivorList*/ ctx[1];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
@@ -10573,13 +10593,13 @@ var app = (function () {
     			div0 = element("div");
     			button = element("button");
     			button.textContent = "취소";
-    			add_location(button, file, 63, 24, 2634);
+    			add_location(button, file, 63, 24, 2686);
     			set_style(div0, "display", "flex");
     			set_style(div0, "flex-direction", "row-reverse");
-    			add_location(div0, file, 62, 20, 2552);
+    			add_location(div0, file, 62, 20, 2604);
     			set_style(div1, "display", "flex");
     			set_style(div1, "flex-direction", "column");
-    			add_location(div1, file, 56, 16, 2170);
+    			add_location(div1, file, 56, 16, 2222);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -10591,8 +10611,25 @@ var app = (function () {
     			append_dev(div1, t0);
     			append_dev(div1, div0);
     			append_dev(div0, button);
+
+    			if (!mounted) {
+    				dispose = listen_dev(
+    					button,
+    					"click",
+    					function () {
+    						if (is_function(gameStore$1.cancelAbility(/*currentSurvivor*/ ctx[3]))) gameStore$1.cancelAbility(/*currentSurvivor*/ ctx[3]).apply(this, arguments);
+    					},
+    					false,
+    					false,
+    					false
+    				);
+
+    				mounted = true;
+    			}
     		},
-    		p: function update(ctx, dirty) {
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
     			if (dirty & /*gameStore, woundSurvivorList*/ 2) {
     				each_value_1 = /*woundSurvivorList*/ ctx[1];
     				validate_each_argument(each_value_1);
@@ -10620,6 +10657,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
     			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -10648,6 +10687,8 @@ var app = (function () {
     	let t4;
     	let div3;
     	let button;
+    	let mounted;
+    	let dispose;
     	let each_value = /*currentSurvivor*/ ctx[3].targetPlaceList;
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -10711,8 +10752,24 @@ var app = (function () {
     			append_dev(div4, t4);
     			append_dev(div4, div3);
     			append_dev(div3, button);
+
+    			if (!mounted) {
+    				dispose = listen_dev(
+    					button,
+    					"click",
+    					function () {
+    						if (is_function(gameStore$1.cancelAbility(/*currentSurvivor*/ ctx[3]))) gameStore$1.cancelAbility(/*currentSurvivor*/ ctx[3]).apply(this, arguments);
+    					},
+    					false,
+    					false,
+    					false
+    				);
+
+    				mounted = true;
+    			}
     		},
-    		p: function update(ctx, dirty) {
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
     			if (dirty & /*currentSurvivor*/ 8 && t0_value !== (t0_value = /*currentSurvivor*/ ctx[3].name + "")) set_data_dev(t0, t0_value);
 
     			if (dirty & /*currentSurvivor, gameStore*/ 8) {
@@ -10742,6 +10799,8 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div4);
     			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			dispose();
     		}
     	};
 
@@ -10776,10 +10835,10 @@ var app = (function () {
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = text(" 치료");
-    			add_location(button, file, 59, 28, 2384);
+    			add_location(button, file, 59, 28, 2436);
     			set_style(div, "display", "flex");
     			set_style(div, "margin-top", "10px");
-    			add_location(div, file, 58, 24, 2310);
+    			add_location(div, file, 58, 24, 2362);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -10928,13 +10987,13 @@ var app = (function () {
     			attr_dev(div1, "class", div1_class_value = "modal " + /*modalClass*/ ctx[2]);
     			add_location(div1, file, 34, 0, 970);
     			attr_dev(div2, "class", "board-item-section board-player-section");
-    			add_location(div2, file, 72, 4, 2793);
+    			add_location(div2, file, 72, 4, 2897);
     			attr_dev(div3, "class", "board-item-section board-content-section");
-    			add_location(div3, file, 73, 4, 2891);
+    			add_location(div3, file, 73, 4, 2995);
     			attr_dev(div4, "class", "board-item-section board-player-section");
-    			add_location(div4, file, 74, 4, 2980);
+    			add_location(div4, file, 74, 4, 3084);
     			attr_dev(div5, "class", "board flex");
-    			add_location(div5, file, 71, 0, 2763);
+    			add_location(div5, file, 71, 0, 2867);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

@@ -50,7 +50,7 @@
                     </div>
                     <div style="display: flex;margin-top: 10px">위험노출 주사위 없이 이동</div>
                     <div style="display: flex;flex-direction: row-reverse;">
-                        <button>취소</button>
+                        <button on:click={gameStore.cancelAbility(currentSurvivor)}>취소</button>
                     </div>
                 </div>
             {:else if modalType == 'care'}
@@ -61,7 +61,7 @@
                         </div>
                     {/each}
                     <div style="display: flex;flex-direction: row-reverse;">
-                        <button>취소</button>
+                        <button on:click={gameStore.cancelAbility(currentSurvivor)}>취소</button>
                     </div>
                 </div>
             {/if}

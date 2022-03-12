@@ -1,5 +1,6 @@
 import {get, writable} from "svelte/store";
 import game from "./game"
+import {tick} from "svelte";
 
 const { subscribe, set, update } = writable(game);
 
@@ -208,9 +209,14 @@ gameStore = {
 
     move: (currentSurvivor, placeName) => {
         u(game => {
+            if (g.modalClass !== '') {
+                g.currentSurvivor.canUseAbility = false;
+            }
+
             g.modalClass = '';
             g.modalType = '';
             g.actionType = 'move';
+
             g.placeList.forEach(place => {
                 if (place.name === placeName) {
                     place.survivorList = [...place.survivorList, currentSurvivor];
@@ -995,7 +1001,6 @@ gameStore = {
                 g.currentSurvivor = currentSurvivor;
                 g.currentSurvivor.place = currentPlace;
                 g.currentActionIndex = actionIndex;
-                currentSurvivor.canUseAbility = false;
             });
         } else if (currentSurvivor.ability.type === 'care') {
             u(game => {
@@ -1075,8 +1080,9 @@ gameStore = {
         }
     },
 
-    use:  async (currentItemCard) => {
+    use:  (currentItemCard) => {
         u(game => {
+            g.itemCardAnimationType = '';
             g.currentPlayer.itemCardList = g.currentPlayer.itemCardList
                 .filter(itemCard => itemCard.index !== currentItemCard.index);
 
@@ -1108,22 +1114,28 @@ gameStore = {
                     }
                 }
             }
-        });
 
-        u(game => {
-            const camp = gameStore.getCamp();
-            camp.trashList = [...camp.trashList, currentItemCard];
-            camp.trashCount = camp.trashList.length;
-            g.campTrashIndex++
-
-            g.selectedItemCardFeature = null;
-            g.currentPlace = null;
+            gameStore.throwItemCard(currentItemCard);
         });
+    },
+
+    throwItemCard: (currentItemCard) => {
+        const camp = gameStore.getCamp();
+        camp.trashList = [...camp.trashList, currentItemCard];
+        camp.trashCount = camp.trashList.length;
+        g.campTrashIndex++
     },
 
     cancel: (currentItemCard) => {
         u(game => {
             g.selectedItemCardFeature = null;
+        });
+    },
+
+    cancelAbility: (currentSurvivor) => {
+        u(game => {
+            g.modalClass = '';
+            g.modalType = '';
         });
     },
 
@@ -1432,7 +1444,9 @@ gameStore = {
 
         if (!rollDangerDice) {
             u(game => {
+                g.itemCardAnimationType = '';
                 let use = false;
+                let targetItemCard = null;
 
                 g.playerList
                     .filter(player => player.index === g.currentPlayer.index)
@@ -1440,6 +1454,7 @@ gameStore = {
                         player.itemCardList = player.itemCardList
                             .filter(itemCard => {
                                 if (use === false && itemCard.feature === 'safeMove') {
+                                    targetItemCard = itemCard;
                                     use = true;
                                     return false;
                                 }
@@ -1447,6 +1462,8 @@ gameStore = {
                                 return true;
                             });
                     });
+
+                gameStore.throwItemCard(targetItemCard);
             });
 
             return;

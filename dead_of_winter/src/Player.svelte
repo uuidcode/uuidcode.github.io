@@ -16,8 +16,26 @@
     let itemCardList;
     let selectedItemCardFeature;
     let itemCardAnimationType;
-    let send = itemCardSend;
-    let receive = itemCardReceive;
+
+    const send = (node, args) => {
+        if (itemCardAnimationType === 'risk') {
+            itemCardSend(node, args);
+        } else if (itemCardAnimationType === 'get') {
+            placeItemCardSend(node, args);
+        } else {
+            trashSend(node, args);
+        }
+    }
+
+    const receive = (node, args) => {
+        if (itemCardAnimationType === 'risk') {
+            itemCardReceive(node, args);
+        } else if (itemCardAnimationType === 'get') {
+            placeItemCardReceive(node, args);
+        } else {
+            trashReceive(node, args);
+        }
+    }
 
     $: {
         playerList = $gameStore.playerList;
@@ -28,19 +46,6 @@
         survivorList = player.survivorList;
         itemCardTable = player.itemCardTable;
         itemCardList = player.itemCardList;
-
-        if (selectedItemCardFeature != null) {
-            send = trashSend;
-            receive = trashReceive;
-        } else {
-            if (itemCardAnimationType === 'risk') {
-                send = itemCardSend;
-                receive = itemCardReceive;
-            } else if (itemCardAnimationType === 'get') {
-                send = placeItemCardSend;
-                receive = placeItemCardReceive;
-            }
-        }
     }
 </script>
 
