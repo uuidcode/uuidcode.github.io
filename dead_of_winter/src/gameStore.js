@@ -1115,6 +1115,7 @@ gameStore = {
                 }
             }
 
+            g.selectedItemCardFeature = null;
             gameStore.throwItemCard(currentItemCard);
         });
     },

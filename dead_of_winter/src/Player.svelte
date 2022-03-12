@@ -1,7 +1,12 @@
 <script>
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
-    import {itemCardCrossfade, trashCrossfade, placeItemCardCrossfade} from './animation';
+    import {
+        itemCardCrossfade,
+        trashCrossfade,
+        placeItemCardCrossfade,
+        foodCrossfade
+    } from './animation';
     const [itemCardSend, itemCardReceive] = itemCardCrossfade;
     const [placeItemCardSend, placeItemCardReceive] = placeItemCardCrossfade;
     const [trashSend, trashReceive] = trashCrossfade
