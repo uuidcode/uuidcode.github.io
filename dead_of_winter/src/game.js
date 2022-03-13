@@ -14,6 +14,7 @@ const game = {
     messageList: [],
     zombieIndex: 0,
     entranceZombieIndex: 0,
+    foodIndex: 0,
     campFoodIndex: 0,
     campTrashIndex: 0,
     selectedItemCardFeature: null,

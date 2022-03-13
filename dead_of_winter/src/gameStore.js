@@ -65,7 +65,15 @@ gameStore = {
     },
 
     createNewItemCard: (name) => {
-        let itemCard = g.itemCardList.find(item => item.name === name);
+        const itemCard = g.itemCardList.find(item => item.name === name);
+
+        if (itemCard.feature === 'food') {
+            itemCard.foodList = [];
+
+            for (let i = 0; i < itemCard.targetCount; i++) {
+                itemCard.foodList.push(g.foodIndex++);
+            }
+        }
 
         return {
             ...itemCard
@@ -891,10 +899,9 @@ gameStore = {
         }
     },
 
-    addFood: (game, camp, targetCount) => {
-        for (let i = 0; i < targetCount; i++) {
-            camp.foodList.push(game.campFoodIndex++);
-        }
+    addFood: (game, camp, itemCard) => {
+        camp.foodList = [...camp.foodList, ...itemCard.foodList];
+        itemCard.foodList = [];
 
         camp.foodCount = camp.foodList.length;
     },
@@ -1014,7 +1021,11 @@ gameStore = {
         } else if (currentSurvivor.ability.type === 'food') {
             u(game => {
                 const camp = gameStore.getCamp();
-                gameStore.addFood(game, camp, 2);
+
+                gameStore.addFood(game, camp, {
+                    foodList: [g.foodIndex++, g.foodIndex++]
+                });
+
                 currentSurvivor.canUseAbility = false;
                 g.currentPlayer.actionDiceList[actionIndex].done = true;
                 return g;
@@ -1091,7 +1102,7 @@ gameStore = {
             if (currentItemCard.feature === 'power') {
                 g.currentPlayer.actionDiceList[g.selectedActionIndex].power++;
             } else if (currentItemCard.feature === 'food') {
-                gameStore.addFood(g, camp, currentItemCard.targetCount);
+                gameStore.addFood(g, camp, currentItemCard);
             } else if (currentItemCard.feature === 'clean') {
                 gameStore.clean(4);
             } else if (currentItemCard.feature === 'search') {

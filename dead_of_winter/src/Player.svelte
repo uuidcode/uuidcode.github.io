@@ -6,6 +6,7 @@
         trashCrossfade,
         placeItemCardCrossfade
     } from './animation';
+    import ItemCard from "./ItemCard.svelte";
     const [itemCardSend, itemCardReceive] = itemCardCrossfade;
     const [placeItemCardSend, placeItemCardReceive] = placeItemCardCrossfade;
     const [trashSend, trashReceive] = trashCrossfade
@@ -61,33 +62,11 @@
     </div>
     <div style="height:100vh">
         {#each itemCardList as itemCard (itemCard)}
-            <table class="game-table box"
-                   animate:flip
-                   in:receive={{key: itemCard}}
-                   out:send={{key: itemCard}}
-                   style="width: 190px;margin: 5px">
-                <tr>
-                    <td class="active">이름</td>
-                    <td class="active">{itemCard.name}</td>
-                    <td class="active">유형</td>
-                    <td>{itemCard.category}</td>
-                </tr>
-                <tr>
-                    <td colspan="4">{itemCard.description}
-                        {#if itemCard.canPreventRisk == true}
-                            <button class="card-action-dice-button"
-                                    on:click={()=>gameStore.preventRisk(itemCard)}>위기사항처리</button>
-                        {/if}
-
-                        {#if itemCard.canAction == true}
-                            <button class="none-action-dice-button"
-                                    on:click={()=>gameStore.use(itemCard)}>사용</button>
-                            <button class="none-action-dice-button"
-                                    on:click={()=>gameStore.cancel(itemCard)}>취소</button>
-                        {/if}
-                    </td>
-                </tr>
-            </table>
+            <div animate:flip
+                 in:receive={{key: itemCard}}
+                 out:send={{key: itemCard}}>
+                <ItemCard itemCard={itemCard}></ItemCard>
+            </div>
         {/each}
     </div>
 </div>
