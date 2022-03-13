@@ -17,9 +17,7 @@
     let playerList;
     let currentPlayer;
     let survivorList;
-    let itemCardTable;
     let itemCardList;
-    let selectedItemCardFeature;
     let itemCardAnimationType;
 
     const send = (node, args) => {
@@ -46,10 +44,8 @@
         playerList = $gameStore.playerList;
         itemCardAnimationType = $gameStore.itemCardAnimationType;
         currentPlayer = $gameStore.currentPlayer;
-        selectedItemCardFeature = $gameStore.selectedItemCardFeature;
         player = playerList[playerIndex];
         survivorList = player.survivorList;
-        itemCardTable = player.itemCardTable;
         itemCardList = player.itemCardList;
     }
 </script>
@@ -65,7 +61,7 @@
             <div animate:flip
                  in:receive={{key: itemCard}}
                  out:send={{key: itemCard}}>
-                <ItemCard itemCard={itemCard}></ItemCard>
+                <ItemCard itemCard={itemCard}/>
             </div>
         {/each}
     </div>
