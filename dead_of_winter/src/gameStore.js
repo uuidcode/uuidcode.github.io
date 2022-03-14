@@ -553,7 +553,7 @@ gameStore = {
                 let placeMatch = true;
 
                 if (itemCard.placeNameList && itemCard.feature === 'search') {
-                    placeMatch = game.currentSurvivor.place.name === itemCard.placeNameList[0];
+                    placeMatch = game.currentSurvivor?.place?.name === itemCard.placeNameList[0];
                 }
 
                 itemCard.canAction = game.canAction === true &&
@@ -1347,6 +1347,7 @@ gameStore = {
         let currentSurvivorName = '';
 
         u(game => {
+            g.currentSurvivor.place = currentPlace;
             g.deadSurvivorCount++
             g.deadSurvivorList.push(g.currentSurvivor);
 
