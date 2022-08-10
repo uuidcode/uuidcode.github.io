@@ -9,40 +9,68 @@
             height: 30px;
             border: 1px solid lightgray;
             padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 2px 0 rgba(0,0,0,0.16), 0 0 0 1px rgba(0,0,0,0.08);
+            border-radius: 2px;
+            box-shadow: rgb(0 0 0 / 10%) 0 4px 6px, rgb(0 0 0 / 15%) 0 8px 30px, rgb(255 255 255 / 20%) 0 0 0 1px;
             margin-bottom: 8px;
+            animation: animation_up .5s;
         }
 
         #app {
             margin: 10px auto;
             width: 100px;
         }
+
+        button {
+            margin: 10px;
+            padding: 10px;
+            width: 100px;
+        }
+
+        @keyframes animation_up {
+            from {
+                opacity: 0;
+                transform: translate(0, 30px)
+            }
+            to {
+                opacity: 1;
+                transform: translate(0, 0)
+            }
+        }
     </style>
 </head>
 <div id="app">
+    <button v-on:click="run">run</button>
     <div v-for="item in list"
          class="item">
         <strong>{{ item }}</strong>
     </div>
 </div>
 <script type="text/javascript">
-    let data = {
-        list: [
-            'ted',
-            'krystal',
-            'messi',
-            'tube',
-            'kale',
-            'ciao'
-        ]
-    };
-
-    data.list.sort(() => Math.random() - 0.5);
+    let data = {};
+    data.list = [];
 
     let app = new Vue({
         el: '#app',
-        data: data
+        data: data,
+        methods: {
+            run: async () => {
+                data.list = [];
+
+                await app.$nextTick();
+
+                data.list = [
+                    'ted',
+                    'ciao',
+                    'jayden',
+                    'jemi',
+                    'nathan',
+                    'lucas',
+                    'edward'
+                ];
+
+                data.list.sort(() => Math.random() - 0.5);
+            }
+        }
     });
 </script>
 </body>
