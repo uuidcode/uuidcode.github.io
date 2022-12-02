@@ -196,7 +196,7 @@ public class MedicalCost {
 
         g.drawString(bank.getName(), 145, top);
         g.drawString(bank.getNumber(), 250, top);
-        g.drawString(person.getName(), 480, top);
+        g.drawString(owner.getName(), 480, top);
     }
     private void drawNumber(String number, int left, int top) {
         AtomicInteger index = new AtomicInteger();
