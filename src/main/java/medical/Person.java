@@ -13,4 +13,5 @@ public class Person {
     private String phone2;
     private String phone3;
     private boolean owner;
+    private Bank bank;
 }
