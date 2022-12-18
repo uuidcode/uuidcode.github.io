@@ -6,7 +6,8 @@ Number.prototype.range = function (start = 0) {
         return [];
     }
 
-    return Array(this).fill(start).map((x, y) => x + y)
+    return Array(this).fill(start)
+        .map((x, y) => x + y)
 }
 
 const { subscribe, set, update } = writable(game);
