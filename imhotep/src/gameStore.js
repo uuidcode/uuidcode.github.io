@@ -27,9 +27,6 @@ let gameStore = {
 
 gameStore = {
     ...gameStore,
-    range: (size, start = 0) => {
-        return Array(size).fill(start).map((x, y) => x + y)
-    },
     getLoadableBoatList: (game) => {
         return game.boatList
             .filter(boat => boat.stoneCount < boat.maxStoneCount)
