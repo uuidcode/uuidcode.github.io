@@ -1,0 +1,18 @@
+body {
+    margin: 0;
+}
+
+* {
+    font-size: 13px;
+}
+
+.boat_stone {
+    width: 50px;
+    height: 50px;
+    border: 1px solid lightblue;
+    text-align: center;
+}
+
+.boat_stone_fill {
+    background-color: lightblue;
+}
