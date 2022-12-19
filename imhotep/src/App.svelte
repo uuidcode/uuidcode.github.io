@@ -1,21 +1,26 @@
 <script>
     import gameStore from "./gameStore";
-
+    import Player from "./Player.svelte";
 </script>
 
-<table>
-    <tr>
-        <td>ted.song</td>
-        <td>
-            <table>
-                {#each $gameStore.boatList as boat}
-                <tr>
-                    {#each boat.maxStoneCount.range() as stoneIndex}
-                        <td class="boat_stone" class:boat_stone_fill={stoneIndex < boat.stoneCount}>{stoneIndex}</td>
-                    {/each}
-                </tr>
+<div class="board">
+    <div class="inline-block">
+        <Player playerIndex="0"></Player>
+        <Player playerIndex="1"></Player>
+    </div>
+    <div class="port">
+        {#each $gameStore.boatList as boat}
+            <div class="boat">
+                {#each boat.maxStoneCount.range() as stoneIndex}
+                    <div class="stone"
+                         class:boat_stone_fill={stoneIndex < boat.stoneCount}>
+                        {stoneIndex}
+                    </div>
                 {/each}
-            </table>
-        </td>
-    </tr>
-</table>
+            </div>
+        {/each}
+    </div>
+    <div class="place">
+
+    </div>
+</div>

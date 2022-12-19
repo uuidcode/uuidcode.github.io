@@ -1,18 +1,57 @@
 body {
-    margin: 0;
+    margin: 20px;
 }
 
 * {
     font-size: 13px;
 }
 
-.boat_stone {
+.board {
+}
+
+.port {
+    width: 300px;
+    display: inline-block;
+}
+
+.boat {
+    margin: 5px;
+    padding: 5px;
+    border: 3px solid black;
+}
+
+.player {
+    background-color: lightgreen;
+    border: 1px solid black;
+    width: 300px;
+    height: 100px;
+}
+
+.stone {
     width: 50px;
     height: 50px;
     border: 1px solid lightblue;
+    line-height: 50px;
+    margin: 2px;
     text-align: center;
+    display: inline-block;
+}
+
+.boat_stone {
+
+}
+
+.inline-block {
+    display: inline-block;
 }
 
 .boat_stone_fill {
     background-color: lightblue;
+}
+
+.place {
+    display: inline-block;
+    width: 500px;
+    height: 500px;
+    border: 1px solid blue;
 }

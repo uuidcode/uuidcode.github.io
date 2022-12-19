@@ -6,13 +6,7 @@ const game = {
     playerIndex: 0,
     currentPlayer: null,
     stageActionDone: false,
-    boatList: [
-        {
-            minStoneCount: 1,
-            maxStoneCount: 2,
-            stoneCount: 1
-        }
-    ],
+    boatList: [],
     boatGroup: [
         [
             {

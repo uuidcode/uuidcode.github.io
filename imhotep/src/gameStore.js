@@ -33,11 +33,15 @@ gameStore = {
             .pop();
     },
     getLoadableBoatList: (game) => {
+        if (game.currentPlayer.stoneCount === 0) {
+            return [];
+        }
+
         return game.boatList
             .filter(boat => boat.stoneCount < boat.maxStoneCount)
     },
     canGetStone: (game) => {
-        return game.currentPlayer.stoneCount < 5;
+        return game.currentPlayer.stoneCount <= 2;
     },
     getMovableBoatList: (game) => {
         return game.boatList
@@ -72,5 +76,7 @@ gameStore = {
         }
     }
 }
+
+gameStore.start();
 
 export default gameStore;
