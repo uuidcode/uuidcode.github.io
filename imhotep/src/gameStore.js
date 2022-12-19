@@ -27,6 +27,11 @@ let gameStore = {
 
 gameStore = {
     ...gameStore,
+    setNewBoatList: (game) => {
+        game.boatList = game.boatGroup
+            .sort(() => 0.5 - Math.random())
+            .pop();
+    },
     getLoadableBoatList: (game) => {
         return game.boatList
             .filter(boat => boat.stoneCount < boat.maxStoneCount)
@@ -38,14 +43,33 @@ gameStore = {
         return game.boatList
             .filter(boat => boat.stoneCount >= boat.minStoneCount);
     },
-    updateGame: () => {
+    startStage: (game) => {
+        if (game.start) {
+            game.stage += 1;
+        }
+
+        gameStore.setNewBoatList(game);
+    },
+    start: () => {
         u((game) => {
-            game.currentPlayer = game.playerList[game.turn % 2];
-            game.currentPlayer.canGetStone = gameStore.canGetStone(game);
-            game.currentPlayer.loadableBoatList = gameStore.getLoadableBoatList(game);
-            game.currentPlayer.movableBoatList = gameStore.getMovableBoatList(game);
-            game.turn += 1;
+            gameStore.startStage(game);
+            gameStore.turn(game);
+            game.start = true;
         });
+    },
+    turn: (game) => {
+        if (game.start) {
+            game.turn += 1;
+        }
+
+        game.currentPlayer = game.playerList[game.turn % 2];
+        game.currentPlayer.canGetStone = gameStore.canGetStone(game);
+        game.currentPlayer.loadableBoatList = gameStore.getLoadableBoatList(game);
+        game.currentPlayer.movableBoatList = gameStore.getMovableBoatList(game);
+
+        if (game.boatList.length === 0) {
+            gameStore.startStage(game);
+        }
     }
 }
 
