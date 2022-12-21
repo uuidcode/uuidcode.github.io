@@ -444,6 +444,7 @@ var app = (function () {
         playerIndex: 0,
         currentPlayer: null,
         stageActionDone: false,
+        arrivedBoatList:[],
         boatList: [],
         boatGroup: [
             [
@@ -469,10 +470,12 @@ var app = (function () {
         ],
         playerList: [
             {
+                index: 0,
                 name: '테드',
                 stoneCount: 2
             },
             {
+                index: 1,
                 name: '다은',
                 stoneCount: 3
             }
@@ -510,20 +513,25 @@ var app = (function () {
                 .sort(() => 0.5 - Math.random())
                 .pop();
         },
-        getLoadableBoatList: (game) => {
-            if (game.currentPlayer.stoneCount === 0) {
+        getLoadableBoatList: (game, player) => {
+            if (player.active) {
+                return [];
+            }
+
+            if (player.stoneCount === 0) {
                 return [];
             }
 
             return game.boatList
                 .filter(boat => boat.stoneCount < boat.maxStoneCount)
         },
-        canGetStone: (game) => {
-            return game.currentPlayer.stoneCount <= 2;
+        canGetStone: (game, player) => {
+            return player.active
+                && player.stoneCount <= 2;
         },
-        getMovableBoatList: (game) => {
-            return game.boatList
-                .filter(boat => boat.stoneCount >= boat.minStoneCount);
+        getMovableBoatList: (game, player) => {
+            return player.active
+                && game.boatList.filter(boat => boat.stoneCount >= boat.minStoneCount);
         },
         startStage: (game) => {
             if (game.start) {
@@ -544,14 +552,32 @@ var app = (function () {
                 game.turn += 1;
             }
 
-            game.currentPlayer = game.playerList[game.turn % 2];
-            game.currentPlayer.canGetStone = gameStore.canGetStone(game);
-            game.currentPlayer.loadableBoatList = gameStore.getLoadableBoatList(game);
-            game.currentPlayer.movableBoatList = gameStore.getMovableBoatList(game);
+            gameStore.updateGame(game);
+        },
+        template: () => {
+            u((game) => {
 
-            if (game.boatList.length === 0) {
-                gameStore.startStage(game);
-            }
+            });
+        },
+        updateGame: (game) => {
+            game.currentPlayer = game.playerList[game.turn % 2];
+
+            game.playerList = game.playerList
+                .map(player => {
+                    player.active = player.index === game.turn % 2;
+                    return player;
+                })
+                .map(player => {
+                    player.canGetStone = gameStore.canGetStone(game, player);
+                    player.loadableBoatList = gameStore.getLoadableBoatList(game, player);
+                    player.movableBoatList = gameStore.getMovableBoatList(game, player);
+
+                    if (game.boatList.length === 0) {
+                        gameStore.startStage(game);
+                    }
+
+                    return player;
+                });
         }
     };
 
@@ -564,32 +590,29 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[2] = list[i];
+    	child_ctx[3] = list[i];
     	return child_ctx;
     }
 
-    // (8:4) {#each $gameStore.playerList[playerIndex].stoneCount.range() as stoneIndex}
+    // (13:4) {#each $gameStore.playerList[playerIndex].stoneCount.range() as stoneIndex}
     function create_each_block$1(ctx) {
     	let div;
-    	let t0_value = /*stoneIndex*/ ctx[2] + "";
-    	let t0;
-    	let t1;
+    	let t_value = /*stoneIndex*/ ctx[3] + "";
+    	let t;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			t0 = text(t0_value);
-    			t1 = space();
+    			t = text(t_value);
     			attr_dev(div, "class", "stone");
-    			add_location(div, file$1, 8, 8, 199);
+    			add_location(div, file$1, 13, 8, 284);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
-    			append_dev(div, t0);
-    			append_dev(div, t1);
+    			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$gameStore, playerIndex*/ 3 && t0_value !== (t0_value = /*stoneIndex*/ ctx[2] + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$gameStore, playerIndex*/ 3 && t_value !== (t_value = /*stoneIndex*/ ctx[3] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
@@ -600,7 +623,36 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(8:4) {#each $gameStore.playerList[playerIndex].stoneCount.range() as stoneIndex}",
+    		source: "(13:4) {#each $gameStore.playerList[playerIndex].stoneCount.range() as stoneIndex}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (20:8) {#if player.canGetStone}
+    function create_if_block(ctx) {
+    	let button;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "돌 가져오기";
+    			add_location(button, file$1, 20, 12, 427);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(20:8) {#if player.canGetStone}",
     		ctx
     	});
 
@@ -608,7 +660,9 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let div;
+    	let div1;
+    	let t;
+    	let div0;
     	let each_value = /*$gameStore*/ ctx[1].playerList[/*playerIndex*/ ctx[0]].stoneCount.range();
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -617,26 +671,37 @@ var app = (function () {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
+    	let if_block = /*player*/ ctx[2].canGetStone && create_if_block(ctx);
+
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			div1 = element("div");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "player");
-    			add_location(div, file$1, 6, 0, 90);
+    			t = space();
+    			div0 = element("div");
+    			if (if_block) if_block.c();
+    			attr_dev(div0, "class", "action");
+    			add_location(div0, file$1, 18, 4, 361);
+    			attr_dev(div1, "class", "player");
+    			add_location(div1, file$1, 11, 0, 175);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
+    			insert_dev(target, div1, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div, null);
+    				each_blocks[i].m(div1, null);
     			}
+
+    			append_dev(div1, t);
+    			append_dev(div1, div0);
+    			if (if_block) if_block.m(div0, null);
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*$gameStore, playerIndex*/ 3) {
@@ -652,7 +717,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block$1(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div, null);
+    						each_blocks[i].m(div1, t);
     					}
     				}
 
@@ -662,12 +727,24 @@ var app = (function () {
 
     				each_blocks.length = each_value.length;
     			}
+
+    			if (/*player*/ ctx[2].canGetStone) {
+    				if (if_block) ; else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(div0, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div1);
     			destroy_each(each_blocks, detaching);
+    			if (if_block) if_block.d();
     		}
     	};
 
@@ -689,6 +766,7 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Player', slots, []);
     	let { playerIndex } = $$props;
+    	let player;
     	const writable_props = ['playerIndex'];
 
     	Object.keys($$props).forEach(key => {
@@ -699,17 +777,31 @@ var app = (function () {
     		if ('playerIndex' in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
     	};
 
-    	$$self.$capture_state = () => ({ gameStore: gameStore$1, playerIndex, $gameStore });
+    	$$self.$capture_state = () => ({
+    		gameStore: gameStore$1,
+    		playerIndex,
+    		player,
+    		$gameStore
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ('playerIndex' in $$props) $$invalidate(0, playerIndex = $$props.playerIndex);
+    		if ('player' in $$props) $$invalidate(2, player = $$props.player);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [playerIndex, $gameStore];
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$gameStore, playerIndex*/ 3) {
+    			{
+    				$$invalidate(2, player = $gameStore.playerList[playerIndex]);
+    			}
+    		}
+    	};
+
+    	return [playerIndex, $gameStore, player];
     }
 
     class Player extends SvelteComponentDev {

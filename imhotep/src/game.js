@@ -6,6 +6,7 @@ const game = {
     playerIndex: 0,
     currentPlayer: null,
     stageActionDone: false,
+    arrivedBoatList:[],
     boatList: [],
     boatGroup: [
         [
@@ -31,10 +32,12 @@ const game = {
     ],
     playerList: [
         {
+            index: 0,
             name: '테드',
             stoneCount: 2
         },
         {
+            index: 1,
             name: '다은',
             stoneCount: 3
         }

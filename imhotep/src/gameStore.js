@@ -32,20 +32,25 @@ gameStore = {
             .sort(() => 0.5 - Math.random())
             .pop();
     },
-    getLoadableBoatList: (game) => {
-        if (game.currentPlayer.stoneCount === 0) {
+    getLoadableBoatList: (game, player) => {
+        if (player.active) {
+            return [];
+        }
+
+        if (player.stoneCount === 0) {
             return [];
         }
 
         return game.boatList
             .filter(boat => boat.stoneCount < boat.maxStoneCount)
     },
-    canGetStone: (game) => {
-        return game.currentPlayer.stoneCount <= 2;
+    canGetStone: (game, player) => {
+        return player.active
+            && player.stoneCount <= 2;
     },
-    getMovableBoatList: (game) => {
-        return game.boatList
-            .filter(boat => boat.stoneCount >= boat.minStoneCount);
+    getMovableBoatList: (game, player) => {
+        return player.active
+            && game.boatList.filter(boat => boat.stoneCount >= boat.minStoneCount);
     },
     startStage: (game) => {
         if (game.start) {
@@ -66,14 +71,32 @@ gameStore = {
             game.turn += 1;
         }
 
-        game.currentPlayer = game.playerList[game.turn % 2];
-        game.currentPlayer.canGetStone = gameStore.canGetStone(game);
-        game.currentPlayer.loadableBoatList = gameStore.getLoadableBoatList(game);
-        game.currentPlayer.movableBoatList = gameStore.getMovableBoatList(game);
+        gameStore.updateGame(game);
+    },
+    template: () => {
+        u((game) => {
 
-        if (game.boatList.length === 0) {
-            gameStore.startStage(game);
-        }
+        });
+    },
+    updateGame: (game) => {
+        game.currentPlayer = game.playerList[game.turn % 2];
+
+        game.playerList = game.playerList
+            .map(player => {
+                player.active = player.index === game.turn % 2;
+                return player;
+            })
+            .map(player => {
+                player.canGetStone = gameStore.canGetStone(game, player);
+                player.loadableBoatList = gameStore.getLoadableBoatList(game, player);
+                player.movableBoatList = gameStore.getMovableBoatList(game, player);
+
+                if (game.boatList.length === 0) {
+                    gameStore.startStage(game);
+                }
+
+                return player;
+            });
     }
 }
 
