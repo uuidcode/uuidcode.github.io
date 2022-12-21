@@ -768,7 +768,7 @@ var app = (function () {
     			t = text(t_value);
     			attr_dev(div, "class", "stone");
     			toggle_class(div, "boat_stone_fill", /*stoneIndex*/ ctx[4] < /*boat*/ ctx[1].stoneCount);
-    			add_location(div, file, 14, 20, 432);
+    			add_location(div, file, 14, 20, 426);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -819,7 +819,7 @@ var app = (function () {
 
     			t = space();
     			attr_dev(div, "class", "boat");
-    			add_location(div, file, 12, 12, 328);
+    			add_location(div, file, 12, 12, 322);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -873,7 +873,7 @@ var app = (function () {
     }
 
     function create_fragment(ctx) {
-    	let div3;
+    	let div8;
     	let div0;
     	let player0;
     	let t0;
@@ -881,7 +881,16 @@ var app = (function () {
     	let t1;
     	let div1;
     	let t2;
+    	let div7;
     	let div2;
+    	let t3;
+    	let div3;
+    	let t4;
+    	let div4;
+    	let t5;
+    	let div5;
+    	let t6;
+    	let div6;
     	let current;
 
     	player0 = new Player({
@@ -904,7 +913,7 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div3 = element("div");
+    			div8 = element("div");
     			div0 = element("div");
     			create_component(player0.$$.fragment);
     			t0 = space();
@@ -917,34 +926,62 @@ var app = (function () {
     			}
 
     			t2 = space();
+    			div7 = element("div");
     			div2 = element("div");
-    			attr_dev(div0, "class", "inline-block");
+    			t3 = space();
+    			div3 = element("div");
+    			t4 = space();
+    			div4 = element("div");
+    			t5 = space();
+    			div5 = element("div");
+    			t6 = space();
+    			div6 = element("div");
+    			attr_dev(div0, "class", "source");
     			add_location(div0, file, 6, 4, 127);
     			attr_dev(div1, "class", "port");
-    			add_location(div1, file, 10, 4, 253);
-    			attr_dev(div2, "class", "place");
-    			add_location(div2, file, 22, 4, 668);
-    			attr_dev(div3, "class", "board");
-    			add_location(div3, file, 5, 0, 103);
+    			add_location(div1, file, 10, 4, 247);
+    			attr_dev(div2, "class", "region");
+    			add_location(div2, file, 23, 8, 696);
+    			attr_dev(div3, "class", "region");
+    			add_location(div3, file, 24, 8, 731);
+    			attr_dev(div4, "class", "region");
+    			add_location(div4, file, 25, 8, 766);
+    			attr_dev(div5, "class", "region");
+    			add_location(div5, file, 26, 8, 801);
+    			attr_dev(div6, "class", "region");
+    			add_location(div6, file, 27, 8, 836);
+    			attr_dev(div7, "class", "destination");
+    			add_location(div7, file, 22, 4, 662);
+    			attr_dev(div8, "class", "board");
+    			add_location(div8, file, 5, 0, 103);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div3, anchor);
-    			append_dev(div3, div0);
+    			insert_dev(target, div8, anchor);
+    			append_dev(div8, div0);
     			mount_component(player0, div0, null);
     			append_dev(div0, t0);
     			mount_component(player1, div0, null);
-    			append_dev(div3, t1);
-    			append_dev(div3, div1);
+    			append_dev(div8, t1);
+    			append_dev(div8, div1);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(div1, null);
     			}
 
-    			append_dev(div3, t2);
-    			append_dev(div3, div2);
+    			append_dev(div8, t2);
+    			append_dev(div8, div7);
+    			append_dev(div7, div2);
+    			append_dev(div7, t3);
+    			append_dev(div7, div3);
+    			append_dev(div7, t4);
+    			append_dev(div7, div4);
+    			append_dev(div7, t5);
+    			append_dev(div7, div5);
+    			append_dev(div7, t6);
+    			append_dev(div7, div6);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
@@ -984,7 +1021,7 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div3);
+    			if (detaching) detach_dev(div8);
     			destroy_component(player0);
     			destroy_component(player1);
     			destroy_each(each_blocks, detaching);

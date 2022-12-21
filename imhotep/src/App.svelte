@@ -4,7 +4,7 @@
 </script>
 
 <div class="board">
-    <div class="inline-block">
+    <div class="source">
         <Player playerIndex="0"></Player>
         <Player playerIndex="1"></Player>
     </div>
@@ -20,7 +20,11 @@
             </div>
         {/each}
     </div>
-    <div class="place">
-
+    <div class="destination">
+        <div class="region"></div>
+        <div class="region"></div>
+        <div class="region"></div>
+        <div class="region"></div>
+        <div class="region"></div>
     </div>
 </div>

@@ -6,16 +6,27 @@ body {
     font-size: 13px;
 }
 
+div {
+    box-sizing: border-box;
+}
+
 .board {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .port {
-    width: 300px;
-    display: inline-block;
+    width: 600px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .boat {
-    margin: 5px;
+    width: 200px;
+    margin: 20px;
     padding: 5px;
     border: 3px solid black;
 }
@@ -23,8 +34,8 @@ body {
 .player {
     background-color: lightgreen;
     border: 1px solid black;
-    width: 300px;
-    height: 100px;
+    width: 400px;
+    height: 350px;
 }
 
 .stone {
@@ -49,9 +60,27 @@ body {
     background-color: lightblue;
 }
 
-.place {
-    display: inline-block;
-    width: 500px;
-    height: 500px;
+.destination {
+    width: 800px;
+    height: 800px;
     border: 1px solid blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
+
+.source {
+    width: 400px;
+    height: 800px;
+    border: 1px solid blue;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.region {
+    width: 800px;
+    height: 200px;
+    border: 1px solid lightgrey;
+}
+
