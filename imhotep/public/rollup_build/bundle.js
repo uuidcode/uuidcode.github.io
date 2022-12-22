@@ -1057,8 +1057,9 @@ var app = (function () {
                 game.destinationBoatList = [...game.destinationBoatList,
                     game.boatList[boatIndex]];
 
-                game.boatList = game.boatList
-                    .filter((boat, i) => i !== boatIndex);
+                game.boatList[boatIndex] = {
+                    maxStoneCount: 0
+                };
             });
         },
         template: () => {
@@ -1654,6 +1655,7 @@ var app = (function () {
     			create_component(boat.$$.fragment);
     			t = space();
     			attr_dev(div, "class", "boat");
+    			toggle_class(div, "boat-ready", /*boat*/ ctx[12].maxStoneCount !== 0);
     			add_location(div, file, 24, 12, 705);
     			this.first = div;
     		},
@@ -1673,6 +1675,10 @@ var app = (function () {
     			const boat_changes = {};
     			if (dirty & /*$gameStore*/ 1) boat_changes.boat = /*boat*/ ctx[12];
     			boat.$set(boat_changes);
+
+    			if (dirty & /*$gameStore*/ 1) {
+    				toggle_class(div, "boat-ready", /*boat*/ ctx[12].maxStoneCount !== 0);
+    			}
     		},
     		r: function measure() {
     			rect = div.getBoundingClientRect();
@@ -1724,7 +1730,7 @@ var app = (function () {
     	return block;
     }
 
-    // (35:8) {#each destinationBoatList as destinationBoat (destinationBoat)}
+    // (36:8) {#each destinationBoatList as destinationBoat (destinationBoat)}
     function create_each_block_1(key_1, ctx) {
     	let div;
     	let boat;
@@ -1748,7 +1754,8 @@ var app = (function () {
     			create_component(boat.$$.fragment);
     			t = space();
     			attr_dev(div, "class", "boat");
-    			add_location(div, file, 35, 12, 1123);
+    			toggle_class(div, "boat-ready", /*destinationBoat*/ ctx[9].maxStoneCount !== 0);
+    			add_location(div, file, 36, 12, 1184);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -1762,6 +1769,10 @@ var app = (function () {
     			const boat_changes = {};
     			if (dirty & /*destinationBoatList*/ 4) boat_changes.boat = /*destinationBoat*/ ctx[9];
     			boat.$set(boat_changes);
+
+    			if (dirty & /*destinationBoatList*/ 4) {
+    				toggle_class(div, "boat-ready", /*destinationBoat*/ ctx[9].maxStoneCount !== 0);
+    			}
     		},
     		r: function measure() {
     			rect = div.getBoundingClientRect();
@@ -1804,14 +1815,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(35:8) {#each destinationBoatList as destinationBoat (destinationBoat)}",
+    		source: "(36:8) {#each destinationBoatList as destinationBoat (destinationBoat)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (45:8) {#each destinationList as destination}
+    // (47:8) {#each destinationList as destination}
     function create_each_block(ctx) {
     	let div;
 
@@ -1819,7 +1830,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "destination");
-    			add_location(div, file, 45, 12, 1482);
+    			add_location(div, file, 47, 12, 1615);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1833,7 +1844,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(45:8) {#each destinationList as destination}",
+    		source: "(47:8) {#each destinationList as destination}",
     		ctx
     	});
 
@@ -1931,9 +1942,9 @@ var app = (function () {
     			attr_dev(div1, "class", "port source-port");
     			add_location(div1, file, 22, 4, 611);
     			attr_dev(div2, "class", "port destination-port");
-    			add_location(div2, file, 33, 4, 1002);
+    			add_location(div2, file, 34, 4, 1063);
     			attr_dev(div3, "class", "destination-container");
-    			add_location(div3, file, 43, 4, 1387);
+    			add_location(div3, file, 45, 4, 1520);
     			attr_dev(div4, "class", "board");
     			add_location(div4, file, 17, 0, 467);
     		},

@@ -23,6 +23,7 @@
     <div class="port source-port">
         {#each $gameStore.boatList as boat (boat)}
             <div class="boat"
+                 class:boat-ready={boat.maxStoneCount !== 0}
                  animate:flip
                  in:boatReceive={{key: boat}}
                  out:boatSend={{key: boat}}
@@ -34,6 +35,7 @@
     <div class="port destination-port">
         {#each destinationBoatList as destinationBoat (destinationBoat)}
             <div class="boat"
+                 class:boat-ready={destinationBoat.maxStoneCount !== 0}
                  animate:flip
                  in:boatReceive={{key: destinationBoat}}
                  out:boatSend={{key: destinationBoat}}>

@@ -83,8 +83,9 @@ gameStore = {
             game.destinationBoatList = [...game.destinationBoatList,
                 game.boatList[boatIndex]];
 
-            game.boatList = game.boatList
-                .filter((boat, i) => i !== boatIndex);
+            game.boatList[boatIndex] = {
+                maxStoneCount: 0
+            }
         });
     },
     template: () => {

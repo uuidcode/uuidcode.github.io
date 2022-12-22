@@ -29,6 +29,9 @@ div {
     height: 70px;
     margin: 20px;
     padding: 5px;
+}
+
+.boat-ready {
     border: 3px solid black;
 }
 
