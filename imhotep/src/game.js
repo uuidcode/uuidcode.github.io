@@ -1,3 +1,5 @@
+import gameStore from "./gameStore";
+
 const game = {
     start: false,
     turn: 0,
@@ -8,6 +10,7 @@ const game = {
     stageActionDone: false,
     arrivedBoatList:[],
     boatList: [],
+    destinationBoatList: [],
     boatGroup: [
         [
             {
@@ -29,6 +32,17 @@ const game = {
                 maxStoneCount: 1
             }
         ],
+    ],
+    destinationList: [
+        {
+            name: '장터'
+        },
+        {
+            name: '묘실'
+        },
+        {
+            name: '피라미드'
+        }
     ],
     playerList: [
         {

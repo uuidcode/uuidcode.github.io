@@ -30,7 +30,11 @@ gameStore = {
     setNewBoatList: (game) => {
         game.boatList = game.boatGroup
             .sort(() => 0.5 - Math.random())
-            .pop();
+            .pop()
+            .map((boat, index) => {
+                boat.index = index;
+                return boat;
+            });
     },
     getLoadableBoatList: (game, player) => {
         if (player.active) {
@@ -72,6 +76,16 @@ gameStore = {
         }
 
         gameStore.updateGame(game);
+    },
+    clickBoat: (boatIndex) => {
+
+        u((game) => {
+            game.destinationBoatList = [...game.destinationBoatList,
+                game.boatList[boatIndex]];
+
+            game.boatList = game.boatList
+                .filter((boat, i) => i !== boatIndex);
+        });
     },
     template: () => {
         u((game) => {
