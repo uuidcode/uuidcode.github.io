@@ -46,6 +46,11 @@ var app = (function () {
         const unsub = store.subscribe(...callbacks);
         return unsub.unsubscribe ? () => unsub.unsubscribe() : unsub;
     }
+    function get_store_value(store) {
+        let value;
+        subscribe$1(store, _ => value = _)();
+        return value;
+    }
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe$1(store, callback));
     }
@@ -140,6 +145,14 @@ var app = (function () {
     }
     function children(element) {
         return Array.from(element.childNodes);
+    }
+    function set_style(node, key, value, important) {
+        if (value === null) {
+            node.style.removeProperty(key);
+        }
+        else {
+            node.style.setProperty(key, value, important ? 'important' : '');
+        }
     }
     function toggle_class(element, name, toggle) {
         element.classList[toggle ? 'add' : 'remove'](name);
@@ -965,7 +978,7 @@ var app = (function () {
                     maxStoneCount: 4
                 },
                 {
-                    minStoneCount: 1,
+                    minStoneCount: 2,
                     maxStoneCount: 3
                 }
             ],
@@ -991,10 +1004,12 @@ var app = (function () {
             {
                 index: 0,
                 name: '테드',
+                color: 'lightblue'
             },
             {
                 index: 1,
                 name: '다은',
+                color: 'lightcoral'
             }
         ]
     };
@@ -1009,7 +1024,8 @@ var app = (function () {
         player.stoneList = Array(stoneCount).fill(0)
             .map((item, stoneIndex) => {
                 return {
-                    index: stoneIndex
+                    index: stoneIndex,
+                    playerIndex: playerIndex
                 }
             });
 
@@ -1079,10 +1095,24 @@ var app = (function () {
         load: (boat) => {
             u((game) => {
                 const stone = game.currentPlayer.stoneList.pop();
-                stone.empty = false;
-                boat.stoneList.shift();
-                boat.stoneList = [stone, ...boat.stoneList];
-                boat.stoneCount = boat.stoneList.length;
+                let loaded = false;
+
+                boat.stoneList = boat.stoneList
+                    .map(currentStone => {
+                        if (loaded) {
+                            return currentStone;
+                        }
+
+                        if (currentStone.empty) {
+                            loaded = true;
+                            return stone;
+                        }
+
+                        return currentStone;
+                    });
+
+                boat.stoneCount++;
+                game.turn++;
                 gameStore.updateGame(game);
             });
         },
@@ -1166,6 +1196,15 @@ var app = (function () {
                 gameStore.updateGame(game);
             });
         },
+        getStoneColor: (stone) => {
+            if (stone.empty) {
+                return 'lightgrey';
+            }
+
+            return get_store_value(gameStore)
+                .playerList[stone.playerIndex]
+                .color;
+        },
         template: () => {
             u((game) => {
 
@@ -1181,7 +1220,6 @@ var app = (function () {
                 })
                 .map(player => {
                     player.canGetStone = gameStore.canGetStone(game, player);
-                    player.loadableBoatList = gameStore.getLoadableBoatList(game, player);
 
                     game.boatList = game.boatList
                         .map(boat => {
@@ -1200,14 +1238,14 @@ var app = (function () {
                             return boat;
                         });
 
+                    console.log('>>> 2game.boatList', game.boatList);
+
                     if (game.boatList.length === 0) {
                         gameStore.startStage(game);
                     }
 
                     return player;
                 });
-
-            console.log('>>> game', game);
         }
     };
 
@@ -1327,6 +1365,7 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "stone");
+    			set_style(div, "background-color", /*$gameStore*/ ctx[1].playerList[/*stone*/ ctx[5].playerIndex].color);
     			add_location(div, file$2, 18, 8, 437);
     			this.first = div;
     		},
@@ -1338,6 +1377,10 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			if ((!current || dirty & /*$gameStore, playerIndex*/ 3) && t_value !== (t_value = /*stone*/ ctx[5].index + "")) set_data_dev(t, t_value);
+
+    			if (!current || dirty & /*$gameStore, playerIndex*/ 3) {
+    				set_style(div, "background-color", /*$gameStore*/ ctx[1].playerList[/*stone*/ ctx[5].playerIndex].color);
+    			}
     		},
     		r: function measure() {
     			rect = div.getBoundingClientRect();
@@ -1384,7 +1427,7 @@ var app = (function () {
     	return block;
     }
 
-    // (29:8) {#if player.canGetStone}
+    // (30:8) {#if player.canGetStone}
     function create_if_block$1(ctx) {
     	let button;
 
@@ -1392,7 +1435,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "돌 가져오기";
-    			add_location(button, file$2, 29, 12, 706);
+    			add_location(button, file$2, 30, 12, 794);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1406,7 +1449,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(29:8) {#if player.canGetStone}",
+    		source: "(30:8) {#if player.canGetStone}",
     		ctx
     	});
 
@@ -1445,7 +1488,7 @@ var app = (function () {
     			div0 = element("div");
     			if (if_block) if_block.c();
     			attr_dev(div0, "class", "action");
-    			add_location(div0, file$2, 27, 4, 640);
+    			add_location(div0, file$2, 28, 4, 728);
     			attr_dev(div1, "class", "player");
     			add_location(div1, file$2, 16, 0, 334);
     		},
@@ -1638,6 +1681,7 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "stone");
+    			set_style(div, "background-color", gameStore$1.getStoneColor(/*stone*/ ctx[8]));
     			toggle_class(div, "boat_stone_empty", /*stone*/ ctx[8].empty);
     			add_location(div, file$1, 11, 4, 285);
     			this.first = div;
@@ -1650,6 +1694,10 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			if ((!current || dirty & /*boat*/ 1) && t_value !== (t_value = /*stone*/ ctx[8].index + "")) set_data_dev(t, t_value);
+
+    			if (!current || dirty & /*boat*/ 1) {
+    				set_style(div, "background-color", gameStore$1.getStoneColor(/*stone*/ ctx[8]));
+    			}
 
     			if (dirty & /*boat*/ 1) {
     				toggle_class(div, "boat_stone_empty", /*stone*/ ctx[8].empty);
@@ -1700,7 +1748,7 @@ var app = (function () {
     	return block;
     }
 
-    // (22:4) {#if boat.loadable}
+    // (23:4) {#if boat.loadable}
     function create_if_block_1(ctx) {
     	let button;
     	let mounted;
@@ -1710,7 +1758,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "싣기";
-    			add_location(button, file$1, 22, 8, 531);
+    			add_location(button, file$1, 23, 8, 599);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1732,14 +1780,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(22:4) {#if boat.loadable}",
+    		source: "(23:4) {#if boat.loadable}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (26:4) {#if !boat.arrived}
+    // (27:4) {#if !boat.arrived}
     function create_if_block(ctx) {
     	let each_1_anchor;
     	let each_value = /*boat*/ ctx[0].destinationList;
@@ -1800,14 +1848,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(26:4) {#if !boat.arrived}",
+    		source: "(27:4) {#if !boat.arrived}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (27:8) {#each boat.destinationList as destination}
+    // (28:8) {#each boat.destinationList as destination}
     function create_each_block$1(ctx) {
     	let button;
     	let t0_value = /*destination*/ ctx[5].name + "";
@@ -1825,7 +1873,7 @@ var app = (function () {
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = text("로 출발");
-    			add_location(button, file$1, 27, 12, 688);
+    			add_location(button, file$1, 28, 12, 756);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1852,7 +1900,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(27:8) {#each boat.destinationList as destination}",
+    		source: "(28:8) {#each boat.destinationList as destination}",
     		ctx
     	});
 
@@ -1891,7 +1939,7 @@ var app = (function () {
     			if (if_block0) if_block0.c();
     			t1 = space();
     			if (if_block1) if_block1.c();
-    			add_location(div, file$1, 20, 0, 493);
+    			add_location(div, file$1, 21, 0, 561);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1909,7 +1957,7 @@ var app = (function () {
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*boat*/ 1) {
+    			if (dirty & /*gameStore, boat*/ 1) {
     				each_value_1 = /*boat*/ ctx[0].stoneList;
     				validate_each_argument(each_value_1);
     				group_outros();

@@ -13,6 +13,7 @@
          animate:flip
          in:stoneReceive={{key: stone}}
          out:stoneSend={{key: stone}}
+         style="background-color: {gameStore.getStoneColor(stone)}"
          class:boat_stone_empty={stone.empty}>
         {stone.index}
     </div>

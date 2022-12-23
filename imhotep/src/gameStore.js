@@ -1,6 +1,7 @@
 import {get, writable} from "svelte/store";
 import { tick } from 'svelte';
 import game from "./game"
+import {listen_dev} from "svelte/internal";
 
 Number.prototype.range = function (start = 0) {
     if (!Number.isInteger(this)) {
@@ -46,10 +47,24 @@ gameStore = {
     load: (boat) => {
         u((game) => {
             const stone = game.currentPlayer.stoneList.pop();
-            stone.empty = false;
-            boat.stoneList.shift();
-            boat.stoneList = [stone, ...boat.stoneList];
-            boat.stoneCount = boat.stoneList.length;
+            let loaded = false;
+
+            boat.stoneList = boat.stoneList
+                .map(currentStone => {
+                    if (loaded) {
+                        return currentStone;
+                    }
+
+                    if (currentStone.empty) {
+                        loaded = true;
+                        return stone;
+                    }
+
+                    return currentStone;
+                });
+
+            boat.stoneCount++;
+            game.turn++;
             gameStore.updateGame(game);
         });
     },
@@ -133,6 +148,15 @@ gameStore = {
             gameStore.updateGame(game);
         });
     },
+    getStoneColor: (stone) => {
+        if (stone.empty) {
+            return 'lightgrey';
+        }
+
+        return get(gameStore)
+            .playerList[stone.playerIndex]
+            .color;
+    },
     template: () => {
         u((game) => {
 
@@ -148,7 +172,6 @@ gameStore = {
             })
             .map(player => {
                 player.canGetStone = gameStore.canGetStone(game, player);
-                player.loadableBoatList = gameStore.getLoadableBoatList(game, player);
 
                 game.boatList = game.boatList
                     .map(boat => {
@@ -167,14 +190,14 @@ gameStore = {
                         return boat;
                     });
 
+                console.log('>>> 2game.boatList', game.boatList);
+
                 if (game.boatList.length === 0) {
                     gameStore.startStage(game);
                 }
 
                 return player;
             });
-
-        console.log('>>> game', game);
     }
 }
 
