@@ -4,6 +4,7 @@
     import Player from "./Player.svelte";
     import Boat from "./Boat.svelte";
     import {boatCrossfade} from "./animation";
+
     const [boatSend, boatReceive] = boatCrossfade;
 
     let destinationList;

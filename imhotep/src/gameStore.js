@@ -1,4 +1,5 @@
 import {get, writable} from "svelte/store";
+import { tick } from 'svelte';
 import game from "./game"
 
 Number.prototype.range = function (start = 0) {
@@ -40,7 +41,8 @@ gameStore = {
     },
     load: (boat) => {
         u((game) => {
-            game.currentPlayer.stoneCount -= 1;
+            game.currentPlayer.stoneList.pop();
+
             game.boatList
                 .find(b => b === boat)
                 .stoneCount++;
@@ -53,7 +55,7 @@ gameStore = {
             return [];
         }
 
-        if (player.stoneCount === 0) {
+        if (player.stoneList.length === 0) {
             return [];
         }
 
@@ -62,7 +64,7 @@ gameStore = {
     },
     canGetStone: (game, player) => {
         return player.active
-            && player.stoneCount <= 2;
+            && player.stoneList.length <= 2;
     },
     getMovableBoatList: (game, player) => {
         return player.active
@@ -104,16 +106,26 @@ gameStore = {
 
         gameStore.updateGame(game);
     },
-    clickBoat: (boatIndex) => {
+    move: async (boat, destination) => {
         u((game) => {
-            game.destinationBoatList[2] = game.boatList[boatIndex];
-            game.destinationBoatList[2].arrived = true;
+            game.boatList[boat.index].arrived = true;
+            gameStore.updateGame(game);
+        });
 
-            game.boatList[boatIndex] = {
+        await tick();
+
+        u((game) => {
+            game.destinationBoatList[destination.index] = boat;
+            game.destinationBoatList[destination.index].arrived = true;
+
+            game.boatList[boat.index] = {
+                arrived: true,
                 stoneCount: 0,
                 maxStoneCount: 0,
                 destinationList: []
             }
+
+            gameStore.updateGame(game);
         });
     },
     template: () => {
@@ -135,7 +147,8 @@ gameStore = {
 
                 game.boatList = game.boatList
                     .map(boat => {
-                        boat.loadable = boat.stoneCount < boat.maxStoneCount
+                        boat.loadable = game.currentPlayer.stoneList.length > 0
+                            && boat.stoneCount < boat.minStoneCount
 
                         if (boat.stoneCount < boat.minStoneCount) {
                             boat.destinationList = [];
@@ -148,8 +161,6 @@ gameStore = {
 
                         return boat;
                     });
-
-                console.log('>>> game.boatList', game.boatList);
 
                 if (game.boatList.length === 0) {
                     gameStore.startStage(game);

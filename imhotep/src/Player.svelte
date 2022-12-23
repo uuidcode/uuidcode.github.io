@@ -1,7 +1,12 @@
 <script>
     import gameStore from "./gameStore";
+    import {flip} from 'svelte/animate';
+    import {boatCrossfade, stoneCrossfade} from "./animation";
+
+    const [stoneSend, stoneReceive] = boatCrossfade;
 
     export let playerIndex;
+
     let player;
 
     $: {
@@ -10,8 +15,12 @@
 </script>
 
 <div class="player">
-    {#each $gameStore.playerList[playerIndex].stoneCount.range() as stoneIndex}
-        <div class="stone">
+    {#each $gameStore.playerList[playerIndex].stoneList as stoneIndex (stoneIndex)}
+        <div class="stone"
+             animate:flip
+             in:stoneReceive={{key: stoneIndex}}
+             out:stoneSend={{key: stoneIndex}}
+            >
             {stoneIndex}
         </div>
     {/each}
