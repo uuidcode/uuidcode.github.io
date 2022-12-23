@@ -15,13 +15,13 @@
 </script>
 
 <div class="player">
-    {#each $gameStore.playerList[playerIndex].stoneList as stoneIndex (stoneIndex)}
+    {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}
         <div class="stone"
              animate:flip
-             in:stoneReceive={{key: stoneIndex}}
-             out:stoneSend={{key: stoneIndex}}
+             in:stoneReceive={{key: stone}}
+             out:stoneSend={{key: stone}}
             >
-            {stoneIndex}
+            {stone.index}
         </div>
     {/each}
 

@@ -8,13 +8,13 @@
     export let boat;
 </script>
 
-{#each boat.maxStoneCount.range() as stoneIndex (stoneIndex)}
+{#each boat.stoneList as stone (stone)}
     <div class="stone"
          animate:flip
-         in:stoneReceive={{key: stoneIndex}}
-         out:stoneSend={{key: stoneIndex}}
-         class:boat_stone_fill={stoneIndex < boat.stoneCount}>
-        {stoneIndex}
+         in:stoneReceive={{key: stone}}
+         out:stoneSend={{key: stone}}
+         class:boat_stone_empty={stone.empty}>
+        {stone.index}
     </div>
 {/each}
 

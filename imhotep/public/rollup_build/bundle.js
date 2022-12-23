@@ -991,26 +991,48 @@ var app = (function () {
             {
                 index: 0,
                 name: '테드',
-                stoneList: [
-                    0,
-                    1
-                ]
             },
             {
                 index: 1,
                 name: '다은',
-                stoneList: [
-                    0,
-                    1,
-                    2
-                ]
             }
         ]
     };
 
+    game.playerList.map((player, playerIndex) => {
+        let stoneCount = 2;
+
+        if (playerIndex === 1) {
+            stoneCount = 3;
+        }
+
+        player.stoneList = Array(stoneCount).fill(0)
+            .map((item, stoneIndex) => {
+                return {
+                    index: stoneIndex
+                }
+            });
+
+        return player;
+    });
+
     game.destinationList.map((destination, index) => {
         destination.index = index;
         return destination;
+    });
+
+    game.boatGroup.map((boatList) => {
+        boatList.forEach(boat => {
+            boat.stoneCount = 0;
+            boat.stoneList = Array(boat.maxStoneCount)
+                .fill(0)
+                .map((item, index) => {
+                    return {
+                        index: index,
+                        empty: true
+                    }
+                });
+        });
     });
 
     Number.prototype.range = function (start = 0) {
@@ -1039,6 +1061,10 @@ var app = (function () {
 
     gameStore = {
         ...gameStore,
+        range: (size, start = 0) => {
+            return Array(size).fill(start)
+                .map((item, index) => item + index)
+        },
         setNewBoatList: (game) => {
             game.boatList = game.boatGroup
                 .sort(() => 0.5 - Math.random())
@@ -1052,12 +1078,11 @@ var app = (function () {
         },
         load: (boat) => {
             u((game) => {
-                game.currentPlayer.stoneList.pop();
-
-                game.boatList
-                    .find(b => b === boat)
-                    .stoneCount++;
-
+                const stone = game.currentPlayer.stoneList.pop();
+                stone.empty = false;
+                boat.stoneList.shift();
+                boat.stoneList = [stone, ...boat.stoneList];
+                boat.stoneCount = boat.stoneList.length;
                 gameStore.updateGame(game);
             });
         },
@@ -1098,6 +1123,7 @@ var app = (function () {
                 .map(destination => {
                     return {
                         stoneCount: 0,
+                        stoneList: [],
                         maxStoneCount: 0,
                         destinationList: []
                     }
@@ -1132,6 +1158,7 @@ var app = (function () {
                 game.boatList[boat.index] = {
                     arrived: true,
                     stoneCount: 0,
+                    stoneList: [],
                     maxStoneCount: 0,
                     destinationList: []
                 };
@@ -1179,6 +1206,8 @@ var app = (function () {
 
                     return player;
                 });
+
+            console.log('>>> game', game);
         }
     };
 
@@ -1280,10 +1309,10 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (18:4) {#each $gameStore.playerList[playerIndex].stoneList as stoneIndex (stoneIndex)}
+    // (18:4) {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}
     function create_each_block$2(key_1, ctx) {
     	let div;
-    	let t_value = /*stoneIndex*/ ctx[5] + "";
+    	let t_value = /*stone*/ ctx[5].index + "";
     	let t;
     	let div_intro;
     	let div_outro;
@@ -1298,7 +1327,7 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "stone");
-    			add_location(div, file$2, 18, 8, 447);
+    			add_location(div, file$2, 18, 8, 437);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -1308,7 +1337,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if ((!current || dirty & /*$gameStore, playerIndex*/ 3) && t_value !== (t_value = /*stoneIndex*/ ctx[5] + "")) set_data_dev(t, t_value);
+    			if ((!current || dirty & /*$gameStore, playerIndex*/ 3) && t_value !== (t_value = /*stone*/ ctx[5].index + "")) set_data_dev(t, t_value);
     		},
     		r: function measure() {
     			rect = div.getBoundingClientRect();
@@ -1327,7 +1356,7 @@ var app = (function () {
 
     			add_render_callback(() => {
     				if (div_outro) div_outro.end(1);
-    				div_intro = create_in_transition(div, /*stoneReceive*/ ctx[4], { key: /*stoneIndex*/ ctx[5] });
+    				div_intro = create_in_transition(div, /*stoneReceive*/ ctx[4], { key: /*stone*/ ctx[5] });
     				div_intro.start();
     			});
 
@@ -1335,7 +1364,7 @@ var app = (function () {
     		},
     		o: function outro(local) {
     			if (div_intro) div_intro.invalidate();
-    			div_outro = create_out_transition(div, /*stoneSend*/ ctx[3], { key: /*stoneIndex*/ ctx[5] });
+    			div_outro = create_out_transition(div, /*stoneSend*/ ctx[3], { key: /*stone*/ ctx[5] });
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -1348,7 +1377,7 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(18:4) {#each $gameStore.playerList[playerIndex].stoneList as stoneIndex (stoneIndex)}",
+    		source: "(18:4) {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}",
     		ctx
     	});
 
@@ -1363,7 +1392,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "돌 가져오기";
-    			add_location(button, file$2, 29, 12, 725);
+    			add_location(button, file$2, 29, 12, 706);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1393,7 +1422,7 @@ var app = (function () {
     	let current;
     	let each_value = /*$gameStore*/ ctx[1].playerList[/*playerIndex*/ ctx[0]].stoneList;
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*stoneIndex*/ ctx[5];
+    	const get_key = ctx => /*stone*/ ctx[5];
     	validate_each_keys(ctx, each_value, get_each_context$2, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1416,7 +1445,7 @@ var app = (function () {
     			div0 = element("div");
     			if (if_block) if_block.c();
     			attr_dev(div0, "class", "action");
-    			add_location(div0, file$2, 27, 4, 659);
+    			add_location(div0, file$2, 27, 4, 640);
     			attr_dev(div1, "class", "player");
     			add_location(div1, file$2, 16, 0, 334);
     		},
@@ -1591,10 +1620,10 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (11:0) {#each boat.maxStoneCount.range() as stoneIndex (stoneIndex)}
+    // (11:0) {#each boat.stoneList as stone (stone)}
     function create_each_block_1$1(key_1, ctx) {
     	let div;
-    	let t_value = /*stoneIndex*/ ctx[8] + "";
+    	let t_value = /*stone*/ ctx[8].index + "";
     	let t;
     	let div_intro;
     	let div_outro;
@@ -1609,8 +1638,8 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "stone");
-    			toggle_class(div, "boat_stone_fill", /*stoneIndex*/ ctx[8] < /*boat*/ ctx[0].stoneCount);
-    			add_location(div, file$1, 11, 4, 307);
+    			toggle_class(div, "boat_stone_empty", /*stone*/ ctx[8].empty);
+    			add_location(div, file$1, 11, 4, 285);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -1620,10 +1649,10 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if ((!current || dirty & /*boat*/ 1) && t_value !== (t_value = /*stoneIndex*/ ctx[8] + "")) set_data_dev(t, t_value);
+    			if ((!current || dirty & /*boat*/ 1) && t_value !== (t_value = /*stone*/ ctx[8].index + "")) set_data_dev(t, t_value);
 
     			if (dirty & /*boat*/ 1) {
-    				toggle_class(div, "boat_stone_fill", /*stoneIndex*/ ctx[8] < /*boat*/ ctx[0].stoneCount);
+    				toggle_class(div, "boat_stone_empty", /*stone*/ ctx[8].empty);
     			}
     		},
     		r: function measure() {
@@ -1643,7 +1672,7 @@ var app = (function () {
 
     			add_render_callback(() => {
     				if (div_outro) div_outro.end(1);
-    				div_intro = create_in_transition(div, /*stoneReceive*/ ctx[2], { key: /*stoneIndex*/ ctx[8] });
+    				div_intro = create_in_transition(div, /*stoneReceive*/ ctx[2], { key: /*stone*/ ctx[8] });
     				div_intro.start();
     			});
 
@@ -1651,7 +1680,7 @@ var app = (function () {
     		},
     		o: function outro(local) {
     			if (div_intro) div_intro.invalidate();
-    			div_outro = create_out_transition(div, /*stoneSend*/ ctx[1], { key: /*stoneIndex*/ ctx[8] });
+    			div_outro = create_out_transition(div, /*stoneSend*/ ctx[1], { key: /*stone*/ ctx[8] });
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -1664,7 +1693,7 @@ var app = (function () {
     		block,
     		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(11:0) {#each boat.maxStoneCount.range() as stoneIndex (stoneIndex)}",
+    		source: "(11:0) {#each boat.stoneList as stone (stone)}",
     		ctx
     	});
 
@@ -1681,7 +1710,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "싣기";
-    			add_location(button, file$1, 22, 8, 578);
+    			add_location(button, file$1, 22, 8, 531);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1796,7 +1825,7 @@ var app = (function () {
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = text("로 출발");
-    			add_location(button, file$1, 27, 12, 735);
+    			add_location(button, file$1, 27, 12, 688);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1837,9 +1866,9 @@ var app = (function () {
     	let div;
     	let t1;
     	let current;
-    	let each_value_1 = /*boat*/ ctx[0].maxStoneCount.range();
+    	let each_value_1 = /*boat*/ ctx[0].stoneList;
     	validate_each_argument(each_value_1);
-    	const get_key = ctx => /*stoneIndex*/ ctx[8];
+    	const get_key = ctx => /*stone*/ ctx[8];
     	validate_each_keys(ctx, each_value_1, get_each_context_1$1, get_key);
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -1862,7 +1891,7 @@ var app = (function () {
     			if (if_block0) if_block0.c();
     			t1 = space();
     			if (if_block1) if_block1.c();
-    			add_location(div, file$1, 20, 0, 540);
+    			add_location(div, file$1, 20, 0, 493);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1881,7 +1910,7 @@ var app = (function () {
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*boat*/ 1) {
-    				each_value_1 = /*boat*/ ctx[0].maxStoneCount.range();
+    				each_value_1 = /*boat*/ ctx[0].stoneList;
     				validate_each_argument(each_value_1);
     				group_outros();
     				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();

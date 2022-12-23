@@ -28,6 +28,10 @@ let gameStore = {
 
 gameStore = {
     ...gameStore,
+    range: (size, start = 0) => {
+        return Array(size).fill(start)
+            .map((item, index) => item + index)
+    },
     setNewBoatList: (game) => {
         game.boatList = game.boatGroup
             .sort(() => 0.5 - Math.random())
@@ -41,12 +45,11 @@ gameStore = {
     },
     load: (boat) => {
         u((game) => {
-            game.currentPlayer.stoneList.pop();
-
-            game.boatList
-                .find(b => b === boat)
-                .stoneCount++;
-
+            const stone = game.currentPlayer.stoneList.pop();
+            stone.empty = false;
+            boat.stoneList.shift();
+            boat.stoneList = [stone, ...boat.stoneList];
+            boat.stoneCount = boat.stoneList.length;
             gameStore.updateGame(game);
         });
     },
@@ -87,6 +90,7 @@ gameStore = {
             .map(destination => {
                 return {
                     stoneCount: 0,
+                    stoneList: [],
                     maxStoneCount: 0,
                     destinationList: []
                 }
@@ -121,6 +125,7 @@ gameStore = {
             game.boatList[boat.index] = {
                 arrived: true,
                 stoneCount: 0,
+                stoneList: [],
                 maxStoneCount: 0,
                 destinationList: []
             }
@@ -168,6 +173,8 @@ gameStore = {
 
                 return player;
             });
+
+        console.log('>>> game', game);
     }
 }
 

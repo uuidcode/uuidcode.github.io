@@ -1,5 +1,3 @@
-import gameStore from "./gameStore";
-
 const game = {
     start: false,
     turn: 0,
@@ -70,26 +68,48 @@ const game = {
         {
             index: 0,
             name: '테드',
-            stoneList: [
-                0,
-                1
-            ]
         },
         {
             index: 1,
             name: '다은',
-            stoneList: [
-                0,
-                1,
-                2
-            ]
         }
     ]
 }
 
+game.playerList.map((player, playerIndex) => {
+    let stoneCount = 2;
+
+    if (playerIndex === 1) {
+        stoneCount = 3;
+    }
+
+    player.stoneList = Array(stoneCount).fill(0)
+        .map((item, stoneIndex) => {
+            return {
+                index: stoneIndex
+            }
+        });
+
+    return player;
+});
+
 game.destinationList.map((destination, index) => {
     destination.index = index;
     return destination;
+});
+
+game.boatGroup.map((boatList) => {
+    boatList.forEach(boat => {
+        boat.stoneCount = 0;
+        boat.stoneList = Array(boat.maxStoneCount)
+            .fill(0)
+            .map((item, index) => {
+                return {
+                    index: index,
+                    empty: true
+                }
+            })
+    })
 });
 
 export default game;
