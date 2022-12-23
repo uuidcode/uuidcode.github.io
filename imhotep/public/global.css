@@ -26,7 +26,6 @@ div {
 }
 
 .boat {
-    width: 250px;
     height: 70px;
     margin: 20px;
     padding: 5px;
@@ -88,6 +87,7 @@ div {
 .destination-boat {
     border: 2px dashed black;
     background-color: lightgrey;
+    width: 250px;
 }
 
 .boat-arrived {

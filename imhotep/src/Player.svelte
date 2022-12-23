@@ -20,6 +20,7 @@
              animate:flip
              in:stoneReceive={{key: stone}}
              out:stoneSend={{key: stone}}
+             style="background-color: {$gameStore.playerList[stone.playerIndex].color}"
             >
             {stone.index}
         </div>

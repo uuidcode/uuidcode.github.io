@@ -42,7 +42,7 @@ const game = {
                 maxStoneCount: 4
             },
             {
-                minStoneCount: 1,
+                minStoneCount: 2,
                 maxStoneCount: 3
             }
         ],
@@ -68,10 +68,12 @@ const game = {
         {
             index: 0,
             name: '테드',
+            color: 'lightblue'
         },
         {
             index: 1,
             name: '다은',
+            color: 'lightcoral'
         }
     ]
 }
@@ -86,7 +88,8 @@ game.playerList.map((player, playerIndex) => {
     player.stoneList = Array(stoneCount).fill(0)
         .map((item, stoneIndex) => {
             return {
-                index: stoneIndex
+                index: stoneIndex,
+                playerIndex: playerIndex
             }
         });
 
