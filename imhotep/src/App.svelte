@@ -8,10 +8,12 @@
 
     let destinationList;
     let destinationBoatList;
+    let boatList;
 
     $: {
         destinationList = $gameStore.destinationList;
         destinationBoatList = $gameStore.destinationBoatList;
+        boatList = $gameStore.boatList;
     }
 </script>
 
@@ -21,31 +23,32 @@
         <Player playerIndex="1"></Player>
     </div>
     <div class="port source-port">
-        {#each $gameStore.boatList as boat (boat)}
+        {#each boatList as boat (boat)}
             <div class="boat"
                  class:boat-ready={boat.maxStoneCount !== 0}
                  animate:flip
                  in:boatReceive={{key: boat}}
                  out:boatSend={{key: boat}}
-                 on:click={() => gameStore.clickBoat(boat.index)}>
+            >
                 <Boat boat={boat}></Boat>
             </div>
         {/each}
     </div>
     <div class="port destination-port">
         {#each destinationBoatList as destinationBoat (destinationBoat)}
-            <div class="boat"
+            <div class="boat destination-boat"
                  class:boat-ready={destinationBoat.maxStoneCount !== 0}
+                 class:boat-arrived={destinationBoat.arrived}
                  animate:flip
                  in:boatReceive={{key: destinationBoat}}
                  out:boatSend={{key: destinationBoat}}>
-                <Boat boat={destinationBoat}></Boat>
+                <Boat boat={destinationBoat}>{destinationBoat}</Boat>
             </div>
         {/each}
     </div>
     <div class="destination-container">
         {#each destinationList as destination}
-            <div class="destination"></div>
+            <div class="destination">{destination.name}</div>
         {/each}
     </div>
 </div>

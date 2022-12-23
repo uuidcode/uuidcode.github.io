@@ -33,8 +33,20 @@ gameStore = {
             .pop()
             .map((boat, index) => {
                 boat.index = index;
+                boat.destinationList = [];
+                boat.stoneCount = 0;
                 return boat;
             });
+    },
+    load: (boat) => {
+        u((game) => {
+            game.currentPlayer.stoneCount -= 1;
+            game.boatList
+                .find(b => b === boat)
+                .stoneCount++;
+
+            gameStore.updateGame(game);
+        });
     },
     getLoadableBoatList: (game, player) => {
         if (player.active) {
@@ -62,6 +74,21 @@ gameStore = {
         }
 
         gameStore.setNewBoatList(game);
+
+        game.destinationList = game.destinationList
+            .map(destination => {
+                destination.empty = true;
+                return destination;
+            });
+
+        game.destinationBoatList = game.destinationList
+            .map(destination => {
+                return {
+                    stoneCount: 0,
+                    maxStoneCount: 0,
+                    destinationList: []
+                }
+            });
     },
     start: () => {
         u((game) => {
@@ -78,13 +105,14 @@ gameStore = {
         gameStore.updateGame(game);
     },
     clickBoat: (boatIndex) => {
-
         u((game) => {
-            game.destinationBoatList = [...game.destinationBoatList,
-                game.boatList[boatIndex]];
+            game.destinationBoatList[2] = game.boatList[boatIndex];
+            game.destinationBoatList[2].arrived = true;
 
             game.boatList[boatIndex] = {
-                maxStoneCount: 0
+                stoneCount: 0,
+                maxStoneCount: 0,
+                destinationList: []
             }
         });
     },
@@ -104,7 +132,24 @@ gameStore = {
             .map(player => {
                 player.canGetStone = gameStore.canGetStone(game, player);
                 player.loadableBoatList = gameStore.getLoadableBoatList(game, player);
-                player.movableBoatList = gameStore.getMovableBoatList(game, player);
+
+                game.boatList = game.boatList
+                    .map(boat => {
+                        boat.loadable = boat.stoneCount < boat.maxStoneCount
+
+                        if (boat.stoneCount < boat.minStoneCount) {
+                            boat.destinationList = [];
+                        } else {
+                            boat.destinationList = game.destinationList
+                                .filter(destination => {
+                                    return destination.empty
+                                });
+                        }
+
+                        return boat;
+                    });
+
+                console.log('>>> game.boatList', game.boatList);
 
                 if (game.boatList.length === 0) {
                     gameStore.startStage(game);

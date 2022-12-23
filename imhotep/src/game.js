@@ -20,16 +20,32 @@ const game = {
             {
                 minStoneCount: 1,
                 maxStoneCount: 1
+            },
+            {
+                minStoneCount: 3,
+                maxStoneCount: 4
+            },
+            {
+                minStoneCount: 1,
+                maxStoneCount: 2
             }
         ],
         [
             {
-                minStoneCount: 1,
-                maxStoneCount: 2
+                minStoneCount: 2,
+                maxStoneCount: 3
             },
             {
                 minStoneCount: 1,
                 maxStoneCount: 1
+            },
+            {
+                minStoneCount: 3,
+                maxStoneCount: 4
+            },
+            {
+                minStoneCount: 1,
+                maxStoneCount: 3
             }
         ],
     ],
@@ -42,6 +58,12 @@ const game = {
         },
         {
             name: '피라미드'
+        },
+        {
+            name: '성벽'
+        },
+        {
+            name: '오빌리스크'
         }
     ],
     playerList: [
