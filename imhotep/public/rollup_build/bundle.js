@@ -1247,7 +1247,7 @@ var app = (function () {
                     game.boatList = game.boatList
                         .map(boat => {
                             boat.loadable = game.currentPlayer.stoneList.length > 0
-                                && boat.stoneCount < boat.minStoneCount;
+                                && boat.stoneCount < boat.maxStoneCount;
 
                             if (boat.stoneCount < boat.minStoneCount) {
                                 boat.destinationList = [];
@@ -1819,7 +1819,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "싣기";
     			set_style(button, "background-color", /*$gameStore*/ ctx[1].currentPlayer.color, false);
-    			add_location(button, file$1, 25, 8, 627);
+    			add_location(button, file$1, 25, 8, 647);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1939,7 +1939,7 @@ var app = (function () {
     			t0 = text(t0_value);
     			t1 = text("로 출발");
     			set_style(button, "background-color", /*$gameStore*/ ctx[1].currentPlayer.color, false);
-    			add_location(button, file$1, 31, 12, 856);
+    			add_location(button, file$1, 31, 12, 876);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2009,6 +2009,7 @@ var app = (function () {
     			if (if_block0) if_block0.c();
     			t1 = space();
     			if (if_block1) if_block1.c();
+    			attr_dev(div, "class", "boat-action");
     			add_location(div, file$1, 23, 0, 589);
     		},
     		l: function claim(nodes) {

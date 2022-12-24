@@ -130,3 +130,10 @@ button:hover {
 .action {
     display: flex;
 }
+
+.boat-action {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    width:300px;
+}

@@ -21,7 +21,7 @@
     </div>
 {/each}
 
-<div>
+<div class="boat-action">
     {#if boat.loadable}
         <button style:background-color={$gameStore.currentPlayer.color}
                 on:click={() => gameStore.load(boat)}>싣기</button>

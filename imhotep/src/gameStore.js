@@ -199,7 +199,7 @@ gameStore = {
                 game.boatList = game.boatList
                     .map(boat => {
                         boat.loadable = game.currentPlayer.stoneList.length > 0
-                            && boat.stoneCount < boat.minStoneCount
+                            && boat.stoneCount < boat.maxStoneCount
 
                         if (boat.stoneCount < boat.minStoneCount) {
                             boat.destinationList = [];
