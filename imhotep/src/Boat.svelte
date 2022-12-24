@@ -6,6 +6,7 @@
     const [stoneSend, stoneReceive] = boatCrossfade;
 
     export let boat;
+
 </script>
 
 {#each boat.stoneList as stone (stone)}
@@ -13,7 +14,8 @@
          animate:flip
          in:stoneReceive={{key: stone}}
          out:stoneSend={{key: stone}}
-         style="background-color: {gameStore.getStoneColor(stone)}"
+         on:introend={() => gameStore.turn()}
+         style="background-color: {stone.color}"
          class:boat_stone_empty={stone.empty}>
         {stone.index}
     </div>
@@ -21,12 +23,14 @@
 
 <div>
     {#if boat.loadable}
-        <button on:click={() => gameStore.load(boat)}>싣기</button>
+        <button style:background-color={$gameStore.currentPlayer.color}
+                on:click={() => gameStore.load(boat)}>싣기</button>
     {/if}
 
     {#if !boat.arrived}
         {#each boat.destinationList as destination}
-            <button on:click={() => gameStore.move(boat, destination)}>{destination.name}로 출발</button>
+            <button style:background-color={$gameStore.currentPlayer.color}
+                    on:click={() => gameStore.move(boat, destination)}>{destination.name}로 출발</button>
         {/each}
     {/if}
 </div>

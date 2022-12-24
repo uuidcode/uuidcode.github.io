@@ -40,6 +40,28 @@ div {
     border: 1px solid black;
     width: 400px;
     height: 350px;
+    padding: 10px;
+}
+
+button {
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 10px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.player-title {
+    font-size: 20px;
+}
+
+.player-stone-container {
+    margin: 10px 0;
 }
 
 .stone {
@@ -51,6 +73,7 @@ div {
     text-align: center;
     display: inline-block;
     background-color: sandybrown;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
 .boat_stone {
@@ -82,6 +105,7 @@ div {
     width: 800px;
     height: 160px;
     border: 1px solid lightgrey;
+    padding: 5px;
 }
 
 .destination-boat {
@@ -98,7 +122,6 @@ div {
 .source {
     width: 400px;
     height: 800px;
-    border: 1px solid blue;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;

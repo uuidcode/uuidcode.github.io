@@ -46,6 +46,7 @@ gameStore = {
     },
     load: (boat) => {
         u((game) => {
+            let color = gameStore.getCurrentPlayerColor();
             const stone = game.currentPlayer.stoneList.pop();
             let loaded = false;
 
@@ -57,6 +58,7 @@ gameStore = {
 
                     if (currentStone.empty) {
                         loaded = true;
+                        stone.color = color;
                         return stone;
                     }
 
@@ -64,9 +66,14 @@ gameStore = {
                 });
 
             boat.stoneCount++;
-            game.turn++;
-            gameStore.updateGame(game);
+
         });
+
+        // await tick();
+        //
+        // u((game) => {
+        //     gameStore.turn(game);
+        // })
     },
     getLoadableBoatList: (game, player) => {
         if (player.active) {
@@ -119,6 +126,15 @@ gameStore = {
         });
     },
     turn: (game) => {
+        if (game) {
+            gameStore._turn(game);
+        } else {
+            u((game) => {
+                gameStore._turn(game);
+            });
+        }
+    },
+    _turn: (game) => {
         if (game.start) {
             game.turn += 1;
         }
@@ -157,12 +173,19 @@ gameStore = {
             .playerList[stone.playerIndex]
             .color;
     },
-    template: () => {
-        u((game) => {
-
-        });
+    getCurrentPlayerColor: () => {
+        return get(gameStore).currentPlayer.color;
     },
     updateGame: (game) => {
+        if (game) {
+            gameStore._updateGame(game);
+        } else {
+            u((game) => {
+                gameStore._updateGame(game);
+            });
+        }
+    },
+    _updateGame: (game) => {
         game.currentPlayer = game.playerList[game.turn % 2];
 
         game.playerList = game.playerList
