@@ -40,7 +40,6 @@
             <div class="boat destination-boat"
                  class:boat-ready={destinationBoat.maxStoneCount !== 0}
                  class:boat-arrived={destinationBoat.arrived}
-                 animate:flip
                  in:boatReceive={{key: destinationBoat}}
                  out:boatSend={{key: destinationBoat}}>
                 <Boat boat={destinationBoat}>{destinationBoat}</Boat>

@@ -817,6 +817,10 @@ var app = (function () {
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
     }
+    function prop_dev(node, property, value) {
+        node[property] = value;
+        dispatch_dev('SvelteDOMSetProperty', { node, property, value });
+    }
     function set_data_dev(text, data) {
         data = '' + data;
         if (text.wholeText === data)
@@ -935,6 +939,7 @@ var app = (function () {
     }
 
     const game = {
+        disabled: false,
         start: false,
         turn: 0,
         stage: 0,
@@ -1092,7 +1097,13 @@ var app = (function () {
                     return boat;
                 });
         },
-        load: (boat) => {
+        load: async (boat) => {
+            u((game) => {
+                game.disabled = true;
+            });
+
+            await tick();
+
             u((game) => {
                 let color = gameStore.getCurrentPlayerColor();
                 const stone = game.currentPlayer.stoneList.pop();
@@ -1114,14 +1125,7 @@ var app = (function () {
                     });
 
                 boat.stoneCount++;
-
             });
-
-            // await tick();
-            //
-            // u((game) => {
-            //     gameStore.turn(game);
-            // })
         },
         getLoadableBoatList: (game, player) => {
             if (player.active) {
@@ -1234,6 +1238,7 @@ var app = (function () {
             }
         },
         _updateGame: (game) => {
+            game.disabled = false;
             game.currentPlayer = game.playerList[game.turn % 2];
 
             game.playerList = game.playerList
@@ -1808,21 +1813,25 @@ var app = (function () {
     	return block;
     }
 
-    // (25:4) {#if boat.loadable}
+    // (25:4) {#if boat.loadable && !$gameStore.disabled && !boat.arrived}
     function create_if_block_1(ctx) {
     	let button;
+    	let t;
+    	let button_disabled_value;
     	let mounted;
     	let dispose;
 
     	const block = {
     		c: function create() {
     			button = element("button");
-    			button.textContent = "싣기";
+    			t = text("싣기");
+    			button.disabled = button_disabled_value = /*$gameStore*/ ctx[1].disabled;
     			set_style(button, "background-color", /*$gameStore*/ ctx[1].currentPlayer.color, false);
-    			add_location(button, file$1, 25, 8, 647);
+    			add_location(button, file$1, 25, 8, 688);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
+    			append_dev(button, t);
 
     			if (!mounted) {
     				dispose = listen_dev(button, "click", /*click_handler*/ ctx[5], false, false, false);
@@ -1830,6 +1839,10 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 2 && button_disabled_value !== (button_disabled_value = /*$gameStore*/ ctx[1].disabled)) {
+    				prop_dev(button, "disabled", button_disabled_value);
+    			}
+
     			if (dirty & /*$gameStore*/ 2) {
     				set_style(button, "background-color", /*$gameStore*/ ctx[1].currentPlayer.color, false);
     			}
@@ -1845,14 +1858,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(25:4) {#if boat.loadable}",
+    		source: "(25:4) {#if boat.loadable && !$gameStore.disabled && !boat.arrived}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (30:4) {#if !boat.arrived}
+    // (31:4) {#if !boat.arrived}
     function create_if_block(ctx) {
     	let each_1_anchor;
     	let each_value = /*boat*/ ctx[0].destinationList;
@@ -1913,19 +1926,20 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(30:4) {#if !boat.arrived}",
+    		source: "(31:4) {#if !boat.arrived}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (31:8) {#each boat.destinationList as destination}
+    // (32:8) {#each boat.destinationList as destination}
     function create_each_block$1(ctx) {
     	let button;
     	let t0_value = /*destination*/ ctx[7].name + "";
     	let t0;
     	let t1;
+    	let button_disabled_value;
     	let mounted;
     	let dispose;
 
@@ -1938,8 +1952,9 @@ var app = (function () {
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = text("로 출발");
+    			button.disabled = button_disabled_value = /*$gameStore*/ ctx[1].disabled;
     			set_style(button, "background-color", /*$gameStore*/ ctx[1].currentPlayer.color, false);
-    			add_location(button, file$1, 31, 12, 876);
+    			add_location(button, file$1, 32, 12, 958);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1954,6 +1969,10 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			if (dirty & /*boat*/ 1 && t0_value !== (t0_value = /*destination*/ ctx[7].name + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*$gameStore*/ 2 && button_disabled_value !== (button_disabled_value = /*$gameStore*/ ctx[1].disabled)) {
+    				prop_dev(button, "disabled", button_disabled_value);
+    			}
 
     			if (dirty & /*$gameStore*/ 2) {
     				set_style(button, "background-color", /*$gameStore*/ ctx[1].currentPlayer.color, false);
@@ -1970,7 +1989,7 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(31:8) {#each boat.destinationList as destination}",
+    		source: "(32:8) {#each boat.destinationList as destination}",
     		ctx
     	});
 
@@ -1995,7 +2014,7 @@ var app = (function () {
     		each_1_lookup.set(key, each_blocks[i] = create_each_block_1$1(key, child_ctx));
     	}
 
-    	let if_block0 = /*boat*/ ctx[0].loadable && create_if_block_1(ctx);
+    	let if_block0 = /*boat*/ ctx[0].loadable && !/*$gameStore*/ ctx[1].disabled && !/*boat*/ ctx[0].arrived && create_if_block_1(ctx);
     	let if_block1 = !/*boat*/ ctx[0].arrived && create_if_block(ctx);
 
     	const block = {
@@ -2039,7 +2058,7 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if (/*boat*/ ctx[0].loadable) {
+    			if (/*boat*/ ctx[0].loadable && !/*$gameStore*/ ctx[1].disabled && !/*boat*/ ctx[0].arrived) {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     				} else {
@@ -2298,7 +2317,7 @@ var app = (function () {
     	return block;
     }
 
-    // (46:16) <Boat boat={destinationBoat}>
+    // (45:16) <Boat boat={destinationBoat}>
     function create_default_slot(ctx) {
     	let t_value = /*destinationBoat*/ ctx[9] + "";
     	let t;
@@ -2322,7 +2341,7 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(46:16) <Boat boat={destinationBoat}>",
+    		source: "(45:16) <Boat boat={destinationBoat}>",
     		ctx
     	});
 
@@ -2336,8 +2355,6 @@ var app = (function () {
     	let t;
     	let div_intro;
     	let div_outro;
-    	let rect;
-    	let stop_animation = noop;
     	let current;
 
     	boat = new Boat({
@@ -2387,18 +2404,6 @@ var app = (function () {
     				toggle_class(div, "boat-arrived", /*destinationBoat*/ ctx[9].arrived);
     			}
     		},
-    		r: function measure() {
-    			rect = div.getBoundingClientRect();
-    		},
-    		f: function fix() {
-    			fix_position(div);
-    			stop_animation();
-    			add_transform(div, rect);
-    		},
-    		a: function animate() {
-    			stop_animation();
-    			stop_animation = create_animation(div, rect, flip, {});
-    		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(boat.$$.fragment, local);
@@ -2435,7 +2440,7 @@ var app = (function () {
     	return block;
     }
 
-    // (51:8) {#each destinationList as destination}
+    // (50:8) {#each destinationList as destination}
     function create_each_block(ctx) {
     	let div;
     	let t_value = /*destination*/ ctx[6].name + "";
@@ -2446,7 +2451,7 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "destination");
-    			add_location(div, file, 51, 12, 1706);
+    			add_location(div, file, 50, 12, 1676);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2464,7 +2469,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(51:8) {#each destinationList as destination}",
+    		source: "(50:8) {#each destinationList as destination}",
     		ctx
     	});
 
@@ -2564,7 +2569,7 @@ var app = (function () {
     			attr_dev(div2, "class", "port destination-port");
     			add_location(div2, file, 37, 4, 1058);
     			attr_dev(div3, "class", "destination-container");
-    			add_location(div3, file, 49, 4, 1611);
+    			add_location(div3, file, 48, 4, 1581);
     			attr_dev(div4, "class", "board");
     			add_location(div4, file, 20, 0, 526);
     		},
@@ -2616,10 +2621,8 @@ var app = (function () {
     				each_value_1 = /*destinationBoatList*/ ctx[1];
     				validate_each_argument(each_value_1);
     				group_outros();
-    				for (let i = 0; i < each_blocks_1.length; i += 1) each_blocks_1[i].r();
     				validate_each_keys(ctx, each_value_1, get_each_context_1, get_key_1);
-    				each_blocks_1 = update_keyed_each(each_blocks_1, dirty, get_key_1, 1, ctx, each_value_1, each1_lookup, div2, fix_and_outro_and_destroy_block, create_each_block_1, null, get_each_context_1);
-    				for (let i = 0; i < each_blocks_1.length; i += 1) each_blocks_1[i].a();
+    				each_blocks_1 = update_keyed_each(each_blocks_1, dirty, get_key_1, 1, ctx, each_value_1, each1_lookup, div2, outro_and_destroy_block, create_each_block_1, null, get_each_context_1);
     				check_outros();
     			}
 

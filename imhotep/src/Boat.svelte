@@ -22,15 +22,17 @@
 {/each}
 
 <div class="boat-action">
-    {#if boat.loadable}
+    {#if boat.loadable && !$gameStore.disabled && !boat.arrived}
         <button style:background-color={$gameStore.currentPlayer.color}
-                on:click={() => gameStore.load(boat)}>싣기</button>
+            disabled='{$gameStore.disabled}'
+            on:click={() => gameStore.load(boat)}>싣기</button>
     {/if}
 
     {#if !boat.arrived}
         {#each boat.destinationList as destination}
             <button style:background-color={$gameStore.currentPlayer.color}
-                    on:click={() => gameStore.move(boat, destination)}>{destination.name}로 출발</button>
+                disabled='{$gameStore.disabled}'
+                on:click={() => gameStore.move(boat, destination)}>{destination.name}로 출발</button>
         {/each}
     {/if}
 </div>
