@@ -25,24 +25,19 @@
     </div>
     <div class="port source-port">
         {#each boatList as boat (boat)}
-            <div class="boat"
-                 class:boat-ready={boat.maxStoneCount !== 0}
-                 animate:flip
+            <div animate:flip
                  in:boatReceive={{key: boat}}
-                 out:boatSend={{key: boat}}
-            >
+                 out:boatSend={{key: boat}}>
                 <Boat boat={boat}></Boat>
             </div>
         {/each}
     </div>
     <div class="port destination-port">
-        {#each destinationBoatList as destinationBoat (destinationBoat)}
-            <div class="boat destination-boat"
-                 class:boat-ready={destinationBoat.maxStoneCount !== 0}
-                 class:boat-arrived={destinationBoat.arrived}
-                 in:boatReceive={{key: destinationBoat}}
-                 out:boatSend={{key: destinationBoat}}>
-                <Boat boat={destinationBoat}>{destinationBoat}</Boat>
+        {#each destinationBoatList as boat (boat)}
+            <div animate:flip
+                 in:boatReceive={{key: boat}}
+                 out:boatSend={{key: boat}}>
+                <Boat boat={boat}></Boat>
             </div>
         {/each}
     </div>

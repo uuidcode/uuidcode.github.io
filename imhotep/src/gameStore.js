@@ -110,6 +110,8 @@ gameStore = {
         game.destinationBoatList = game.destinationList
             .map(destination => {
                 return {
+                    empty: true,
+                    destination: true,
                     stoneCount: 0,
                     stoneList: [],
                     maxStoneCount: 0,
@@ -140,25 +142,21 @@ gameStore = {
 
         gameStore.updateGame(game);
     },
-    move: async (boat, destination) => {
+    move: (boat, destination) => {
         u((game) => {
-            game.boatList[boat.index].arrived = true;
-            gameStore.updateGame(game);
-        });
-
-        await tick();
-
-        u((game) => {
-            game.destinationBoatList[destination.index] = boat;
-            game.destinationBoatList[destination.index].arrived = true;
-
             game.boatList[boat.index] = {
-                arrived: true,
+                empty: true,
                 stoneCount: 0,
                 stoneList: [],
                 maxStoneCount: 0,
-                destinationList: []
+                destinationList: [],
+                destination: false
             }
+
+            boat.arrived = true;
+            boat.destination = true;
+            boat.destinationList = [];
+            game.destinationBoatList[destination.index] = boat;
 
             gameStore.updateGame(game);
         });
@@ -212,8 +210,6 @@ gameStore = {
 
                         return boat;
                     });
-
-                console.log('>>> 2game.boatList', game.boatList);
 
                 if (game.boatList.length === 0) {
                     gameStore.startStage(game);

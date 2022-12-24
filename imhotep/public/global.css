@@ -29,10 +29,11 @@ div {
     height: 70px;
     margin: 20px;
     padding: 5px;
+    border: 3px solid black;
 }
 
-.boat-ready {
-    border: 3px solid black;
+.empty-boat {
+    border: unset;
 }
 
 .player {
@@ -132,8 +133,5 @@ button:hover {
 }
 
 .boat-action {
-    position: absolute;
-    display: flex;
-    flex-wrap: wrap;
     width:300px;
 }
