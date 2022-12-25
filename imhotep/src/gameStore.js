@@ -44,8 +44,15 @@ gameStore = {
                 return boat;
             });
     },
-    load: (boat) => {
+    load: async (boat) => {
         u((game) => {
+            game.disabled = true;
+        });
+
+        await tick();
+
+        u((game) => {
+            let color = gameStore.getCurrentPlayerColor();
             const stone = game.currentPlayer.stoneList.pop();
             let loaded = false;
 
@@ -57,6 +64,7 @@ gameStore = {
 
                     if (currentStone.empty) {
                         loaded = true;
+                        stone.color = color;
                         return stone;
                     }
 
@@ -64,8 +72,6 @@ gameStore = {
                 });
 
             boat.stoneCount++;
-            game.turn++;
-            gameStore.updateGame(game);
         });
     },
     getLoadableBoatList: (game, player) => {
@@ -104,6 +110,8 @@ gameStore = {
         game.destinationBoatList = game.destinationList
             .map(destination => {
                 return {
+                    empty: true,
+                    destination: true,
                     stoneCount: 0,
                     stoneList: [],
                     maxStoneCount: 0,
@@ -119,31 +127,36 @@ gameStore = {
         });
     },
     turn: (game) => {
+        if (game) {
+            gameStore._turn(game);
+        } else {
+            u((game) => {
+                gameStore._turn(game);
+            });
+        }
+    },
+    _turn: (game) => {
         if (game.start) {
             game.turn += 1;
         }
 
         gameStore.updateGame(game);
     },
-    move: async (boat, destination) => {
+    move: (boat, destination) => {
         u((game) => {
-            game.boatList[boat.index].arrived = true;
-            gameStore.updateGame(game);
-        });
-
-        await tick();
-
-        u((game) => {
-            game.destinationBoatList[destination.index] = boat;
-            game.destinationBoatList[destination.index].arrived = true;
-
             game.boatList[boat.index] = {
-                arrived: true,
+                empty: true,
                 stoneCount: 0,
                 stoneList: [],
                 maxStoneCount: 0,
-                destinationList: []
+                destinationList: [],
+                destination: false
             }
+
+            boat.arrived = true;
+            boat.destination = true;
+            boat.destinationList = [];
+            game.destinationBoatList[destination.index] = boat;
 
             gameStore.updateGame(game);
         });
@@ -157,12 +170,20 @@ gameStore = {
             .playerList[stone.playerIndex]
             .color;
     },
-    template: () => {
-        u((game) => {
-
-        });
+    getCurrentPlayerColor: () => {
+        return get(gameStore).currentPlayer.color;
     },
     updateGame: (game) => {
+        if (game) {
+            gameStore._updateGame(game);
+        } else {
+            u((game) => {
+                gameStore._updateGame(game);
+            });
+        }
+    },
+    _updateGame: (game) => {
+        game.disabled = false;
         game.currentPlayer = game.playerList[game.turn % 2];
 
         game.playerList = game.playerList
@@ -176,7 +197,7 @@ gameStore = {
                 game.boatList = game.boatList
                     .map(boat => {
                         boat.loadable = game.currentPlayer.stoneList.length > 0
-                            && boat.stoneCount < boat.minStoneCount
+                            && boat.stoneCount < boat.maxStoneCount
 
                         if (boat.stoneCount < boat.minStoneCount) {
                             boat.destinationList = [];
@@ -189,8 +210,6 @@ gameStore = {
 
                         return boat;
                     });
-
-                console.log('>>> 2game.boatList', game.boatList);
 
                 if (game.boatList.length === 0) {
                     gameStore.startStage(game);

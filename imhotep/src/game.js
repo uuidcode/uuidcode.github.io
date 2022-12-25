@@ -1,4 +1,5 @@
 const game = {
+    disabled: false,
     start: false,
     turn: 0,
     stage: 0,
