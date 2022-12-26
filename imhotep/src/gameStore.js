@@ -45,7 +45,7 @@ gameStore = {
     },
     load: async (boat) => {
         u((game) => {
-            game.disabled = true;
+            game.enable = false;
         });
 
         await tick();
@@ -71,9 +71,8 @@ gameStore = {
                 });
 
             boat.stoneCount++;
+            game.enable = true;
         });
-
-        gameStore.turn();
     },
     canGetStone: (game, player) => {
         return player.active
@@ -103,6 +102,10 @@ gameStore = {
             gameStore.turn(game);
             game.start = true;
         });
+    },
+    turn2: () => {
+        console.log('turn2');
+        gameStore.turn();
     },
     turn: (game) => {
         console.log('turn')

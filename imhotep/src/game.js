@@ -1,5 +1,5 @@
 const game = {
-    disabled: false,
+    enable: true,
     animation: false,
     start: false,
     turn: 0,
