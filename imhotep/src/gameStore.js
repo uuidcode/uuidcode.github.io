@@ -1,7 +1,6 @@
 import {get, writable} from "svelte/store";
 import { tick } from 'svelte';
 import game from "./game"
-import {listen_dev} from "svelte/internal";
 
 Number.prototype.range = function (start = 0) {
     if (!Number.isInteger(this)) {
@@ -33,16 +32,16 @@ gameStore = {
         return Array(size).fill(start)
             .map((item, index) => item + index)
     },
-    setNewBoatList: (game) => {
-        game.boatList = game.boatGroup
-            .sort(() => 0.5 - Math.random())
-            .pop()
-            .map((boat, index) => {
+    setNewBoatListList: (game) => {
+        game.boatListList = Array(4).fill(1)
+            .map((item, index) => {
+                let boat = game.waitingBoatList.pop();
                 boat.index = index;
-                boat.destinationList = [];
-                boat.stoneCount = 0;
-                return boat;
-            });
+                return [boat];
+        });
+
+        console.log('>>> game.boatListList', game.boatListList);
+
     },
     load: async (boat) => {
         u((game) => {
@@ -73,33 +72,19 @@ gameStore = {
 
             boat.stoneCount++;
         });
-    },
-    getLoadableBoatList: (game, player) => {
-        if (player.active) {
-            return [];
-        }
 
-        if (player.stoneList.length === 0) {
-            return [];
-        }
-
-        return game.boatList
-            .filter(boat => boat.stoneCount < boat.maxStoneCount)
+        gameStore.turn();
     },
     canGetStone: (game, player) => {
         return player.active
             && player.stoneList.length <= 2;
-    },
-    getMovableBoatList: (game, player) => {
-        return player.active
-            && game.boatList.filter(boat => boat.stoneCount >= boat.minStoneCount);
     },
     startStage: (game) => {
         if (game.start) {
             game.stage += 1;
         }
 
-        gameStore.setNewBoatList(game);
+        gameStore.setNewBoatListList(game);
 
         game.destinationList = game.destinationList
             .map(destination => {
@@ -107,16 +92,9 @@ gameStore = {
                 return destination;
             });
 
-        game.destinationBoatList = game.destinationList
+        game.destinationBoatListList = game.destinationList
             .map(destination => {
-                return {
-                    empty: true,
-                    destination: true,
-                    stoneCount: 0,
-                    stoneList: [],
-                    maxStoneCount: 0,
-                    destinationList: []
-                }
+                return []
             });
     },
     start: () => {
@@ -136,6 +114,10 @@ gameStore = {
         }
     },
     _turn: (game) => {
+        if (game.animation === true) {
+            return;
+        }
+
         if (game.start) {
             game.turn += 1;
         }
@@ -144,21 +126,28 @@ gameStore = {
     },
     move: (boat, destination) => {
         u((game) => {
-            game.boatList[boat.index] = {
-                empty: true,
-                stoneCount: 0,
-                stoneList: [],
-                maxStoneCount: 0,
-                destinationList: [],
-                destination: false
-            }
+            game.animation = true;
+        });
 
+        u((game) => {
+            game.animation = true;
             boat.arrived = true;
-            boat.destination = true;
-            boat.destinationList = [];
-            game.destinationBoatList[destination.index] = boat;
+            game.boatListList = game.boatListList.map((boatList, index) => {
+                if (boat.index === index) {
+                    boatList = [];
+                }
 
-            gameStore.updateGame(game);
+                return boatList;
+            });
+
+            game.destinationBoatListList = game.destinationBoatListList
+                .map((boatList, index) => {
+                    if (destination.index === index) {
+                        boatList = [boat];
+                    }
+
+                    return boatList;
+                });
         });
     },
     getStoneColor: (stone) => {
@@ -194,8 +183,16 @@ gameStore = {
             .map(player => {
                 player.canGetStone = gameStore.canGetStone(game, player);
 
-                game.boatList = game.boatList
-                    .map(boat => {
+                game.boatListList = game.boatListList
+                    .map((boatList, i) => {
+                        if (boatList.length < 1) {
+                            return boatList;
+                        }
+
+                        console.log(`>>> boatList[${i}]`, boatList);
+                        let boat = boatList[0];
+                        console.log('>>> boat', boat);
+
                         boat.loadable = game.currentPlayer.stoneList.length > 0
                             && boat.stoneCount < boat.maxStoneCount
 
@@ -208,15 +205,18 @@ gameStore = {
                                 });
                         }
 
-                        return boat;
+                        return [boat];
                     });
 
-                if (game.boatList.length === 0) {
-                    gameStore.startStage(game);
-                }
+                // if (game.boatListList.filter(boatList => boatList.length > 0).length === 0) {
+                //     gameStore.startStage(game);
+                // }
 
                 return player;
             });
+
+        console.log('>>> game', game);
+
     }
 }
 

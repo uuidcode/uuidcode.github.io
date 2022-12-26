@@ -2,8 +2,7 @@
     import gameStore from "./gameStore";
     import {flip} from 'svelte/animate';
     import {boatCrossfade, stoneCrossfade} from "./animation";
-
-    const [stoneSend, stoneReceive] = boatCrossfade;
+    const [stoneSend, stoneReceive] = stoneCrossfade;
 
     export let playerIndex;
 

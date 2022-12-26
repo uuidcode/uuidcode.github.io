@@ -25,6 +25,17 @@ div {
     align-items: flex-start;
 }
 
+.terminal {
+    height: 100px;
+    display: flex;
+}
+
+.terminal-empty {
+    background-color: lightgrey;
+    border: 1px dashed black;
+    width: 200px;
+}
+
 .boat {
     height: 70px;
     margin: 20px;
@@ -74,7 +85,7 @@ button:hover {
     text-align: center;
     display: inline-block;
     background-color: sandybrown;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+    /*box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;*/
 }
 
 .boat_stone {
@@ -133,5 +144,6 @@ button:hover {
 }
 
 .boat-action {
+    position: absolute;
     width:300px;
 }

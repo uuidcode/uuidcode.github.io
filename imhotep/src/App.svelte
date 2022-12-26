@@ -7,14 +7,14 @@
 
     const [boatSend, boatReceive] = boatCrossfade;
 
+    let destinationBoatListList;
     let destinationList;
-    let destinationBoatList;
-    let boatList;
+    let boatListList;
 
     $: {
+        destinationBoatListList = $gameStore.destinationBoatListList;
         destinationList = $gameStore.destinationList;
-        destinationBoatList = $gameStore.destinationBoatList;
-        boatList = $gameStore.boatList;
+        boatListList = $gameStore.boatListList;
     }
 </script>
 
@@ -24,20 +24,22 @@
         <Player playerIndex="1"></Player>
     </div>
     <div class="port source-port">
-        {#each boatList as boat (boat)}
-            <div animate:flip
-                 in:boatReceive={{key: boat}}
-                 out:boatSend={{key: boat}}>
-                <Boat boat={boat}></Boat>
+        {#each boatListList as boatList, boatListIndex}
+            <div class="terminal"
+                 class:terminal-empty={boatList.length === 0}>
+                {#each boatList as b}
+                    <Boat boat={b} boatType="source"></Boat>
+                {/each}
             </div>
         {/each}
     </div>
     <div class="port destination-port">
-        {#each destinationBoatList as boat (boat)}
-            <div animate:flip
-                 in:boatReceive={{key: boat}}
-                 out:boatSend={{key: boat}}>
-                <Boat boat={boat}></Boat>
+        {#each destinationBoatListList as boatList, boatListIndex}
+            <div class="terminal"
+                 class:terminal-empty={boatList.length === 0}>
+                {#each boatList as b}
+                    <Boat boat={b} boatType="destination"></Boat>
+                {/each}
             </div>
         {/each}
     </div>

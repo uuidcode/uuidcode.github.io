@@ -5,5 +5,5 @@ export const boatCrossfade = crossfade({
 });
 
 export const stoneCrossfade = crossfade({
-    duration: 10000
+    // duration: 10000
 });
