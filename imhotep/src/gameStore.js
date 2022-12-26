@@ -105,6 +105,8 @@ gameStore = {
         });
     },
     turn: (game) => {
+        console.log('turn')
+        
         if (game) {
             gameStore._turn(game);
         } else {

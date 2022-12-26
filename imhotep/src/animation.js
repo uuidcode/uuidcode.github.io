@@ -1,7 +1,7 @@
 import { crossfade } from 'svelte/transition';
 
 export const boatCrossfade = crossfade({
-    duration: 10000
+    // duration: 10000
 });
 
 export const stoneCrossfade = crossfade({

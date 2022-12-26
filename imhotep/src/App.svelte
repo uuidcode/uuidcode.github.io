@@ -19,6 +19,7 @@
 </script>
 
 <div class="board">
+    {$gameStore.turn}
     <div class="source">
         <Player playerIndex="0"></Player>
         <Player playerIndex="1"></Player>
@@ -28,7 +29,10 @@
             <div class="terminal"
                  class:terminal-empty={boatList.length === 0}>
                 {#each boatList as b}
-                    <Boat boat={b} boatType="source"></Boat>
+                    <div in:boatReceive={{key: b}}
+                         out:boatSend={{key: b}}>
+                        <Boat boat={b} boatType="source"></Boat>
+                    </div>
                 {/each}
             </div>
         {/each}
@@ -38,7 +42,10 @@
             <div class="terminal"
                  class:terminal-empty={boatList.length === 0}>
                 {#each boatList as b}
+                    <div in:boatReceive={{key: b}}
+                         out:boatSend={{key: b}}>
                     <Boat boat={b} boatType="destination"></Boat>
+                        </div>
                 {/each}
             </div>
         {/each}

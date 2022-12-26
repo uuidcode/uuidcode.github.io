@@ -7,40 +7,39 @@
     // export let boatListIndex;
     export let boatType;
 
-    const send = (node, args) => {
-        console.log('>>> node', args);
-        console.log('>>> args', args);
-
-        if (boatType === 'source') {
+    const _boatSend = (node, args) => {
+        // if (boatType === 'source') {
             boatSend(node, args);
+        // }
+    }
+
+    const _boatReceive = (node, args) => {
+        // if (boatType === 'source') {
+            boatReceive(node, args);
+        // }
+    }
+
+    const _stoneSend = (node, args) => {
+        if (boatType === 'source') {
+            stoneSend(node, args);
         }
     }
 
-    const receive = (node, args) => {
+    const _stoneReceive = (node, args) => {
         if (boatType === 'source') {
-            boatReceive(node, args);
+            stoneReceive(node, args);
         }
     }
 
     export let boat;
-
-    // $: {
-    //     if (boatType === 'source') {
-    //         boat = $gameStore.boatListList[boatListIndex][0];
-    //     } else if (boatType === 'destination') {
-    //         boat = $gameStore.destinationBoatListList[boatListIndex][0];
-    //     }
-    // }
 </script>
 
-<div in:receive={{key: boat}}
-     out:send={{key: boat}}>
+
     <div class="boat">
-        {#each boat.stoneList as stone (stone)}
+        {#each boat.stoneList.reverse() as stone (stone)}
             <div class="stone"
-                 in:stoneReceive={{key: stone}}
-                 out:stoneSend={{key: stone}}
-                 on:introend={() => gameStore.turn()}
+                 in:_stoneReceive={{key: stone}}
+                 out:_stoneSend={{key: stone}}
                  style="background-color: {stone.color}"
                  class:boat_stone_empty={stone.empty}>
                 {stone.index}
@@ -63,4 +62,3 @@
             </div>
         {/if}
     </div>
-</div>
