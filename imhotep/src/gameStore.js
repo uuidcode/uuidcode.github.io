@@ -55,8 +55,9 @@ gameStore = {
 
             console.log('>>> boat.stoneListList', boat.stoneListList);
 
-            for (let i = boat.stoneListList.length - 1; i > 0 ; i--) {
+            for (let i = boat.stoneListList.length - 1; i >= 0 ; i--) {
                 console.log('>>> i', i);
+                console.log('>>> boat.stoneListList[i]', boat.stoneListList[i]);
 
                 if (boat.stoneListList[i].length === 0) {
                     boat.stoneListList[i].push(stone);

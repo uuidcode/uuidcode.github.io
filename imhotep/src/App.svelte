@@ -43,9 +43,11 @@
                  class:terminal-empty={boatList.length === 0}>
                 {#each boatList as b}
                     <div in:boatReceive={{key: b}}
-                         out:boatSend={{key: b}}>
-                    <Boat boat={b} boatType="destination"></Boat>
-                        </div>
+                         out:boatSend={{key: b}}
+                         on:introend={() => gameStore.turn2()}
+                    >
+                        <Boat boat={b} boatType="destination"></Boat>
+                            </div>
                 {/each}
             </div>
         {/each}

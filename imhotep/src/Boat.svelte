@@ -28,14 +28,13 @@
     }
 </script>
 
-
 <div class="boat">
     {#each stoneListList as stoneList}
         <div class:boat_stone_empty={stoneList.length === 0}>
             {#each stoneList as stone (stone)}
                 <div class="stone"
-                     in:stoneReceive={{key: stone}}
-                     out:stoneSend={{key: stone}}
+                     in:_stoneReceive={{key: stone}}
+                     out:_stoneSend={{key: stone}}
                      on:introend={() => gameStore.turn2()}
                      style="background-color: {stone.color}">
                     {stone.index}
