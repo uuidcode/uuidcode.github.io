@@ -19,25 +19,28 @@
     }
 
     export let boat;
-    let stoneList;
+    let stoneListList;
     let enable;
 
     $: {
-        stoneList = boat.stoneList.reverse();
+        stoneListList = boat.stoneListList;
         enable = $gameStore.enable;
     }
 </script>
 
 
 <div class="boat">
-    {#each stoneList as stone (stone)}
-        <div class="stone"
-             in:stoneReceive={{key: stone}}
-             out:stoneSend={{key: stone}}
-             on:introend={() => gameStore.turn2()}
-             style="background-color: {stone.color}"
-             class:boat_stone_empty={stone.empty}>
-            {stone.index}
+    {#each stoneListList as stoneList}
+        <div class:boat_stone_empty={stoneList.length === 0}>
+            {#each stoneList as stone (stone)}
+                <div class="stone"
+                     in:stoneReceive={{key: stone}}
+                     out:stoneSend={{key: stone}}
+                     on:introend={() => gameStore.turn2()}
+                     style="background-color: {stone.color}">
+                    {stone.index}
+                </div>
+            {/each}
         </div>
     {/each}
 

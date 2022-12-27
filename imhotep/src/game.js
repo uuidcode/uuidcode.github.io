@@ -83,21 +83,17 @@ game.destinationList.map((destination, index) => {
     return destination;
 });
 
-game.destinationBoatListList = game.destinationList
-    .map((destination, index) => {
-        return [];
-    });
+for (let i = 0; i < game.destinationList; i++) {
+    game.destinationBoatListList.push([]);
+}
 
 game.waitingBoatList.forEach((boat) => {
     boat.stoneCount = 0;
-    boat.stoneList = Array(boat.maxStoneCount)
-        .fill(0)
-        .map((item, index) => {
-            return {
-                index: index,
-                empty: true
-            }
-        });
+    boat.stoneListList = [];
+
+    for (let i = 0; i < boat.maxStoneCount; i++) {
+        boat.stoneListList.push([]);
+    }
 });
 
 export default game;

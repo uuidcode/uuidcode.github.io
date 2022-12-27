@@ -38,9 +38,7 @@ gameStore = {
                 let boat = game.waitingBoatList.pop();
                 boat.index = index;
                 return [boat];
-        });
-
-        console.log('>>> game.boatListList', game.boatListList);
+            });
 
     },
     load: async (boat) => {
@@ -53,22 +51,20 @@ gameStore = {
         u((game) => {
             let color = gameStore.getCurrentPlayerColor();
             const stone = game.currentPlayer.stoneList.pop();
-            let loaded = false;
+            stone.color = color;
 
-            boat.stoneList = boat.stoneList
-                .map(currentStone => {
-                    if (loaded) {
-                        return currentStone;
-                    }
+            console.log('>>> boat.stoneListList', boat.stoneListList);
 
-                    if (currentStone.empty) {
-                        loaded = true;
-                        stone.color = color;
-                        return stone;
-                    }
+            for (let i = boat.stoneListList.length - 1; i > 0 ; i--) {
+                console.log('>>> i', i);
 
-                    return currentStone;
-                });
+                if (boat.stoneListList[i].length === 0) {
+                    boat.stoneListList[i].push(stone);
+                    break;
+                }
+            }
+
+            console.log('>>> boat.stoneListList', boat.stoneListList);
 
             boat.stoneCount++;
             game.enable = true;
@@ -137,22 +133,8 @@ gameStore = {
         u((game) => {
             game.animation = true;
             boat.arrived = true;
-            game.boatListList = game.boatListList.map((boatList, index) => {
-                if (boat.index === index) {
-                    boatList = [];
-                }
-
-                return boatList;
-            });
-
-            game.destinationBoatListList = game.destinationBoatListList
-                .map((boatList, index) => {
-                    if (destination.index === index) {
-                        boatList = [boat];
-                    }
-
-                    return boatList;
-                });
+            game.boatListList[boat.index].pop();
+            game.destinationBoatListList[destination.index].push(boat);
         });
     },
     getStoneColor: (stone) => {
