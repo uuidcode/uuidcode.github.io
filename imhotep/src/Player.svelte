@@ -19,7 +19,6 @@
         {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}
             <div class="stone"
                  animate:flip
-                 in:stoneReceive={{key: stone}}
                  out:stoneSend={{key: stone}}
                  style="background-color: {$gameStore.playerList[stone.playerIndex].color}"
                 >

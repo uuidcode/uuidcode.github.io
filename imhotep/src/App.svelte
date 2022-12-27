@@ -26,8 +26,7 @@
     </div>
     <div class="port source-port">
         {#each boatListList as boatList, boatListIndex}
-            <div class="terminal"
-                 class:terminal-empty={boatList.length === 0}>
+            <div class="terminal">
                 {#each boatList as b}
                     <div in:boatReceive={{key: b}}
                          out:boatSend={{key: b}}
@@ -40,12 +39,11 @@
     </div>
     <div class="port destination-port">
         {#each destinationBoatListList as boatList, boatListIndex}
-            <div class="terminal"
-                 class:terminal-empty={boatList.length === 0}>
+            <div class="terminal">
                 {#each boatList as b}
                     <div in:boatReceive={{key: b}}
                          out:boatSend={{key: b}}
-                         on:introend={() => gameStore.turn2()}
+                         on:introend={() => gameStore.turn()}
                     >
                         <Boat boat={b} boatType="destination"></Boat>
                     </div>

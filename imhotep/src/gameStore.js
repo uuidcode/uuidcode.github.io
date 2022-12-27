@@ -53,22 +53,17 @@ gameStore = {
             const stone = game.currentPlayer.stoneList.pop();
             stone.color = color;
 
-            console.log('>>> boat.stoneListList', boat.stoneListList);
-
-            for (let i = boat.stoneListList.length - 1; i >= 0 ; i--) {
-                console.log('>>> i', i);
-                console.log('>>> boat.stoneListList[i]', boat.stoneListList[i]);
-
+            for (let i = boat.stoneListList.length - 1; i >= 0; i--) {
                 if (boat.stoneListList[i].length === 0) {
                     boat.stoneListList[i].push(stone);
                     break;
                 }
             }
 
-            console.log('>>> boat.stoneListList', boat.stoneListList);
-
             boat.stoneCount++;
             game.enable = true;
+
+            gameStore.updateGame(game);
         });
     },
     canGetStone: (game, player) => {
@@ -100,13 +95,9 @@ gameStore = {
             game.start = true;
         });
     },
-    turn2: () => {
-        console.log('turn2');
-        gameStore.turn();
-    },
     turn: (game) => {
         console.log('turn')
-        
+
         if (game) {
             gameStore._turn(game);
         } else {

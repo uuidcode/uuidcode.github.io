@@ -15,6 +15,18 @@
         enable = $gameStore.enable;
         actionType = $gameStore.actionType;
     }
+
+    let firstTurn = true;
+
+    const turn = () => {
+        if (firstTurn) {
+            firstTurn = false;
+            return;
+        }
+
+        gameStore.turn();
+        firstTurn = true;
+    }
 </script>
 
 <div class="boat">
@@ -23,7 +35,7 @@
             {#each stoneList as stone (stone)}
                 <div class="stone"
                      in:stoneReceive={{key: stone}}
-                     on:introend={() => gameStore.turn2()}
+                     on:introend={turn}
                      style="background-color: {stone.color}">
                     {stone.index}
                 </div>
@@ -31,7 +43,7 @@
         </div>
     {/each}
 
-    {#if !boat.arrived && !boat.empty && enable}
+    {#if !boat.arrived && !boat.empty && firstTurn}
         <div class="boat-action">
         {#if boat.loadable && !$gameStore.disabled && !boat.arrived}
             <button style:background-color={$gameStore.currentPlayer.color}
