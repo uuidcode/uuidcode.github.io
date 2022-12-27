@@ -19,17 +19,18 @@
         {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}
             <div class="stone"
                  animate:flip
+                 in:stoneReceive={{key: stone}}
                  out:stoneSend={{key: stone}}
                  style="background-color: {$gameStore.playerList[stone.playerIndex].color}"
                 >
-                {stone.index}
             </div>
         {/each}
     </div>
 
     <div class="action">
         {#if player.canGetStone}
-            <button style="background-color: {gameStore.getCurrentPlayerColor()}">돌 가져오기</button>
+            <button on:click={() => gameStore.getStone()}
+                    style="background-color: {gameStore.getCurrentPlayerColor()}">돌 가져오기</button>
         {/if}
     </div>
 </div>

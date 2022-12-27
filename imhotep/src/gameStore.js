@@ -41,6 +41,22 @@ gameStore = {
             });
 
     },
+    getStone: () => {
+      u((game) => {
+          for (let i = 0; i < 3; i++) {
+              game.currentPlayer
+                  .stoneList
+                  .push(
+                       {
+                          playerIndex: game.turn % 2
+                      }
+                  );
+          }
+
+          gameStore.updateGame(game);
+          gameStore.turn(game);
+      });
+    },
     load: async (boat) => {
         u((game) => {
             game.enable = false;

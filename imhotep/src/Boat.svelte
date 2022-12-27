@@ -37,7 +37,6 @@
                      in:stoneReceive={{key: stone}}
                      on:introend={turn}
                      style="background-color: {stone.color}">
-                    {stone.index}
                 </div>
             {/each}
         </div>

@@ -70,7 +70,6 @@ game.playerList.map((player, playerIndex) => {
     player.stoneList = Array(stoneCount).fill(0)
         .map((item, stoneIndex) => {
             return {
-                index: stoneIndex,
                 playerIndex: playerIndex
             }
         });
