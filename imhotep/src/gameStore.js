@@ -126,13 +126,15 @@ gameStore = {
 
         gameStore.updateGame(game);
     },
-    move: (boat, destination) => {
+    move: async (boat, destination) => {
         u((game) => {
-            game.animation = true;
+            game.actionType = 'move';
         });
 
+        await tick();
+
         u((game) => {
-            game.animation = true;
+            game.actionType = null;
             boat.arrived = true;
             game.boatListList[boat.index].pop();
             game.destinationBoatListList[destination.index].push(boat);

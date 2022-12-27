@@ -4,27 +4,16 @@
     import {boatCrossfade, stoneCrossfade} from "./animation";
     const [stoneSend, stoneReceive] = stoneCrossfade;
 
-    export let boatType;
-
-    const _stoneSend = (node, args) => {
-        stoneSend(node, args);
-        if (boatType === 'source') {
-        }
-    }
-
-    const _stoneReceive = (node, args) => {
-        stoneReceive(node, args);
-        if (boatType === 'source') {
-        }
-    }
-
     export let boat;
+    export let boatType;
     let stoneListList;
     let enable;
+    let actionType;
 
     $: {
         stoneListList = boat.stoneListList;
         enable = $gameStore.enable;
+        actionType = $gameStore.actionType;
     }
 </script>
 
@@ -33,8 +22,7 @@
         <div class:boat_stone_empty={stoneList.length === 0}>
             {#each stoneList as stone (stone)}
                 <div class="stone"
-                     in:_stoneReceive={{key: stone}}
-                     out:_stoneSend={{key: stone}}
+                     in:stoneReceive={{key: stone}}
                      on:introend={() => gameStore.turn2()}
                      style="background-color: {stone.color}">
                     {stone.index}
