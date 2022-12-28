@@ -1094,24 +1094,20 @@ var app = (function () {
             await tick();
 
             u((game) => {
-                const newStoneListList = game.stoneListList.slice(0, 2);
-                newStoneListList.map(stoneList => {
-                    stoneList[0].playerIndex = game.turn % 2;
-                    return stoneList;
-                });
+                let count = 0;
 
-                game.stoneListList = game.stoneListList.slice(3, 5);
+                for (let i = 0; i < game.currentPlayer.stoneListList.length; i++) {
+                    if (game.currentPlayer.stoneListList[i].length === 0) {
+                        game.currentPlayer.stoneListList[i] = [{
+                            playerIndex: game.turn % 2
+                        }];
 
-                for (let i = 0; i < newStoneListList.length; i++) {
-                    game.currentPlayer.stoneListList =
-                        game.currentPlayer.stoneListList
-                            .map(stoneList => {
-                                if (stoneList.length === 0) {
-                                    stoneList = newStoneListList[i];
-                                }
+                        count++;
+                    }
 
-                                return stoneList;
-                            });
+                    if (count === 3) {
+                        break;
+                    }
                 }
 
                 gameStore.updateGame(game);
