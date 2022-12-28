@@ -3,8 +3,9 @@
     import gameStore from "./gameStore";
     import Player from "./Player.svelte";
     import Boat from "./Boat.svelte";
-    import {boatCrossfade} from "./animation";
-
+    import {boatCrossfade, stoneCrossfade, newStoneCrossfade} from "./animation";
+    const [newStoneSend, newStoneReceive] = newStoneCrossfade;
+    const [stoneSend, stoneReceive] = stoneCrossfade;
     const [boatSend, boatReceive] = boatCrossfade;
 
     let destinationBoatListList;
@@ -15,6 +16,15 @@
         destinationBoatListList = $gameStore.destinationBoatListList;
         destinationList = $gameStore.destinationList;
         boatListList = $gameStore.boatListList;
+    }
+
+    const _stoneSend = (node, args) => {
+        if ($gameStore.actionType === 'getStone') {
+            newStoneSend(node, args);
+            return;
+        }
+
+        stoneSend(node, args);
     }
 </script>
 

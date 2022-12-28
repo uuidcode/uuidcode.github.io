@@ -8,6 +8,7 @@ const game = {
     playerIndex: 0,
     currentPlayer: null,
     stageActionDone: false,
+    stoneListList: [],
     arrivedBoatList:[],
     boatListList: [],
     destinationBoatListList: [],
@@ -60,6 +61,10 @@ const game = {
     ]
 }
 
+for (let i = 0; i < 5; i++) {
+    game.stoneListList.push([{}]);
+}
+
 game.playerList.map((player, playerIndex) => {
     let stoneCount = 2;
 
@@ -67,12 +72,17 @@ game.playerList.map((player, playerIndex) => {
         stoneCount = 3;
     }
 
-    player.stoneList = Array(stoneCount).fill(0)
-        .map((item, stoneIndex) => {
-            return {
+    player.stoneListList = [];
+
+    for (let i = 0; i < 5; i++) {
+        player.stoneListList[i] = [];
+
+        if (i < stoneCount) {
+            player.stoneListList[i].push({
                 playerIndex: playerIndex
-            }
-        });
+            });
+        }
+    }
 
     return player;
 });

@@ -41,21 +41,37 @@ gameStore = {
             });
 
     },
-    getStone: () => {
-      u((game) => {
-          for (let i = 0; i < 3; i++) {
-              game.currentPlayer
-                  .stoneList
-                  .push(
-                       {
-                          playerIndex: game.turn % 2
-                      }
-                  );
-          }
+    getStone: async () => {
+        u((game) => {
+            game.actionType = 'getStone';
+        });
 
-          gameStore.updateGame(game);
-          gameStore.turn(game);
-      });
+        await tick();
+
+        u((game) => {
+            const newStoneListList = game.stoneListList.slice(0, 2);
+            newStoneListList.map(stoneList => {
+                stoneList[0].playerIndex = game.turn % 2;
+                return stoneList;
+            });
+
+            game.stoneListList = game.stoneListList.slice(3, 5);
+
+            for (let i = 0; i < newStoneListList.length; i++) {
+                game.currentPlayer.stoneListList =
+                    game.currentPlayer.stoneListList
+                        .map(stoneList => {
+                            if (stoneList.length === 0) {
+                                stoneList = newStoneListList[i];
+                            }
+
+                            return stoneList;
+                        });
+            }
+
+            gameStore.updateGame(game);
+
+        });
     },
     load: async (boat) => {
         u((game) => {
@@ -66,7 +82,11 @@ gameStore = {
 
         u((game) => {
             let color = gameStore.getCurrentPlayerColor();
-            const stone = game.currentPlayer.stoneList.pop();
+
+            const stone = game.currentPlayer.stoneListList
+                .findLast(stoneList => stoneList.length > 0)
+                .pop();
+
             stone.color = color;
 
             for (let i = boat.stoneListList.length - 1; i >= 0; i--) {
@@ -84,7 +104,9 @@ gameStore = {
     },
     canGetStone: (game, player) => {
         return player.active
-            && player.stoneList.length <= 2;
+            && player.stoneListList
+                .filter(stoneList => stoneList.length > 0)
+                .length <= 2;
     },
     startStage: (game) => {
         if (game.start) {
@@ -109,6 +131,7 @@ gameStore = {
             gameStore.startStage(game);
             gameStore.turn(game);
             game.start = true;
+            gameStore.updateGame(game);
         });
     },
     turn: (game) => {
@@ -190,8 +213,10 @@ gameStore = {
                         let boat = boatList[0];
                         console.log('>>> boat', boat);
 
-                        boat.loadable = game.currentPlayer.stoneList.length > 0
-                            && boat.stoneCount < boat.maxStoneCount
+                        boat.loadable = game.currentPlayer.stoneListList
+                                .filter(stoneList => stoneList.length > 0)
+                                .length > 0
+                                && boat.stoneCount < boat.maxStoneCount
 
                         if (boat.stoneCount < boat.minStoneCount) {
                             boat.destinationList = [];

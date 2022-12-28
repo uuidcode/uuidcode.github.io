@@ -950,6 +950,7 @@ var app = (function () {
         playerIndex: 0,
         currentPlayer: null,
         stageActionDone: false,
+        stoneListList: [],
         arrivedBoatList:[],
         boatListList: [],
         destinationBoatListList: [],
@@ -1002,6 +1003,10 @@ var app = (function () {
         ]
     };
 
+    for (let i = 0; i < 5; i++) {
+        game.stoneListList.push([{}]);
+    }
+
     game.playerList.map((player, playerIndex) => {
         let stoneCount = 2;
 
@@ -1009,12 +1014,17 @@ var app = (function () {
             stoneCount = 3;
         }
 
-        player.stoneList = Array(stoneCount).fill(0)
-            .map((item, stoneIndex) => {
-                return {
+        player.stoneListList = [];
+
+        for (let i = 0; i < 5; i++) {
+            player.stoneListList[i] = [];
+
+            if (i < stoneCount) {
+                player.stoneListList[i].push({
                     playerIndex: playerIndex
-                }
-            });
+                });
+            }
+        }
 
         return player;
     });
@@ -1076,21 +1086,37 @@ var app = (function () {
                 });
 
         },
-        getStone: () => {
-          u((game) => {
-              for (let i = 0; i < 3; i++) {
-                  game.currentPlayer
-                      .stoneList
-                      .push(
-                           {
-                              playerIndex: game.turn % 2
-                          }
-                      );
-              }
+        getStone: async () => {
+            u((game) => {
+                game.actionType = 'getStone';
+            });
 
-              gameStore.updateGame(game);
-              gameStore.turn(game);
-          });
+            await tick();
+
+            u((game) => {
+                const newStoneListList = game.stoneListList.slice(0, 2);
+                newStoneListList.map(stoneList => {
+                    stoneList[0].playerIndex = game.turn % 2;
+                    return stoneList;
+                });
+
+                game.stoneListList = game.stoneListList.slice(3, 5);
+
+                for (let i = 0; i < newStoneListList.length; i++) {
+                    game.currentPlayer.stoneListList =
+                        game.currentPlayer.stoneListList
+                            .map(stoneList => {
+                                if (stoneList.length === 0) {
+                                    stoneList = newStoneListList[i];
+                                }
+
+                                return stoneList;
+                            });
+                }
+
+                gameStore.updateGame(game);
+
+            });
         },
         load: async (boat) => {
             u((game) => {
@@ -1101,7 +1127,11 @@ var app = (function () {
 
             u((game) => {
                 let color = gameStore.getCurrentPlayerColor();
-                const stone = game.currentPlayer.stoneList.pop();
+
+                const stone = game.currentPlayer.stoneListList
+                    .findLast(stoneList => stoneList.length > 0)
+                    .pop();
+
                 stone.color = color;
 
                 for (let i = boat.stoneListList.length - 1; i >= 0; i--) {
@@ -1119,7 +1149,9 @@ var app = (function () {
         },
         canGetStone: (game, player) => {
             return player.active
-                && player.stoneList.length <= 2;
+                && player.stoneListList
+                    .filter(stoneList => stoneList.length > 0)
+                    .length <= 2;
         },
         startStage: (game) => {
             if (game.start) {
@@ -1144,6 +1176,7 @@ var app = (function () {
                 gameStore.startStage(game);
                 gameStore.turn(game);
                 game.start = true;
+                gameStore.updateGame(game);
             });
         },
         turn: (game) => {
@@ -1225,8 +1258,10 @@ var app = (function () {
                             let boat = boatList[0];
                             console.log('>>> boat', boat);
 
-                            boat.loadable = game.currentPlayer.stoneList.length > 0
-                                && boat.stoneCount < boat.maxStoneCount;
+                            boat.loadable = game.currentPlayer.stoneListList
+                                    .filter(stoneList => stoneList.length > 0)
+                                    .length > 0
+                                    && boat.stoneCount < boat.maxStoneCount;
 
                             if (boat.stoneCount < boat.minStoneCount) {
                                 boat.destinationList = [];
@@ -1281,6 +1316,45 @@ var app = (function () {
                     t[p[i]] = s[p[i]];
             }
         return t;
+    }
+    function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
+        const o = +getComputedStyle(node).opacity;
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `opacity: ${t * o}`
+        };
+    }
+    function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 } = {}) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const od = target_opacity * (1 - opacity);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (t, u) => `
+			transform: ${transform} translate(${(1 - t) * x}px, ${(1 - t) * y}px);
+			opacity: ${target_opacity - (od * u)}`
+        };
+    }
+    function scale(node, { delay = 0, duration = 400, easing = cubicOut, start = 0, opacity = 0 } = {}) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const sd = 1 - start;
+        const od = target_opacity * (1 - opacity);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (_t, u) => `
+			transform: ${transform} scale(${1 - (sd * u)});
+			opacity: ${target_opacity - (od * u)}
+		`
+        };
     }
     function crossfade(_a) {
         var { fallback } = _a, defaults = __rest(_a, ["fallback"]);
@@ -1339,17 +1413,26 @@ var app = (function () {
     const stoneCrossfade = crossfade({
     });
 
+    const newStoneCrossfade = crossfade({
+    });
+
     /* src/Player.svelte generated by Svelte v3.46.4 */
     const file$2 = "src/Player.svelte";
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[9] = list[i];
     	return child_ctx;
     }
 
-    // (19:8) {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}
-    function create_each_block$2(key_1, ctx) {
+    function get_each_context_1$2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[12] = list[i];
+    	return child_ctx;
+    }
+
+    // (32:16) {#each stoneList as stone (stone)}
+    function create_each_block_1$2(key_1, ctx) {
     	let div;
     	let div_intro;
     	let div_outro;
@@ -1363,8 +1446,8 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "stone");
-    			set_style(div, "background-color", /*$gameStore*/ ctx[1].playerList[/*stone*/ ctx[6].playerIndex].color);
-    			add_location(div, file$2, 19, 12, 536);
+    			set_style(div, "background-color", /*$gameStore*/ ctx[1].playerList[/*stone*/ ctx[12].playerIndex].color);
+    			add_location(div, file$2, 32, 20, 1012);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -1375,7 +1458,7 @@ var app = (function () {
     			ctx = new_ctx;
 
     			if (!current || dirty & /*$gameStore, playerIndex*/ 3) {
-    				set_style(div, "background-color", /*$gameStore*/ ctx[1].playerList[/*stone*/ ctx[6].playerIndex].color);
+    				set_style(div, "background-color", /*$gameStore*/ ctx[1].playerList[/*stone*/ ctx[12].playerIndex].color);
     			}
     		},
     		r: function measure() {
@@ -1395,7 +1478,7 @@ var app = (function () {
 
     			add_render_callback(() => {
     				if (div_outro) div_outro.end(1);
-    				div_intro = create_in_transition(div, /*stoneReceive*/ ctx[4], { key: /*stone*/ ctx[6] });
+    				div_intro = create_in_transition(div, fly, { x: -100, duration: 1000 });
     				div_intro.start();
     			});
 
@@ -1403,7 +1486,7 @@ var app = (function () {
     		},
     		o: function outro(local) {
     			if (div_intro) div_intro.invalidate();
-    			div_outro = create_out_transition(div, /*stoneSend*/ ctx[3], { key: /*stone*/ ctx[6] });
+    			div_outro = create_out_transition(div, /*stoneSend*/ ctx[3], { key: /*stone*/ ctx[12] });
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -1414,16 +1497,108 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block$2.name,
+    		id: create_each_block_1$2.name,
     		type: "each",
-    		source: "(19:8) {#each $gameStore.playerList[playerIndex].stoneList as stone (stone)}",
+    		source: "(32:16) {#each stoneList as stone (stone)}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (31:8) {#if player.canGetStone}
+    // (30:8) {#each $gameStore.playerList[playerIndex].stoneListList as stoneList}
+    function create_each_block$2(ctx) {
+    	let div;
+    	let each_blocks = [];
+    	let each_1_lookup = new Map();
+    	let t;
+    	let current;
+    	let each_value_1 = /*stoneList*/ ctx[9];
+    	validate_each_argument(each_value_1);
+    	const get_key = ctx => /*stone*/ ctx[12];
+    	validate_each_keys(ctx, each_value_1, get_each_context_1$2, get_key);
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		let child_ctx = get_each_context_1$2(ctx, each_value_1, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block_1$2(key, child_ctx));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t = space();
+    			toggle_class(div, "player_stone_empty", /*stoneList*/ ctx[9].length === 0);
+    			add_location(div, file$2, 30, 12, 885);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+
+    			append_dev(div, t);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore, playerIndex*/ 3) {
+    				each_value_1 = /*stoneList*/ ctx[9];
+    				validate_each_argument(each_value_1);
+    				group_outros();
+    				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
+    				validate_each_keys(ctx, each_value_1, get_each_context_1$2, get_key);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value_1, each_1_lookup, div, fix_and_outro_and_destroy_block, create_each_block_1$2, t, get_each_context_1$2);
+    				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
+    				check_outros();
+    			}
+
+    			if (dirty & /*$gameStore, playerIndex*/ 3) {
+    				toggle_class(div, "player_stone_empty", /*stoneList*/ ctx[9].length === 0);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value_1.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d();
+    			}
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$2.name,
+    		type: "each",
+    		source: "(30:8) {#each $gameStore.playerList[playerIndex].stoneListList as stoneList}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (46:8) {#if player.canGetStone}
     function create_if_block$1(ctx) {
     	let button;
     	let t;
@@ -1435,14 +1610,14 @@ var app = (function () {
     			button = element("button");
     			t = text("돌 가져오기");
     			set_style(button, "background-color", gameStore$1.getCurrentPlayerColor());
-    			add_location(button, file$2, 31, 12, 906);
+    			add_location(button, file$2, 46, 12, 1481);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
     			append_dev(button, t);
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[5], false, false, false);
+    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
@@ -1458,7 +1633,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(31:8) {#if player.canGetStone}",
+    		source: "(46:8) {#if player.canGetStone}",
     		ctx
     	});
 
@@ -1472,21 +1647,20 @@ var app = (function () {
     	let t0;
     	let t1;
     	let div1;
-    	let each_blocks = [];
-    	let each_1_lookup = new Map();
     	let t2;
     	let div2;
     	let current;
-    	let each_value = /*$gameStore*/ ctx[1].playerList[/*playerIndex*/ ctx[0]].stoneList;
+    	let each_value = /*$gameStore*/ ctx[1].playerList[/*playerIndex*/ ctx[0]].stoneListList;
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*stone*/ ctx[6];
-    	validate_each_keys(ctx, each_value, get_each_context$2, get_key);
+    	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		let child_ctx = get_each_context$2(ctx, each_value, i);
-    		let key = get_key(child_ctx);
-    		each_1_lookup.set(key, each_blocks[i] = create_each_block$2(key, child_ctx));
+    		each_blocks[i] = create_each_block$2(get_each_context$2(ctx, each_value, i));
     	}
+
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
 
     	let if_block = /*player*/ ctx[2].canGetStone && create_if_block$1(ctx);
 
@@ -1506,13 +1680,13 @@ var app = (function () {
     			div2 = element("div");
     			if (if_block) if_block.c();
     			attr_dev(div0, "class", "player-title");
-    			add_location(div0, file$2, 16, 4, 359);
+    			add_location(div0, file$2, 27, 4, 708);
     			attr_dev(div1, "class", "player-stone-container");
-    			add_location(div1, file$2, 17, 4, 409);
+    			add_location(div1, file$2, 28, 4, 758);
     			attr_dev(div2, "class", "action");
-    			add_location(div2, file$2, 29, 4, 840);
+    			add_location(div2, file$2, 44, 4, 1415);
     			attr_dev(div3, "class", "player");
-    			add_location(div3, file$2, 15, 0, 334);
+    			add_location(div3, file$2, 26, 0, 683);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1537,13 +1711,30 @@ var app = (function () {
     			if ((!current || dirty & /*player*/ 4) && t0_value !== (t0_value = /*player*/ ctx[2].name + "")) set_data_dev(t0, t0_value);
 
     			if (dirty & /*$gameStore, playerIndex*/ 3) {
-    				each_value = /*$gameStore*/ ctx[1].playerList[/*playerIndex*/ ctx[0]].stoneList;
+    				each_value = /*$gameStore*/ ctx[1].playerList[/*playerIndex*/ ctx[0]].stoneListList;
     				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$2(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block$2(child_ctx);
+    						each_blocks[i].c();
+    						transition_in(each_blocks[i], 1);
+    						each_blocks[i].m(div1, null);
+    					}
+    				}
+
     				group_outros();
-    				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
-    				validate_each_keys(ctx, each_value, get_each_context$2, get_key);
-    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, div1, fix_and_outro_and_destroy_block, create_each_block$2, null, get_each_context$2);
-    				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
+
+    				for (i = each_value.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
     				check_outros();
     			}
 
@@ -1570,6 +1761,8 @@ var app = (function () {
     			current = true;
     		},
     		o: function outro(local) {
+    			each_blocks = each_blocks.filter(Boolean);
+
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				transition_out(each_blocks[i]);
     			}
@@ -1578,11 +1771,7 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div3);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].d();
-    			}
-
+    			destroy_each(each_blocks, detaching);
     			if (if_block) if_block.d();
     		}
     	};
@@ -1604,9 +1793,20 @@ var app = (function () {
     	component_subscribe($$self, gameStore$1, $$value => $$invalidate(1, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Player', slots, []);
+    	const [newStoneSend, newStoneReceive] = newStoneCrossfade;
     	const [stoneSend, stoneReceive] = stoneCrossfade;
     	let { playerIndex } = $$props;
     	let player;
+
+    	const _stoneReceive = (node, args) => {
+    		if ($gameStore.actionType === 'getStone') {
+    			newStoneReceive(node, args);
+    			return;
+    		}
+
+    		stoneReceive(node, args);
+    	};
+
     	const writable_props = ['playerIndex'];
 
     	Object.keys($$props).forEach(key => {
@@ -1620,14 +1820,21 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
+    		fade,
+    		scale,
+    		fly,
     		gameStore: gameStore$1,
     		flip,
     		boatCrossfade,
     		stoneCrossfade,
+    		newStoneCrossfade,
+    		newStoneSend,
+    		newStoneReceive,
     		stoneSend,
     		stoneReceive,
     		playerIndex,
     		player,
+    		_stoneReceive,
     		$gameStore
     	});
 
@@ -1648,7 +1855,7 @@ var app = (function () {
     		}
     	};
 
-    	return [playerIndex, $gameStore, player, stoneSend, stoneReceive, click_handler];
+    	return [playerIndex, $gameStore, player, stoneSend, click_handler];
     }
 
     class Player extends SvelteComponentDev {
@@ -2278,37 +2485,37 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
+    	child_ctx[12] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
-    	child_ctx[12] = i;
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[18] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
-    	child_ctx[12] = i;
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
     	return child_ctx;
     }
 
     function get_each_context_4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[18] = list[i];
     	return child_ctx;
     }
 
-    // (30:16) {#each boatList as b}
+    // (40:16) {#each boatList as b}
     function create_each_block_4(ctx) {
     	let div;
     	let boat;
@@ -2317,7 +2524,7 @@ var app = (function () {
     	let current;
 
     	boat = new Boat({
-    			props: { boat: /*b*/ ctx[13], boatType: "source" },
+    			props: { boat: /*b*/ ctx[18], boatType: "source" },
     			$$inline: true
     		});
 
@@ -2325,7 +2532,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			create_component(boat.$$.fragment);
-    			add_location(div, file, 30, 20, 896);
+    			add_location(div, file, 40, 20, 1247);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2335,7 +2542,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			const boat_changes = {};
-    			if (dirty & /*boatListList*/ 8) boat_changes.boat = /*b*/ ctx[13];
+    			if (dirty & /*boatListList*/ 8) boat_changes.boat = /*b*/ ctx[18];
     			boat.$set(boat_changes);
     		},
     		i: function intro(local) {
@@ -2344,7 +2551,7 @@ var app = (function () {
 
     			add_render_callback(() => {
     				if (div_outro) div_outro.end(1);
-    				div_intro = create_in_transition(div, /*boatReceive*/ ctx[5], { key: /*b*/ ctx[13] });
+    				div_intro = create_in_transition(div, /*boatReceive*/ ctx[5], { key: /*b*/ ctx[18] });
     				div_intro.start();
     			});
 
@@ -2353,7 +2560,7 @@ var app = (function () {
     		o: function outro(local) {
     			transition_out(boat.$$.fragment, local);
     			if (div_intro) div_intro.invalidate();
-    			div_outro = create_out_transition(div, /*boatSend*/ ctx[4], { key: /*b*/ ctx[13] });
+    			div_outro = create_out_transition(div, /*boatSend*/ ctx[4], { key: /*b*/ ctx[18] });
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -2367,19 +2574,19 @@ var app = (function () {
     		block,
     		id: create_each_block_4.name,
     		type: "each",
-    		source: "(30:16) {#each boatList as b}",
+    		source: "(40:16) {#each boatList as b}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (28:8) {#each boatListList as boatList, boatListIndex}
+    // (38:8) {#each boatListList as boatList, boatListIndex}
     function create_each_block_3(ctx) {
     	let div;
     	let t;
     	let current;
-    	let each_value_4 = /*boatList*/ ctx[10];
+    	let each_value_4 = /*boatList*/ ctx[15];
     	validate_each_argument(each_value_4);
     	let each_blocks = [];
 
@@ -2401,7 +2608,7 @@ var app = (function () {
 
     			t = space();
     			attr_dev(div, "class", "terminal");
-    			add_location(div, file, 28, 12, 815);
+    			add_location(div, file, 38, 12, 1166);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2415,7 +2622,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*boatListList*/ 8) {
-    				each_value_4 = /*boatList*/ ctx[10];
+    				each_value_4 = /*boatList*/ ctx[15];
     				validate_each_argument(each_value_4);
     				let i;
 
@@ -2470,14 +2677,14 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(28:8) {#each boatListList as boatList, boatListIndex}",
+    		source: "(38:8) {#each boatListList as boatList, boatListIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (43:16) {#each boatList as b}
+    // (53:16) {#each boatList as b}
     function create_each_block_2(ctx) {
     	let div;
     	let boat;
@@ -2489,7 +2696,7 @@ var app = (function () {
 
     	boat = new Boat({
     			props: {
-    				boat: /*b*/ ctx[13],
+    				boat: /*b*/ ctx[18],
     				boatType: "destination"
     			},
     			$$inline: true
@@ -2499,7 +2706,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			create_component(boat.$$.fragment);
-    			add_location(div, file, 43, 20, 1360);
+    			add_location(div, file, 53, 20, 1711);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2514,7 +2721,7 @@ var app = (function () {
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
     			const boat_changes = {};
-    			if (dirty & /*destinationBoatListList*/ 2) boat_changes.boat = /*b*/ ctx[13];
+    			if (dirty & /*destinationBoatListList*/ 2) boat_changes.boat = /*b*/ ctx[18];
     			boat.$set(boat_changes);
     		},
     		i: function intro(local) {
@@ -2523,7 +2730,7 @@ var app = (function () {
 
     			add_render_callback(() => {
     				if (div_outro) div_outro.end(1);
-    				div_intro = create_in_transition(div, /*boatReceive*/ ctx[5], { key: /*b*/ ctx[13] });
+    				div_intro = create_in_transition(div, /*boatReceive*/ ctx[5], { key: /*b*/ ctx[18] });
     				div_intro.start();
     			});
 
@@ -2532,7 +2739,7 @@ var app = (function () {
     		o: function outro(local) {
     			transition_out(boat.$$.fragment, local);
     			if (div_intro) div_intro.invalidate();
-    			div_outro = create_out_transition(div, /*boatSend*/ ctx[4], { key: /*b*/ ctx[13] });
+    			div_outro = create_out_transition(div, /*boatSend*/ ctx[4], { key: /*b*/ ctx[18] });
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -2548,19 +2755,19 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(43:16) {#each boatList as b}",
+    		source: "(53:16) {#each boatList as b}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (41:8) {#each destinationBoatListList as boatList, boatListIndex}
+    // (51:8) {#each destinationBoatListList as boatList, boatListIndex}
     function create_each_block_1(ctx) {
     	let div;
     	let t;
     	let current;
-    	let each_value_2 = /*boatList*/ ctx[10];
+    	let each_value_2 = /*boatList*/ ctx[15];
     	validate_each_argument(each_value_2);
     	let each_blocks = [];
 
@@ -2582,7 +2789,7 @@ var app = (function () {
 
     			t = space();
     			attr_dev(div, "class", "terminal");
-    			add_location(div, file, 41, 12, 1279);
+    			add_location(div, file, 51, 12, 1630);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2596,7 +2803,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*destinationBoatListList, gameStore*/ 2) {
-    				each_value_2 = /*boatList*/ ctx[10];
+    				each_value_2 = /*boatList*/ ctx[15];
     				validate_each_argument(each_value_2);
     				let i;
 
@@ -2651,17 +2858,17 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(41:8) {#each destinationBoatListList as boatList, boatListIndex}",
+    		source: "(51:8) {#each destinationBoatListList as boatList, boatListIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (55:8) {#each destinationList as destination}
+    // (65:8) {#each destinationList as destination}
     function create_each_block(ctx) {
     	let div;
-    	let t_value = /*destination*/ ctx[7].name + "";
+    	let t_value = /*destination*/ ctx[12].name + "";
     	let t;
 
     	const block = {
@@ -2669,14 +2876,14 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "destination");
-    			add_location(div, file, 55, 12, 1790);
+    			add_location(div, file, 65, 12, 2141);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
     			append_dev(div, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*destinationList*/ 4 && t_value !== (t_value = /*destination*/ ctx[7].name + "")) set_data_dev(t, t_value);
+    			if (dirty & /*destinationList*/ 4 && t_value !== (t_value = /*destination*/ ctx[12].name + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
@@ -2687,7 +2894,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(55:8) {#each destinationList as destination}",
+    		source: "(65:8) {#each destinationList as destination}",
     		ctx
     	});
 
@@ -2784,15 +2991,15 @@ var app = (function () {
     			}
 
     			attr_dev(div0, "class", "source");
-    			add_location(div0, file, 22, 4, 596);
+    			add_location(div0, file, 32, 4, 947);
     			attr_dev(div1, "class", "port source-port");
-    			add_location(div1, file, 26, 4, 716);
+    			add_location(div1, file, 36, 4, 1067);
     			attr_dev(div2, "class", "port destination-port");
-    			add_location(div2, file, 39, 4, 1164);
+    			add_location(div2, file, 49, 4, 1515);
     			attr_dev(div3, "class", "destination-container");
-    			add_location(div3, file, 53, 4, 1695);
+    			add_location(div3, file, 63, 4, 2046);
     			attr_dev(div4, "class", "board");
-    			add_location(div4, file, 20, 0, 550);
+    			add_location(div4, file, 30, 0, 901);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2970,10 +3177,22 @@ var app = (function () {
     	component_subscribe($$self, gameStore$1, $$value => $$invalidate(0, $gameStore = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('App', slots, []);
+    	const [newStoneSend, newStoneReceive] = newStoneCrossfade;
+    	const [stoneSend, stoneReceive] = stoneCrossfade;
     	const [boatSend, boatReceive] = boatCrossfade;
     	let destinationBoatListList;
     	let destinationList;
     	let boatListList;
+
+    	const _stoneSend = (node, args) => {
+    		if ($gameStore.actionType === 'getStone') {
+    			newStoneSend(node, args);
+    			return;
+    		}
+
+    		stoneSend(node, args);
+    	};
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -2988,11 +3207,18 @@ var app = (function () {
     		Player,
     		Boat,
     		boatCrossfade,
+    		stoneCrossfade,
+    		newStoneCrossfade,
+    		newStoneSend,
+    		newStoneReceive,
+    		stoneSend,
+    		stoneReceive,
     		boatSend,
     		boatReceive,
     		destinationBoatListList,
     		destinationList,
     		boatListList,
+    		_stoneSend,
     		$gameStore
     	});
 
