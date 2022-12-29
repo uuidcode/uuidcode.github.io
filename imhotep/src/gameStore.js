@@ -44,6 +44,7 @@ gameStore = {
     getStone: async () => {
         u((game) => {
             game.actionType = 'getStone';
+            game.enable = false;
         });
 
         await tick();
@@ -66,7 +67,6 @@ gameStore = {
             }
 
             gameStore.updateGame(game);
-
         });
     },
     load: async (boat) => {
@@ -131,8 +131,6 @@ gameStore = {
         });
     },
     turn: (game) => {
-        console.log('turn')
-
         if (game) {
             gameStore._turn(game);
         } else {
@@ -150,6 +148,7 @@ gameStore = {
             game.turn += 1;
         }
 
+        game.enable = true;
         gameStore.updateGame(game);
     },
     move: async (boat, destination) => {

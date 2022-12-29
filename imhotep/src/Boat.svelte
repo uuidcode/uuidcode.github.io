@@ -42,13 +42,13 @@
         </div>
     {/each}
 
-    {#if !boat.arrived && !boat.empty && firstTurn}
+    {#if !boat.arrived && $gameStore.enable}
         <div class="boat-action">
-        {#if boat.loadable && !$gameStore.disabled && !boat.arrived}
-            <button style:background-color={$gameStore.currentPlayer.color}
-                disabled='{$gameStore.disabled}'
-                on:click={() => gameStore.load(boat)}>싣기</button>
-        {/if}
+            {#if boat.loadable && !$gameStore.disabled && !boat.arrived}
+                <button style:background-color={$gameStore.currentPlayer.color}
+                    disabled='{$gameStore.disabled}'
+                    on:click={() => gameStore.load(boat)}>싣기</button>
+            {/if}
 
             {#each boat.destinationList as destination}
                 <button style:background-color={$gameStore.currentPlayer.color}

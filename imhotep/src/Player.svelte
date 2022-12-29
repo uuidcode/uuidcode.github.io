@@ -22,6 +22,18 @@
 
         stoneReceive(node, args);
     }
+
+    let turnCount = 1;
+
+    const turn = () => {
+        if (turnCount === 3) {
+            gameStore.turn();
+            turnCount = 1;
+            return;
+        }
+
+        turnCount++;
+    }
 </script>
 
 <div class="player">
@@ -34,6 +46,7 @@
                          animate:flip
                          in:fly="{{ x: -100, duration: 1000 }}"
                          out:stoneSend={{key: stone}}
+                         on:introend={turn}
                          style="background-color: {$gameStore.playerList[stone.playerIndex].color}"
                         >
                     </div>
