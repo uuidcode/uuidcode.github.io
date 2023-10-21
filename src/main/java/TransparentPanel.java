@@ -1,6 +1,8 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -16,19 +18,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 
 public class TransparentPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
     Point stratPoint;
     Point endPoint;
-    JTabbedPane tabbedPane = new JTabbedPane();
+    JTabbedPane tabbedPane;
     JFrame frame;
+    JFrame imageFrame;
 
-    public TransparentPanel(JFrame frame) {
+    public TransparentPanel(JTabbedPane tabbedPane, JFrame imageFrame, JFrame frame) {
+        this.tabbedPane = tabbedPane;
+        this.imageFrame = imageFrame;
         this.frame = frame;
     }
 
@@ -75,34 +82,52 @@ public class TransparentPanel extends JPanel implements KeyListener, MouseListen
             Rectangle rectangle = this.getRectangle();
             this.stratPoint = null;
             this.endPoint = null;
+            frame.setBackground(new Color(0, 0, 0, 0));
 
             rectangle.width++;
             rectangle.height++;
-            this.repaint(rectangle);
+            frame.getContentPane().repaint();
 
-            BufferedImage image = new Robot().createScreenCapture(rectangle);
-            String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-            File file = new File("screenshot/" + fileName + ".png");
-            ImageIO.write(image, "png", file);
-
-            JPanel panel = new JPanel() {
-                public void paint(Graphics g) {
-                    super.paint(g);
-
+            new Thread() {
+                public void run() {
                     try {
-                        BufferedImage bufferedImage = ImageIO.read(file);
-                        g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
-                            bufferedImage.getHeight(), this);
-                    } catch (Throwable ignored) {
+                        Thread.sleep(100);
+
+                        BufferedImage image = new Robot().createScreenCapture(rectangle);
+                        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+                        File file = new File("screenshot/" + fileName + ".png");
+                        ImageIO.write(image, "png", file);
+
+                        JPanel panel = new JPanel() {
+                            public void paint(Graphics g) {
+                                super.paint(g);
+
+                                try {
+                                    BufferedImage bufferedImage = ImageIO.read(file);
+                                    g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
+                                        bufferedImage.getHeight(), this);
+                                    g.setColor(Color.black);
+                                    g.drawRect(0, 0, bufferedImage.getWidth() - 1,
+                                        bufferedImage.getHeight() - 1);
+
+                                    Graphics2D g2 = bufferedImage.createGraphics();
+                                    g2.setColor(Color.black);
+                                    g2.drawRect(0, 0, bufferedImage.getWidth() - 1,
+                                        bufferedImage.getHeight() - 1);
+                                    ImageIO.write(bufferedImage, "png", file);
+                                } catch (Throwable ignored) {
+                                }
+                            }
+                        };
+
+                        tabbedPane.add(fileName, panel);
+                        imageFrame.setVisible(true);
+                        frame.setVisible(false);
+                    } catch (Throwable t) {
                     }
                 }
-            };
+            }.start();
 
-            tabbedPane.add(fileName, panel);
-            frame.setContentPane(tabbedPane);
-            frame.revalidate();
-            frame.repaint();
-            frame.setAlwaysOnTop(false);
         } catch (Throwable ignored) {
         }
     }
@@ -142,31 +167,55 @@ public class TransparentPanel extends JPanel implements KeyListener, MouseListen
 
         if (stratPoint != null) {
             Rectangle rectangle = this.getRectangle();
-            g.setColor(Color.black);
-            g.drawRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+            g.setColor(new Color(255, 255, 255, 100));
+            g.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         }
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Hello");
-        JFrame.setDefaultLookAndFeelDecorated(true);
-//        frame.setBackground(new Color(0, 0, 0, 0));
-        frame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-//        frame.setUndecorated(true);
-        frame.setAlwaysOnTop(true);
-        frame.setType(JFrame.Type.NORMAL);
-        frame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
-        frame.setLocation(0, 0); // 1620 780
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(screenSize);
+            JFrame imageFrame = new JFrame("Hello");
+            JFrame frame = new JFrame("Hello");
 
-        TransparentPanel contentPane = new TransparentPanel(frame);
-        frame.addKeyListener(contentPane);
-        contentPane.addMouseListener(contentPane);
-        contentPane.addMouseMotionListener(contentPane);
+            imageFrame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+            imageFrame.setAlwaysOnTop(true);
+            imageFrame.setType(javax.swing.JFrame.Type.NORMAL);
+            imageFrame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
+            imageFrame.setLocation(0, 0); // 1620 780
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            imageFrame.setSize(screenSize);
 
-        frame.setContentPane(contentPane);
+            JPanel panel = new JPanel(new BorderLayout());
+            JTabbedPane tabbedPane = new JTabbedPane();
+            panel.add(tabbedPane, BorderLayout.CENTER);
+            JToolBar toolBar = new JToolBar("Still draggable");
+            JButton captureButton = new JButton("캡쳐");
+            captureButton.addActionListener(e -> {
+                imageFrame.setVisible(false);
+                frame.setVisible(true);
+            });
+            toolBar.add(captureButton);
+            panel.add(toolBar, BorderLayout.NORTH);
+            imageFrame.setContentPane(panel);
+            imageFrame.setVisible(true);
 
-        frame.setVisible(true);
+
+            javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
+            frame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+            frame.setUndecorated(true);
+            frame.setAlwaysOnTop(true);
+            frame.setType(javax.swing.JFrame.Type.NORMAL);
+            frame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
+            frame.setLocation(0, 0); // 1620 780
+            frame.setSize(screenSize);
+
+            TransparentPanel contentPane = new TransparentPanel(tabbedPane, imageFrame, frame);
+            frame.addKeyListener(contentPane);
+            contentPane.addMouseListener(contentPane);
+            contentPane.addMouseMotionListener(contentPane);
+
+            frame.setContentPane(contentPane);
+            frame.setBackground(new Color(0, 0, 0, 100));
+            frame.setVisible(false);
     }
+
 }
