@@ -2,7 +2,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -23,6 +22,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+
+import screenshot.ImageContentPanel;
 
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 
@@ -98,32 +99,12 @@ public class TransparentPanel extends JPanel implements KeyListener, MouseListen
                         File file = new File("screenshot/" + fileName + ".png");
                         ImageIO.write(image, "png", file);
 
-                        JPanel panel = new JPanel() {
-                            public void paint(Graphics g) {
-                                super.paint(g);
+                        JPanel imageContentPanel = new ImageContentPanel(file);
 
-                                try {
-                                    BufferedImage bufferedImage = ImageIO.read(file);
-                                    g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
-                                        bufferedImage.getHeight(), this);
-                                    g.setColor(Color.black);
-                                    g.drawRect(0, 0, bufferedImage.getWidth() - 1,
-                                        bufferedImage.getHeight() - 1);
-
-                                    Graphics2D g2 = bufferedImage.createGraphics();
-                                    g2.setColor(Color.black);
-                                    g2.drawRect(0, 0, bufferedImage.getWidth() - 1,
-                                        bufferedImage.getHeight() - 1);
-                                    ImageIO.write(bufferedImage, "png", file);
-                                } catch (Throwable ignored) {
-                                }
-                            }
-                        };
-
-                        tabbedPane.add(fileName, panel);
+                        tabbedPane.add(fileName, imageContentPanel);
                         imageFrame.setVisible(true);
                         frame.setVisible(false);
-                    } catch (Throwable t) {
+                    } catch (Throwable ignored) {
                     }
                 }
             }.start();
@@ -198,8 +179,6 @@ public class TransparentPanel extends JPanel implements KeyListener, MouseListen
             imageFrame.setContentPane(panel);
             imageFrame.setVisible(true);
 
-
-            javax.swing.JFrame.setDefaultLookAndFeelDecorated(true);
             frame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
             frame.setUndecorated(true);
             frame.setAlwaysOnTop(true);
