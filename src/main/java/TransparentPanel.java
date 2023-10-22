@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -17,25 +16,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 
 import screenshot.ImageContentPanel;
+import screenshot.ImageFrame;
 
 import static java.awt.event.KeyEvent.VK_ESCAPE;
+import static javax.swing.WindowConstants.HIDE_ON_CLOSE;
 
-public class TransparentPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+public class TransparentPanel extends JPanel
+    implements KeyListener, MouseListener, MouseMotionListener {
+    public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
     Point stratPoint;
     Point endPoint;
     JTabbedPane tabbedPane;
     JFrame frame;
     JFrame imageFrame;
 
-    public TransparentPanel(JTabbedPane tabbedPane, JFrame imageFrame, JFrame frame) {
-        this.tabbedPane = tabbedPane;
+    public TransparentPanel(ImageFrame imageFrame, JFrame frame) {
+        this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
         this.frame = frame;
     }
@@ -89,25 +90,24 @@ public class TransparentPanel extends JPanel implements KeyListener, MouseListen
             rectangle.height++;
             frame.getContentPane().repaint();
 
-            new Thread() {
-                public void run() {
-                    try {
-                        Thread.sleep(100);
+            new Thread(() -> {
+                try {
+                    Thread.sleep(100);
 
-                        BufferedImage image = new Robot().createScreenCapture(rectangle);
-                        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-                        File file = new File("screenshot/" + fileName + ".png");
-                        ImageIO.write(image, "png", file);
+                    BufferedImage image = new Robot().createScreenCapture(rectangle);
+                    String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+                    File file = new File("screenshot/" + fileName + ".png");
+                    ImageIO.write(image, "png", file);
 
-                        JPanel imageContentPanel = new ImageContentPanel(file);
+                    JPanel imageContentPanel = new ImageContentPanel(file);
 
-                        tabbedPane.add(fileName, imageContentPanel);
-                        imageFrame.setVisible(true);
-                        frame.setVisible(false);
-                    } catch (Throwable ignored) {
-                    }
+                    tabbedPane.add(fileName, imageContentPanel);
+                    imageFrame.setVisible(true);
+                    frame.setBackground(BACKGROUND_COLOR);
+                    frame.setVisible(false);
+                } catch (Throwable ignored) {
                 }
-            }.start();
+            }).start();
 
         } catch (Throwable ignored) {
         }
@@ -154,47 +154,36 @@ public class TransparentPanel extends JPanel implements KeyListener, MouseListen
     }
 
     public static void main(String[] args) {
-            JFrame imageFrame = new JFrame("Hello");
-            JFrame frame = new JFrame("Hello");
+        JFrame frame = new JFrame("Hello");
+        ImageFrame imageFrame = new ImageFrame(frame);
 
-            imageFrame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-            imageFrame.setAlwaysOnTop(true);
-            imageFrame.setType(javax.swing.JFrame.Type.NORMAL);
-            imageFrame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
-            imageFrame.setLocation(0, 0); // 1620 780
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            imageFrame.setSize(screenSize);
+        imageFrame.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        imageFrame.setAlwaysOnTop(true);
+        imageFrame.setType(javax.swing.JFrame.Type.NORMAL);
+        imageFrame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
+        imageFrame.setLocation(0, 0);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        imageFrame.setSize(screenSize);
+        imageFrame.setVisible(true);
 
-            JPanel panel = new JPanel(new BorderLayout());
-            JTabbedPane tabbedPane = new JTabbedPane();
-            panel.add(tabbedPane, BorderLayout.CENTER);
-            JToolBar toolBar = new JToolBar("Still draggable");
-            JButton captureButton = new JButton("캡쳐");
-            captureButton.addActionListener(e -> {
-                imageFrame.setVisible(false);
-                frame.setVisible(true);
-            });
-            toolBar.add(captureButton);
-            panel.add(toolBar, BorderLayout.NORTH);
-            imageFrame.setContentPane(panel);
-            imageFrame.setVisible(true);
+        frame.setDefaultCloseOperation(HIDE_ON_CLOSE);
+        frame.setUndecorated(true);
+        frame.setAlwaysOnTop(true);
+        frame.setType(javax.swing.JFrame.Type.NORMAL);
+        frame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
+        frame.setLocation(0, 0);
+        frame.setSize(screenSize);
 
-            frame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-            frame.setUndecorated(true);
-            frame.setAlwaysOnTop(true);
-            frame.setType(javax.swing.JFrame.Type.NORMAL);
-            frame.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", false);
-            frame.setLocation(0, 0); // 1620 780
-            frame.setSize(screenSize);
+        TransparentPanel contentPane = new TransparentPanel(imageFrame, frame);
+        contentPane.setBackground(new Color(0, 0, 0, 100));
+        frame.addKeyListener(contentPane);
+        contentPane.addMouseListener(contentPane);
+        contentPane.addMouseMotionListener(contentPane);
 
-            TransparentPanel contentPane = new TransparentPanel(tabbedPane, imageFrame, frame);
-            frame.addKeyListener(contentPane);
-            contentPane.addMouseListener(contentPane);
-            contentPane.addMouseMotionListener(contentPane);
-
-            frame.setContentPane(contentPane);
-            frame.setBackground(new Color(0, 0, 0, 100));
-            frame.setVisible(false);
+        frame.setContentPane(contentPane);
+        frame.setBackground(BACKGROUND_COLOR);
+        frame.setVisible(false);
     }
+
 
 }
