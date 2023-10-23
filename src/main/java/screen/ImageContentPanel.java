@@ -1,11 +1,15 @@
 package screen;
 
 import java.awt.BorderLayout;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -18,11 +22,16 @@ import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
 public class ImageContentPanel extends JPanel implements ClipboardOwner {
-    private ImagePanel imagePanel;
+    private final ImagePanel imagePanel;
+    private final String name;
+    private final ButtonTabPanel tabbedPane;
 
-    public ImageContentPanel(File imageFile) {
+    public ImageContentPanel(String name, File imageFile, ButtonTabPanel tabbedPane) {
         super(new BorderLayout());
+        this.name = name;
         this.imagePanel = new ImagePanel(imageFile);
+        this.tabbedPane = tabbedPane;
+
         imagePanel.addMouseListener(imagePanel);
         imagePanel.addMouseMotionListener(imagePanel);
         this.add(imagePanel, CENTER);
@@ -46,18 +55,44 @@ public class ImageContentPanel extends JPanel implements ClipboardOwner {
 
         JButton copyButton = new JButton("copy");
         copyButton.addActionListener(e -> {
-            TransferableImage trans = new TransferableImage(this.imagePanel.getBufferedImage());
-            Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
-            c.setContents(trans, ImageContentPanel.this);
+            try {
+                ProcessBuilder processBuilder = new ProcessBuilder();
+                processBuilder.command("sh", "-c", "osascript -e 'set the clipboard to (read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'");
+                Process process = processBuilder.start();
+                StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
+                Executors.newSingleThreadExecutor().submit(streamGobbler);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
         });
 
         controlPanel.add(copyButton);
+
+        JButton closeButton = new JButton("close");
+        closeButton.addActionListener(e -> this.tabbedPane.close(this.name));
+
+        controlPanel.add(closeButton);
 
         this.add(controlPanel, NORTH);
     }
 
     @Override
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
+    }
 
+    private static class StreamGobbler implements Runnable {
+        private InputStream inputStream;
+        private Consumer<String> consumer;
+
+        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
+            this.inputStream = inputStream;
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void run() {
+            new BufferedReader(new InputStreamReader(inputStream)).lines()
+                .forEach(consumer);
+        }
     }
 }

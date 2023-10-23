@@ -152,6 +152,14 @@ public class TransparentPanel extends JPanel
         JFrame frame = new JFrame("Hello");
         ImageFrame imageFrame = new ImageFrame(frame);
 
+        TransparentPanel contentPane = new TransparentPanel(imageFrame, frame);
+        contentPane.setBackground(new Color(0, 0, 0, 100));
+        frame.addKeyListener(contentPane);
+        contentPane.addMouseListener(contentPane);
+        contentPane.addMouseMotionListener(contentPane);
+
+
+
         imageFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         imageFrame.setLocation(0, 0);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -164,11 +172,6 @@ public class TransparentPanel extends JPanel
         frame.setLocation(0, 0);
         frame.setSize(screenSize);
 
-        TransparentPanel contentPane = new TransparentPanel(imageFrame, frame);
-        contentPane.setBackground(new Color(0, 0, 0, 100));
-        frame.addKeyListener(contentPane);
-        contentPane.addMouseListener(contentPane);
-        contentPane.addMouseMotionListener(contentPane);
 
         frame.setContentPane(contentPane);
         frame.setBackground(BACKGROUND_COLOR);

@@ -21,11 +21,22 @@ import static javax.swing.BoxLayout.LINE_AXIS;
 
 public class ButtonTabPanel extends JPanel {
     public static final Color SELECTED_COLOR = new Color(124, 166, 208, 244);
-    private JPanel controlPanel;
-    private Map<String, JPanel> contentPanelMap = new HashMap<>();
-    private Map<String, JLabel> buttonMap = new HashMap<>();
+    private final JPanel controlPanel;
+    private final Map<String, JPanel> contentPanelMap = new HashMap<>();
+    private final Map<String, JLabel> buttonMap = new HashMap<>();
     private JPanel contentPanel = null;
     private Color defaultColor = null;
+
+    public void close(String name) {
+        System.out.println(name);
+        contentPanel.remove(this.buttonMap.get(name));
+        contentPanel.revalidate();
+        contentPanel.repaint();
+
+        this.remove(this.contentPanelMap.get(name));
+        this.revalidate();
+        this.repaint();
+    }
 
     public ButtonTabPanel() {
         this.setLayout(new BorderLayout());
@@ -103,7 +114,7 @@ public class ButtonTabPanel extends JPanel {
 
         this.controlPanel.add(button);
 
-        JPanel imageContentPanel = new ImageContentPanel(Util.getImageFile(name));
+        JPanel imageContentPanel = new ImageContentPanel(name, Util.getImageFile(name), this);
         imageContentPanel.setBorder(createCompoundBorder(
             createEtchedBorder(), createEmptyBorder(10, 10, 10, 10)));
 
