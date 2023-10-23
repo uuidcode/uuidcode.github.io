@@ -149,6 +149,8 @@ public class TransparentPanel extends JPanel
     }
 
     public static void main(String[] args) {
+//        FlatLightLaf.setup();
+
         JFrame frame = new JFrame("Hello");
         ImageFrame imageFrame = new ImageFrame(frame);
 
@@ -157,8 +159,6 @@ public class TransparentPanel extends JPanel
         frame.addKeyListener(contentPane);
         contentPane.addMouseListener(contentPane);
         contentPane.addMouseMotionListener(contentPane);
-
-
 
         imageFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
         imageFrame.setLocation(0, 0);
