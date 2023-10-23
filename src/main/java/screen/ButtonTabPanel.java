@@ -128,7 +128,7 @@ public class ButtonTabPanel extends JPanel {
 
         this.controlPanel.add(button);
 
-        JPanel imageContentPanel = new ImageContentPanel(name, Util.getImageFile(name), this);
+        JPanel imageContentPanel = new ImagePanel(name, Util.getImageFile(name), this);
         imageContentPanel.setBorder(createCompoundBorder(
             createEtchedBorder(), createEmptyBorder(10, 10, 10, 10)));
 
