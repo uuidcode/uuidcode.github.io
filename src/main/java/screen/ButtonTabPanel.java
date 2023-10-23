@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BoxLayout;
@@ -22,20 +24,32 @@ import static javax.swing.BoxLayout.LINE_AXIS;
 public class ButtonTabPanel extends JPanel {
     public static final Color SELECTED_COLOR = new Color(124, 166, 208, 244);
     private final JPanel controlPanel;
-    private final Map<String, JPanel> contentPanelMap = new HashMap<>();
-    private final Map<String, JLabel> buttonMap = new HashMap<>();
+    private final Map<String, JPanel> contentPanelMap = new LinkedHashMap<>();
+    private final Map<String, JLabel> buttonMap = new LinkedHashMap<>();
     private JPanel contentPanel = null;
     private Color defaultColor = null;
 
     public void close(String name) {
-        System.out.println(name);
-        contentPanel.remove(this.buttonMap.get(name));
+        contentPanelMap.remove(name);
+        List<JPanel> panelList = new ArrayList<>(contentPanelMap.values());
+        contentPanel.removeAll();
+
+        if (!panelList.isEmpty()) {
+            contentPanel.add(panelList.get(panelList.size() - 1));
+        }
+
         contentPanel.revalidate();
         contentPanel.repaint();
 
-        this.remove(this.contentPanelMap.get(name));
-        this.revalidate();
-        this.repaint();
+        JLabel currentLabel = this.buttonMap.remove(name);
+        this.controlPanel.remove(currentLabel);
+
+        List<JLabel> labelList = new ArrayList<>(this.buttonMap.values());
+        this.unselectedButton();
+
+        if (!labelList.isEmpty()) {
+            this.selectedButton(labelList.get(labelList.size() - 1));
+        }
     }
 
     public ButtonTabPanel() {
