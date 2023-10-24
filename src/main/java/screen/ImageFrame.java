@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.BorderLayout;
+import java.awt.GraphicsDevice;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,6 +14,7 @@ import lombok.experimental.Accessors;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
 import static java.awt.Toolkit.getDefaultToolkit;
 
 @Data
@@ -20,7 +22,6 @@ import static java.awt.Toolkit.getDefaultToolkit;
 @EqualsAndHashCode(callSuper = false)
 public class ImageFrame extends JFrame {
     private ButtonTabPanel tabbedPane;
-    private ScreenShotFrame screenShotFrame;
 
     public ImageFrame() {
         super("ImageFrame");
@@ -38,20 +39,27 @@ public class ImageFrame extends JFrame {
     public JPanel createControlPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        JButton captureScreenButton = new JButton("capture screen");
+        JButton captureButton = new JButton("capture");
 
-        captureScreenButton.addActionListener(e -> {
+        captureButton.addActionListener(e -> {
             this.setVisible(false);
-            this.screenShotFrame.setVisible(true);
+            Store.screenShotFrameList.forEach(f -> f.setVisible(true));
         });
 
-        panel.add(captureScreenButton);
+        panel.add(captureButton);
+
         return panel;
     }
 
     public static void main(String[] args){
         ImageFrame imageFrame = new ImageFrame();
-        ScreenShotFrame screenShotFrame = new ScreenShotFrame("ScreenShotFrame", imageFrame);
-        imageFrame.setScreenShotFrame(screenShotFrame);
+        
+        GraphicsDevice[] screenDeviceArray =
+            getLocalGraphicsEnvironment().getScreenDevices();
+
+        for (GraphicsDevice graphicsDevice : screenDeviceArray) {
+            ScreenShotFrame screenShotFrame = new ScreenShotFrame(graphicsDevice, imageFrame);
+            Store.screenShotFrameList.add(screenShotFrame);
+        }
     }
 }

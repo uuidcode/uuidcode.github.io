@@ -2,6 +2,7 @@ package screen;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -24,8 +25,10 @@ public class ScreenShotPanel extends JPanel
     private final ButtonTabPanel tabbedPane;
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
+    private GraphicsDevice graphicsDevice;
 
-    public ScreenShotPanel(ImageFrame imageFrame, ScreenShotFrame screenShotFrame) {
+    public ScreenShotPanel(GraphicsDevice graphicsDevice, ImageFrame imageFrame, ScreenShotFrame screenShotFrame) {
+        this.graphicsDevice = graphicsDevice;
         this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
         this.screenShotFrame = screenShotFrame;
@@ -33,7 +36,6 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
@@ -57,6 +59,9 @@ public class ScreenShotPanel extends JPanel
                 try {
                     Thread.sleep(100);
 
+                    Rectangle display = this.graphicsDevice.getDefaultConfiguration().getBounds();
+                    rectangle.x += display.x;
+                    rectangle.y += display.y;
                     BufferedImage image = new Robot().createScreenCapture(rectangle);
                     String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
                     File file = Util.getImageFile(fileName);
@@ -65,7 +70,7 @@ public class ScreenShotPanel extends JPanel
                     tabbedPane.addTab(fileName);
                     imageFrame.setVisible(true);
                     screenShotFrame.setBackground(BACKGROUND_COLOR);
-                    screenShotFrame.setVisible(false);
+                    Store.screenShotFrameList.forEach(f -> f.setVisible(false));
                 } catch (Throwable ignored) {
                 }
             }).start();
@@ -75,12 +80,10 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override

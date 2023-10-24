@@ -57,14 +57,22 @@ public class ImagePanel extends JPanel {
     private void createActionRadio() {
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        JRadioButton cropRadioButton = new JRadioButton("crop");
         JRadioButton arrowRadioButton = new JRadioButton("arrow");
+        arrowRadioButton.setSelected(true);
+        arrowRadioButton.addActionListener(e -> {
+            Store.mode = Mode.ARROW;
+        });
+
+        JRadioButton rectangleRadioButton = new JRadioButton("rectangle");
+        rectangleRadioButton.addActionListener(e -> {
+            Store.mode = Mode.RECTANGLE;
+        });
 
         buttonGroup.add(arrowRadioButton);
-        buttonGroup.add(cropRadioButton);
+        buttonGroup.add(rectangleRadioButton);
 
         this.controlPanel.add(arrowRadioButton);
-        this.controlPanel.add(cropRadioButton);
+        this.controlPanel.add(rectangleRadioButton);
     }
 
     private void createSaveButton() {

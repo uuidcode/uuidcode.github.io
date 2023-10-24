@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -36,7 +35,6 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
 
     public ImageViewPanel(File imageFile) {
         this.imageFile = imageFile;
-
     }
 
     @Override
@@ -67,7 +65,7 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
         }
 
         if (this.stratPoint != null) {
-            this.drawArrow(g);
+            Store.mode.draw(g, this.stratPoint, this.endPoint);
         }
     }
 
@@ -79,6 +77,11 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
         g2.setStroke(new BasicStroke(10, CAP_BUTT, JOIN_MITER));
         g2.drawLine(stratPoint.x, stratPoint.y, endPoint.x, endPoint.y);
         this.drawArrowLine(g, stratPoint.x, stratPoint.y, endPoint.x, endPoint.y, 20, 20);
+    }
+
+    public void drawArrowImage() {
+        Graphics2D g2 = this.bufferedImage.createGraphics();
+        this.drawArrow(g2);
     }
 
     @Override
@@ -107,7 +110,14 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseReleased(MouseEvent e) {
         Graphics g = this.bufferedImage.getGraphics();
-        this.drawArrow(g);
+
+        Store.mode.draw(g, this.bufferedImage, this.stratPoint, this.endPoint);
+
+        try {
+            ImageIO.write(bufferedImage, "png", this.imageFile);
+        } catch (Throwable ignored) {
+        }
+
         this.resetPoint();
     }
 
@@ -150,15 +160,6 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
             y1 + (int) (headLength * Math.sin(angle - offs)) };
         g.drawLine(x0, y0, x1, y1);
         g.drawPolyline(xs, ys, 3);
-    }
-
-    public Rectangle getRectangle() {
-        int x = Math.min(stratPoint.x, endPoint.x);
-        int y = Math.min(stratPoint.y, endPoint.y);
-        int width = Math.abs(stratPoint.x - endPoint.x);
-        int height = Math.abs(stratPoint.y - endPoint.y);
-
-        return new Rectangle(x, y, width, height);
     }
 
     public void save(File selectedFile) {
