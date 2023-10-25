@@ -55,18 +55,6 @@ public class ImageFrame extends JFrame implements KeyListener {
         return panel;
     }
 
-    public static void main(String[] args){
-        ImageFrame imageFrame = new ImageFrame();
-        
-        GraphicsDevice[] screenDeviceArray =
-            getLocalGraphicsEnvironment().getScreenDevices();
-
-        for (GraphicsDevice graphicsDevice : screenDeviceArray) {
-            ScreenShotFrame screenShotFrame = new ScreenShotFrame(graphicsDevice, imageFrame);
-            Store.screenShotFrameList.add(screenShotFrame);
-        }
-    }
-
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -81,5 +69,45 @@ public class ImageFrame extends JFrame implements KeyListener {
     public void keyReleased(KeyEvent e) {
         System.out.println(e);
         this.tabbedPane.keyReleased(e);
+    }
+
+    public static void main(String[] args){
+        ImageFrame imageFrame = new ImageFrame();
+        imageFrame.setVisible(true);
+        imageFrame.addKeyListener(new MyKeyListener(imageFrame));
+
+        imageFrame.addKeyListener(imageFrame);
+        
+        GraphicsDevice[] screenDeviceArray =
+            getLocalGraphicsEnvironment().getScreenDevices();
+
+        for (GraphicsDevice graphicsDevice : screenDeviceArray) {
+            ScreenShotFrame screenShotFrame = new ScreenShotFrame(graphicsDevice, imageFrame);
+            Store.screenShotFrameList.add(screenShotFrame);
+        }
+    }
+
+    static class MyKeyListener implements KeyListener {
+        private final ImageFrame imageFrame;
+
+        public MyKeyListener(ImageFrame imageFrame) {
+            this.imageFrame = imageFrame;
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            System.out.println(e);
+            this.imageFrame.tabbedPane.keyReleased(e);
+        }
     }
 }

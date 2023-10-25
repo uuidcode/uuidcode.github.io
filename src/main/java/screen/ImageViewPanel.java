@@ -19,8 +19,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import static java.awt.Color.black;
-import static java.awt.event.KeyEvent.VK_C;
-import static java.awt.event.KeyEvent.VK_Z;
 
 @Data
 @Accessors(chain = true)
@@ -38,7 +36,6 @@ public class ImageViewPanel extends JPanel
         this.imageFile = imageFile;
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-
     }
 
     @Override
@@ -99,15 +96,14 @@ public class ImageViewPanel extends JPanel
     @Override
     public void mouseReleased(MouseEvent e) {
         Graphics g = this.bufferedImage.getGraphics();
-        this.previousBufferedImage = this.bufferedImage;
-
-        Store.mode.draw(g, this.bufferedImage, this.stratPoint, this.endPoint);
 
         try {
-            ImageIO.write(bufferedImage, "png", this.imageFile);
+            this.previousBufferedImage = ImageIO.read(this.imageFile);
         } catch (Throwable ignored) {
         }
 
+        Store.mode.draw(g, this.bufferedImage, this.stratPoint, this.endPoint);
+        this.save();
         this.resetPoint();
     }
 
@@ -152,6 +148,10 @@ public class ImageViewPanel extends JPanel
         g.drawPolyline(xs, ys, 3);
     }
 
+    public void save() {
+        this.save(this.imageFile);
+    }
+
     public void save(File selectedFile) {
         try {
             ImageIO.write(this.bufferedImage, "png", selectedFile);
@@ -161,29 +161,28 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        System.out.println("getKeyCode:" + e.getKeyCode());
+        System.out.println("isControlDown:" + e.isControlDown());
+        System.out.println("isMetaDown:" + e.isMetaDown());
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-
+        System.out.println("getKeyCode:" + e.getKeyCode());
+        System.out.println("isControlDown:" + e.isControlDown());
+        System.out.println("isMetaDown:" + e.isMetaDown());
     }
 
     public void keyReleased(KeyEvent e) {
-        if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == VK_Z) {
-            this.bufferedImage = this.previousBufferedImage;
-            this.save(imageFile);
-            this.repaint();
-            System.out.println("z");
-        }
 
-        if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == VK_C) {
-            this.bufferedImage = this.previousBufferedImage;
-            this.save(this.imageFile);
-            this.repaint();
-            this.copy(this.imageFile);
-            System.out.println("c");
-        }
+    }
+
+    public void undo() {
+        System.out.println(this.previousBufferedImage);
+        this.bufferedImage = this.previousBufferedImage;
+        this.save();
+        this.bufferedImage = null;
+        this.repaint();
     }
 
     public void copy(File imageFile) {

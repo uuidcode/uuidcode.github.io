@@ -2,6 +2,7 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Arrays;
 
@@ -34,9 +35,9 @@ public class ImagePanel extends JPanel {
     private ImageViewPanel createImageViewPanel(File imageFile) {
         this.imageViewPanel = new ImageViewPanel(imageFile);
         this.add(imageViewPanel, CENTER);
-        this.imageViewPanel.addKeyListener(this.imageViewPanel);
+        this.imageViewPanel.addKeyListener(new MyKeyListener(imageViewPanel));
         this.imageViewPanel.setFocusable(true);
-        this.imageViewPanel.requestFocusInWindow();
+        this.imageViewPanel.requestFocus();
         return imageViewPanel;
     }
 
@@ -47,9 +48,18 @@ public class ImagePanel extends JPanel {
         this.createActionRadio();
         this.createSaveButton();
         this.createCopyButton(imageFile);
+        this.createUndoButton();
         this.createCloseButton();
 
         this.add(this.controlPanel, NORTH);
+    }
+
+    private void createUndoButton() {
+        JButton button = new JButton("undo");
+
+        button.addActionListener(e -> this.imageViewPanel.undo());
+
+        controlPanel.add(button);
     }
 
     private void createActionRadio() {
@@ -103,5 +113,28 @@ public class ImagePanel extends JPanel {
 
     public void keyReleased(KeyEvent e) {
         this.imageViewPanel.keyReleased(e);
+    }
+
+    static class MyKeyListener implements KeyListener {
+        private final ImageViewPanel imageViewPanel;
+
+        public MyKeyListener(ImageViewPanel imageViewPanel) {
+            this.imageViewPanel = imageViewPanel;
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+
+        }
+
+        public void keyReleased(KeyEvent e) {
+            System.out.println("@@@@@" + e);
+            this.imageViewPanel.keyReleased(e);
+        }
     }
 }
