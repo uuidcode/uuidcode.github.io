@@ -3,8 +3,6 @@ package screen;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -24,7 +22,7 @@ import static java.awt.Color.black;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class ImageViewPanel extends JPanel
-    implements MouseListener, MouseMotionListener, KeyListener {
+    implements MouseListener, MouseMotionListener {
 
     private final File imageFile;
     private Point stratPoint;
@@ -146,23 +144,6 @@ public class ImageViewPanel extends JPanel
         }
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        System.out.println("getKeyCode:" + e.getKeyCode());
-        System.out.println("isControlDown:" + e.isControlDown());
-        System.out.println("isMetaDown:" + e.isMetaDown());
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        System.out.println("getKeyCode:" + e.getKeyCode());
-        System.out.println("isControlDown:" + e.isControlDown());
-        System.out.println("isMetaDown:" + e.isMetaDown());
-    }
-
-    public void keyReleased(KeyEvent e) {
-    }
-
     public void undo() {
         this.nextBufferedImage = this.bufferedImage;
         this.bufferedImage = this.previousBufferedImage;
@@ -185,9 +166,10 @@ public class ImageViewPanel extends JPanel
 
     public void copy(File imageFile) {
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder();
             String command = "osascript -e 'set the clipboard to " +
                 "(read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'";
+
+            ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command("sh", "-c", command);
             processBuilder.start();
         } catch (Throwable t) {

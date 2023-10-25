@@ -4,10 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.Arrays;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -24,9 +24,9 @@ import static javax.swing.JFileChooser.APPROVE_OPTION;
 public class ImagePanel extends JPanel {
     private final String name;
     private final ButtonTabPanel tabbedPane;
+    private final File imageFile;
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
-    private File imageFile;
 
     public ImagePanel(String name, File imageFile, ButtonTabPanel tabbedPane) {
         super(new BorderLayout());
@@ -62,10 +62,8 @@ public class ImagePanel extends JPanel {
 
     private ImageViewPanel createImageViewPanel(File imageFile) {
         this.imageViewPanel = new ImageViewPanel(imageFile);
+        this.imageViewPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
         this.add(imageViewPanel, CENTER);
-        this.imageViewPanel.addKeyListener(new MyKeyListener(imageViewPanel));
-        this.imageViewPanel.setFocusable(true);
-        this.imageViewPanel.requestFocus();
         return imageViewPanel;
     }
 
@@ -86,7 +84,7 @@ public class ImagePanel extends JPanel {
     private void createUndoButton() {
         JButton button = new JButton("undo");
         button.addActionListener(e -> undo());
-        controlPanel.add(button);
+        this.controlPanel.add(button);
     }
 
     private void undo() {
@@ -96,7 +94,7 @@ public class ImagePanel extends JPanel {
     private void createRedoButton() {
         JButton button = new JButton("redo");
         button.addActionListener(e -> redo());
-        controlPanel.add(button);
+        this.controlPanel.add(button);
     }
 
     private void redo() {
@@ -122,8 +120,7 @@ public class ImagePanel extends JPanel {
     private void createSaveButton() {
         JButton saveButton = new JButton("save");
         saveButton.addActionListener(e -> save());
-
-        controlPanel.add(saveButton);
+        this.controlPanel.add(saveButton);
     }
 
     private void save() {
@@ -148,7 +145,6 @@ public class ImagePanel extends JPanel {
     private void createCloseButton() {
         JButton closeButton = new JButton("close");
         closeButton.addActionListener(e -> close());
-
         controlPanel.add(closeButton);
     }
 
@@ -158,40 +154,11 @@ public class ImagePanel extends JPanel {
 
     private void createCopyButton() {
         JButton copyButton = new JButton("copy");
-        
         copyButton.addActionListener(e -> copy());
-
         controlPanel.add(copyButton);
     }
 
     private void copy() {
         this.imageViewPanel.copy(imageFile);
-    }
-
-    public void keyReleased(KeyEvent e) {
-        this.imageViewPanel.keyReleased(e);
-    }
-
-    static class MyKeyListener implements KeyListener {
-        private final ImageViewPanel imageViewPanel;
-
-        public MyKeyListener(ImageViewPanel imageViewPanel) {
-            this.imageViewPanel = imageViewPanel;
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        public void keyReleased(KeyEvent e) {
-            System.out.println("@@@@@" + e);
-            this.imageViewPanel.keyReleased(e);
-        }
     }
 }

@@ -2,8 +2,6 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -22,7 +20,7 @@ import static java.awt.Toolkit.getDefaultToolkit;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class ImageFrame extends JFrame implements KeyListener {
+public class ImageFrame extends JFrame {
     private ButtonTabPanel tabbedPane;
 
     public ImageFrame() {
@@ -35,7 +33,6 @@ public class ImageFrame extends JFrame implements KeyListener {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocation(0, 0);
         this.setSize(getDefaultToolkit().getScreenSize());
-        this.addKeyListener(this);
         this.setVisible(true);
         this.setFocusable(true);
     }
@@ -55,59 +52,17 @@ public class ImageFrame extends JFrame implements KeyListener {
         return panel;
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        System.out.println(e);
-        this.tabbedPane.keyReleased(e);
-    }
-
     public static void main(String[] args){
         ImageFrame imageFrame = new ImageFrame();
         imageFrame.setVisible(true);
-        imageFrame.addKeyListener(new MyKeyListener(imageFrame));
 
-        imageFrame.addKeyListener(imageFrame);
-        
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment().getScreenDevices();
 
         for (GraphicsDevice graphicsDevice : screenDeviceArray) {
-            ScreenShotFrame screenShotFrame = new ScreenShotFrame(graphicsDevice, imageFrame);
+            ScreenShotFrame screenShotFrame =
+                new ScreenShotFrame(graphicsDevice, imageFrame);
             Store.screenShotFrameList.add(screenShotFrame);
-        }
-    }
-
-    static class MyKeyListener implements KeyListener {
-        private final ImageFrame imageFrame;
-
-        public MyKeyListener(ImageFrame imageFrame) {
-            this.imageFrame = imageFrame;
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            System.out.println(e);
-            this.imageFrame.tabbedPane.keyReleased(e);
         }
     }
 }

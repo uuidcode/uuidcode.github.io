@@ -2,9 +2,8 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -96,7 +95,7 @@ public class ButtonTabPanel extends JPanel {
         this.buttonMap.put(name, button);
         this.selectedButton(button);
 
-        button.addMouseListener(new MouseListener() {
+        button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String selectedName = e.getComponent().getName();
@@ -104,26 +103,6 @@ public class ButtonTabPanel extends JPanel {
                 unselectedButton();
                 selectedButton(buttonMap.get(selectedName));
                 select(selectedPanel);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
 
@@ -152,9 +131,5 @@ public class ButtonTabPanel extends JPanel {
         contentPanel.add(imageContentPanel, CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
-    }
-
-    public void keyReleased(KeyEvent e) {
-        this.contentPanelMap.values().forEach(p -> p.keyReleased(e));
     }
 }

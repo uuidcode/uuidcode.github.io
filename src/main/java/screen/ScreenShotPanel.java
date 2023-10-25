@@ -20,14 +20,17 @@ import javax.swing.JPanel;
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
+
+    private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
     private final ButtonTabPanel tabbedPane;
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
-    private GraphicsDevice graphicsDevice;
 
-    public ScreenShotPanel(GraphicsDevice graphicsDevice, ImageFrame imageFrame, ScreenShotFrame screenShotFrame) {
+    public ScreenShotPanel(GraphicsDevice graphicsDevice,
+                           ImageFrame imageFrame,
+                           ScreenShotFrame screenShotFrame) {
         this.graphicsDevice = graphicsDevice;
         this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
@@ -98,12 +101,7 @@ public class ScreenShotPanel extends JPanel
     }
 
     public Rectangle getRectangle() {
-        int x = Math.min(stratPoint.x, endPoint.x);
-        int y = Math.min(stratPoint.y, endPoint.y);
-        int width = Math.abs(stratPoint.x - endPoint.x);
-        int height = Math.abs(stratPoint.y - endPoint.y);
-
-        return new Rectangle(x, y, width, height);
+        return Util.getRectangle(this.stratPoint, this.endPoint);
     }
 
     public void paint(Graphics g) {
