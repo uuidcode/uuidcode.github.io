@@ -1,8 +1,6 @@
 package screen;
 
 import java.awt.BorderLayout;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
@@ -18,6 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
@@ -36,27 +35,22 @@ public class ImagePanel extends JPanel {
         this.imageViewPanel = this.createImageViewPanel(imageFile);
         this.createControlPanel();
 
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
-            @Override
-            public boolean dispatchKeyEvent(KeyEvent ke) {
-                System.out.println(">>>>>" + ke);
-
-                if (ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
-                    if (ke.getKeyCode() == KeyEvent.VK_S) {
-                        save();
-                    } else if (ke.getKeyCode() == KeyEvent.VK_C) {
-                        copy();
-                    } else if (ke.getKeyCode() == KeyEvent.VK_W) {
-                        close();
-                    } else if (ke.getKeyCode() == KeyEvent.VK_Z) {
-                        undo();
-                    } else if (ke.getKeyCode() == KeyEvent.VK_Y) {
-                        redo();
-                    }
+        getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            if (ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
+                if (ke.getKeyCode() == KeyEvent.VK_S) {
+                    save();
+                } else if (ke.getKeyCode() == KeyEvent.VK_C) {
+                    copy();
+                } else if (ke.getKeyCode() == KeyEvent.VK_W) {
+                    close();
+                } else if (ke.getKeyCode() == KeyEvent.VK_Z) {
+                    undo();
+                } else if (ke.getKeyCode() == KeyEvent.VK_Y) {
+                    redo();
                 }
-
-                return false;
             }
+
+            return false;
         });
     }
 
