@@ -31,11 +31,13 @@ public class ImageViewPanel extends JPanel
     private Point endPoint;
     private BufferedImage bufferedImage;
     private BufferedImage previousBufferedImage;
+    private BufferedImage nextBufferedImage;
 
     public ImageViewPanel(File imageFile) {
         this.imageFile = imageFile;
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+
     }
 
     @Override
@@ -109,12 +111,10 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-
     }
 
     @Override
@@ -133,19 +133,6 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
-    }
-
-    private void drawArrowLine(Graphics g, int x0, int y0, int x1,
-                               int y1, int headLength, int headAngle) {
-        double offs = headAngle * Math.PI / 180.0;
-        double angle = Math.atan2(y0 - y1, x0 - x1);
-        int[] xs = { x1 + (int) (headLength * Math.cos(angle + offs)), x1,
-            x1 + (int) (headLength * Math.cos(angle - offs)) };
-        int[] ys = { y1 + (int) (headLength * Math.sin(angle + offs)), y1,
-            y1 + (int) (headLength * Math.sin(angle - offs)) };
-        g.drawLine(x0, y0, x1, y1);
-        g.drawPolyline(xs, ys, 3);
     }
 
     public void save() {
@@ -174,12 +161,23 @@ public class ImageViewPanel extends JPanel
     }
 
     public void keyReleased(KeyEvent e) {
-
     }
 
     public void undo() {
-        System.out.println(this.previousBufferedImage);
+        this.nextBufferedImage = this.bufferedImage;
         this.bufferedImage = this.previousBufferedImage;
+        this.save();
+        this.bufferedImage = null;
+        this.repaint();
+    }
+
+    public void redo() {
+        if (this.nextBufferedImage == null) {
+            return;
+        }
+
+        this.previousBufferedImage = this.bufferedImage;
+        this.bufferedImage = this.nextBufferedImage;
         this.save();
         this.bufferedImage = null;
         this.repaint();

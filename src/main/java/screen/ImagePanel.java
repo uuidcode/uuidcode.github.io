@@ -1,6 +1,8 @@
 package screen;
 
 import java.awt.BorderLayout;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -12,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -23,13 +26,38 @@ public class ImagePanel extends JPanel {
     private final ButtonTabPanel tabbedPane;
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
+    private File imageFile;
 
     public ImagePanel(String name, File imageFile, ButtonTabPanel tabbedPane) {
         super(new BorderLayout());
         this.name = name;
         this.tabbedPane = tabbedPane;
+        this.imageFile = imageFile;
         this.imageViewPanel = this.createImageViewPanel(imageFile);
-        this.createControlPanel(imageFile);
+        this.createControlPanel();
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent ke) {
+                System.out.println(">>>>>" + ke);
+
+                if (ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
+                    if (ke.getKeyCode() == KeyEvent.VK_S) {
+                        save();
+                    } else if (ke.getKeyCode() == KeyEvent.VK_C) {
+                        copy();
+                    } else if (ke.getKeyCode() == KeyEvent.VK_W) {
+                        close();
+                    } else if (ke.getKeyCode() == KeyEvent.VK_Z) {
+                        undo();
+                    } else if (ke.getKeyCode() == KeyEvent.VK_Y) {
+                        redo();
+                    }
+                }
+
+                return false;
+            }
+        });
     }
 
     private ImageViewPanel createImageViewPanel(File imageFile) {
@@ -41,14 +69,15 @@ public class ImagePanel extends JPanel {
         return imageViewPanel;
     }
 
-    private void createControlPanel(File imageFile) {
+    private void createControlPanel() {
         this.controlPanel = new JPanel();
         this.controlPanel.setLayout(new BoxLayout(controlPanel, LINE_AXIS));
 
         this.createActionRadio();
         this.createSaveButton();
-        this.createCopyButton(imageFile);
+        this.createCopyButton();
         this.createUndoButton();
+        this.createRedoButton();
         this.createCloseButton();
 
         this.add(this.controlPanel, NORTH);
@@ -56,10 +85,22 @@ public class ImagePanel extends JPanel {
 
     private void createUndoButton() {
         JButton button = new JButton("undo");
-
-        button.addActionListener(e -> this.imageViewPanel.undo());
-
+        button.addActionListener(e -> undo());
         controlPanel.add(button);
+    }
+
+    private void undo() {
+        this.imageViewPanel.undo();
+    }
+
+    private void createRedoButton() {
+        JButton button = new JButton("redo");
+        button.addActionListener(e -> redo());
+        controlPanel.add(button);
+    }
+
+    private void redo() {
+        this.imageViewPanel.redo();
     }
 
     private void createActionRadio() {
@@ -80,35 +121,51 @@ public class ImagePanel extends JPanel {
 
     private void createSaveButton() {
         JButton saveButton = new JButton("save");
-        saveButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File("."));
-            int result = fileChooser.showSaveDialog(this);
-
-            if (result == APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                this.imageViewPanel.save(selectedFile);
-            }
-        });
+        saveButton.addActionListener(e -> save());
 
         controlPanel.add(saveButton);
     }
 
+    private void save() {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(filter);
+        fileChooser.setCurrentDirectory(new File("/Users/ted.song/IdeaProjects/uuidcode.github.io/i"));
+        int result = fileChooser.showSaveDialog(this);
+
+        if (result == APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            String fileName = selectedFile.getName();
+            if (!fileName.endsWith(".png")) {
+                selectedFile = new File(selectedFile.getParent(), fileName + ".png");
+            }
+
+            this.imageViewPanel.save(selectedFile);
+        }
+    }
+
     private void createCloseButton() {
         JButton closeButton = new JButton("close");
-        closeButton.addActionListener(e -> this.tabbedPane.close(this.name));
+        closeButton.addActionListener(e -> close());
 
         controlPanel.add(closeButton);
     }
 
-    private void createCopyButton(File imageFile) {
+    private void close() {
+        this.tabbedPane.close(this.name);
+    }
+
+    private void createCopyButton() {
         JButton copyButton = new JButton("copy");
         
-        copyButton.addActionListener(e -> {
-            this.imageViewPanel.copy(imageFile);
-        });
+        copyButton.addActionListener(e -> copy());
 
         controlPanel.add(copyButton);
+    }
+
+    private void copy() {
+        this.imageViewPanel.copy(imageFile);
     }
 
     public void keyReleased(KeyEvent e) {
