@@ -7,32 +7,64 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.github.uuidcode.util.CoreUtil;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
+
 import static screen.Mode.ARROW;
 
+@Slf4j
+@Data(staticConstructor = "of")
+@Accessors(chain = true)
 public class Store {
-    public static List<ScreenShotFrame> screenShotFrameList = new ArrayList<>();
-    public static Mode mode = ARROW;
-    public static BufferedImage bufferedImage;
-    public static List<BufferedImage> historyList = new ArrayList<>();
-    public static int historyIndex = -1;
+    private List<ScreenShotFrame> screenShotFrameList = new ArrayList<>();
+    private Mode mode = ARROW;
+    private List<BufferedImage> historyList = new ArrayList<>();
+    private int historyIndex = -1;
+    private static Store store = new Store();
 
-    public static void setBufferedImage(BufferedImage image, File imageFile) {
-        BufferedImage history = Util.deepCopy(image);
-        historyList.add(history);
+    private Store() {
+    }
 
-        historyIndex++;
+    public static Store get() {
+        return store;
+    }
 
-        if (historyList.size() > 10) {
-            historyList.remove(0);
-            historyIndex--;
-        }
-
-        bufferedImage = image;
-
+    public void setBufferedImage(File imageFile) {
         try {
-            ImageIO.write(bufferedImage, "png", imageFile);
+            Store.get().setBufferedImage(ImageIO.read(imageFile), imageFile, true);
         } catch (Throwable t) {
             throw new RuntimeException(t);
+        }
+    }
+
+    public void setBufferedImage(BufferedImage image, File imageFile, boolean addHistory) {
+        if (addHistory) {
+            BufferedImage history = Util.deepCopy(image);
+
+            for (int i = this.historyIndex + 1; i < historyList.size(); i++) {
+                historyList.remove(this.historyIndex + 1);
+            }
+
+            historyList.add(history);
+            historyIndex++;
+
+            if (historyList.size() > 10) {
+                historyList.remove(0);
+                historyIndex--;
+            }
+        }
+
+        try {
+            ImageIO.write(image, "png", imageFile);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug(">>> setBufferedImage store: {}", CoreUtil.toJson(Store.get()));
         }
     }
 
@@ -41,7 +73,7 @@ public class Store {
             return null;
         }
 
-        return historyList.get(--historyIndex);
+        return this.historyList.get(--this.historyIndex);
     }
 
     public BufferedImage getNext() {
@@ -55,5 +87,17 @@ public class Store {
         }
 
         return historyList.get(++historyIndex);
+    }
+
+    public BufferedImage getBufferedImage() {
+        if (historyIndex < 0) {
+            return null;
+        }
+
+        if (this.historyIndex >= this.historyList.size()) {
+            return null;
+        }
+
+        return this.historyList.get(this.historyIndex);
     }
 }

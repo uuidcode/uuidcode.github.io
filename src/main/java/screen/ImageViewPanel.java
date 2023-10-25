@@ -12,12 +12,16 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import com.github.uuidcode.util.CoreUtil;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
 import static java.awt.Color.black;
 
+@Slf4j
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
@@ -27,9 +31,6 @@ public class ImageViewPanel extends JPanel
     private final File imageFile;
     private Point stratPoint;
     private Point endPoint;
-    private BufferedImage bufferedImage;
-    private BufferedImage previousBufferedImage;
-    private BufferedImage nextBufferedImage;
 
     public ImageViewPanel(File imageFile) {
         this.imageFile = imageFile;
@@ -42,9 +43,13 @@ public class ImageViewPanel extends JPanel
     public void paint(Graphics g) {
         super.paint(g);
 
+        BufferedImage bufferedImage = Store.get().getBufferedImage();
+
         if (bufferedImage == null) {
             try {
-                this.bufferedImage = ImageIO.read(this.imageFile);
+                Store.get().setBufferedImage(this.imageFile);
+                bufferedImage = Store.get().getBufferedImage();
+
                 g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
                     bufferedImage.getHeight(), this);
 
@@ -57,16 +62,16 @@ public class ImageViewPanel extends JPanel
                 g2.drawRect(0, 0, bufferedImage.getWidth() - 1,
                     bufferedImage.getHeight() - 1);
 
-                this.save(this.imageFile);
+                Store.get().setBufferedImage(bufferedImage, this.imageFile, false);
             } catch (Throwable ignored) {
             }
         } else {
-            g.drawImage(this.bufferedImage, 0, 0, bufferedImage.getWidth(),
+            g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
                 bufferedImage.getHeight(), this);
         }
 
         if (this.stratPoint != null) {
-            Store.mode.draw(g, this.stratPoint, this.endPoint);
+            Store.get().getMode().draw(g, this.stratPoint, this.endPoint);
         }
     }
 
@@ -77,8 +82,14 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int width = this.bufferedImage.getWidth();
-        int height = this.bufferedImage.getHeight();
+        BufferedImage bufferedImage = Store.get().getBufferedImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
         Point point = e.getPoint();
 
         if (point.x < width && point.y < height) {
@@ -95,15 +106,15 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Graphics g = this.bufferedImage.getGraphics();
+        BufferedImage bufferedImage = Store.get().getBufferedImage();
 
-        try {
-            this.previousBufferedImage = ImageIO.read(this.imageFile);
-        } catch (Throwable ignored) {
+        if (bufferedImage == null) {
+            return;
         }
 
-        Store.mode.draw(g, this.bufferedImage, this.stratPoint, this.endPoint);
-        this.save();
+        Graphics g = bufferedImage.getGraphics();
+        Store.get().getMode().draw(g, bufferedImage, this.stratPoint, this.endPoint);
+        Store.get().setBufferedImage(bufferedImage, this.imageFile, true);
         this.resetPoint();
     }
 
@@ -117,8 +128,14 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int width = this.bufferedImage.getWidth();
-        int height = this.bufferedImage.getHeight();
+        BufferedImage bufferedImage = Store.get().getBufferedImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
         Point point = e.getPoint();
 
         if (point.x < width && point.y < height) {
@@ -133,35 +150,46 @@ public class ImageViewPanel extends JPanel
     public void mouseMoved(MouseEvent e) {
     }
 
-    public void save() {
-        this.save(this.imageFile);
+    public void saveImage() {
+        this.saveImage(this.imageFile);
     }
 
-    public void save(File selectedFile) {
+    public void saveImage(File selectedFile) {
         try {
-            ImageIO.write(this.bufferedImage, "png", selectedFile);
+            BufferedImage bufferedImage = Store.get().getBufferedImage();
+            ImageIO.write(bufferedImage, "png", selectedFile);
         } catch (Throwable ignored) {
         }
     }
 
     public void undo() {
-        this.nextBufferedImage = this.bufferedImage;
-        this.bufferedImage = this.previousBufferedImage;
-        this.save();
-        this.bufferedImage = null;
-        this.repaint();
-    }
+        BufferedImage previous = Store.get().getPrevious();
 
-    public void redo() {
-        if (this.nextBufferedImage == null) {
+        if (previous == null) {
             return;
         }
 
-        this.previousBufferedImage = this.bufferedImage;
-        this.bufferedImage = this.nextBufferedImage;
-        this.save();
-        this.bufferedImage = null;
+        this.saveImage();
         this.repaint();
+
+        if (log.isDebugEnabled()) {
+            log.debug(">>> undo store: {}", CoreUtil.toJson(Store.get()));
+        }
+    }
+
+    public void redo() {
+        BufferedImage next = Store.get().getPrevious();
+
+        if (next == null) {
+            return;
+        }
+
+        this.saveImage();
+        this.repaint();
+
+        if (log.isDebugEnabled()) {
+            log.debug(">>> undo store: {}", CoreUtil.toJson(Store.get()));
+        }
     }
 
     public void copy(File imageFile) {

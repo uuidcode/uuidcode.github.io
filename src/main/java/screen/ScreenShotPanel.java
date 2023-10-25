@@ -14,7 +14,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 public class ScreenShotPanel extends JPanel
@@ -65,15 +64,16 @@ public class ScreenShotPanel extends JPanel
                     Rectangle display = this.graphicsDevice.getDefaultConfiguration().getBounds();
                     rectangle.x += display.x;
                     rectangle.y += display.y;
-                    BufferedImage image = new Robot().createScreenCapture(rectangle);
+                    BufferedImage bufferedImage = new Robot().createScreenCapture(rectangle);
                     String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-                    File file = Util.getImageFile(fileName);
-                    ImageIO.write(image, "png", file);
+                    File imageFile = Util.getImageFile(fileName);
+
+                    Store.get().setBufferedImage(bufferedImage, imageFile, true);
 
                     tabbedPane.addTab(fileName);
                     imageFrame.setVisible(true);
                     screenShotFrame.setBackground(BACKGROUND_COLOR);
-                    Store.screenShotFrameList.forEach(f -> f.setVisible(false));
+                    Store.get().getScreenShotFrameList().forEach(f -> f.setVisible(false));
                 } catch (Throwable ignored) {
                 }
             }).start();

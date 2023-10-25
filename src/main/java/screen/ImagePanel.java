@@ -103,7 +103,7 @@ public class ImagePanel extends JPanel {
                 JRadioButton radioButton = new JRadioButton(mode.name());
                 radioButton.setSelected(true);
                 radioButton.addActionListener(e -> {
-                    Store.mode = mode;
+                    Store.get().setMode(mode);
                 });
 
                 buttonGroup.add(radioButton);
@@ -132,7 +132,7 @@ public class ImagePanel extends JPanel {
                 selectedFile = new File(selectedFile.getParent(), fileName + ".png");
             }
 
-            this.imageViewPanel.save(selectedFile);
+            this.imageViewPanel.saveImage(selectedFile);
         }
     }
 

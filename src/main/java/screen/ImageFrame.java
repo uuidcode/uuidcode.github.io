@@ -44,7 +44,7 @@ public class ImageFrame extends JFrame {
 
         captureButton.addActionListener(e -> {
             this.setVisible(false);
-            Store.screenShotFrameList.forEach(f -> f.setVisible(true));
+            Store.get().getScreenShotFrameList().forEach(f -> f.setVisible(true));
         });
 
         panel.add(captureButton);
@@ -62,7 +62,7 @@ public class ImageFrame extends JFrame {
         for (GraphicsDevice graphicsDevice : screenDeviceArray) {
             ScreenShotFrame screenShotFrame =
                 new ScreenShotFrame(graphicsDevice, imageFrame);
-            Store.screenShotFrameList.add(screenShotFrame);
+            Store.get().getScreenShotFrameList().add(screenShotFrame);
         }
     }
 }
