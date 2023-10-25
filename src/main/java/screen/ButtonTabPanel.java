@@ -2,6 +2,7 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import static javax.swing.BoxLayout.LINE_AXIS;
 public class ButtonTabPanel extends JPanel {
     public static final Color SELECTED_COLOR = new Color(124, 166, 208, 244);
     private final JPanel controlPanel;
-    private final Map<String, JPanel> contentPanelMap = new LinkedHashMap<>();
+    private final Map<String, ImagePanel> contentPanelMap = new LinkedHashMap<>();
     private final Map<String, JLabel> buttonMap = new LinkedHashMap<>();
     private JPanel contentPanel = null;
     private Color defaultColor = null;
@@ -128,22 +129,22 @@ public class ButtonTabPanel extends JPanel {
 
         this.controlPanel.add(button);
 
-        JPanel imageContentPanel = new ImagePanel(name, Util.getImageFile(name), this);
-        imageContentPanel.setBorder(createCompoundBorder(
+        ImagePanel imagePanel = new ImagePanel(name, Util.getImageFile(name), this);
+        imagePanel.setBorder(createCompoundBorder(
             createEtchedBorder(), createEmptyBorder(10, 10, 10, 10)));
 
         if (contentPanel == null) {
             contentPanel = new JPanel(new BorderLayout());
             this.add(contentPanel, CENTER);
-            this.select(imageContentPanel);
+            this.select(imagePanel);
         } else {
-            this.select(imageContentPanel);
+            this.select(imagePanel);
         }
 
         this.revalidate();
         this.repaint();
 
-        this.contentPanelMap.put(name, imageContentPanel);
+        this.contentPanelMap.put(name, imagePanel);
     }
 
     private void select(JPanel imageContentPanel) {
@@ -151,5 +152,9 @@ public class ButtonTabPanel extends JPanel {
         contentPanel.add(imageContentPanel, CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
+    }
+
+    public void keyReleased(KeyEvent e) {
+        this.contentPanelMap.values().forEach(p -> p.keyReleased(e));
     }
 }

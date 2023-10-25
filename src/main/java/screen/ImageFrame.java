@@ -2,6 +2,8 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,7 +22,7 @@ import static java.awt.Toolkit.getDefaultToolkit;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class ImageFrame extends JFrame {
+public class ImageFrame extends JFrame implements KeyListener {
     private ButtonTabPanel tabbedPane;
 
     public ImageFrame() {
@@ -33,7 +35,9 @@ public class ImageFrame extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocation(0, 0);
         this.setSize(getDefaultToolkit().getScreenSize());
+        this.addKeyListener(this);
         this.setVisible(true);
+        this.setFocusable(true);
     }
 
     public JPanel createControlPanel() {
@@ -61,5 +65,21 @@ public class ImageFrame extends JFrame {
             ScreenShotFrame screenShotFrame = new ScreenShotFrame(graphicsDevice, imageFrame);
             Store.screenShotFrameList.add(screenShotFrame);
         }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.out.println(e);
+        this.tabbedPane.keyReleased(e);
     }
 }

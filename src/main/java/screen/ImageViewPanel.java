@@ -1,10 +1,10 @@
 package screen;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,23 +18,27 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import static java.awt.BasicStroke.CAP_BUTT;
-import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.black;
-import static java.awt.RenderingHints.KEY_ANTIALIASING;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import static java.awt.event.KeyEvent.VK_C;
+import static java.awt.event.KeyEvent.VK_Z;
 
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
-public class ImageViewPanel extends JPanel implements MouseListener, MouseMotionListener {
+public class ImageViewPanel extends JPanel
+    implements MouseListener, MouseMotionListener, KeyListener {
+
     private final File imageFile;
     private Point stratPoint;
     private Point endPoint;
     private BufferedImage bufferedImage;
+    private BufferedImage previousBufferedImage;
 
     public ImageViewPanel(File imageFile) {
         this.imageFile = imageFile;
+        this.addMouseListener(this);
+        this.addMouseMotionListener(this);
+
     }
 
     @Override
@@ -56,7 +60,7 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
                 g2.drawRect(0, 0, bufferedImage.getWidth() - 1,
                     bufferedImage.getHeight() - 1);
 
-                ImageIO.write(bufferedImage, "png", this.imageFile);
+                this.save(this.imageFile);
             } catch (Throwable ignored) {
             }
         } else {
@@ -67,21 +71,6 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
         if (this.stratPoint != null) {
             Store.mode.draw(g, this.stratPoint, this.endPoint);
         }
-    }
-
-    public void drawArrow(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-
-        g2.setColor(new Color(124, 166, 208, 244));
-        g2.setStroke(new BasicStroke(10, CAP_BUTT, JOIN_MITER));
-        g2.drawLine(stratPoint.x, stratPoint.y, endPoint.x, endPoint.y);
-        this.drawArrowLine(g, stratPoint.x, stratPoint.y, endPoint.x, endPoint.y, 20, 20);
-    }
-
-    public void drawArrowImage() {
-        Graphics2D g2 = this.bufferedImage.createGraphics();
-        this.drawArrow(g2);
     }
 
     @Override
@@ -110,6 +99,7 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
     @Override
     public void mouseReleased(MouseEvent e) {
         Graphics g = this.bufferedImage.getGraphics();
+        this.previousBufferedImage = this.bufferedImage;
 
         Store.mode.draw(g, this.bufferedImage, this.stratPoint, this.endPoint);
 
@@ -164,8 +154,47 @@ public class ImageViewPanel extends JPanel implements MouseListener, MouseMotion
 
     public void save(File selectedFile) {
         try {
-            ImageIO.write(bufferedImage, "png", selectedFile);
+            ImageIO.write(this.bufferedImage, "png", selectedFile);
         } catch (Throwable ignored) {
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    public void keyReleased(KeyEvent e) {
+        if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == VK_Z) {
+            this.bufferedImage = this.previousBufferedImage;
+            this.save(imageFile);
+            this.repaint();
+            System.out.println("z");
+        }
+
+        if ((e.isControlDown() || e.isMetaDown()) && e.getKeyCode() == VK_C) {
+            this.bufferedImage = this.previousBufferedImage;
+            this.save(this.imageFile);
+            this.repaint();
+            this.copy(this.imageFile);
+            System.out.println("c");
+        }
+    }
+
+    public void copy(File imageFile) {
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            String command = "osascript -e 'set the clipboard to " +
+                "(read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'";
+            processBuilder.command("sh", "-c", command);
+            processBuilder.start();
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
         }
     }
 }

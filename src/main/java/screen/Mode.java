@@ -27,7 +27,7 @@ public enum Mode implements Drawable {
             drawArrowLine(g, startPoint.x, startPoint.y, endPoint.x, endPoint.y, 20, 20);
         }
     },
-    RECTANGLE {
+    FILL_RECTANGLE {
         @Override
         public void draw(Graphics g, Point startPoint, Point endPoint) {
             Graphics2D g2 = (Graphics2D) g;
@@ -37,6 +37,18 @@ public enum Mode implements Drawable {
             g2.setStroke(new BasicStroke(10, CAP_BUTT, JOIN_MITER));
             Rectangle rectangle = getRectangle(startPoint, endPoint);
             g2.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        }
+    },
+    DRAW_RECTANGLE {
+        @Override
+        public void draw(Graphics g, Point startPoint, Point endPoint) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+
+            g2.setColor(new Color(124, 166, 208, 255));
+            g2.setStroke(new BasicStroke(3, CAP_BUTT, JOIN_MITER));
+            Rectangle rectangle = getRectangle(startPoint, endPoint);
+            g2.drawRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         }
     }
 }

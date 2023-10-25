@@ -1,12 +1,9 @@
 package screen;
 
 import java.awt.BorderLayout;
-import java.io.BufferedReader;
+import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
+import java.util.Arrays;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -23,23 +20,24 @@ import static javax.swing.JFileChooser.APPROVE_OPTION;
 public class ImagePanel extends JPanel {
     private final String name;
     private final ButtonTabPanel tabbedPane;
-    private ImageViewPanel imagePanel;
+    private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
 
     public ImagePanel(String name, File imageFile, ButtonTabPanel tabbedPane) {
         super(new BorderLayout());
         this.name = name;
         this.tabbedPane = tabbedPane;
-        this.imagePanel = this.createImageViewPanel(imageFile);
+        this.imageViewPanel = this.createImageViewPanel(imageFile);
         this.createControlPanel(imageFile);
     }
 
     private ImageViewPanel createImageViewPanel(File imageFile) {
-        this.imagePanel = new ImageViewPanel(imageFile);
-        imagePanel.addMouseListener(imagePanel);
-        imagePanel.addMouseMotionListener(imagePanel);
-        this.add(imagePanel, CENTER);
-        return imagePanel;
+        this.imageViewPanel = new ImageViewPanel(imageFile);
+        this.add(imageViewPanel, CENTER);
+        this.imageViewPanel.addKeyListener(this.imageViewPanel);
+        this.imageViewPanel.setFocusable(true);
+        this.imageViewPanel.requestFocusInWindow();
+        return imageViewPanel;
     }
 
     private void createControlPanel(File imageFile) {
@@ -57,22 +55,17 @@ public class ImagePanel extends JPanel {
     private void createActionRadio() {
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        JRadioButton arrowRadioButton = new JRadioButton("arrow");
-        arrowRadioButton.setSelected(true);
-        arrowRadioButton.addActionListener(e -> {
-            Store.mode = Mode.ARROW;
-        });
+        Arrays.stream(Mode.values())
+            .forEach(mode -> {
+                JRadioButton radioButton = new JRadioButton(mode.name());
+                radioButton.setSelected(true);
+                radioButton.addActionListener(e -> {
+                    Store.mode = mode;
+                });
 
-        JRadioButton rectangleRadioButton = new JRadioButton("rectangle");
-        rectangleRadioButton.addActionListener(e -> {
-            Store.mode = Mode.RECTANGLE;
-        });
-
-        buttonGroup.add(arrowRadioButton);
-        buttonGroup.add(rectangleRadioButton);
-
-        this.controlPanel.add(arrowRadioButton);
-        this.controlPanel.add(rectangleRadioButton);
+                buttonGroup.add(radioButton);
+                this.controlPanel.add(radioButton);
+            });
     }
 
     private void createSaveButton() {
@@ -84,7 +77,7 @@ public class ImagePanel extends JPanel {
 
             if (result == APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
-                this.imagePanel.save(selectedFile);
+                this.imageViewPanel.save(selectedFile);
             }
         });
 
@@ -102,34 +95,13 @@ public class ImagePanel extends JPanel {
         JButton copyButton = new JButton("copy");
         
         copyButton.addActionListener(e -> {
-            try {
-                ProcessBuilder processBuilder = new ProcessBuilder();
-                String command = "osascript -e 'set the clipboard to (read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'";
-                processBuilder.command("sh", "-c", command);
-                Process process = processBuilder.start();
-                StreamGobbler streamGobbler = new StreamGobbler(process.getInputStream(), System.out::println);
-                Executors.newSingleThreadExecutor().submit(streamGobbler);
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
+            this.imageViewPanel.copy(imageFile);
         });
 
         controlPanel.add(copyButton);
     }
 
-    private static class StreamGobbler implements Runnable {
-        private final InputStream inputStream;
-        private final Consumer<String> consumer;
-
-        public StreamGobbler(InputStream inputStream, Consumer<String> consumer) {
-            this.inputStream = inputStream;
-            this.consumer = consumer;
-        }
-
-        @Override
-        public void run() {
-            new BufferedReader(new InputStreamReader(inputStream)).lines()
-                .forEach(consumer);
-        }
+    public void keyReleased(KeyEvent e) {
+        this.imageViewPanel.keyReleased(e);
     }
 }
