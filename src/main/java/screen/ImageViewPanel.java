@@ -8,6 +8,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -27,24 +29,34 @@ public class ImageViewPanel extends JPanel
     private final File imageFile;
     private Point stratPoint;
     private Point endPoint;
-    private BufferedImage bufferedImage;
-    private BufferedImage previousBufferedImage;
-    private BufferedImage nextBufferedImage;
+    private List<BufferedImage> bufferedImageHistoryList = new ArrayList<>();
+    private int imageHistoryIndex = 0;
 
     public ImageViewPanel(File imageFile) {
         this.imageFile = imageFile;
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+    }
 
+    public BufferedImage getBufferedImage() {
+        if (this.bufferedImageHistoryList.isEmpty()) {
+            return null;
+        }
+
+        return this.bufferedImageHistoryList.get(this.imageHistoryIndex);
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
+        BufferedImage bufferedImage = this.getBufferedImage();
+
         if (bufferedImage == null) {
             try {
-                this.bufferedImage = ImageIO.read(this.imageFile);
+                bufferedImage = ImageIO.read(this.imageFile);
+                this.bufferedImageHistoryList.add(bufferedImage);
+
                 g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
                     bufferedImage.getHeight(), this);
 
@@ -61,7 +73,7 @@ public class ImageViewPanel extends JPanel
             } catch (Throwable ignored) {
             }
         } else {
-            g.drawImage(this.bufferedImage, 0, 0, bufferedImage.getWidth(),
+            g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
                 bufferedImage.getHeight(), this);
         }
 
@@ -72,13 +84,18 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int width = this.bufferedImage.getWidth();
-        int height = this.bufferedImage.getHeight();
+        BufferedImage bufferedImage = this.getBufferedImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
         Point point = e.getPoint();
 
         if (point.x < width && point.y < height) {
@@ -95,16 +112,24 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Graphics g = this.bufferedImage.getGraphics();
+        BufferedImage bufferedImage = this.getBufferedImage();
 
-        try {
-            this.previousBufferedImage = ImageIO.read(this.imageFile);
-        } catch (Throwable ignored) {
+        if (bufferedImage == null) {
+            return;
         }
 
-        Store.mode.draw(g, this.bufferedImage, this.stratPoint, this.endPoint);
+        bufferedImage = Util.deepCopy(bufferedImage);
+        Graphics g = bufferedImage.getGraphics();
+
+        Store.mode.draw(g, bufferedImage, this.stratPoint, this.endPoint);
         this.save();
+        this.addHistory(bufferedImage);
         this.resetPoint();
+    }
+
+    public void addHistory(BufferedImage bufferedImage) {
+        this.bufferedImageHistoryList.add(bufferedImage);
+        this.imageHistoryIndex++;
     }
 
     @Override
@@ -117,8 +142,14 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int width = this.bufferedImage.getWidth();
-        int height = this.bufferedImage.getHeight();
+        BufferedImage bufferedImage = this.getBufferedImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        int width = bufferedImage.getWidth();
+        int height = bufferedImage.getHeight();
         Point point = e.getPoint();
 
         if (point.x < width && point.y < height) {
@@ -138,29 +169,35 @@ public class ImageViewPanel extends JPanel
     }
 
     public void save(File selectedFile) {
+        BufferedImage bufferedImage = this.getBufferedImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
         try {
-            ImageIO.write(this.bufferedImage, "png", selectedFile);
+            ImageIO.write(bufferedImage, "png", selectedFile);
         } catch (Throwable ignored) {
         }
     }
 
     public void undo() {
-        this.nextBufferedImage = this.bufferedImage;
-        this.bufferedImage = this.previousBufferedImage;
+        if (this.imageHistoryIndex <= 0) {
+            return;
+        }
+
+        this.imageHistoryIndex--;
         this.save();
-        this.bufferedImage = null;
         this.repaint();
     }
 
     public void redo() {
-        if (this.nextBufferedImage == null) {
+        if (this.imageHistoryIndex >= this.bufferedImageHistoryList.size() - 1) {
             return;
         }
 
-        this.previousBufferedImage = this.bufferedImage;
-        this.bufferedImage = this.nextBufferedImage;
+        this.imageHistoryIndex++;
         this.save();
-        this.bufferedImage = null;
         this.repaint();
     }
 
