@@ -122,8 +122,9 @@ public class ImageViewPanel extends JPanel
         Graphics g = bufferedImage.getGraphics();
 
         Store.mode.draw(g, bufferedImage, this.stratPoint, this.endPoint);
-        this.save();
+
         this.addHistory(bufferedImage);
+        this.save();
         this.resetPoint();
     }
 
