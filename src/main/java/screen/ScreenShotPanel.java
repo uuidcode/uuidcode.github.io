@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.Point;
@@ -15,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class ScreenShotPanel extends JPanel
@@ -27,6 +30,7 @@ public class ScreenShotPanel extends JPanel
     private final ButtonTabPanel tabbedPane;
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
+    private JPanel controlPanel = null;
 
     public ScreenShotPanel(GraphicsDevice graphicsDevice,
                            ImageFrame imageFrame,
@@ -35,34 +39,31 @@ public class ScreenShotPanel extends JPanel
         this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
         this.screenShotFrame = screenShotFrame;
+        this.setLayout(null);
     }
 
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
+    private JPanel createControlPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setBackground(new Color(0, 0, 0, 0));
 
-    @Override
-    public void mousePressed(MouseEvent e) {
-        stratPoint = e.getPoint();
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        try {
-            Rectangle rectangle = this.getRectangle();
-            this.stratPoint = null;
-            this.endPoint = null;
+        JButton shotButton = new JButton("shot");
+        shotButton.addActionListener(e -> {
+            Rectangle rectangle = getRectangle();
+            stratPoint = null;
+            endPoint = null;
             screenShotFrame.setBackground(new Color(0, 0, 0, 0));
 
             rectangle.width++;
             rectangle.height++;
+            controlPanel.setVisible(false);
             screenShotFrame.getContentPane().repaint();
 
             new Thread(() -> {
                 try {
                     Thread.sleep(100);
 
-                    Rectangle display = this.graphicsDevice.getDefaultConfiguration().getBounds();
+                    Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
                     rectangle.x += display.x;
                     rectangle.y += display.y;
                     BufferedImage image = new Robot().createScreenCapture(rectangle);
@@ -75,9 +76,59 @@ public class ScreenShotPanel extends JPanel
                     screenShotFrame.setBackground(BACKGROUND_COLOR);
                     Store.screenShotFrameList.forEach(f -> f.setVisible(false));
                 } catch (Throwable ignored) {
+                    ignored.printStackTrace();
                 }
             }).start();
-        } catch (Throwable ignored) {
+        });
+        panel.add(shotButton);
+
+        JButton cancelButton = new JButton("cancel");
+        cancelButton.addActionListener(e -> {
+            controlPanel.setVisible(false);
+            stratPoint = null;
+            endPoint = null;
+            Store.screenShotFrameList.forEach(f -> f.setVisible(false));
+            imageFrame.setVisible(true);
+        });
+        panel.add(cancelButton);
+
+        return panel;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        stratPoint = e.getPoint();
+
+        if (this.controlPanel != null) {
+            this.controlPanel.setVisible(false);
+        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        try {
+            Rectangle rectangle = this.getRectangle();
+
+            if (this.controlPanel == null) {
+                this.controlPanel = this.createControlPanel();
+                this.add(this.controlPanel);
+                this.revalidate();
+                this.repaint();
+            }
+
+            this.controlPanel.setVisible(true);
+            Dimension dimension = controlPanel.getPreferredSize();
+
+            this.controlPanel.setBounds(rectangle.x + (int) ((rectangle.getWidth() - dimension.getWidth()) / 2),
+                rectangle.y + (int) ((rectangle.getHeight()  - dimension.getHeight()) / 2),
+                (int) dimension.getWidth(),
+                (int) dimension.getHeight());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
         }
     }
 
@@ -97,7 +148,6 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
-
     }
 
     public Rectangle getRectangle() {
