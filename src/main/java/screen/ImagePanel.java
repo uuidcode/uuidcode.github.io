@@ -138,7 +138,7 @@ public class ImagePanel extends JPanel {
 
     private void createCloseButton() {
         JButton closeButton = new JButton("close");
-        closeButton.addActionListener(e -> close());
+        closeButton.addActionListener(e -> this.close());
         controlPanel.add(closeButton);
     }
 

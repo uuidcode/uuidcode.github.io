@@ -30,16 +30,16 @@ public class ButtonTabPanel extends JPanel {
     private Color defaultColor = null;
 
     public void close(String name) {
-        contentPanelMap.remove(name);
+        this.contentPanelMap.remove(name);
         List<JPanel> panelList = new ArrayList<>(contentPanelMap.values());
-        contentPanel.removeAll();
+        this.contentPanel.removeAll();
 
         if (!panelList.isEmpty()) {
             contentPanel.add(panelList.get(panelList.size() - 1));
         }
 
-        contentPanel.revalidate();
-        contentPanel.repaint();
+        this.contentPanel.revalidate();
+        this.contentPanel.repaint();
 
         JLabel currentLabel = this.buttonMap.remove(name);
         this.controlPanel.remove(currentLabel);
@@ -50,6 +50,9 @@ public class ButtonTabPanel extends JPanel {
         if (!labelList.isEmpty()) {
             this.selectedButton(labelList.get(labelList.size() - 1));
         }
+
+        this.controlPanel.revalidate();
+        this.controlPanel.repaint();
     }
 
     public ButtonTabPanel() {
