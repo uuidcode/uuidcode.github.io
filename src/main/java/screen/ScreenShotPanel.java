@@ -27,7 +27,7 @@ public class ScreenShotPanel extends JPanel
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
-    private final ButtonTabPanel tabbedPane;
+    private final ImageTabPanel tabbedPane;
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
     private JPanel controlPanel = null;

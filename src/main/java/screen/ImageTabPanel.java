@@ -9,7 +9,7 @@ import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
-public class ButtonTabPanel extends JTabbedPane {
+public class ImageTabPanel extends JTabbedPane {
     private final Map<String, Integer> indexMap = new HashMap<>();
 
     public void addTab(String name) {

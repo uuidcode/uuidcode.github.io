@@ -23,12 +23,12 @@ import static java.awt.Toolkit.getDefaultToolkit;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class ImageFrame extends JFrame {
-    private ButtonTabPanel tabbedPane;
+    private ImageTabPanel tabbedPane;
 
     public ImageFrame() {
         super("ImageFrame");
         JPanel panel = new JPanel(new BorderLayout());
-        this.tabbedPane = new ButtonTabPanel();
+        this.tabbedPane = new ImageTabPanel();
         panel.add(tabbedPane, CENTER);
         panel.add(this.createControlPanel(), NORTH);
         this.setContentPane(panel);

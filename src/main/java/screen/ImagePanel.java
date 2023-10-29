@@ -22,12 +22,12 @@ import static javax.swing.JFileChooser.APPROVE_OPTION;
 
 public class ImagePanel extends JPanel {
     private final String name;
-    private final ButtonTabPanel tabbedPane;
+    private final ImageTabPanel tabbedPane;
     private final File imageFile;
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
 
-    public ImagePanel(String name, File imageFile, ButtonTabPanel tabbedPane) {
+    public ImagePanel(String name, File imageFile, ImageTabPanel tabbedPane) {
         super(new BorderLayout());
         this.name = name;
         this.tabbedPane = tabbedPane;
