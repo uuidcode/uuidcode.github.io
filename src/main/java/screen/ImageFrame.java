@@ -1,12 +1,14 @@
 package screen;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GraphicsDevice;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -52,7 +54,8 @@ public class ImageFrame extends JFrame {
         return panel;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        UIManager.put("TabbedPane.selectedBackground", new Color(146, 210, 224, 200));
         ImageFrame imageFrame = new ImageFrame();
         imageFrame.setVisible(true);
 

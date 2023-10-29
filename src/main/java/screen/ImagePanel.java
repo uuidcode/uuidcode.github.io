@@ -72,6 +72,7 @@ public class ImagePanel extends JPanel {
         this.createCopyButton();
         this.createUndoButton();
         this.createRedoButton();
+        this.createClearButton();
         this.createCloseButton();
 
         this.add(this.controlPanel, NORTH);
@@ -144,8 +145,18 @@ public class ImagePanel extends JPanel {
         controlPanel.add(closeButton);
     }
 
+    private void createClearButton() {
+        JButton closeButton = new JButton("clear");
+        closeButton.addActionListener(e -> this.clear());
+        controlPanel.add(closeButton);
+    }
+
+    private void clear() {
+        this.imageViewPanel.clear();
+    }
+
     private void close() {
-        this.tabbedPane.close(this.name);
+        this.tabbedPane.removeTab(this.name);
     }
 
     private void createCopyButton() {

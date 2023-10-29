@@ -129,6 +129,12 @@ public class ImageViewPanel extends JPanel
     }
 
     public void addHistory(BufferedImage bufferedImage) {
+        if (this.imageHistoryIndex < this.bufferedImageHistoryList.size() - 1) {
+            this.bufferedImageHistoryList = this.bufferedImageHistoryList
+                .subList(0, this.imageHistoryIndex + 1);
+            this.imageHistoryIndex = this.bufferedImageHistoryList.size() - 1;
+        }
+
         this.bufferedImageHistoryList.add(bufferedImage);
         this.imageHistoryIndex++;
     }
@@ -171,7 +177,10 @@ public class ImageViewPanel extends JPanel
 
     public void save(File selectedFile) {
         BufferedImage bufferedImage = this.getBufferedImage();
+        this.save(selectedFile, bufferedImage);
+    }
 
+    public void save(File selectedFile, BufferedImage bufferedImage) {
         if (bufferedImage == null) {
             return;
         }
@@ -213,5 +222,14 @@ public class ImageViewPanel extends JPanel
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
+    }
+
+    public void clear() {
+        BufferedImage bufferedImage = this.bufferedImageHistoryList.get(0);
+        this.save(this.imageFile, bufferedImage);
+        this.bufferedImageHistoryList.clear();
+        this.imageHistoryIndex = 0;
+        this.revalidate();
+        this.repaint();
     }
 }
