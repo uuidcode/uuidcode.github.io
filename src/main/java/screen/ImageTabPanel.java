@@ -1,5 +1,6 @@
 package screen;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,9 @@ public class ImageTabPanel extends JTabbedPane {
         this.setSelectedComponent(imagePanel);
         this.revalidate();
         this.repaint();
+
+        int selectedIndex = this.getSelectedIndex();
+        this.setBackgroundAt(selectedIndex, Color.blue);
     }
 
     public void removeTab(String name) {
