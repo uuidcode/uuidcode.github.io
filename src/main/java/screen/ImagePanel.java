@@ -1,7 +1,6 @@
 package screen;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
@@ -37,21 +36,21 @@ public class ImagePanel extends JPanel {
         this.createControlPanel();
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
-            Component component = ke.getComponent();
-
-            if (component == null) {
-                return true;
-            }
-
-            String componentName = component.getName();
-
-            if (componentName == null) {
-                return true;
-            }
-
-            if (!componentName.equals(this.name)) {
-                return true;
-            }
+//            Component component = ke.getComponent();
+//
+//            if (component == null) {
+//                return true;
+//            }
+//
+//            String componentName = component.getName();
+//
+//            if (componentName == null) {
+//                return true;
+//            }
+//
+//            if (!componentName.equals(this.name)) {
+//                return true;
+//            }
 
             if (ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
                 if (ke.getKeyCode() == KeyEvent.VK_S) {
