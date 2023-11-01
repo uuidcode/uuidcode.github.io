@@ -122,7 +122,9 @@ public class ImageViewPanel extends JPanel
         bufferedImage = Util.deepCopy(bufferedImage);
         Graphics g = bufferedImage.getGraphics();
 
-        Store.mode.draw(g, bufferedImage, this.stratPoint, this.endPoint);
+        if (this.stratPoint != null && this.endPoint != null) {
+            Store.mode.draw(g, bufferedImage, this.stratPoint, this.endPoint);
+        }
 
         this.addHistory(bufferedImage);
         this.save();
