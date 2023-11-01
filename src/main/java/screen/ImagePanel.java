@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
@@ -36,6 +37,22 @@ public class ImagePanel extends JPanel {
         this.createControlPanel();
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            Component component = ke.getComponent();
+
+            if (component == null) {
+                return true;
+            }
+
+            String componentName = component.getName();
+
+            if (componentName == null) {
+                return true;
+            }
+
+            if (!componentName.equals(this.name)) {
+                return true;
+            }
+
             if (ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
                 if (ke.getKeyCode() == KeyEvent.VK_S) {
                     save();
@@ -80,6 +97,7 @@ public class ImagePanel extends JPanel {
 
     private void createUndoButton() {
         JButton button = new JButton("undo");
+        button.setName(this.name);
         button.addActionListener(e -> undo());
         this.controlPanel.add(button);
     }
@@ -90,6 +108,7 @@ public class ImagePanel extends JPanel {
 
     private void createRedoButton() {
         JButton button = new JButton("redo");
+        button.setName(this.name);
         button.addActionListener(e -> redo());
         this.controlPanel.add(button);
     }
@@ -115,9 +134,10 @@ public class ImagePanel extends JPanel {
     }
 
     private void createSaveButton() {
-        JButton saveButton = new JButton("save");
-        saveButton.addActionListener(e -> save());
-        this.controlPanel.add(saveButton);
+        JButton button = new JButton("save");
+        button.setName(this.name);
+        button.addActionListener(e -> save());
+        this.controlPanel.add(button);
     }
 
     private void save() {
@@ -140,15 +160,17 @@ public class ImagePanel extends JPanel {
     }
 
     private void createCloseButton() {
-        JButton closeButton = new JButton("close");
-        closeButton.addActionListener(e -> this.close());
-        controlPanel.add(closeButton);
+        JButton button = new JButton("close");
+        button.setName(this.name);
+        button.addActionListener(e -> this.close());
+        controlPanel.add(button);
     }
 
     private void createClearButton() {
-        JButton closeButton = new JButton("clear");
-        closeButton.addActionListener(e -> this.clear());
-        controlPanel.add(closeButton);
+        JButton button = new JButton("clear");
+        button.setName(this.name);
+        button.addActionListener(e -> this.clear());
+        controlPanel.add(button);
     }
 
     private void clear() {
@@ -160,9 +182,10 @@ public class ImagePanel extends JPanel {
     }
 
     private void createCopyButton() {
-        JButton copyButton = new JButton("copy");
-        copyButton.addActionListener(e -> copy());
-        controlPanel.add(copyButton);
+        JButton button = new JButton("copy");
+        button.setName(this.name);
+        button.addActionListener(e -> copy());
+        controlPanel.add(button);
     }
 
     private void copy() {

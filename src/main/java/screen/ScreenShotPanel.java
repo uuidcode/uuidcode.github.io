@@ -75,11 +75,12 @@ public class ScreenShotPanel extends JPanel
                     imageFrame.setVisible(true);
                     screenShotFrame.setBackground(BACKGROUND_COLOR);
                     Store.screenShotFrameList.forEach(f -> f.setVisible(false));
-                } catch (Throwable ignored) {
-                    ignored.printStackTrace();
+                } catch (Throwable t) {
+                    throw new RuntimeException(t);
                 }
             }).start();
         });
+
         panel.add(shotButton);
 
         JButton cancelButton = new JButton("cancel");

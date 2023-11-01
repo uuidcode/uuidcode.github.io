@@ -9,8 +9,14 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 
 public class Util {
+    public static final String SCREENSHOT_DIR = "screenshot/";
+
     public static File getImageFile(String name) {
-        return new File("screenshot/" + name + ".png");
+        if (name.endsWith(".png")) {
+            return new File(SCREENSHOT_DIR + name);
+        }
+
+        return new File(SCREENSHOT_DIR + name + ".png");
     }
 
     public static void drawArrowLine(Graphics g, int x0, int y0, int x1,

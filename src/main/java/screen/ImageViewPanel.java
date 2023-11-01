@@ -70,7 +70,8 @@ public class ImageViewPanel extends JPanel
                     bufferedImage.getHeight() - 1);
 
                 this.save(this.imageFile);
-            } catch (Throwable ignored) {
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
             }
         } else {
             g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
