@@ -37,15 +37,18 @@ public class ImagePanel extends JPanel {
         this.createControlPanel();
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
-            Component component = ke.getComponent();
+            Component selectedComponent = this.tabbedPane
+                .getSelectedComponent();
 
-            if (component != null) {
-                String componentName = component.getName();
-                System.out.println("component:" + component);
-                System.out.println("componentName:" + componentName);
+            boolean isOK = false;
+
+            if (selectedComponent instanceof ImagePanel) {
+                ImagePanel imagePanel = (ImagePanel) selectedComponent;
+
+                isOK = imagePanel.name.equals(this.name);
             }
 
-            if (ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
+            if (isOK && ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
                 if (ke.getKeyCode() == KeyEvent.VK_S) {
                     save();
                 } else if (ke.getKeyCode() == KeyEvent.VK_C) {
@@ -117,7 +120,7 @@ public class ImagePanel extends JPanel {
                 JRadioButton radioButton = new JRadioButton(mode.name());
                 radioButton.setSelected(true);
                 radioButton.addActionListener(e -> {
-                    Store.mode = mode;
+                    imageViewPanel.setMode(mode);
                 });
 
                 buttonGroup.add(radioButton);
