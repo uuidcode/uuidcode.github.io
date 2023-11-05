@@ -3,6 +3,7 @@ package screen;
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,6 +20,8 @@ import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
 import static java.awt.Toolkit.getDefaultToolkit;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
 
@@ -27,6 +30,7 @@ import static javax.swing.JFileChooser.FILES_ONLY;
 @EqualsAndHashCode(callSuper = false)
 public class ImageFrame extends JFrame {
     private ImageTabPanel tabbedPane;
+    private List<ScreenShotFrame> screenShotFrameList;
 
     public ImageFrame() {
         super("ImageFrame");
@@ -56,7 +60,17 @@ public class ImageFrame extends JFrame {
 
         captureButton.addActionListener(e -> {
             this.setVisible(false);
-            Store.screenShotFrameList.forEach(f -> f.setVisible(true));
+
+            GraphicsDevice[] screenDeviceArray =
+                getLocalGraphicsEnvironment()
+                    .getScreenDevices();
+
+            this.screenShotFrameList = stream(screenDeviceArray)
+                .map(device -> new ScreenShotFrame(device, this))
+                .peek(f -> f.setVisible(true))
+                .collect(toList());
+
+            this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
         });
 
         panel.add(captureButton);
@@ -70,7 +84,8 @@ public class ImageFrame extends JFrame {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileFilter(filter);
             fileChooser.setFileSelectionMode(FILES_ONLY);
-            fileChooser.setCurrentDirectory(new File("/Users/ted.song/IdeaProjects/uuidcode.github.io/screenshot"));
+            String dirName = "/Users/ted.song/IdeaProjects/uuidcode.github.io/screenshot";
+            fileChooser.setCurrentDirectory(new File(dirName));
             int result = fileChooser.showOpenDialog(this);
 
             if (result == APPROVE_OPTION) {
@@ -87,16 +102,7 @@ public class ImageFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        ImageFrame imageFrame = new ImageFrame();
+        final ImageFrame imageFrame = new ImageFrame();
         imageFrame.setVisible(true);
-
-        GraphicsDevice[] screenDeviceArray =
-            getLocalGraphicsEnvironment().getScreenDevices();
-
-        for (GraphicsDevice graphicsDevice : screenDeviceArray) {
-            ScreenShotFrame screenShotFrame =
-                new ScreenShotFrame(graphicsDevice, imageFrame);
-            Store.screenShotFrameList.add(screenShotFrame);
-        }
     }
 }

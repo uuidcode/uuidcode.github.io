@@ -44,7 +44,6 @@ public class ImagePanel extends JPanel {
 
             if (selectedComponent instanceof ImagePanel) {
                 ImagePanel imagePanel = (ImagePanel) selectedComponent;
-
                 isOK = imagePanel.name.equals(this.name);
             }
 
@@ -59,8 +58,6 @@ public class ImagePanel extends JPanel {
                     undo();
                 } else if (ke.getKeyCode() == KeyEvent.VK_Y) {
                     redo();
-                } else if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    Store.screenShotFrameList.forEach(f -> f.setVisible(false));
                 }
             }
 

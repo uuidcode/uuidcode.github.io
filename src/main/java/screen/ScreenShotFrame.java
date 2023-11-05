@@ -2,8 +2,11 @@ package screen;
 
 import java.awt.Color;
 import java.awt.GraphicsDevice;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
+
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotFrame extends JFrame {
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
@@ -27,5 +30,17 @@ public class ScreenShotFrame extends JFrame {
         this.setSize(width, height);
         this.setContentPane(contentPane);
         this.setBackground(BACKGROUND_COLOR);
+
+        getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            boolean isOK = this.equals(ke.getComponent());
+
+            if (isOK && ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
+                if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+                }
+            }
+
+            return false;
+        });
     }
 }

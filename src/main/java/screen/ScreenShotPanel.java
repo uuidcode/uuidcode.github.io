@@ -7,6 +7,7 @@ import java.awt.GraphicsDevice;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,6 +20,8 @@ import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
@@ -40,6 +43,15 @@ public class ScreenShotPanel extends JPanel
         this.imageFrame = imageFrame;
         this.screenShotFrame = screenShotFrame;
         this.setLayout(null);
+
+        getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            if (ke.getID() == KeyEvent.KEY_RELEASED && ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+                this.imageFrame.setVisible(true);
+            }
+
+            return false;
+        });
     }
 
     private JPanel createControlPanel() {
@@ -74,7 +86,7 @@ public class ScreenShotPanel extends JPanel
                     tabbedPane.addTab(fileName);
                     imageFrame.setVisible(true);
                     screenShotFrame.setBackground(BACKGROUND_COLOR);
-                    Store.screenShotFrameList.forEach(f -> f.setVisible(false));
+                    imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
                 } catch (Throwable t) {
                     throw new RuntimeException(t);
                 }
@@ -88,7 +100,7 @@ public class ScreenShotPanel extends JPanel
             controlPanel.setVisible(false);
             stratPoint = null;
             endPoint = null;
-            Store.screenShotFrameList.forEach(f -> f.setVisible(false));
+            imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(true);
         });
         panel.add(cancelButton);
@@ -129,7 +141,7 @@ public class ScreenShotPanel extends JPanel
                 (int) dimension.getWidth(),
                 (int) dimension.getHeight());
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            throw new RuntimeException(throwable);
         }
     }
 
