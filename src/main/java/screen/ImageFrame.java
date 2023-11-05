@@ -2,8 +2,11 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -19,6 +22,7 @@ import lombok.experimental.Accessors;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.Toolkit.getDefaultToolkit;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -44,6 +48,19 @@ public class ImageFrame extends JFrame {
         this.setSize(getDefaultToolkit().getScreenSize());
         this.setVisible(true);
         this.setFocusable(true);
+
+        Map<Integer, Runnable> keyMap = new HashMap<>();
+        keyMap.put(KeyEvent.VK_P, this::capture);
+        keyMap.put(KeyEvent.VK_O, this::open);
+
+        getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            if (ke.getID() == KeyEvent.KEY_RELEASED
+                && (ke.isControlDown() || ke.isMetaDown())) {
+                keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
+            }
+
+            return false;
+        });
     }
 
     public JPanel createControlPanel() {
@@ -57,48 +74,48 @@ public class ImageFrame extends JFrame {
 
     private void createCaptureButton(JPanel panel) {
         JButton captureButton = new JButton("capture");
-
-        captureButton.addActionListener(e -> {
-            this.setVisible(false);
-
-            GraphicsDevice[] screenDeviceArray =
-                getLocalGraphicsEnvironment()
-                    .getScreenDevices();
-
-            this.screenShotFrameList = stream(screenDeviceArray)
-                .map(device -> new ScreenShotFrame(device, this))
-                .peek(f -> f.setVisible(true))
-                .collect(toList());
-
-            this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
-        });
-
+        captureButton.addActionListener(e -> capture());
         panel.add(captureButton);
+    }
+
+    private void capture() {
+        this.setVisible(false);
+
+        GraphicsDevice[] screenDeviceArray =
+            getLocalGraphicsEnvironment()
+                .getScreenDevices();
+
+        this.screenShotFrameList = stream(screenDeviceArray)
+            .map(device -> new ScreenShotFrame(device, this))
+            .peek(f -> f.setVisible(true))
+            .collect(toList());
+
+        this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
     }
 
     private void createOpenButton(JPanel panel) {
         JButton captureButton = new JButton("open");
-
-        captureButton.addActionListener(e -> {
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(filter);
-            fileChooser.setFileSelectionMode(FILES_ONLY);
-            String dirName = "/Users/ted.song/IdeaProjects/uuidcode.github.io/screenshot";
-            fileChooser.setCurrentDirectory(new File(dirName));
-            int result = fileChooser.showOpenDialog(this);
-
-            if (result == APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                try {
-                    this.tabbedPane.addTab(selectedFile.getName());
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }
-        });
-
+        captureButton.addActionListener(e -> open());
         panel.add(captureButton);
+    }
+
+    private void open() {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(filter);
+        fileChooser.setFileSelectionMode(FILES_ONLY);
+        String dirName = "/Users/ted.song/IdeaProjects/uuidcode.github.io/screenshot";
+        fileChooser.setCurrentDirectory(new File(dirName));
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                this.tabbedPane.addTab(selectedFile.getName());
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        }
     }
 
     public static void main(String[] args) {
