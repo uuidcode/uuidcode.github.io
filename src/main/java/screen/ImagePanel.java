@@ -5,6 +5,8 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -36,6 +38,14 @@ public class ImagePanel extends JPanel {
         this.imageViewPanel = this.createImageViewPanel(imageFile);
         this.createControlPanel();
 
+        Map<Integer, Runnable> keyMap = new HashMap<>();
+        keyMap.put(KeyEvent.VK_S, this::save);
+        keyMap.put(KeyEvent.VK_C, this::copy);
+        keyMap.put(KeyEvent.VK_W, this::close);
+        keyMap.put(KeyEvent.VK_Z, this::undo);
+        keyMap.put(KeyEvent.VK_Y, this::redo);
+        keyMap.put(KeyEvent.VK_E, this::clear);
+
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             Component selectedComponent = this.tabbedPane
                 .getSelectedComponent();
@@ -48,17 +58,7 @@ public class ImagePanel extends JPanel {
             }
 
             if (isOK && ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
-                if (ke.getKeyCode() == KeyEvent.VK_S) {
-                    save();
-                } else if (ke.getKeyCode() == KeyEvent.VK_C) {
-                    copy();
-                } else if (ke.getKeyCode() == KeyEvent.VK_W) {
-                    close();
-                } else if (ke.getKeyCode() == KeyEvent.VK_Z) {
-                    undo();
-                } else if (ke.getKeyCode() == KeyEvent.VK_Y) {
-                    redo();
-                }
+                keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
             }
 
             return false;
