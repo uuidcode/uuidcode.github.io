@@ -13,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -143,8 +144,14 @@ public class ImagePanel extends JPanel {
             File selectedFile = fileChooser.getSelectedFile();
 
             String fileName = selectedFile.getName();
+
             if (!fileName.endsWith(".png")) {
                 selectedFile = new File(selectedFile.getParent(), fileName + ".png");
+            }
+
+            if (selectedFile.exists()) {
+                JOptionPane.showMessageDialog(null, "이미 존재하는 파일입니다.");
+                return;
             }
 
             this.imageViewPanel.save(selectedFile);
