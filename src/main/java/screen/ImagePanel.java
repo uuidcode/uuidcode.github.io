@@ -21,6 +21,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
+import static java.awt.event.KeyEvent.KEY_RELEASED;
 import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 
@@ -58,7 +59,8 @@ public class ImagePanel extends JPanel {
                 isOK = imagePanel.name.equals(this.name);
             }
 
-            if (isOK && ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
+            if (isOK && ke.getID() == KEY_RELEASED
+                && (ke.isControlDown() || ke.isMetaDown())) {
                 keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
             }
 
