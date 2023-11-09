@@ -60,40 +60,12 @@ public class ScreenShotPanel extends JPanel
         panel.setBackground(new Color(0, 0, 0, 0));
 
         JButton shotButton = new JButton("shot");
-        shotButton.addActionListener(e -> {
-            Rectangle rectangle = getRectangle();
-            stratPoint = null;
-            endPoint = null;
-            screenShotFrame.setBackground(new Color(0, 0, 0, 0));
-
-            rectangle.width++;
-            rectangle.height++;
-            controlPanel.setVisible(false);
-            screenShotFrame.getContentPane().repaint();
-
-            new Thread(() -> {
-                try {
-                    Thread.sleep(100);
-
-                    Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
-                    rectangle.x += display.x;
-                    rectangle.y += display.y;
-                    BufferedImage image = new Robot().createScreenCapture(rectangle);
-                    String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-                    File file = Util.getImageFile(fileName);
-                    ImageIO.write(image, "png", file);
-
-                    tabbedPane.addTab(fileName);
-                    imageFrame.setVisible(true);
-                    screenShotFrame.setBackground(BACKGROUND_COLOR);
-                    imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
-                } catch (Throwable t) {
-                    throw new RuntimeException(t);
-                }
-            }).start();
-        });
-
+        shotButton.addActionListener(e -> this.shot(null));
         panel.add(shotButton);
+
+        JButton delayShotButton = new JButton("delay shot");
+        delayShotButton.addActionListener(e -> this.shot(3));
+        panel.add(delayShotButton);
 
         JButton cancelButton = new JButton("cancel");
         cancelButton.addActionListener(e -> {
@@ -106,6 +78,43 @@ public class ScreenShotPanel extends JPanel
         panel.add(cancelButton);
 
         return panel;
+    }
+
+    private void shot(Integer second) {
+        Rectangle rectangle = getRectangle();
+        stratPoint = null;
+        endPoint = null;
+        screenShotFrame.setBackground(new Color(0, 0, 0, 0));
+
+        rectangle.width++;
+        rectangle.height++;
+        controlPanel.setVisible(false);
+        screenShotFrame.getContentPane().repaint();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(100);
+
+                if (second != null) {
+                    Thread.sleep(second * 1000);
+                }
+
+                Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
+                rectangle.x += display.x;
+                rectangle.y += display.y;
+                BufferedImage image = new Robot().createScreenCapture(rectangle);
+                String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+                File file = Util.getImageFile(fileName);
+                ImageIO.write(image, "png", file);
+
+                tabbedPane.addTab(fileName);
+                imageFrame.setVisible(true);
+                screenShotFrame.setBackground(BACKGROUND_COLOR);
+                imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        }).start();
     }
 
     @Override
