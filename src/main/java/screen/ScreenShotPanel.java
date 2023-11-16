@@ -64,7 +64,11 @@ public class ScreenShotPanel extends JPanel
         panel.add(shotButton);
 
         JButton delayShotButton = new JButton("delay shot");
-        delayShotButton.addActionListener(e -> this.shot(3));
+        delayShotButton.addActionListener(e -> {
+            imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+            imageFrame.setVisible(true);
+            this.shot(3);
+        });
         panel.add(delayShotButton);
 
         JButton cancelButton = new JButton("cancel");
