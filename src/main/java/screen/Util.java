@@ -35,7 +35,7 @@ public class Util {
 
     private static void init(Graphics2D g2, FillType fillType) {
         g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-        g2.setColor(new Color(124, 166, 208, 244));
+        g2.setColor(new Color(124, 166, 208, 255));
         g2.setStroke(new BasicStroke(3, CAP_BUTT, JOIN_MITER));
 
         if (fillType == FillType.OPAQUE) {
@@ -44,7 +44,6 @@ public class Util {
 
         AlphaComposite alphaComposite = AlphaComposite.getInstance(SRC_OVER, 0.5f);
         g2.setComposite(alphaComposite);
-
     }
 
     public static void processRect(Graphics2D g2,
