@@ -85,7 +85,7 @@ public class ScreenShotPanel extends JPanel
     }
 
     private void shot(Integer second) {
-        Rectangle rectangle = getRectangle();
+        Rectangle rectangle = Util.getRectangle(this.stratPoint, this.endPoint);
         stratPoint = null;
         endPoint = null;
         screenShotFrame.setBackground(new Color(0, 0, 0, 0));

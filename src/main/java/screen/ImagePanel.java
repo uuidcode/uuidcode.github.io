@@ -13,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -79,7 +80,8 @@ public class ImagePanel extends JPanel {
         this.controlPanel = new JPanel();
         this.controlPanel.setLayout(new BoxLayout(controlPanel, LINE_AXIS));
 
-        this.createActionRadio();
+        this.createShapeTypeRadio();
+        this.createFillTypeRadio();
         this.createSaveButton();
         this.createCopyButton();
         this.createUndoButton();
@@ -112,15 +114,31 @@ public class ImagePanel extends JPanel {
         this.imageViewPanel.redo();
     }
 
-    private void createActionRadio() {
+    private void createShapeTypeRadio() {
         ButtonGroup buttonGroup = new ButtonGroup();
-
-        Arrays.stream(Mode.values())
+        this.controlPanel.add(new JLabel("Shape Type"));
+        Arrays.stream(ShapeType.values())
             .forEach(mode -> {
                 JRadioButton radioButton = new JRadioButton(mode.name());
                 radioButton.setSelected(true);
                 radioButton.addActionListener(e -> {
-                    imageViewPanel.setMode(mode);
+                    imageViewPanel.setShapeType(mode);
+                });
+
+                buttonGroup.add(radioButton);
+                this.controlPanel.add(radioButton);
+            });
+    }
+
+    private void createFillTypeRadio() {
+        ButtonGroup buttonGroup = new ButtonGroup();
+        this.controlPanel.add(new JLabel("Fill Type"));
+        Arrays.stream(FillType.values())
+            .forEach(fillType -> {
+                JRadioButton radioButton = new JRadioButton(fillType.name());
+                radioButton.setSelected(true);
+                radioButton.addActionListener(e -> {
+                    imageViewPanel.setFillType(fillType);
                 });
 
                 buttonGroup.add(radioButton);

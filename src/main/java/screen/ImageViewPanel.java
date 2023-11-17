@@ -31,7 +31,8 @@ public class ImageViewPanel extends JPanel
     private Point endPoint;
     private List<BufferedImage> bufferedImageHistoryList = new ArrayList<>();
     private int imageHistoryIndex = 0;
-    private Mode mode = Mode.ARROW;
+    private ShapeType shapeType = ShapeType.FILL_ARROW;
+    private FillType fillType = FillType.TRANSPARENT;
 
     public ImageViewPanel(File imageFile) {
         this.imageFile = imageFile;
@@ -80,7 +81,7 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.stratPoint != null) {
-            this.mode.draw(g, this.stratPoint, this.endPoint);
+            this.shapeType.draw(g, this.fillType, this.stratPoint, this.endPoint);
         }
     }
 
@@ -124,7 +125,7 @@ public class ImageViewPanel extends JPanel
         Graphics g = bufferedImage.getGraphics();
 
         if (this.stratPoint != null && this.endPoint != null) {
-            this.mode.draw(g, bufferedImage, this.stratPoint, this.endPoint);
+            this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint);
         }
 
         this.addHistory(bufferedImage);
