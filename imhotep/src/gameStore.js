@@ -17,16 +17,13 @@ gameStore = {
 
             player.stoneList = player.stoneList
                 .map((stone, index) => {
-                    if (stone.status === 'ready') {
+                    if (index === 0) {
                         const left = boat.element.offsetLeft - boat.element.clientLeft;
                         const top = 0;
                         stone.style = `left: ${index * 50}px;transform: translate(${left}px, ${top}px);`
                         stone.status = 'loaded';
-                        stone.left = left;
-                        stone.top = top;
-                        loadedCount++;
-                    } else {
-                        stone.style = `left: ${(index - 1) * 50}px`;
+                        stone.animating = true;
+                        stone.element.addEventListener('transitionend', () => gameStore.loadEnd(stone, boat));
                     }
 
                     return stone;
@@ -35,27 +32,35 @@ gameStore = {
             return game;
         });
     },
-    loadEnd: (boat) => {
+    loadEnd: (stone, boat) => {
+        if (stone.animating === false) {
+            return;
+        }
+
         update(game => {
             const player = gameStore.currentPlayer(game);
 
+            const stone = player.stoneList.pop();
+
             player.stoneList = player.stoneList
-                .map((stone, index) => {
-                    if (index === 0) {
-                        const left = boat.element.offsetLeft - boat.element.clientLeft;
-                        const top = 0;
-                        stone.style = `left: ${index * 50}px;transform: translate(${left}px, ${top}px);`
-                    } else {
-                        stone.style = `left: ${(index - 1) * 50}px`;
+                .filter((stone, index) => index !== 0)
+
+            game.boatList = game.boatList
+                .map(currentBoat => {
+                    if (currentBoat.index === boat.index) {
+                        currentBoat.stoneList = [...currentBoat.stoneList, stone]
+                            .map((currentStone, i) => currentStone.style = `left:${50 * i}px`)
                     }
 
-                    console.log('>>> stone', stone);
-
-                    return stone;
+                    return currentBoat;
                 })
 
             return game;
         });
+
+        stone.animating = false;
+
+        stone.element.removeEventListener('transitionend', () => gameStore.loadEnd(stone));
     },
     currentPlayer: (game) => {
         return game.playerList[game.currentPlayerIndex];

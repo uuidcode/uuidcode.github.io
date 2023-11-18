@@ -23,10 +23,15 @@ afterUpdate(() => {
     <div class="part sea-part">
         {#each $gameStore.boatList as boat}
             <div class="boat" bind:this={boat.element}>
-                <div class="boat-load"></div>
+                <div class="boat-load">
+                    {#each boat.stoneList as stone, i}
+                        <div class="player-stone"
+                             bind:this={stone.element}
+                             style="{stone.style}">{i}</div>
+                    {/each}
+                </div>
                 <div>
                     <button
-                        on:animationend={e => gameStore.loadEnd(boat)}
                         on:click={e => gameStore.load(boat)}>싣기</button>
                 </div>
             </div>

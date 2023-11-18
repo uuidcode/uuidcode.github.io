@@ -19,12 +19,16 @@ const game = {
     ],
     boatList: [
         {
+            index: 0,
             max: 3,
-            min: 2
+            min: 2,
+            stoneList: []
         },
         {
+            index: 1,
             max: 4,
-            min: 3
+            min: 3,
+            stoneList: []
         }
     ],
     playerList: [
@@ -67,8 +71,7 @@ const game = {
 
 game.playerList.forEach(player => {
     player.stoneList.forEach((stone, index) => {
-        stone.left = 0;
-        stone.top = 0;
+        stone.animating = false;
         stone.style = `left: ${50 * index}px`;
         stone.status = 'ready';
     })
