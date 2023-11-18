@@ -1,23 +1,35 @@
 <script>
+import { afterUpdate } from 'svelte';
 import gameStore from './gameStore.js'
+
+afterUpdate(() => {
+
+});
 </script>
 
 <div class="board">
     <div class="part player-part">
         {#each $gameStore.playerList as player}
             <div class="player">
-                <div>{player.name}</div>
                 {#each player.stoneList as stone, i}
                     <div class="player-stone"
-                         on:click={e => gameStore.moveStone(stone, 200, 200)}
-                         style="left: {i * 50}px;{stone.style};">{i}</div>
+                         bind:this={stone.element}
+                         style="{stone.style}">{i}</div>
                 {/each}
+                <div>{player.name}</div>
             </div>
         {/each}
     </div>
     <div class="part sea-part">
         {#each $gameStore.boatList as boat}
-            <div class="boat">{boat.min}/{boat.max}</div>
+            <div class="boat" bind:this={boat.element}>
+                <div class="boat-load"></div>
+                <div>
+                    <button
+                        on:animationend={e => gameStore.loadEnd(boat)}
+                        on:click={e => gameStore.load(boat)}>싣기</button>
+                </div>
+            </div>
         {/each}
     </div>
     <div class="part land-part"></div>

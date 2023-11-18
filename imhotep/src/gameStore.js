@@ -9,29 +9,56 @@ let gameStore = {
     update
 };
 
-const u = (callback) => {
-    update(game => {
-        callback(game);
-        return game;
-    });
-};
-
 gameStore = {
     ...gameStore,
-    moveStone: (targetStone, x, y) => {
-        console.log('>>> targetStone', targetStone);
+    load: (boat) => {
+        update(game => {
+            const player = gameStore.currentPlayer(game);
 
-        u((game) => {
-            const player = game.playerList[game.currentPlayerIndex];
             player.stoneList = player.stoneList
-                .map(stone => {
-                    if (stone.index === targetStone.index) {
-                        stone.style = `transform: translate(${x}px, ${y}px);`
+                .map((stone, index) => {
+                    if (stone.status === 'ready') {
+                        const left = boat.element.offsetLeft - boat.element.clientLeft;
+                        const top = 0;
+                        stone.style = `left: ${index * 50}px;transform: translate(${left}px, ${top}px);`
+                        stone.status = 'loaded';
+                        stone.left = left;
+                        stone.top = top;
+                        loadedCount++;
+                    } else {
+                        stone.style = `left: ${(index - 1) * 50}px`;
                     }
 
                     return stone;
                 })
+
+            return game;
         });
+    },
+    loadEnd: (boat) => {
+        update(game => {
+            const player = gameStore.currentPlayer(game);
+
+            player.stoneList = player.stoneList
+                .map((stone, index) => {
+                    if (index === 0) {
+                        const left = boat.element.offsetLeft - boat.element.clientLeft;
+                        const top = 0;
+                        stone.style = `left: ${index * 50}px;transform: translate(${left}px, ${top}px);`
+                    } else {
+                        stone.style = `left: ${(index - 1) * 50}px`;
+                    }
+
+                    console.log('>>> stone', stone);
+
+                    return stone;
+                })
+
+            return game;
+        });
+    },
+    currentPlayer: (game) => {
+        return game.playerList[game.currentPlayerIndex];
     }
 }
 

@@ -151,9 +151,14 @@ button:hover {
 
 .boat {
     width: 200px;
-    height: 50px;
+    height: 100px;
     background: yellow;
     border: 1px solid black;
+    position: relative;
+}
+
+.boat-load {
+    height: 50px;
 }
 
 .player-stone {
@@ -163,5 +168,9 @@ button:hover {
     display: inline-block;
     position: absolute;
     transition-duration: 1s;
+    z-index: 100;
 }
 
+*, *:before, *:after {
+    box-sizing: content-box;
+}

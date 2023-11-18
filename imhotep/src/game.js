@@ -66,11 +66,13 @@ const game = {
 }
 
 game.playerList.forEach(player => {
-    player.stoneList.forEach(stone => {
-        stone.style = '';
+    player.stoneList.forEach((stone, index) => {
+        stone.left = 0;
+        stone.top = 0;
+        stone.style = `left: ${50 * index}px`;
+        stone.status = 'ready';
     })
 })
 
-console.log('>>> game', game);
 
 export default game;
