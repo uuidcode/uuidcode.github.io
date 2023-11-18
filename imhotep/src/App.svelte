@@ -1,6 +1,8 @@
 <script>
 import gameStore from './gameStore.js'
 
+gameStore.init();
+
 </script>
 
 <div class="board">
@@ -15,13 +17,18 @@ import gameStore from './gameStore.js'
                              style="{stone.style}"></div>
                     {/each}
                 </div>
+                <div>
+                    {#if player.canGet}
+                        <button on:click={e => gameStore.getStone(player)}>가져오기</button>
+                    {/if}
+                </div>
             </div>
         {/each}
     </div>
     <div class="part sea-part">
         {#each $gameStore.boatList as boat}
             <div class="boat" bind:this={boat.element}>
-                <div>{boat.min}/{boat.max}</div>
+                <div>{boat.minStone}/{boat.maxStone}</div>
                 <div class="boat-load">
                     {#each boat.stoneList as stone, i}
                         <div class="player-stone"
@@ -30,7 +37,9 @@ import gameStore from './gameStore.js'
                     {/each}
                 </div>
                 <div>
-                    <button on:click={e => gameStore.load(boat)}>싣기</button>
+                    {#if boat.canLoad}
+                        <button on:click={e => gameStore.load(boat)}>싣기</button>
+                    {/if}
                 </div>
             </div>
         {/each}
