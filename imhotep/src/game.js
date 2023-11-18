@@ -1,4 +1,5 @@
 const game = {
+    turn: 0,
     currentPlayerIndex: 0,
     landList: [
         {
@@ -34,8 +35,9 @@ const game = {
     playerList: [
         {
             index: 0,
+            active: true,
             name: '테드',
-            color: 'lightblue',
+            color: 'sandybrown',
             stoneList: [
                 {
                     playerIndex: 0,
@@ -54,7 +56,7 @@ const game = {
         {
             index: 1,
             name: '다은',
-            color: 'lightcoral',
+            color: 'darkgray',
             stoneList: [
                 {
                     playerIndex: 1,
@@ -71,8 +73,6 @@ const game = {
 
 game.playerList.forEach(player => {
     player.stoneList.forEach((stone, index) => {
-        stone.animating = false;
-        stone.style = `left: ${50 * index}px`;
         stone.status = 'ready';
     })
 })

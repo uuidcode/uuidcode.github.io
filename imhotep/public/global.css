@@ -146,19 +146,18 @@ button:hover {
 
 .player {
     height: 400px;
-    position: relative;
 }
 
 .boat {
-    width: 200px;
+    width: 300px;
     height: 100px;
     background: yellow;
     border: 1px solid black;
-    position: relative;
 }
 
 .boat-load {
     height: 50px;
+    float: right;
 }
 
 .player-stone {
@@ -166,11 +165,9 @@ button:hover {
     height: 50px;
     border: 1px solid lightblue;
     display: inline-block;
-    position: absolute;
-    transition-duration: 1s;
-    z-index: 100;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
-*, *:before, *:after {
-    box-sizing: content-box;
+.player.active {
+    background: lightblue;
 }
