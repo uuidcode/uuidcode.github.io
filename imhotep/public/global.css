@@ -25,23 +25,8 @@ div {
     align-items: flex-start;
 }
 
-.boat {
-    height: 70px;
-    margin: 20px;
-    padding: 5px;
-    border: 3px solid black;
-}
-
 .empty-boat {
     border: unset;
-}
-
-.player {
-    background-color: lightgreen;
-    border: 1px solid black;
-    width: 400px;
-    height: 350px;
-    padding: 10px;
 }
 
 button {
@@ -135,3 +120,48 @@ button:hover {
 .boat-action {
     width:300px;
 }
+
+.board {
+    height: 800px;
+    border: 1px solid black;
+}
+
+.part {
+    height: 800px;
+    display: inline-block;
+    border: 1px solid black;
+}
+
+.player-part {
+    width: 200px;
+}
+
+.sea-part {
+    width: 400px;
+}
+
+.land-part {
+    width: 600px;
+}
+
+.player {
+    height: 400px;
+    position: relative;
+}
+
+.boat {
+    width: 200px;
+    height: 50px;
+    background: yellow;
+    border: 1px solid black;
+}
+
+.player-stone {
+    width: 50px;
+    height: 50px;
+    border: 1px solid lightblue;
+    display: inline-block;
+    position: absolute;
+    transition-duration: 1s;
+}
+

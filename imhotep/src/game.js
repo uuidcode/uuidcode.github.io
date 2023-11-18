@@ -1,54 +1,6 @@
 const game = {
-    disabled: false,
-    start: false,
-    turn: 0,
-    stage: 0,
-    stageDone: false,
-    playerIndex: 0,
-    currentPlayer: null,
-    stageActionDone: false,
-    arrivedBoatList:[],
-    boatList: [],
-    destinationBoatList: [],
-    boatGroup: [
-        [
-            {
-                minStoneCount: 2,
-                maxStoneCount: 3
-            },
-            {
-                minStoneCount: 1,
-                maxStoneCount: 1
-            },
-            {
-                minStoneCount: 3,
-                maxStoneCount: 4
-            },
-            {
-                minStoneCount: 1,
-                maxStoneCount: 2
-            }
-        ],
-        [
-            {
-                minStoneCount: 2,
-                maxStoneCount: 3
-            },
-            {
-                minStoneCount: 1,
-                maxStoneCount: 1
-            },
-            {
-                minStoneCount: 3,
-                maxStoneCount: 4
-            },
-            {
-                minStoneCount: 2,
-                maxStoneCount: 3
-            }
-        ],
-    ],
-    destinationList: [
+    currentPlayerIndex: 0,
+    landList: [
         {
             name: '장터'
         },
@@ -65,55 +17,60 @@ const game = {
             name: '오빌리스크'
         }
     ],
+    boatList: [
+        {
+            max: 3,
+            min: 2
+        },
+        {
+            max: 4,
+            min: 3
+        }
+    ],
     playerList: [
         {
             index: 0,
             name: '테드',
-            color: 'lightblue'
+            color: 'lightblue',
+            stoneList: [
+                {
+                    playerIndex: 0,
+                    index: 0,
+                },
+                {
+                    playerIndex: 0,
+                    index: 1,
+                },
+                {
+                    playerIndex: 0,
+                    index: 2,
+                }
+            ]
         },
         {
             index: 1,
             name: '다은',
-            color: 'lightcoral'
+            color: 'lightcoral',
+            stoneList: [
+                {
+                    playerIndex: 1,
+                    index: 3,
+                },
+                {
+                    playerIndex: 1,
+                    index: 4,
+                }
+            ]
         }
     ]
 }
 
-game.playerList.map((player, playerIndex) => {
-    let stoneCount = 2;
-
-    if (playerIndex === 1) {
-        stoneCount = 3;
-    }
-
-    player.stoneList = Array(stoneCount).fill(0)
-        .map((item, stoneIndex) => {
-            return {
-                index: stoneIndex,
-                playerIndex: playerIndex
-            }
-        });
-
-    return player;
-});
-
-game.destinationList.map((destination, index) => {
-    destination.index = index;
-    return destination;
-});
-
-game.boatGroup.map((boatList) => {
-    boatList.forEach(boat => {
-        boat.stoneCount = 0;
-        boat.stoneList = Array(boat.maxStoneCount)
-            .fill(0)
-            .map((item, index) => {
-                return {
-                    index: index,
-                    empty: true
-                }
-            })
+game.playerList.forEach(player => {
+    player.stoneList.forEach(stone => {
+        stone.style = '';
     })
-});
+})
+
+console.log('>>> game', game);
 
 export default game;

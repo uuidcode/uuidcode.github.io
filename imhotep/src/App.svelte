@@ -1,49 +1,24 @@
 <script>
-    import {flip} from 'svelte/animate';
-    import gameStore from "./gameStore";
-    import Player from "./Player.svelte";
-    import Boat from "./Boat.svelte";
-    import {boatCrossfade} from "./animation";
-
-    const [boatSend, boatReceive] = boatCrossfade;
-
-    let destinationList;
-    let destinationBoatList;
-    let boatList;
-
-    $: {
-        destinationList = $gameStore.destinationList;
-        destinationBoatList = $gameStore.destinationBoatList;
-        boatList = $gameStore.boatList;
-    }
+import gameStore from './gameStore.js'
 </script>
 
 <div class="board">
-    <div class="source">
-        <Player playerIndex="0"></Player>
-        <Player playerIndex="1"></Player>
-    </div>
-    <div class="port source-port">
-        {#each boatList as boat (boat)}
-            <div animate:flip
-                 in:boatReceive={{key: boat}}
-                 out:boatSend={{key: boat}}>
-                <Boat boat={boat}></Boat>
+    <div class="part player-part">
+        {#each $gameStore.playerList as player}
+            <div class="player">
+                <div>{player.name}</div>
+                {#each player.stoneList as stone, i}
+                    <div class="player-stone"
+                         on:click={e => gameStore.moveStone(stone, 200, 200)}
+                         style="left: {i * 50}px;{stone.style};">{i}</div>
+                {/each}
             </div>
         {/each}
     </div>
-    <div class="port destination-port">
-        {#each destinationBoatList as boat (boat)}
-            <div animate:flip
-                 in:boatReceive={{key: boat}}
-                 out:boatSend={{key: boat}}>
-                <Boat boat={boat}></Boat>
-            </div>
+    <div class="part sea-part">
+        {#each $gameStore.boatList as boat}
+            <div class="boat">{boat.min}/{boat.max}</div>
         {/each}
     </div>
-    <div class="destination-container">
-        {#each destinationList as destination}
-            <div class="destination">{destination.name}</div>
-        {/each}
-    </div>
+    <div class="part land-part"></div>
 </div>

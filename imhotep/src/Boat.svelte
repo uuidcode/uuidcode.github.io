@@ -4,7 +4,6 @@
     import {boatCrossfade, stoneCrossfade} from "./animation";
 
     const [stoneSend, stoneReceive] = boatCrossfade;
-
     export let boat;
 
 </script>
