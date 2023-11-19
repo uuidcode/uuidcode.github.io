@@ -20,6 +20,8 @@ gameStore = {
                     return player;
                 })
 
+            game.boatList = gameStore.createBoat();
+
             gameStore.refresh(game);
 
             return game;
@@ -47,10 +49,76 @@ gameStore = {
 
         return stoneList;
     },
+    createList: (size) => {
+        return Array(size).fill(0).map((item, i) => i);
+    },
+    random : (list) => {
+        return list.sort(() => Math.random() - 0.5).pop();
+    },
+    randomWithSize : (start, end) => {
+        const list = Array(end - start + 1)
+            .fill(0)
+            .map((item, i) => start + i);
+
+        return gameStore.random(list);
+    },
+    createBoat : () => {
+        const boatList = [];
+
+        for (let i = 0; i < 4; i++) {
+            const maxStone = gameStore.random([2, 3, 4]);
+            const minStone = gameStore.randomWithSize(1, maxStone);
+
+            boatList.push({
+                maxStone,
+                minStone,
+                stoneList: []
+            });
+        }
+
+        return boatList;
+    },
+    getMarket: () => {
+        return get(gameStore).landList[0];
+    },
+    getTomb: () => {
+        return get(gameStore).landList[1];
+    },
+    getPyramid: () => {
+        return get(gameStore).landList[2];
+    },
+    getWall: () => {
+        return get(gameStore).landList[3];
+    },
+    getObelisk: () => {
+        return get(gameStore).landList[4];
+    },
+    move : (boat, land) => {
+        update(game => {
+            const top = 150 * land.index - boat.element.offsetTop + 20;
+            boat.style = `transform: translate(400px, ${top}px)`
+            gameStore.refresh(game);
+            return game;
+        });
+    },
+    moveToTomb : (boat) => {
+        update(game => {
+            const land = gameStore;
+            boat.style = `transform: translate(300px, 150px)`
+            return game;
+        });
+    },
     refresh: (game) => {
         game.boatList = game.boatList.map(boat => {
             boat.canLoad = boat.stoneList.length < boat.maxStone
                 && game.activePlayer.stoneList.length > 0;
+
+            const canMove = boat.stoneList.length >= boat.minStone;
+            boat.canMoveToMarket = canMove && game.landList[0].landed === false;
+            boat.canMoveToPyramid = canMove && game.landList[1].landed === false;
+            boat.canMoveToTomb = canMove && game.landList[2].landed === false;
+            boat.canMoveToWall = canMove && game.landList[3].landed === false;
+            boat.canMoveToObelisk = canMove && game.landList[4].landed === false;
             return boat;
         });
 

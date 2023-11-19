@@ -9,7 +9,7 @@ gameStore.init();
     <div class="part player-part">
         {#each $gameStore.playerList as player}
             <div class="player" class:active={player.active}>
-                <div>{player.name}</div>
+                <div class="player-name">{player.name}</div>
                 <div>
                     {#each player.stoneList as stone, i}
                         <div class="player-stone"
@@ -27,8 +27,17 @@ gameStore.init();
     </div>
     <div class="part sea-part">
         {#each $gameStore.boatList as boat}
-            <div class="boat" bind:this={boat.element}>
-                <div>{boat.minStone}/{boat.maxStone}</div>
+            <div class="boat" bind:this={boat.element} style="{boat.style}">
+                <div class="boat-load-max">
+                    {#each gameStore.createList(boat.maxStone) as stone, i}
+                        <div class="boat-stone"></div>
+                    {/each}
+                </div>
+                <div class="boat-load-min">
+                    {#each gameStore.createList(boat.minStone) as stone, i}
+                        <div class="boat-min-stone"></div>
+                    {/each}
+                </div>
                 <div class="boat-load">
                     {#each boat.stoneList as stone, i}
                         <div class="player-stone"
@@ -36,13 +45,41 @@ gameStore.init();
                              style="{stone.style}"></div>
                     {/each}
                 </div>
-                <div>
+                <div class="boat-controller">
                     {#if boat.canLoad}
                         <button on:click={e => gameStore.load(boat)}>싣기</button>
+                    {/if}
+                    {#if boat.canMoveToMarket}
+                        {#if boat.canMoveToMarket}
+                            <button on:click={e => gameStore.move(boat, gameStore.getMarket())}>장터</button>
+                        {/if}
+
+                        {#if boat.canMoveToPyramid}
+                            <button on:click={e => gameStore.move(boat, gameStore.getPyramid())}>피라미드</button>
+                        {/if}
+
+                        {#if boat.canMoveToTomb}
+                            <button on:click={e => gameStore.move(boat, gameStore.getTomb())}>묘실</button>
+                        {/if}
+
+                        {#if boat.canMoveToWall}
+                            <button on:click={e => gameStore.move(boat, gameStore.getWall())}>성벽</button>
+                        {/if}
+
+                        {#if boat.canMoveToObelisk}
+                            <button on:click={e => gameStore.move(boat, gameStore.getObelisk())}>오빌리스크</button>
+                        {/if}
                     {/if}
                 </div>
             </div>
         {/each}
     </div>
-    <div class="part land-part"></div>
+    <div class="part land-part">
+        {#each $gameStore.landList as land, i}
+            <div class="land">
+                <div>{land.name}</div>
+                <div class="land-control" bind:this={land.element}></div>
+            </div>
+        {/each}
+    </div>
 </div>

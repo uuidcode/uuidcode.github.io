@@ -7,10 +7,10 @@ const game = {
             name: '장터'
         },
         {
-            name: '묘실'
+            name: '피라미드'
         },
         {
-            name: '피라미드'
+            name: '묘실'
         },
         {
             name: '성벽'
@@ -49,5 +49,10 @@ const game = {
         }
     ]
 }
+
+game.landList.forEach((land, i) => {
+    land.index = i;
+    land.landed = false;
+})
 
 export default game;
