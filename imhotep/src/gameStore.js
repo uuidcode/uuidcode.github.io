@@ -118,6 +118,9 @@ gameStore = {
 
         return get(gameStore).landList[4];
     },
+    sleep: (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    },
     move : (boat, land) => {
         update(game => {
             const top = 170 * land.index - boat.element.offsetTop + 20;
@@ -139,6 +142,8 @@ gameStore = {
                     gameStore.refresh(game);
                     return game;
                 });
+
+                gameStore.nextTurn();
             }, 1000);
         } else if (land.index === 3) {
             setTimeout(() => {
@@ -152,12 +157,21 @@ gameStore = {
                         currentPlayer.wallStoneCount++;
                         land.currentStoneIndex++;
                         land.currentStoneIndex = land.currentStoneIndex % 4;
+
+                        if (land.currentStoneIndex === 0) {
+                            land.stoneList.forEach(i => {
+                                i.playerIndex = -1;
+                                i.color = 'white';
+                            })
+                        }
                     });
 
                     boat.stoneList = [];
                     gameStore.refresh(game);
                     return game;
                 });
+
+                gameStore.nextTurn();
             }, 1000);
         } else if (land.index === 2) {
             setTimeout(() => {
@@ -180,6 +194,8 @@ gameStore = {
                     gameStore.refresh(game);
                     return game;
                 });
+
+                gameStore.nextTurn();
             }, 1000);
         } else if (land.index === 1) {
             setTimeout(() => {
@@ -207,6 +223,8 @@ gameStore = {
                     gameStore.refresh(game);
                     return game;
                 });
+
+                gameStore.nextTurn();
             }, 1000);
         }
     },
@@ -249,6 +267,12 @@ gameStore = {
     },
     nextTurn: () => {
         update(game => {
+            if (game.boatList.filter(boat => !boat.landed).length === 0) {
+                game.boatList = gameStore.createBoat();
+
+                game.landList.forEach(land => land.landed = false);
+            }
+
             game.turn = game.turn + 1;
             game.playerList = game.playerList.map(player => {
                 player.active = game.turn % 2 === player.index;

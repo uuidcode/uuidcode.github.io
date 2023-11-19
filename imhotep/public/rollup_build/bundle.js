@@ -719,6 +719,9 @@ var app = (function () {
 
             return get_store_value(gameStore).landList[4];
         },
+        sleep: (ms) => {
+            return new Promise(resolve => setTimeout(resolve, ms))
+        },
         move : (boat, land) => {
             update(game => {
                 const top = 170 * land.index - boat.element.offsetTop + 20;
@@ -740,6 +743,8 @@ var app = (function () {
                         gameStore.refresh(game);
                         return game;
                     });
+
+                    gameStore.nextTurn();
                 }, 1000);
             } else if (land.index === 3) {
                 setTimeout(() => {
@@ -753,12 +758,21 @@ var app = (function () {
                             currentPlayer.wallStoneCount++;
                             land.currentStoneIndex++;
                             land.currentStoneIndex = land.currentStoneIndex % 4;
+
+                            if (land.currentStoneIndex === 0) {
+                                land.stoneList.forEach(i => {
+                                    i.playerIndex = -1;
+                                    i.color = 'white';
+                                });
+                            }
                         });
 
                         boat.stoneList = [];
                         gameStore.refresh(game);
                         return game;
                     });
+
+                    gameStore.nextTurn();
                 }, 1000);
             } else if (land.index === 2) {
                 setTimeout(() => {
@@ -781,6 +795,8 @@ var app = (function () {
                         gameStore.refresh(game);
                         return game;
                     });
+
+                    gameStore.nextTurn();
                 }, 1000);
             } else if (land.index === 1) {
                 setTimeout(() => {
@@ -808,6 +824,8 @@ var app = (function () {
                         gameStore.refresh(game);
                         return game;
                     });
+
+                    gameStore.nextTurn();
                 }, 1000);
             }
         },
@@ -850,6 +868,12 @@ var app = (function () {
         },
         nextTurn: () => {
             update(game => {
+                if (game.boatList.filter(boat => !boat.landed).length === 0) {
+                    game.boatList = gameStore.createBoat();
+
+                    game.landList.forEach(land => land.landed = false);
+                }
+
                 game.turn = game.turn + 1;
                 game.playerList = game.playerList.map(player => {
                     player.active = game.turn % 2 === player.index;
