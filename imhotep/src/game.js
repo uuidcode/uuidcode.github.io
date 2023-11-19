@@ -39,13 +39,15 @@ const game = {
             active: true,
             name: '테드',
             color: 'sandybrown',
-            stoneList: []
+            stoneList: [],
+            obeliskStoneCount: 0
         },
         {
             index: 1,
             name: '다은',
             color: 'darkgray',
-            stoneList: []
+            stoneList: [],
+            obeliskStoneCount: 0
         }
     ]
 }

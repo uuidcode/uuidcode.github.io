@@ -70,6 +70,7 @@ gameStore = {
             const minStone = gameStore.randomWithSize(1, maxStone);
 
             boatList.push({
+                landed: false,
                 maxStone,
                 minStone,
                 stoneList: []
@@ -97,23 +98,35 @@ gameStore = {
         update(game => {
             const top = 150 * land.index - boat.element.offsetTop + 20;
             boat.style = `transform: translate(400px, ${top}px)`
+            land.landed = true;
+            boat.landed = true;
             gameStore.refresh(game);
             return game;
         });
-    },
-    moveToTomb : (boat) => {
-        update(game => {
-            const land = gameStore;
-            boat.style = `transform: translate(300px, 150px)`
-            return game;
-        });
+
+        if (land.index === 4) {
+            setTimeout(() => {
+                update(game => {
+                    boat.stoneList.forEach(stone => {
+                        game.playerList[stone.playerIndex].obeliskStoneCount++;
+                    });
+
+                    boat.stoneList = [];
+                    gameStore.refresh(game);
+                    return game;
+                });
+            }, 1000);
+        }
     },
     refresh: (game) => {
         game.boatList = game.boatList.map(boat => {
             boat.canLoad = boat.stoneList.length < boat.maxStone
-                && game.activePlayer.stoneList.length > 0;
+                && game.activePlayer.stoneList.length > 0
+                && boat.landed === false;
 
-            const canMove = boat.stoneList.length >= boat.minStone;
+            const canMove = boat.stoneList.length >= boat.minStone
+                && boat.landed === false;
+
             boat.canMoveToMarket = canMove && gameStore.getMarket().landed === false;
             boat.canMoveToPyramid = canMove && gameStore.getPyramid().landed === false;
             boat.canMoveToTomb = canMove && gameStore.getTomb().landed === false;

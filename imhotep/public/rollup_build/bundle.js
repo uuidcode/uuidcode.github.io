@@ -490,13 +490,15 @@ var app = (function () {
                 active: true,
                 name: '테드',
                 color: 'sandybrown',
-                stoneList: []
+                stoneList: [],
+                obeliskStoneCount: 0
             },
             {
                 index: 1,
                 name: '다은',
                 color: 'darkgray',
-                stoneList: []
+                stoneList: [],
+                obeliskStoneCount: 0
             }
         ]
     };
@@ -575,6 +577,7 @@ var app = (function () {
                 const minStone = gameStore.randomWithSize(1, maxStone);
 
                 boatList.push({
+                    landed: false,
                     maxStone,
                     minStone,
                     stoneList: []
@@ -602,22 +605,35 @@ var app = (function () {
             update(game => {
                 const top = 150 * land.index - boat.element.offsetTop + 20;
                 boat.style = `transform: translate(400px, ${top}px)`;
+                land.landed = true;
+                boat.landed = true;
                 gameStore.refresh(game);
                 return game;
             });
-        },
-        moveToTomb : (boat) => {
-            update(game => {
-                boat.style = `transform: translate(300px, 150px)`;
-                return game;
-            });
+
+            if (land.index === 4) {
+                setTimeout(() => {
+                    update(game => {
+                        boat.stoneList.forEach(stone => {
+                            game.playerList[stone.playerIndex].obeliskStoneCount++;
+                        });
+
+                        boat.stoneList = [];
+                        gameStore.refresh(game);
+                        return game;
+                    });
+                }, 1000);
+            }
         },
         refresh: (game) => {
             game.boatList = game.boatList.map(boat => {
                 boat.canLoad = boat.stoneList.length < boat.maxStone
-                    && game.activePlayer.stoneList.length > 0;
+                    && game.activePlayer.stoneList.length > 0
+                    && boat.landed === false;
 
-                const canMove = boat.stoneList.length >= boat.minStone;
+                const canMove = boat.stoneList.length >= boat.minStone
+                    && boat.landed === false;
+
                 boat.canMoveToMarket = canMove && gameStore.getMarket().landed === false;
                 boat.canMoveToPyramid = canMove && gameStore.getPyramid().landed === false;
                 boat.canMoveToTomb = canMove && gameStore.getTomb().landed === false;
@@ -1074,135 +1090,6 @@ var app = (function () {
     }
 
     // (52:20) {#if boat.canMoveToMarket}
-    function create_if_block(ctx) {
-    	let t0;
-    	let t1;
-    	let t2;
-    	let t3;
-    	let if_block4_anchor;
-    	let if_block0 = /*boat*/ ctx[13].canMoveToMarket && create_if_block_5(ctx);
-    	let if_block1 = /*boat*/ ctx[13].canMoveToPyramid && create_if_block_4(ctx);
-    	let if_block2 = /*boat*/ ctx[13].canMoveToTomb && create_if_block_3(ctx);
-    	let if_block3 = /*boat*/ ctx[13].canMoveToWall && create_if_block_2(ctx);
-    	let if_block4 = /*boat*/ ctx[13].canMoveToObelisk && create_if_block_1(ctx);
-
-    	const block = {
-    		c: function create() {
-    			if (if_block0) if_block0.c();
-    			t0 = space();
-    			if (if_block1) if_block1.c();
-    			t1 = space();
-    			if (if_block2) if_block2.c();
-    			t2 = space();
-    			if (if_block3) if_block3.c();
-    			t3 = space();
-    			if (if_block4) if_block4.c();
-    			if_block4_anchor = empty();
-    		},
-    		m: function mount(target, anchor) {
-    			if (if_block0) if_block0.m(target, anchor);
-    			insert_dev(target, t0, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
-    			insert_dev(target, t1, anchor);
-    			if (if_block2) if_block2.m(target, anchor);
-    			insert_dev(target, t2, anchor);
-    			if (if_block3) if_block3.m(target, anchor);
-    			insert_dev(target, t3, anchor);
-    			if (if_block4) if_block4.m(target, anchor);
-    			insert_dev(target, if_block4_anchor, anchor);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (/*boat*/ ctx[13].canMoveToMarket) {
-    				if (if_block0) {
-    					if_block0.p(ctx, dirty);
-    				} else {
-    					if_block0 = create_if_block_5(ctx);
-    					if_block0.c();
-    					if_block0.m(t0.parentNode, t0);
-    				}
-    			} else if (if_block0) {
-    				if_block0.d(1);
-    				if_block0 = null;
-    			}
-
-    			if (/*boat*/ ctx[13].canMoveToPyramid) {
-    				if (if_block1) {
-    					if_block1.p(ctx, dirty);
-    				} else {
-    					if_block1 = create_if_block_4(ctx);
-    					if_block1.c();
-    					if_block1.m(t1.parentNode, t1);
-    				}
-    			} else if (if_block1) {
-    				if_block1.d(1);
-    				if_block1 = null;
-    			}
-
-    			if (/*boat*/ ctx[13].canMoveToTomb) {
-    				if (if_block2) {
-    					if_block2.p(ctx, dirty);
-    				} else {
-    					if_block2 = create_if_block_3(ctx);
-    					if_block2.c();
-    					if_block2.m(t2.parentNode, t2);
-    				}
-    			} else if (if_block2) {
-    				if_block2.d(1);
-    				if_block2 = null;
-    			}
-
-    			if (/*boat*/ ctx[13].canMoveToWall) {
-    				if (if_block3) {
-    					if_block3.p(ctx, dirty);
-    				} else {
-    					if_block3 = create_if_block_2(ctx);
-    					if_block3.c();
-    					if_block3.m(t3.parentNode, t3);
-    				}
-    			} else if (if_block3) {
-    				if_block3.d(1);
-    				if_block3 = null;
-    			}
-
-    			if (/*boat*/ ctx[13].canMoveToObelisk) {
-    				if (if_block4) {
-    					if_block4.p(ctx, dirty);
-    				} else {
-    					if_block4 = create_if_block_1(ctx);
-    					if_block4.c();
-    					if_block4.m(if_block4_anchor.parentNode, if_block4_anchor);
-    				}
-    			} else if (if_block4) {
-    				if_block4.d(1);
-    				if_block4 = null;
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (if_block0) if_block0.d(detaching);
-    			if (detaching) detach_dev(t0);
-    			if (if_block1) if_block1.d(detaching);
-    			if (detaching) detach_dev(t1);
-    			if (if_block2) if_block2.d(detaching);
-    			if (detaching) detach_dev(t2);
-    			if (if_block3) if_block3.d(detaching);
-    			if (detaching) detach_dev(t3);
-    			if (if_block4) if_block4.d(detaching);
-    			if (detaching) detach_dev(if_block4_anchor);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block.name,
-    		type: "if",
-    		source: "(52:20) {#if boat.canMoveToMarket}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (53:24) {#if boat.canMoveToMarket}
     function create_if_block_5(ctx) {
     	let button;
     	let mounted;
@@ -1216,7 +1103,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "장터";
-    			add_location(button, file, 53, 28, 2091);
+    			add_location(button, file, 52, 24, 2036);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1240,14 +1127,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5.name,
     		type: "if",
-    		source: "(53:24) {#if boat.canMoveToMarket}",
+    		source: "(52:20) {#if boat.canMoveToMarket}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (57:24) {#if boat.canMoveToPyramid}
+    // (56:20) {#if boat.canMoveToPyramid}
     function create_if_block_4(ctx) {
     	let button;
     	let mounted;
@@ -1261,7 +1148,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "피라미드";
-    			add_location(button, file, 57, 28, 2282);
+    			add_location(button, file, 56, 24, 2215);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1285,14 +1172,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(57:24) {#if boat.canMoveToPyramid}",
+    		source: "(56:20) {#if boat.canMoveToPyramid}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (61:24) {#if boat.canMoveToTomb}
+    // (60:20) {#if boat.canMoveToTomb}
     function create_if_block_3(ctx) {
     	let button;
     	let mounted;
@@ -1306,7 +1193,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "묘실";
-    			add_location(button, file, 61, 28, 2473);
+    			add_location(button, file, 60, 24, 2394);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1330,14 +1217,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(61:24) {#if boat.canMoveToTomb}",
+    		source: "(60:20) {#if boat.canMoveToTomb}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (65:24) {#if boat.canMoveToWall}
+    // (64:20) {#if boat.canMoveToWall}
     function create_if_block_2(ctx) {
     	let button;
     	let mounted;
@@ -1351,7 +1238,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "성벽";
-    			add_location(button, file, 65, 28, 2659);
+    			add_location(button, file, 64, 24, 2568);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1375,14 +1262,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(65:24) {#if boat.canMoveToWall}",
+    		source: "(64:20) {#if boat.canMoveToWall}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (69:24) {#if boat.canMoveToObelisk}
+    // (68:20) {#if boat.canMoveToObelisk}
     function create_if_block_1(ctx) {
     	let button;
     	let mounted;
@@ -1396,7 +1283,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "오빌리스크";
-    			add_location(button, file, 69, 28, 2848);
+    			add_location(button, file, 68, 24, 2745);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1420,7 +1307,7 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(69:24) {#if boat.canMoveToObelisk}",
+    		source: "(68:20) {#if boat.canMoveToObelisk}",
     		ctx
     	});
 
@@ -1439,6 +1326,10 @@ var app = (function () {
     	let div3;
     	let t3;
     	let t4;
+    	let t5;
+    	let t6;
+    	let t7;
+    	let t8;
     	let div4_style_value;
     	let each_value_1 = /*each_value_1*/ ctx[14];
     	let boat_index = /*boat_index*/ ctx[15];
@@ -1467,7 +1358,11 @@ var app = (function () {
     	}
 
     	let if_block0 = /*boat*/ ctx[13].canLoad && create_if_block_6(ctx);
-    	let if_block1 = /*boat*/ ctx[13].canMoveToMarket && create_if_block(ctx);
+    	let if_block1 = /*boat*/ ctx[13].canMoveToMarket && create_if_block_5(ctx);
+    	let if_block2 = /*boat*/ ctx[13].canMoveToPyramid && create_if_block_4(ctx);
+    	let if_block3 = /*boat*/ ctx[13].canMoveToTomb && create_if_block_3(ctx);
+    	let if_block4 = /*boat*/ ctx[13].canMoveToWall && create_if_block_2(ctx);
+    	let if_block5 = /*boat*/ ctx[13].canMoveToObelisk && create_if_block_1(ctx);
     	const assign_div4 = () => /*div4_binding*/ ctx[8](div4, each_value_1, boat_index);
     	const unassign_div4 = () => /*div4_binding*/ ctx[8](null, each_value_1, boat_index);
 
@@ -1500,6 +1395,14 @@ var app = (function () {
     			t3 = space();
     			if (if_block1) if_block1.c();
     			t4 = space();
+    			if (if_block2) if_block2.c();
+    			t5 = space();
+    			if (if_block3) if_block3.c();
+    			t6 = space();
+    			if (if_block4) if_block4.c();
+    			t7 = space();
+    			if (if_block5) if_block5.c();
+    			t8 = space();
     			attr_dev(div0, "class", "boat-load-max");
     			add_location(div0, file, 30, 16, 1019);
     			attr_dev(div1, "class", "boat-load-min");
@@ -1539,7 +1442,15 @@ var app = (function () {
     			if (if_block0) if_block0.m(div3, null);
     			append_dev(div3, t3);
     			if (if_block1) if_block1.m(div3, null);
-    			append_dev(div4, t4);
+    			append_dev(div3, t4);
+    			if (if_block2) if_block2.m(div3, null);
+    			append_dev(div3, t5);
+    			if (if_block3) if_block3.m(div3, null);
+    			append_dev(div3, t6);
+    			if (if_block4) if_block4.m(div3, null);
+    			append_dev(div3, t7);
+    			if (if_block5) if_block5.m(div3, null);
+    			append_dev(div4, t8);
     			assign_div4();
     		},
     		p: function update(new_ctx, dirty) {
@@ -1632,13 +1543,65 @@ var app = (function () {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block(ctx);
+    					if_block1 = create_if_block_5(ctx);
     					if_block1.c();
-    					if_block1.m(div3, null);
+    					if_block1.m(div3, t4);
     				}
     			} else if (if_block1) {
     				if_block1.d(1);
     				if_block1 = null;
+    			}
+
+    			if (/*boat*/ ctx[13].canMoveToPyramid) {
+    				if (if_block2) {
+    					if_block2.p(ctx, dirty);
+    				} else {
+    					if_block2 = create_if_block_4(ctx);
+    					if_block2.c();
+    					if_block2.m(div3, t5);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+
+    			if (/*boat*/ ctx[13].canMoveToTomb) {
+    				if (if_block3) {
+    					if_block3.p(ctx, dirty);
+    				} else {
+    					if_block3 = create_if_block_3(ctx);
+    					if_block3.c();
+    					if_block3.m(div3, t6);
+    				}
+    			} else if (if_block3) {
+    				if_block3.d(1);
+    				if_block3 = null;
+    			}
+
+    			if (/*boat*/ ctx[13].canMoveToWall) {
+    				if (if_block4) {
+    					if_block4.p(ctx, dirty);
+    				} else {
+    					if_block4 = create_if_block_2(ctx);
+    					if_block4.c();
+    					if_block4.m(div3, t7);
+    				}
+    			} else if (if_block4) {
+    				if_block4.d(1);
+    				if_block4 = null;
+    			}
+
+    			if (/*boat*/ ctx[13].canMoveToObelisk) {
+    				if (if_block5) {
+    					if_block5.p(ctx, dirty);
+    				} else {
+    					if_block5 = create_if_block_1(ctx);
+    					if_block5.c();
+    					if_block5.m(div3, null);
+    				}
+    			} else if (if_block5) {
+    				if_block5.d(1);
+    				if_block5 = null;
     			}
 
     			if (dirty & /*$gameStore*/ 1 && div4_style_value !== (div4_style_value = /*boat*/ ctx[13].style)) {
@@ -1659,6 +1622,10 @@ var app = (function () {
     			destroy_each(each_blocks, detaching);
     			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
+    			if (if_block2) if_block2.d();
+    			if (if_block3) if_block3.d();
+    			if (if_block4) if_block4.d();
+    			if (if_block5) if_block5.d();
     			unassign_div4();
     		}
     	};
@@ -1674,8 +1641,8 @@ var app = (function () {
     	return block;
     }
 
-    // (78:8) {#each $gameStore.landList as land, i}
-    function create_each_block(ctx) {
+    // (85:12) {:else}
+    function create_else_block(ctx) {
     	let div2;
     	let div0;
     	let t0_value = /*land*/ ctx[10].name + "";
@@ -1696,11 +1663,11 @@ var app = (function () {
     			t1 = space();
     			div1 = element("div");
     			t2 = space();
-    			add_location(div0, file, 79, 16, 3184);
+    			add_location(div0, file, 86, 20, 3463);
     			attr_dev(div1, "class", "land-control");
-    			add_location(div1, file, 80, 16, 3223);
+    			add_location(div1, file, 87, 20, 3506);
     			attr_dev(div2, "class", "land");
-    			add_location(div2, file, 78, 12, 3149);
+    			add_location(div2, file, 85, 16, 3424);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div2, anchor);
@@ -1730,9 +1697,123 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(85:12) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (77:12) {#if i === 4}
+    function create_if_block(ctx) {
+    	let div4;
+    	let div0;
+    	let t0_value = /*land*/ ctx[10].name + "";
+    	let t0;
+    	let t1;
+    	let div3;
+    	let div1;
+    	let t2_value = /*$gameStore*/ ctx[0].playerList[0].obeliskStoneCount + "";
+    	let t2;
+    	let t3;
+    	let div2;
+    	let t4_value = /*$gameStore*/ ctx[0].playerList[1].obeliskStoneCount + "";
+    	let t4;
+    	let t5;
+
+    	const block = {
+    		c: function create() {
+    			div4 = element("div");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			div3 = element("div");
+    			div1 = element("div");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			div2 = element("div");
+    			t4 = text(t4_value);
+    			t5 = space();
+    			add_location(div0, file, 78, 20, 3085);
+    			attr_dev(div1, "class", "obelisk_stone");
+    			add_location(div1, file, 80, 24, 3158);
+    			attr_dev(div2, "class", "obelisk_stone");
+    			add_location(div2, file, 81, 24, 3260);
+    			add_location(div3, file, 79, 20, 3128);
+    			attr_dev(div4, "class", "land");
+    			add_location(div4, file, 77, 16, 3046);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div4, anchor);
+    			append_dev(div4, div0);
+    			append_dev(div0, t0);
+    			append_dev(div4, t1);
+    			append_dev(div4, div3);
+    			append_dev(div3, div1);
+    			append_dev(div1, t2);
+    			append_dev(div3, t3);
+    			append_dev(div3, div2);
+    			append_dev(div2, t4);
+    			append_dev(div4, t5);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[10].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$gameStore*/ 1 && t2_value !== (t2_value = /*$gameStore*/ ctx[0].playerList[0].obeliskStoneCount + "")) set_data_dev(t2, t2_value);
+    			if (dirty & /*$gameStore*/ 1 && t4_value !== (t4_value = /*$gameStore*/ ctx[0].playerList[1].obeliskStoneCount + "")) set_data_dev(t4, t4_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div4);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(77:12) {#if i === 4}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (76:8) {#each $gameStore.landList as land, i}
+    function create_each_block(ctx) {
+    	let if_block_anchor;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*i*/ ctx[12] === 4) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if_block.p(ctx, dirty);
+    		},
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(78:8) {#each $gameStore.landList as land, i}",
+    		source: "(76:8) {#each $gameStore.landList as land, i}",
     		ctx
     	});
 
@@ -1798,7 +1879,7 @@ var app = (function () {
     			attr_dev(div1, "class", "part sea-part");
     			add_location(div1, file, 27, 4, 854);
     			attr_dev(div2, "class", "part land-part");
-    			add_location(div2, file, 76, 4, 3061);
+    			add_location(div2, file, 74, 4, 2928);
     			attr_dev(div3, "class", "board");
     			add_location(div3, file, 7, 0, 79);
     		},
