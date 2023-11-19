@@ -1,5 +1,6 @@
 <script>
 import gameStore from './gameStore.js'
+import Land from "./Land.svelte";
 
 gameStore.init();
 
@@ -72,22 +73,5 @@ gameStore.init();
             </div>
         {/each}
     </div>
-    <div class="part land-part">
-        {#each $gameStore.landList as land, i}
-            {#if i === 4}
-                <div class="land">
-                    <div>{land.name}</div>
-                    <div>
-                        <div class="obelisk_stone">{$gameStore.playerList[0].obeliskStoneCount}</div>
-                        <div class="obelisk_stone">{$gameStore.playerList[1].obeliskStoneCount}</div>
-                    </div>
-                </div>
-            {:else}
-                <div class="land">
-                    <div>{land.name}</div>
-                    <div class="land-control" bind:this={land.element}></div>
-                </div>
-            {/if}
-        {/each}
-    </div>
+    <Land></Land>
 </div>

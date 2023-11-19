@@ -96,7 +96,7 @@ gameStore = {
     },
     move : (boat, land) => {
         update(game => {
-            const top = 150 * land.index - boat.element.offsetTop + 20;
+            const top = 170 * land.index - boat.element.offsetTop + 20;
             boat.style = `transform: translate(400px, ${top}px)`
             land.landed = true;
             boat.landed = true;
@@ -109,6 +109,25 @@ gameStore = {
                 update(game => {
                     boat.stoneList.forEach(stone => {
                         game.playerList[stone.playerIndex].obeliskStoneCount++;
+                    });
+
+                    boat.stoneList = [];
+                    gameStore.refresh(game);
+                    return game;
+                });
+            }, 1000);
+        } else if (land.index === 3) {
+            setTimeout(() => {
+                update(game => {
+                    boat.stoneList.forEach(stone => {
+                        const landStone = land.stoneList[land.currentStoneIndex];
+                        const currentPlayer = game.playerList[stone.playerIndex];
+
+                        landStone.playerIndex = stone.playerIndex;
+                        landStone.color = currentPlayer.color;
+                        currentPlayer.wallStoneCount++;
+                        land.currentStoneIndex++;
+                        land.currentStoneIndex = land.currentStoneIndex % 4;
                     });
 
                     boat.stoneList = [];

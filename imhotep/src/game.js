@@ -13,7 +13,26 @@ const game = {
             name: '묘실'
         },
         {
-            name: '성벽'
+            name: '성벽',
+            currentStoneIndex: 0,
+            stoneList: [
+                {
+                    playerIndex: -1,
+                    color: 'white'
+                },
+                {
+                    playerIndex: -1,
+                    color: 'white'
+                },
+                {
+                    playerIndex: -1,
+                    color: 'white'
+                },
+                {
+                    playerIndex: -1,
+                    color: 'white'
+                }
+            ]
         },
         {
             name: '오빌리스크'
@@ -40,14 +59,16 @@ const game = {
             name: '테드',
             color: 'sandybrown',
             stoneList: [],
-            obeliskStoneCount: 0
+            obeliskStoneCount: 0,
+            wallStoneCount: 0
         },
         {
             index: 1,
             name: '다은',
             color: 'darkgray',
             stoneList: [],
-            obeliskStoneCount: 0
+            obeliskStoneCount: 0,
+            wallStoneCount: 0
         }
     ]
 }
