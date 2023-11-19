@@ -22,6 +22,10 @@ gameStore = {
 
             game.boatList = gameStore.createBoat();
 
+            for (let i = 0; i < 4; i++) {
+                gameStore.getMarket(game).itemList.push(game.itemList.pop());
+            }
+
             gameStore.refresh(game);
 
             return game;
@@ -79,19 +83,39 @@ gameStore = {
 
         return boatList;
     },
-    getMarket: () => {
+    getMarket: (game) => {
+        if (game) {
+            return game.landList[0];
+        }
+
         return get(gameStore).landList[0];
     },
-    getTomb: () => {
+    getPyramid: (game) => {
+        if (game) {
+            return game.landList[1];
+        }
+
         return get(gameStore).landList[1];
     },
-    getPyramid: () => {
+    getTomb: (game) => {
+        if (game) {
+            return game.landList[2];
+        }
+
         return get(gameStore).landList[2];
     },
-    getWall: () => {
+    getWall: (game) => {
+        if (game) {
+            return game.landList[3];
+        }
+
         return get(gameStore).landList[3];
     },
-    getObelisk: () => {
+    getObelisk: (game) => {
+        if (game) {
+            return game.landList[4];
+        }
+
         return get(gameStore).landList[4];
     },
     move : (boat, land) => {
@@ -128,6 +152,55 @@ gameStore = {
                         currentPlayer.wallStoneCount++;
                         land.currentStoneIndex++;
                         land.currentStoneIndex = land.currentStoneIndex % 4;
+                    });
+
+                    boat.stoneList = [];
+                    gameStore.refresh(game);
+                    return game;
+                });
+            }, 1000);
+        } else if (land.index === 2) {
+            setTimeout(() => {
+                update(game => {
+                    boat.stoneList.forEach(stone => {
+                        const landStone = land.stoneList[land.currentStoneRow][land.currentStoneColumn];
+                        const currentPlayer = game.playerList[stone.playerIndex];
+                        landStone.playerIndex = stone.playerIndex;
+                        landStone.color = currentPlayer.color;
+                        currentPlayer.tombStoneCount++;
+                        land.currentStoneRow++;
+                        land.currentStoneRow = land.currentStoneRow % 3;
+
+                        if (land.currentStoneRow === 0) {
+                            land.currentStoneColumn++;
+                        }
+                    });
+
+                    boat.stoneList = [];
+                    gameStore.refresh(game);
+                    return game;
+                });
+            }, 1000);
+        } else if (land.index === 1) {
+            setTimeout(() => {
+                update(game => {
+                    boat.stoneList.forEach(stone => {
+                        const landStone = land.stoneList[land.currentStoneRow][land.currentStoneColumn];
+                        const currentPlayer = game.playerList[stone.playerIndex];
+                        landStone.playerIndex = stone.playerIndex;
+                        landStone.color = currentPlayer.color;
+                        currentPlayer.tombStoneCount++;
+                        land.currentStoneRow++;
+
+                        if (land.currentStoneColumn < 3) {
+                            land.currentStoneRow = land.currentStoneRow % 3;
+                        } else if (land.currentStoneColumn === 3 && land.currentStoneColumn === 4) {
+                            land.currentStoneRow = land.currentStoneRow % 2;
+                        }
+
+                        if (land.currentStoneRow === 0) {
+                            land.currentStoneColumn++;
+                        }
                     });
 
                     boat.stoneList = [];

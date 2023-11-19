@@ -25,10 +25,34 @@
                     <div class="wall_stone">{$gameStore.playerList[1].name} : {$gameStore.playerList[1].wallStoneCount}</div>
                 </div>
             </div>
-        {:else}
+        {:else if i === 2}
             <div class="land">
                 <div>{land.name}</div>
-                <div class="land-control" bind:this={land.element}></div>
+                {#each land.stoneList as stoneList}
+                    <div style="height:50px">
+                        {#each stoneList as stone, i}
+                            <div class="wall_stone" style="background:{stone.color}"></div>
+                        {/each}
+                    </div>
+                {/each}
+            </div>
+        {:else if i === 1}
+            <div class="land">
+                <div>{land.name}</div>
+                {#each land.stoneList as stoneList}
+                    <div style="height:50px">
+                        {#each stoneList as stone, i}
+                            <div class="wall_stone" style="background:{stone.color}"></div>
+                        {/each}
+                    </div>
+                {/each}
+            </div>
+        {:else if i === 0}
+            <div class="land">
+                <div>{land.name}</div>
+                {#each land.itemList as item}
+                    <div class="item"></div>
+                {/each}
             </div>
         {/if}
     {/each}

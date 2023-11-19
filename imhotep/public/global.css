@@ -131,7 +131,7 @@ button:hover {
 }
 
 .land-part {
-    width: 600px;
+    width: 700px;
     margin-left: 400px;
 }
 
@@ -250,4 +250,11 @@ button:hover {
     width: 400px;
     height: 100px;
     border: 1px solid black;
+}
+
+.item {
+    width: 150px;
+    height: 150px;
+    border: 1px solid black;
+    display: inline-block;
 }

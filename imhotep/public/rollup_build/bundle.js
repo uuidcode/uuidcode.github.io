@@ -475,13 +475,18 @@ var app = (function () {
         activePlayer: null,
         landList: [
             {
-                name: '장터'
+                name: '장터',
+                itemList: []
             },
             {
-                name: '피라미드'
+                name: '피라미드',
+                currentStoneRow: 0,
+                currentStoneColumn: 0
             },
             {
-                name: '묘실'
+                name: '묘실',
+                currentStoneRow: 0,
+                currentStoneColumn: 0
             },
             {
                 name: '성벽',
@@ -531,7 +536,8 @@ var app = (function () {
                 color: 'sandybrown',
                 stoneList: [],
                 obeliskStoneCount: 0,
-                wallStoneCount: 0
+                wallStoneCount: 0,
+                tombStoneCount: 0
             },
             {
                 index: 1,
@@ -539,7 +545,8 @@ var app = (function () {
                 color: 'darkgray',
                 stoneList: [],
                 obeliskStoneCount: 0,
-                wallStoneCount: 0
+                wallStoneCount: 0,
+                tombStoneCount: 0
             }
         ]
     };
@@ -547,7 +554,53 @@ var app = (function () {
     game.landList.forEach((land, i) => {
         land.index = i;
         land.landed = false;
+
+        if (i === 2) {
+            land.stoneList = [];
+            for (let j = 0; j < 3; j++) {
+                const stoneList = [];
+
+                for (let k = 0; k < 8; k++) {
+                    stoneList.push({
+                        playerIndex: -1,
+                        color: 'white'
+                    });
+                }
+
+                land.stoneList.push(stoneList);
+            }
+        } else if (i === 1) {
+            land.stoneList = [];
+            for (let j = 0; j < 3; j++) {
+                const stoneList = [];
+
+                let column = 6;
+
+                if (j === 1) {
+                    column = 5;
+                } else if (j === 2) {
+                    column = 3;
+                }
+
+                for (let k = 0; k < column; k++) {
+                    stoneList.push({
+                        playerIndex: -1,
+                        color: 'white'
+                    });
+                }
+
+                land.stoneList.push(stoneList);
+            }
+        }
     });
+
+    game.itemList = [];
+
+    for (let i = 0; i < 10; i++) {
+        game.itemList.push({
+            name: 'stone'
+        });
+    }
 
     const { subscribe, set, update } = writable(game);
 
@@ -569,6 +622,10 @@ var app = (function () {
                     });
 
                 game.boatList = gameStore.createBoat();
+
+                for (let i = 0; i < 4; i++) {
+                    gameStore.getMarket(game).itemList.push(game.itemList.pop());
+                }
 
                 gameStore.refresh(game);
 
@@ -627,19 +684,39 @@ var app = (function () {
 
             return boatList;
         },
-        getMarket: () => {
+        getMarket: (game) => {
+            if (game) {
+                return game.landList[0];
+            }
+
             return get_store_value(gameStore).landList[0];
         },
-        getTomb: () => {
+        getPyramid: (game) => {
+            if (game) {
+                return game.landList[1];
+            }
+
             return get_store_value(gameStore).landList[1];
         },
-        getPyramid: () => {
+        getTomb: (game) => {
+            if (game) {
+                return game.landList[2];
+            }
+
             return get_store_value(gameStore).landList[2];
         },
-        getWall: () => {
+        getWall: (game) => {
+            if (game) {
+                return game.landList[3];
+            }
+
             return get_store_value(gameStore).landList[3];
         },
-        getObelisk: () => {
+        getObelisk: (game) => {
+            if (game) {
+                return game.landList[4];
+            }
+
             return get_store_value(gameStore).landList[4];
         },
         move : (boat, land) => {
@@ -676,6 +753,55 @@ var app = (function () {
                             currentPlayer.wallStoneCount++;
                             land.currentStoneIndex++;
                             land.currentStoneIndex = land.currentStoneIndex % 4;
+                        });
+
+                        boat.stoneList = [];
+                        gameStore.refresh(game);
+                        return game;
+                    });
+                }, 1000);
+            } else if (land.index === 2) {
+                setTimeout(() => {
+                    update(game => {
+                        boat.stoneList.forEach(stone => {
+                            const landStone = land.stoneList[land.currentStoneRow][land.currentStoneColumn];
+                            const currentPlayer = game.playerList[stone.playerIndex];
+                            landStone.playerIndex = stone.playerIndex;
+                            landStone.color = currentPlayer.color;
+                            currentPlayer.tombStoneCount++;
+                            land.currentStoneRow++;
+                            land.currentStoneRow = land.currentStoneRow % 3;
+
+                            if (land.currentStoneRow === 0) {
+                                land.currentStoneColumn++;
+                            }
+                        });
+
+                        boat.stoneList = [];
+                        gameStore.refresh(game);
+                        return game;
+                    });
+                }, 1000);
+            } else if (land.index === 1) {
+                setTimeout(() => {
+                    update(game => {
+                        boat.stoneList.forEach(stone => {
+                            const landStone = land.stoneList[land.currentStoneRow][land.currentStoneColumn];
+                            const currentPlayer = game.playerList[stone.playerIndex];
+                            landStone.playerIndex = stone.playerIndex;
+                            landStone.color = currentPlayer.color;
+                            currentPlayer.tombStoneCount++;
+                            land.currentStoneRow++;
+
+                            if (land.currentStoneColumn < 3) {
+                                land.currentStoneRow = land.currentStoneRow % 3;
+                            } else if (land.currentStoneColumn === 3 && land.currentStoneColumn === 4) {
+                                land.currentStoneRow = land.currentStoneRow % 2;
+                            }
+
+                            if (land.currentStoneRow === 0) {
+                                land.currentStoneColumn++;
+                            }
                         });
 
                         boat.stoneList = [];
@@ -748,78 +874,307 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[2] = list[i];
-    	child_ctx[3] = list;
-    	child_ctx[4] = i;
+    	child_ctx[1] = list[i];
+    	child_ctx[3] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_6(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[13] = list[i];
+    	return child_ctx;
+    }
+
+    function get_each_context_4$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[6] = list[i];
+    	return child_ctx;
+    }
+
+    function get_each_context_5$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[4] = list[i];
+    	child_ctx[3] = i;
+    	return child_ctx;
+    }
+
+    function get_each_context_2$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[6] = list[i];
+    	return child_ctx;
+    }
+
+    function get_each_context_3$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[4] = list[i];
+    	child_ctx[3] = i;
     	return child_ctx;
     }
 
     function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
-    	child_ctx[4] = i;
+    	child_ctx[4] = list[i];
+    	child_ctx[3] = i;
     	return child_ctx;
     }
 
-    // (28:8) {:else}
-    function create_else_block(ctx) {
-    	let div2;
+    // (50:26) 
+    function create_if_block_4$1(ctx) {
+    	let div1;
     	let div0;
-    	let t0_value = /*land*/ ctx[2].name + "";
+    	let t0_value = /*land*/ ctx[1].name + "";
     	let t0;
     	let t1;
-    	let div1;
-    	let each_value = /*each_value*/ ctx[3];
-    	let i = /*i*/ ctx[4];
     	let t2;
-    	const assign_div1 = () => /*div1_binding*/ ctx[1](div1, each_value, i);
-    	const unassign_div1 = () => /*div1_binding*/ ctx[1](null, each_value, i);
+    	let each_value_6 = /*land*/ ctx[1].itemList;
+    	validate_each_argument(each_value_6);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_6.length; i += 1) {
+    		each_blocks[i] = create_each_block_6(get_each_context_6(ctx, each_value_6, i));
+    	}
 
     	const block = {
     		c: function create() {
-    			div2 = element("div");
+    			div1 = element("div");
     			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = space();
-    			div1 = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
     			t2 = space();
-    			add_location(div0, file$1, 29, 16, 1248);
-    			attr_dev(div1, "class", "land-control");
-    			add_location(div1, file$1, 30, 16, 1287);
-    			attr_dev(div2, "class", "land");
-    			add_location(div2, file$1, 28, 12, 1213);
+    			add_location(div0, file$1, 51, 16, 2145);
+    			attr_dev(div1, "class", "land");
+    			add_location(div1, file$1, 50, 12, 2110);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div2, anchor);
-    			append_dev(div2, div0);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
     			append_dev(div0, t0);
-    			append_dev(div2, t1);
-    			append_dev(div2, div1);
-    			assign_div1();
-    			append_dev(div2, t2);
-    		},
-    		p: function update(new_ctx, dirty) {
-    			ctx = new_ctx;
-    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[2].name + "")) set_data_dev(t0, t0_value);
+    			append_dev(div1, t1);
 
-    			if (each_value !== /*each_value*/ ctx[3] || i !== /*i*/ ctx[4]) {
-    				unassign_div1();
-    				each_value = /*each_value*/ ctx[3];
-    				i = /*i*/ ctx[4];
-    				assign_div1();
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div1, null);
+    			}
+
+    			append_dev(div1, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[1].name + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*$gameStore*/ 1) {
+    				const old_length = each_value_6.length;
+    				each_value_6 = /*land*/ ctx[1].itemList;
+    				validate_each_argument(each_value_6);
+    				let i;
+
+    				for (i = old_length; i < each_value_6.length; i += 1) {
+    					const child_ctx = get_each_context_6(ctx, each_value_6, i);
+
+    					if (!each_blocks[i]) {
+    						each_blocks[i] = create_each_block_6(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div1, t2);
+    					}
+    				}
+
+    				for (i = each_value_6.length; i < old_length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_6.length;
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div2);
-    			unassign_div1();
+    			if (detaching) detach_dev(div1);
+    			destroy_each(each_blocks, detaching);
     		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block.name,
-    		type: "else",
-    		source: "(28:8) {:else}",
+    		id: create_if_block_4$1.name,
+    		type: "if",
+    		source: "(50:26) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (39:26) 
+    function create_if_block_3$1(ctx) {
+    	let div1;
+    	let div0;
+    	let t0_value = /*land*/ ctx[1].name + "";
+    	let t0;
+    	let t1;
+    	let t2;
+    	let each_value_4 = /*land*/ ctx[1].stoneList;
+    	validate_each_argument(each_value_4);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_4.length; i += 1) {
+    		each_blocks[i] = create_each_block_4$1(get_each_context_4$1(ctx, each_value_4, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div1 = element("div");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t2 = space();
+    			add_location(div0, file$1, 40, 16, 1702);
+    			attr_dev(div1, "class", "land");
+    			add_location(div1, file$1, 39, 12, 1667);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
+    			append_dev(div0, t0);
+    			append_dev(div1, t1);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div1, null);
+    			}
+
+    			append_dev(div1, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[1].name + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*$gameStore*/ 1) {
+    				each_value_4 = /*land*/ ctx[1].stoneList;
+    				validate_each_argument(each_value_4);
+    				let i;
+
+    				for (i = 0; i < each_value_4.length; i += 1) {
+    					const child_ctx = get_each_context_4$1(ctx, each_value_4, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_4$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div1, t2);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_4.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div1);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3$1.name,
+    		type: "if",
+    		source: "(39:26) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (28:26) 
+    function create_if_block_2$1(ctx) {
+    	let div1;
+    	let div0;
+    	let t0_value = /*land*/ ctx[1].name + "";
+    	let t0;
+    	let t1;
+    	let t2;
+    	let each_value_2 = /*land*/ ctx[1].stoneList;
+    	validate_each_argument(each_value_2);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks[i] = create_each_block_2$1(get_each_context_2$1(ctx, each_value_2, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div1 = element("div");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = space();
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t2 = space();
+    			add_location(div0, file$1, 29, 16, 1259);
+    			attr_dev(div1, "class", "land");
+    			add_location(div1, file$1, 28, 12, 1224);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
+    			append_dev(div0, t0);
+    			append_dev(div1, t1);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div1, null);
+    			}
+
+    			append_dev(div1, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[1].name + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*$gameStore*/ 1) {
+    				each_value_2 = /*land*/ ctx[1].stoneList;
+    				validate_each_argument(each_value_2);
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2$1(ctx, each_value_2, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_2$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div1, t2);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_2.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div1);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$1.name,
+    		type: "if",
+    		source: "(28:26) ",
     		ctx
     	});
 
@@ -830,7 +1185,7 @@ var app = (function () {
     function create_if_block_1$1(ctx) {
     	let div5;
     	let div0;
-    	let t0_value = /*land*/ ctx[2].name + "";
+    	let t0_value = /*land*/ ctx[1].name + "";
     	let t0;
     	let t1;
     	let div1;
@@ -850,7 +1205,7 @@ var app = (function () {
     	let t9_value = /*$gameStore*/ ctx[0].playerList[1].wallStoneCount + "";
     	let t9;
     	let t10;
-    	let each_value_1 = /*land*/ ctx[2].stoneList;
+    	let each_value_1 = /*land*/ ctx[1].stoneList;
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
 
@@ -917,10 +1272,10 @@ var app = (function () {
     			append_dev(div5, t10);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[2].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[1].name + "")) set_data_dev(t0, t0_value);
 
     			if (dirty & /*$gameStore*/ 1) {
-    				each_value_1 = /*land*/ ctx[2].stoneList;
+    				each_value_1 = /*land*/ ctx[1].stoneList;
     				validate_each_argument(each_value_1);
     				let i;
 
@@ -969,7 +1324,7 @@ var app = (function () {
     function create_if_block$1(ctx) {
     	let div4;
     	let div0;
-    	let t0_value = /*land*/ ctx[2].name + "";
+    	let t0_value = /*land*/ ctx[1].name + "";
     	let t0;
     	let t1;
     	let div3;
@@ -1032,7 +1387,7 @@ var app = (function () {
     			append_dev(div4, t9);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[2].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[1].name + "")) set_data_dev(t0, t0_value);
     			if (dirty & /*$gameStore*/ 1 && t2_value !== (t2_value = /*$gameStore*/ ctx[0].playerList[0].name + "")) set_data_dev(t2, t2_value);
     			if (dirty & /*$gameStore*/ 1 && t4_value !== (t4_value = /*$gameStore*/ ctx[0].playerList[0].obeliskStoneCount + "")) set_data_dev(t4, t4_value);
     			if (dirty & /*$gameStore*/ 1 && t6_value !== (t6_value = /*$gameStore*/ ctx[0].playerList[1].name + "")) set_data_dev(t6, t6_value);
@@ -1054,6 +1409,247 @@ var app = (function () {
     	return block;
     }
 
+    // (53:16) {#each land.itemList as item}
+    function create_each_block_6(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			attr_dev(div, "class", "item");
+    			add_location(div, file$1, 53, 20, 2234);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_6.name,
+    		type: "each",
+    		source: "(53:16) {#each land.itemList as item}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (44:24) {#each stoneList as stone, i}
+    function create_each_block_5$1(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			attr_dev(div, "class", "wall_stone");
+    			set_style(div, "background", /*stone*/ ctx[4].color);
+    			add_location(div, file$1, 44, 28, 1905);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1) {
+    				set_style(div, "background", /*stone*/ ctx[4].color);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_5$1.name,
+    		type: "each",
+    		source: "(44:24) {#each stoneList as stone, i}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (42:16) {#each land.stoneList as stoneList}
+    function create_each_block_4$1(ctx) {
+    	let div;
+    	let each_value_5 = /*stoneList*/ ctx[6];
+    	validate_each_argument(each_value_5);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_5.length; i += 1) {
+    		each_blocks[i] = create_each_block_5$1(get_each_context_5$1(ctx, each_value_5, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			set_style(div, "height", "50px");
+    			add_location(div, file$1, 42, 20, 1797);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1) {
+    				each_value_5 = /*stoneList*/ ctx[6];
+    				validate_each_argument(each_value_5);
+    				let i;
+
+    				for (i = 0; i < each_value_5.length; i += 1) {
+    					const child_ctx = get_each_context_5$1(ctx, each_value_5, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_5$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_5.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_4$1.name,
+    		type: "each",
+    		source: "(42:16) {#each land.stoneList as stoneList}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (33:24) {#each stoneList as stone, i}
+    function create_each_block_3$1(ctx) {
+    	let div;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			attr_dev(div, "class", "wall_stone");
+    			set_style(div, "background", /*stone*/ ctx[4].color);
+    			add_location(div, file$1, 33, 28, 1462);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1) {
+    				set_style(div, "background", /*stone*/ ctx[4].color);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_3$1.name,
+    		type: "each",
+    		source: "(33:24) {#each stoneList as stone, i}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (31:16) {#each land.stoneList as stoneList}
+    function create_each_block_2$1(ctx) {
+    	let div;
+    	let each_value_3 = /*stoneList*/ ctx[6];
+    	validate_each_argument(each_value_3);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_3.length; i += 1) {
+    		each_blocks[i] = create_each_block_3$1(get_each_context_3$1(ctx, each_value_3, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			set_style(div, "height", "50px");
+    			add_location(div, file$1, 31, 20, 1354);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(div, null);
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1) {
+    				each_value_3 = /*stoneList*/ ctx[6];
+    				validate_each_argument(each_value_3);
+    				let i;
+
+    				for (i = 0; i < each_value_3.length; i += 1) {
+    					const child_ctx = get_each_context_3$1(ctx, each_value_3, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_3$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(div, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_3.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_2$1.name,
+    		type: "each",
+    		source: "(31:16) {#each land.stoneList as stoneList}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     // (19:20) {#each land.stoneList as stone, i}
     function create_each_block_1$1(ctx) {
     	let div;
@@ -1062,7 +1658,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
-    			set_style(div, "background", /*stone*/ ctx[5].color);
+    			set_style(div, "background", /*stone*/ ctx[4].color);
     			add_location(div, file$1, 19, 24, 754);
     		},
     		m: function mount(target, anchor) {
@@ -1070,7 +1666,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*$gameStore*/ 1) {
-    				set_style(div, "background", /*stone*/ ctx[5].color);
+    				set_style(div, "background", /*stone*/ ctx[4].color);
     			}
     		},
     		d: function destroy(detaching) {
@@ -1094,28 +1690,33 @@ var app = (function () {
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*i*/ ctx[4] === 4) return create_if_block$1;
-    		if (/*i*/ ctx[4] === 3) return create_if_block_1$1;
-    		return create_else_block;
+    		if (/*i*/ ctx[3] === 4) return create_if_block$1;
+    		if (/*i*/ ctx[3] === 3) return create_if_block_1$1;
+    		if (/*i*/ ctx[3] === 2) return create_if_block_2$1;
+    		if (/*i*/ ctx[3] === 1) return create_if_block_3$1;
+    		if (/*i*/ ctx[3] === 0) return create_if_block_4$1;
     	}
 
     	let current_block_type = select_block_type(ctx);
-    	let if_block = current_block_type(ctx);
+    	let if_block = current_block_type && current_block_type(ctx);
 
     	const block = {
     		c: function create() {
-    			if_block.c();
+    			if (if_block) if_block.c();
     			if_block_anchor = empty();
     		},
     		m: function mount(target, anchor) {
-    			if_block.m(target, anchor);
+    			if (if_block) if_block.m(target, anchor);
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if_block.p(ctx, dirty);
+    			if (if_block) if_block.p(ctx, dirty);
     		},
     		d: function destroy(detaching) {
-    			if_block.d(detaching);
+    			if (if_block) {
+    				if_block.d(detaching);
+    			}
+
     			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
@@ -1218,15 +1819,8 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Land> was created with unknown prop '${key}'`);
     	});
 
-    	function div1_binding($$value, each_value, i) {
-    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
-    			each_value[i].element = $$value;
-    			gameStore$1.set($gameStore);
-    		});
-    	}
-
     	$$self.$capture_state = () => ({ gameStore: gameStore$1, $gameStore });
-    	return [$gameStore, div1_binding];
+    	return [$gameStore];
     }
 
     class Land extends SvelteComponentDev {
