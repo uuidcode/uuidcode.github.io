@@ -618,11 +618,11 @@ var app = (function () {
                     && game.activePlayer.stoneList.length > 0;
 
                 const canMove = boat.stoneList.length >= boat.minStone;
-                boat.canMoveToMarket = canMove && game.landList[0].landed === false;
-                boat.canMoveToPyramid = canMove && game.landList[1].landed === false;
-                boat.canMoveToTomb = canMove && game.landList[2].landed === false;
-                boat.canMoveToWall = canMove && game.landList[3].landed === false;
-                boat.canMoveToObelisk = canMove && game.landList[4].landed === false;
+                boat.canMoveToMarket = canMove && gameStore.getMarket().landed === false;
+                boat.canMoveToPyramid = canMove && gameStore.getPyramid().landed === false;
+                boat.canMoveToTomb = canMove && gameStore.getTomb().landed === false;
+                boat.canMoveToWall = canMove && gameStore.getWall().landed === false;
+                boat.canMoveToObelisk = canMove && gameStore.getObelisk().landed === false;
                 return boat;
             });
 
