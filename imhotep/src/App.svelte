@@ -11,6 +11,10 @@ gameStore.init();
         {#each $gameStore.playerList as player}
             <div class="player" class:active={player.active}>
                 <div class="player-name">{player.name}</div>
+                <div>망치 : {player.hammerCount}</div>
+                <div>끌 : {player.chiselCount}</div>
+                <div>돛 : {player.sailCount}</div>
+                <div>지렛대 : {player.leverCount}</div>
                 <div>
                     {#each player.stoneList as stone, i}
                         <div class="player-stone"
@@ -73,5 +77,5 @@ gameStore.init();
             </div>
         {/each}
     </div>
-    <Land></Land>
+    <Land/>
 </div>

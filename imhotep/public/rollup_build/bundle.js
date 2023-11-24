@@ -537,7 +537,11 @@ var app = (function () {
                 stoneList: [],
                 obeliskStoneCount: 0,
                 wallStoneCount: 0,
-                tombStoneCount: 0
+                tombStoneCount: 0,
+                hammerCount: 0,
+                chiselCount: 0,
+                leverCount: 0,
+                sailCount: 0
             },
             {
                 index: 1,
@@ -546,7 +550,11 @@ var app = (function () {
                 stoneList: [],
                 obeliskStoneCount: 0,
                 wallStoneCount: 0,
-                tombStoneCount: 0
+                tombStoneCount: 0,
+                hammerCount: 0,
+                chiselCount: 0,
+                leverCount: 0,
+                sailCount: 0
             }
         ]
     };
@@ -596,11 +604,29 @@ var app = (function () {
 
     game.itemList = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         game.itemList.push({
-            name: 'stone'
+            name: '지렛대',
+            description: '배 한척을 빈 항구로 옮깁니다. 석재 내리는 순서를 마음대로 바꿉니다.'
+        });
+
+        game.itemList.push({
+            name: '끌',
+            description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
+        });
+
+        game.itemList.push({
+            name: '돛',
+            description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
+        });
+
+        game.itemList.push({
+            name: '망치',
+            description: '석재 3개를 받고 석재 1개를 배 1척에 싣습니다.'
         });
     }
+
+    game.itemList = game.itemList.sort(i => Math.random() - 0.5);
 
     const { subscribe, set, update } = writable(game);
 
@@ -827,6 +853,32 @@ var app = (function () {
 
                     gameStore.nextTurn();
                 }, 1000);
+            } else if (land.index === 0) {
+                setTimeout(() => {
+                    update(game => {
+                        boat.stoneList.forEach(stone => {
+                            const item = gameStore.getMarket(game)
+                                .itemList.shift();
+
+                            const currentPlayer = game.playerList[stone.playerIndex];
+
+                            if (item.name === '망치') {
+                                currentPlayer.hammerCount++;
+                            } else if (item.name === '돛') {
+                                currentPlayer.sailCount++;
+                            } else if (item.name === '끌') {
+                                currentPlayer.chiselCount++;
+                            } else if (item.name === '지렛대') {
+                                currentPlayer.leverCount++;
+                            }
+                        });
+
+                        gameStore.refresh(game);
+                        return game;
+                    });
+
+                    gameStore.nextTurn();
+                }, 1000);
             }
         },
         refresh: (game) => {
@@ -990,22 +1042,23 @@ var app = (function () {
     			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*land*/ ctx[1].name + "")) set_data_dev(t0, t0_value);
 
     			if (dirty & /*$gameStore*/ 1) {
-    				const old_length = each_value_6.length;
     				each_value_6 = /*land*/ ctx[1].itemList;
     				validate_each_argument(each_value_6);
     				let i;
 
-    				for (i = old_length; i < each_value_6.length; i += 1) {
+    				for (i = 0; i < each_value_6.length; i += 1) {
     					const child_ctx = get_each_context_6(ctx, each_value_6, i);
 
-    					if (!each_blocks[i]) {
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
     						each_blocks[i] = create_each_block_6(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(div1, t2);
     					}
     				}
 
-    				for (i = each_value_6.length; i < old_length; i += 1) {
+    				for (; i < each_blocks.length; i += 1) {
     					each_blocks[i].d(1);
     				}
 
@@ -1436,15 +1489,34 @@ var app = (function () {
     // (53:16) {#each land.itemList as item}
     function create_each_block_6(ctx) {
     	let div;
+    	let t0_value = /*item*/ ctx[13].name + "";
+    	let t0;
+    	let br;
+    	let t1;
+    	let t2_value = /*item*/ ctx[13].description + "";
+    	let t2;
 
     	const block = {
     		c: function create() {
     			div = element("div");
+    			t0 = text(t0_value);
+    			br = element("br");
+    			t1 = space();
+    			t2 = text(t2_value);
+    			add_location(br, file$1, 54, 35, 2288);
     			attr_dev(div, "class", "item");
     			add_location(div, file$1, 53, 20, 2234);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
+    			append_dev(div, t0);
+    			append_dev(div, br);
+    			append_dev(div, t1);
+    			append_dev(div, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*item*/ ctx[13].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$gameStore*/ 1 && t2_value !== (t2_value = /*item*/ ctx[13].description + "")) set_data_dev(t2, t2_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
@@ -1906,7 +1978,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (15:20) {#each player.stoneList as stone, i}
+    // (19:20) {#each player.stoneList as stone, i}
     function create_each_block_5(ctx) {
     	let div;
     	let div_style_value;
@@ -1917,7 +1989,7 @@ var app = (function () {
     			attr_dev(div, "class", "player-stone");
     			attr_dev(div, "style", div_style_value = /*stone*/ ctx[12].style);
     			set_style(div, "background", /*player*/ ctx[17].color, false);
-    			add_location(div, file, 15, 24, 442);
+    			add_location(div, file, 19, 24, 650);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1940,14 +2012,14 @@ var app = (function () {
     		block,
     		id: create_each_block_5.name,
     		type: "each",
-    		source: "(15:20) {#each player.stoneList as stone, i}",
+    		source: "(19:20) {#each player.stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (22:20) {#if player.canGet}
+    // (26:20) {#if player.canGet}
     function create_if_block_6(ctx) {
     	let button;
     	let mounted;
@@ -1961,7 +2033,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "가져오기";
-    			add_location(button, file, 22, 24, 724);
+    			add_location(button, file, 26, 24, 932);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1985,7 +2057,7 @@ var app = (function () {
     		block,
     		id: create_if_block_6.name,
     		type: "if",
-    		source: "(22:20) {#if player.canGet}",
+    		source: "(26:20) {#if player.canGet}",
     		ctx
     	});
 
@@ -1994,15 +2066,35 @@ var app = (function () {
 
     // (11:8) {#each $gameStore.playerList as player}
     function create_each_block_4(ctx) {
-    	let div3;
+    	let div7;
     	let div0;
     	let t0_value = /*player*/ ctx[17].name + "";
     	let t0;
     	let t1;
     	let div1;
     	let t2;
-    	let div2;
+    	let t3_value = /*player*/ ctx[17].hammerCount + "";
     	let t3;
+    	let t4;
+    	let div2;
+    	let t5;
+    	let t6_value = /*player*/ ctx[17].chiselCount + "";
+    	let t6;
+    	let t7;
+    	let div3;
+    	let t8;
+    	let t9_value = /*player*/ ctx[17].sailCount + "";
+    	let t9;
+    	let t10;
+    	let div4;
+    	let t11;
+    	let t12_value = /*player*/ ctx[17].leverCount + "";
+    	let t12;
+    	let t13;
+    	let div5;
+    	let t14;
+    	let div6;
+    	let t15;
     	let each_value_5 = /*player*/ ctx[17].stoneList;
     	validate_each_argument(each_value_5);
     	let each_blocks = [];
@@ -2015,46 +2107,86 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div3 = element("div");
+    			div7 = element("div");
     			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = space();
     			div1 = element("div");
+    			t2 = text("망치 : ");
+    			t3 = text(t3_value);
+    			t4 = space();
+    			div2 = element("div");
+    			t5 = text("끌 : ");
+    			t6 = text(t6_value);
+    			t7 = space();
+    			div3 = element("div");
+    			t8 = text("돛 : ");
+    			t9 = text(t9_value);
+    			t10 = space();
+    			div4 = element("div");
+    			t11 = text("지렛대 : ");
+    			t12 = text(t12_value);
+    			t13 = space();
+    			div5 = element("div");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t2 = space();
-    			div2 = element("div");
+    			t14 = space();
+    			div6 = element("div");
     			if (if_block) if_block.c();
-    			t3 = space();
+    			t15 = space();
     			attr_dev(div0, "class", "player-name");
     			add_location(div0, file, 12, 16, 294);
     			add_location(div1, file, 13, 16, 355);
-    			add_location(div2, file, 20, 16, 654);
-    			attr_dev(div3, "class", "player");
-    			toggle_class(div3, "active", /*player*/ ctx[17].active);
-    			add_location(div3, file, 11, 12, 228);
+    			add_location(div2, file, 14, 16, 408);
+    			add_location(div3, file, 15, 16, 460);
+    			add_location(div4, file, 16, 16, 510);
+    			add_location(div5, file, 17, 16, 563);
+    			add_location(div6, file, 24, 16, 862);
+    			attr_dev(div7, "class", "player");
+    			toggle_class(div7, "active", /*player*/ ctx[17].active);
+    			add_location(div7, file, 11, 12, 228);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div3, anchor);
-    			append_dev(div3, div0);
+    			insert_dev(target, div7, anchor);
+    			append_dev(div7, div0);
     			append_dev(div0, t0);
-    			append_dev(div3, t1);
-    			append_dev(div3, div1);
+    			append_dev(div7, t1);
+    			append_dev(div7, div1);
+    			append_dev(div1, t2);
+    			append_dev(div1, t3);
+    			append_dev(div7, t4);
+    			append_dev(div7, div2);
+    			append_dev(div2, t5);
+    			append_dev(div2, t6);
+    			append_dev(div7, t7);
+    			append_dev(div7, div3);
+    			append_dev(div3, t8);
+    			append_dev(div3, t9);
+    			append_dev(div7, t10);
+    			append_dev(div7, div4);
+    			append_dev(div4, t11);
+    			append_dev(div4, t12);
+    			append_dev(div7, t13);
+    			append_dev(div7, div5);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div1, null);
+    				each_blocks[i].m(div5, null);
     			}
 
-    			append_dev(div3, t2);
-    			append_dev(div3, div2);
-    			if (if_block) if_block.m(div2, null);
-    			append_dev(div3, t3);
+    			append_dev(div7, t14);
+    			append_dev(div7, div6);
+    			if (if_block) if_block.m(div6, null);
+    			append_dev(div7, t15);
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*player*/ ctx[17].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*$gameStore*/ 1 && t3_value !== (t3_value = /*player*/ ctx[17].hammerCount + "")) set_data_dev(t3, t3_value);
+    			if (dirty & /*$gameStore*/ 1 && t6_value !== (t6_value = /*player*/ ctx[17].chiselCount + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*$gameStore*/ 1 && t9_value !== (t9_value = /*player*/ ctx[17].sailCount + "")) set_data_dev(t9, t9_value);
+    			if (dirty & /*$gameStore*/ 1 && t12_value !== (t12_value = /*player*/ ctx[17].leverCount + "")) set_data_dev(t12, t12_value);
 
     			if (dirty & /*$gameStore*/ 1) {
     				each_value_5 = /*player*/ ctx[17].stoneList;
@@ -2069,7 +2201,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block_5(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div1, null);
+    						each_blocks[i].m(div5, null);
     					}
     				}
 
@@ -2086,7 +2218,7 @@ var app = (function () {
     				} else {
     					if_block = create_if_block_6(ctx);
     					if_block.c();
-    					if_block.m(div2, null);
+    					if_block.m(div6, null);
     				}
     			} else if (if_block) {
     				if_block.d(1);
@@ -2094,11 +2226,11 @@ var app = (function () {
     			}
 
     			if (dirty & /*$gameStore*/ 1) {
-    				toggle_class(div3, "active", /*player*/ ctx[17].active);
+    				toggle_class(div7, "active", /*player*/ ctx[17].active);
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div3);
+    			if (detaching) detach_dev(div7);
     			destroy_each(each_blocks, detaching);
     			if (if_block) if_block.d();
     		}
@@ -2115,7 +2247,7 @@ var app = (function () {
     	return block;
     }
 
-    // (33:20) {#each gameStore.createList(boat.maxStone) as stone, i}
+    // (37:20) {#each gameStore.createList(boat.maxStone) as stone, i}
     function create_each_block_3(ctx) {
     	let div;
 
@@ -2123,7 +2255,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "boat-stone");
-    			add_location(div, file, 33, 24, 1181);
+    			add_location(div, file, 37, 24, 1389);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2137,14 +2269,14 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(33:20) {#each gameStore.createList(boat.maxStone) as stone, i}",
+    		source: "(37:20) {#each gameStore.createList(boat.maxStone) as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (38:20) {#each gameStore.createList(boat.minStone) as stone, i}
+    // (42:20) {#each gameStore.createList(boat.minStone) as stone, i}
     function create_each_block_2(ctx) {
     	let div;
 
@@ -2152,7 +2284,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "class", "boat-min-stone");
-    			add_location(div, file, 38, 24, 1407);
+    			add_location(div, file, 42, 24, 1615);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2166,14 +2298,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(38:20) {#each gameStore.createList(boat.minStone) as stone, i}",
+    		source: "(42:20) {#each gameStore.createList(boat.minStone) as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (43:20) {#each boat.stoneList as stone, i}
+    // (47:20) {#each boat.stoneList as stone, i}
     function create_each_block_1(ctx) {
     	let div;
     	let div_style_value;
@@ -2184,7 +2316,7 @@ var app = (function () {
     			attr_dev(div, "class", "player-stone");
     			attr_dev(div, "style", div_style_value = /*stone*/ ctx[12].style);
     			set_style(div, "background", /*stone*/ ctx[12].color, false);
-    			add_location(div, file, 43, 24, 1612);
+    			add_location(div, file, 47, 24, 1820);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2207,14 +2339,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(43:20) {#each boat.stoneList as stone, i}",
+    		source: "(47:20) {#each boat.stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (50:20) {#if boat.canLoad}
+    // (54:20) {#if boat.canLoad}
     function create_if_block_5(ctx) {
     	let button;
     	let mounted;
@@ -2228,7 +2360,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "싣기";
-    			add_location(button, file, 50, 24, 1916);
+    			add_location(button, file, 54, 24, 2124);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2252,14 +2384,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5.name,
     		type: "if",
-    		source: "(50:20) {#if boat.canLoad}",
+    		source: "(54:20) {#if boat.canLoad}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (53:20) {#if boat.canMoveToMarket}
+    // (57:20) {#if boat.canMoveToMarket}
     function create_if_block_4(ctx) {
     	let button;
     	let mounted;
@@ -2273,7 +2405,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "장터";
-    			add_location(button, file, 53, 24, 2070);
+    			add_location(button, file, 57, 24, 2278);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2297,14 +2429,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(53:20) {#if boat.canMoveToMarket}",
+    		source: "(57:20) {#if boat.canMoveToMarket}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (57:20) {#if boat.canMoveToPyramid}
+    // (61:20) {#if boat.canMoveToPyramid}
     function create_if_block_3(ctx) {
     	let button;
     	let mounted;
@@ -2318,7 +2450,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "피라미드";
-    			add_location(button, file, 57, 24, 2249);
+    			add_location(button, file, 61, 24, 2457);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2342,14 +2474,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(57:20) {#if boat.canMoveToPyramid}",
+    		source: "(61:20) {#if boat.canMoveToPyramid}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (61:20) {#if boat.canMoveToTomb}
+    // (65:20) {#if boat.canMoveToTomb}
     function create_if_block_2(ctx) {
     	let button;
     	let mounted;
@@ -2363,7 +2495,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "묘실";
-    			add_location(button, file, 61, 24, 2428);
+    			add_location(button, file, 65, 24, 2636);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2387,14 +2519,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(61:20) {#if boat.canMoveToTomb}",
+    		source: "(65:20) {#if boat.canMoveToTomb}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (65:20) {#if boat.canMoveToWall}
+    // (69:20) {#if boat.canMoveToWall}
     function create_if_block_1(ctx) {
     	let button;
     	let mounted;
@@ -2408,7 +2540,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "성벽";
-    			add_location(button, file, 65, 24, 2602);
+    			add_location(button, file, 69, 24, 2810);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2432,14 +2564,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(65:20) {#if boat.canMoveToWall}",
+    		source: "(69:20) {#if boat.canMoveToWall}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (69:20) {#if boat.canMoveToObelisk}
+    // (73:20) {#if boat.canMoveToObelisk}
     function create_if_block(ctx) {
     	let button;
     	let mounted;
@@ -2453,7 +2585,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "오빌리스크";
-    			add_location(button, file, 69, 24, 2779);
+    			add_location(button, file, 73, 24, 2987);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -2477,14 +2609,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(69:20) {#if boat.canMoveToObelisk}",
+    		source: "(73:20) {#if boat.canMoveToObelisk}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (30:8) {#each $gameStore.boatList as boat}
+    // (34:8) {#each $gameStore.boatList as boat}
     function create_each_block(ctx) {
     	let div4;
     	let div0;
@@ -2574,16 +2706,16 @@ var app = (function () {
     			if (if_block5) if_block5.c();
     			t8 = space();
     			attr_dev(div0, "class", "boat-load-max");
-    			add_location(div0, file, 31, 16, 1053);
+    			add_location(div0, file, 35, 16, 1261);
     			attr_dev(div1, "class", "boat-load-min");
-    			add_location(div1, file, 36, 16, 1279);
+    			add_location(div1, file, 40, 16, 1487);
     			attr_dev(div2, "class", "boat-load");
-    			add_location(div2, file, 41, 16, 1509);
+    			add_location(div2, file, 45, 16, 1717);
     			attr_dev(div3, "class", "boat-controller");
-    			add_location(div3, file, 48, 16, 1823);
+    			add_location(div3, file, 52, 16, 2031);
     			attr_dev(div4, "class", "boat");
     			attr_dev(div4, "style", div4_style_value = /*boat*/ ctx[9].style);
-    			add_location(div4, file, 30, 12, 972);
+    			add_location(div4, file, 34, 12, 1180);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div4, anchor);
@@ -2804,7 +2936,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(30:8) {#each $gameStore.boatList as boat}",
+    		source: "(34:8) {#each $gameStore.boatList as boat}",
     		ctx
     	});
 
@@ -2858,7 +2990,7 @@ var app = (function () {
     			attr_dev(div0, "class", "part player-part");
     			add_location(div0, file, 9, 4, 137);
     			attr_dev(div1, "class", "part sea-part");
-    			add_location(div1, file, 28, 4, 888);
+    			add_location(div1, file, 32, 4, 1096);
     			attr_dev(div2, "class", "board");
     			add_location(div2, file, 8, 0, 113);
     		},

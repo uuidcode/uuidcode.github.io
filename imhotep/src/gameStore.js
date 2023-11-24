@@ -226,6 +226,32 @@ gameStore = {
 
                 gameStore.nextTurn();
             }, 1000);
+        } else if (land.index === 0) {
+            setTimeout(() => {
+                update(game => {
+                    boat.stoneList.forEach(stone => {
+                        const item = gameStore.getMarket(game)
+                            .itemList.shift();
+
+                        const currentPlayer = game.playerList[stone.playerIndex];
+
+                        if (item.name === '망치') {
+                            currentPlayer.hammerCount++;
+                        } else if (item.name === '돛') {
+                            currentPlayer.sailCount++;
+                        } else if (item.name === '끌') {
+                            currentPlayer.chiselCount++;
+                        } else if (item.name === '지렛대') {
+                            currentPlayer.leverCount++;
+                        }
+                    });
+
+                    gameStore.refresh(game);
+                    return game;
+                });
+
+                gameStore.nextTurn();
+            }, 1000);
         }
     },
     refresh: (game) => {

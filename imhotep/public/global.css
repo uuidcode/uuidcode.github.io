@@ -136,7 +136,7 @@ button:hover {
 }
 
 .player {
-    height: 400px;
+    height: 450px;
 }
 
 .boat {
@@ -257,4 +257,5 @@ button:hover {
     height: 150px;
     border: 1px solid black;
     display: inline-block;
+    vertical-align:top
 }

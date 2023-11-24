@@ -51,7 +51,10 @@
             <div class="land">
                 <div>{land.name}</div>
                 {#each land.itemList as item}
-                    <div class="item"></div>
+                    <div class="item">
+                        {item.name}<br>
+                        {item.description}
+                    </div>
                 {/each}
             </div>
         {/if}
