@@ -541,7 +541,8 @@ var app = (function () {
                 hammerCount: 0,
                 chiselCount: 0,
                 leverCount: 0,
-                sailCount: 0
+                sailCount: 0,
+                stoneStatueCount: 0
             },
             {
                 index: 1,
@@ -554,7 +555,8 @@ var app = (function () {
                 hammerCount: 0,
                 chiselCount: 0,
                 leverCount: 0,
-                sailCount: 0
+                sailCount: 0,
+                stoneStatueCount: 0
             }
         ]
     };
@@ -603,6 +605,13 @@ var app = (function () {
     });
 
     game.itemList = [];
+
+    for (let i = 0; i < 10; i++) {
+        game.itemList.push({
+            name: '석상',
+            description: '게임이 끝난 뒤 모은 석상 수에 따른 점수'
+        });
+    }
 
     for (let i = 0; i < 5; i++) {
         game.itemList.push({
