@@ -139,6 +139,10 @@ button:hover {
     height: 450px;
 }
 
+.player-tool {
+    border: 1px solid black;
+}
+
 .boat {
     width: 400px;
     height: 100px;
