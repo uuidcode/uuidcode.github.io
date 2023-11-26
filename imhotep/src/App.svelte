@@ -30,26 +30,26 @@ gameStore.init();
                 <div class="player-tool">돛 : {player.sailCount}<br>
                     배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.
                     {#if player.canUseSail}
-                        <br><button>사용</button>
+                        <br><button on:click={e => gameStore.useSail()}>사용</button>
                     {/if}
                 </div>
                 <div class="player-tool">지렛대 : {player.leverCount}<br>
                     배 한척을 빈 항구로 옮깁니다. 석재 내리는 순서를 마음대로 바꿉니다.
                     {#if player.canUseLever}
-                        <br><button>사용</button>
+                        <br><button on:click={e => gameStore.useLever()}>사용</button>
                     {/if}
-                    <div>
-                        {#each player.stoneList as stone, i}
-                            <div class="player-stone"
-                                 style:background={player.color}
-                                 style="{stone.style}"></div>
-                        {/each}
-                    </div>
-                    <div>
-                        {#if player.canGetStone}
-                            <button on:click={() => gameStore.getStoneAndNextTure(player)}>가져오기</button>
-                        {/if}
-                    </div>
+                </div>
+                <div>
+                    {#each player.stoneList as stone, i}
+                        <div class="player-stone"
+                             style:background={player.color}
+                             style="{stone.style}"></div>
+                    {/each}
+                </div>
+                <div>
+                    {#if player.canGetStone}
+                        <button on:click={() => gameStore.getStoneAndNextTure(player)}>가져오기</button>
+                    {/if}
                 </div>
             </div>
         {/each}

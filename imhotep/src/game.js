@@ -69,8 +69,8 @@ const game = {
             tombStoneCount: 0,
             hammerCount: 1,
             chiselCount: 1,
+            sailCount: 1,
             leverCount: 0,
-            sailCount: 0,
             stoneStatueCount: 0
         },
         {

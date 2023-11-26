@@ -261,18 +261,39 @@ gameStore = {
     },
     refresh: (game) => {
         game.boatList = game.boatList.map(boat => {
+            const player = game.activePlayer;
+
+            const canMoveUsingSail = player.useTool === true
+                && player.useToolName === '돛'
+                && player.loadCount === 1;
+
             boat.canLoad = boat.stoneList.length < boat.maxStone
                 && game.activePlayer.stoneList.length > 0
                 && boat.landed === false;
 
-            const canMove = boat.stoneList.length >= boat.minStone
+            if (canMoveUsingSail) {
+                boat.canLoad = false;
+            }
+
+            let canMove = boat.stoneList.length >= boat.minStone
                 && boat.landed === false;
+
+            canMove = canMove || canMoveUsingSail;
 
             boat.canMoveToMarket = canMove && gameStore.getMarket().landed === false;
             boat.canMoveToPyramid = canMove && gameStore.getPyramid().landed === false;
             boat.canMoveToTomb = canMove && gameStore.getTomb().landed === false;
             boat.canMoveToWall = canMove && gameStore.getWall().landed === false;
             boat.canMoveToObelisk = canMove && gameStore.getObelisk().landed === false;
+
+            if (canMoveUsingSail && boat !== game.boatUsingSail) {
+                boat.canMoveToMarket = false;
+                boat.canMoveToPyramid = false;
+                boat.canMoveToTomb = false;
+                boat.canMoveToWall = false;
+                boat.canMoveToObelisk = false;
+            }
+
             return boat;
         });
 
@@ -292,7 +313,8 @@ gameStore = {
 
             player.canUseSail = player.active
                 && player.useTool === false
-                && player.sailCount > 0;
+                && player.sailCount > 0
+                && player.stoneList.length >= 1;
 
             player.canUseLever = player.active
                 && player.useTool === false
@@ -319,6 +341,22 @@ gameStore = {
             return game;
         });
     },
+    useSail: () => {
+        update(game => {
+            game.activePlayer.useTool = true;
+            game.activePlayer.useToolName = '돛';
+            gameStore.refresh(game);
+            return game;
+        });
+    },
+    useLever: () => {
+        update(game => {
+            game.activePlayer.useTool = true;
+            game.activePlayer.useToolName = '지렛대';
+            gameStore.refresh(game);
+            return game;
+        });
+    },
     load: (boat) => {
         let nextTurn = true;
 
@@ -329,10 +367,16 @@ gameStore = {
             boat.stoneList = [...boat.stoneList, stone]
 
             if (player.useTool === true) {
-                if (player.useToolName === '망치') {
-                    player.hammerCount--;
-                    player.useTool = false;
-                    player.useToolName = '';
+                if (player.useToolName === '망치' || player.useToolName === '돛') {
+                    if (player.useToolName === '망치') {
+                        player.useTool = false;
+                        player.useToolName = '';
+                        player.hammerCount--;
+                    } else if (player.useToolName === '돛') {
+                        game.boatUsingSail = boat;
+                        player.loadCount++;
+                        nextTurn = false;
+                    }
                 } else if (player.useToolName === '끌') {
                     if (player.loadCount === 0) {
                         player.loadCount++;
@@ -345,6 +389,8 @@ gameStore = {
                     }
                 }
             }
+
+            gameStore.refresh(game);
 
             return game;
         });
