@@ -31,14 +31,8 @@ gameStore = {
             return game;
         });
     },
-    getStone: (player) => {
-        update(game => {
-            const stoneCount = Math.min(5 - game.activePlayer.stoneList.length, 3);
-            player.stoneList = player.stoneList.concat(gameStore.createStoneList(game, player, stoneCount));
-            return game;
-        });
-
-        gameStore.nextTurn();
+    getStoneAndNextTure: (player) => {
+        getStone(player, true);
     },
     createStoneList: (game, player, count) => {
         const stoneList = [];
@@ -55,6 +49,17 @@ gameStore = {
     },
     createList: (size) => {
         return Array(size).fill(0).map((item, i) => i);
+    },
+    getStone: (player, nextTure) => {
+        update(game => {
+            const stoneCount = Math.min(5 - game.activePlayer.stoneList.length, 3);
+            player.stoneList = player.stoneList.concat(gameStore.createStoneList(game, player, stoneCount));
+            return game;
+        });
+
+        if (nextTure === true) {
+            gameStore.nextTurn();
+        }
     },
     random : (list) => {
         return list.sort(() => Math.random() - 0.5).pop();
@@ -272,21 +277,81 @@ gameStore = {
         });
 
         game.playerList = game.playerList.map(player => {
-            player.canGet = player.active && player.stoneList.length <= 4;
+            player.canGetStone = player.active
+                && player.stoneList.length <= 4
+                && player.useTool === false;
+
+            player.canUseHammer = player.active
+                && player.useTool === false
+                && player.hammerCount > 0;
+
+            player.canUseChisel = player.active
+                && player.useTool === false
+                && player.chiselCount > 0
+                && player.stoneList.length >= 2;
+
+            player.canUseSail = player.active
+                && player.useTool === false
+                && player.sailCount > 0;
+
+            player.canUseLever = player.active
+                && player.useTool === false
+                && player.leverCount > 0;
+
             return player;
         });
     },
-    load: (boat) => {
+    useHammer: () => {
+        gameStore.getStone(game.activePlayer, false);
+
         update(game => {
-            const player = gameStore.currentPlayer(game);
+            game.activePlayer.useTool = true;
+            game.activePlayer.useToolName = '망치';
+            gameStore.refresh(game);
+            return game;
+        });
+    },
+    useChisel: () => {
+        update(game => {
+            game.activePlayer.useTool = true;
+            game.activePlayer.useToolName = '끌';
+            gameStore.refresh(game);
+            return game;
+        });
+    },
+    load: (boat) => {
+        let nextTurn = true;
+
+        update(game => {
+            const player = game.activePlayer;
             const stone = player.stoneList.pop();
             stone.color = player.color;
             boat.stoneList = [...boat.stoneList, stone]
 
+            if (player.useTool === true) {
+                if (player.useToolName === '망치') {
+                    player.hammerCount--;
+                    player.useTool = false;
+                    player.useToolName = '';
+                } else if (player.useToolName === '끌') {
+                    if (player.loadCount === 0) {
+                        player.loadCount++;
+                        nextTurn = false;
+                    } else if (player.loadCount === 1) {
+                        player.chiselCount--;
+                        player.loadCount = 0;
+                        player.useTool = false;
+                        player.useToolName = '';
+                    }
+                }
+            }
+
             return game;
         });
 
-        gameStore.nextTurn();
+        if (nextTurn === true) {
+            gameStore.nextTurn();
+        }
     },
     currentPlayer: (game) => {
         return game.playerList[game.turn % 2];

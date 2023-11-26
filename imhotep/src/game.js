@@ -67,8 +67,8 @@ const game = {
             obeliskStoneCount: 0,
             wallStoneCount: 0,
             tombStoneCount: 0,
-            hammerCount: 0,
-            chiselCount: 0,
+            hammerCount: 1,
+            chiselCount: 1,
             leverCount: 0,
             sailCount: 0,
             stoneStatueCount: 0
@@ -89,6 +89,12 @@ const game = {
         }
     ]
 }
+
+game.playerList.forEach(player => {
+    player.useTool = false;
+    player.useToolName = null;
+    player.loadCount = 0;
+});
 
 game.landList.forEach((land, i) => {
     land.index = i;
