@@ -153,7 +153,7 @@ button:hover {
 }
 
 .boat-load-max {
-    direction: rtl;
+    /*direction: rtl;*/
     display: flex;
     top: 0;
     left: 0;
@@ -163,7 +163,7 @@ button:hover {
 }
 
 .boat-load-min {
-    direction: rtl;
+    /*direction: rtl;*/
     display: flex;
     top: 0;
     left: 0;
@@ -173,7 +173,7 @@ button:hover {
 }
 
 .boat-load {
-    direction: rtl;
+    /*direction: rtl;*/
     display: flex;
     top: 0;
     left: 0;

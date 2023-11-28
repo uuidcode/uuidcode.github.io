@@ -70,7 +70,7 @@ const game = {
             hammerCount: 1,
             chiselCount: 1,
             sailCount: 1,
-            leverCount: 0,
+            leverCount: 1,
             stoneStatueCount: 0
         },
         {

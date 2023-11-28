@@ -7,21 +7,19 @@
     let stoneList = null;
 
     const handleSortItem = e => {
-        const target = $items.find(item => item.id === e.item.id)
-        const allItems = $items.filter(item => item.id !== e.item.id)
-        const _items = allItems.filter(item => item.boardId === e.to.id)
-        target.boardId = e.to.id
-        _items.splice(e.newIndex, 0, target)
+        console.log('>>> e.to', e.to);
+        console.log('>>> e.to.children', e.to.children);
 
-        const newItems = allItems
-            .filter(item => item.boardId !== e.to.id)
-            .concat(_items)
-        items.set(newItems)
+        // boat.stoneList = Array.from(e.to.children)
+        //     .map(child => child.getAttribute('stoneIndex'))
+        //     .map(index => Number(index))
+        //     .map(stoneIndex => boat.stoneList.find(stone => stone.index === stoneIndex));
     }
 
     afterUpdate(() => {
         if (stoneList) {
             new Sortable(stoneList, {
+                direction: 'horizontal',
                 onEnd: handleSortItem
             });
         }
@@ -31,7 +29,8 @@
 <div class="boat-load" bind:this={stoneList}>
     {#each boat.stoneList as stone, i}
         <div class="player-stone"
+             stoneIndex="{stone.index}"
              style:background={stone.color}
-             style="{stone.style}"></div>
+             style="{stone.style}">{stone.index}</div>
     {/each}
 </div>

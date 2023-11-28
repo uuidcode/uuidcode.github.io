@@ -32,7 +32,7 @@ gameStore = {
         });
     },
     getStoneAndNextTure: (player) => {
-        getStone(player, true);
+        gameStore.getStone(player, true);
     },
     createStoneList: (game, player, count) => {
         const stoneList = [];
