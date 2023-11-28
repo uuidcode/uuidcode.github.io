@@ -1,6 +1,17 @@
 <script>
 import gameStore from './gameStore.js'
 import Land from "./Land.svelte";
+import Boat from "./Boat.svelte";
+import Sortable from 'sortablejs';
+import { afterUpdate } from 'svelte'
+
+let boatList = [];
+
+afterUpdate(() => {
+    boatList.forEach(boat => {
+        new Sortable(boat);
+    })
+})
 
 gameStore.init();
 
@@ -55,7 +66,7 @@ gameStore.init();
         {/each}
     </div>
     <div class="part sea-part">
-        {#each $gameStore.boatList as boat}
+        {#each $gameStore.boatList as boat, boatIndex}
             <div class="boat" bind:this={boat.element} style="{boat.style}">
                 <div class="boat-load-max">
                     {#each gameStore.createList(boat.maxStone) as stone, i}
@@ -67,13 +78,7 @@ gameStore.init();
                         <div class="boat-min-stone"></div>
                     {/each}
                 </div>
-                <div class="boat-load">
-                    {#each boat.stoneList as stone, i}
-                        <div class="player-stone"
-                             style:background={stone.color}
-                             style="{stone.style}"></div>
-                    {/each}
-                </div>
+                <Boat boat={boat}></Boat>
                 <div class="boat-controller">
                     {#if boat.canLoad}
                         <button on:click={e => gameStore.load(boat)}>싣기</button>

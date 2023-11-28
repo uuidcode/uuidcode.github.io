@@ -267,6 +267,10 @@ gameStore = {
                 && player.useToolName === '돛'
                 && player.loadCount === 1;
 
+            const canMoveUsingLever = player.useTool === true
+                && player.useToolName === '지렛대'
+                && boat.stoneList.length > 1
+
             boat.canLoad = boat.stoneList.length < boat.maxStone
                 && game.activePlayer.stoneList.length > 0
                 && boat.landed === false;
@@ -278,7 +282,7 @@ gameStore = {
             let canMove = boat.stoneList.length >= boat.minStone
                 && boat.landed === false;
 
-            canMove = canMove || canMoveUsingSail;
+            canMove = canMove || canMoveUsingSail || canMoveUsingLever;
 
             boat.canMoveToMarket = canMove && gameStore.getMarket().landed === false;
             boat.canMoveToPyramid = canMove && gameStore.getPyramid().landed === false;
@@ -367,16 +371,14 @@ gameStore = {
             boat.stoneList = [...boat.stoneList, stone]
 
             if (player.useTool === true) {
-                if (player.useToolName === '망치' || player.useToolName === '돛') {
-                    if (player.useToolName === '망치') {
-                        player.useTool = false;
-                        player.useToolName = '';
-                        player.hammerCount--;
-                    } else if (player.useToolName === '돛') {
-                        game.boatUsingSail = boat;
-                        player.loadCount++;
-                        nextTurn = false;
-                    }
+                if (player.useToolName === '망치') {
+                    player.useTool = false;
+                    player.useToolName = '';
+                    player.hammerCount--;
+                } else if (player.useToolName === '돛') {
+                    game.boatUsingSail = boat;
+                    player.loadCount++;
+                    nextTurn = false;
                 } else if (player.useToolName === '끌') {
                     if (player.loadCount === 0) {
                         player.loadCount++;
