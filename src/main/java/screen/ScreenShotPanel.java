@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
@@ -97,6 +99,14 @@ public class ScreenShotPanel extends JPanel
 
         new Thread(() -> {
             try {
+                PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+                Point mousePoint = pointerInfo.getLocation();
+                int x = (int) mousePoint.getX();
+                int y = (int) mousePoint.getY();
+
+                Robot robot = new Robot();
+                robot.mouseMove(0, 0);
+
                 Thread.sleep(100);
 
                 if (second != null) {
@@ -106,7 +116,10 @@ public class ScreenShotPanel extends JPanel
                 Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
                 rectangle.x += display.x;
                 rectangle.y += display.y;
-                BufferedImage image = new Robot().createScreenCapture(rectangle);
+
+                BufferedImage image = robot.createScreenCapture(rectangle);
+                robot.mouseMove(x, y);
+
                 String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
                 File file = Util.getImageFile(fileName);
                 ImageIO.write(image, "png", file);
