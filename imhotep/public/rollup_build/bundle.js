@@ -704,9 +704,6 @@ var app = (function () {
                     .map(stoneIndex => boat.stoneList.find(stone => stone.index === stoneIndex))
                     .reverse();
 
-                console.log('>>> boat.stoneList', boat.stoneList);
-                console.log('>>> stoneList', stoneList);
-
                 boat.stoneList = stoneList;
 
                 return game;
@@ -734,7 +731,8 @@ var app = (function () {
         getStone: (player, nextTure) => {
             update(game => {
                 const stoneCount = Math.min(5 - game.activePlayer.stoneList.length, 3);
-                player.stoneList = player.stoneList.concat(gameStore.createStoneList(game, player, stoneCount));
+                const newStoneList = gameStore.createStoneList(game, player, stoneCount);
+                player.stoneList = player.stoneList.concat(newStoneList);
                 return game;
             });
 
@@ -811,7 +809,8 @@ var app = (function () {
         move : (boat, land) => {
             update(game => {
                 const top = 170 * land.index - boat.element.offsetTop + 20;
-                boat.style = `transform: translate(400px, ${top}px)`;
+                const left = 800 - boat.maxStone * 50;
+                boat.style = `transform: translate(${left}px, ${top}px)`;
                 land.landed = true;
                 boat.landed = true;
                 gameStore.refresh(game);

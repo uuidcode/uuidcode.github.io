@@ -146,14 +146,13 @@ button:hover {
 .boat {
     width: 400px;
     height: 100px;
-    background: yellow;
-    border: 1px solid black;
+    /*background: yellow;*/
+    /*border: 1px solid black;*/
     position: relative;
     transition-duration: 1000ms;
 }
 
 .boat-load-max {
-    /*direction: rtl;*/
     display: flex;
     top: 0;
     left: 0;
@@ -163,7 +162,6 @@ button:hover {
 }
 
 .boat-load-min {
-    /*direction: rtl;*/
     display: flex;
     top: 0;
     left: 0;
@@ -173,7 +171,6 @@ button:hover {
 }
 
 .boat-load {
-    /*direction: rtl;*/
     display: flex;
     top: 0;
     left: 0;

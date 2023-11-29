@@ -145,7 +145,8 @@ gameStore = {
     move : (boat, land) => {
         update(game => {
             const top = 170 * land.index - boat.element.offsetTop + 20;
-            boat.style = `transform: translate(400px, ${top}px)`
+            const left = 800 - boat.maxStone * 50;
+            boat.style = `transform: translate(${left}px, ${top}px)`
             land.landed = true;
             boat.landed = true;
             gameStore.refresh(game);
