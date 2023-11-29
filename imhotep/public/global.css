@@ -182,6 +182,12 @@ button:hover {
     height: 50px;
 }
 
+.sortable-js-rtl-clearfix {
+    display: block;
+    width: 1px;
+    height: 0;
+}
+
 .boat-controller {
     margin: 4px;
     display: flex;
