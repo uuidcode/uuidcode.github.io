@@ -31,6 +31,23 @@ gameStore = {
             return game;
         });
     },
+    sortStone: (e, boatIndex) => {
+        update(game => {
+            const boat = game.boatList.find(boat => boat.index === boatIndex);
+            const stoneList = Array.from(e.to.children)
+                .map(child => child.getAttribute('stoneIndex'))
+                .map(index => Number(index))
+                .map(stoneIndex => boat.stoneList.find(stone => stone.index === stoneIndex))
+                .reverse();
+
+            console.log('>>> boat.stoneList', boat.stoneList);
+            console.log('>>> stoneList', stoneList);
+
+            boat.stoneList = stoneList;
+
+            return game;
+        })
+    },
     getStoneAndNextTure: (player) => {
         gameStore.getStone(player, true);
     },
@@ -79,6 +96,7 @@ gameStore = {
             const minStone = gameStore.randomWithSize(1, maxStone);
 
             boatList.push({
+                index: game.boatIndex++,
                 landed: false,
                 maxStone,
                 minStone,
@@ -273,7 +291,8 @@ gameStore = {
 
             boat.canLoad = boat.stoneList.length < boat.maxStone
                 && game.activePlayer.stoneList.length > 0
-                && boat.landed === false;
+                && boat.landed === false
+                && canMoveUsingLever === false;
 
             if (canMoveUsingSail) {
                 boat.canLoad = false;

@@ -4,21 +4,18 @@
     import { afterUpdate } from 'svelte'
 
     export let boat;
-
     let stoneList = null;
 
     const handleSortItem = e => {
-        console.log('>>> e.to', e.to);
-        console.log('>>> e.to.children', e.to.children);
-
-        // boat.stoneList = Array.from(e.to.children)
-        //     .map(child => child.getAttribute('stoneIndex'))
-        //     .map(index => Number(index))
-        //     .map(stoneIndex => boat.stoneList.find(stone => stone.index === stoneIndex));
+        gameStore.sortStone(e, boat.index);
     }
 
     afterUpdate(() => {
         if (stoneList) {
+            if ($gameStore.activePlayer.useToolName !== '지렛대') {
+                return;
+            }
+
             new Sortable(stoneList, {
                 direction: 'horizontal',
                 onEnd: handleSortItem

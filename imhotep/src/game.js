@@ -1,6 +1,7 @@
 const game = {
     turn: 0,
     stoneIndex: 0,
+    boatIndex: 0,
     activePlayer: null,
     landList: [
         {
