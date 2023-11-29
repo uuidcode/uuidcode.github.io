@@ -40,9 +40,6 @@ gameStore = {
                 .map(stoneIndex => boat.stoneList.find(stone => stone.index === stoneIndex))
                 .reverse();
 
-            console.log('>>> boat.stoneList', boat.stoneList);
-            console.log('>>> stoneList', stoneList);
-
             boat.stoneList = stoneList;
 
             return game;
@@ -70,7 +67,8 @@ gameStore = {
     getStone: (player, nextTure) => {
         update(game => {
             const stoneCount = Math.min(5 - game.activePlayer.stoneList.length, 3);
-            player.stoneList = player.stoneList.concat(gameStore.createStoneList(game, player, stoneCount));
+            const newStoneList = gameStore.createStoneList(game, player, stoneCount);
+            player.stoneList = player.stoneList.concat(newStoneList);
             return game;
         });
 
