@@ -3,6 +3,7 @@
 </script>
 
 <div class="part land-part">
+    <div class="info">7</div>
     {#each $gameStore.landList as land, i}
         {#if i === 4}
             <div class="land">

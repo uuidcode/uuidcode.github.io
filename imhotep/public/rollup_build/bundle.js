@@ -1163,7 +1163,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (50:26) 
+    // (51:26) 
     function create_if_block_4$2(ctx) {
     	let div1;
     	let div0;
@@ -1191,9 +1191,9 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			add_location(div0, file$2, 51, 16, 2145);
+    			add_location(div0, file$2, 52, 16, 2175);
     			attr_dev(div1, "class", "land");
-    			add_location(div1, file$2, 50, 12, 2110);
+    			add_location(div1, file$2, 51, 12, 2140);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -1244,14 +1244,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4$2.name,
     		type: "if",
-    		source: "(50:26) ",
+    		source: "(51:26) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (39:26) 
+    // (40:26) 
     function create_if_block_3$2(ctx) {
     	let div1;
     	let div0;
@@ -1279,9 +1279,9 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			add_location(div0, file$2, 40, 16, 1702);
+    			add_location(div0, file$2, 41, 16, 1732);
     			attr_dev(div1, "class", "land");
-    			add_location(div1, file$2, 39, 12, 1667);
+    			add_location(div1, file$2, 40, 12, 1697);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -1332,14 +1332,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3$2.name,
     		type: "if",
-    		source: "(39:26) ",
+    		source: "(40:26) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (28:26) 
+    // (29:26) 
     function create_if_block_2$2(ctx) {
     	let div1;
     	let div0;
@@ -1367,9 +1367,9 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			add_location(div0, file$2, 29, 16, 1259);
+    			add_location(div0, file$2, 30, 16, 1289);
     			attr_dev(div1, "class", "land");
-    			add_location(div1, file$2, 28, 12, 1224);
+    			add_location(div1, file$2, 29, 12, 1254);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -1420,14 +1420,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2$2.name,
     		type: "if",
-    		source: "(28:26) ",
+    		source: "(29:26) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (15:26) 
+    // (16:26) 
     function create_if_block_1$2(ctx) {
     	let div5;
     	let div0;
@@ -1483,15 +1483,15 @@ var app = (function () {
     			t8 = text(" : ");
     			t9 = text(t9_value);
     			t10 = space();
-    			add_location(div0, file$2, 16, 16, 630);
-    			add_location(div1, file$2, 17, 16, 669);
+    			add_location(div0, file$2, 17, 16, 660);
+    			add_location(div1, file$2, 18, 16, 699);
     			attr_dev(div2, "class", "wall_stone");
-    			add_location(div2, file$2, 23, 20, 911);
+    			add_location(div2, file$2, 24, 20, 941);
     			attr_dev(div3, "class", "wall_stone");
-    			add_location(div3, file$2, 24, 20, 1037);
-    			add_location(div4, file$2, 22, 16, 885);
+    			add_location(div3, file$2, 25, 20, 1067);
+    			add_location(div4, file$2, 23, 16, 915);
     			attr_dev(div5, "class", "land");
-    			add_location(div5, file$2, 15, 12, 595);
+    			add_location(div5, file$2, 16, 12, 625);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div5, anchor);
@@ -1559,14 +1559,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(15:26) ",
+    		source: "(16:26) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (7:8) {#if i === 4}
+    // (8:8) {#if i === 4}
     function create_if_block$2(ctx) {
     	let div4;
     	let div0;
@@ -1606,14 +1606,14 @@ var app = (function () {
     			t7 = text(" :  ");
     			t8 = text(t8_value);
     			t9 = space();
-    			add_location(div0, file$2, 8, 16, 204);
+    			add_location(div0, file$2, 9, 16, 234);
     			attr_dev(div1, "class", "obelisk_stone");
-    			add_location(div1, file$2, 10, 20, 269);
+    			add_location(div1, file$2, 11, 20, 299);
     			attr_dev(div2, "class", "obelisk_stone");
-    			add_location(div2, file$2, 11, 20, 401);
-    			add_location(div3, file$2, 9, 16, 243);
+    			add_location(div2, file$2, 12, 20, 431);
+    			add_location(div3, file$2, 10, 16, 273);
     			attr_dev(div4, "class", "land");
-    			add_location(div4, file$2, 7, 12, 169);
+    			add_location(div4, file$2, 8, 12, 199);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div4, anchor);
@@ -1648,14 +1648,14 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(7:8) {#if i === 4}",
+    		source: "(8:8) {#if i === 4}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (53:16) {#each land.itemList as item}
+    // (54:16) {#each land.itemList as item}
     function create_each_block_6(ctx) {
     	let div;
     	let t0_value = /*item*/ ctx[13].name + "";
@@ -1672,9 +1672,9 @@ var app = (function () {
     			br = element("br");
     			t1 = space();
     			t2 = text(t2_value);
-    			add_location(br, file$2, 54, 35, 2288);
+    			add_location(br, file$2, 55, 35, 2318);
     			attr_dev(div, "class", "item");
-    			add_location(div, file$2, 53, 20, 2234);
+    			add_location(div, file$2, 54, 20, 2264);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1696,14 +1696,14 @@ var app = (function () {
     		block,
     		id: create_each_block_6.name,
     		type: "each",
-    		source: "(53:16) {#each land.itemList as item}",
+    		source: "(54:16) {#each land.itemList as item}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (44:24) {#each stoneList as stone, i}
+    // (45:24) {#each stoneList as stone, i}
     function create_each_block_5(ctx) {
     	let div;
 
@@ -1712,7 +1712,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
     			set_style(div, "background", /*stone*/ ctx[4].color);
-    			add_location(div, file$2, 44, 28, 1905);
+    			add_location(div, file$2, 45, 28, 1935);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1731,14 +1731,14 @@ var app = (function () {
     		block,
     		id: create_each_block_5.name,
     		type: "each",
-    		source: "(44:24) {#each stoneList as stone, i}",
+    		source: "(45:24) {#each stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (42:16) {#each land.stoneList as stoneList}
+    // (43:16) {#each land.stoneList as stoneList}
     function create_each_block_4(ctx) {
     	let div;
     	let each_value_5 = /*stoneList*/ ctx[6];
@@ -1758,7 +1758,7 @@ var app = (function () {
     			}
 
     			set_style(div, "height", "50px");
-    			add_location(div, file$2, 42, 20, 1797);
+    			add_location(div, file$2, 43, 20, 1827);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1802,14 +1802,14 @@ var app = (function () {
     		block,
     		id: create_each_block_4.name,
     		type: "each",
-    		source: "(42:16) {#each land.stoneList as stoneList}",
+    		source: "(43:16) {#each land.stoneList as stoneList}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (33:24) {#each stoneList as stone, i}
+    // (34:24) {#each stoneList as stone, i}
     function create_each_block_3(ctx) {
     	let div;
 
@@ -1818,7 +1818,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
     			set_style(div, "background", /*stone*/ ctx[4].color);
-    			add_location(div, file$2, 33, 28, 1462);
+    			add_location(div, file$2, 34, 28, 1492);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1837,14 +1837,14 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(33:24) {#each stoneList as stone, i}",
+    		source: "(34:24) {#each stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (31:16) {#each land.stoneList as stoneList}
+    // (32:16) {#each land.stoneList as stoneList}
     function create_each_block_2$2(ctx) {
     	let div;
     	let each_value_3 = /*stoneList*/ ctx[6];
@@ -1864,7 +1864,7 @@ var app = (function () {
     			}
 
     			set_style(div, "height", "50px");
-    			add_location(div, file$2, 31, 20, 1354);
+    			add_location(div, file$2, 32, 20, 1384);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1908,14 +1908,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2$2.name,
     		type: "each",
-    		source: "(31:16) {#each land.stoneList as stoneList}",
+    		source: "(32:16) {#each land.stoneList as stoneList}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (19:20) {#each land.stoneList as stone, i}
+    // (20:20) {#each land.stoneList as stone, i}
     function create_each_block_1$2(ctx) {
     	let div;
 
@@ -1924,7 +1924,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
     			set_style(div, "background", /*stone*/ ctx[4].color);
-    			add_location(div, file$2, 19, 24, 754);
+    			add_location(div, file$2, 20, 24, 784);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1943,14 +1943,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1$2.name,
     		type: "each",
-    		source: "(19:20) {#each land.stoneList as stone, i}",
+    		source: "(20:20) {#each land.stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (6:4) {#each $gameStore.landList as land, i}
+    // (7:4) {#each $gameStore.landList as land, i}
     function create_each_block$2(ctx) {
     	let if_block_anchor;
 
@@ -1990,7 +1990,7 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(6:4) {#each $gameStore.landList as land, i}",
+    		source: "(7:4) {#each $gameStore.landList as land, i}",
     		ctx
     	});
 
@@ -1998,7 +1998,9 @@ var app = (function () {
     }
 
     function create_fragment$2(ctx) {
-    	let div;
+    	let div1;
+    	let div0;
+    	let t1;
     	let each_value = /*$gameStore*/ ctx[0].landList;
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -2009,23 +2011,30 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			div0.textContent = "7";
+    			t1 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(div, "class", "part land-part");
-    			add_location(div, file$2, 4, 0, 63);
+    			attr_dev(div0, "class", "info");
+    			add_location(div0, file$2, 5, 4, 96);
+    			attr_dev(div1, "class", "part land-part");
+    			add_location(div1, file$2, 4, 0, 63);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, div0);
+    			append_dev(div1, t1);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div, null);
+    				each_blocks[i].m(div1, null);
     			}
     		},
     		p: function update(ctx, [dirty]) {
@@ -2042,7 +2051,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block$2(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div, null);
+    						each_blocks[i].m(div1, null);
     					}
     				}
 
@@ -2056,7 +2065,7 @@ var app = (function () {
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div1);
     			destroy_each(each_blocks, detaching);
     		}
     	};
@@ -5971,7 +5980,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (25:20) {#if player.useTool}
+    // (24:20) {#if player.useTool}
     function create_if_block_5(ctx) {
     	let t0;
     	let t1_value = /*player*/ ctx[10].useToolName + "";
@@ -6003,14 +6012,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5.name,
     		type: "if",
-    		source: "(25:20) {#if player.useTool}",
+    		source: "(24:20) {#if player.useTool}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (31:20) {#if player.canUseHammer}
+    // (30:20) {#if player.canUseHammer}
     function create_if_block_4(ctx) {
     	let br;
     	let button;
@@ -6022,8 +6031,8 @@ var app = (function () {
     			br = element("br");
     			button = element("button");
     			button.textContent = "사용";
-    			add_location(br, file, 31, 24, 881);
-    			add_location(button, file, 31, 28, 885);
+    			add_location(br, file, 30, 24, 880);
+    			add_location(button, file, 30, 28, 884);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, br, anchor);
@@ -6047,14 +6056,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(31:20) {#if player.canUseHammer}",
+    		source: "(30:20) {#if player.canUseHammer}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (37:20) {#if player.canUseChisel}
+    // (36:20) {#if player.canUseChisel}
     function create_if_block_3(ctx) {
     	let br;
     	let button;
@@ -6066,8 +6075,8 @@ var app = (function () {
     			br = element("br");
     			button = element("button");
     			button.textContent = "사용";
-    			add_location(br, file, 37, 24, 1193);
-    			add_location(button, file, 37, 28, 1197);
+    			add_location(br, file, 36, 24, 1192);
+    			add_location(button, file, 36, 28, 1196);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, br, anchor);
@@ -6091,14 +6100,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(37:20) {#if player.canUseChisel}",
+    		source: "(36:20) {#if player.canUseChisel}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (43:20) {#if player.canUseSail}
+    // (42:20) {#if player.canUseSail}
     function create_if_block_2(ctx) {
     	let br;
     	let button;
@@ -6110,8 +6119,8 @@ var app = (function () {
     			br = element("br");
     			button = element("button");
     			button.textContent = "사용";
-    			add_location(br, file, 43, 24, 1491);
-    			add_location(button, file, 43, 28, 1495);
+    			add_location(br, file, 42, 24, 1490);
+    			add_location(button, file, 42, 28, 1494);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, br, anchor);
@@ -6135,14 +6144,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(43:20) {#if player.canUseSail}",
+    		source: "(42:20) {#if player.canUseSail}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (49:20) {#if player.canUseLever}
+    // (48:20) {#if player.canUseLever}
     function create_if_block_1(ctx) {
     	let br;
     	let button;
@@ -6154,8 +6163,8 @@ var app = (function () {
     			br = element("br");
     			button = element("button");
     			button.textContent = "사용";
-    			add_location(br, file, 49, 24, 1800);
-    			add_location(button, file, 49, 28, 1804);
+    			add_location(br, file, 48, 24, 1799);
+    			add_location(button, file, 48, 28, 1803);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, br, anchor);
@@ -6179,14 +6188,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(49:20) {#if player.canUseLever}",
+    		source: "(48:20) {#if player.canUseLever}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (54:20) {#each player.stoneList as stone, i}
+    // (53:20) {#each player.stoneList as stone, i}
     function create_each_block_2(ctx) {
     	let div;
     	let div_style_value;
@@ -6197,7 +6206,7 @@ var app = (function () {
     			attr_dev(div, "class", "player-stone");
     			attr_dev(div, "style", div_style_value = /*stone*/ ctx[13].style);
     			set_style(div, "background", /*player*/ ctx[10].color, false);
-    			add_location(div, file, 54, 24, 2013);
+    			add_location(div, file, 53, 24, 2012);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -6220,14 +6229,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(54:20) {#each player.stoneList as stone, i}",
+    		source: "(53:20) {#each player.stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (61:20) {#if player.canGetStone}
+    // (60:20) {#if player.canGetStone}
     function create_if_block(ctx) {
     	let button;
     	let mounted;
@@ -6241,7 +6250,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "가져오기";
-    			add_location(button, file, 61, 24, 2300);
+    			add_location(button, file, 60, 24, 2299);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -6265,14 +6274,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(61:20) {#if player.canGetStone}",
+    		source: "(60:20) {#if player.canGetStone}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (22:8) {#each $gameStore.playerList as player}
+    // (21:8) {#each $gameStore.playerList as player}
     function create_each_block_1(ctx) {
     	let div7;
     	let div0;
@@ -6374,24 +6383,24 @@ var app = (function () {
     			if (if_block5) if_block5.c();
     			t20 = space();
     			attr_dev(div0, "class", "player-name");
-    			add_location(div0, file, 23, 16, 510);
-    			add_location(br0, file, 28, 66, 757);
+    			add_location(div0, file, 22, 16, 509);
+    			add_location(br0, file, 27, 66, 756);
     			attr_dev(div1, "class", "player-tool");
-    			add_location(div1, file, 28, 16, 707);
-    			add_location(br1, file, 34, 65, 1057);
+    			add_location(div1, file, 27, 16, 706);
+    			add_location(br1, file, 33, 65, 1056);
     			attr_dev(div2, "class", "player-tool");
-    			add_location(div2, file, 34, 16, 1008);
-    			add_location(br2, file, 40, 63, 1367);
+    			add_location(div2, file, 33, 16, 1007);
+    			add_location(br2, file, 39, 63, 1366);
     			attr_dev(div3, "class", "player-tool");
-    			add_location(div3, file, 40, 16, 1320);
-    			add_location(br3, file, 46, 66, 1666);
+    			add_location(div3, file, 39, 16, 1319);
+    			add_location(br3, file, 45, 66, 1665);
     			attr_dev(div4, "class", "player-tool");
-    			add_location(div4, file, 46, 16, 1616);
-    			add_location(div5, file, 52, 16, 1926);
-    			add_location(div6, file, 59, 16, 2225);
+    			add_location(div4, file, 45, 16, 1615);
+    			add_location(div5, file, 51, 16, 1925);
+    			add_location(div6, file, 58, 16, 2224);
     			attr_dev(div7, "class", "player");
     			toggle_class(div7, "active", /*player*/ ctx[10].active);
-    			add_location(div7, file, 22, 12, 444);
+    			add_location(div7, file, 21, 12, 443);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div7, anchor);
@@ -6572,14 +6581,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(22:8) {#each $gameStore.playerList as player}",
+    		source: "(21:8) {#each $gameStore.playerList as player}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (69:8) {#each $gameStore.boatList as boat, boatIndex}
+    // (68:8) {#each $gameStore.boatList as boat, boatIndex}
     function create_each_block(ctx) {
     	let boat;
     	let current;
@@ -6620,7 +6629,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(69:8) {#each $gameStore.boatList as boat, boatIndex}",
+    		source: "(68:8) {#each $gameStore.boatList as boat, boatIndex}",
     		ctx
     	});
 
@@ -6676,11 +6685,11 @@ var app = (function () {
     			t1 = space();
     			create_component(land.$$.fragment);
     			attr_dev(div0, "class", "part player-part");
-    			add_location(div0, file, 20, 4, 353);
+    			add_location(div0, file, 19, 4, 352);
     			attr_dev(div1, "class", "part sea-part");
-    			add_location(div1, file, 67, 4, 2476);
+    			add_location(div1, file, 66, 4, 2475);
     			attr_dev(div2, "class", "board");
-    			add_location(div2, file, 19, 0, 329);
+    			add_location(div2, file, 18, 0, 328);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

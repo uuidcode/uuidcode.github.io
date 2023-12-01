@@ -14,7 +14,6 @@ afterUpdate(() => {
 })
 
 gameStore.init();
-
 </script>
 
 <div class="board">
