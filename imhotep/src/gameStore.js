@@ -340,7 +340,8 @@ gameStore = {
 
             player.canUseLever = player.active
                 && player.useTool === false
-                && player.leverCount > 0;
+                && player.leverCount > 0
+                && game.boatList.some(boat => boat.stoneList.length > 0);
 
             return player;
         });
