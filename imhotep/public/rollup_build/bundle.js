@@ -492,6 +492,7 @@ var app = (function () {
 
     const game = {
         turn: 0,
+        leftTurn: 7,
         stoneIndex: 0,
         boatIndex: 0,
         activePlayer: null,
@@ -641,26 +642,43 @@ var app = (function () {
         });
     }
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
+        game.itemList.push({
+            name: '피라미드 입구',
+            description: '즉시 돌무더기에서 석재 1개를 가져와 피라미드에 놓습니다.'
+        });
+
+        game.itemList.push({
+            name: '석관',
+            description: '즉시 돌무더기에서 석재 1개를 가져와 묘실에 놓습니다.'
+        });
+
+        game.itemList.push({
+            name: '포장도로',
+            description: '즉시 돌무더기에서 석재 1개를 가져와 오벨리스크에 놓습니다.'
+        });
+
         game.itemList.push({
             name: '지렛대',
             description: '배 한척을 빈 항구로 옮깁니다. 석재 내리는 순서를 마음대로 바꿉니다.'
         });
 
         game.itemList.push({
-            name: '끌',
-            description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
-        });
-
-        game.itemList.push({
-            name: '돛',
-            description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
-        });
-
-        game.itemList.push({
             name: '망치',
             description: '석재 3개를 받고 석재 1개를 배 1척에 싣습니다.'
         });
+
+        if (i === 2) {
+            game.itemList.push({
+                name: '끌',
+                description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
+            });
+
+            game.itemList.push({
+                name: '돛',
+                description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
+            });
+        }
     }
 
     game.itemList = game.itemList.sort(i => Math.random() - 0.5);
@@ -1191,9 +1209,9 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			add_location(div0, file$2, 52, 16, 2175);
+    			add_location(div0, file$2, 52, 16, 2203);
     			attr_dev(div1, "class", "land");
-    			add_location(div1, file$2, 51, 12, 2140);
+    			add_location(div1, file$2, 51, 12, 2168);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -1279,9 +1297,9 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			add_location(div0, file$2, 41, 16, 1732);
+    			add_location(div0, file$2, 41, 16, 1760);
     			attr_dev(div1, "class", "land");
-    			add_location(div1, file$2, 40, 12, 1697);
+    			add_location(div1, file$2, 40, 12, 1725);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -1367,9 +1385,9 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			add_location(div0, file$2, 30, 16, 1289);
+    			add_location(div0, file$2, 30, 16, 1317);
     			attr_dev(div1, "class", "land");
-    			add_location(div1, file$2, 29, 12, 1254);
+    			add_location(div1, file$2, 29, 12, 1282);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
@@ -1483,15 +1501,15 @@ var app = (function () {
     			t8 = text(" : ");
     			t9 = text(t9_value);
     			t10 = space();
-    			add_location(div0, file$2, 17, 16, 660);
-    			add_location(div1, file$2, 18, 16, 699);
+    			add_location(div0, file$2, 17, 16, 688);
+    			add_location(div1, file$2, 18, 16, 727);
     			attr_dev(div2, "class", "wall_stone");
-    			add_location(div2, file$2, 24, 20, 941);
+    			add_location(div2, file$2, 24, 20, 969);
     			attr_dev(div3, "class", "wall_stone");
-    			add_location(div3, file$2, 25, 20, 1067);
-    			add_location(div4, file$2, 23, 16, 915);
+    			add_location(div3, file$2, 25, 20, 1095);
+    			add_location(div4, file$2, 23, 16, 943);
     			attr_dev(div5, "class", "land");
-    			add_location(div5, file$2, 16, 12, 625);
+    			add_location(div5, file$2, 16, 12, 653);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div5, anchor);
@@ -1606,14 +1624,14 @@ var app = (function () {
     			t7 = text(" :  ");
     			t8 = text(t8_value);
     			t9 = space();
-    			add_location(div0, file$2, 9, 16, 234);
+    			add_location(div0, file$2, 9, 16, 262);
     			attr_dev(div1, "class", "obelisk_stone");
-    			add_location(div1, file$2, 11, 20, 299);
+    			add_location(div1, file$2, 11, 20, 327);
     			attr_dev(div2, "class", "obelisk_stone");
-    			add_location(div2, file$2, 12, 20, 431);
-    			add_location(div3, file$2, 10, 16, 273);
+    			add_location(div2, file$2, 12, 20, 459);
+    			add_location(div3, file$2, 10, 16, 301);
     			attr_dev(div4, "class", "land");
-    			add_location(div4, file$2, 8, 12, 199);
+    			add_location(div4, file$2, 8, 12, 227);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div4, anchor);
@@ -1672,9 +1690,9 @@ var app = (function () {
     			br = element("br");
     			t1 = space();
     			t2 = text(t2_value);
-    			add_location(br, file$2, 55, 35, 2318);
+    			add_location(br, file$2, 55, 35, 2346);
     			attr_dev(div, "class", "item");
-    			add_location(div, file$2, 54, 20, 2264);
+    			add_location(div, file$2, 54, 20, 2292);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1712,7 +1730,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
     			set_style(div, "background", /*stone*/ ctx[4].color);
-    			add_location(div, file$2, 45, 28, 1935);
+    			add_location(div, file$2, 45, 28, 1963);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1758,7 +1776,7 @@ var app = (function () {
     			}
 
     			set_style(div, "height", "50px");
-    			add_location(div, file$2, 43, 20, 1827);
+    			add_location(div, file$2, 43, 20, 1855);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1818,7 +1836,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
     			set_style(div, "background", /*stone*/ ctx[4].color);
-    			add_location(div, file$2, 34, 28, 1492);
+    			add_location(div, file$2, 34, 28, 1520);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1864,7 +1882,7 @@ var app = (function () {
     			}
 
     			set_style(div, "height", "50px");
-    			add_location(div, file$2, 32, 20, 1384);
+    			add_location(div, file$2, 32, 20, 1412);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1924,7 +1942,7 @@ var app = (function () {
     			div = element("div");
     			attr_dev(div, "class", "wall_stone");
     			set_style(div, "background", /*stone*/ ctx[4].color);
-    			add_location(div, file$2, 20, 24, 784);
+    			add_location(div, file$2, 20, 24, 812);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2000,7 +2018,10 @@ var app = (function () {
     function create_fragment$2(ctx) {
     	let div1;
     	let div0;
+    	let t0_value = /*$gameStore*/ ctx[0].leftTurn + "";
+    	let t0;
     	let t1;
+    	let t2;
     	let each_value = /*$gameStore*/ ctx[0].landList;
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -2013,8 +2034,9 @@ var app = (function () {
     		c: function create() {
     			div1 = element("div");
     			div0 = element("div");
-    			div0.textContent = "7";
-    			t1 = space();
+    			t0 = text(t0_value);
+    			t1 = text("번 남았습니다.");
+    			t2 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
@@ -2031,13 +2053,17 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, div1, anchor);
     			append_dev(div1, div0);
-    			append_dev(div1, t1);
+    			append_dev(div0, t0);
+    			append_dev(div0, t1);
+    			append_dev(div1, t2);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(div1, null);
     			}
     		},
     		p: function update(ctx, [dirty]) {
+    			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*$gameStore*/ ctx[0].leftTurn + "")) set_data_dev(t0, t0_value);
+
     			if (dirty & /*$gameStore*/ 1) {
     				each_value = /*$gameStore*/ ctx[0].landList;
     				validate_each_argument(each_value);

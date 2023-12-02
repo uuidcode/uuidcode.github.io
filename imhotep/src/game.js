@@ -1,5 +1,6 @@
 const game = {
     turn: 0,
+    leftTurn: 7,
     stoneIndex: 0,
     boatIndex: 0,
     activePlayer: null,
@@ -149,26 +150,43 @@ for (let i = 0; i < 10; i++) {
     });
 }
 
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 3; i++) {
+    game.itemList.push({
+        name: '피라미드 입구',
+        description: '즉시 돌무더기에서 석재 1개를 가져와 피라미드에 놓습니다.'
+    });
+
+    game.itemList.push({
+        name: '석관',
+        description: '즉시 돌무더기에서 석재 1개를 가져와 묘실에 놓습니다.'
+    });
+
+    game.itemList.push({
+        name: '포장도로',
+        description: '즉시 돌무더기에서 석재 1개를 가져와 오벨리스크에 놓습니다.'
+    });
+
     game.itemList.push({
         name: '지렛대',
         description: '배 한척을 빈 항구로 옮깁니다. 석재 내리는 순서를 마음대로 바꿉니다.'
     });
 
     game.itemList.push({
-        name: '끌',
-        description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
-    });
-
-    game.itemList.push({
-        name: '돛',
-        description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
-    });
-
-    game.itemList.push({
         name: '망치',
         description: '석재 3개를 받고 석재 1개를 배 1척에 싣습니다.'
     });
+
+    if (i === 2) {
+        game.itemList.push({
+            name: '끌',
+            description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
+        });
+
+        game.itemList.push({
+            name: '돛',
+            description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
+        });
+    }
 }
 
 game.itemList = game.itemList.sort(i => Math.random() - 0.5);
