@@ -1,10 +1,11 @@
 <script>
     import gameStore from './gameStore.js'
     import Sortable from 'sortablejs';
-    import { afterUpdate } from 'svelte'
+    import {afterUpdate, onMount} from 'svelte'
 
     export let boat;
     let stoneList = null;
+    let element = null;
 
     const handleSortItem = e => {
         gameStore.sortStone(e, boat.index);
@@ -22,9 +23,13 @@
             });
         }
     })
+
+    onMount(() => {
+        console.log(boat);
+    })
 </script>
 
-<div class="boat" bind:this={boat.element} style="{boat.style}">
+<div class="boat" bind:this={element} style="{boat.style}">
     <div class="boat-load-max" style="width: {50 * boat.maxStone}px">
         {#each gameStore.createList(boat.maxStone) as stone, i}
             <div class="boat-stone"></div>
@@ -48,23 +53,23 @@
             <button on:click={e => gameStore.load(boat)}>싣기</button>
         {/if}
         {#if boat.canMoveToMarket}
-            <button on:click={e => gameStore.move(boat, gameStore.getMarket())}>장터</button>
+            <button on:click={e => gameStore.move(boat, element, gameStore.getMarket())}>장터</button>
         {/if}
 
         {#if boat.canMoveToPyramid}
-            <button on:click={e => gameStore.move(boat, gameStore.getPyramid())}>피라미드</button>
+            <button on:click={e => gameStore.move(boat, element, gameStore.getPyramid())}>피라미드</button>
         {/if}
 
         {#if boat.canMoveToTomb}
-            <button on:click={e => gameStore.move(boat, gameStore.getTomb())}>묘실</button>
+            <button on:click={e => gameStore.move(boat, element, gameStore.getTomb())}>묘실</button>
         {/if}
 
         {#if boat.canMoveToWall}
-            <button on:click={e => gameStore.move(boat, gameStore.getWall())}>성벽</button>
+            <button on:click={e => gameStore.move(boat, element, gameStore.getWall())}>성벽</button>
         {/if}
 
         {#if boat.canMoveToObelisk}
-            <button on:click={e => gameStore.move(boat, gameStore.getObelisk())}>오빌리스크</button>
+            <button on:click={e => gameStore.move(boat, element, gameStore.getObelisk())}>오빌리스크</button>
         {/if}
     </div>
 </div>

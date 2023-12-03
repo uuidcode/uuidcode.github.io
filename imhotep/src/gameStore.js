@@ -142,9 +142,9 @@ gameStore = {
     sleep: (ms) => {
         return new Promise(resolve => setTimeout(resolve, ms))
     },
-    move : (boat, land) => {
+    move : (boat, element, land) => {
         update(game => {
-            const top = 170 * land.index - boat.element.offsetTop + 70;
+            const top = 170 * land.index - element.offsetTop + 70;
             const left = 800 - boat.maxStone * 50;
             boat.style = `transform: translate(${left}px, ${top}px)`
             land.landed = true;
