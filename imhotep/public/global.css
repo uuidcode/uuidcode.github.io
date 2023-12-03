@@ -14,6 +14,7 @@ div {
     height: 50px;
     border: 1px solid black;
 }
+
 .board {
     display: flex;
     justify-content: flex-start;
@@ -126,7 +127,7 @@ button:hover {
 }
 
 .player-part {
-    width: 300px;
+    width: 400px;
 }
 
 .sea-part {
@@ -140,6 +141,7 @@ button:hover {
 }
 
 .player {
+    width: 400px;
     height: 450px;
 }
 

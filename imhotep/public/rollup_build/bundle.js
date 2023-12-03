@@ -565,7 +565,11 @@ var app = (function () {
                 chiselCount: 1,
                 sailCount: 1,
                 leverCount: 1,
-                stoneStatueCount: 0
+                stoneStatueCount: 0,
+                tombDecorationCount: 0,
+                obeliskDecorationCount: 0,
+                wallDecorationCount: 0,
+                pyramidDecorationCount: 0
             },
             {
                 index: 1,
@@ -579,7 +583,11 @@ var app = (function () {
                 chiselCount: 0,
                 leverCount: 0,
                 sailCount: 0,
-                stoneStatueCount: 0
+                stoneStatueCount: 0,
+                tombDecorationCount: 0,
+                obeliskDecorationCount: 0,
+                wallDecorationCount: 0,
+                pyramidDecorationCount: 0
             }
         ]
     };
@@ -642,7 +650,27 @@ var app = (function () {
         });
     }
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
+        game.itemList.push({
+            name: '오빌리스크 장식',
+            description: '오빌리스크에 놓인 석재 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+        });
+
+        game.itemList.push({
+            name: '묘실 장식',
+            description: '묘실에 놓인 석재 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+        });
+
+        game.itemList.push({
+            name: '성벽 장식',
+            description: '성벽에 놓인 석재 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+        });
+
+        game.itemList.push({
+            name: '피라미드 장식',
+            description: '피라미드에 놓인 석제 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+        });
+
         game.itemList.push({
             name: '피라미드 입구',
             description: '즉시 돌무더기에서 석재 1개를 가져와 피라미드에 놓습니다.'
@@ -667,18 +695,18 @@ var app = (function () {
             name: '망치',
             description: '석재 3개를 받고 석재 1개를 배 1척에 싣습니다.'
         });
+    }
 
-        if (i === 2) {
-            game.itemList.push({
-                name: '끌',
-                description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
-            });
+    for (let i = 0; i < 3; i++) {
+        game.itemList.push({
+            name: '끌',
+            description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
+        });
 
-            game.itemList.push({
-                name: '돛',
-                description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
-            });
-        }
+        game.itemList.push({
+            name: '돛',
+            description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
+        });
     }
 
     game.itemList = game.itemList.sort(i => Math.random() - 0.5);
@@ -826,7 +854,7 @@ var app = (function () {
         },
         move : (boat, land) => {
             update(game => {
-                const top = 170 * land.index - boat.element.offsetTop + 20;
+                const top = 170 * land.index - boat.element.offsetTop + 70;
                 const left = 800 - boat.maxStone * 50;
                 boat.style = `transform: translate(${left}px, ${top}px)`;
                 land.landed = true;
@@ -839,7 +867,7 @@ var app = (function () {
                 setTimeout(() => {
                     update(game => {
                         boat.stoneList.forEach(stone => {
-                            game.playerList[stone.playerIndex].obeliskStoneCount++;
+                            gameStore.addStoneAtObelisk(stone);
                         });
 
                         boat.stoneList = [];
@@ -881,17 +909,7 @@ var app = (function () {
                 setTimeout(() => {
                     update(game => {
                         boat.stoneList.forEach(stone => {
-                            const landStone = land.stoneList[land.currentStoneRow][land.currentStoneColumn];
-                            const currentPlayer = game.playerList[stone.playerIndex];
-                            landStone.playerIndex = stone.playerIndex;
-                            landStone.color = currentPlayer.color;
-                            currentPlayer.tombStoneCount++;
-                            land.currentStoneRow++;
-                            land.currentStoneRow = land.currentStoneRow % 3;
-
-                            if (land.currentStoneRow === 0) {
-                                land.currentStoneColumn++;
-                            }
+                            gameStore.addStoneAtTomb(stone);
                         });
 
                         boat.stoneList = [];
@@ -909,12 +927,12 @@ var app = (function () {
                             const currentPlayer = game.playerList[stone.playerIndex];
                             landStone.playerIndex = stone.playerIndex;
                             landStone.color = currentPlayer.color;
-                            currentPlayer.tombStoneCount++;
                             land.currentStoneRow++;
 
                             if (land.currentStoneColumn < 3) {
                                 land.currentStoneRow = land.currentStoneRow % 3;
-                            } else if (land.currentStoneColumn === 3 && land.currentStoneColumn === 4) {
+                            } else if (land.currentStoneColumn === 3
+                                && land.currentStoneColumn === 4) {
                                 land.currentStoneRow = land.currentStoneRow % 2;
                             }
 
@@ -947,9 +965,24 @@ var app = (function () {
                                 currentPlayer.chiselCount++;
                             } else if (item.name === '지렛대') {
                                 currentPlayer.leverCount++;
+                            } else if (item.name === '오빌리스크 장식') {
+                                currentPlayer.obeliskDecorationCount++;
+                            } else if (item.name === '묘실 장식') {
+                                currentPlayer.tombDecorationCount++;
+                            } else if (item.name === '성벽 장식') {
+                                currentPlayer.wallDecorationCount++;
+                            } else if (item.name === '피라미드 장식') {
+                                currentPlayer.pyramidDecorationCount++;
+                            } else if (item.name === '석관') {
+                                const stoneList = gameStore.createStoneList(game, currentPlayer, 1);
+                                gameStore.addStoneAtTomb(stoneList[0]);
+                            } else if (item.name === '포장도로') {
+                                const stoneList = gameStore.createStoneList(game, currentPlayer, 1);
+                                gameStore.addStoneAtObelisk(stoneList[0]);
                             }
                         });
 
+                        boat.stoneList = [];
                         gameStore.refresh(game);
                         return game;
                     });
@@ -957,6 +990,31 @@ var app = (function () {
                     gameStore.nextTurn();
                 }, 1000);
             }
+        },
+        addStoneAtObelisk: (stone) => {
+            update(game => {
+                const player = game.playerList[stone.playerIndex];
+                player.obeliskStoneCount++;
+                return game;
+            });
+        },
+        addStoneAtTomb: (stone) => {
+            update(game => {
+                const tomb = gameStore.getTomb(game);
+                const landStone = tomb.stoneList[tomb.currentStoneRow][tomb.currentStoneColumn];
+                landStone.playerIndex = stone.playerIndex;
+                const player = game.playerList[stone.playerIndex];
+                landStone.color = player.color;
+                player.tombStoneCount++;
+                tomb.currentStoneRow++;
+                tomb.currentStoneRow = tomb.currentStoneRow % 3;
+
+                if (tomb.currentStoneRow === 0) {
+                    tomb.currentStoneColumn++;
+                }
+
+                return game;
+            });
         },
         refresh: (game) => {
             game.boatList = game.boatList.map(boat => {
@@ -6221,7 +6279,7 @@ var app = (function () {
     	return block;
     }
 
-    // (53:20) {#each player.stoneList as stone, i}
+    // (59:20) {#each player.stoneList as stone, i}
     function create_each_block_2(ctx) {
     	let div;
     	let div_style_value;
@@ -6232,7 +6290,7 @@ var app = (function () {
     			attr_dev(div, "class", "player-stone");
     			attr_dev(div, "style", div_style_value = /*stone*/ ctx[13].style);
     			set_style(div, "background", /*player*/ ctx[10].color, false);
-    			add_location(div, file, 53, 24, 2012);
+    			add_location(div, file, 59, 24, 2304);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -6255,14 +6313,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(53:20) {#each player.stoneList as stone, i}",
+    		source: "(59:20) {#each player.stoneList as stone, i}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (60:20) {#if player.canGetStone}
+    // (66:20) {#if player.canGetStone}
     function create_if_block(ctx) {
     	let button;
     	let mounted;
@@ -6276,7 +6334,7 @@ var app = (function () {
     		c: function create() {
     			button = element("button");
     			button.textContent = "가져오기";
-    			add_location(button, file, 60, 24, 2299);
+    			add_location(button, file, 66, 24, 2591);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -6300,7 +6358,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(60:20) {#if player.canGetStone}",
+    		source: "(66:20) {#if player.canGetStone}",
     		ctx
     	});
 
@@ -6309,7 +6367,7 @@ var app = (function () {
 
     // (21:8) {#each $gameStore.playerList as player}
     function create_each_block_1(ctx) {
-    	let div7;
+    	let div8;
     	let div0;
     	let t0_value = /*player*/ ctx[10].name + "";
     	let t0;
@@ -6345,8 +6403,26 @@ var app = (function () {
     	let t18;
     	let div5;
     	let t19;
-    	let div6;
+    	let t20_value = /*player*/ ctx[10].pyramidDecorationCount + "";
     	let t20;
+    	let br4;
+    	let t21;
+    	let t22_value = /*player*/ ctx[10].tombDecorationCount + "";
+    	let t22;
+    	let br5;
+    	let t23;
+    	let t24_value = /*player*/ ctx[10].wallDecorationCount + "";
+    	let t24;
+    	let br6;
+    	let t25;
+    	let t26_value = /*player*/ ctx[10].obeliskDecorationCount + "";
+    	let t26;
+    	let br7;
+    	let t27;
+    	let div6;
+    	let t28;
+    	let div7;
+    	let t29;
     	let if_block0 = /*player*/ ctx[10].useTool && create_if_block_5(ctx);
     	let if_block1 = /*player*/ ctx[10].canUseHammer && create_if_block_4(ctx);
     	let if_block2 = /*player*/ ctx[10].canUseChisel && create_if_block_3(ctx);
@@ -6364,7 +6440,7 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div7 = element("div");
+    			div8 = element("div");
     			div0 = element("div");
     			t0 = text(t0_value);
     			t1 = space();
@@ -6399,15 +6475,29 @@ var app = (function () {
     			if (if_block4) if_block4.c();
     			t18 = space();
     			div5 = element("div");
+    			t19 = text("피라미드장식: ");
+    			t20 = text(t20_value);
+    			br4 = element("br");
+    			t21 = text("\n                    묘실장식: ");
+    			t22 = text(t22_value);
+    			br5 = element("br");
+    			t23 = text("\n                    성벽장식: ");
+    			t24 = text(t24_value);
+    			br6 = element("br");
+    			t25 = text("\n                    오빌리스크장식: ");
+    			t26 = text(t26_value);
+    			br7 = element("br");
+    			t27 = space();
+    			div6 = element("div");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t19 = space();
-    			div6 = element("div");
+    			t28 = space();
+    			div7 = element("div");
     			if (if_block5) if_block5.c();
-    			t20 = space();
+    			t29 = space();
     			attr_dev(div0, "class", "player-name");
     			add_location(div0, file, 22, 16, 509);
     			add_location(br0, file, 27, 66, 756);
@@ -6422,57 +6512,76 @@ var app = (function () {
     			add_location(br3, file, 45, 66, 1665);
     			attr_dev(div4, "class", "player-tool");
     			add_location(div4, file, 45, 16, 1615);
+    			add_location(br4, file, 52, 59, 1990);
+    			add_location(br5, file, 53, 54, 2049);
+    			add_location(br6, file, 54, 54, 2108);
+    			add_location(br7, file, 55, 60, 2173);
     			add_location(div5, file, 51, 16, 1925);
-    			add_location(div6, file, 58, 16, 2224);
-    			attr_dev(div7, "class", "player");
-    			toggle_class(div7, "active", /*player*/ ctx[10].active);
-    			add_location(div7, file, 21, 12, 443);
+    			add_location(div6, file, 57, 16, 2217);
+    			add_location(div7, file, 64, 16, 2516);
+    			attr_dev(div8, "class", "player");
+    			toggle_class(div8, "active", /*player*/ ctx[10].active);
+    			add_location(div8, file, 21, 12, 443);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div7, anchor);
-    			append_dev(div7, div0);
+    			insert_dev(target, div8, anchor);
+    			append_dev(div8, div0);
     			append_dev(div0, t0);
     			append_dev(div0, t1);
     			if (if_block0) if_block0.m(div0, null);
-    			append_dev(div7, t2);
-    			append_dev(div7, div1);
+    			append_dev(div8, t2);
+    			append_dev(div8, div1);
     			append_dev(div1, t3);
     			append_dev(div1, t4);
     			append_dev(div1, br0);
     			append_dev(div1, t5);
     			if (if_block1) if_block1.m(div1, null);
-    			append_dev(div7, t6);
-    			append_dev(div7, div2);
+    			append_dev(div8, t6);
+    			append_dev(div8, div2);
     			append_dev(div2, t7);
     			append_dev(div2, t8);
     			append_dev(div2, br1);
     			append_dev(div2, t9);
     			if (if_block2) if_block2.m(div2, null);
-    			append_dev(div7, t10);
-    			append_dev(div7, div3);
+    			append_dev(div8, t10);
+    			append_dev(div8, div3);
     			append_dev(div3, t11);
     			append_dev(div3, t12);
     			append_dev(div3, br2);
     			append_dev(div3, t13);
     			if (if_block3) if_block3.m(div3, null);
-    			append_dev(div7, t14);
-    			append_dev(div7, div4);
+    			append_dev(div8, t14);
+    			append_dev(div8, div4);
     			append_dev(div4, t15);
     			append_dev(div4, t16);
     			append_dev(div4, br3);
     			append_dev(div4, t17);
     			if (if_block4) if_block4.m(div4, null);
-    			append_dev(div7, t18);
-    			append_dev(div7, div5);
+    			append_dev(div8, t18);
+    			append_dev(div8, div5);
+    			append_dev(div5, t19);
+    			append_dev(div5, t20);
+    			append_dev(div5, br4);
+    			append_dev(div5, t21);
+    			append_dev(div5, t22);
+    			append_dev(div5, br5);
+    			append_dev(div5, t23);
+    			append_dev(div5, t24);
+    			append_dev(div5, br6);
+    			append_dev(div5, t25);
+    			append_dev(div5, t26);
+    			append_dev(div5, br7);
+    			append_dev(div8, t27);
+    			append_dev(div8, div6);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(div5, null);
+    				each_blocks[i].m(div6, null);
     			}
 
-    			append_dev(div7, t19);
-    			append_dev(div7, div6);
-    			if (if_block5) if_block5.m(div6, null);
-    			append_dev(div7, t20);
+    			append_dev(div8, t28);
+    			append_dev(div8, div7);
+    			if (if_block5) if_block5.m(div7, null);
+    			append_dev(div8, t29);
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*$gameStore*/ 1 && t0_value !== (t0_value = /*player*/ ctx[10].name + "")) set_data_dev(t0, t0_value);
@@ -6550,6 +6659,11 @@ var app = (function () {
     				if_block4 = null;
     			}
 
+    			if (dirty & /*$gameStore*/ 1 && t20_value !== (t20_value = /*player*/ ctx[10].pyramidDecorationCount + "")) set_data_dev(t20, t20_value);
+    			if (dirty & /*$gameStore*/ 1 && t22_value !== (t22_value = /*player*/ ctx[10].tombDecorationCount + "")) set_data_dev(t22, t22_value);
+    			if (dirty & /*$gameStore*/ 1 && t24_value !== (t24_value = /*player*/ ctx[10].wallDecorationCount + "")) set_data_dev(t24, t24_value);
+    			if (dirty & /*$gameStore*/ 1 && t26_value !== (t26_value = /*player*/ ctx[10].obeliskDecorationCount + "")) set_data_dev(t26, t26_value);
+
     			if (dirty & /*$gameStore*/ 1) {
     				each_value_2 = /*player*/ ctx[10].stoneList;
     				validate_each_argument(each_value_2);
@@ -6563,7 +6677,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block_2(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(div5, null);
+    						each_blocks[i].m(div6, null);
     					}
     				}
 
@@ -6580,7 +6694,7 @@ var app = (function () {
     				} else {
     					if_block5 = create_if_block(ctx);
     					if_block5.c();
-    					if_block5.m(div6, null);
+    					if_block5.m(div7, null);
     				}
     			} else if (if_block5) {
     				if_block5.d(1);
@@ -6588,11 +6702,11 @@ var app = (function () {
     			}
 
     			if (dirty & /*$gameStore*/ 1) {
-    				toggle_class(div7, "active", /*player*/ ctx[10].active);
+    				toggle_class(div8, "active", /*player*/ ctx[10].active);
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div7);
+    			if (detaching) detach_dev(div8);
     			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
     			if (if_block2) if_block2.d();
@@ -6614,7 +6728,7 @@ var app = (function () {
     	return block;
     }
 
-    // (68:8) {#each $gameStore.boatList as boat, boatIndex}
+    // (74:8) {#each $gameStore.boatList as boat, boatIndex}
     function create_each_block(ctx) {
     	let boat;
     	let current;
@@ -6655,7 +6769,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(68:8) {#each $gameStore.boatList as boat, boatIndex}",
+    		source: "(74:8) {#each $gameStore.boatList as boat, boatIndex}",
     		ctx
     	});
 
@@ -6713,7 +6827,7 @@ var app = (function () {
     			attr_dev(div0, "class", "part player-part");
     			add_location(div0, file, 19, 4, 352);
     			attr_dev(div1, "class", "part sea-part");
-    			add_location(div1, file, 66, 4, 2475);
+    			add_location(div1, file, 72, 4, 2767);
     			attr_dev(div2, "class", "board");
     			add_location(div2, file, 18, 0, 328);
     		},

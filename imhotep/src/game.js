@@ -73,7 +73,11 @@ const game = {
             chiselCount: 1,
             sailCount: 1,
             leverCount: 1,
-            stoneStatueCount: 0
+            stoneStatueCount: 0,
+            tombDecorationCount: 0,
+            obeliskDecorationCount: 0,
+            wallDecorationCount: 0,
+            pyramidDecorationCount: 0
         },
         {
             index: 1,
@@ -87,7 +91,11 @@ const game = {
             chiselCount: 0,
             leverCount: 0,
             sailCount: 0,
-            stoneStatueCount: 0
+            stoneStatueCount: 0,
+            tombDecorationCount: 0,
+            obeliskDecorationCount: 0,
+            wallDecorationCount: 0,
+            pyramidDecorationCount: 0
         }
     ]
 }
@@ -150,7 +158,27 @@ for (let i = 0; i < 10; i++) {
     });
 }
 
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < 2; i++) {
+    game.itemList.push({
+        name: '오빌리스크 장식',
+        description: '오빌리스크에 놓인 석재 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+    });
+
+    game.itemList.push({
+        name: '묘실 장식',
+        description: '묘실에 놓인 석재 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+    });
+
+    game.itemList.push({
+        name: '성벽 장식',
+        description: '성벽에 놓인 석재 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+    });
+
+    game.itemList.push({
+        name: '피라미드 장식',
+        description: '피라미드에 놓인 석제 3개당 1점을 얻습니다.(모든 플레이어의 석재를 합쳐서 계산합니다.)'
+    });
+
     game.itemList.push({
         name: '피라미드 입구',
         description: '즉시 돌무더기에서 석재 1개를 가져와 피라미드에 놓습니다.'
@@ -175,18 +203,18 @@ for (let i = 0; i < 3; i++) {
         name: '망치',
         description: '석재 3개를 받고 석재 1개를 배 1척에 싣습니다.'
     });
+}
 
-    if (i === 2) {
-        game.itemList.push({
-            name: '끌',
-            description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
-        });
+for (let i = 0; i < 3; i++) {
+    game.itemList.push({
+        name: '끌',
+        description: '배 1척에 석재 2개를 싣습니다. 배 2척에 각각 석재 1개를 싣습니다.'
+    });
 
-        game.itemList.push({
-            name: '돛',
-            description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
-        });
-    }
+    game.itemList.push({
+        name: '돛',
+        description: '배 1척에 석재 1개를 싣고 그 배를 항구로 보냅니다.'
+    });
 }
 
 game.itemList = game.itemList.sort(i => Math.random() - 0.5);

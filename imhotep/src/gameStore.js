@@ -144,7 +144,7 @@ gameStore = {
     },
     move : (boat, land) => {
         update(game => {
-            const top = 170 * land.index - boat.element.offsetTop + 20;
+            const top = 170 * land.index - boat.element.offsetTop + 70;
             const left = 800 - boat.maxStone * 50;
             boat.style = `transform: translate(${left}px, ${top}px)`
             land.landed = true;
@@ -157,7 +157,7 @@ gameStore = {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
-                        game.playerList[stone.playerIndex].obeliskStoneCount++;
+                        gameStore.addStoneAtObelisk(stone);
                     });
 
                     boat.stoneList = [];
@@ -199,17 +199,7 @@ gameStore = {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
-                        const landStone = land.stoneList[land.currentStoneRow][land.currentStoneColumn];
-                        const currentPlayer = game.playerList[stone.playerIndex];
-                        landStone.playerIndex = stone.playerIndex;
-                        landStone.color = currentPlayer.color;
-                        currentPlayer.tombStoneCount++;
-                        land.currentStoneRow++;
-                        land.currentStoneRow = land.currentStoneRow % 3;
-
-                        if (land.currentStoneRow === 0) {
-                            land.currentStoneColumn++;
-                        }
+                        gameStore.addStoneAtTomb(stone);
                     });
 
                     boat.stoneList = [];
@@ -227,12 +217,12 @@ gameStore = {
                         const currentPlayer = game.playerList[stone.playerIndex];
                         landStone.playerIndex = stone.playerIndex;
                         landStone.color = currentPlayer.color;
-                        currentPlayer.tombStoneCount++;
                         land.currentStoneRow++;
 
                         if (land.currentStoneColumn < 3) {
                             land.currentStoneRow = land.currentStoneRow % 3;
-                        } else if (land.currentStoneColumn === 3 && land.currentStoneColumn === 4) {
+                        } else if (land.currentStoneColumn === 3
+                            && land.currentStoneColumn === 4) {
                             land.currentStoneRow = land.currentStoneRow % 2;
                         }
 
@@ -265,9 +255,24 @@ gameStore = {
                             currentPlayer.chiselCount++;
                         } else if (item.name === '지렛대') {
                             currentPlayer.leverCount++;
+                        } else if (item.name === '오빌리스크 장식') {
+                            currentPlayer.obeliskDecorationCount++;
+                        } else if (item.name === '묘실 장식') {
+                            currentPlayer.tombDecorationCount++;
+                        } else if (item.name === '성벽 장식') {
+                            currentPlayer.wallDecorationCount++;
+                        } else if (item.name === '피라미드 장식') {
+                            currentPlayer.pyramidDecorationCount++;
+                        } else if (item.name === '석관') {
+                            const stoneList = gameStore.createStoneList(game, currentPlayer, 1);
+                            gameStore.addStoneAtTomb(stoneList[0]);
+                        } else if (item.name === '포장도로') {
+                            const stoneList = gameStore.createStoneList(game, currentPlayer, 1);
+                            gameStore.addStoneAtObelisk(stoneList[0]);
                         }
                     });
 
+                    boat.stoneList = [];
                     gameStore.refresh(game);
                     return game;
                 });
@@ -275,6 +280,31 @@ gameStore = {
                 gameStore.nextTurn();
             }, 1000);
         }
+    },
+    addStoneAtObelisk: (stone) => {
+        update(game => {
+            const player = game.playerList[stone.playerIndex];
+            player.obeliskStoneCount++;
+            return game;
+        })
+    },
+    addStoneAtTomb: (stone) => {
+        update(game => {
+            const tomb = gameStore.getTomb(game);
+            const landStone = tomb.stoneList[tomb.currentStoneRow][tomb.currentStoneColumn];
+            landStone.playerIndex = stone.playerIndex;
+            const player = game.playerList[stone.playerIndex];
+            landStone.color = player.color;
+            player.tombStoneCount++;
+            tomb.currentStoneRow++;
+            tomb.currentStoneRow = tomb.currentStoneRow % 3;
+
+            if (tomb.currentStoneRow === 0) {
+                tomb.currentStoneColumn++;
+            }
+
+            return game;
+        });
     },
     refresh: (game) => {
         game.boatList = game.boatList.map(boat => {

@@ -50,6 +50,12 @@ gameStore.init();
                     {/if}
                 </div>
                 <div>
+                    피라미드장식: {player.pyramidDecorationCount}<br>
+                    묘실장식: {player.tombDecorationCount}<br>
+                    성벽장식: {player.wallDecorationCount}<br>
+                    오빌리스크장식: {player.obeliskDecorationCount}<br>
+                </div>
+                <div>
                     {#each player.stoneList as stone, i}
                         <div class="player-stone"
                              style:background={player.color}
