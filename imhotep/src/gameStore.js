@@ -21,15 +21,20 @@ gameStore = {
                 })
 
             game.boatList = gameStore.createBoat();
-
-            for (let i = 0; i < 4; i++) {
-                gameStore.getMarket(game).itemList.push(game.itemList.pop());
-            }
-
+            gameStore.resetItem(game);
             gameStore.refresh(game);
 
             return game;
         });
+    },
+    resetItem: (game) => {
+        const market = gameStore.getMarket(game);
+
+        market.itemList = [];
+
+        for (let i = 0; i < 4; i++) {
+            market.itemList.push(game.itemList.pop());
+        }
     },
     sortStone: (e, boatIndex) => {
         update(game => {
@@ -153,7 +158,7 @@ gameStore = {
             return game;
         });
 
-        if (land.index === 4) {
+        if (land.name === '오벨리스크') {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
@@ -167,7 +172,7 @@ gameStore = {
 
                 gameStore.nextTurn();
             }, 1000);
-        } else if (land.index === 3) {
+        } else if (land.name === '성벽') {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
@@ -195,7 +200,7 @@ gameStore = {
 
                 gameStore.nextTurn();
             }, 1000);
-        } else if (land.index === 2) {
+        } else if (land.name === '묘실') {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
@@ -209,7 +214,7 @@ gameStore = {
 
                 gameStore.nextTurn();
             }, 1000);
-        } else if (land.index === 1) {
+        } else if (land.name === '피라미드') {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
@@ -238,7 +243,7 @@ gameStore = {
 
                 gameStore.nextTurn();
             }, 1000);
-        } else if (land.index === 0) {
+        } else if (land.name === '장터') {
             setTimeout(() => {
                 update(game => {
                     boat.stoneList.forEach(stone => {
@@ -271,6 +276,7 @@ gameStore = {
                             gameStore.addStoneAtObelisk(stoneList[0]);
                         }
                     });
+
 
                     boat.stoneList = [];
                     gameStore.refresh(game);
@@ -457,8 +463,8 @@ gameStore = {
         update(game => {
             if (game.boatList.filter(boat => !boat.landed).length === 0) {
                 game.boatList = gameStore.createBoat();
-
                 game.landList.forEach(land => land.landed = false);
+                gameStore.resetItem(game);
             }
 
             game.turn = game.turn + 1;
