@@ -157,6 +157,26 @@
 </div>
 <div class="container" style="padding: 60px 0">
 <pre>
+<h2>20231212</h2>
+<xmp>
+private static String replaceOnEvent(String text) {
+    return RegExReplaceBuilder.of()
+        .setFlags(CASE_INSENSITIVE)
+        .setText(text)
+        .setPattern("(<)(.*?)(on)([a-zA-Z]{3,20})=(.*?)(>)")
+        .setMapper(matcher -> {
+            String on = matcher.group(3);
+            String event = matcher.group(4);
+            return matcher.group(1) +
+                matcher.group(2) +
+                "_" + on + event + "=" +
+                matcher.group(5) +
+                matcher.group(6);
+        })
+        .build();
+}
+</xmp>
+
 <h2>20231208</h2>
 
 <img src="../i/20231208.png">
