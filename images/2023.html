@@ -1,160 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head><title>uuidcode</title>
-    <meta charset="utf-8"/>
-    <meta http-equiv="Cache-Control" content="no-cache"/>
-    <meta http-equiv="Expires" content="0"/>
-    <meta http-equiv="Pragma" content="no-cache"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
-    <link href="../bootstrap/css/bootstrap.css" rel="stylesheet"/>
-    <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet"/>
-    <link href="../css/shCore.css" rel="stylesheet"/>
-    <link href="../css/shThemeDefault.css" rel="stylesheet"/>
-    <script src="../bootstrap/js/jquery.js"></script>
-    <script src="../bootstrap/js/bootstrap-dropdown.js"></script>
-    <script src="../jqueryrolling/jquery.rolling.js"></script>
-    <script src="../interpark/jquery/lib/jquery/jquery.easydrag.js"></script>
-    <script src="../virtualform/json2.js"></script>
-    <script src="../virtualform/jquery.virtualform-0.1.js"></script>
-    <script src="../js/shCore.js"></script>
-    <script src="../js/shBrushJava.js"></script>
-    <script src="../js/shBrushSql.js"></script>
-    <script src="../js/shBrushPhp.js"></script>
-    <script src="../js/shBrushXml.js"></script>
-    <style type="text/css">
-        .navbar-fixed-top {
-            margin-bottom: 20px;
-        }
-    </style>
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <script src="../js/youtube.js?v=1"></script>
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+<!DOCTYPE html><html lang="en"><head><title>uuidcode</title>
+<meta charset="utf-8" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<link href="../bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+<link href="../css/shCore.css" rel="stylesheet" />
+<link href="../css/shThemeDefault.css" rel="stylesheet" />
+<script src="../bootstrap/js/jquery.js"></script>
+<script src="../bootstrap/js/bootstrap-dropdown.js"></script>
+<script src="../jqueryrolling/jquery.rolling.js"></script>
+<script src="../interpark/jquery/lib/jquery/jquery.easydrag.js"></script>
+<script src="../virtualform/json2.js"></script>
+<script src="../virtualform/jquery.virtualform-0.1.js"></script>
+<script src="../js/shCore.js"></script>
+<script src="../js/shBrushJava.js"></script>
+<script src="../js/shBrushSql.js"></script>
+<script src="../js/shBrushPhp.js"></script>
+<script src="../js/shBrushXml.js"></script>
+<style type="text/css">
+    .navbar-fixed-top {
+        margin-bottom: 20px;
+    }
+</style>
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src="../js/youtube.js?v=1"></script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-        ga('create', 'UA-49038982-1', 'uuidcode.github.io');
-        ga('send', 'pageview');
+    ga('create', 'UA-49038982-1', 'uuidcode.github.io');
+    ga('send', 'pageview');
 
-    </script>
-    <script type="text/javascript">
-        jQuery(function () {
-            SyntaxHighlighter.all()
-        });
-    </script>
-</head>
+</script>
+<script type="text/javascript">
+    jQuery(function () {
+        SyntaxHighlighter.all()
+    });
+</script></head>
 <body class="none">
-<div class="navbar navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <div class="nav">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Diary <b
-                            class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/images/2023.html">2023</a></li>
-                        <li><a href="/images/2022.html">2022</a></li>
-                        <li><a href="/images/2021.html">2021</a></li>
-                        <li><a href="/images/2020.html">2020</a></li>
-                        <li><a href="/images/2019.html">2019</a></li>
-                        <li><a href="/images/2018.html">2018</a></li>
-                        <li><a href="/images/2017.html">2017</a></li>
-                        <li><a href="/images/2016.html">2016</a></li>
-                        <li><a href="/images/2015.html">2015</a></li>
-                        <li><a href="/images/2014.html">2014</a></li>
-                        <li><a href="/images/2013.html">2013</a></li>
-                        <li><a href="/images/2012.html">2012</a></li>
-                        <li><a href="/images/2011.html">2011</a></li>
-                        <li><a href="/images/2010.html">2010</a></li>
-                        <li><a href="/images/2009.html">2009</a></li>
-                        <li><a href="/images/2008.html">2008</a></li>
-                        <li><a href="/images/2007.html">2007</a></li>
-                        <li><a href="/images/2006.html">2006</a></li>
-                        <li><a href="/images/2005.html">2005</a></li>
-                        <li><a href="/images/2004.html">2004</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming III<b
-                            class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/redux/index.html">Redux class base action middleware</a></li>
-                        <li><a href="/generateAssertJ/index.html">Generate AssertJ Plugin</a></li>
-                        <li><a href="/antlr4/index.html">antlr4 + querydsl</a></li>
-                        <li><a href="/querydsl/index.html">querydsl</a></li>
-                        <li><a href="/deployable/deployable.html">deployable</a></li>
-                        <li><a href="/people/people.html">people</a></li>
-                        <li><a href="/at/at.html">@</a></li>
-                        <li><a href="/worksheet2/index.html" target="_blank">Worksheet</a></li>
-                        <li><a href="/codegen/codegen.html">CodeGen</a></li>
-                        <li><a href="/virtualform/test.html">VirtualForm</a></li>
-                        <li>
-                            <a href="https://market.android.com/details?id=songsungkyun.MemoryTester&feature=search_result"
-                               target="_blank">MemoryTester</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming II<b
-                            class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/interpark/VSF.html">VSF</a></li>
-                        <li><a href="/interpark/BatchMonitor.html">BatchMonitor</a></li>
-                        <li><a href="/interpark/XPathTest.html">XPathTest</a></li>
-                        <li><a href="/interpark/CodecTest.html">CodecTest</a></li>
-                        <li><a href="/interpark/cronViewer.html">Cron Viewer</a></li>
-                        <li><a href="/interpark/noname.html">No name</a></li>
-                        <li><a href="/interpark/MiltiTools.html">MiltiTools</a></li>
-                        <li><a href="/programming/programming.html">Programming</a></li>
-                        <li><a href="/jqueryrolling/index.html">JQuery rolling</a></li>
-                        <li><a href="/interpark/SocketDebugger.html">Socket Debugger</a></li>
-                        <li><a href="/interpark/PacketCapture.html">Packet Capture</a></li>
-                        <li><a href="/interpark/JavaServiceManager.html">Java Service Manager</a>
-                        </li>
-                        <li><a href="/interpark/MetaObject.html">MetaObject</a></li>
-                        <li><a href="/interpark/osop.html">OSOP</a></li>
-                        <li><a href="http://sourceforge.net/projects/berimbautab/" target="_blank">Berimbau
-                            Tab</a></li>
-                        <li><a href="/interpark/caruru.html">Caruru</a></li>
-                        <li><a href="/interpark/notaden.html">Notaden</a></li>
-                        <li><a href="/interpark/dmt.html">DMT</a></li>
-                        <li><a href="/interpark/mole.html">Mole</a></li>
-                        <li><a href="/interpark/poaching.html">Poaching</a></li>
-                        <li><a href="/interpark/hostEditor.html">HostEditor</a></li>
-                        <li><a href="/interpark/fileSynchronizer.html">FileSynchronizer</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming I<b
-                            class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/interpark/AStar.html">A*</a></li>
-                        <li><a href="/interpark/bead.html">Bead</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Repository <b
-                            class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="../music/music.html">music</a></li>
-                    </ul>
-                </li>
-            </div>
+<div class="navbar navbar-fixed-top"><div class="navbar-inner">
+    <div class="container">
+        <div class="nav">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Diary <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/images/2024.html">2023</a></li>
+                    <li><a href="/images/2023.html">2023</a></li>
+                    <li><a href="/images/2022.html">2022</a></li>
+                    <li><a href="/images/2021.html">2021</a></li>
+                    <li><a href="/images/2020.html">2020</a></li>
+                    <li><a href="/images/2019.html">2019</a></li>
+                    <li><a href="/images/2018.html">2018</a></li>
+                    <li><a href="/images/2017.html">2017</a></li>
+                    <li><a href="/images/2016.html">2016</a></li>
+                    <li><a href="/images/2015.html">2015</a></li>
+                    <li><a href="/images/2014.html">2014</a></li>
+                    <li><a href="/images/2013.html">2013</a></li>
+                    <li><a href="/images/2012.html">2012</a></li>
+                    <li><a href="/images/2011.html">2011</a></li>
+                    <li><a href="/images/2010.html">2010</a></li>
+                    <li><a href="/images/2009.html">2009</a></li>
+                    <li><a href="/images/2008.html">2008</a></li>
+                    <li><a href="/images/2007.html">2007</a></li>
+                    <li><a href="/images/2006.html">2006</a></li>
+                    <li><a href="/images/2005.html">2005</a></li>
+                    <li><a href="/images/2004.html">2004</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming III<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/redux/index.html">Redux class base action middleware</a></li>
+                    <li><a href="/generateAssertJ/index.html">Generate AssertJ Plugin</a></li>
+                    <li><a href="/antlr4/index.html">antlr4 + querydsl</a></li>
+                    <li><a href="/querydsl/index.html">querydsl</a></li>
+                    <li><a href="/deployable/deployable.html">deployable</a></li>
+                    <li><a href="/people/people.html">people</a></li>
+                    <li><a href="/at/at.html">@</a></li>
+                    <li><a href="/worksheet2/index.html" target="_blank">Worksheet</a></li>
+                    <li><a href="/codegen/codegen.html">CodeGen</a></li>
+                    <li><a href="/virtualform/test.html">VirtualForm</a></li>
+                    <li><a href="https://market.android.com/details?id=songsungkyun.MemoryTester&feature=search_result" target="_blank">MemoryTester</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming II<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/interpark/VSF.html">VSF</a></li>
+                    <li><a href="/interpark/BatchMonitor.html">BatchMonitor</a></li>
+                    <li><a href="/interpark/XPathTest.html">XPathTest</a></li>
+                    <li><a href="/interpark/CodecTest.html">CodecTest</a></li>
+                    <li><a href="/interpark/cronViewer.html">Cron Viewer</a></li>
+                    <li><a href="/interpark/noname.html">No name</a></li>
+                    <li><a href="/interpark/MiltiTools.html">MiltiTools</a></li>
+                    <li><a href="/programming/programming.html">Programming</a></li>
+                    <li><a href="/jqueryrolling/index.html">JQuery rolling</a></li>
+                    <li><a href="/interpark/SocketDebugger.html">Socket Debugger</a></li>
+                    <li><a href="/interpark/PacketCapture.html">Packet Capture</a></li>
+                    <li><a href="/interpark/JavaServiceManager.html">Java Service Manager</a></li>
+                    <li><a href="/interpark/MetaObject.html">MetaObject</a></li>
+                    <li><a href="/interpark/osop.html">OSOP</a></li>
+                    <li><a href="http://sourceforge.net/projects/berimbautab/" target="_blank">Berimbau Tab</a></li>
+                    <li><a href="/interpark/caruru.html">Caruru</a></li>
+                    <li><a href="/interpark/notaden.html">Notaden</a></li>
+                    <li><a href="/interpark/dmt.html">DMT</a></li>
+                    <li><a href="/interpark/mole.html">Mole</a></li>
+                    <li><a href="/interpark/poaching.html">Poaching</a></li>
+                    <li><a href="/interpark/hostEditor.html">HostEditor</a></li>
+                    <li><a href="/interpark/fileSynchronizer.html">FileSynchronizer</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Programming I<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/interpark/AStar.html">A*</a></li>
+                    <li><a href="/interpark/bead.html">Bead</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Repository <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../music/music.html">music</a></li>
+                </ul>
+            </li>
         </div>
     </div>
-</div>
+</div></div>
 <div class="container" style="padding: 60px 0">
 <pre>
 <h2>20231231</h2>
@@ -167,67 +147,67 @@
 
 <h2>20231227</h2>
 
-<img src="../i/20231227.png">
+<img src="../i/20231227.png" />
 
 <h2>20231226</h2>
 
-<img src="../i/20231226.png">
+<img src="../i/20231226.png" />
 
 <h2>20231225</h2>
 
-<img src="../i/20231225.png">
+<img src="../i/20231225.png" />
 
 <h2>20231224</h2>
 
-<img src="../i/20231224.png">
+<img src="../i/20231224.png" />
 
 <h2>20231223</h2>
 
-<img src="../i/20231223.png">
+<img src="../i/20231223.png" />
 
 <h2>20231222</h2>
 
-<img src="../i/20231222.png">
+<img src="../i/20231222.png" />
 
 <h2>20231221</h2>
 
-<img src="../i/20231221.png">
+<img src="../i/20231221.png" />
 
 <h2>20231220</h2>
 
-<img src="../i/20231220.png">
+<img src="../i/20231220.png" />
 
 <h2>20231219</h2>
 
-<img src="../i/20231219.png">
+<img src="../i/20231219.png" />
 
 <h2>20231218</h2>
 
-<img src="../i/20231218.png">
+<img src="../i/20231218.png" />
 
 <h2>20231217</h2>
 
-<img src="../i/20231217.png">
+<img src="../i/20231217.png" />
 
 <h2>20231216</h2>
 
-<img src="../i/20231216.png">
+<img src="../i/20231216.png" />
 
 <h2>20231215</h2>
 
-<img src="../i/20231215.png">
+<img src="../i/20231215.png" />
 
 <h2>20231214</h2>
 
-<img src="../i/20231214.png">
+<img src="../i/20231214.png" />
 
 <h2>20231213</h2>
 
-<img src="../i/20231213.png">
+<img src="../i/20231213.png" />
 
 <h2>20231212</h2>
 
-<img src="../i/20231212.png">
+<img src="../i/20231212.png" />
 
 <xmp>
 private static String replaceOnEvent(String text) {
@@ -250,149 +230,149 @@ private static String replaceOnEvent(String text) {
 
 <h2>20231211</h2>
 
-<img src="../i/20231211.png">
+<img src="../i/20231211.png" />
 
 <h2>20231210</h2>
 
-<img src="../i/20231210.png">
+<img src="../i/20231210.png" />
 
 <h2>20231209</h2>
 
-<img src="../i/20231209.png">
+<img src="../i/20231209.png" />
 
 <h2>20231208</h2>
 
-<img src="../i/20231208.png">
+<img src="../i/20231208.png" />
 
 <h2>20231207</h2>
 
-<img src="../i/20231207.png">
+<img src="../i/20231207.png" />
 
 <h2>20231206</h2>
 
-<img src="../i/20231206.png">
+<img src="../i/20231206.png" />
 
 <h2>20231205</h2>
 
-<img src="../i/20231205.png">
+<img src="../i/20231205.png" />
 
 <h2>20231204</h2>
 
-<img src="../i/20231204.png">
+<img src="../i/20231204.png" />
 
 <h2>20231203</h2>
 
-<img src="../i/20231203.png">
+<img src="../i/20231203.png" />
 
 <h2>20231202</h2>
 
-<img src="../i/20231202.png">
+<img src="../i/20231202.png" />
 
 <h2>20231201</h2>
 
-<img src="../i/20231201.png">
+<img src="../i/20231201.png" />
 
 <a href="https://www.youtube.com/watch?v=LW9U_MC1OEM" target="_blank">https://www.youtube.com/watch?v=LW9U_MC1OEM</a>
 
 <h2>20231130</h2>
 
-<img src="../i/20231130.png">
+<img src="../i/20231130.png" />
 
 <a href="https://mermaid.js.org/intro/getting-started.html" target="_blank">https://mermaid.js.org/intro/getting-started.html</a>
 
 <h2>20231129</h2>
 
-<img src="../i/20231129.png">
+<img src="../i/20231129.png" />
 
 <a href="https://github.com/SortableJS/Sortable/issues/1447" target="_blank">https://github.com/SortableJS/Sortable/issues/1447</a>
 
 <h2>20231128</h2>
 
-<img src="../i/20231128.png">
+<img src="../i/20231128.png" />
 
 <a href="https://github.com/SortableJS/Sortable" target="_blank">https://github.com/SortableJS/Sortable</a>
 
 <h2>20231126</h2>
 
-<img src="../i/20231126.png">
+<img src="../i/20231126.png" />
 
 <h2>20231125</h2>
 
-<img src="../i/20231125.png">
+<img src="../i/20231125.png" />
 
 <h2>20231124</h2>
 
-<img src="../i/20231124.png">
+<img src="../i/20231124.png" />
 
 <h2>20231123</h2>
 
-<img src="../i/20231123.png">
+<img src="../i/20231123.png" />
 
 It's only a matter of time before they know it.
 
 <h2>20231122</h2>
 
-<img src="../i/20231122.png">
+<img src="../i/20231122.png" />
 
 <h2>20231121</h2>
 
-<img src="../i/20231121.png">
+<img src="../i/20231121.png" />
 
-<img src="../i/20231121_01.png">
+<img src="../i/20231121_01.png" />
 
 <h2>20231120</h2>
 
-<img src="../i/20231120.png">
+<img src="../i/20231120.png" />
 
 <h2>20231119</h2>
 
-<img src="../i/20231119.png">
+<img src="../i/20231119.png" />
 
 <h2>20231118</h2>
 
-<img src="../i/20231118.png">
+<img src="../i/20231118.png" />
 
 <h2>20231117</h2>
 
-<img src="../i/20231117.png">
+<img src="../i/20231117.png" />
 
-<img src="../i/20231117_01.png">
+<img src="../i/20231117_01.png" />
 
 <h2>20231116</h2>
 
-<img src="../i/20231116.png">
+<img src="../i/20231116.png" />
 
 <h2>20231115</h2>
 
-<img src="../i/20231115.png">
+<img src="../i/20231115.png" />
 
-<img src="../i/20231115_01.png">
+<img src="../i/20231115_01.png" />
 
 She lives vicariously through videos.
 
 <h2>20231114</h2>
 
-<img src="../i/20231114.png">
+<img src="../i/20231114.png" />
 
 <h2>20231113</h2>
 
-<img src="../i/20231113.png">
+<img src="../i/20231113.png" />
 
 <h2>20231111</h2>
 
-<img src="../i/20231111.png">
+<img src="../i/20231111.png" />
 
 <h2>20231109</h2>
 
-<img src="../i/20231109.png">
+<img src="../i/20231109.png" />
 
-<img src="../i/20231109_01.png">
+<img src="../i/20231109_01.png" />
 
 What on earth Why do I do a such thing?
 
 <h2>20231108</h2>
 
-<img src="../i/20231108.png">
+<img src="../i/20231108.png" />
 
 I'm good with faces.
 He isn't good with his hands.
@@ -400,11 +380,11 @@ I'm good at cooking.
 
 <h2>20231107</h2>
 
-<img src="../i/20231107.png">
+<img src="../i/20231107.png" />
 
 <h2>20231106</h2>
 
-<img src="../i/20231106.png">
+<img src="../i/20231106.png" />
 
 It seems to be fair, if you ask me.
 If you ask me, it's a rip-off.
@@ -413,35 +393,35 @@ Would you stop grilling me, please.
 
 <h2>20231105</h2>
 
-<img src="../i/20231105.png">
+<img src="../i/20231105.png" />
 
 <h2>20231104</h2>
 
-<img src="../i/20231104.png">
+<img src="../i/20231104.png" />
 
-<img src="../i/20231104_01.png">
+<img src="../i/20231104_01.png" />
 
 docker system df -v
 docker history
 
 <h2>20231103</h2>
 
-<img src="../i/20231103.png">
+<img src="../i/20231103.png" />
 
-<img src="../i/20231103_01.png">
+<img src="../i/20231103_01.png" />
 
 <h2>20231102</h2>
 
-<img src="../i/20231102.png">
+<img src="../i/20231102.png" />
 
-<img src="../i/20231102_01.png">
+<img src="../i/20231102_01.png" />
 
 
 He received a standing ovation from the audience.
 
 <h2>20231101</h2>
 
-<img src="../i/20231101.png">
+<img src="../i/20231101.png" />
 
 He described the relationship was as firm as it has ever been.
 
@@ -449,203 +429,203 @@ All problems in computer science can be solved by another level of indirection  
 
 <h2>20231031</h2>
 
-<img src="../i/20231031.png">
+<img src="../i/20231031.png" />
 
 <h2>20231030</h2>
 
-<img src="../i/20231030.png">
+<img src="../i/20231030.png" />
 
 <h2>20231029</h2>
 
-<img src="../i/20231029.png">
+<img src="../i/20231029.png" />
 
 <h2>20231028</h2>
 
-<img src="../i/20231028.png">
+<img src="../i/20231028.png" />
 
 <h2>20231027</h2>
 
-<img src="../i/20231027.png">
+<img src="../i/20231027.png" />
 
 <h2>20231026</h2>
 
-<img src="../i/20231026.png">
+<img src="../i/20231026.png" />
 
 <h2>20231025</h2>
 
-<img src="../i/20231025.png">
+<img src="../i/20231025.png" />
 
 <h2>20231024</h2>
 
-<img src="../i/20231024.png">
+<img src="../i/20231024.png" />
 
 <h2>20231023</h2>
 
-<img src="../i/20231023.png">
+<img src="../i/20231023.png" />
 
 <a href="https://github.com/JFormDesigner/FlatLaf/tree/main/flatlaf-swingx" target="_blank">https://github.com/JFormDesigner/FlatLaf/tree/main/flatlaf-swingx</a>
 
 <h2>20231022</h2>
 
-<img src="../i/20231022.png">
+<img src="../i/20231022.png" />
 
-<img src="../i/20231022_01.png">
+<img src="../i/20231022_01.png" />
 
 <h2>20231021</h2>
 
-<img src="../i/20231021.png">
+<img src="../i/20231021.png" />
 
 <h2>20231020</h2>
 
-<img src="../i/20231020.png">
+<img src="../i/20231020.png" />
 
 <h2>20231019</h2>
 
-<img src="../i/20231019.png">
+<img src="../i/20231019.png" />
 
 <h2>20231018</h2>
 
-<img src="../i/20231018.png">
+<img src="../i/20231018.png" />
 
 <h2>20231017</h2>
 
-<img src="../i/20231017.png">
+<img src="../i/20231017.png" />
 
 <h2>20231016</h2>
 
-<img src="../i/20231016.png">
+<img src="../i/20231016.png" />
 
 <h2>20231015</h2>
 
-<img src="../i/20231015.png">
+<img src="../i/20231015.png" />
 
 <h2>20231014</h2>
 
-<img src="../i/20231014.png">
+<img src="../i/20231014.png" />
 
-<img src="../i/20231014_01.png">
+<img src="../i/20231014_01.png" />
 
-<img src="../i/20231014_02.png">
+<img src="../i/20231014_02.png" />
 
 <h2>20231013</h2>
 
-<img src="../i/20231013.png">
+<img src="../i/20231013.png" />
 
 <h2>20231012</h2>
 
-<img src="../i/20231012.png">
+<img src="../i/20231012.png" />
 
 <h2>20231011</h2>
 
-<img src="../i/20231011.png">
+<img src="../i/20231011.png" />
 
 <h2>20231010</h2>
 
-<img src="../i/20231010.png">
+<img src="../i/20231010.png" />
 
-<img src="../i/20231010_01.png">
+<img src="../i/20231010_01.png" />
 
 <h2>20231009</h2>
 
-<img src="../i/20231009.png">
+<img src="../i/20231009.png" />
     
 <h2>20231008</h2>
 
-<img src="../i/20231008.png">
+<img src="../i/20231008.png" />
 
-<img src="../i/20231008_01.png">
+<img src="../i/20231008_01.png" />
 
 <h2>20231007</h2>
 
-<img src="../i/20231007.png">
+<img src="../i/20231007.png" />
 
 <h2>20231006</h2>
 
-<img src="../i/20231006.png">
+<img src="../i/20231006.png" />
 
 <h2>20231005</h2>
 
-<img src="../i/20231005.png">
+<img src="../i/20231005.png" />
 
 <h2>20231004</h2>
 
-<img src="../i/20231004.png">
+<img src="../i/20231004.png" />
 
 <h2>20231003</h2>
 
-<img src="../i/20231003.png">
+<img src="../i/20231003.png" />
 
 <h2>20231002</h2>
 
-<img src="../i/20231002.png">
+<img src="../i/20231002.png" />
 
-<img src="../i/20231002_01.png">
+<img src="../i/20231002_01.png" />
 
-<img src="../i/20231002_02.png">
+<img src="../i/20231002_02.png" />
 
 <h2>20231001</h2>
 
-<img src="../i/20231001.png">
+<img src="../i/20231001.png" />
 
 <h2>20230930</h2>
 
-<img src="../i/20230930.png">
+<img src="../i/20230930.png" />
 
 <h2>20230929</h2>
 
-<img src="../i/20230929.png">
+<img src="../i/20230929.png" />
 
 <h2>20230928</h2>
 
-<img src="../i/20230928.png">
+<img src="../i/20230928.png" />
 
 <h2>20230927</h2>
 
-<img src="../i/20230927.png">
+<img src="../i/20230927.png" />
 
 <h2>20230926</h2>
 
-<img src="../i/20230926.png">
+<img src="../i/20230926.png" />
 
 <h2>20230925</h2>
 
-<img src="../i/20230925.png">
+<img src="../i/20230925.png" />
 
 <h2>20230924</h2>
 
-<img src="../i/20230924.png">
+<img src="../i/20230924.png" />
 
 <h2>20230923</h2>
 
-<img src="../i/20230923.png">
+<img src="../i/20230923.png" />
     
 <h2>20230922</h2>
 
-<img src="../i/20230922.png">
+<img src="../i/20230922.png" />
 
 <h2>20230921</h2>
 
-<img src="../i/20230921.png">
+<img src="../i/20230921.png" />
 
 <h2>20230920</h2>
 
-<img src="../i/20230920.png">
+<img src="../i/20230920.png" />
 
 <h2>20230919</h2>
 
-<img src="../i/20230919.png">
+<img src="../i/20230919.png" />
 
 <h2>20230918</h2>
 
-<img src="../i/20230918.png">
+<img src="../i/20230918.png" />
 
 <h2>20230917</h2>
 
-<img src="../i/20230917.png">
+<img src="../i/20230917.png" />
 
 <h2>20230916</h2>
 
-<img src="../i/20230916.png">
+<img src="../i/20230916.png" />
 
 <h2>20230915</h2>
 
@@ -653,1090 +633,1088 @@ org.apache.ibatis.binding.MapperProxy@2c28414b
 
 <h2>20230914</h2>
 
-<img src="../i/20230914.png">
+<img src="../i/20230914.png" />
 
 <h2>20230913</h2>
 
-<img src="../i/20230913.png">
+<img src="../i/20230913.png" />
 
 <h2>20230912</h2>
 
-<img src="../i/20230912.png">
+<img src="../i/20230912.png" />
 
 <h2>20230911</h2>
 
-<img src="../i/20230911.png">
+<img src="../i/20230911.png" />
 
 <h2>20230910</h2>
 
-<img src="../i/20230910.png">
+<img src="../i/20230910.png" />
 
 <h2>20230909</h2>
 
-<img src="../i/20230909.png">
+<img src="../i/20230909.png" />
 
 <h2>20230908</h2>
 
-<img src="../i/20230908.png">
+<img src="../i/20230908.png" />
 
 <h2>20230907</h2>
 
-<img src="../i/20230907.png">
+<img src="../i/20230907.png" />
 
 <h2>20230906</h2>
 
-<img src="../i/20230906.png">
+<img src="../i/20230906.png" />
 
 <h2>20230905</h2>
 
-<img src="../i/20230905.png">
+<img src="../i/20230905.png" />
 
 <h2>20230903</h2>
 
-<img src="../i/20230903.png">
+<img src="../i/20230903.png" />
 
 <h2>20230902</h2>
 
-<img src="../i/20230902.png">
+<img src="../i/20230902.png" />
 
 <h2>20230901</h2>
 
-<img src="../i/20230901.png">
+<img src="../i/20230901.png" />
 
 <h2>20230831</h2>
 
-<img src="../i/20230831.png">
+<img src="../i/20230831.png" />
 
 <h2>20230830</h2>
 
-<img src="../i/20230830.png">
+<img src="../i/20230830.png" />
 
 <h2>20230829</h2>
 
-<img src="../i/20230829.png">
+<img src="../i/20230829.png" />
 
 <h2>20230828</h2>
 
-<img src="../i/20230828.png">
+<img src="../i/20230828.png" />
 
 <h2>20230827</h2>
 
-<img src="../i/20230827.png">
+<img src="../i/20230827.png" />
 
 <h2>20230826</h2>
 
-<img src="../i/20230826.png">
+<img src="../i/20230826.png" />
 
 <h2>20230825</h2>
 
-<img src="../i/20230825.png">
+<img src="../i/20230825.png" />
 
 <h2>20230824</h2>
 
-<img src="../i/20230824.png">
+<img src="../i/20230824.png" />
 
 <h2>20230823</h2>
 
-<img src="../i/20230823.png">
+<img src="../i/20230823.png" />
 
 <h2>20230822</h2>
 
-<img src="../i/20230822.png">
+<img src="../i/20230822.png" />
 
-<img src="../i/20230822_01.png">
+<img src="../i/20230822_01.png" />
 
 <h2>20230821</h2>
 
-<img src="../i/20230821.png">
+<img src="../i/20230821.png" />
 
 <h2>20230820</h2>
 
-<img src="../i/20230820.png">
+<img src="../i/20230820.png" />
     
 <h2>20230818</h2>
 
-<img src="../i/20230818.png">
+<img src="../i/20230818.png" />
 
 <h2>20230817</h2>
 
-<img src="../i/20230817.png">
+<img src="../i/20230817.png" />
     
 <h2>20230815</h2>
 
-<img src="../i/20230815.png">
+<img src="../i/20230815.png" />
 
 <h2>20230814</h2>
 
-<img src="../i/20230814.png">
+<img src="../i/20230814.png" />
 
 <h2>20230813</h2>
 
-<img src="../i/20230813.png">
+<img src="../i/20230813.png" />
 
 <h2>20230812</h2>
 
-<img src="../i/20230812_01.png">
+<img src="../i/20230812_01.png" />
 
-<img src="../i/20230812.png">
+<img src="../i/20230812.png" />
 
 <a href="https://clipdrop.co/" target="_blank">https://clipdrop.co/</a>
 
 <h2>20230811</h2>
 
-<img src="../i/20230811.png">
+<img src="../i/20230811.png" />
     
 <h2>20230810</h2>
 
-<img src="../i/20230810.png">
+<img src="../i/20230810.png" />
 
 <h2>20230809</h2>
 
-<img src="../i/20230809.png">
+<img src="../i/20230809.png" />
 
 <h2>20230808</h2>
 
-<img src="../i/20230808.png">
+<img src="../i/20230808.png" />
 
 <h2>20230807</h2>
 
-<img src="../i/20230807.png">
+<img src="../i/20230807.png" />
 
 <h2>20230806</h2>
 
-<img src="../i/20230806.png">
+<img src="../i/20230806.png" />
 
 <h2>20230805</h2>
 
-<img src="../i/20230805.png">
+<img src="../i/20230805.png" />
 
 <h2>20230804</h2>
 
-<img src="../i/20230804.png">
+<img src="../i/20230804.png" />
     
 <h2>20230803</h2>
 
-<img src="../i/20230803.png">
+<img src="../i/20230803.png" />
 
 <h2>20230802</h2>
 
-<img src="../i/20230802.png">
+<img src="../i/20230802.png" />
 
 <h2>20230801</h2>
 
-<img src="../i/20230801.png">
+<img src="../i/20230801.png" />
 
 <h2>20230730</h2>
 
-<img src="../i/20230730.png">
+<img src="../i/20230730.png" />
 
 <h2>20230729</h2>
 
-<img src="../i/20230729.png">
+<img src="../i/20230729.png" />
 
 <h2>20230728</h2>
 
-<img src="../i/20230728.png">
+<img src="../i/20230728.png" />
 
 <h2>20230727</h2>
 
-<img src="../i/20230727.png">
+<img src="../i/20230727.png" />
 
 <h2>20230726</h2>
 
-<img src="../i/20230726.png">
+<img src="../i/20230726.png" />
 
 <h2>20230725</h2>
 
-<img src="../i/20230725.png">
+<img src="../i/20230725.png" />
 
 <h2>20230724</h2>
 
-<img src="../i/20230724.png">
+<img src="../i/20230724.png" />
 
-<img src="../i/20230724_01.png">
+<img src="../i/20230724_01.png" />
 
 <h2>20230723</h2>
 
-<img src="../i/20230723.png">
+<img src="../i/20230723.png" />
 
 <h2>20230722</h2>
 
-<img src="../i/20230722.png">
+<img src="../i/20230722.png" />
 
 <h2>20230721</h2>
 
-<img src="../i/20230721.png">
+<img src="../i/20230721.png" />
 
 <h2>20230720</h2>
 
-<img src="../i/20230720.png">
+<img src="../i/20230720.png" />
 
 <h2>20230719</h2>
 
-<img src="../i/20230719.png">
+<img src="../i/20230719.png" />
     
 <h2>20230718</h2>
 
-<img src="../i/20230718.png">
+<img src="../i/20230718.png" />
 
 <h2>20230717</h2>
 
-<img src="../i/20230717.png">
+<img src="../i/20230717.png" />
 
 <h2>20230716</h2>
 
-<img src="../i/20230716.png">
+<img src="../i/20230716.png" />
 
 <h2>20230715</h2>
 
-<img src="../i/20230715.png">
+<img src="../i/20230715.png" />
 
 <h2>20230714</h2>
 
-<img src="../i/20230714.png">
+<img src="../i/20230714.png" />
 
 <h2>20230713</h2>
 
-<img src="../i/20230713.png">
+<img src="../i/20230713.png" />
     
 <h2>20230712</h2>
 
-<img src="../i/20230712.png">
+<img src="../i/20230712.png" />
 
 <h2>20230711</h2>
 
-<img src="../i/20230711.png">
+<img src="../i/20230711.png" />
 
 <h2>20230710</h2>
 
-<img src="../i/20230710.png">
+<img src="../i/20230710.png" />
 
 <h2>20230709</h2>
 
-<img src="../i/20230709.png">
+<img src="../i/20230709.png" />
 
 <h2>20230708</h2>
 
-<img src="../i/20230708.png">
+<img src="../i/20230708.png" />
 
 <h2>20230707</h2>
 
-<img src="../i/20230707.png">
+<img src="../i/20230707.png" />
 
 <h2>20230706</h2>
 
-<img src="../i/20230706.png">
+<img src="../i/20230706.png" />
 
 <h2>20230705</h2>
 
-<img src="../i/20230705.png">
+<img src="../i/20230705.png" />
 
 <h2>20230704</h2>
 
-<img src="../i/20230704.png">
+<img src="../i/20230704.png" />
 
 <a href="https://chalk.ist/" target="_blank">https://chalk.ist/</a>
 
 <h2>20230703</h2>
 
-<img src="../i/20230703.png">
+<img src="../i/20230703.png" />
 
 <h2>20230702</h2>
 
-<img src="../i/20230702.png">
+<img src="../i/20230702.png" />
 
 <h2>20230701</h2>
 
-<img src="../i/20230701.png">
+<img src="../i/20230701.png" />
 
 <h2>20230630</h2>
 
-<img src="../i/20230630.png">
+<img src="../i/20230630.png" />
 
 <h2>20230629</h2>
 
-<img src="../i/20230629.png">
+<img src="../i/20230629.png" />
 
 <h2>20230627</h2>
 
-<img src="../i/20230627.png">
+<img src="../i/20230627.png" />
 
 <h2>20230626</h2>
 
-<img src="../i/20230626.png">
+<img src="../i/20230626.png" />
 
 <h2>20230625</h2>
 
-<img src="../i/20230625.png">
+<img src="../i/20230625.png" />
     
 <h2>20230624</h2>
 
-<img src="../i/20230624.png">
+<img src="../i/20230624.png" />
 
 <h2>20230622</h2>
 
-<img src="../i/20230622.png">
+<img src="../i/20230622.png" />
 
 <h2>20230621</h2>
 
 ^(.{1})(.*),
 .set\U$1\E$2(sumMetrics.get\U1\E$2())
 
-<img src="../i/20230621.png">
+<img src="../i/20230621.png" />
 
 <h2>20230620</h2>
 
-<img src="../i/20230620.png">
+<img src="../i/20230620.png" />
 
 <h2>20230619</h2>
 
-<img src="../i/20230619.png">
+<img src="../i/20230619.png" />
 
 <h2>20230618</h2>
 
-<img src="../i/20230618.png">
+<img src="../i/20230618.png" />
 
 <h2>20230617</h2>
 
-<img src="../i/20230617.png">
+<img src="../i/20230617.png" />
 
 <h2>20230616</h2>
 
-<img src="../i/20230616.png">
+<img src="../i/20230616.png" />
 
 <h2>20230615</h2>
 
-<img src="../i/20230615.png">
+<img src="../i/20230615.png" />
 
 <h2>20230614</h2>
 
-<img src="../i/20230614.png">
+<img src="../i/20230614.png" />
 
 <h2>20230613</h2>
 
-<img src="../i/20230613.png">
+<img src="../i/20230613.png" />
 
 <h2>20230612</h2>
 
-<img src="../i/20230612.png">
+<img src="../i/20230612.png" />
 
-<img src="../i/20230612_01.png">
+<img src="../i/20230612_01.png" />
 
 <h2>20230611</h2>
 
-<img src="../i/20230611.png">
+<img src="../i/20230611.png" />
 
 <h2>20230610</h2>
 
-<img src="../i/20230610.png">
+<img src="../i/20230610.png" />
 
-<img src="../i/20230610_01.png">
+<img src="../i/20230610_01.png" />
 
 <h2>20230609</h2>
 
-<img src="../i/20230609.png">
+<img src="../i/20230609.png" />
 
 <h2>20230608</h2>
 
-<img src="../i/20230608.png">
+<img src="../i/20230608.png" />
 
 <h2>20230607</h2>
 
-<img src="../i/20230607.png">
+<img src="../i/20230607.png" />
 
 <h2>20230606</h2>
 
-<img src="../i/20230606.png">
+<img src="../i/20230606.png" />
 
 <h2>20230605</h2>
 
-<img src="../i/20230605.png">
+<img src="../i/20230605.png" />
 
-<img src="../i/20230605_01.png">
+<img src="../i/20230605_01.png" />
 
 <h2>20230604</h2>
 
-<img src="../i/20230604.png">
+<img src="../i/20230604.png" />
 
 <h2>20230603</h2>
 
-<img src="../i/20230603.png">
+<img src="../i/20230603.png" />
 
-<img src="../i/20230603_01.png">
+<img src="../i/20230603_01.png" />
 
 <h2>20230602</h2>
 
-<img src="../i/20230602.png">
+<img src="../i/20230602.png" />
 
 <h2>20230601</h2>
 
-<img src="../i/20230601.png">
+<img src="../i/20230601.png" />
 
 <h2>20230531</h2>
 
-<img src="../i/20230531.png">
+<img src="../i/20230531.png" />
 
 <h2>20230530</h2>
 
-<img src="../i/20230530.png">
+<img src="../i/20230530.png" />
 
 <h2>20230529</h2>
 
-<img src="../i/20230529.png">
+<img src="../i/20230529.png" />
 
 <h2>20230527</h2>
 
-<img src="../i/20230527.png">
+<img src="../i/20230527.png" />
 
 <h2>20230526</h2>
 
-<img src="../i/20230526.png">
+<img src="../i/20230526.png" />
 
-<img src="../i/20230526_01.png">
+<img src="../i/20230526_01.png" />
 
 <h2>20230525</h2>
 
-<img src="../i/20230525.png">
+<img src="../i/20230525.png" />
 
 <h2>20230524</h2>
 
-<img src="../i/20230524.png">
+<img src="../i/20230524.png" />
 
 <h2>20230523</h2>
 
-<img src="../i/20230523.png">
+<img src="../i/20230523.png" />
 
 <h2>20230522</h2>
 
-<img src="../i/20230522.png">
+<img src="../i/20230522.png" />
 
 <h2>20230521</h2>
 
-<img src="../i/20230521.png">
+<img src="../i/20230521.png" />
 
 <h2>20230520</h2>
 
-<img src="../i/20230520.png">
+<img src="../i/20230520.png" />
 
 <h2>20230519</h2>
 
-<img src="../i/20230519.png">
+<img src="../i/20230519.png" />
 
 <h2>20230518</h2>
 
-<img src="../i/20230518.png">
+<img src="../i/20230518.png" />
 
 <h2>20230517</h2>
 
-<img src="../i/20230517.png">
+<img src="../i/20230517.png" />
 
 <h2>20230516</h2>
 
-<img src="../i/20230516.png">
+<img src="../i/20230516.png" />
 
 <h2>20230515</h2>
 
-<img src="../i/20230515.png">
+<img src="../i/20230515.png" />
 
 <h2>20230514</h2>
 
-<img src="../i/20230514.png">
+<img src="../i/20230514.png" />
 
 <h2>20230513</h2>
 
-<img src="../i/20230513.png">
+<img src="../i/20230513.png" />
 
 <h2>20230512</h2>
 
-<img src="../i/20230512.png">
+<img src="../i/20230512.png" />
 
 <h2>20230511</h2>
 
-<img src="../i/20230511.png">
+<img src="../i/20230511.png" />
 
 <h2>20230510</h2>
 
-<img src="../i/20230510.png">
+<img src="../i/20230510.png" />
 
 <h2>20230509</h2>
 
-<img src="../i/20230509.png">
+<img src="../i/20230509.png" />
 
-<img src="../i/20230509_01.png">
+<img src="../i/20230509_01.png" />
 
 <h2>20230508</h2>
 
-<img src="../i/20230508.png">
+<img src="../i/20230508.png" />
 
-<img src="../i/20230508_01.png">
+<img src="../i/20230508_01.png" />
 
 <h2>20230507</h2>
 
-<img src="../i/20230507.png">
+<img src="../i/20230507.png" />
 
-<img src="../i/20230507_01.png">
+<img src="../i/20230507_01.png" />
 
-<img src="../i/20230507_02.png">
+<img src="../i/20230507_02.png" />
 
 <h2>20230506</h2>
 
-<img src="../i/20230506.png">
+<img src="../i/20230506.png" />
 
 <h2>20230505</h2>
 
-<img src="../i/20230505.png">
+<img src="../i/20230505.png" />
 
 <h2>20230504</h2>
 
-<img src="../i/20230504.png">
+<img src="../i/20230504.png" />
 
 <a href="https://www.getoutsidedoor.com/2018/09/03/ports-adapters-architecture/" target="_blank">https://www.getoutsidedoor.com/2018/09/03/ports-adapters-architecture/</a>
 
 <h2>20230503</h2>
 
-<img src="../i/20230503.png">
+<img src="../i/20230503.png" />
 
 <h2>20230502</h2>
 
-<img src="../i/20230502.png">
+<img src="../i/20230502.png" />
     
 <h2>20230501</h2>
 
-<img src="../i/20230501.png">
+<img src="../i/20230501.png" />
 
 
 <h2>20230430</h2>
 
-<img src="../i/20230430.png">
+<img src="../i/20230430.png" />
 
 <h2>20230429</h2>
 
-<img src="../i/20230429.png">
+<img src="../i/20230429.png" />
 
 <h2>20230428</h2>
 
-<img src="../i/20230428.png">
+<img src="../i/20230428.png" />
 
 <h2>20230427</h2>
 
-<img src="../i/20230427.png">
+<img src="../i/20230427.png" />
 
 <h2>20230426</h2>
 
-<img src="../i/20230426.png">
+<img src="../i/20230426.png" />
 
 <h2>20230425</h2>
 
-<img src="../i/20230425.png">
+<img src="../i/20230425.png" />
 
 <h2>20230423</h2>
 
-<img src="../i/20230423.png">
+<img src="../i/20230423.png" />
 
 <h2>20230422</h2>
 
-<img src="../i/20230422.png">
+<img src="../i/20230422.png" />
 
 <h2>20230421</h2>
 
-<img src="../i/20230421.png">
+<img src="../i/20230421.png" />
 
 <h2>20230420</h2>
 
-<img src="../i/20230420.png">
+<img src="../i/20230420.png" />
 
 <h2>20230419</h2>
 
-<img src="../i/20230419.png">
+<img src="../i/20230419.png" />
 
 <h2>20230418</h2>
 
-<img src="../i/20230418.png">
+<img src="../i/20230418.png" />
 
 <h2>20230417</h2>
 
-<img src="../i/20230417.png">
+<img src="../i/20230417.png" />
 
 <h2>20230416</h2>
 
-<img src="../i/20230416.png">
+<img src="../i/20230416.png" />
 
 <h2>20230415</h2>
 
-<img src="../i/20230415.png">
+<img src="../i/20230415.png" />
 
     
 <h2>20230414</h2>
 
-<img src="../i/20230414.png">
+<img src="../i/20230414.png" />
 
 <h2>20230413</h2>
 
-<img src="../i/20230413.png">
+<img src="../i/20230413.png" />
 
 <h2>20230412</h2>
 
-<img src="../i/20230412.png">
+<img src="../i/20230412.png" />
 
 <h2>20230411</h2>
 
-<img src="../i/20230411.png">
+<img src="../i/20230411.png" />
 
 <h2>20230410</h2>
 
-<img src="../i/20230410.png">
+<img src="../i/20230410.png" />
 
 <h2>20230409</h2>
 
-<img src="../i/20230409.png">
+<img src="../i/20230409.png" />
 
 <h2>20230408</h2>
 
-<img src="../i/20230408.png">
+<img src="../i/20230408.png" />
 
 <h2>20230407</h2>
 
-<img src="../i/20230407.png">
+<img src="../i/20230407.png" />
 
 <h2>20230406</h2>
 
-<img src="../i/20230406.png">
+<img src="../i/20230406.png" />
 
 <h2>20230405</h2>
 
-<img src="../i/20230405.png">
+<img src="../i/20230405.png" />
 
 <h2>20230404</h2>
 
-<img src="../i/20230404.png">
+<img src="../i/20230404.png" />
 
 <h2>20230402</h2>
 
-<img src="../i/20230402.png">
+<img src="../i/20230402.png" />
 
 <h2>20230401</h2>
 
-<img src="../i/20230401.png">
+<img src="../i/20230401.png" />
 
-<img src="../i/20230401_01.png">
+<img src="../i/20230401_01.png" />
 
 <h2>20230331</h2>
 
-<img src="../i/20230331.png">
+<img src="../i/20230331.png" />
 
 <h2>20230330</h2>
 
-<img src="../i/20230330.png">
+<img src="../i/20230330.png" />
 
 <h2>20230329</h2>
 
-<img src="../i/20230329.png">
+<img src="../i/20230329.png" />
 
 <h2>20230328</h2>
 
-<img src="../i/20230328.png">
+<img src="../i/20230328.png" />
 
 <h2>20230327</h2>
 
-<img src="../i/20230327.png">
+<img src="../i/20230327.png" />
 
-<a href="https://stackoverflow.com/questions/45884414/what-is-tree-shaking-and-why-would-i-need-it"
-   target="_blank">https://stackoverflow.com/questions/45884414/what-is-tree-shaking-and-why-would-i-need-it</a>
+<a href="https://stackoverflow.com/questions/45884414/what-is-tree-shaking-and-why-would-i-need-it" target="_blank">https://stackoverflow.com/questions/45884414/what-is-tree-shaking-and-why-would-i-need-it</a>
 
 <h2>20230326</h2>
 
-<img src="../i/20230326.png">
+<img src="../i/20230326.png" />
     
 <a href="https://wave.video/" target="_blank">https://wave.video/</a>    
     
 <h2>20230325</h2>
 
-<img src="../i/20230325.png">
+<img src="../i/20230325.png" />
 
 <h2>20230324</h2>
 
-<img src="../i/20230324.png">
+<img src="../i/20230324.png" />
 
 <h2>20230323</h2>
 
-<img src="../i/20230323.png">
+<img src="../i/20230323.png" />
 
 <h2>20230322</h2>
 
-<img src="../i/20230322.png">
+<img src="../i/20230322.png" />
 
 <h2>20230321</h2>
 
-<img src="../i/20230321.png">
+<img src="../i/20230321.png" />
 
 <h2>20230320</h2>
 
-<img src="../i/20230320.png">
+<img src="../i/20230320.png" />
 
 <h2>20230319</h2>
 
-<img src="../i/20230319.png">
+<img src="../i/20230319.png" />
 
 <h2>20230318</h2>
 
-<img src="../i/20230318.png">
+<img src="../i/20230318.png" />
 
 <h2>20230317</h2>
 
-<img src="../i/20230317.png">
+<img src="../i/20230317.png" />
 
 <h2>20230316</h2>
 
-<img src="../i/20230316.png">
+<img src="../i/20230316.png" />
 
 <h2>20230315</h2>
 
-<img src="../i/20230315.png">
+<img src="../i/20230315.png" />
 
 <h2>20230314</h2>
 
-<img src="../i/20230314.png">
+<img src="../i/20230314.png" />
 
 <h2>20230313</h2>
 
-<img src="../i/20230313.png">
+<img src="../i/20230313.png" />
 
 <a href="https://app.grammarly.com" target="_blank">https://app.grammarly.com</a>
 
 <h2>20230312</h2>
 
-<img src="../i/20230312.png">
+<img src="../i/20230312.png" />
 
 <h2>20230311</h2>
 
-<img src="../i/20230311.png">
+<img src="../i/20230311.png" />
 
-<a href="https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga"
-   target="_blank">https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga</a>
+<a href="https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga" target="_blank">https://learn.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga</a>
 
 <h2>20230310</h2>
 
-<img src="../i/20230310.png">
+<img src="../i/20230310.png" />
 
 <h2>20230308</h2>
 
-<img src="../i/20230308.png">
+<img src="../i/20230308.png" />
 
 <h2>20230307</h2>
 
-<img src="../i/20230307.png">
+<img src="../i/20230307.png" />
 
 <h2>20230305</h2>
 
-<img src="../i/20230305.png">
+<img src="../i/20230305.png" />
 
 <h2>20230304</h2>
 
-<img src="../i/20230304.png">
+<img src="../i/20230304.png" />
 
 <h2>20230303</h2>
 
-<img src="../i/20230303.png">
+<img src="../i/20230303.png" />
 
 <h2>20230302</h2>
 
-<img src="../i/20230302.png">
+<img src="../i/20230302.png" />
 
-<img src="../i/20230302_01.png">
+<img src="../i/20230302_01.png" />
 
 <h2>20230301</h2>
 
-<img src="../i/20230301.png">
+<img src="../i/20230301.png" />
 
 <h2>20230227</h2>
 
-<img src="../i/20230227.png">
+<img src="../i/20230227.png" />
 
 <h2>20230226</h2>
 
-<img src="../i/20230226.png">
+<img src="../i/20230226.png" />
 
 <h2>20230224</h2>
 
-<img src="../i/20230224.png">
+<img src="../i/20230224.png" />
 
 <a href="https://scribblediffusion.com/" target="_blank">https://scribblediffusion.com/</a>
 
 <h2>20230223</h2>
 
-<img src="../i/20230223.png">
+<img src="../i/20230223.png" />
 
 <h2>20230222</h2>
 
-<img src="../i/20230222.png">
+<img src="../i/20230222.png" />
 
-<img src="../i/20230222_01.png">
+<img src="../i/20230222_01.png" />
 
-<img src="../i/20230222_02.png">
+<img src="../i/20230222_02.png" />
 
 <h2>20230221</h2>
 
-<img src="../i/20230221.png">
+<img src="../i/20230221.png" />
 
 <h2>20230220</h2>
 
-<img src="../i/20230220.png">
+<img src="../i/20230220.png" />
 
 <h2>20230219</h2>
 
-<img src="../i/20230219.png">
+<img src="../i/20230219.png" />
 
 <h2>20230218</h2>
 
-<img src="../i/20230218.png">
+<img src="../i/20230218.png" />
 
-<img src="../i/20230218_01.png">
+<img src="../i/20230218_01.png" />
 
 <h2>20230217</h2>
 
-<img src="../i/20230217.png">
+<img src="../i/20230217.png" />
 
 <h2>20230216</h2>
 
-<img src="../i/20230216.png">
+<img src="../i/20230216.png" />
 
-<img src="../i/20230216_01.png">
+<img src="../i/20230216_01.png" />
 
 <h2>20230215</h2>
 
-<img src="../i/20230215.png">
+<img src="../i/20230215.png" />
 
 <a href="https://github.com/coreutils/coreutils/tree/master/src" target="_blank">https://github.com/coreutils/coreutils/tree/master/src</a>
 
 <h2>20230214</h2>
 
-<img src="../i/20230214.png">
+<img src="../i/20230214.png" />
 
 <h2>20230213</h2>
 
-<img src="../i/20230213.png">
+<img src="../i/20230213.png" />
 
 <h2>20230212</h2>
 
-<img src="../i/20230212.png">
+<img src="../i/20230212.png" />
 
 <h2>20230211</h2>
 
-<img src="../i/20230211.png">
+<img src="../i/20230211.png" />
 
 <h2>20230210</h2>
 
-<img src="../i/20230210.png">
+<img src="../i/20230210.png" />
 
-<img src="../i/20230210_01.png">
+<img src="../i/20230210_01.png" />
 
 <h2>20230209</h2>
 
-<img src="../i/20230209.png">
+<img src="../i/20230209.png" />
 
 <h2>20230208</h2>
 
-<img src="../i/20230208.png">
+<img src="../i/20230208.png" />
 
 <h2>20230207</h2>
 
-<img src="../i/20230207.png">
+<img src="../i/20230207.png" />
 
-<img src="../i/20230207_01.png">
+<img src="../i/20230207_01.png" />
 
 <h2>20230206</h2>
 
-<img src="../i/20230206.png">
+<img src="../i/20230206.png" />
 
 <h2>20230205</h2>
 
-<img src="../i/20230205.png">
+<img src="../i/20230205.png" />
 
 <h2>20230204</h2>
 
-<img src="../i/20230204.png">
+<img src="../i/20230204.png" />
 
-<img src="../i/20230204_01.png">
+<img src="../i/20230204_01.png" />
 
 <h2>20230203</h2>
 
-<img src="../i/20230203.png">
+<img src="../i/20230203.png" />
 
 <h2>20230202</h2>
 
-<img src="../i/20230202.png">
+<img src="../i/20230202.png" />
 
 <h2>20230201</h2>
 
-<img src="../i/20230201.png">
+<img src="../i/20230201.png" />
 
-<img src="../i/20230201_01.png">
+<img src="../i/20230201_01.png" />
 
 <h2>20230131</h2>
 
-<img src="../i/20230131.png">
+<img src="../i/20230131.png" />
 
-<img src="../i/20230131_01.png">
+<img src="../i/20230131_01.png" />
 
 <h2>20230130</h2>
 
-<img src="../i/20230130.png">
+<img src="../i/20230130.png" />
 
 <h2>20230129</h2>
 
-<img src="../i/20230129.png">
+<img src="../i/20230129.png" />
 
 <a href="https://neal.fun/wonders-of-street-view/?v=b2wMrU" target="_blank">https://neal.fun/wonders-of-street-view/?v=b2wMrU</a>
 
-<img src="../i/20230129_01.png">
+<img src="../i/20230129_01.png" />
 
-<img src="../i/20230129_02.png">
+<img src="../i/20230129_02.png" />
 
 <h2>20230128</h2>
 
-<img src="../i/20230128.png">
+<img src="../i/20230128.png" />
 
-<img src="../i/20230128_01.png">
+<img src="../i/20230128_01.png" />
 
 <h2>20230127</h2>
 
-<img src="../i/20230127.png">
+<img src="../i/20230127.png" />
 
-<img src="../i/20230127_01.png">
+<img src="../i/20230127_01.png" />
 
 <h2>20230126</h2>
 
-<img src="../i/20230126.png">
+<img src="../i/20230126.png" />
 
-<img src="../i/20230126_01.png">
+<img src="../i/20230126_01.png" />
 
 <h2>20230125</h2>
 
-<img src="../i/20230125.png">
+<img src="../i/20230125.png" />
 
 <h2>20230124</h2>
 
-<img src="../i/20230124.png">
+<img src="../i/20230124.png" />
 
-<img src="../i/20230124_01.png">
+<img src="../i/20230124_01.png" />
 
 <h2>20230123</h2>
 
-<img src="../i/20230123.png">
+<img src="../i/20230123.png" />
 
 <h2>20230122</h2>
 
-<img src="../i/20230122.png">
+<img src="../i/20230122.png" />
 
 <a href="https://play.d2lang.com/" target="_blank">https://play.d2lang.com/</a>
 
 <h2>20230121</h2>
 
-<img src="../i/20230121.png">
+<img src="../i/20230121.png" />
 
 <h2>20230120</h2>
 
-<img src="../i/20230120.png">
+<img src="../i/20230120.png" />
 
 <h2>20230119</h2>
 
-<img src="../i/20230119.png">
+<img src="../i/20230119.png" />
 
-<img src="../i/20230119_01.png">
+<img src="../i/20230119_01.png" />
 
 <h2>20230118</h2>
 
-<img src="../i/20230118.png">
+<img src="../i/20230118.png" />
 
-<img src="../i/20230118_01.png">
+<img src="../i/20230118_01.png" />
 
 <h2>20230117</h2>
 
-<img src="../i/20230117.png">
+<img src="../i/20230117.png" />
 
 <h2>20230116</h2>
 
-<img src="../i/20230116.png">
+<img src="../i/20230116.png" />
 
 <h2>20230115</h2>
 
-<img src="../i/20230115.png">
+<img src="../i/20230115.png" />
 
 <h2>20230114</h2>
 
-<img src="../i/20230114.png">
+<img src="../i/20230114.png" />
 
-<img src="../i/20230114_01.png">
+<img src="../i/20230114_01.png" />
 
 <h2>20230113</h2>
 
-<img src="../i/20230113.png">
+<img src="../i/20230113.png" />
 
 <h2>20230112</h2>
 
-<img src="../i/20230112.png">
+<img src="../i/20230112.png" />
 
 <h2>20230111</h2>
 
-<img src="../i/20230111.png">
+<img src="../i/20230111.png" />
 
-<img src="../i/20230111_01.png">
+<img src="../i/20230111_01.png" />
 
-<img src="../i/20230111_02.png">
+<img src="../i/20230111_02.png" />
 
 <h2>20230110</h2>
 
-<img src="../i/20230110.png">
+<img src="../i/20230110.png" />
 
 <h2>20230109</h2>
 
-<img src="../i/20230109.png">
+<img src="../i/20230109.png" />
 
-<img src="../i/20230109_01.png">
+<img src="../i/20230109_01.png" />
 
 <h2>20230108</h2>
 
-<img src="../i/20230108.png">
+<img src="../i/20230108.png" />
 
-<img src="../i/20230108_01.png">
+<img src="../i/20230108_01.png" />
 
 <h2>20230107</h2>
 
-<img src="../i/20230107.png">
+<img src="../i/20230107.png" />
 
 <h2>20230106</h2>
 
-<img src="../i/20230106.png">
+<img src="../i/20230106.png" />
 
 <h2>20230105</h2>
 
-<img src="../i/20230105.png">
+<img src="../i/20230105.png" />
 
 <h2>20230104</h2>
 
-<img src="../i/20230104.png">
+<img src="../i/20230104.png" />
 
-<img src="../i/20230104_01.png">
+<img src="../i/20230104_01.png" />
 
-<img src="../i/20230104_02.png">
+<img src="../i/20230104_02.png" />
 
 <h2>20230103</h2>
 
-<img src="../i/20230103.png">
+<img src="../i/20230103.png" />
 
-<img src="../i/20230103_01.png">
+<img src="../i/20230103_01.png" />
 
 <h2>20230102</h2>
 
-<img src="../i/20230102.png">
+<img src="../i/20230102.png" />
 
 <h2>20230101</h2>
 
-<img src="../i/20230101.png">
+<img src="../i/20230101.png" />
 
 </pre>
 </div>
 
 
-</body>
-</html>
+
+</body></html>
