@@ -2,6 +2,7 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.HashMap;
@@ -67,6 +68,7 @@ public class ImageFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         this.createCaptureButton(panel);
+        this.createCaptureRepeatButton(panel);
         this.createOpenButton(panel);
 
         return panel;
@@ -74,7 +76,13 @@ public class ImageFrame extends JFrame {
 
     private void createCaptureButton(JPanel panel) {
         JButton captureButton = new JButton("capture");
-        captureButton.addActionListener(e -> capture());
+        captureButton.addActionListener(e -> this.capture());
+        panel.add(captureButton);
+    }
+
+    private void createCaptureRepeatButton(JPanel panel) {
+        JButton captureButton = new JButton("capture repeat");
+        captureButton.addActionListener(e -> this.captureRepeat());
         panel.add(captureButton);
     }
 
@@ -91,6 +99,22 @@ public class ImageFrame extends JFrame {
             .collect(toList());
 
         this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
+    }
+
+    private void captureRepeat() {
+        this.setVisible(false);
+
+        try {
+            Robot robot = new Robot();
+
+            ScreenShotPanel.capture(robot, ScreenShotPanel.lastRectangle,
+                ScreenShotPanel.lastRectangle.x, ScreenShotPanel.lastRectangle.y,
+                this.tabbedPane);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        this.setVisible(true);
     }
 
     private void createOpenButton(JPanel panel) {

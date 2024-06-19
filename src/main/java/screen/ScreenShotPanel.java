@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,6 +37,7 @@ public class ScreenShotPanel extends JPanel
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
     private JPanel controlPanel = null;
+    public static Rectangle lastRectangle = null;
 
     public ScreenShotPanel(GraphicsDevice graphicsDevice,
                            ImageFrame imageFrame,
@@ -66,11 +68,13 @@ public class ScreenShotPanel extends JPanel
         panel.add(shotButton);
 
         JButton delayShotButton = new JButton("delay shot");
+
         delayShotButton.addActionListener(e -> {
             imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(true);
             this.shot(3);
         });
+
         panel.add(delayShotButton);
 
         JButton cancelButton = new JButton("cancel");
@@ -117,14 +121,9 @@ public class ScreenShotPanel extends JPanel
                 rectangle.x += display.x;
                 rectangle.y += display.y;
 
-                BufferedImage image = robot.createScreenCapture(rectangle);
-                robot.mouseMove(x, y);
+                lastRectangle = rectangle;
+                capture(robot, rectangle, x, y, this.tabbedPane);
 
-                String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-                File file = Util.getImageFile(fileName);
-                ImageIO.write(image, "png", file);
-
-                tabbedPane.addTab(fileName);
                 imageFrame.setVisible(true);
                 screenShotFrame.setBackground(BACKGROUND_COLOR);
                 imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
@@ -132,6 +131,17 @@ public class ScreenShotPanel extends JPanel
                 throw new RuntimeException(t);
             }
         }).start();
+    }
+
+    public static void capture(Robot robot, Rectangle rectangle, int x, int y, ImageTabPanel tabbedPane) throws IOException {
+        BufferedImage image = robot.createScreenCapture(rectangle);
+        robot.mouseMove(x, y);
+
+        String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+        File file = Util.getImageFile(fileName);
+        ImageIO.write(image, "png", file);
+
+        tabbedPane.addTab(fileName);
     }
 
     @Override
