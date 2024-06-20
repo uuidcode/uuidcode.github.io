@@ -203,7 +203,7 @@ public class ImagePanel extends JPanel {
     private void createCopyButton() {
         JButton button = new JButton("copy");
         button.setName(this.name);
-        button.addActionListener(e -> copy());
+        button.addActionListener(e -> this.copy());
         controlPanel.add(button);
     }
 

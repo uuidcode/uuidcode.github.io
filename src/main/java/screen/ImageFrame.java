@@ -2,13 +2,22 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.GraphicsDevice;
+import java.awt.Image;
 import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -69,6 +78,7 @@ public class ImageFrame extends JFrame {
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         this.createCaptureButton(panel);
         this.createCaptureRepeatButton(panel);
+        this.createClipboardButton(panel);
         this.createOpenButton(panel);
 
         return panel;
@@ -83,6 +93,12 @@ public class ImageFrame extends JFrame {
     private void createCaptureRepeatButton(JPanel panel) {
         JButton captureButton = new JButton("capture repeat");
         captureButton.addActionListener(e -> this.captureRepeat());
+        panel.add(captureButton);
+    }
+
+    private void createClipboardButton(JPanel panel) {
+        JButton captureButton = new JButton("clipboard");
+        captureButton.addActionListener(e -> this.clipboard());
         panel.add(captureButton);
     }
 
@@ -115,6 +131,38 @@ public class ImageFrame extends JFrame {
         }
 
         this.setVisible(true);
+    }
+
+    private void clipboard() {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+
+        try {
+            Transferable transferable = clipboard.getContents(null);
+            if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+                Image image = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
+
+                String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
+                File file = Util.getImageFile(fileName);
+                BufferedImage bufferedImage = this.toBufferedImage(image);
+                ImageIO.write(bufferedImage, "png", file);
+                this.tabbedPane.addTab(fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static BufferedImage toBufferedImage(Image img) {
+        if (img instanceof BufferedImage) {
+            return (BufferedImage) img;
+        }
+
+        int width = img.getWidth(null);
+        int height = img.getHeight(null);
+
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        bufferedImage.getGraphics().drawImage(img, 0, 0, null);
+        return bufferedImage;
     }
 
     private void createOpenButton(JPanel panel) {
