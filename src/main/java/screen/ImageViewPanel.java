@@ -87,6 +87,24 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (this.shapeType != ShapeType.ALPHABET) {
+            return;
+        }
+
+        BufferedImage bufferedImage = this.getBufferedImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        bufferedImage = Util.deepCopy(bufferedImage);
+        Graphics g = bufferedImage.getGraphics();
+
+        this.shapeType.draw(g, this.fillType, bufferedImage, e.getPoint(), null);
+        this.addHistory(bufferedImage);
+        this.save();
+        this.resetPoint();
+        this.repaint();
     }
 
     @Override
@@ -115,6 +133,10 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (this.shapeType == ShapeType.ALPHABET) {
+            return;
+        }
+
         BufferedImage bufferedImage = this.getBufferedImage();
 
         if (bufferedImage == null) {
@@ -154,6 +176,10 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (this.shapeType == ShapeType.ALPHABET) {
+            return;
+        }
+
         BufferedImage bufferedImage = this.getBufferedImage();
 
         if (bufferedImage == null) {

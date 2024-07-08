@@ -117,7 +117,10 @@ public class ImagePanel extends JPanel {
 
     private void createShapeTypeRadio() {
         this.createRadioPanel("Shape Type", ShapeType.class,
-            shapeType -> this.imageViewPanel.setShapeType(shapeType));
+            shapeType -> {
+                ShapeType.init();
+                this.imageViewPanel.setShapeType(shapeType);
+            });
     }
 
     private void createFillTypeRadio() {

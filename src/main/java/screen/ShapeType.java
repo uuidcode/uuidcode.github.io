@@ -2,6 +2,8 @@ package screen;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
 public enum ShapeType implements Drawable {
     FILL_ARROW {
@@ -27,5 +29,26 @@ public enum ShapeType implements Drawable {
         public void draw(Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
             Util.processRect(g2, startPoint, endPoint, fillType, DrawType.DRAW);
         }
+    },
+    ALPHABET {
+        @Override
+        public void draw(Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, ALPHASBET_LIST.get(index % ALPHASBET_LIST.size()));
+            index++;
+        }
     };
+
+    private static int index = 0;
+    private final static List<String> ALPHASBET_LIST = new ArrayList<String>() {{
+        this.add("A");
+        this.add("B");
+        this.add("C");
+        this.add("D");
+        this.add("E");
+        this.add("F");
+    }};
+
+    public static void init() {
+        index = 0;
+    }
 }

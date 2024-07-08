@@ -3,6 +3,7 @@ package screen;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -60,6 +61,17 @@ public class Util {
         }
 
         g2.draw(rectangle);
+    }
+
+    public static void processAlphabet(Graphics2D g2,
+                                       Point2D start,
+                                       String text) {
+        Font font = g2.getFont();
+        font = new Font(font.getFontName(), Font.BOLD, 30);
+        g2.setFont(font);
+        g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+        g2.setColor(new Color(124, 166, 208, 255));
+        g2.drawString(text, (int) start.getX(), (int) start.getY());
     }
 
     public static void processArrow(Graphics2D g2,
