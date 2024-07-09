@@ -3,6 +3,8 @@ package screen;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -251,7 +253,13 @@ public class ImageViewPanel extends JPanel
             processBuilder.command("sh", "-c", command);
             processBuilder.start();
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            try {
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                BufferedImage image = ImageIO.read(imageFile);
+                ImageTransferable transferable = new ImageTransferable(image);
+                clipboard.setContents(transferable, null);
+            } catch (Throwable ignored) {
+            }
         }
     }
 
