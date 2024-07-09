@@ -12,15 +12,15 @@ public interface Drawable {
 
     default void draw(Graphics2D g2, FillType fillType, BufferedImage bufferedImage, Point startPoint, Point endPoint) {
         if (bufferedImage == null) {
-            this.draw(g2, fillType, startPoint, endPoint);
+            this.draw(bufferedImage, g2, fillType, startPoint, endPoint);
         } else {
-            this.draw((Graphics2D) bufferedImage.getGraphics(), fillType, startPoint, endPoint);
+            this.draw(bufferedImage, (Graphics2D) bufferedImage.getGraphics(), fillType, startPoint, endPoint);
         }
     }
 
-    void draw(Graphics2D g2, FillType fillType, Point startPoint, Point endPoint);
+    void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint);
 
-    default void draw(Graphics g, FillType fillType, Point startPoint, Point endPoint) {
-        this.draw((Graphics2D) g, fillType, startPoint, endPoint);
+    default void draw(BufferedImage bufferedImage, Graphics g, FillType fillType, Point startPoint, Point endPoint) {
+        this.draw(bufferedImage, (Graphics2D) g, fillType, startPoint, endPoint);
     }
 }

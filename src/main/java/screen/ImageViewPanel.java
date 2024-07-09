@@ -81,7 +81,7 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.stratPoint != null) {
-            this.shapeType.draw(g, this.fillType, this.stratPoint, this.endPoint);
+            this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint);
         }
     }
 

@@ -4,6 +4,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -13,12 +14,15 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 
 import static java.awt.AlphaComposite.SRC_OVER;
 import static java.awt.BasicStroke.CAP_BUTT;
 import static java.awt.BasicStroke.JOIN_MITER;
+import static java.awt.Color.WHITE;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static screen.DrawType.FILL;
@@ -63,14 +67,62 @@ public class Util {
         g2.draw(rectangle);
     }
 
+    public static void processBlur(BufferedImage bufferedImage,
+                                   Graphics2D g2,
+                                   Point2D start,
+                                   Point2D end,
+                                   int size) {
+        float[] blurKernel = {
+            0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f,
+            0.00002292f, 0.00078634f, 0.00655408f, 0.01328503f, 0.00655408f, 0.00078634f, 0.00002292f,
+            0.00019117f, 0.00655408f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655408f, 0.00019117f,
+            0.00038771f, 0.01328503f, 0.11098164f, 0.22508352f, 0.11098164f, 0.01328503f, 0.00038771f,
+            0.00019117f, 0.00655408f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655408f, 0.00019117f,
+            0.00002292f, 0.00078634f, 0.00655408f, 0.01328503f, 0.00655408f, 0.00078634f, 0.00002292f,
+            0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f
+        };
+        Kernel kernel = new Kernel(7, 7, blurKernel);
+        ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+
+        try {
+            Rectangle2D rect = getRectangle2D(start, end);
+            BufferedImage subImage = bufferedImage.getSubimage((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
+            BufferedImage blurredSubImage = convolveOp.filter(subImage, null);
+
+            for (int i = 0; i < size; i++) {  // 블러 필터를 여러 번 적용
+                blurredSubImage = convolveOp.filter(blurredSubImage, null);
+            }
+
+            g2.drawImage(blurredSubImage, (int) rect.getX(), (int) rect.getY(), null);
+        } catch (Throwable t) {
+        }
+    }
+
     public static void processAlphabet(Graphics2D g2,
                                        Point2D start,
                                        String text) {
         Font font = g2.getFont();
         font = new Font(font.getFontName(), Font.BOLD, 30);
         g2.setFont(font);
-        g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+
+        FontMetrics metrics = g2.getFontMetrics(g2.getFont());
+        int width = metrics.stringWidth(text);
+        int height = metrics.getHeight();
+        int ascent = metrics.getAscent();
+
+        g2.setStroke(new BasicStroke(5));
+        Rectangle rect = new Rectangle((int) start.getX(), (int) start.getY() - ascent, width, height);
+        rect.x -= 10;
+        rect.y -= 5;
+        rect.width += 20;
+        rect.height += 10;
+        g2.setColor(WHITE);
+        g2.fill(rect);
+
         g2.setColor(new Color(124, 166, 208, 255));
+        g2.draw(rect);
+
+        g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
         g2.drawString(text, (int) start.getX(), (int) start.getY());
     }
 
