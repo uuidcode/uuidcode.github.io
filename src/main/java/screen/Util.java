@@ -23,6 +23,7 @@ import static java.awt.AlphaComposite.SRC_OVER;
 import static java.awt.BasicStroke.CAP_BUTT;
 import static java.awt.BasicStroke.JOIN_MITER;
 import static java.awt.Color.WHITE;
+import static java.awt.Color.lightGray;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static screen.DrawType.FILL;
@@ -81,6 +82,7 @@ public class Util {
             0.00002292f, 0.00078634f, 0.00655408f, 0.01328503f, 0.00655408f, 0.00078634f, 0.00002292f,
             0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f
         };
+
         Kernel kernel = new Kernel(7, 7, blurKernel);
         ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
 
@@ -124,6 +126,11 @@ public class Util {
 
         g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
         g2.drawString(text, (int) start.getX(), (int) start.getY());
+
+        int shadow = 3;
+        g2.setColor(lightGray);
+        g2.fillRect(rect.x + shadow, rect.y + rect.height + shadow , rect.width + shadow, shadow);
+        g2.fillRect(rect.x + rect.width + shadow, rect.y + shadow, shadow, rect.height + shadow);
     }
 
     public static void processArrow(Graphics2D g2,
@@ -159,7 +166,7 @@ public class Util {
 
         if (drawType == FILL) {
             g2.fill(polygon);
-            return;
+            return ;
         }
 
         g2.draw(polygon);

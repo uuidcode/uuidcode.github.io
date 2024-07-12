@@ -34,14 +34,19 @@ public enum ShapeType implements Drawable {
     ALPHABET {
         @Override
         public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
-            Util.processAlphabet(g2, startPoint, ALPHASBET_LIST.get(index % ALPHASBET_LIST.size()));
-            index++;
+            Util.processAlphabet(g2, startPoint, ALPHASBET_LIST.get(index++ % ALPHASBET_LIST.size()));
         }
     },
     BLUR {
         @Override
         public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
             Util.processBlur(bufferedImage, g2, startPoint,endPoint, 20);
+        }
+    },
+    CROP {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processRect(g2, startPoint, endPoint, fillType, DrawType.FILL);
         }
     };
 

@@ -8,6 +8,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +22,11 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import static java.awt.Color.black;
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
+import static screen.ShapeType.ALPHABET;
+import static screen.ShapeType.CROP;
+import static screen.Util.deepCopy;
+import static screen.Util.getRectangle2D;
 
 @Data
 @Accessors(chain = true)
@@ -89,7 +95,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (this.shapeType != ShapeType.ALPHABET) {
+        if (this.shapeType != ALPHABET) {
             return;
         }
 
@@ -99,7 +105,7 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
-        bufferedImage = Util.deepCopy(bufferedImage);
+        bufferedImage = deepCopy(bufferedImage);
         Graphics g = bufferedImage.getGraphics();
 
         this.shapeType.draw(g, this.fillType, bufferedImage, e.getPoint(), null);
@@ -135,7 +141,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (this.shapeType == ShapeType.ALPHABET) {
+        if (this.shapeType == ALPHABET) {
             return;
         }
 
@@ -145,16 +151,30 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
-        bufferedImage = Util.deepCopy(bufferedImage);
-        Graphics g = bufferedImage.getGraphics();
+        bufferedImage = deepCopy(bufferedImage);
 
         if (this.stratPoint != null && this.endPoint != null) {
-            this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint);
+            if (this.shapeType == CROP) {
+                Rectangle2D rect = getRectangle2D(this.stratPoint, this.endPoint);
+
+                BufferedImage cropImage = bufferedImage.getSubimage((int) rect.getX(), (int) rect.getY(),
+                    (int) rect.getWidth(), (int) rect.getHeight());
+
+                bufferedImage = new BufferedImage(cropImage.getWidth(),
+                    cropImage.getHeight(), TYPE_INT_ARGB);
+
+                bufferedImage.getGraphics().drawImage(cropImage, 0, 0, null);
+            } else {
+                Graphics g = bufferedImage.getGraphics();
+                this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint);
+            }
+
+            this.addHistory(bufferedImage);
         }
 
-        this.addHistory(bufferedImage);
         this.save();
         this.resetPoint();
+        this.repaint();
     }
 
     public void addHistory(BufferedImage bufferedImage) {
@@ -178,7 +198,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (this.shapeType == ShapeType.ALPHABET) {
+        if (this.shapeType == ALPHABET) {
             return;
         }
 
