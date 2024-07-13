@@ -114,7 +114,6 @@ public class ThumbnailDialog extends JDialog {
                 panel.add(label, CENTER);
 
                 JLabel fileNameLabel = new JLabel(file.getName());
-                fileNameLabel.setFont(fileNameLabel.getFont());
                 fileNameLabel.setBorder(createEmptyBorder(2, 2, 2, 2));
                 panel.add(fileNameLabel, SOUTH);
 
