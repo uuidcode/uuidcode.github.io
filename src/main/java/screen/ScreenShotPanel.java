@@ -63,8 +63,12 @@ public class ScreenShotPanel extends JPanel
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
         panel.setBackground(new Color(0, 0, 0, 0));
 
+        JButton shotAllButton = new JButton("shot all");
+        shotAllButton.addActionListener(e -> this.shot(null, true));
+        panel.add(shotAllButton);
+
         JButton shotButton = new JButton("shot");
-        shotButton.addActionListener(e -> this.shot(null));
+        shotButton.addActionListener(e -> this.shot(null, false));
         panel.add(shotButton);
 
         JButton delayShotButton = new JButton("delay shot");
@@ -72,10 +76,20 @@ public class ScreenShotPanel extends JPanel
         delayShotButton.addActionListener(e -> {
             imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(true);
-            this.shot(3);
+            this.shot(3, false);
         });
 
         panel.add(delayShotButton);
+
+        JButton delayShotAllButton = new JButton("delay shot all");
+
+        delayShotAllButton.addActionListener(e -> {
+            imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+            imageFrame.setVisible(false);
+            this.shot(3, true);
+        });
+
+        panel.add(delayShotAllButton);
 
         JButton cancelButton = new JButton("cancel");
         cancelButton.addActionListener(e -> {
@@ -90,7 +104,7 @@ public class ScreenShotPanel extends JPanel
         return panel;
     }
 
-    private void shot(Integer second) {
+    private void shot(Integer second, boolean isAll) {
         Rectangle rectangle = Util.getRectangle(this.stratPoint, this.endPoint);
         stratPoint = null;
         endPoint = null;
@@ -122,7 +136,12 @@ public class ScreenShotPanel extends JPanel
                 rectangle.y += display.y;
 
                 lastRectangle = rectangle;
-                capture(robot, rectangle, x, y, this.tabbedPane);
+
+                if (isAll) {
+                    capture(robot, display, 0, 0, this.tabbedPane);
+                } else {
+                    capture(robot, rectangle, x, y, this.tabbedPane);
+                }
 
                 imageFrame.setVisible(true);
                 screenShotFrame.setBackground(BACKGROUND_COLOR);
