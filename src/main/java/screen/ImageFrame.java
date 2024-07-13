@@ -80,26 +80,44 @@ public class ImageFrame extends JFrame {
         this.createCaptureRepeatButton(panel);
         this.createClipboardButton(panel);
         this.createOpenButton(panel);
+        this.createViewButton(panel);
 
         return panel;
     }
 
     private void createCaptureButton(JPanel panel) {
-        JButton captureButton = new JButton("capture");
-        captureButton.addActionListener(e -> this.capture());
-        panel.add(captureButton);
+        JButton button = new JButton("capture");
+        button.addActionListener(e -> this.capture());
+        panel.add(button);
     }
 
     private void createCaptureRepeatButton(JPanel panel) {
-        JButton captureButton = new JButton("capture repeat");
-        captureButton.addActionListener(e -> this.captureRepeat());
-        panel.add(captureButton);
+        JButton button = new JButton("capture repeat");
+        button.addActionListener(e -> this.captureRepeat());
+        panel.add(button);
     }
 
     private void createClipboardButton(JPanel panel) {
-        JButton captureButton = new JButton("clipboard");
-        captureButton.addActionListener(e -> this.clipboard());
-        panel.add(captureButton);
+        JButton button = new JButton("clipboard");
+        button.addActionListener(e -> this.clipboard());
+        panel.add(button);
+    }
+
+    private void createOpenButton(JPanel panel) {
+        JButton button = new JButton("open");
+        button.addActionListener(e -> open());
+        panel.add(button);
+    }
+
+    private void createViewButton(JPanel panel) {
+        JButton button = new JButton("view");
+        button.addActionListener(e -> view());
+        panel.add(button);
+    }
+
+    private void view() {
+        ThumbnailDialog dialog = new ThumbnailDialog(this, "Thumbnail Viewer");
+        dialog.setVisible(true);
     }
 
     private void capture() {
@@ -163,12 +181,6 @@ public class ImageFrame extends JFrame {
         BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         bufferedImage.getGraphics().drawImage(img, 0, 0, null);
         return bufferedImage;
-    }
-
-    private void createOpenButton(JPanel panel) {
-        JButton captureButton = new JButton("open");
-        captureButton.addActionListener(e -> open());
-        panel.add(captureButton);
     }
 
     private void open() {
