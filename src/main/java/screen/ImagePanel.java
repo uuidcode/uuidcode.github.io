@@ -17,6 +17,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import static java.awt.BorderLayout.CENTER;
@@ -33,6 +35,7 @@ public class ImagePanel extends JPanel {
     private final File imageFile;
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
+    private JScrollPane jScrollPane;
 
     public ImagePanel(String name, File imageFile, ImageTabPanel tabbedPane) {
         super(new BorderLayout());
@@ -70,10 +73,34 @@ public class ImagePanel extends JPanel {
         });
     }
 
+    public void init() {
+        if (this.jScrollPane != null) {
+            this.jScrollPane.getVerticalScrollBar().setValue(0);
+            this.jScrollPane.getHorizontalScrollBar().setValue(0);
+            this.jScrollPane.revalidate();
+        }
+    }
+
     private ImageViewPanel createImageViewPanel(File imageFile) {
-        this.imageViewPanel = new ImageViewPanel(imageFile);
-        this.imageViewPanel.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        this.add(imageViewPanel, CENTER);
+        this.imageViewPanel = new ImageViewPanel(this, imageFile);
+        this.jScrollPane = new JScrollPane(this.imageViewPanel);
+        this.jScrollPane.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+        jScrollPane.addMouseWheelListener(e -> {
+            JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
+            int notches = e.getWheelRotation();
+            int scrollAmount = 100;
+
+            if (notches < 0) {
+                verticalScrollBar.setValue(verticalScrollBar.getValue() - scrollAmount);
+            } else {
+                verticalScrollBar.setValue(verticalScrollBar.getValue() + scrollAmount);
+            }
+
+            e.consume();
+        });
+
+        this.add(jScrollPane, CENTER);
         return imageViewPanel;
     }
 

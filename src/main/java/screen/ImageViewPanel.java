@@ -1,5 +1,6 @@
 package screen;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -34,6 +35,7 @@ import static screen.Util.getRectangle2D;
 public class ImageViewPanel extends JPanel
     implements MouseListener, MouseMotionListener {
 
+    private ImagePanel imagePanel;
     private final File imageFile;
     private Point stratPoint;
     private Point endPoint;
@@ -42,15 +44,29 @@ public class ImageViewPanel extends JPanel
     private ShapeType shapeType = ShapeType.FILL_ARROW;
     private FillType fillType = FillType.TRANSPARENT;
 
-    public ImageViewPanel(File imageFile) {
+    public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
+        this.imagePanel = imagePanel;
         this.imageFile = imageFile;
+        init();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
 
+    private void init() {
+        BufferedImage bufferedImage = this.getBufferedImage();
+        this.setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
+        this.imagePanel.init();
+    }
+
     public BufferedImage getBufferedImage() {
         if (this.bufferedImageHistoryList.isEmpty()) {
-            return null;
+            try {
+                BufferedImage bufferedImage = ImageIO.read(this.imageFile);
+                this.bufferedImageHistoryList.add(bufferedImage);
+                return bufferedImage;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
         }
 
         return this.bufferedImageHistoryList.get(this.imageHistoryIndex);
@@ -155,26 +171,33 @@ public class ImageViewPanel extends JPanel
 
         if (this.stratPoint != null && this.endPoint != null) {
             if (this.shapeType == CROP) {
-                Rectangle2D rect = getRectangle2D(this.stratPoint, this.endPoint);
-
-                BufferedImage cropImage = bufferedImage.getSubimage((int) rect.getX(), (int) rect.getY(),
-                    (int) rect.getWidth(), (int) rect.getHeight());
-
-                bufferedImage = new BufferedImage(cropImage.getWidth(),
-                    cropImage.getHeight(), TYPE_INT_ARGB);
-
-                bufferedImage.getGraphics().drawImage(cropImage, 0, 0, null);
+                bufferedImage = this.crop(bufferedImage);
             } else {
                 Graphics g = bufferedImage.getGraphics();
                 this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint);
             }
 
             this.addHistory(bufferedImage);
+            this.init();
         }
 
         this.save();
         this.resetPoint();
         this.repaint();
+    }
+
+    private BufferedImage crop(BufferedImage bufferedImage) {
+        Rectangle2D rect = getRectangle2D(this.stratPoint, this.endPoint);
+
+        BufferedImage cropImage = bufferedImage.getSubimage((int) rect.getX(), (int) rect.getY(),
+            (int) rect.getWidth(), (int) rect.getHeight());
+
+        bufferedImage = new BufferedImage(cropImage.getWidth(),
+            cropImage.getHeight(), TYPE_INT_ARGB);
+
+        this.setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
+        bufferedImage.getGraphics().drawImage(cropImage, 0, 0, null);
+        return bufferedImage;
     }
 
     public void addHistory(BufferedImage bufferedImage) {
@@ -251,6 +274,7 @@ public class ImageViewPanel extends JPanel
 
         this.imageHistoryIndex--;
         this.save();
+        this.init();
         this.repaint();
     }
 
@@ -261,6 +285,7 @@ public class ImageViewPanel extends JPanel
 
         this.imageHistoryIndex++;
         this.save();
+        this.init();
         this.repaint();
     }
 
