@@ -105,18 +105,18 @@ public class ImageFrame extends JFrame {
 
     private void createOpenButton(JPanel panel) {
         JButton button = new JButton("open");
-        button.addActionListener(e -> open());
+        button.addActionListener(e -> this.open());
         panel.add(button);
     }
 
     private void createViewButton(JPanel panel) {
         JButton button = new JButton("view");
-        button.addActionListener(e -> view());
+        button.addActionListener(e -> this.view());
         panel.add(button);
     }
 
     private void view() {
-        ThumbnailDialog dialog = new ThumbnailDialog(this, "Thumbnail Viewer");
+        ThumbnailDialog dialog = new ThumbnailDialog(this, this.tabbedPane, "Thumbnail Viewer");
         dialog.setVisible(true);
     }
 
@@ -194,6 +194,7 @@ public class ImageFrame extends JFrame {
 
         if (result == APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
+
             try {
                 this.tabbedPane.addTab(selectedFile.getName());
             } catch (Throwable t) {

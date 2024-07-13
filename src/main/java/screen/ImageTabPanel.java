@@ -17,6 +17,7 @@ import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static lombok.AccessLevel.PRIVATE;
+import static screen.Util.getImageFile;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -28,7 +29,7 @@ public class ImageTabPanel extends JTabbedPane {
     private List<ScreenShotFrame> screenShotFrameList;
 
     public void addTab(String name) {
-        ImagePanel imagePanel = new ImagePanel(name, Util.getImageFile(name), this);
+        ImagePanel imagePanel = new ImagePanel(name, getImageFile(name), this);
         imagePanel.setBorder(createCompoundBorder(
             createEtchedBorder(), createEmptyBorder(10, 10, 10, 10)));
 
