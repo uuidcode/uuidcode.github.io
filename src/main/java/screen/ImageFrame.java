@@ -71,6 +71,8 @@ public class ImageFrame extends JFrame {
 
             return false;
         });
+
+        ThumbnailDialog.deleteOldFile();
     }
 
     public JPanel createControlPanel() {

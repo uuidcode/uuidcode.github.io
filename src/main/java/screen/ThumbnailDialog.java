@@ -9,10 +9,10 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
@@ -27,6 +27,7 @@ import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.SOUTH;
 import static java.awt.Image.SCALE_SMOOTH;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -43,12 +44,31 @@ public class ThumbnailDialog extends JDialog {
         initComponents();
     }
 
+    public static List<File> getFileList() {
+        File dir = new File("screenshot");
+        File[] files = dir.listFiles((d, name) -> name.endsWith(".png"));
+
+        if (files == null) {
+            return new ArrayList<>();
+        }
+
+        return Arrays.stream(files)
+            .sorted(comparing(File::getName).reversed())
+            .collect(toList());
+    }
+
+    public static void deleteOldFile() {
+        getFileList()
+            .stream()
+            .skip(100)
+            .forEach(File::delete);
+    }
+
     private void initComponents() {
         setSize(1_000, 800);
         setLocationRelativeTo(getOwner());
 
-        File dir = new File("screenshot");
-        File[] files = dir.listFiles((d, name) -> name.endsWith(".png"));
+        List<File> totalLlist = getFileList();
 
         this.contentPanel = new JPanel();
         this.contentPanel.setLayout(new BoxLayout(this.contentPanel, Y_AXIS));
@@ -69,18 +89,12 @@ public class ThumbnailDialog extends JDialog {
             e.consume();
         });
 
-        if (files != null) {
-            List<File> totalLlist = Arrays.stream(files)
-                .sorted(comparing(File::getName).reversed())
-                .collect(Collectors.toList());
+        List<File> list = totalLlist.subList(0, Math.min(9, totalLlist.size()));
+        addImage(list);
 
-            List<File> list = totalLlist.subList(0, Math.min(9, totalLlist.size()));
-            addImage(list);
-
-            new Thread(() -> {
-                addImage(totalLlist.subList(list.size(), totalLlist.size()));
-            }).start();
-        }
+        new Thread(() -> {
+            addImage(totalLlist.subList(list.size(), totalLlist.size()));
+        }).start();
 
         getContentPane().add(scrollPane);
     }
