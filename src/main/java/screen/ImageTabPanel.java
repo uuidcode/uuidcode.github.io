@@ -13,8 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import static javax.swing.BorderFactory.createCompoundBorder;
-import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static lombok.AccessLevel.PRIVATE;
 import static screen.Util.getImageFile;
@@ -30,8 +28,7 @@ public class ImageTabPanel extends JTabbedPane {
 
     public void addTab(String name) {
         ImagePanel imagePanel = new ImagePanel(name, getImageFile(name), this);
-        imagePanel.setBorder(createCompoundBorder(
-            createEtchedBorder(), createEmptyBorder(10, 10, 10, 10)));
+        imagePanel.setBorder(createEtchedBorder());
 
         this.indexMap.put(name, this.getComponentCount());
         this.addTab(name, imagePanel);

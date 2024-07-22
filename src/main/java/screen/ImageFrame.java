@@ -38,6 +38,7 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
+import static screen.ScreenShotPanel.lastRectangle;
 
 @Data
 @Accessors(chain = true)
@@ -72,7 +73,7 @@ public class ImageFrame extends JFrame {
             return false;
         });
 
-        ThumbnailDialog.deleteOldFile();
+//        ThumbnailDialog.deleteOldFile();
     }
 
     public JPanel createControlPanel() {
@@ -143,8 +144,8 @@ public class ImageFrame extends JFrame {
         try {
             Robot robot = new Robot();
 
-            ScreenShotPanel.capture(robot, ScreenShotPanel.lastRectangle,
-                ScreenShotPanel.lastRectangle.x, ScreenShotPanel.lastRectangle.y,
+            ScreenShotPanel.capture(robot, lastRectangle,
+                lastRectangle.x, lastRectangle.y,
                 this.tabbedPane);
         } catch (Throwable t) {
             t.printStackTrace();

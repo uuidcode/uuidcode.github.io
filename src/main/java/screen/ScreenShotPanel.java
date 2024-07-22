@@ -24,6 +24,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import static java.awt.Color.BLACK;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotPanel extends JPanel
@@ -155,6 +156,10 @@ public class ScreenShotPanel extends JPanel
     public static void capture(Robot robot, Rectangle rectangle, int x, int y, ImageTabPanel tabbedPane) throws IOException {
         BufferedImage image = robot.createScreenCapture(rectangle);
         robot.mouseMove(x, y);
+
+        Graphics g = image.getGraphics();
+        g.setColor(BLACK);
+        g.drawRect(0, 0, (int) (rectangle.getWidth() - 1), (int) (rectangle.getHeight() - 1));
 
         String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
         File file = Util.getImageFile(fileName);
