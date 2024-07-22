@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -46,6 +47,7 @@ import static screen.ScreenShotPanel.lastRectangle;
 public class ImageFrame extends JFrame {
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
+    public static JCheckBox borderCheckbox;
 
     public ImageFrame() {
         super("ImageFrame");
@@ -84,8 +86,15 @@ public class ImageFrame extends JFrame {
         this.createClipboardButton(panel);
         this.createOpenButton(panel);
         this.createViewButton(panel);
+        this.createBorderCheckBox(panel);
 
         return panel;
+    }
+
+    private void createBorderCheckBox(JPanel panel) {
+        borderCheckbox = new JCheckBox("border");
+        borderCheckbox.setSelected(true);
+        panel.add(borderCheckbox);
     }
 
     private void createCaptureButton(JPanel panel) {

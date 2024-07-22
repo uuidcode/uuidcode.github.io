@@ -157,9 +157,11 @@ public class ScreenShotPanel extends JPanel
         BufferedImage image = robot.createScreenCapture(rectangle);
         robot.mouseMove(x, y);
 
-        Graphics g = image.getGraphics();
-        g.setColor(BLACK);
-        g.drawRect(0, 0, (int) (rectangle.getWidth() - 1), (int) (rectangle.getHeight() - 1));
+        if (ImageFrame.borderCheckbox.isSelected()) {
+            Graphics g = image.getGraphics();
+            g.setColor(BLACK);
+            g.drawRect(0, 0, (int) (rectangle.getWidth() - 1), (int) (rectangle.getHeight() - 1));
+        }
 
         String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
         File file = Util.getImageFile(fileName);
