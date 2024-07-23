@@ -24,8 +24,14 @@ import lombok.experimental.Accessors;
 
 import static java.awt.Color.black;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-import static screen.ShapeType.ALPHABET;
+import static java.lang.Math.min;
+import static screen.ShapeType.A;
+import static screen.ShapeType.B;
+import static screen.ShapeType.C;
 import static screen.ShapeType.CROP;
+import static screen.ShapeType.D;
+import static screen.ShapeType.E;
+import static screen.ShapeType.F;
 import static screen.Util.deepCopy;
 import static screen.Util.getRectangle2D;
 
@@ -111,7 +117,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (this.shapeType != ALPHABET) {
+        if (!this.isAlphabet()) {
             return;
         }
 
@@ -129,6 +135,15 @@ public class ImageViewPanel extends JPanel
         this.save();
         this.resetPoint();
         this.repaint();
+    }
+
+    private boolean isAlphabet() {
+        return this.shapeType == A
+            || this.shapeType == B
+            || this.shapeType == C
+            || this.shapeType == D
+            || this.shapeType == E
+            || this.shapeType == F;
     }
 
     @Override
@@ -157,7 +172,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (this.shapeType == ALPHABET) {
+        if (this.isAlphabet()) {
             return;
         }
 
@@ -221,7 +236,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (this.shapeType == ALPHABET) {
+        if (this.isAlphabet()) {
             return;
         }
 
@@ -235,12 +250,8 @@ public class ImageViewPanel extends JPanel
         int height = bufferedImage.getHeight();
         Point point = e.getPoint();
 
-        if (point.x < width && point.y < height) {
-            this.endPoint = point;
-            e.getComponent().repaint();
-        } else {
-            resetPoint();
-        }
+        this.endPoint = new Point(min(point.x, width), min(point.y, height));
+        e.getComponent().repaint();
     }
 
     @Override
