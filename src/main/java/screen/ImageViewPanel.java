@@ -300,7 +300,7 @@ public class ImageViewPanel extends JPanel
         this.repaint();
     }
 
-    public void copy(File imageFile) {
+    public static void copy(File imageFile) {
         try {
             String command = "osascript -e 'set the clipboard to " +
                 "(read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'";

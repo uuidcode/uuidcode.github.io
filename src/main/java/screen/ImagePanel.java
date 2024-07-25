@@ -236,7 +236,7 @@ public class ImagePanel extends JPanel {
 
     private void copy() {
         if (this.isValid() && this.isVisible()) {
-            this.imageViewPanel.copy(imageFile);
+            ImageViewPanel.copy(imageFile);
         }
     }
 }
