@@ -127,6 +127,7 @@ public class ThumbnailDialog extends JDialog {
                     }
                 });
 
+
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.add(label, CENTER);
 
