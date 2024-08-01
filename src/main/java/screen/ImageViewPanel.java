@@ -48,7 +48,7 @@ public class ImageViewPanel extends JPanel
     private List<BufferedImage> bufferedImageHistoryList = new ArrayList<>();
     private int imageHistoryIndex = 0;
     private ShapeType shapeType = ShapeType.FILL_ARROW;
-    private FillType fillType = FillType.TRANSPARENT;
+    private FillType fillType = FillType.OPAQUE;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
