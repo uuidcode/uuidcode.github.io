@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import static java.awt.Color.BLACK;
 import static java.awt.Color.black;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Math.min;
@@ -211,7 +212,11 @@ public class ImageViewPanel extends JPanel
             cropImage.getHeight(), TYPE_INT_ARGB);
 
         this.setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
-        bufferedImage.getGraphics().drawImage(cropImage, 0, 0, null);
+        Graphics g = bufferedImage.getGraphics();
+        g.drawImage(cropImage, 0, 0, null);
+        g.setColor(BLACK);
+        g.drawRect(0, 0, cropImage.getWidth() - 1, cropImage.getHeight() - 1);
+
         return bufferedImage;
     }
 

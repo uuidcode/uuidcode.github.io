@@ -98,7 +98,7 @@ public class ThumbnailDialog extends JDialog {
 
         new Thread(() -> addImage(totalLlist.subList(list.size(), totalLlist.size()))).start();
 
-        getContentPane().add(scrollPane);
+        setContentPane(scrollPane);
     }
 
     private void addImage(List<File> list) {
@@ -127,7 +127,6 @@ public class ThumbnailDialog extends JDialog {
                     }
                 });
 
-
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.add(label, CENTER);
 
@@ -139,6 +138,16 @@ public class ThumbnailDialog extends JDialog {
                 JButton copyButton = new JButton("copy");
                 copyButton.addActionListener(e -> copy(file));
                 bottomPanel.add(copyButton);
+
+                JButton deleteButton = new JButton("delete");
+                deleteButton.addActionListener(e -> {
+                    file.delete();
+                    this.initComponents();
+                    this.revalidate();
+                    this.repaint();
+                });
+
+                bottomPanel.add(deleteButton);
 
                 panel.add(bottomPanel, SOUTH);
 

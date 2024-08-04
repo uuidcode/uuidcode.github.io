@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import static screen.FillType.TRANSPARENT;
+
 public enum ShapeType implements Drawable {
     FILL_ARROW {
         @Override
@@ -74,7 +76,7 @@ public enum ShapeType implements Drawable {
     CROP {
         @Override
         public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
-            Util.processRect(g2, startPoint, endPoint, fillType, DrawType.FILL);
+            Util.processRect(g2, startPoint, endPoint, TRANSPARENT, DrawType.FILL);
         }
     };
 }

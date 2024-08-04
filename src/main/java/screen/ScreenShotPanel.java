@@ -115,6 +115,7 @@ public class ScreenShotPanel extends JPanel
         rectangle.height++;
         controlPanel.setVisible(false);
         screenShotFrame.getContentPane().repaint();
+        imageFrame.setVisible(false);
 
         new Thread(() -> {
             try {
