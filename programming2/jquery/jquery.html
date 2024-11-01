@@ -1,0 +1,860 @@
+
+        <script>
+            var _com_interpark_ui_debug_ = "_com_interpark_ui_debug_";
+            var _com_interpark_ui_disabler_ = "_com_interpark_ui_disabler_";
+            var _com_interpark_ui_debug_frame = "_com_interpark_ui_debug_frame_";
+            var _com_interpark_ui_table_footer_ = "_com_interpark_ui_table_footer_";
+            var _com_interpark_ui_table_column_ = "_com_interpark_ui_table_column_";
+            var _com_interpark_ui_table_row_ = "_com_interpark_ui_table_row_";
+            var _com_interpark_ui_table_menu_ = "_com_interpark_ui_table_menu_";
+            var _com_interpark_ui_table_cell_edit_ = "_com_interpark_ui_table_cell_edit_";
+            var _com_interpark_ui_loading_ = "_com_interpark_ui_loading_";
+            
+            var isDebug = true;
+            
+            $(function(){
+                if (isDebug) {
+                    $("body").append("<div id='" + _com_interpark_ui_debug_frame + "'></div>");
+                    var debugFrame = $("#" + _com_interpark_ui_debug_frame);
+                    debugFrame.easydrag();
+                    debugFrame.css("font-size", 12);
+                    debugFrame.css("border", "solid 1px #000000");
+                    debugFrame.css("padding", "5 5 5 5");
+                    debugFrame.css("background-color", "#EFF3FF");
+                    debugFrame.css("position", "absolute");
+                    debugFrame.css("left", "0");
+                    debugFrame.css("top", "500");
+                    debugFrame.css("width", "600");
+                    debugFrame.css("height", "300");
+                    debugFrame.css("overflow", "hidden");
+                    debugFrame.append("<table width='100%'><tr><td><b>Debug</b></td><td align='right'><input type='button' value='clear'></td></tr></table>");
+                    debugFrame.append("<div id='" + _com_interpark_ui_debug_ + "'></div>");
+                    var debugContent = $("#" + _com_interpark_ui_debug_);
+                    debugContent.css("width", "100%");
+                    debugContent.css("height", "90%");
+                    debugContent.css("background-color", "white");
+                    debugContent.css("border", "solid 1px #000000");
+                    debugContent.css("overflow", "scroll");
+                    debugContent.css("font-size", "12");
+                    debugContent.css("padding", "5 5 5 5");
+                    var clearAction = $("input[value=clear]", debugFrame);
+                    clearAction.bind("click", function(){
+                        $("#" + _com_interpark_ui_debug_).empty();
+                    });
+                    log("debug start");
+                }
+            });
+            
+            function log(message){
+                if (isDebug) {
+                    $("#" + _com_interpark_ui_debug_).append(new Date() + "=>" + message + "<br>");
+                    document.getElementById(_com_interpark_ui_debug_).scrollTop = 100000000;
+                }
+            }
+            
+            var tables = new Array();
+            var activeTable;
+            
+            function createTable(id, width, height){
+                var table = new Table(id, width, height);
+                tables[id] = table;
+                activeTable = table;
+                log("create table[id=" + id + "]");
+                return table;
+            }
+            
+            Array.prototype.remove = function(s){
+                for (var i = 0; i < this.length; i++) {
+                    if (s == i) {
+                        this.splice(i, 1);
+                    }
+                }
+            }
+            
+            function Cell(row, column, value){
+                this.id;
+                this.height = 30;
+                this.width = 100;
+                this.align = "center";
+                this.value = value;
+                this.clickedDate = new Date();
+                this.row = row;
+                this.column = column;
+                this.editable;
+            }
+            
+            Cell.prototype.setId = function(id){
+                this.id = id;
+            }
+            
+            Cell.prototype.getId = function(){
+                return this.id;
+            }
+            
+            Cell.prototype.setEditable = function(editable){
+                this.editable = editable;
+            }
+            
+            Cell.prototype.getEditable = function(){
+                return this.editable;
+            }
+            
+            Cell.prototype.getClickedDate = function(){
+                return this.clickedDate;
+            }
+            
+            Cell.prototype.setClickedDate = function(clickedDate){
+                this.clickedDate = clickedDate;
+            }
+            
+            Cell.prototype.getRow = function(){
+                return this.row;
+            }
+            
+            Cell.prototype.getColumn = function(){
+                return this.column;
+            }
+            
+            Cell.prototype.setHeight = function(height){
+                this.height = height;
+            }
+            
+            Cell.prototype.getHeight = function(){
+                return this.height;
+            }
+            
+            Cell.prototype.getWidth = function(){
+                return this.width;
+            }
+            
+            Cell.prototype.setWidth = function(width){
+                this.width = width;
+            }
+            
+            Cell.prototype.setAlign = function(align){
+                this.align = align;
+            }
+            
+            Cell.prototype.getAlign = function(){
+                return this.align;
+            }
+            
+            Cell.prototype.setValue = function(value){
+                this.value = value;
+            }
+            
+            Cell.prototype.getValue = function(){
+                return this.value;
+            }
+            
+            Cell.prototype.html = function(){
+            		var html = "<div id=\"" + this.id + "\">\r\n";
+                html += "<table width=\"100%\" height=\"100%\"><tbody>\r\n";
+                html += "<tr>\n";
+                html += "<td align='" + this.align + "' valign='center'>\r\n";
+                html += this.value;
+                html += "</td>\r\n";
+                html += "</tr>\r\n";
+                html += "</tbody></table>\r\n";
+                html += "</div>\r\n";
+                return html;
+            }
+            
+            function Column(){
+                this.id;
+                this.name;
+                this.dataName;
+                this.width = 100;
+                this.height = 30;
+                this.align;
+                this.bindType = "default";
+                this.isEditable = false;
+                this.editType = "text";
+            }
+            
+            Column.prototype.setEditType = function(editType){
+                this.editType = editType;
+            }
+            
+            Column.prototype.getEditType = function(){
+                return this.editType;
+            }
+            
+            Column.prototype.setEditable = function(isEditable){
+                this.isEditable = isEditable;
+            }
+            
+            Column.prototype.getEditable = function(){
+                return this.isEditable;
+            }
+            
+            Column.prototype.setBindType = function(bindType){
+                this.bindType = bindType;
+            }
+            
+            Column.prototype.getBindType = function(){
+                return this.bindType;
+            }
+            
+            Column.prototype.setDataName = function(dataName){
+                this.dataName = dataName;
+            }
+            
+            Column.prototype.getDataName = function(){
+                return this.dataName;
+            }
+            
+            Column.prototype.setDataName = function(dataName){
+                this.dataName = dataName;
+            }
+            
+            Column.prototype.getName = function(){
+                return this.name;
+            }
+            
+            Column.prototype.setName = function(name){
+                this.name = name;
+            }
+            
+            Column.prototype.setId = function(id){
+                this.id = id;
+            }
+            
+            Column.prototype.getId = function(){
+                return this.id;
+            }
+            
+            Column.prototype.setWidth = function(width){
+                this.width = width;
+            }
+            
+            Column.prototype.setHeight = function(height){
+                this.height = height;
+            }
+            
+            Column.prototype.getHeight = function(){
+                return this.height;
+            }
+            
+            Column.prototype.getWidth = function(){
+                return this.width;
+            }
+            
+            Column.prototype.setAlign = function(align){
+                this.align = align;
+            }
+            
+            Column.prototype.getAlign = function(){
+                return this.align;
+            }
+            
+            Column.prototype.html = function(){
+                var html = "<div id=\"" + this.id + "\">\r\n";
+                html += "<table width=\"100%\" height=\"100%\"><tbody>\r\n";
+                html += "<tr>\n";
+                html += "<td align=\"center\" valign=\"middle\">\r\n";
+                html += this.name;
+                html += "</td>\r\n";
+                html += "</tr>\r\n";
+                html += "</tbody></table>\r\n";
+                html += "</div>\r\n";
+                return html;
+            }
+            
+            function ContextMenu(){
+                log("init context menu.");
+                $("body").append("<div id='" + _com_interpark_ui_table_menu_ + "'><table width='100%'></table></div>");
+                var contextMenu = $("#" + _com_interpark_ui_table_menu_);
+                var tableDiv = $("table", contextMenu);
+                contextMenu.css("position", "absolute");
+                contextMenu.css("width", 100);
+                contextMenu.css("height", 25 * $("a", tableDiv).size());
+                contextMenu.css("left", 100);
+                contextMenu.css("top", 100);
+                contextMenu.css("background-color", "#D6D3CE");
+                contextMenu.css("border-left", "solid 1px #FFFFFF");
+                contextMenu.css("border-top", "solid 1px #FFFFFF");
+                contextMenu.css("border-right", "solid 1px #000000");
+                contextMenu.css("border-bottom", "solid 1px #000000");
+                contextMenu.css("padding-left", 2);
+                contextMenu.css("padding-top", 2);
+                contextMenu.hide();
+                log("context menu was created.");
+            }
+            
+            ContextMenu.prototype.add = function(item){
+                log("init context menu item.");
+                var contextMenuDiv = $("#" + _com_interpark_ui_table_menu_);
+                $("table", contextMenuDiv).append("<tr><td align='left' valign='center'>" + item.html() + "</td></tr>");
+                var menuItem = $("a[name='" + item.getName() + "']", contextMenuDiv);
+                menuItem.bind("click", item.getAction());
+                var contextMenuItemTd = $("td", contextMenuDiv);
+                contextMenuItemTd.css("font-size", 12)
+                contextMenuItemTd.attr("height", 25);
+                contextMenuItemTd.bind("mouseover", function(){
+                    $(this).css("background-color", "#0A246A");
+                    $("a", this).css("color", "white");
+                });
+                contextMenuItemTd.bind("mouseout", function(e){
+                    window.event.cancelBubble = true;
+                    $(this).css("background-color", "#D6D3CE");
+                    $("a", this).css("color", "black");
+                    window.event.cancelBubble = false;
+                });
+                
+                var contextMenuItem = $("a", this.contextMenu);
+                contextMenuItem.css("text-decoration", "none");
+                contextMenuItem.css("color", "black");
+                log("add context item menu[name=" + item.getName() + "]");
+                log("context menu[html=<xmp>" + contextMenuDiv.html() + "</xmp>]");
+            }
+            
+            function ContextMenuItem(name, action){
+                this.name = name;
+                this.action = action;
+            }
+            
+            ContextMenuItem.prototype.getAction = function(){
+                return this.action;
+            }
+            
+            ContextMenuItem.prototype.getName = function(){
+                return this.name;
+            }
+            
+            ContextMenuItem.prototype.html = function(){
+                return "<a name='" + this.name + "'>" + this.name + "</a>";
+            }
+            
+            function Table(id, width, height){
+                this.id = id;
+                this.columns = new Array();
+                this.rows = new Array();
+                this.height = 50;
+                this.menuHtml = "";
+                this.contextMenuHeight = 25;
+                this.dataSource;
+                this.fixedColumn = 0;
+                this.page = 1;
+                this.totalCont = 0;
+                this.selctedRow = -1;
+                this.editingCell;
+                this.width = width;
+                this.height = height;
+                this.columnHeight = 30;
+                this.footerHeight = 30;
+                this.scrollWidth = 20;
+                
+                var tableDiv = $("#" + id);
+                tableDiv.empty();
+                tableDiv.append("<div style='display:inline' id=\"" + _com_interpark_ui_table_column_ + "\"><table cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table></div>");
+                tableDiv.append("<div style='display:inline;height:" + this.columnHeight + ";width:" + this.scrollWidth + ";background-color:#B5EDBC' id=\"" + _com_interpark_ui_table_column_ + "\"><table cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table></div>");
+                tableDiv.append("<div id=\"" + _com_interpark_ui_table_row_ + "\"><table cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table></div>");
+                tableDiv.append("<div id=\"" + _com_interpark_ui_table_footer_ + "\"><table width=\"100%\"><tr><td></td></tr></table></div>");
+                tableDiv.css("width", this.width);
+                tableDiv.css("height", this.height);
+                tableDiv.css("overflow", "hidden");
+                
+                var columnDiv = $("#" + _com_interpark_ui_table_column_, tableDiv);
+                var rowDiv = $("#" + _com_interpark_ui_table_row_, tableDiv);
+                var footerDiv = $("#" + _com_interpark_ui_table_footer_, tableDiv);
+                footerDiv.css("width", width);
+                var footerTd = $("td", footerDiv);
+                footerTd.css("font-size", 12);
+                footerTd.css("height", this.footerHeight);
+                footerTd.attr("align", "center");
+                footerTd.attr("width", "100%");
+                
+                columnDiv.css("overflow", "hidden");
+                columnDiv.css("width", this.width - this.scrollWidth);
+                rowDiv.css("overflow", "scroll");
+                rowDiv.css("width", this.width);
+                rowDiv.css("backbround-color", "#FFFFFF");
+                rowDiv.css("height", this.height - this.footerHeight - this.columnHeight);
+                rowDiv.bind("scroll", function(){
+                    var scrollLeft = document.getElementById("_com_interpark_ui_table_row_").scrollLeft;
+                    document.getElementById("_com_interpark_ui_table_column_").scrollLeft = scrollLeft;
+                });
+            }
+            
+            Table.prototype.removeAllRow = function(){
+                this.rows = new Array();
+            }
+            
+            Table.prototype.showContextMenu = function(){
+                $("#" + _com_interpark_ui_table_menu_).show();
+            }
+            
+            Table.prototype.hideContextMenu = function(){
+                $("#" + _com_interpark_ui_table_menu_).hide();
+            }
+            
+            Table.prototype.getId = function(){
+                return this.id;
+            }
+            
+            Table.prototype.activate = function(){
+                activeTable = this;
+            }
+            
+            Table.prototype.getEditingCell = function(){
+                return this.editingCell;
+            }
+            
+            Table.prototype.setEditingCell= function(editingCell){
+                this.editingCell = editingCell;
+            }
+            
+            Table.prototype.getPage = function(){
+                return this.page;
+            }
+            
+            Table.prototype.setPage = function(page){
+                this.page = page;
+            }
+            
+            Table.prototype.getTotalCount = function(){
+                return this.totalCount;
+            }
+            
+            Table.prototype.setTotalCount = function(totalCount){
+                this.totalCount = totalCount;
+            }
+            
+            Table.prototype.load = function(){
+                grayOut(true);
+                var startDate = new Date();
+                log("load...");
+                log("url is " + activeTable.getDataSource());
+                
+                var tableDiv = $("#" + activeTable.getId());
+                var rowDiv = $("#" + _com_interpark_ui_table_row_, tableDiv);
+                $("#" + _com_interpark_ui_table_menu_).hide();
+                rowDiv.empty();
+                rowDiv.append("<table width=\"100%\" height=\"100%\" cellpadding=\"0\" cellspacing=\"0\"><tr><td style='font-size:12' align=\"center\" valing='center'><img src='loading_progress_bar.gif'><p>loading data...</td></tr></table>");
+                
+                var ajaxParameter = {
+                    type: "GET",
+                    url: activeTable.getDataSource(),
+                    dataType: "xml",
+                    date: "page=" + activeTable.getPage(),
+                    success: function(xml){
+                    
+                        log("receiving data...");
+                        var tableDiv = $("#" + activeTable.getId());
+                        var rowDiv = $("#" + _com_interpark_ui_table_row_, tableDiv);
+                        rowDiv.empty();
+                        rowDiv.append("<table cellpadding=\"0\" cellspacing=\"0\"><tr></tr></table>");
+                        activeTable.removeAllRow();
+                        //alert(activeTable.getRows().length);
+                        var xmlRow = $("result > rows > row", xml);
+                        var columns = activeTable.getColumns();
+                        activeTable.setTotalCount(xmlRow.length);
+                        var count = 1;
+                        
+                        for (var i = 0; i < xmlRow.length; i++) {
+                            if (i >= (activeTable.getPage() - 1) * 10 &&
+                            i < (activeTable.getPage() * 10)) {
+                                var data = new Array();
+                                for (var j = 0; j < columns.length; j++) {
+                                    if (columns[j].getBindType() == "autoIncremental") {
+                                        data[j] = new Cell(i, j, count++);
+                                    }
+                                    else {
+                                        data[j] = new Cell(i, j, $(columns[j].getDataName(), xmlRow.get(i)).text());
+                                    }
+                                    
+                                    data[j].setAlign(columns[j].getAlign());
+                                }
+                                activeTable.addRow(data);
+                            }
+                        }
+                        grayOut(false);
+                    },
+                    error: function(){
+                        alert("Error");
+                    }
+                };
+                
+                $.ajax(ajaxParameter);
+                log("loading complete.");
+                log("elapsed time " + (new Date() - startDate) + "ms.");
+            }
+            
+            Table.prototype.setFixedColumn = function(dataSource){
+                this.fixedColumn = fixedColumn;
+            }
+            
+            Table.prototype.getFixedColumn = function(){
+                return this.fixedColumn;
+            }
+            
+            Table.prototype.setDataSource = function(dataSource){
+                this.dataSource = dataSource;
+            }
+            
+            Table.prototype.getDataSource = function(){
+                return this.dataSource;
+            }
+            
+            Table.prototype.setColumHeight = function(height){
+                this.height = height;
+            }
+            
+            Table.prototype.removeSelectedRow = function(){
+                if (this.selectedRow != -1) {
+                    this.removeRow(this.selectedRow);
+                    this.selectedRow = -1;
+                }
+            }
+            
+            Table.prototype.removeRow = function(index){
+                var tableDiv = $("#" + this.id);
+                var rowDiv = $("#" + _com_interpark_ui_table_row_, tableDiv);
+                var cell = $("#" + this.rows[index][0].getId(), rowDiv);
+                cell.parent().parent().remove();
+                activeTable.hideContextMenu();
+                log("remove row[index=" + index + "][rows.length=" + this.rows.length + "]");
+            }
+            
+            Table.prototype.getRows = function(){
+                return this.rows;
+            }
+            
+            Table.prototype.getColumns = function(){
+                return this.columns;
+            }
+            
+            Table.prototype.addColumn = function(column){
+                column.setId(_com_interpark_ui_table_column_ + this.columns.length);
+                this.columns.push(column);
+                var tableDiv = $("#" + this.id);
+                var tableHeader = $($("table>*>tr", $("#" + _com_interpark_ui_table_column_, tableDiv)).get(0));
+                tableHeader.append("<td>" + column.html() + "</td>");
+                
+                var columnDiv = $("#" + column.getId());
+                columnDiv.css("display", "inline");
+                columnDiv.css("position", "relative");
+                columnDiv.css("width", column.getWidth());
+                columnDiv.css("height", column.getHeight());
+                columnDiv.css("border", "solid 1px #CECBCE");
+                columnDiv.css("background-color", "#B5EDBC");
+                $("td", columnDiv).css("font-size", "12px");
+            }
+            
+            Table.prototype.setCssCell = function(cellDiv, column){
+                cellDiv.css("display", "inline");
+                cellDiv.css("width", columns.getWidth());
+                cellDiv.css("height", columns.getHeight());
+                cellDiv.css("border", "solid 1px #CECBCE");
+                cellDiv.css("background-color", "#EFF3FF");
+            }
+            
+            Table.prototype.updateFooter = function(){
+                var totalCount = this.rows.length;
+                var tableDiv = $("#" + this.id);
+                var footerDiv = $("#" + _com_interpark_ui_table_footer_, tableDiv);
+                footerDiv.css("width", this.width);
+                var footerTd = $("td", footerDiv);
+                var totalPage = this.totalCount / 10;
+                var footerHTML = "";
+                for (var i = 0; i < totalPage; i++) {
+                    if ((i + 1) == this.page) {
+                        footerHTML += "<b>" + (i + 1) + "</b> ";
+                    }
+                    else {
+                        footerHTML += "<a href=\"#\" value=\"" + (i + 1) + "\">" + (i + 1) + "</a> ";
+                    }
+                    
+                }
+                footerTd.html(footerHTML);
+                var aTag = $("a", footerTd);
+                aTag.bind("click", function(){
+                    activeTable.setPage($(this).attr("value"));
+                    activeTable.load();
+                });
+            }
+            
+            Table.prototype.setupContextMenu = function(cellDiv, event){
+                var contextMenu = $("#" + _com_interpark_ui_table_menu_);
+                contextMenu.css("left", event.x - 10);
+                contextMenu.css("top", event.y - 10);
+                contextMenu.show();
+                
+                var id = cellDiv.attr("id");
+                id = id.replace(_com_interpark_ui_table_row_, "");
+                var rowAndColumn = id.split("_");
+                var row = parseInt(rowAndColumn[0]);
+                activeTable.select(row);
+            }
+            
+            Table.prototype.cellMousedownAction = function (e){
+            		if (e.which == 3) {
+                    $(document).bind("contextmenu", function(){
+                        e.cancelBubble = true;
+                        e.returnValue = false;
+                        return false;
+                    });
+                    
+                    activeTable.setupContextMenu($(this), e);
+                }
+                else 
+                    if (e.which == 1) {
+                        var id = $(this).attr("id");
+                        id = id.replace(_com_interpark_ui_table_row_, "");
+                        var rowAndColumn = id.split("_");
+                        var row = rowAndColumn[0];
+                        var column = rowAndColumn[1];
+                        
+                        var currentRows = activeTable.getRows();
+                        var currentColumns = activeTable.getColumns();
+                        var cells = currentRows[row];
+                        
+                        if (currentColumns[column].getEditable() &&
+                        		(new Date() - cells[column].getClickedDate()) <= 1000) {
+                        		log("cell[" + column + "][" + row + "] is editing");
+                        		activeTable.select(row);
+                            
+                            var editingCellDiv = $("#" + cells[column].getId());
+                            var content = $("td", editingCellDiv);
+                            content.empty();
+                            if (currentColumns[column].getEditType() == "text") {
+                            	content.append("<input id=\"" + _com_interpark_ui_table_cell_edit_ + "\" type=\"text\">");
+                            } else if (currentColumns[column].getEditType() == "combobox") {
+                            	content.append("<select id=\"" + _com_interpark_ui_table_cell_edit_ + "\"><option>�ѵ���</option><option>��ø�</option></select>");
+                            } else if (currentColumns[column].getEditType() == "checkbox") {
+                            	content.append("<input type='checkbox' id='" + _com_interpark_ui_table_cell_edit_ + "' value='OK'>");
+                            }
+                            
+                            activeTable.setEditingCell(cells[column]);
+                            var editComponent = $("#" + _com_interpark_ui_table_cell_edit_);
+                            if (currentColumns[column].getEditType() == "text") {
+                            	editComponent.attr("value", cells[column].getValue());	
+                            }
+                            editComponent.css("width", "100%");
+                            editComponent.css("height", "100%");
+                            editComponent.css("border", "solid 1px #000000");
+                            editComponent.css("font-size", 12);
+                            
+                            editComponent.css("text-align", cells[column].getAlign());
+                            editComponent.show();
+                            editComponent.focus();
+                            editComponent.select();
+                            
+                            if (currentColumns[column].getEditType() == "text") {
+	                            editComponent.bind("keydown", function(e){
+	                                if (e.keyCode == 13) {
+	                                    log("cell[" + column + "][" + row + "] old value:" + cells[column].getValue() + ", new value:" + editComponent.val());
+	                                    cells[column].setValue(editComponent.val());
+	                                    editingCellDiv.empty();
+	                                    editingCellDiv.append(cells[column].html());
+	                                    $("td", editingCellDiv).css("font-size", "12px");
+	                                    activeTable.select(row);
+	                                }
+	                            });
+	                          } else if (currentColumns[column].getEditType() == "combobox") {
+	                          	editComponent.unbind("change");
+	                          	editComponent.bind("change", function() {
+	                          					log("cell[" + column + "][" + row + "] old value:" + cells[column].getValue() + ", new value:" + editComponent.val());
+	                          		 			cells[column].setValue(editComponent.val());
+	                                    editingCellDiv.empty();
+	                                    editingCellDiv.append(cells[column].html());
+	                                    $("td", editingCellDiv).css("font-size", "12px");
+	                                    activeTable.select(row);
+	                          	});
+ 														} else if (currentColumns[column].getEditType() == "checkbox") {
+	                          	editComponent.unbind("click");
+	                          	editComponent.bind("click", function() {
+	                          					log("cell[" + column + "][" + row + "] old value:" + cells[column].getValue() + ", new value:" + editComponent.val());
+	                          		 			cells[column].setValue(editComponent.val());
+	                                    editingCellDiv.empty();
+	                                    editingCellDiv.append(cells[column].html());
+	                                    $("td", editingCellDiv).css("font-size", "12px");
+	                                    activeTable.select(row);
+	                          	});
+	                          }
+	                          
+                            var cellDiv = $("#" + cells[column].getId());
+                            cellDiv.unbind("mousedown");
+                        }
+                      else {
+                          activeTable.select(row);
+                          cells[column].setClickedDate(new Date());
+                      }
+                      $("#" + _com_interpark_ui_table_menu_).hide();
+                    }
+            	}           
+            
+            Table.prototype.addRow = function(row){
+                for (var i = 0; i < row.length; i++) {
+                    row[i].setId(_com_interpark_ui_table_row_ + this.rows.length + "_" + i);
+                }
+                this.rows.push(row);
+                
+                var tableDiv = $("#" + this.id);
+                $($("table", $("#" + _com_interpark_ui_table_row_, tableDiv)).get(0)).append("<tr></tr>");
+                var rowTableDiv = $("#" + _com_interpark_ui_table_row_, tableDiv);
+                var allTr = $("table", rowTableDiv);
+                var allTr = $("tr", allTr.get(0));
+                var lastTr = allTr.get(allTr.size() - 1);
+                
+                for (var i = 0; i < this.columns.length; i++) {
+                    $(lastTr).append("<td>" + row[i].html() + "</td>");
+                    
+                    var index = (this.rows.length - 1);
+                    var cellDiv = $("#" + row[i].getId());
+                    cellDiv.css("display", "inline");
+                    cellDiv.css("width", this.columns[i].getWidth());
+                    cellDiv.css("height", this.columns[i].getHeight());
+                    cellDiv.css("border", "solid 1px #CECBCE");
+                    cellDiv.css("background-color", "#EFF3FF");
+                    $("td", cellDiv).css("font-size", "12px");
+                    
+                    cellDiv.bind("mousedown", this.cellMousedownAction);
+                    
+                }
+                
+                this.updateFooter();
+                log("addRow[rows.length=" + this.rows.length + "]");
+            }
+            
+            Table.prototype.select = function(index){
+              if (this.editingCell != null) {
+                var editingCellDiv = $("#" + this.editingCell.getId());
+                var content = $("td", editingCellDiv);
+	              var editComponent = $("#" + _com_interpark_ui_table_cell_edit_);
+	              editingCellDiv.empty();
+								editingCellDiv.append(this.editingCell.html());
+	              $("td", editingCellDiv).css("font-size", "12px");
+	              var cellDiv = $("#" + this.editingCell.getId());
+	              cellDiv.bind("mousedown", this.cellMousedownAction);
+	            }
+                                
+                this.selectedRow = index;
+                for (var i = 0; i < this.rows.length; i++) {
+                    for (var j = 0; j < this.columns.length; j++) {
+                        $("#" + this.rows[i][j].getId()).css("background-color", "#EFF3FF");
+                    }
+                }
+                
+                for (var i = 0; i < this.columns.length; i++) {
+                    $("#" + this.rows[index][i].getId()).css("background-color", "yellow");
+                }
+                log("selcted row " + index);
+            }
+            
+            function grayOut(vis, options){
+                try {
+                    var options = options ||
+                    {};
+                    var zindex = options.zindex || 50;
+                    var opacity = options.opacity || 25;
+                    var opaque = 0;
+                    var bgcolor = options.bgcolor || '#000000';
+                    var dark = $("#" + _com_interpark_ui_disabler_);
+                    
+                    if (dark.size() == 0) {
+                        var tbody = $("body");
+                        tbody.append("<div id='" + _com_interpark_ui_disabler_ + "'></div>");
+                        var tnode = $("#" + _com_interpark_ui_disabler_);
+                        tnode.css("position", "absolute");
+                        tnode.css("top", "0");
+                        tnode.css("left", "0");
+                        tnode.css("overflow", "hidden");
+                        tnode.css("display", "none");
+                        dark = tnode;
+                    }
+                    
+                    if (vis) {
+                        dark.css("opacity", opaque);
+                        dark.css("MozOpacity", opaque);
+                        //dark.css("filter", "alpha(opacity=" + opacity + ")");
+                        dark.css("zIndex", zindex);
+                        dark.css("background-color", bgcolor);
+                        dark.css("width", "100%");
+                        dark.css("height", "100%");
+                        dark.css("display", "block");
+                    }
+                    else {
+                        dark.css("display", "none");
+                    }
+                } 
+                catch (e) {
+                    alert('Error in grayOut.' + e.message + e.line);
+                }
+            }
+            
+            $(function(){
+                var table = new createTable("result", 800, 300);
+                var contextMenu = new ContextMenu();
+                contextMenu.add(new ContextMenuItem("�߰�", function(){
+                    var row = new Array();
+                    row.push(new Cell("", "", ""));
+                    row.push(new Cell("", "", ""));
+                    row.push(new Cell("", "", ""));
+                    row.push(new Cell("", "", ""));
+                    row.push(new Cell("", "", ""));
+                    activeTable.addRow(row);
+                    activeTable.hideContextMenu();
+                }));
+                contextMenu.add(new ContextMenuItem("����", function(){
+                    activeTable.removeSelectedRow();
+                    activeTable.hideContextMenu();
+                }));
+                
+                var column = new Column();
+                column.setName("��ȣ");
+                column.setWidth(50);
+                column.setAlign("center");
+                column.setBindType("autoIncremental");
+                column.setEditable(true);
+                column.setEditType("checkbox");
+                table.addColumn(column);
+                
+                column = new Column();
+                column.setName("�ֹ���ȣ");
+                column.setWidth(200);
+                column.setAlign("left");
+                column.setDataName("ordclmNo");
+                table.addColumn(column);
+                
+                column = new Column();
+                column.setName("��ǰ��");
+                column.setWidth(300);
+                column.setAlign("center");
+                column.setDataName("prdNm");
+                column.setEditable(true);
+                table.addColumn(column);
+                
+                column = new Column();
+                column.setName("�ֹ���");
+                column.setWidth(100);
+                column.setAlign("right");
+                column.setDataName("ordNm");
+                column.setEditable(true);
+                column.setEditType("combobox");
+                table.addColumn(column);
+                
+                column = new Column();
+                column.setName("�ֹ���");
+                column.setWidth(200);
+                column.setAlign("center");
+                column.setDataName("ordDts");
+                table.addColumn(column);
+                
+                table.setDataSource("http://songsungkyun.cafe24.com/programming2/jquery/data.xml");
+                table.load();
+            });
+        </script>
+    </head>
+    <body>
+        <pre>
+    Grid with <a href="http://jquery.com/">JQuery</a>
+      features
+      - inline editing(text, select)
+      - context menu
+      - ajax
+      - 2008-02-07 updated
+    </pre>
+        <div id="result">
+        </div>

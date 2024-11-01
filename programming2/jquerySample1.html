@@ -1,0 +1,165 @@
+<html><head><title>uuidcode</title>
+<meta charset="utf-8" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="" />
+<meta name="author" content="" />
+<link href="../bootstrap/css/bootstrap.css" rel="stylesheet" />
+<link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet" />
+<link href="../css/shCore.css" rel="stylesheet" />
+<link href="../css/shThemeDefault.css" rel="stylesheet" />
+<script src="../bootstrap/js/jquery.js"></script>
+<script src="../bootstrap/js/bootstrap-dropdown.js"></script>
+<script src="../jqueryrolling/jquery.rolling.js"></script>
+<script src="/jquery/lib/jquery/jquery.easydrag.js"></script>
+<script src="../virtualform/json2.js"></script>
+<script src="../virtualform/jquery.virtualform-0.1.js"></script>
+<script src="../js/shCore.js"></script>
+<script src="../js/shBrushJava.js"></script>
+<script src="../js/shBrushSql.js"></script>
+<script src="../js/shBrushPhp.js"></script>
+<script src="../js/shBrushXml.js"></script>
+<style type="text/css">
+    .navbar-fixed-top {
+        margin-bottom: 20px;
+    }
+</style>
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<script src="../js/youtube.js?v=1"></script>
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-49038982-1', 'uuidcode.github.io');
+    ga('send', 'pageview');
+
+</script>
+<script type="text/javascript">
+    jQuery(function () {
+        SyntaxHighlighter.all()
+    });
+</script></head><body>
+<h2>Sample1</h2>
+<div id="rollingHead"></div>
+<p>
+<a href="javascript:rollingLeft()"><img src="left.jpg" alt="left rolling" border="0" /></a>
+<a href="javascript:rollingRight()"><img src="right.jpg" alt="right rolling" border="0" /></a>
+</p><div id="rollingHeadComment"><b><font color="white">...</font></b></div>
+<p>
+</p><form name="rollingHeadForm">
+<table>
+<tbody><tr>
+<td>
+Rolling Animation Frame</td>
+<td><select name="rollingAnimationFrame" onchange="javascript: changeRollingAnimationFrame()">
+	<option value="10">10</option>
+	<option value="20">20</option>
+	<option value="50" selected="">50</option>
+	<option value="80">80</option>
+	<option value="100">100</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+Rolling Time
+</td>
+<td><select name="rollingTime" onchange="javascript: changeRollingTime()">
+	<option value="10">10</option>
+	<option value="20">20</option>
+	<option value="30" selected="">30</option>
+	<option value="40">40</option>
+	<option value="50">50</option>
+	<option value="100">100</option>
+</select> ms
+</td>
+</tr>
+<tr>
+<td>
+Viewing Time
+</td>
+<td><select name="viewingTime" onchange="javascript: changeViewingTime()">
+	<option value="0" selected="">0</option>
+	<option value="100">100</option>
+	<option value="500">500</option>
+	<option value="1000">1000</option>
+	<option value="2000">2000</option>
+</select> ms
+</td>
+</tr>
+<tr><td>Status</td><td><div id="status" style="display:inline"></div></td><td></td></tr>
+<tr><td colspan="2" align="center"><input type="button" value="default" onclick="javascript: chagneDefault()" /></td></tr>
+<tr><td><div id="showYouTubeDiv"></div></td></tr>
+</tbody></table>
+
+<h2>Script</h2>
+<xmp id="code">
+	var rollingDiv = $("#rollingHead");	
+	rollingDiv.rolling("left", 130, 100, 5);
+	
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"oG5RQPRCHH4\")'><img src='http://i.ytimg.com/vi/oG5RQPRCHH4/default.jpg' width='120' height='90' alt='Capoeira Demo 2' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"4CDAZVR7kgY\")'><img src='http://i.ytimg.com/vi/4CDAZVR7kgY/default.jpg' width='120' height='90' alt='Capoeira clip: Cueca' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"tbW6ErTogio\")'><img src='http://i.ytimg.com/vi/tbW6ErTogio/default.jpg' width='120' height='90' alt='Capoeira Demonstration' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"GOa5FSwK96w\")'><img src='http://i.ytimg.com/vi/GOa5FSwK96w/default.jpg' width='120' height='90' alt='abada capoeira trailer' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"UJKR4cOt2Dc\")'><img src='http://i.ytimg.com/vi/UJKR4cOt2Dc/default.jpg' width='120' height='90' alt='Capoeira Mestre' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"Qtkt_cbFj6U\")'><img src='http://i.ytimg.com/vi/Qtkt_cbFj6U/default.jpg' width='120' height='90' alt='Capoeirage III mix by Capoeira4Real.com' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"EX82tPUy1LE\")'><img src='http://i.ytimg.com/vi/EX82tPUy1LE/default.jpg' width='120' height='90' alt='Miudinho Capoeira on the Beach' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"4VNkBwgvVGo\")'><img src='http://i.ytimg.com/vi/4VNkBwgvVGo/default.jpg' width='120' height='90' alt='Capoeira - Instinto Coletivo (O Rappa)' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"hhPmrpxGLqc\")'><img src='http://i.ytimg.com/vi/hhPmrpxGLqc/default.jpg' width='120' height='90' alt='Mestre Jose Antonio vs Mestre Poncianinho' border='0'/></a>");
+	rollingDiv.addRollingItem("<a href='javascript: showYoutubeById(\"14GxmMgG1Tc\")'><img src='http://i.ytimg.com/vi/14GxmMgG1Tc/default.jpg' width='120' height='90' alt='cordao de ouro 3amigos : ponchianinho casquinha papa leguas' border='0'/></a>");
+   
+	rollingDiv.bind("mouseover", function() {
+		 $(this).stopRolling();		 
+	});
+	rollingDiv.bind("mouseout", function() {
+		 $(this).resumeRolling();
+	});
+	
+	var opacity = 0.6;
+	
+	$('img', rollingDiv.getRollingItems()).css("opacity", opacity);
+	
+	$('img', rollingDiv.getRollingItems()).hover(
+		function() {
+			$(this).animate({ 
+				width: "130",
+				height: "100",
+				opacity: 1
+			}, 300);
+			$("#rollingHeadComment").html("<b><font color='blue'>" + $(this).attr('alt') + "</font></b>");
+		},
+		function() {
+			$(this).animate({ 
+				width: "120",
+				height: "90",
+				opacity: opacity
+			}, 300);
+			$("#rollingHeadComment").html("<b><font color='white'>...</font></b>");
+		}
+	);
+	rollingDiv.startRolling(30, 0, 50);	
+	
+	rollingDiv.bindViewingEvent(function(event, currentRollingItem) {
+		$("#status").text("viewing");
+	});
+	
+	rollingDiv.bindRollingEvent(function(event) {
+		$("#status").text("rolling");
+	});
+	
+	rollingDiv.bindStartEvent(function(event) {
+		$("#status").text("start");
+	});
+	
+	rollingDiv.bindStopEvent(function(event) {
+		$("#status").text("stop");
+	});
+</xmp>
+</form></body></html>
