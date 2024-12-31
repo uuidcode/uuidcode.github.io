@@ -16,7 +16,7 @@ public class Generator {
         List<File> fileList = Lists.newArrayList(new File("images").listFiles());
         fileList.addAll(Lists.newArrayList(new File("codegen").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("virtualform").listFiles()));
-        fileList.addAll(Lists.newArrayList(new File("interpark").listFiles()));
+        fileList.addAll(Lists.newArrayList(new File("programming2").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("music").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("at").listFiles()));
         fileList.addAll(Lists.newArrayList(new File("people").listFiles()));
