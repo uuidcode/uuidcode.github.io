@@ -77,7 +77,7 @@ public class ScreenShotPanel extends JPanel
         delayShotButton.addActionListener(e -> {
             imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(true);
-            this.shot(3, false);
+            this.shot(5, false);
         });
 
         panel.add(delayShotButton);
@@ -87,7 +87,7 @@ public class ScreenShotPanel extends JPanel
         delayShotAllButton.addActionListener(e -> {
             imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(false);
-            this.shot(3, true);
+            this.shot(5, true);
         });
 
         panel.add(delayShotAllButton);
