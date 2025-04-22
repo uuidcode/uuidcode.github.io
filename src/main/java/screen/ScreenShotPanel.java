@@ -125,7 +125,6 @@ public class ScreenShotPanel extends JPanel
                 int y = (int) mousePoint.getY();
 
                 Robot robot = new Robot();
-                robot.mouseMove(0, 0);
 
                 Thread.sleep(100);
 

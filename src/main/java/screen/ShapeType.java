@@ -31,6 +31,42 @@ public enum ShapeType implements Drawable {
             Util.processRect(g2, startPoint, endPoint, fillType, DrawType.DRAW);
         }
     },
+    N1 {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, "1");
+        }
+    },
+    N2 {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, "2");
+        }
+    },
+    N3 {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, "3");
+        }
+    },
+    N4 {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, "4");
+        }
+    },
+    N5 {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, "5");
+        }
+    },
+    N6 {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {
+            Util.processAlphabet(g2, startPoint, "6");
+        }
+    },
     A {
         @Override
         public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint) {

@@ -2,7 +2,10 @@ package screen;
 
 import java.awt.Color;
 import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
 
@@ -42,5 +45,23 @@ public class ScreenShotFrame extends JFrame {
 
             return false;
         });
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    toggleFullscreen(ScreenShotFrame.this);
+                }
+            }
+        });
+    }
+
+    private static void toggleFullscreen(JFrame frame) {
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        if (gd.getFullScreenWindow() == frame) {
+            gd.setFullScreenWindow(null);
+        } else {
+            gd.setFullScreenWindow(frame);
+        }
     }
 }
