@@ -50,6 +50,7 @@ public class ImageViewPanel extends JPanel
     private int imageHistoryIndex = 0;
     private ShapeType shapeType = ShapeType.FILL_ARROW;
     private FillType fillType = FillType.OPAQUE;
+    private ColorType colorType = ColorType.BLUE;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
@@ -112,7 +113,7 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.stratPoint != null) {
-            this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint);
+            this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint, this.colorType);
         }
     }
 
@@ -131,7 +132,7 @@ public class ImageViewPanel extends JPanel
         bufferedImage = deepCopy(bufferedImage);
         Graphics g = bufferedImage.getGraphics();
 
-        this.shapeType.draw(g, this.fillType, bufferedImage, e.getPoint(), null);
+        this.shapeType.draw(g, this.fillType, bufferedImage, e.getPoint(), null, this.colorType);
         this.addHistory(bufferedImage);
         this.save();
         this.resetPoint();
@@ -190,7 +191,7 @@ public class ImageViewPanel extends JPanel
                 bufferedImage = this.crop(bufferedImage);
             } else {
                 Graphics g = bufferedImage.getGraphics();
-                this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint);
+                this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint, this.colorType);
             }
 
             this.addHistory(bufferedImage);

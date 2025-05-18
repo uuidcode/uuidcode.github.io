@@ -2,7 +2,6 @@ package screen;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -39,9 +38,9 @@ public class Util {
         return new File(SCREENSHOT_DIR + name + ".png");
     }
 
-    private static void init(Graphics2D g2, FillType fillType) {
+    private static void init(Graphics2D g2, FillType fillType, ColorType colorType) {
         g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-        g2.setColor(new Color(124, 166, 208, 255));
+        g2.setColor(colorType.getColor());
         g2.setStroke(new BasicStroke(3, CAP_BUTT, JOIN_MITER));
 
         if (fillType == FillType.OPAQUE) {
@@ -56,9 +55,10 @@ public class Util {
                                    Point2D start,
                                    Point2D end,
                                    FillType fillType,
-                                   DrawType drawType) {
+                                   DrawType drawType,
+                                   ColorType colorType) {
         Rectangle2D rectangle = getRectangle2D(start, end);
-        init(g2, fillType);
+        init(g2, fillType, colorType);
 
         if (drawType == FILL) {
             g2.fill(rectangle);
@@ -102,6 +102,7 @@ public class Util {
 
     public static void processAlphabet(Graphics2D g2,
                                        Point2D start,
+                                       ColorType colorType,
                                        String text) {
         Font font = g2.getFont();
         font = new Font(font.getFontName(), Font.BOLD, 30);
@@ -121,7 +122,7 @@ public class Util {
         g2.setColor(WHITE);
         g2.fill(rect);
 
-        g2.setColor(new Color(124, 166, 208, 255));
+        g2.setColor(colorType.getColor());
         g2.draw(rect);
 
         g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
@@ -140,8 +141,9 @@ public class Util {
                                     float headWidth,
                                     float headHeight,
                                     FillType fillType,
-                                    DrawType drawType) {
-        init(g2, fillType);
+                                    DrawType drawType,
+                                    ColorType colorType) {
+        init(g2, fillType, colorType);
 
         double lineLength = Math.sqrt(Math.pow(end.getX() - start.getX(), 2)
             + Math.pow(end.getY() - start.getY(), 2));

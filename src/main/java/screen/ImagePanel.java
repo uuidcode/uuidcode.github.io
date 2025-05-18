@@ -110,6 +110,7 @@ public class ImagePanel extends JPanel {
 
         this.createShapeTypeRadio();
         this.createFillTypeRadio();
+        this.createColorTypeRadio();
         this.createSaveButton();
         this.createCopyButton();
         this.createUndoButton();
@@ -150,6 +151,11 @@ public class ImagePanel extends JPanel {
     private void createFillTypeRadio() {
         this.createRadioPanel("Fill Type", FillType.class,
             fillType -> this.imageViewPanel.setFillType(fillType));
+    }
+
+    private void createColorTypeRadio() {
+        this.createRadioPanel("Color Type", ColorType.class,
+            colorType -> this.imageViewPanel.setColorType(colorType));
     }
 
     private <T extends Enum<T>>void createRadioPanel(String name,
