@@ -4,8 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import static lombok.AccessLevel.PRIVATE;
 import static screen.FillType.TRANSPARENT;
 
+@Getter
 public enum ShapeType implements Drawable {
     FILL_ARROW {
         @Override
@@ -115,4 +120,28 @@ public enum ShapeType implements Drawable {
             Util.processRect(g2, startPoint, endPoint, TRANSPARENT, DrawType.FILL, colorType);
         }
     };
+
+    @Setter(PRIVATE)
+    private String title;
+
+    static {
+        FILL_ARROW.setTitle("화살표");
+        DRAW_ARROW.setTitle("외곽 화살표");
+        FILL_RECTANGLE.setTitle("사각형");
+        DRAW_RECTANGLE.setTitle("외곽 사각형");
+        N1.setTitle("1");
+        N2.setTitle("2");
+        N3.setTitle("3");
+        N4.setTitle("4");
+        N5.setTitle("5");
+        N6.setTitle("6");
+        A.setTitle("A");
+        B.setTitle("B");
+        C.setTitle("C");
+        D.setTitle("D");
+        E.setTitle("E");
+        F.setTitle("F");
+        BLUR.setTitle("흐리게");
+        CROP.setTitle("자르기");
+    }
 }

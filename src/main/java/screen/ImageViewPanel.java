@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 
 import static java.awt.Color.BLACK;
@@ -55,7 +56,7 @@ public class ImageViewPanel extends JPanel
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
         this.imageFile = imageFile;
-        init();
+        this.init();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
@@ -306,22 +307,22 @@ public class ImageViewPanel extends JPanel
         this.repaint();
     }
 
+    @SneakyThrows
     public static void copy(File imageFile) {
-        try {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            BufferedImage image = ImageIO.read(imageFile);
+            ImageTransferable transferable = new ImageTransferable(image);
+            clipboard.setContents(transferable, null);
+        } else if (os.contains("mac")) {
             String command = "osascript -e 'set the clipboard to " +
                 "(read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'";
 
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command("sh", "-c", command);
             processBuilder.start();
-        } catch (Throwable t) {
-            try {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                BufferedImage image = ImageIO.read(imageFile);
-                ImageTransferable transferable = new ImageTransferable(image);
-                clipboard.setContents(transferable, null);
-            } catch (Throwable ignored) {
-            }
         }
     }
 
