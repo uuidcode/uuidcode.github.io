@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 
 import static java.awt.Color.BLACK;
@@ -50,11 +51,12 @@ public class ImageViewPanel extends JPanel
     private int imageHistoryIndex = 0;
     private ShapeType shapeType = ShapeType.FILL_ARROW;
     private FillType fillType = FillType.OPAQUE;
+    private ColorType colorType = ColorType.BLUE;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
         this.imageFile = imageFile;
-        init();
+        this.init();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
@@ -112,7 +114,7 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.stratPoint != null) {
-            this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint);
+            this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint, this.colorType);
         }
     }
 
@@ -131,7 +133,7 @@ public class ImageViewPanel extends JPanel
         bufferedImage = deepCopy(bufferedImage);
         Graphics g = bufferedImage.getGraphics();
 
-        this.shapeType.draw(g, this.fillType, bufferedImage, e.getPoint(), null);
+        this.shapeType.draw(g, this.fillType, bufferedImage, e.getPoint(), null, this.colorType);
         this.addHistory(bufferedImage);
         this.save();
         this.resetPoint();
@@ -190,7 +192,7 @@ public class ImageViewPanel extends JPanel
                 bufferedImage = this.crop(bufferedImage);
             } else {
                 Graphics g = bufferedImage.getGraphics();
-                this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint);
+                this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint, this.colorType);
             }
 
             this.addHistory(bufferedImage);
@@ -305,22 +307,22 @@ public class ImageViewPanel extends JPanel
         this.repaint();
     }
 
+    @SneakyThrows
     public static void copy(File imageFile) {
-        try {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            BufferedImage image = ImageIO.read(imageFile);
+            ImageTransferable transferable = new ImageTransferable(image);
+            clipboard.setContents(transferable, null);
+        } else if (os.contains("mac")) {
             String command = "osascript -e 'set the clipboard to " +
                 "(read (POSIX file \"" + imageFile + "\") as  {«class PNGf»})'";
 
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command("sh", "-c", command);
             processBuilder.start();
-        } catch (Throwable t) {
-            try {
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                BufferedImage image = ImageIO.read(imageFile);
-                ImageTransferable transferable = new ImageTransferable(image);
-                clipboard.setContents(transferable, null);
-            } catch (Throwable ignored) {
-            }
         }
     }
 

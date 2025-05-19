@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -110,6 +111,7 @@ public class ImagePanel extends JPanel {
 
         this.createShapeTypeRadio();
         this.createFillTypeRadio();
+        this.createColorTypeRadio();
         this.createSaveButton();
         this.createCopyButton();
         this.createUndoButton();
@@ -143,17 +145,23 @@ public class ImagePanel extends JPanel {
     }
 
     private void createShapeTypeRadio() {
-        this.createRadioPanel("Shape Type", ShapeType.class,
+        this.createRadioPanel("Shape Type", ShapeType.class, ShapeType::getTitle,
             shapeType -> this.imageViewPanel.setShapeType(shapeType));
     }
 
     private void createFillTypeRadio() {
-        this.createRadioPanel("Fill Type", FillType.class,
+        this.createRadioPanel("Fill Type", FillType.class, FillType::getTitle,
             fillType -> this.imageViewPanel.setFillType(fillType));
+    }
+
+    private void createColorTypeRadio() {
+        this.createRadioPanel("Color Type", ColorType.class, ColorType::getTitle,
+            colorType -> this.imageViewPanel.setColorType(colorType));
     }
 
     private <T extends Enum<T>>void createRadioPanel(String name,
                                                      Class<T> tClass,
+                                                     Function<T, String> nameFunction,
                                                      Consumer<T> consumer) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, X_AXIS));
@@ -163,7 +171,7 @@ public class ImagePanel extends JPanel {
 
         Arrays.stream(tClass.getEnumConstants())
             .forEach(type -> {
-                JRadioButton radioButton = new JRadioButton(type.name());
+                JRadioButton radioButton = new JRadioButton(nameFunction.apply(type));
                 radioButton.setSelected(true);
                 radioButton.addActionListener(e -> consumer.accept(type));
                 buttonGroup.add(radioButton);
