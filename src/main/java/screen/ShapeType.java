@@ -111,7 +111,13 @@ public enum ShapeType implements Drawable {
     BLUR {
         @Override
         public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint, ColorType colorType) {
-            Util.processBlur(bufferedImage, g2, startPoint,endPoint, 20);
+            Util.processBlur(bufferedImage, g2, startPoint, endPoint, 50, false);
+        }
+    },
+    BLUR_CLIPPING {
+        @Override
+        public void draw(BufferedImage bufferedImage, Graphics2D g2, FillType fillType, Point startPoint, Point endPoint, ColorType colorType) {
+            Util.processBlur(bufferedImage, g2, startPoint, endPoint, 50, true);
         }
     },
     CROP {
@@ -142,6 +148,7 @@ public enum ShapeType implements Drawable {
         E.setTitle("E");
         F.setTitle("F");
         BLUR.setTitle("흐리게");
+        BLUR_CLIPPING.setTitle("선택영역외 흐리게");
         CROP.setTitle("자르기");
     }
 }
