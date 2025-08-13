@@ -30,6 +30,7 @@ import static java.awt.Color.WHITE;
 import static java.awt.Color.lightGray;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import static java.util.Arrays.fill;
 import static screen.DrawType.FILL;
 
 public class Util {
@@ -79,33 +80,20 @@ public class Util {
                                    Point2D end,
                                    int size,
                                    boolean clipping) {
-        float[] blurKernel = {
-            0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f,
-            0.00002292f, 0.00078634f, 0.00655408f, 0.01328503f, 0.00655408f, 0.00078634f, 0.00002292f,
-            0.00019117f, 0.00655408f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655408f, 0.00019117f,
-            0.00038771f, 0.01328503f, 0.11098164f, 0.22508352f, 0.11098164f, 0.01328503f, 0.00038771f,
-            0.00019117f, 0.00655408f, 0.05472157f, 0.11098164f, 0.05472157f, 0.00655408f, 0.00019117f,
-            0.00002292f, 0.00078634f, 0.00655408f, 0.01328503f, 0.00655408f, 0.00078634f, 0.00002292f,
-            0.00000067f, 0.00002292f, 0.00019117f, 0.00038771f, 0.00019117f, 0.00002292f, 0.00000067f
-        };
-
-        Kernel kernel = new Kernel(7, 7, blurKernel);
-        ConvolveOp convolveOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
-
         try {
             Rectangle2D rect = getRectangle2D(start, end);
             BufferedImage subImage = bufferedImage.getSubimage((int) rect.getX(),
                 (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
 
             if (clipping) {
-                BufferedImage allImage = bufferedImage.getSubimage(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-                BufferedImage blurredAllImage = convolveOp.filter(allImage, null);
+                BufferedImage allImage = bufferedImage.getSubimage(0, 0,
+                    bufferedImage.getWidth(), bufferedImage.getHeight());
 
-                for (int i = 0; i < size; i++) {  // 블러 필터를 여러 번 적용
-                    blurredAllImage = convolveOp.filter(blurredAllImage, null);
-                }
+                BufferedImage blurredAllImage = blur(allImage);
 
-                Area outside = new Area(new Rectangle(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight()));
+                Area outside = new Area(new Rectangle(0, 0,
+                    bufferedImage.getWidth(), bufferedImage.getHeight()));
+
                 outside.subtract(new Area(rect));
 
                 Shape oldClip = g2.getClip();
@@ -113,11 +101,7 @@ public class Util {
                 g2.drawImage(blurredAllImage, 0, 0, null);
                 g2.setClip(oldClip);
             } else {
-                BufferedImage blurredSubImage = convolveOp.filter(subImage, null);
-
-                for (int i = 0; i < size; i++) {  // 블러 필터를 여러 번 적용
-                    blurredSubImage = convolveOp.filter(blurredSubImage, null);
-                }
+                BufferedImage blurredSubImage = blur(subImage);
 
                 g2.drawImage(blurredSubImage, (int) rect.getX(), (int) rect.getY(), null);
             }
@@ -126,11 +110,11 @@ public class Util {
     }
 
     public static BufferedImage blur(BufferedImage src) {
-        int radius = 5;
-        int k = radius * 2 + 1; // 홀수 권장
+        int radius = 10;
+        int k = radius * 2 + 1;
         float w = 1f / k;
         float[] line = new float[k];
-        java.util.Arrays.fill(line, w);
+        fill(line, w);
 
         Kernel h = new Kernel(k, 1, line);
         Kernel v = new Kernel(1, k, line);
