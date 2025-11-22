@@ -218,5 +218,6 @@ public class ImageFrame extends JFrame {
     public static void main(String[] args) {
         final ImageFrame imageFrame = new ImageFrame();
         imageFrame.setVisible(true);
+        imageFrame.setExtendedState(JFrame.ICONIFIED);
     }
 }
