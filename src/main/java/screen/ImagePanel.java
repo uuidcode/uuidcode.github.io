@@ -192,7 +192,7 @@ public class ImagePanel extends JPanel {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileFilter(filter);
-        fileChooser.setCurrentDirectory(new File("/Users/ted.song/IdeaProjects/uuidcode.github.io/i"));
+        fileChooser.setCurrentDirectory(new File("/Users/ted/IdeaProjects/uuidcode.github.io/i"));
         int result = fileChooser.showSaveDialog(this);
 
         if (result == APPROVE_OPTION) {
