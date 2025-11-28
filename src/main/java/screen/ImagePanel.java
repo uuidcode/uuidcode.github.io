@@ -2,8 +2,11 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FileDialog;
+import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,13 +17,13 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
+import lombok.SneakyThrows;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
@@ -28,7 +31,6 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.KEY_RELEASED;
 import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.BoxLayout.X_AXIS;
-import static javax.swing.JFileChooser.APPROVE_OPTION;
 
 public class ImagePanel extends JPanel {
     private final String name;
@@ -188,16 +190,22 @@ public class ImagePanel extends JPanel {
         this.controlPanel.add(button);
     }
 
+    @SneakyThrows
     private void save() {
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("png file", "png");
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(filter);
-        fileChooser.setCurrentDirectory(new File("/Users/ted/IdeaProjects/uuidcode.github.io/i"));
-        int result = fileChooser.showSaveDialog(this);
+        FileDialog fileDialog = new FileDialog((Frame) null, "파일 선택", FileDialog.SAVE);
+        fileDialog.setVisible(true);
+        fileDialog.setDirectory("/Users/ted/IdeaProjects/uuidcode.github.io/i");
+        fileDialog.setFilenameFilter(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".png");
+            }
+        });
 
-        if (result == APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
+        String file = fileDialog.getFile();
 
+        if (file != null) {
+            File selectedFile = new File(fileDialog.getDirectory(), file);
             String fileName = selectedFile.getName();
 
             if (!fileName.endsWith(".png")) {
@@ -211,6 +219,7 @@ public class ImagePanel extends JPanel {
 
             this.imageViewPanel.save(selectedFile);
         }
+
     }
 
     private void createCloseButton() {
