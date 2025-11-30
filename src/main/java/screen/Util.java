@@ -34,14 +34,18 @@ import static java.util.Arrays.fill;
 import static screen.DrawType.FILL;
 
 public class Util {
-    public static final String SCREENSHOT_DIR = "screenshot/";
+    public static final String SCREENSHOT_DIR = "screenshot";
+
+    public static File getImageDir() {
+        return new File(new File(".."), SCREENSHOT_DIR);
+    }
 
     public static File getImageFile(String name) {
         if (name.endsWith(".png")) {
-            return new File(SCREENSHOT_DIR + name);
+            return new File(getImageDir(), name);
         }
 
-        return new File(SCREENSHOT_DIR + name + ".png");
+        return new File(getImageDir(), name + ".png");
     }
 
     private static void init(Graphics2D g2, FillType fillType, ColorType colorType) {

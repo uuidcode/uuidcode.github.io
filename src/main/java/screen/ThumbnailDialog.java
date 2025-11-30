@@ -49,7 +49,7 @@ public class ThumbnailDialog extends JDialog {
     }
 
     public static List<File> getFileList() {
-        File dir = new File("screenshot");
+        File dir = Util.getImageDir();
         File[] files = dir.listFiles((d, name) -> name.endsWith(".png"));
 
         if (files == null) {
