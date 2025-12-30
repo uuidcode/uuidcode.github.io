@@ -1,4 +1,4 @@
-<html><head><title>uuidcode</title>
+<!DOCTYPE html><html lang="en"><head><title>uuidcode</title>
 <meta charset="utf-8" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
@@ -46,9 +46,9 @@
         SyntaxHighlighter.all()
     });
 </script>
-</head> 
- <body>
- <div class="navbar navbar-fixed-top"><div class="navbar-inner">
+</head>
+<body class="none">
+<div class="navbar navbar-fixed-top"><div class="navbar-inner">
     <div class="container">
         <div class="nav">
             <li class="dropdown">
@@ -139,110 +139,11 @@
 </div>
 </div>
 <div class="container" style="padding: 60px 0">
-    <style type="text/css">
-        td {
-            font-size: 13px;
-        }
-    </style>
 <pre>
-<h2>CodeGen</h2>
+<h2>20260101</h2>
 
-mysql 테이블 스키마를 읽어서 CRUD 웹페이지를 생성합니다.
-spring3, mybatis, sitemesh, velocity, jquery, bootstrap로 구성되어 있습니다.
-Controller에는 restful API가 만들어집니다.
-JDK >= 1.6
-테이블에는 Primary Key로 설정된 컬럼이 한개 존재해야 합니다.
-컬럼명은 도메인 객체의 필드로 사용됩니다.
-컬럼명의 underscore은 camel 표기법으로 바뀝니다.
-Example) board_id -> boardId
-컬럼의 주석은 폼과 리스트의 데이터 이름으로 사용됩니다.
+<img src="../i/20260101.png">
 
-<code>
-config.json를 적절히 수정합니다.
-{
-    targetService: "codegen-sample"
-    , targetDir: "D:\\download\\eclipse-jee-juno-win32\\eclipse\\workspace\\codegen-sample"
-    , rootPackage: "XXX.XXXX"
-    , databaseDriver: "com.mysql.jdbc.Driver"
-    , schema: "XXX"
-    , databaseUrl: "jdbc:mysql://127.0.0.1:3306/XXX?autoReconnect=true&useUnicode=true&characterEncoding=utf8&mysqlEncoding=utf8""
-    , databaseUser: "XXX"
-    , databasePassword: "XXX"
-    , includePattern: ["board"]
-    , all: true
-    , defaultDataSource: "@Master"
-    , modificationDateField: ["mod_datetime"]
-    , registrationDateField: ["reg_datetime"]
-}
-</code>
-<table class="table table-bordered">
-    <tbody><tr>
-        <td width="200px">targetService</td>
-        <td>서비스명이며 rootPackage 밑으로 codegen.sample 패키지가 생성됩니다.</td>
-    </tr>
-    <tr>
-        <td>targetDir</td>
-        <td>프로젝트의 위치</td>
-    </tr>
-    <tr>
-        <td>rootPackage</td>
-        <td>패키지명</td>
-    </tr>
-    <tr>
-        <td>databaseDriver</td>
-        <td>jdbc driver</td>
-    </tr>
-    <tr>
-        <td>schema</td>
-        <td>schema</td>
-    </tr>
-    <tr>
-        <td>databaseUrl</td>
-        <td>databaseUrl</td>
-    </tr>
-    <tr>
-        <td>databaseUser</td>
-        <td>databaseUser</td>
-    </tr>
-    <tr>
-        <td>databasePassword</td>
-        <td>databasePassword</td>
-    </tr>
-    <tr>
-        <td>includePattern</td>
-        <td>생성할 테이블명을 배열로 지정합니다.<br />
-            includePattern와 exludePattern가 존재하지 않으면 전체 테이블을 대상으로 합니다.
-        </td>
-    </tr>
-    <tr>
-        <td>exludePattern</td>
-        <td>제외할 테이블명을 배열로 지정합니다.</td>
-    </tr>
-    <tr>
-        <td>all</td>
-        <td>true: 프로젝트에 관련된 모든 파일을 생성합니다. - 처음 프로젝트 생성시에 사용하십시오.<br />
-            false: CRUD관련 Controller, Service, Dao, Query, velocity 파일만 생성합니다.
-        </td>
-    </tr>
-    <tr>
-        <td>defaultDataSource</td>
-        <td>디폴터로 @Master Annotation이 사용됩니다.<br />
-            DataSource 여러개 있을 경우에는 persistenceContext.xml에 database관련 설정을 추가하고 @Master를 참고하여 신규 Annotation를 생성하여 사용하십시오.
-        </td>
-    </tr>
-    <tr>
-        <td>modificationDateField</td>
-        <td>수정일시를 저장하는 컬럼을 지정합니다.<br />
-            데이터 생성, 수정시 폼에 나타나지 않고 insert, update시 sysdate()로 처리됩니다.
-        </td>
-    </tr>
-    <tr>
-        <td>registrationDateField</td>
-        <td>등록일시를 저장하는 컬럼을 지정합니다.<br />
-            데이터 생성, 수정시 폼에 나타나지 않고 insert시 sysdate()로 처리됩니다.
-        </td>
-    </tr>
-</tbody></table>
 </pre>
 </div>
 
