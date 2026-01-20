@@ -6,7 +6,6 @@ import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -194,13 +193,11 @@ public class ImagePanel extends JPanel {
     private void save() {
         FileDialog fileDialog = new FileDialog((Frame) null, "파일 선택", FileDialog.SAVE);
         fileDialog.setVisible(true);
-        fileDialog.setDirectory("/Users/ted/IdeaProjects/uuidcode.github.io/i");
-        fileDialog.setFilenameFilter(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".png");
-            }
-        });
+
+        String imageDirPath = getImageSavePath();
+
+        fileDialog.setDirectory(imageDirPath);
+        fileDialog.setFilenameFilter((dir, name) -> name.endsWith(".png"));
 
         String file = fileDialog.getFile();
 
@@ -220,6 +217,16 @@ public class ImagePanel extends JPanel {
             this.imageViewPanel.save(selectedFile);
         }
 
+    }
+
+    private static String getImageSavePath() {
+        String imageDirPath = "/Users/ted/IdeaProjects/uuidcode.github.io/i";
+
+        if (new File(imageDirPath).exists()) {
+            return imageDirPath;
+        }
+
+        return "/Users/ted.song/IdeaProjects/uuidcode.github.io/i";
     }
 
     private void createCloseButton() {
