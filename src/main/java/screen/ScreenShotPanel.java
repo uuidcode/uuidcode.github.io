@@ -9,14 +9,18 @@ import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -161,6 +165,17 @@ public class ScreenShotPanel extends JPanel
             Graphics g = image.getGraphics();
             g.setColor(BLACK);
             g.drawRect(0, 0, (int) (rectangle.getWidth() - 1), (int) (rectangle.getHeight() - 1));
+        }
+
+        if (ImageFrame.imgTagCheckbox.isSelected()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "png", baos);
+
+            String base64 = Base64.getEncoder().encodeToString(baos.toByteArray());
+            String imgTag = "<img src=\"data:image/png;base64," + base64 + "\">";
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(imgTag), null);
+
+            return;
         }
 
         String fileName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
