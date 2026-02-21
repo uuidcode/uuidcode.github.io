@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
 import java.awt.Robot;
@@ -23,7 +24,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import lombok.Data;
@@ -49,6 +52,8 @@ public class ImageFrame extends JFrame {
     private List<ScreenShotFrame> screenShotFrameList;
     public static JCheckBox borderCheckbox;
     public static JCheckBox imgTagCheckbox;
+    public static JTextField widthField;
+    public static JTextField heightField;
 
     public ImageFrame() {
         super("ImageFrame");
@@ -89,6 +94,7 @@ public class ImageFrame extends JFrame {
         this.createViewButton(panel);
         this.createBorderCheckBox(panel);
         this.createImgTagCheckBox(panel);
+        this.createFixedSizeFields(panel);
 
         return panel;
     }
@@ -103,6 +109,36 @@ public class ImageFrame extends JFrame {
         imgTagCheckbox = new JCheckBox("img tag");
         imgTagCheckbox.setSelected(false);
         panel.add(imgTagCheckbox);
+    }
+
+    private void createFixedSizeFields(JPanel panel) {
+        panel.add(new JLabel(" width:"));
+        widthField = new JTextField(3);
+        Dimension fieldSize = new Dimension(60, widthField.getPreferredSize().height);
+        widthField.setPreferredSize(fieldSize);
+        widthField.setMaximumSize(fieldSize);
+        panel.add(widthField);
+        panel.add(new JLabel(" height:"));
+        heightField = new JTextField(3);
+        heightField.setPreferredSize(fieldSize);
+        heightField.setMaximumSize(fieldSize);
+        panel.add(heightField);
+    }
+
+    public static Integer getFixedWidth() {
+        try {
+            return Integer.parseInt(widthField.getText().trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public static Integer getFixedHeight() {
+        try {
+            return Integer.parseInt(heightField.getText().trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     private void createCaptureButton(JPanel panel) {

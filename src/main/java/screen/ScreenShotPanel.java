@@ -38,6 +38,7 @@ public class ScreenShotPanel extends JPanel
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
+    private Point mousePosition;
     private final ImageTabPanel tabbedPane;
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
@@ -117,7 +118,9 @@ public class ScreenShotPanel extends JPanel
 
         rectangle.width++;
         rectangle.height++;
-        controlPanel.setVisible(false);
+        if (controlPanel != null) {
+            controlPanel.setVisible(false);
+        }
         screenShotFrame.getContentPane().repaint();
         imageFrame.setVisible(false);
 
@@ -191,6 +194,19 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mousePressed(MouseEvent e) {
+        Integer fixedWidth = ImageFrame.getFixedWidth();
+        Integer fixedHeight = ImageFrame.getFixedHeight();
+
+        if (fixedWidth != null && fixedHeight != null) {
+            Point clickPoint = e.getPoint();
+            stratPoint = clickPoint;
+            endPoint = new Point(clickPoint.x + fixedWidth, clickPoint.y + fixedHeight);
+            mousePosition = null;
+            e.getComponent().repaint();
+            this.shot(null, false);
+            return;
+        }
+
         stratPoint = e.getPoint();
 
         if (this.controlPanel != null) {
@@ -200,6 +216,10 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (stratPoint == null || endPoint == null) {
+            return;
+        }
+
         try {
             Rectangle rectangle = this.getRectangle();
 
@@ -238,6 +258,13 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        Integer fixedWidth = ImageFrame.getFixedWidth();
+        Integer fixedHeight = ImageFrame.getFixedHeight();
+
+        if (fixedWidth != null && fixedHeight != null) {
+            mousePosition = e.getPoint();
+            e.getComponent().repaint();
+        }
     }
 
     public Rectangle getRectangle() {
@@ -247,7 +274,13 @@ public class ScreenShotPanel extends JPanel
     public void paint(Graphics g) {
         super.paint(g);
 
-        if (stratPoint != null) {
+        Integer fixedWidth = ImageFrame.getFixedWidth();
+        Integer fixedHeight = ImageFrame.getFixedHeight();
+
+        if (fixedWidth != null && fixedHeight != null && mousePosition != null) {
+            g.setColor(new Color(255, 255, 255, 100));
+            g.fillRect(mousePosition.x, mousePosition.y, fixedWidth, fixedHeight);
+        } else if (stratPoint != null && endPoint != null) {
             Rectangle rectangle = this.getRectangle();
             g.setColor(new Color(255, 255, 255, 100));
             g.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
