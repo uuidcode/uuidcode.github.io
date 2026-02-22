@@ -43,7 +43,7 @@ public class ScreenShotPanel extends JPanel
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
     private JPanel controlPanel = null;
-    public static Rectangle lastRectangle = null;
+    private final CaptureConfig captureConfig;
 
     public ScreenShotPanel(GraphicsDevice graphicsDevice,
                            ImageFrame imageFrame,
@@ -52,6 +52,7 @@ public class ScreenShotPanel extends JPanel
         this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
         this.screenShotFrame = screenShotFrame;
+        this.captureConfig = imageFrame.getCaptureConfig();
         this.setLayout(null);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
@@ -143,12 +144,12 @@ public class ScreenShotPanel extends JPanel
                 rectangle.x += display.x;
                 rectangle.y += display.y;
 
-                lastRectangle = rectangle;
+                captureConfig.setLastRectangle(rectangle);
 
                 if (isAll) {
-                    capture(robot, display, 0, 0, this.tabbedPane);
+                    capture(robot, display, 0, 0, this.tabbedPane, captureConfig);
                 } else {
-                    capture(robot, rectangle, x, y, this.tabbedPane);
+                    capture(robot, rectangle, x, y, this.tabbedPane, captureConfig);
                 }
 
                 imageFrame.setVisible(true);
@@ -160,17 +161,23 @@ public class ScreenShotPanel extends JPanel
         }).start();
     }
 
-    public static void capture(Robot robot, Rectangle rectangle, int x, int y, ImageTabPanel tabbedPane) throws IOException {
+    public static void capture(Robot robot,
+                               Rectangle rectangle,
+                               int x,
+                               int y,
+                               ImageTabPanel tabbedPane,
+                               CaptureConfig config) throws IOException {
+
         BufferedImage image = robot.createScreenCapture(rectangle);
         robot.mouseMove(x, y);
 
-        if (ImageFrame.borderCheckbox.isSelected()) {
+        if (config.isBorderEnabled()) {
             Graphics g = image.getGraphics();
             g.setColor(BLACK);
             g.drawRect(0, 0, (int) (rectangle.getWidth() - 1), (int) (rectangle.getHeight() - 1));
         }
 
-        if (ImageFrame.imgTagCheckbox.isSelected()) {
+        if (config.isImgTagEnabled()) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
 
@@ -194,8 +201,8 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Integer fixedWidth = ImageFrame.getFixedWidth();
-        Integer fixedHeight = ImageFrame.getFixedHeight();
+        Integer fixedWidth = captureConfig.getFixedWidth();
+        Integer fixedHeight = captureConfig.getFixedHeight();
 
         if (fixedWidth != null && fixedHeight != null) {
             Point clickPoint = e.getPoint();
@@ -258,8 +265,8 @@ public class ScreenShotPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Integer fixedWidth = ImageFrame.getFixedWidth();
-        Integer fixedHeight = ImageFrame.getFixedHeight();
+        Integer fixedWidth = captureConfig.getFixedWidth();
+        Integer fixedHeight = captureConfig.getFixedHeight();
 
         if (fixedWidth != null && fixedHeight != null) {
             mousePosition = e.getPoint();
@@ -274,8 +281,8 @@ public class ScreenShotPanel extends JPanel
     public void paint(Graphics g) {
         super.paint(g);
 
-        Integer fixedWidth = ImageFrame.getFixedWidth();
-        Integer fixedHeight = ImageFrame.getFixedHeight();
+        Integer fixedWidth = captureConfig.getFixedWidth();
+        Integer fixedHeight = captureConfig.getFixedHeight();
 
         if (fixedWidth != null && fixedHeight != null && mousePosition != null) {
             g.setColor(new Color(255, 255, 255, 100));

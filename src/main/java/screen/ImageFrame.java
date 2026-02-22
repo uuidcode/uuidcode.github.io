@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -42,7 +43,6 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static javax.swing.JFileChooser.APPROVE_OPTION;
 import static javax.swing.JFileChooser.FILES_ONLY;
-import static screen.ScreenShotPanel.lastRectangle;
 
 @Data
 @Accessors(chain = true)
@@ -50,10 +50,11 @@ import static screen.ScreenShotPanel.lastRectangle;
 public class ImageFrame extends JFrame {
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
-    public static JCheckBox borderCheckbox;
-    public static JCheckBox imgTagCheckbox;
-    public static JTextField widthField;
-    public static JTextField heightField;
+    private CaptureConfig captureConfig = new CaptureConfig();
+    private JCheckBox borderCheckbox;
+    private JCheckBox imgTagCheckbox;
+    private JTextField widthField;
+    private JTextField heightField;
 
     public ImageFrame() {
         super("ImageFrame");
@@ -101,13 +102,15 @@ public class ImageFrame extends JFrame {
 
     private void createBorderCheckBox(JPanel panel) {
         borderCheckbox = new JCheckBox("border");
-        borderCheckbox.setSelected(true);
+        borderCheckbox.setSelected(captureConfig.isBorderEnabled());
+        borderCheckbox.addActionListener(e -> captureConfig.setBorderEnabled(borderCheckbox.isSelected()));
         panel.add(borderCheckbox);
     }
 
     private void createImgTagCheckBox(JPanel panel) {
         imgTagCheckbox = new JCheckBox("img tag");
-        imgTagCheckbox.setSelected(false);
+        imgTagCheckbox.setSelected(captureConfig.isImgTagEnabled());
+        imgTagCheckbox.addActionListener(e -> captureConfig.setImgTagEnabled(imgTagCheckbox.isSelected()));
         panel.add(imgTagCheckbox);
     }
 
@@ -117,25 +120,34 @@ public class ImageFrame extends JFrame {
         Dimension fieldSize = new Dimension(60, widthField.getPreferredSize().height);
         widthField.setPreferredSize(fieldSize);
         widthField.setMaximumSize(fieldSize);
+        widthField.addActionListener(e -> updateFixedSize());
+        widthField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                updateFixedSize();
+            }
+        });
         panel.add(widthField);
         panel.add(new JLabel(" height:"));
         heightField = new JTextField(3);
         heightField.setPreferredSize(fieldSize);
         heightField.setMaximumSize(fieldSize);
+        heightField.addActionListener(e -> updateFixedSize());
+        heightField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                updateFixedSize();
+            }
+        });
         panel.add(heightField);
     }
 
-    public static Integer getFixedWidth() {
-        try {
-            return Integer.parseInt(widthField.getText().trim());
-        } catch (NumberFormatException e) {
-            return null;
-        }
+    private void updateFixedSize() {
+        captureConfig.setFixedWidth(parseInteger(widthField.getText()));
+        captureConfig.setFixedHeight(parseInteger(heightField.getText()));
     }
 
-    public static Integer getFixedHeight() {
+    private Integer parseInteger(String text) {
         try {
-            return Integer.parseInt(heightField.getText().trim());
+            return Integer.parseInt(text.trim());
         } catch (NumberFormatException e) {
             return null;
         }
@@ -183,6 +195,8 @@ public class ImageFrame extends JFrame {
             getLocalGraphicsEnvironment()
                 .getScreenDevices();
 
+        updateFixedSize();
+        
         this.screenShotFrameList = stream(screenDeviceArray)
             .map(device -> new ScreenShotFrame(device, this))
             .peek(f -> f.setVisible(true))
@@ -196,10 +210,13 @@ public class ImageFrame extends JFrame {
 
         try {
             Robot robot = new Robot();
-
-            ScreenShotPanel.capture(robot, lastRectangle,
-                lastRectangle.x, lastRectangle.y,
-                this.tabbedPane);
+            Rectangle lastRect = captureConfig.getLastRectangle();
+            
+            if (lastRect != null) {
+                ScreenShotPanel.capture(robot, lastRect,
+                    lastRect.x, lastRect.y,
+                    this.tabbedPane, captureConfig);
+            }
         } catch (Throwable t) {
             t.printStackTrace();
         }
