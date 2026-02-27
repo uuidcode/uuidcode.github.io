@@ -168,7 +168,18 @@ public class ScreenShotPanel extends JPanel
                                ImageTabPanel tabbedPane,
                                CaptureConfig config) throws IOException {
 
+        // 캡처 전 마우스를 화면 밖으로 이동하여 커서가 캡처되지 않도록 함
+        robot.mouseMove(-10000, -10000);
+
+        // 마우스 이동 후 잠시 대기 (화면 갱신 시간)
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException ignored) {
+        }
+
         BufferedImage image = robot.createScreenCapture(rectangle);
+
+        // 캡처 후 마우스를 원래 위치로 복원
         robot.mouseMove(x, y);
 
         if (config.isBorderEnabled()) {
