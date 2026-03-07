@@ -67,6 +67,11 @@
   </style>
 </head>
 <body>
+<div style="margin: 20px; display: flex; gap: 10px; align-items: center;">
+  <button id="btnSave" style="padding: 6px 16px; font-size: 13px; cursor: pointer;">저장</button>
+  <button id="btnLoad" style="padding: 6px 16px; font-size: 13px; cursor: pointer;">불러오기</button>
+  <span id="saveStatus" style="font-size: 12px; color: #888;"></span>
+</div>
 <div style="margin: 20px;">
   <canvas id="chart"></canvas>
 </div>
@@ -294,7 +299,7 @@
   </tbody>
 </table>
 </div>
-<script>
+<script>(async () => {
   const COL = {
     DAL_ASSET: 4, AL_ASSET: 5, HAPSAN: 6,
     DAL_INCOME: 7, AL_INCOME: 8,
@@ -352,7 +357,6 @@
   }
 
   const CASCADE_COLS = [9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];
-  const STORAGE_KEY = 'life-table-data';
   const EDITABLE_COLS = [];
   for (let i = 0; i < 28; i++) {
     if (!COMPUTED.includes(i)) EDITABLE_COLS.push(i);
@@ -375,7 +379,10 @@
     saveAll();
   }
 
-  function saveAll() {
+  let fileHandle = null;
+  const statusEl = document.getElementById('saveStatus');
+
+  function collectData() {
     const data = {};
     document.querySelectorAll('tbody tr').forEach(tr => {
       const year = tr.cells[0].textContent.replace(/[^0-9]/g, '');
@@ -385,27 +392,88 @@
       });
       data[year] = row;
     });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return data;
   }
+
+  async function saveAll() {
+    if (!fileHandle) return;
+    try {
+      const writable = await fileHandle.createWritable();
+      await writable.write(JSON.stringify(collectData(), null, 2));
+      await writable.close();
+      statusEl.textContent = '저장됨 ' + new Date().toLocaleTimeString();
+    } catch (e) {
+      statusEl.textContent = '저장 실패: ' + e.message;
+    }
+  }
+
+  async function saveAs() {
+    try {
+      fileHandle = await window.showSaveFilePicker({
+        suggestedName: 'life-data.json',
+        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+      });
+      await saveAll();
+    } catch (e) {
+      if (e.name !== 'AbortError') statusEl.textContent = '저장 실패: ' + e.message;
+    }
+  }
+
+  async function loadFromFile() {
+    try {
+      const [handle] = await window.showOpenFilePicker({
+        types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+      });
+      fileHandle = handle;
+      const file = await handle.getFile();
+      const text = await file.text();
+      const data = JSON.parse(text);
+      document.querySelectorAll('tbody tr').forEach(tr => {
+        const year = tr.cells[0].textContent.replace(/[^0-9]/g, '');
+        const row = data[year];
+        if (!row) return;
+        savedYears.add(year);
+        EDITABLE_COLS.forEach(i => {
+          if (row[i] !== undefined) tr.cells[i].textContent = row[i];
+        });
+      });
+      statusEl.textContent = '불러옴: ' + file.name;
+    } catch (e) {
+      if (e.name !== 'AbortError') statusEl.textContent = '불러오기 실패: ' + e.message;
+    }
+  }
+
+  document.getElementById('btnSave').addEventListener('click', async () => {
+    if (fileHandle) {
+      await saveAll();
+    } else {
+      await saveAs();
+    }
+  });
+  document.getElementById('btnLoad').addEventListener('click', loadFromFile);
 
   const savedYears = new Set();
 
-  function loadAll() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const data = JSON.parse(raw);
-    document.querySelectorAll('tbody tr').forEach(tr => {
-      const year = tr.cells[0].textContent.replace(/[^0-9]/g, '');
-      const row = data[year];
-      if (!row) return;
-      savedYears.add(year);
-      EDITABLE_COLS.forEach(i => {
-        if (row[i] !== undefined) tr.cells[i].textContent = row[i];
-      });
-    });
+  // 기존 데이터 파일 자동 로드 시도
+  async function autoLoad() {
+    try {
+      const res = await fetch('data.json');
+      if (res.ok) {
+        const data = await res.json();
+        document.querySelectorAll('tbody tr').forEach(tr => {
+          const year = tr.cells[0].textContent.replace(/[^0-9]/g, '');
+          const row = data[year];
+          if (!row) return;
+          savedYears.add(year);
+          EDITABLE_COLS.forEach(i => {
+            if (row[i] !== undefined) tr.cells[i].textContent = row[i];
+          });
+        });
+      }
+    } catch (e) {}
   }
 
-  loadAll();
+  await autoLoad();
 
   const rows = Array.from(document.querySelectorAll('tbody tr'));
 
@@ -540,11 +608,6 @@
         }
       });
     });
-  });
-
-  window.addEventListener('beforeunload', () => {
-    if (document.activeElement) document.activeElement.blur();
-    saveAll();
   });
 
   // sticky first 4 columns
@@ -744,10 +807,11 @@
   drawChart();
 
   const origSaveAll = saveAll;
-  saveAll = function() {
-    origSaveAll();
+  saveAll = async function() {
+    await origSaveAll();
     drawChart();
   };
+})();
 </script>
 </body>
 </html>
