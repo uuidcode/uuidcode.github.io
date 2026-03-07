@@ -72,7 +72,7 @@
   <button id="btnLoad" style="padding: 6px 16px; font-size: 13px; cursor: pointer;">불러오기</button>
   <span id="saveStatus" style="font-size: 12px; color: #888;"></span>
 </div>
-<div style="margin: 20px;">
+<div style="margin: 10px;">
   <canvas id="chart"></canvas>
 </div>
 <div class="table-wrap">
@@ -645,7 +645,7 @@
     const H = canvas.height = 500;
     ctx.clearRect(0, 0, W, H);
 
-    const pad = { top: 40, right: 100, bottom: 180, left: 100 };
+    const pad = { top: 40, right: 100, bottom: 150, left: 100 };
     const cw = W - pad.left - pad.right;
     const ch = H - pad.top - pad.bottom;
 
@@ -659,38 +659,36 @@
 
     function yPos(v, max) { return pad.top + ch - (v / max) * ch; }
 
-    // grid
-    ctx.strokeStyle = '#ddd';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 5; i++) {
-      const y = pad.top + (ch / 5) * i;
+    // grid + axis labels - left (수입/지출) 1000 단위
+    const leftStep = 1000;
+    const leftMax = Math.ceil(maxVal / leftStep) * leftStep;
+    ctx.font = 'bold 13px monospace';
+    for (let v = 0; v <= leftMax; v += leftStep) {
+      const y = pad.top + ch - (v / leftMax) * ch;
+      ctx.strokeStyle = '#ddd';
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(pad.left, y);
       ctx.lineTo(W - pad.right, y);
       ctx.stroke();
-    }
-
-    // axis labels - left (수입/지출)
-    ctx.fillStyle = '#333';
-    ctx.font = '11px monospace';
-    ctx.textAlign = 'right';
-    for (let i = 0; i <= 5; i++) {
-      const y = pad.top + (ch / 5) * i;
-      const v = Math.round(maxVal * (5 - i) / 5);
+      ctx.fillStyle = '#333';
+      ctx.textAlign = 'right';
       ctx.fillText(formatNum(v), pad.left - 8, y + 4);
     }
 
-    // axis labels - right (합산)
-    ctx.textAlign = 'left';
-    for (let i = 0; i <= 5; i++) {
-      const y = pad.top + (ch / 5) * i;
-      const v = Math.round(maxAsset * (5 - i) / 5);
+    // axis labels - right (합산) 5000 단위
+    const rightStep = 5000;
+    const rightMax = Math.ceil(maxAsset / rightStep) * rightStep;
+    for (let v = 0; v <= rightMax; v += rightStep) {
+      const y = pad.top + ch - (v / rightMax) * ch;
+      ctx.fillStyle = '#333';
+      ctx.textAlign = 'left';
       ctx.fillText(formatNum(v), W - pad.right + 8, y + 4);
     }
 
     // x labels
     ctx.textAlign = 'center';
-    ctx.font = '10px monospace';
+    ctx.font = 'bold 13px monospace';
     const labelStep = Math.ceil(n / 20);
     for (let i = 0; i < n; i += labelStep) {
       const x = pad.left + xMargin + step * i;
