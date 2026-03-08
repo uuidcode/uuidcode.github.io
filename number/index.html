@@ -215,6 +215,7 @@ async function autoLoad() {
         seen.add(e.score);
         return true;
       });
+      gameData.highScores.sort((a, b) => b.score - a.score);
     }
   } catch (e) {
     console.error('로드 에러:', e);
