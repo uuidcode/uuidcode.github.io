@@ -222,24 +222,26 @@ let startX = 0, startY = 0;
 let gameEnded = false;
 
 const API_URL = 'https://getpantry.cloud/apiv1/pantry/9ca80312-1be4-4e27-afce-2e2949a837b3/basket/number';
-let gameData = { highScores: [], currentStreak: 0, streaks: [], totalOver100: 0 };
+const defaultData = { highScores: [], currentStreak: 0, streaks: [], totalOver100: 0 };
+let gd = { ...defaultData };
 
 async function autoLoad() {
   try {
     const res = await fetch(API_URL);
     if (res.ok) {
-      const data = await res.json();
-      delete data._metadata;
-      gameData = { highScores: [], currentStreak: 0, streaks: [], totalOver100: 0, ...data };
+      const raw = await res.json();
+      delete raw._metadata;
+      const loaded = typeof raw.data === 'string' ? JSON.parse(raw.data) : (raw.data || raw);
+      gd = { ...defaultData, ...loaded };
       // 기존 중복 점수 제거
       const seen = new Set();
-      gameData.highScores = gameData.highScores.filter(e => {
+      gd.highScores = gd.highScores.filter(e => {
         if (seen.has(e.score)) return false;
         seen.add(e.score);
         return true;
       });
-      gameData.highScores.sort((a, b) => b.score - a.score);
-      gameData.highScores = gameData.highScores.slice(0, 10);
+      gd.highScores.sort((a, b) => b.score - a.score);
+      gd.highScores = gd.highScores.slice(0, 10);
     }
   } catch (e) {
     console.error('로드 에러:', e);
@@ -250,7 +252,7 @@ function saveToFile() {
   fetch(API_URL, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(gameData)
+    body: JSON.stringify({ data: JSON.stringify(gd) })
   }).catch(e => console.error('저장 에러:', e));
 }
 
@@ -260,30 +262,30 @@ function addHighScore(newScore) {
   const time = now.toLocaleTimeString('ko-KR');
 
   // Top 10
-  const existing = gameData.highScores.find(e => e.score === newScore);
+  const existing = gd.highScores.find(e => e.score === newScore);
   if (existing) {
     existing.date = date;
   } else {
-    gameData.highScores.push({ score: newScore, date });
-    gameData.highScores.sort((a, b) => b.score - a.score);
-    gameData.highScores = gameData.highScores.slice(0, 10);
+    gd.highScores.push({ score: newScore, date });
+    gd.highScores.sort((a, b) => b.score - a.score);
+    gd.highScores = gd.highScores.slice(0, 10);
   }
-  const rank = gameData.highScores.findIndex(e => e.score === newScore);
+  const rank = gd.highScores.findIndex(e => e.score === newScore);
 
   // Streak
   if (newScore >= 100) {
-    gameData.totalOver100++;
-    gameData.currentStreak++;
-    gameData.streaks.push({
-      streak: gameData.currentStreak,
+    gd.totalOver100++;
+    gd.currentStreak++;
+    gd.streaks.push({
+      streak: gd.currentStreak,
       score: newScore,
       date,
       time
     });
-    gameData.streaks.sort((a, b) => b.streak - a.streak);
-    gameData.streaks = gameData.streaks.slice(0, 10);
+    gd.streaks.sort((a, b) => b.streak - a.streak);
+    gd.streaks = gd.streaks.slice(0, 10);
   } else {
-    gameData.currentStreak = 0;
+    gd.currentStreak = 0;
   }
 
   saveToFile();
@@ -295,9 +297,9 @@ function renderHighScores(highlightIndex) {
   const panel2 = document.getElementById('side-panel2');
 
   let html1 = '<h3>Top 10</h3>';
-  if (gameData.highScores.length > 0) {
+  if (gd.highScores.length > 0) {
     html1 += '<ol>' +
-      gameData.highScores.slice(0, 10).map((s, i) =>
+      gd.highScores.slice(0, 10).map((s, i) =>
         `<li class="${i === highlightIndex ? 'new-record' : ''}">${s.score}개 (${s.date})</li>`
       ).join('') + '</ol>';
   } else {
@@ -306,15 +308,15 @@ function renderHighScores(highlightIndex) {
   panel1.innerHTML = html1;
 
   let html2 = '<h3>연속 100점</h3>';
-  if (gameData.totalOver100 > 0) {
-    html2 += `<div class="streak-info">100점 이상: 총 ${gameData.totalOver100}회</div>`;
+  if (gd.totalOver100 > 0) {
+    html2 += `<div class="streak-info">100점 이상: 총 ${gd.totalOver100}회</div>`;
   }
-  if (gameData.currentStreak > 0) {
-    html2 += `<div class="streak-info">현재 연속: ${gameData.currentStreak}회</div>`;
+  if (gd.currentStreak > 0) {
+    html2 += `<div class="streak-info">현재 연속: ${gd.currentStreak}회</div>`;
   }
-  if (gameData.streaks.length > 0) {
+  if (gd.streaks.length > 0) {
     html2 += '<ol>' +
-      gameData.streaks.map(s =>
+      gd.streaks.map(s =>
         `<li>${s.streak}연속 - ${s.score}개 (${s.date})</li>`
       ).join('') + '</ol>';
   } else {
