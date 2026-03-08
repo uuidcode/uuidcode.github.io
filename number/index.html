@@ -81,7 +81,7 @@ body {
   position: relative;
   background: #c8e6a0;
   border-radius: 12px;
-  padding: 6px;
+  padding: 20px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 #board {
@@ -138,6 +138,7 @@ body {
 }
 .cell.selected {
   transform: scale(1.1);
+  background: radial-gradient(circle at 35% 35%, #f7e96c, #d4a017);
   box-shadow: 0 0 12px rgba(255,255,0,0.8), 0 2px 4px rgba(0,0,0,0.2);
 }
 .cell.removing {
@@ -455,6 +456,8 @@ function endGame(cleared) {
 const ingameStartBtn = document.getElementById('ingame-start-btn');
 
 function startGame() {
+  if (timerInterval) clearInterval(timerInterval);
+  document.getElementById('toast').classList.remove('show');
   gameEnded = false;
   score = 0;
   scoreEl.textContent = 0;
