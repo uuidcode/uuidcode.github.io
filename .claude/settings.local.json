@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sort -t: -k2 -n)"
+      "Bash(sort -t: -k2 -n)",
+      "WebFetch(domain:www.gamesaien.com)",
+      "Bash(curl -s -X POST https://api.restful-api.dev/objects -H \"Content-Type: application/json\" -d '{\"name\":\"apple\",\"data\":{}}')",
+      "Bash(curl -s https://api.restful-api.dev/objects/ff8081819c5368bb019ccb2efb493d76 | python3 -m json.tool)",
+      "Bash(curl -s -X PUT https://api.restful-api.dev/objects/ff8081819c5368bb019ccb2efb493d76 -H \"Content-Type: application/json\" -d '{\"name\":\"apple\",\"data\":{\"highScores\":[{\"score\":39,\"date\":\"2026. 3. 8.\"}],\"currentStreak\":0,\"streaks\":[],\"totalOver100\":0}}')"
     ]
   }
 }

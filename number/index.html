@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fruit Box - 숫자 합 10 만들기</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #2d5a1b;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  user-select: none;
+  overflow: hidden;
+}
+#game-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#main-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+#side-panel, #side-panel2 {
+  width: 180px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 14px;
+  color: #fff;
+  font-size: 13px;
+}
+#side-panel h3, #side-panel2 h3 {
+  text-align: center;
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: #ffd700;
+}
+#side-panel ol, #side-panel2 ol {
+  padding-left: 20px;
+  line-height: 2;
+}
+#side-panel li.new-record { color: #ffd700; font-weight: bold; }
+.streak-info {
+  margin-bottom: 12px;
+  text-align: center;
+  color: #afd89a;
+  font-size: 14px;
+}
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 680px;
+  padding: 10px 0;
+  color: #fff;
+  font-size: 20px;
+}
+#header > div { display: flex; align-items: center; gap: 10px; }
+#timer-bar-bg {
+  width: 300px;
+  height: 22px;
+  background: #1a3a0f;
+  border-radius: 11px;
+  overflow: hidden;
+  border: 2px solid #4a8a2a;
+}
+#timer-bar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #7ddf3a, #4caf1a);
+  border-radius: 9px;
+  transition: width 0.1s linear;
+}
+#board-wrapper {
+  position: relative;
+  background: #c8e6a0;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+#board {
+  display: grid;
+  grid-template-columns: repeat(17, 30px);
+  grid-template-rows: repeat(10, 30px);
+  gap: 8px;
+  position: relative;
+}
+.cell {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.15s, opacity 0.3s;
+}
+.cell.apple {
+  background: radial-gradient(circle at 35% 35%, #6bcf6b, #2e8b2e);
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 -2px 4px rgba(0,0,0,0.1);
+}
+.cell.apple::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 8px;
+  height: 6px;
+  background: #4a2;
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(-30deg);
+}
+.cell.apple::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  width: 8px;
+  height: 4px;
+  background: rgba(255,255,255,0.35);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+.cell.empty {
+  background: transparent;
+}
+.cell.selected {
+  transform: scale(1.1);
+  box-shadow: 0 0 12px rgba(255,255,0,0.8), 0 2px 4px rgba(0,0,0,0.2);
+}
+.cell.removing {
+  animation: pop 0.35s ease forwards;
+}
+@keyframes pop {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+  100% { transform: scale(0); opacity: 0; }
+}
+#selection-rect {
+  position: absolute;
+  border: 3px solid rgba(255, 255, 0, 0.9);
+  background: rgba(255, 255, 0, 0.15);
+  pointer-events: none;
+  z-index: 10;
+  border-radius: 4px;
+  display: none;
+}
+#remaining { font-size: 16px; }
+</style>
+</head>
+<body>
+<div id="main-layout">
+  <div id="game-container">
+    <div id="header">
+      <div><span>🍎</span><span id="score">0</span>개 제거</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="timer-bar-bg"><div id="timer-bar"></div></div>
+        <span id="timer-text" style="color:#fff;font-size:16px;font-weight:bold;min-width:36px">120</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button id="ingame-start-btn" style="padding:4px 14px;font-size:14px;border:none;border-radius:12px;background:#4caf1a;color:#fff;font-weight:bold;cursor:pointer">시작</button>
+        <span id="remaining">남은 사과: <span id="remain-count">0</span></span>
+      </div>
+    </div>
+    <div id="board-wrapper">
+      <div id="board"></div>
+      <div id="selection-rect"></div>
+    </div>
+  </div>
+  <div id="side-panel"></div>
+  <div id="side-panel2"></div>
+</div>
+
+<script>
+const COLS = 17;
+const ROWS = 10;
+const TOTAL = COLS * ROWS;
+const TARGET = 10;
+const TIME_LIMIT = 120;
+
+let grid = [];
+let score = 0;
+let timerInterval = null;
+let timeLeft = TIME_LIMIT;
+let isDragging = false;
+let startX = 0, startY = 0;
+let gameEnded = false;
+
+const API_URL = 'https://getpantry.cloud/apiv1/pantry/9ca80312-1be4-4e27-afce-2e2949a837b3/basket/number';
+let gameData = { highScores: [], currentStreak: 0, streaks: [], totalOver100: 0 };
+
+async function autoLoad() {
+  try {
+    const res = await fetch(API_URL);
+    if (res.ok) {
+      const data = await res.json();
+      delete data._metadata;
+      gameData = { highScores: [], currentStreak: 0, streaks: [], totalOver100: 0, ...data };
+      // 기존 중복 점수 제거
+      const seen = new Set();
+      gameData.highScores = gameData.highScores.filter(e => {
+        if (seen.has(e.score)) return false;
+        seen.add(e.score);
+        return true;
+      });
+    }
+  } catch (e) {
+    console.error('로드 에러:', e);
+  }
+}
+
+function saveToFile() {
+  fetch(API_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(gameData)
+  }).catch(e => console.error('저장 에러:', e));
+}
+
+function addHighScore(newScore) {
+  const now = new Date();
+  const date = now.toLocaleDateString('ko-KR');
+  const time = now.toLocaleTimeString('ko-KR');
+
+  // Top 10
+  const existing = gameData.highScores.find(e => e.score === newScore);
+  if (existing) {
+    existing.date = date;
+  } else {
+    gameData.highScores.push({ score: newScore, date });
+    gameData.highScores.sort((a, b) => b.score - a.score);
+    gameData.highScores = gameData.highScores.slice(0, 10);
+  }
+  const rank = gameData.highScores.findIndex(e => e.score === newScore);
+
+  // Streak
+  if (newScore >= 100) {
+    gameData.totalOver100++;
+    gameData.currentStreak++;
+    gameData.streaks.push({
+      streak: gameData.currentStreak,
+      score: newScore,
+      date,
+      time
+    });
+    gameData.streaks.sort((a, b) => b.streak - a.streak);
+    gameData.streaks = gameData.streaks.slice(0, 10);
+  } else {
+    gameData.currentStreak = 0;
+  }
+
+  saveToFile();
+  return rank;
+}
+
+function renderHighScores(highlightIndex) {
+  const panel1 = document.getElementById('side-panel');
+  const panel2 = document.getElementById('side-panel2');
+
+  let html1 = '<h3>Top 10</h3>';
+  if (gameData.highScores.length > 0) {
+    html1 += '<ol>' +
+      gameData.highScores.map((s, i) =>
+        `<li class="${i === highlightIndex ? 'new-record' : ''}">${s.score}개 (${s.date})</li>`
+      ).join('') + '</ol>';
+  } else {
+    html1 += '<p style="text-align:center;color:#aaa;font-size:12px">기록 없음</p>';
+  }
+  panel1.innerHTML = html1;
+
+  let html2 = '<h3>연속 100점</h3>';
+  if (gameData.totalOver100 > 0) {
+    html2 += `<div class="streak-info">100점 이상: 총 ${gameData.totalOver100}회</div>`;
+  }
+  if (gameData.currentStreak > 0) {
+    html2 += `<div class="streak-info">현재 연속: ${gameData.currentStreak}회</div>`;
+  }
+  if (gameData.streaks.length > 0) {
+    html2 += '<ol>' +
+      gameData.streaks.map(s =>
+        `<li>${s.streak}연속 - ${s.score}개 (${s.date})</li>`
+      ).join('') + '</ol>';
+  } else {
+    html2 += '<p style="text-align:center;color:#aaa;font-size:12px">기록 없음</p>';
+  }
+  panel2.innerHTML = html2;
+}
+
+const boardEl = document.getElementById('board');
+const selRect = document.getElementById('selection-rect');
+const scoreEl = document.getElementById('score');
+const remainEl = document.getElementById('remain-count');
+const timerBar = document.getElementById('timer-bar');
+
+function generateBoard() {
+  grid = [];
+  boardEl.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const val = Math.floor(Math.random() * 9) + 1;
+    grid.push({ value: val, alive: true });
+    const cell = document.createElement('div');
+    cell.className = 'cell apple';
+    cell.textContent = val;
+    cell.dataset.index = i;
+    boardEl.appendChild(cell);
+  }
+  updateRemaining();
+}
+
+function updateRemaining() {
+  const count = grid.filter(c => c.alive).length;
+  remainEl.textContent = count;
+}
+
+function getCellsInRect(x1, y1, x2, y2) {
+  const cells = boardEl.children;
+  const selected = [];
+  const boardRect = boardEl.getBoundingClientRect();
+  const rx1 = Math.min(x1, x2);
+  const ry1 = Math.min(y1, y2);
+  const rx2 = Math.max(x1, x2);
+  const ry2 = Math.max(y1, y2);
+
+  for (let i = 0; i < cells.length; i++) {
+    if (!grid[i].alive) continue;
+    const cell = cells[i];
+    const cr = cell.getBoundingClientRect();
+    const cx = cr.left + cr.width / 2 - boardRect.left;
+    const cy = cr.top + cr.height / 2 - boardRect.top;
+    if (cx >= rx1 && cx <= rx2 && cy >= ry1 && cy <= ry2) {
+      selected.push(i);
+    }
+  }
+  return selected;
+}
+
+function showSelectionRect(x1, y1, x2, y2) {
+  const left = Math.min(x1, x2);
+  const top = Math.min(y1, y2);
+  const w = Math.abs(x2 - x1);
+  const h = Math.abs(y2 - y1);
+  selRect.style.left = left + 'px';
+  selRect.style.top = top + 'px';
+  selRect.style.width = w + 'px';
+  selRect.style.height = h + 'px';
+  selRect.style.display = 'block';
+}
+
+function clearSelection() {
+  const cells = boardEl.children;
+  for (let i = 0; i < cells.length; i++) {
+    cells[i].classList.remove('selected');
+  }
+}
+
+function removeCells(indices) {
+  const cells = boardEl.children;
+  indices.forEach(i => {
+    grid[i].alive = false;
+    cells[i].textContent = '';
+    cells[i].classList.remove('apple', 'selected');
+    cells[i].classList.add('empty');
+  });
+  score += indices.length;
+  scoreEl.textContent = score;
+  updateRemaining();
+
+  // Check if all apples cleared
+  if (grid.every(c => !c.alive)) {
+    endGame(true);
+  }
+}
+
+function startTimer() {
+  timeLeft = TIME_LIMIT;
+  timerBar.style.width = '100%';
+  timerInterval = setInterval(() => {
+    timeLeft -= 0.1;
+    if (timeLeft <= 0) {
+      timeLeft = 0;
+      clearInterval(timerInterval);
+      endGame(false);
+    }
+    const pct = (timeLeft / TIME_LIMIT) * 100;
+    timerBar.style.width = pct + '%';
+    document.getElementById('timer-text').textContent = Math.ceil(timeLeft);
+    if (pct < 20) {
+      timerBar.style.background = 'linear-gradient(to bottom, #ff5555, #cc2222)';
+    } else if (pct < 50) {
+      timerBar.style.background = 'linear-gradient(to bottom, #ffdd33, #ddaa00)';
+    } else {
+      timerBar.style.background = 'linear-gradient(to bottom, #7ddf3a, #4caf1a)';
+    }
+  }, 100);
+}
+
+function endGame(cleared) {
+  if (gameEnded) return;
+  gameEnded = true;
+  clearInterval(timerInterval);
+  isDragging = false;
+  selRect.style.display = 'none';
+  const rank = addHighScore(score);
+  renderHighScores(rank);
+}
+
+const ingameStartBtn = document.getElementById('ingame-start-btn');
+
+function startGame() {
+  gameEnded = false;
+  score = 0;
+  scoreEl.textContent = 0;
+  generateBoard();
+  startTimer();
+}
+
+// Mouse events on board-wrapper
+const wrapper = document.getElementById('board-wrapper');
+
+wrapper.addEventListener('mousedown', (e) => {
+  if (gameEnded) return;
+  const rect = wrapper.getBoundingClientRect();
+  startX = e.clientX - rect.left;
+  startY = e.clientY - rect.top;
+  isDragging = true;
+  clearSelection();
+});
+
+wrapper.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const rect = wrapper.getBoundingClientRect();
+  const curX = e.clientX - rect.left;
+  const curY = e.clientY - rect.top;
+
+  showSelectionRect(startX, startY, curX, curY);
+
+  const boardRect = boardEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const offsetX = boardRect.left - wrapperRect.left;
+  const offsetY = boardRect.top - wrapperRect.top;
+
+  const bx1 = startX - offsetX;
+  const by1 = startY - offsetY;
+  const bx2 = curX - offsetX;
+  const by2 = curY - offsetY;
+
+  clearSelection();
+  const selected = getCellsInRect(bx1, by1, bx2, by2);
+  const cells = boardEl.children;
+  selected.forEach(i => cells[i].classList.add('selected'));
+});
+
+wrapper.addEventListener('mouseup', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  selRect.style.display = 'none';
+
+  const rect = wrapper.getBoundingClientRect();
+  const curX = e.clientX - rect.left;
+  const curY = e.clientY - rect.top;
+
+  const boardRect = boardEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const offsetX = boardRect.left - wrapperRect.left;
+  const offsetY = boardRect.top - wrapperRect.top;
+
+  const bx1 = startX - offsetX;
+  const by1 = startY - offsetY;
+  const bx2 = curX - offsetX;
+  const by2 = curY - offsetY;
+
+  const selected = getCellsInRect(bx1, by1, bx2, by2);
+  const sum = selected.reduce((s, i) => s + grid[i].value, 0);
+
+  if (sum === TARGET && selected.length > 0) {
+    removeCells(selected);
+  } else {
+    clearSelection();
+  }
+});
+
+wrapper.addEventListener('mouseleave', () => {
+  if (isDragging) {
+    isDragging = false;
+    selRect.style.display = 'none';
+    clearSelection();
+  }
+});
+
+// Touch events
+wrapper.addEventListener('touchstart', (e) => {
+  if (gameEnded) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = wrapper.getBoundingClientRect();
+  startX = touch.clientX - rect.left;
+  startY = touch.clientY - rect.top;
+  isDragging = true;
+  clearSelection();
+}, { passive: false });
+
+wrapper.addEventListener('touchmove', (e) => {
+  if (!isDragging) return;
+  e.preventDefault();
+  const touch = e.touches[0];
+  const rect = wrapper.getBoundingClientRect();
+  const curX = touch.clientX - rect.left;
+  const curY = touch.clientY - rect.top;
+
+  showSelectionRect(startX, startY, curX, curY);
+
+  const boardRect = boardEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const offsetX = boardRect.left - wrapperRect.left;
+  const offsetY = boardRect.top - wrapperRect.top;
+
+  const bx1 = startX - offsetX;
+  const by1 = startY - offsetY;
+  const bx2 = curX - offsetX;
+  const by2 = curY - offsetY;
+
+  clearSelection();
+  const selected = getCellsInRect(bx1, by1, bx2, by2);
+  const cells = boardEl.children;
+  selected.forEach(i => cells[i].classList.add('selected'));
+}, { passive: false });
+
+wrapper.addEventListener('touchend', (e) => {
+  if (!isDragging) return;
+  isDragging = false;
+  selRect.style.display = 'none';
+
+  const touch = e.changedTouches[0];
+  const rect = wrapper.getBoundingClientRect();
+  const curX = touch.clientX - rect.left;
+  const curY = touch.clientY - rect.top;
+
+  const boardRect = boardEl.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+  const offsetX = boardRect.left - wrapperRect.left;
+  const offsetY = boardRect.top - wrapperRect.top;
+
+  const bx1 = startX - offsetX;
+  const by1 = startY - offsetY;
+  const bx2 = curX - offsetX;
+  const by2 = curY - offsetY;
+
+  const selected = getCellsInRect(bx1, by1, bx2, by2);
+  const sum = selected.reduce((s, i) => s + grid[i].value, 0);
+
+  if (sum === TARGET && selected.length > 0) {
+    removeCells(selected);
+  } else {
+    clearSelection();
+  }
+});
+
+autoLoad().then(() => renderHighScores(-1));
+ingameStartBtn.addEventListener('click', startGame);
+</script>
+</body>
+</html>

@@ -115,6 +115,7 @@ public class ImagePanel extends JPanel {
         this.createColorTypeRadio();
         this.createSaveButton();
         this.createCopyButton();
+        this.createCopyPathButton();
         this.createUndoButton();
         this.createRedoButton();
         this.createClearButton();
@@ -256,6 +257,21 @@ public class ImagePanel extends JPanel {
         button.setName(this.name);
         button.addActionListener(e -> this.copy());
         controlPanel.add(button);
+    }
+
+    private void createCopyPathButton() {
+        JButton button = new JButton("copy path");
+        button.setName(this.name);
+        button.addActionListener(e -> this.copyPath());
+        controlPanel.add(button);
+    }
+
+    private void copyPath() {
+        String absolutePath = imageFile.getAbsolutePath();
+        java.awt.datatransfer.StringSelection stringSelection =
+            new java.awt.datatransfer.StringSelection(absolutePath);
+        java.awt.Toolkit.getDefaultToolkit().getSystemClipboard()
+            .setContents(stringSelection, null);
     }
 
     private void copy() {
