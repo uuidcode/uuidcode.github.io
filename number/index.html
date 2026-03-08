@@ -158,6 +158,27 @@ body {
   display: none;
 }
 #remaining { font-size: 16px; }
+#toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 20px 40px;
+  border-radius: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+}
+#toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 </style>
 </head>
 <body>
@@ -179,6 +200,7 @@ body {
       <div id="selection-rect"></div>
     </div>
   </div>
+  <div id="toast"></div>
   <div id="side-panel"></div>
   <div id="side-panel2"></div>
 </div>
@@ -407,6 +429,13 @@ function startTimer() {
   }, 100);
 }
 
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
 function endGame(cleared) {
   if (gameEnded) return;
   gameEnded = true;
@@ -415,6 +444,12 @@ function endGame(cleared) {
   selRect.style.display = 'none';
   const rank = addHighScore(score);
   renderHighScores(rank);
+  const remaining = grid.filter(c => c.alive).length;
+  if (cleared) {
+    showToast(`완벽 클리어! ${score}개 제거`);
+  } else {
+    showToast(`시간 종료! ${score}개 제거 / ${remaining}개 남음`);
+  }
 }
 
 const ingameStartBtn = document.getElementById('ingame-start-btn');
