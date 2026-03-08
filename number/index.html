@@ -239,6 +239,7 @@ async function autoLoad() {
         return true;
       });
       gameData.highScores.sort((a, b) => b.score - a.score);
+      gameData.highScores = gameData.highScores.slice(0, 10);
     }
   } catch (e) {
     console.error('로드 에러:', e);
@@ -296,7 +297,7 @@ function renderHighScores(highlightIndex) {
   let html1 = '<h3>Top 10</h3>';
   if (gameData.highScores.length > 0) {
     html1 += '<ol>' +
-      gameData.highScores.map((s, i) =>
+      gameData.highScores.slice(0, 10).map((s, i) =>
         `<li class="${i === highlightIndex ? 'new-record' : ''}">${s.score}개 (${s.date})</li>`
       ).join('') + '</ol>';
   } else {
