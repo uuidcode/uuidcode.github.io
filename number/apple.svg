@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140">
+  <!-- apple body -->
+  <path d="M60 32 C50 20 22 12 8 38 C-2 68 8 100 35 115 C45 122 55 122 60 122 C65 122 75 122 85 115 C112 100 122 68 112 38 C98 12 70 20 60 32Z" fill="#e83030"/>
+  <!-- stem curving right -->
+  <path d="M59 32 C61 24 64 16 67 10" stroke="#8B5E3C" stroke-width="5" fill="none" stroke-linecap="round"/>
+</svg>
