@@ -93,14 +93,14 @@ body {
 }
 #board {
   display: grid;
-  grid-template-columns: repeat(17, 34px);
-  grid-template-rows: repeat(10, 34px);
-  gap: 2px;
+  grid-template-columns: repeat(17, 31px);
+  grid-template-rows: repeat(10, 31px);
+  gap: 0px;
   position: relative;
 }
 .cell {
-  width: 34px;
-  height: 34px;
+  width: 31px;
+  height: 31px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,8 +114,8 @@ body {
   transition: transform 0.15s, opacity 0.3s;
 }
 .cell.apple {
-  width: 34px;
-  height: 34px;
+  width: 31px;
+  height: 31px;
   background: url('apple.svg') center center / contain no-repeat;
   color: #fff;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
