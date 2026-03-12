@@ -126,9 +126,11 @@ body {
   background: transparent;
 }
 .cell.selected {
-  transform: scale(1.1);
-  background: radial-gradient(circle at 35% 35%, #f7e96c, #d4a017);
-  box-shadow: 0 0 12px rgba(255,255,0,0.8), 0 2px 4px rgba(0,0,0,0.2);
+  filter: brightness(1.3);
+  outline: 2px solid rgba(255, 255, 100, 0.9);
+  outline-offset: -1px;
+  border-radius: 50%;
+  z-index: 2;
 }
 .cell.removing {
   animation: pop 0.35s ease forwards;
