@@ -9,7 +9,7 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #2d5a1b;
+  background: #a8d5a0;
   font-family: 'Segoe UI', sans-serif;
   display: flex;
   justify-content: center;
@@ -177,14 +177,14 @@ body {
 <div id="main-layout">
   <div id="game-container">
     <div id="header">
-      <div><span>🍎</span><span id="score">0</span>개 제거</div>
+      <div><span>🍎</span><span id="score" style="display:inline-block;min-width:30px;text-align:right">0</span>개 제거</div>
       <div style="display:flex;align-items:center;gap:8px">
         <div id="timer-bar-bg"><div id="timer-bar"></div></div>
-        <span id="timer-text" style="color:#fff;font-size:16px;font-weight:bold;min-width:36px">120</span>
+        <span id="timer-text" style="color:#fff;font-size:16px;font-weight:bold;display:inline-block;min-width:36px;text-align:right">120</span>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <button id="ingame-start-btn" style="padding:4px 14px;font-size:14px;border:none;border-radius:12px;background:#4caf1a;color:#fff;font-weight:bold;cursor:pointer">시작</button>
-        <span id="remaining">남은 사과: <span id="remain-count">0</span></span>
+        <span id="remaining">남은 사과: <span id="remain-count" style="display:inline-block;min-width:30px;text-align:right">0</span></span>
       </div>
     </div>
     <div id="board-wrapper">
@@ -414,13 +414,7 @@ function startTimer() {
     const pct = (timeLeft / TIME_LIMIT) * 100;
     timerBar.style.width = pct + '%';
     document.getElementById('timer-text').textContent = Math.ceil(timeLeft);
-    if (pct < 20) {
-      timerBar.style.background = 'linear-gradient(to bottom, #ff5555, #cc2222)';
-    } else if (pct < 50) {
-      timerBar.style.background = 'linear-gradient(to bottom, #ffdd33, #ddaa00)';
-    } else {
-      timerBar.style.background = 'linear-gradient(to bottom, #7ddf3a, #4caf1a)';
-    }
+    timerBar.style.background = 'linear-gradient(to bottom, #7ddf3a, #4caf1a)';
   }, 100);
 }
 
