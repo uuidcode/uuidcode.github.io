@@ -61,27 +61,32 @@ body {
 }
 #header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  width: 760px;
-  padding: 10px 0;
+  gap: 16px;
+  width: 100%;
+  padding: 8px 16px;
   color: #fff;
-  font-size: 20px;
+  font-size: 15px;
+  background: rgba(0,0,0,0.45);
+  border-radius: 10px;
+  margin-bottom: 8px;
 }
-#header > div { display: flex; align-items: center; gap: 10px; }
+#header > div { display: flex; align-items: center; gap: 8px; }
+#header .sep { width: 1px; height: 22px; background: rgba(255,255,255,0.25); }
 #timer-bar-bg {
-  width: 300px;
-  height: 22px;
-  background: #1a3a0f;
-  border-radius: 11px;
+  width: 200px;
+  height: 16px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
   overflow: hidden;
-  border: 2px solid #4a8a2a;
+  border: 1px solid rgba(255,255,255,0.15);
 }
 #timer-bar {
   width: 100%;
   height: 100%;
   background: linear-gradient(to bottom, #7ddf3a, #4caf1a);
-  border-radius: 9px;
+  border-radius: 7px;
   transition: width 0.1s linear;
 }
 #board-wrapper {
@@ -149,7 +154,6 @@ body {
   border-radius: 4px;
   display: none;
 }
-#remaining { font-size: 16px; }
 #toast {
   position: fixed;
   top: 50%;
@@ -177,15 +181,16 @@ body {
 <div id="main-layout">
   <div id="game-container">
     <div id="header">
-      <div><span>🍎</span><span id="score" style="display:inline-block;min-width:30px;text-align:right">0</span>개 제거</div>
-      <div style="display:flex;align-items:center;gap:8px">
+      <div><span>🍎</span><span id="score" style="display:inline-block;min-width:26px;text-align:right">0</span>개 제거</div>
+      <div class="sep"></div>
+      <div>
         <div id="timer-bar-bg"><div id="timer-bar"></div></div>
-        <span id="timer-text" style="color:#fff;font-size:16px;font-weight:bold;display:inline-block;min-width:36px;text-align:right">120</span>
+        <span id="timer-text" style="font-size:14px;font-weight:bold;display:inline-block;min-width:32px;text-align:right">120</span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <button id="ingame-start-btn" style="padding:4px 14px;font-size:14px;border:none;border-radius:12px;background:#4caf1a;color:#fff;font-weight:bold;cursor:pointer">시작</button>
-        <span id="remaining">남은 사과: <span id="remain-count" style="display:inline-block;min-width:30px;text-align:right">0</span></span>
-      </div>
+      <div class="sep"></div>
+      <div>남은 <span id="remain-count" style="display:inline-block;min-width:26px;text-align:right;font-weight:bold">0</span>개</div>
+      <div class="sep"></div>
+      <button id="ingame-start-btn" style="padding:4px 16px;font-size:13px;border:none;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-weight:bold;cursor:pointer">시작</button>
     </div>
     <div id="board-wrapper">
       <div id="board"></div>
@@ -233,6 +238,10 @@ async function autoLoad() {
       });
       gd.highScores.sort((a, b) => b.score - a.score);
       gd.highScores = gd.highScores.slice(0, 10);
+      if (gd.streaks) {
+        gd.streaks.sort((a, b) => b.streak - a.streak);
+        gd.streaks = gd.streaks.slice(0, 10);
+      }
     }
   } catch (e) {
     console.error('로드 에러:', e);
