@@ -239,7 +239,7 @@ async function autoLoad() {
       gd.highScores.sort((a, b) => b.score - a.score);
       gd.highScores = gd.highScores.slice(0, 10);
       if (gd.streaks) {
-        gd.streaks.sort((a, b) => b.streak - a.streak);
+        gd.streaks.sort((a, b) => b.streak - a.streak || (b.ts || 0) - (a.ts || 0));
         gd.streaks = gd.streaks.slice(0, 10);
       }
     }
@@ -258,7 +258,7 @@ function saveToFile() {
 
 function addHighScore(newScore) {
   const now = new Date();
-  const date = now.toLocaleDateString('ko-KR');
+  const date = now.toLocaleDateString('ko-KR').replace(/\.$/, '');
   const time = now.toLocaleTimeString('ko-KR');
 
   // Top 10
@@ -280,9 +280,10 @@ function addHighScore(newScore) {
       streak: gd.currentStreak,
       score: newScore,
       date,
-      time
+      time,
+      ts: now.getTime()
     });
-    gd.streaks.sort((a, b) => b.streak - a.streak);
+    gd.streaks.sort((a, b) => b.streak - a.streak || (b.ts || 0) - (a.ts || 0));
     gd.streaks = gd.streaks.slice(0, 10);
   } else {
     gd.currentStreak = 0;
