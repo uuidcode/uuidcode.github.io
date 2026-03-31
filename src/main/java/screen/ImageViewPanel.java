@@ -34,6 +34,12 @@ import static screen.ShapeType.CROP;
 import static screen.ShapeType.D;
 import static screen.ShapeType.E;
 import static screen.ShapeType.F;
+import static screen.ShapeType.N1;
+import static screen.ShapeType.N2;
+import static screen.ShapeType.N3;
+import static screen.ShapeType.N4;
+import static screen.ShapeType.N5;
+import static screen.ShapeType.N6;
 import static screen.Util.deepCopy;
 import static screen.Util.getRectangle2D;
 
@@ -120,7 +126,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (!this.isAlphabet()) {
+        if (!this.isClickMode()) {
             return;
         }
 
@@ -140,8 +146,14 @@ public class ImageViewPanel extends JPanel
         this.repaint();
     }
 
-    private boolean isAlphabet() {
-        return this.shapeType == A
+    private boolean isClickMode() {
+        return this.shapeType == N1
+            || this.shapeType == N2
+            || this.shapeType == N3
+            || this.shapeType == N4
+            || this.shapeType == N5
+            || this.shapeType == N6
+            || this.shapeType == A
             || this.shapeType == B
             || this.shapeType == C
             || this.shapeType == D
@@ -175,7 +187,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (this.isAlphabet()) {
+        if (this.isClickMode()) {
             return;
         }
 
@@ -243,7 +255,7 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (this.isAlphabet()) {
+        if (this.isClickMode()) {
             return;
         }
 
