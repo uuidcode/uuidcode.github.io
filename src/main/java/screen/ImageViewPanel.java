@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
@@ -150,6 +149,7 @@ public class ImageViewPanel extends JPanel
         this.addHistory(bufferedImage);
         this.save();
         this.resetPoint();
+        this.mousePosition = null;
         this.repaint();
     }
 
