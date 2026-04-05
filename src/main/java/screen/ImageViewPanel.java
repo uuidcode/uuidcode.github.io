@@ -1,9 +1,11 @@
 package screen;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
@@ -55,6 +57,7 @@ public class ImageViewPanel extends JPanel
     private Point endPoint;
     private List<BufferedImage> bufferedImageHistoryList = new ArrayList<>();
     private int imageHistoryIndex = 0;
+    private Point mousePosition;
     private ShapeType shapeType = ShapeType.FILL_ARROW;
     private FillType fillType = FillType.OPAQUE;
     private ColorType colorType = ColorType.BLUE;
@@ -121,6 +124,10 @@ public class ImageViewPanel extends JPanel
 
         if (this.stratPoint != null) {
             this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint, this.colorType);
+        }
+
+        if (this.isClickMode() && this.mousePosition != null) {
+            Util.drawAlphabetPreview((Graphics2D) g, this.mousePosition, this.colorType, this.shapeType.getTitle());
         }
     }
 
@@ -251,6 +258,10 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseExited(MouseEvent e) {
+        if (this.mousePosition != null) {
+            this.mousePosition = null;
+            e.getComponent().repaint();
+        }
     }
 
     @Override
@@ -275,6 +286,13 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (this.isClickMode()) {
+            this.mousePosition = e.getPoint();
+            e.getComponent().repaint();
+        } else if (this.mousePosition != null) {
+            this.mousePosition = null;
+            e.getComponent().repaint();
+        }
     }
 
     public void save() {

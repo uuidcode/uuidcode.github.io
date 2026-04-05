@@ -143,6 +143,31 @@ public class Util {
         return dst;
     }
 
+    public static void drawAlphabetPreview(Graphics2D g2,
+                                             Point2D start,
+                                             ColorType colorType,
+                                             String text) {
+        Font font = g2.getFont();
+        font = new Font(font.getFontName(), Font.BOLD, 30);
+        g2.setFont(font);
+
+        FontMetrics metrics = g2.getFontMetrics(g2.getFont());
+        int width = metrics.stringWidth(text);
+        int height = metrics.getHeight();
+        int ascent = metrics.getAscent();
+
+        Rectangle rect = new Rectangle((int) start.getX(), (int) start.getY() - ascent, width, height);
+        rect.x -= 10;
+        rect.y -= 5;
+        rect.width += 20;
+        rect.height += 10;
+
+        float[] dash = {5.0f, 5.0f};
+        g2.setStroke(new BasicStroke(2, CAP_BUTT, JOIN_MITER, 10.0f, dash, 0.0f));
+        g2.setColor(colorType.getColor());
+        g2.draw(rect);
+    }
+
     public static void processAlphabet(Graphics2D g2,
                                        Point2D start,
                                        ColorType colorType,
