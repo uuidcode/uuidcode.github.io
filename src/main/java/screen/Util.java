@@ -86,8 +86,6 @@ public class Util {
                                    boolean clipping) {
         try {
             Rectangle2D rect = getRectangle2D(start, end);
-            BufferedImage subImage = bufferedImage.getSubimage((int) rect.getX(),
-                (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
 
             if (clipping) {
                 BufferedImage allImage = bufferedImage.getSubimage(0, 0,
@@ -105,70 +103,102 @@ public class Util {
                 g2.drawImage(blurredAllImage, 0, 0, null);
                 g2.setClip(oldClip);
             } else {
-                BufferedImage blurredSubImage = blur(subImage);
-
-                g2.drawImage(blurredSubImage, (int) rect.getX(), (int) rect.getY(), null);
+                BufferedImage subImage = bufferedImage.getSubimage((int) rect.getX(),
+                    (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
+                BufferedImage blurred = blur(subImage);
+                g2.drawImage(blurred, (int) rect.getX(), (int) rect.getY(), null);
             }
         } catch (Throwable t) {
         }
     }
 
     public static BufferedImage blur(BufferedImage src) {
-        int radius = 10;
-        int k = radius * 2 + 1;
-        float w = 1f / k;
-        float[] line = new float[k];
-        fill(line, w);
+        int sw = src.getWidth();
+        int sh = src.getHeight();
+        int[] pixels = src.getRGB(0, 0, sw, sh, null, 0, sw);
 
-        Kernel h = new Kernel(k, 1, line);
-        Kernel v = new Kernel(1, k, line);
+        int radius = 20;
+        int passes = 2;
+        for (int p = 0; p < passes; p++) {
+            pixels = boxBlurH(pixels, sw, sh, radius);
+            pixels = boxBlurV(pixels, sw, sh, radius);
+        }
 
-        ConvolveOp opH = new ConvolveOp(h, ConvolveOp.EDGE_NO_OP, null);
-        ConvolveOp opV = new ConvolveOp(v, ConvolveOp.EDGE_NO_OP, null);
-
-        BufferedImage tmp  = createCompatible(src);
-        BufferedImage dest = createCompatible(src);
-
-        opH.filter(src, tmp);
-        return opV.filter(tmp, dest);
+        BufferedImage result = new BufferedImage(sw, sh, BufferedImage.TYPE_INT_ARGB);
+        result.setRGB(0, 0, sw, sh, pixels, 0, sw);
+        return result;
     }
 
-    private static BufferedImage createCompatible(BufferedImage src) {
-        GraphicsConfiguration gc = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice()
-            .getDefaultConfiguration();
-        BufferedImage dst = gc.createCompatibleImage(
-            src.getWidth(), src.getHeight(), Transparency.TRANSLUCENT);
+    private static int[] boxBlurH(int[] src, int w, int h, int radius) {
+        int[] dst = new int[src.length];
+        float div = radius + radius + 1;
+        for (int y = 0; y < h; y++) {
+            int yi = y * w;
+            long ra = 0, ga = 0, ba = 0, aa = 0;
+
+            for (int x = -radius; x <= radius; x++) {
+                int px = Math.max(0, Math.min(w - 1, x));
+                int c = src[yi + px];
+                aa += (c >>> 24);
+                ra += (c >> 16) & 0xFF;
+                ga += (c >> 8) & 0xFF;
+                ba += c & 0xFF;
+            }
+
+            for (int x = 0; x < w; x++) {
+                dst[yi + x] = ((int)(aa / div) << 24)
+                    | ((int)(ra / div) << 16)
+                    | ((int)(ga / div) << 8)
+                    | (int)(ba / div);
+
+                int addIdx = Math.min(w - 1, x + radius + 1);
+                int removeIdx = Math.max(0, x - radius);
+                int addC = src[yi + addIdx];
+                int removeC = src[yi + removeIdx];
+                aa += (addC >>> 24) - (removeC >>> 24);
+                ra += ((addC >> 16) & 0xFF) - ((removeC >> 16) & 0xFF);
+                ga += ((addC >> 8) & 0xFF) - ((removeC >> 8) & 0xFF);
+                ba += (addC & 0xFF) - (removeC & 0xFF);
+            }
+        }
         return dst;
     }
 
-    public static void drawAlphabetPreview(Graphics2D g2,
-                                             Point2D start,
-                                             ColorType colorType,
-                                             String text) {
-        Font font = g2.getFont();
-        font = new Font(font.getFontName(), Font.BOLD, 30);
-        g2.setFont(font);
+    private static int[] boxBlurV(int[] src, int w, int h, int radius) {
+        int[] dst = new int[src.length];
+        float div = radius + radius + 1;
+        for (int x = 0; x < w; x++) {
+            long ra = 0, ga = 0, ba = 0, aa = 0;
 
-        FontMetrics metrics = g2.getFontMetrics(g2.getFont());
-        int width = metrics.stringWidth(text);
-        int height = metrics.getHeight();
-        int ascent = metrics.getAscent();
+            for (int y = -radius; y <= radius; y++) {
+                int py = Math.max(0, Math.min(h - 1, y));
+                int c = src[py * w + x];
+                aa += (c >>> 24);
+                ra += (c >> 16) & 0xFF;
+                ga += (c >> 8) & 0xFF;
+                ba += c & 0xFF;
+            }
 
-        Rectangle rect = new Rectangle((int) start.getX(), (int) start.getY() - ascent, width, height);
-        rect.x -= 10;
-        rect.y -= 5;
-        rect.width += 20;
-        rect.height += 10;
+            for (int y = 0; y < h; y++) {
+                dst[y * w + x] = ((int)(aa / div) << 24)
+                    | ((int)(ra / div) << 16)
+                    | ((int)(ga / div) << 8)
+                    | (int)(ba / div);
 
-        float[] dash = {5.0f, 5.0f};
-        g2.setStroke(new BasicStroke(2, CAP_BUTT, JOIN_MITER, 10.0f, dash, 0.0f));
-        g2.setColor(colorType.getColor());
-        g2.draw(rect);
+                int addIdx = Math.min(h - 1, y + radius + 1);
+                int removeIdx = Math.max(0, y - radius);
+                int addC = src[addIdx * w + x];
+                int removeC = src[removeIdx * w + x];
+                aa += (addC >>> 24) - (removeC >>> 24);
+                ra += ((addC >> 16) & 0xFF) - ((removeC >> 16) & 0xFF);
+                ga += ((addC >> 8) & 0xFF) - ((removeC >> 8) & 0xFF);
+                ba += (addC & 0xFF) - (removeC & 0xFF);
+            }
+        }
+        return dst;
     }
 
-    public static void processAlphabet(Graphics2D g2,
+    public static void drawText(Graphics2D g2,
                                        Point2D start,
                                        ColorType colorType,
                                        String text) {

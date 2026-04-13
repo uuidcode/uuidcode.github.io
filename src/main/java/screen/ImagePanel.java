@@ -68,6 +68,7 @@ public class ImagePanel extends JPanel {
             if (isOK && ke.getID() == KEY_RELEASED) {
                 if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     this.imageViewPanel.cancelPaste();
+                    this.imageViewPanel.cancelText();
                 } else if (ke.isControlDown() || ke.isMetaDown()) {
                     keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
                 }
@@ -117,7 +118,9 @@ public class ImagePanel extends JPanel {
         this.createColorTypeRadio();
         this.createSaveButton();
         this.createPasteButton();
+        this.createTextButton();
         this.createCopyButton();
+        this.createSelectCopyButton();
         this.createCopyPathButton();
         this.createUndoButton();
         this.createRedoButton();
@@ -153,7 +156,6 @@ public class ImagePanel extends JPanel {
         this.createRadioPanel("Shape Type", ShapeType.class, ShapeType::getTitle,
             shapeType -> {
                 this.imageViewPanel.setShapeType(shapeType);
-                this.imageViewPanel.setMousePosition(null);
                 this.imageViewPanel.repaint();
             });
     }
@@ -206,6 +208,21 @@ public class ImagePanel extends JPanel {
 
     private void paste() {
         this.imageViewPanel.pasteFromClipboard();
+    }
+
+    private void createTextButton() {
+        JButton button = new JButton("text");
+        button.setName(this.name);
+        button.addActionListener(e -> text());
+        this.controlPanel.add(button);
+    }
+
+    private void text() {
+        java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
+        String input = JOptionPane.showInputDialog(window, "텍스트를 입력하세요:");
+        if (input != null && !input.isEmpty()) {
+            this.imageViewPanel.startTextMode(input);
+        }
     }
 
     @SneakyThrows
@@ -274,6 +291,13 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("copy");
         button.setName(this.name);
         button.addActionListener(e -> this.copy());
+        controlPanel.add(button);
+    }
+
+    private void createSelectCopyButton() {
+        JButton button = new JButton("select copy");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.startSelectCopyMode());
         controlPanel.add(button);
     }
 
