@@ -54,7 +54,6 @@ public class ImagePanel extends JPanel {
         keyMap.put(KeyEvent.VK_Z, this::undo);
         keyMap.put(KeyEvent.VK_Y, this::redo);
         keyMap.put(KeyEvent.VK_E, this::clear);
-
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             Component selectedComponent = this.tabbedPane
                 .getSelectedComponent();
@@ -66,9 +65,12 @@ public class ImagePanel extends JPanel {
                 isOK = imagePanel.name.equals(this.name);
             }
 
-            if (isOK && ke.getID() == KEY_RELEASED
-                && (ke.isControlDown() || ke.isMetaDown())) {
-                keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
+            if (isOK && ke.getID() == KEY_RELEASED) {
+                if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    this.imageViewPanel.cancelPaste();
+                } else if (ke.isControlDown() || ke.isMetaDown()) {
+                    keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
+                }
             }
 
             return false;
@@ -114,7 +116,7 @@ public class ImagePanel extends JPanel {
         this.createFillTypeRadio();
         this.createColorTypeRadio();
         this.createSaveButton();
-        this.createAppendButton();
+        this.createPasteButton();
         this.createCopyButton();
         this.createCopyPathButton();
         this.createUndoButton();
@@ -195,15 +197,15 @@ public class ImagePanel extends JPanel {
         this.controlPanel.add(button);
     }
 
-    private void createAppendButton() {
-        JButton button = new JButton("append");
+    private void createPasteButton() {
+        JButton button = new JButton("paste");
         button.setName(this.name);
-        button.addActionListener(e -> append());
+        button.addActionListener(e -> paste());
         this.controlPanel.add(button);
     }
 
-    private void append() {
-        this.imageViewPanel.appendFromClipboard();
+    private void paste() {
+        this.imageViewPanel.pasteFromClipboard();
     }
 
     @SneakyThrows

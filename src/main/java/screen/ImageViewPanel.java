@@ -60,6 +60,8 @@ public class ImageViewPanel extends JPanel
     private ShapeType shapeType = ShapeType.FILL_ARROW;
     private FillType fillType = FillType.OPAQUE;
     private ColorType colorType = ColorType.BLUE;
+    private BufferedImage pastePreviewImage;
+    private Point pastePreviewPosition;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
@@ -128,10 +130,29 @@ public class ImageViewPanel extends JPanel
         if (this.isClickMode() && this.mousePosition != null) {
             Util.drawAlphabetPreview((Graphics2D) g, this.mousePosition, this.colorType, this.shapeType.getTitle());
         }
+
+        if (this.pastePreviewImage != null && this.pastePreviewPosition != null) {
+            Graphics2D g2 = (Graphics2D) g;
+            java.awt.Composite originalComposite = g2.getComposite();
+            g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5f));
+            g2.drawImage(this.pastePreviewImage, this.pastePreviewPosition.x, this.pastePreviewPosition.y,
+                this.pastePreviewImage.getWidth(), this.pastePreviewImage.getHeight(), this);
+            g2.setComposite(originalComposite);
+
+            g2.setColor(java.awt.Color.RED);
+            g2.setStroke(new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{6}, 0));
+            g2.drawRect(this.pastePreviewPosition.x, this.pastePreviewPosition.y,
+                this.pastePreviewImage.getWidth() - 1, this.pastePreviewImage.getHeight() - 1);
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (this.pastePreviewImage != null) {
+            this.confirmPaste();
+            return;
+        }
+
         if (!this.isClickMode()) {
             return;
         }
@@ -254,10 +275,19 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        if (this.pastePreviewImage != null) {
+            this.pastePreviewPosition = e.getPoint();
+            this.updatePastePreferredSize();
+            e.getComponent().repaint();
+        }
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        if (this.pastePreviewImage != null) {
+            this.pastePreviewPosition = null;
+            e.getComponent().repaint();
+        }
         if (this.mousePosition != null) {
             this.mousePosition = null;
             e.getComponent().repaint();
@@ -286,6 +316,13 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (this.pastePreviewImage != null) {
+            this.pastePreviewPosition = e.getPoint();
+            this.updatePastePreferredSize();
+            e.getComponent().repaint();
+            return;
+        }
+
         if (this.isClickMode()) {
             this.mousePosition = e.getPoint();
             e.getComponent().repaint();
@@ -356,7 +393,7 @@ public class ImageViewPanel extends JPanel
         }
     }
 
-    public void appendFromClipboard() {
+    public void pasteFromClipboard() {
         try {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             if (!clipboard.isDataFlavorAvailable(java.awt.datatransfer.DataFlavor.imageFlavor)) {
@@ -364,23 +401,53 @@ public class ImageViewPanel extends JPanel
             }
 
             java.awt.Image clipImage = (java.awt.Image) clipboard.getData(java.awt.datatransfer.DataFlavor.imageFlavor);
-            BufferedImage clipBuffered = toBufferedImage(clipImage);
-            BufferedImage current = this.getBufferedImage();
+            this.pastePreviewImage = toBufferedImage(clipImage);
 
-            int newWidth = Math.max(current.getWidth(), clipBuffered.getWidth());
-            int newHeight = current.getHeight() + clipBuffered.getHeight();
-
-            BufferedImage combined = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
-            Graphics2D g = combined.createGraphics();
-            g.drawImage(current, 0, 0, null);
-            g.drawImage(clipBuffered, 0, current.getHeight(), null);
-            g.dispose();
-
-            this.addHistory(combined);
-            this.save();
-            this.init();
+            Point mouse = this.getMousePosition();
+            this.pastePreviewPosition = mouse;
+            if (mouse != null) {
+                this.updatePastePreferredSize();
+            }
             this.repaint();
         } catch (Exception ignored) {
+        }
+    }
+
+    private void confirmPaste() {
+        BufferedImage current = this.getBufferedImage();
+        BufferedImage clipBuffered = this.pastePreviewImage;
+        Point pos = this.pastePreviewPosition;
+        this.pastePreviewImage = null;
+        this.pastePreviewPosition = null;
+
+        int newWidth = Math.max(current.getWidth(), pos.x + clipBuffered.getWidth());
+        int newHeight = Math.max(current.getHeight(), pos.y + clipBuffered.getHeight());
+
+        BufferedImage combined = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
+        Graphics2D g = combined.createGraphics();
+        g.drawImage(current, 0, 0, null);
+        g.drawImage(clipBuffered, pos.x, pos.y, null);
+        g.dispose();
+
+        this.addHistory(combined);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
+    private void updatePastePreferredSize() {
+        BufferedImage current = this.getBufferedImage();
+        int newWidth = Math.max(current.getWidth(), this.pastePreviewPosition.x + this.pastePreviewImage.getWidth());
+        int newHeight = Math.max(current.getHeight(), this.pastePreviewPosition.y + this.pastePreviewImage.getHeight());
+        this.setPreferredSize(new Dimension(newWidth, newHeight));
+        this.revalidate();
+    }
+
+    public void cancelPaste() {
+        if (this.pastePreviewImage != null) {
+            this.pastePreviewImage = null;
+            this.init();
+            this.repaint();
         }
     }
 
