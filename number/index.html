@@ -155,7 +155,7 @@ body {
   display: none;
 }
 #toast {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.8);
@@ -163,7 +163,7 @@ body {
   color: #fff;
   padding: 20px 40px;
   border-radius: 16px;
-  font-size: 24px;
+  font-size: 48px;
   font-weight: bold;
   text-align: center;
   z-index: 200;
@@ -175,11 +175,35 @@ body {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
 }
+#recent-scores {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 6px;
+  color: #fff;
+  font-size: 13px;
+}
+#recent-scores span {
+  background: rgba(0,0,0,0.35);
+  padding: 2px 8px;
+  border-radius: 6px;
+  min-width: 28px;
+  text-align: center;
+}
+#recent-scores .label {
+  background: none;
+  font-weight: bold;
+  color: #ffd700;
+  min-width: auto;
+  padding: 0;
+}
 </style>
 </head>
 <body>
 <div id="main-layout">
   <div id="game-container">
+    <div id="recent-scores"><span class="label">최근:</span></div>
     <div id="header">
       <div><span>🍎</span><span id="score" style="display:inline-block;min-width:26px;text-align:right">0</span>개 제거</div>
       <div class="sep"></div>
@@ -190,14 +214,16 @@ body {
       <div class="sep"></div>
       <div>남은 <span id="remain-count" style="display:inline-block;min-width:26px;text-align:right;font-weight:bold">0</span>개</div>
       <div class="sep"></div>
+      <div><span id="game-count" style="font-weight:bold">0</span>판 평균 <span id="avg-score" style="font-weight:bold">0</span>개 (최근 <span id="avg-recent" style="font-weight:bold">0</span>개)</div>
+      <div class="sep"></div>
       <button id="ingame-start-btn" style="padding:4px 16px;font-size:13px;border:none;border-radius:8px;background:rgba(255,255,255,0.2);color:#fff;font-weight:bold;cursor:pointer">시작</button>
     </div>
     <div id="board-wrapper">
       <div id="board"></div>
       <div id="selection-rect"></div>
+      <div id="toast"></div>
     </div>
   </div>
-  <div id="toast"></div>
   <div id="side-panel"></div>
   <div id="side-panel2"></div>
 </div>
@@ -218,7 +244,14 @@ let startX = 0, startY = 0;
 let gameEnded = false;
 
 const API_URL = 'https://getpantry.cloud/apiv1/pantry/9ca80312-1be4-4e27-afce-2e2949a837b3/basket/number';
-const defaultData = { highScores: [], currentStreak: 0, streaks: [], totalOver100: 0 };
+const defaultData = {
+    highScores: [],
+    currentStreak: 0,
+    streaks: [],
+    totalOver100: 0,
+    recentScores: [],
+    allScores: []
+};
 let gd = { ...defaultData };
 
 async function autoLoad() {
@@ -289,8 +322,42 @@ function addHighScore(newScore) {
     gd.currentStreak = 0;
   }
 
+  // All scores & recent scores
+  if (!gd.allScores) gd.allScores = [];
+  gd.allScores.push(newScore);
+  if (!gd.recentScores) gd.recentScores = [];
+  gd.recentScores.push(newScore);
+  gd.recentScores = gd.recentScores.slice(-10);
+
   saveToFile();
+  renderRecentScores();
   return rank;
+}
+
+function renderRecentScores() {
+  const el = document.getElementById('recent-scores');
+  const scores = gd.recentScores || [];
+  let html = '<span class="label">최근:</span>';
+  scores.forEach(s => {
+    html += `<span>${s}</span>`;
+  });
+  el.innerHTML = html;
+
+  const allScores = gd.allScores || [];
+  const countEl = document.getElementById('game-count');
+  const avgEl = document.getElementById('avg-score');
+  const avgRecentEl = document.getElementById('avg-recent');
+  countEl.textContent = allScores.length;
+  if (allScores.length > 0) {
+    avgEl.textContent = Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length);
+  } else {
+    avgEl.textContent = 0;
+  }
+  if (scores.length > 0) {
+    avgRecentEl.textContent = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+  } else {
+    avgRecentEl.textContent = 0;
+  }
 }
 
 function renderHighScores(highlightIndex) {
@@ -603,7 +670,7 @@ wrapper.addEventListener('touchend', (e) => {
   }
 });
 
-autoLoad().then(() => renderHighScores(-1));
+autoLoad().then(() => { renderHighScores(-1); renderRecentScores(); });
 ingameStartBtn.addEventListener('click', startGame);
 </script>
 </body>
