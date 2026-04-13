@@ -114,6 +114,7 @@ public class ImagePanel extends JPanel {
         this.createFillTypeRadio();
         this.createColorTypeRadio();
         this.createSaveButton();
+        this.createAppendButton();
         this.createCopyButton();
         this.createCopyPathButton();
         this.createUndoButton();
@@ -192,6 +193,17 @@ public class ImagePanel extends JPanel {
         button.setName(this.name);
         button.addActionListener(e -> save());
         this.controlPanel.add(button);
+    }
+
+    private void createAppendButton() {
+        JButton button = new JButton("append");
+        button.setName(this.name);
+        button.addActionListener(e -> append());
+        this.controlPanel.add(button);
+    }
+
+    private void append() {
+        this.imageViewPanel.appendFromClipboard();
     }
 
     @SneakyThrows

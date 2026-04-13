@@ -356,6 +356,47 @@ public class ImageViewPanel extends JPanel
         }
     }
 
+    public void appendFromClipboard() {
+        try {
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            if (!clipboard.isDataFlavorAvailable(java.awt.datatransfer.DataFlavor.imageFlavor)) {
+                return;
+            }
+
+            java.awt.Image clipImage = (java.awt.Image) clipboard.getData(java.awt.datatransfer.DataFlavor.imageFlavor);
+            BufferedImage clipBuffered = toBufferedImage(clipImage);
+            BufferedImage current = this.getBufferedImage();
+
+            int newWidth = Math.max(current.getWidth(), clipBuffered.getWidth());
+            int newHeight = current.getHeight() + clipBuffered.getHeight();
+
+            BufferedImage combined = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
+            Graphics2D g = combined.createGraphics();
+            g.drawImage(current, 0, 0, null);
+            g.drawImage(clipBuffered, 0, current.getHeight(), null);
+            g.dispose();
+
+            this.addHistory(combined);
+            this.save();
+            this.init();
+            this.repaint();
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static BufferedImage toBufferedImage(java.awt.Image img) {
+        if (img instanceof BufferedImage) {
+            return (BufferedImage) img;
+        }
+
+        BufferedImage buffered = new BufferedImage(
+            img.getWidth(null), img.getHeight(null), TYPE_INT_ARGB);
+        Graphics2D g = buffered.createGraphics();
+        g.drawImage(img, 0, 0, null);
+        g.dispose();
+        return buffered;
+    }
+
     public void clear() {
         BufferedImage bufferedImage = this.bufferedImageHistoryList.get(0);
         this.save(this.imageFile, bufferedImage);
