@@ -386,7 +386,7 @@ function renderRecentScores() {
   const row = document.querySelector('#recent-scores .scores-row');
   const scores = gd.recentScores || [];
   let html = '';
-  scores.forEach(s => {
+  [...scores].reverse().forEach(s => {
     html += `<span>${s}</span>`;
   });
   row.innerHTML = html;
