@@ -375,7 +375,7 @@ function addHighScore(newScore) {
   gd.allScores.push(newScore);
   if (!gd.recentScores) gd.recentScores = [];
   gd.recentScores.push(newScore);
-  gd.recentScores = gd.recentScores.slice(-10);
+  gd.recentScores = gd.recentScores.slice(-9);
 
   saveToFile();
   renderRecentScores();
