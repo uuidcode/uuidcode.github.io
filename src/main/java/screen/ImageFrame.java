@@ -51,7 +51,6 @@ public class ImageFrame extends JFrame {
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
     private CaptureConfig captureConfig = new CaptureConfig();
-    private JCheckBox borderCheckbox;
     private JCheckBox imgTagCheckbox;
     private JTextField widthField;
     private JTextField heightField;
@@ -93,18 +92,10 @@ public class ImageFrame extends JFrame {
         this.createClipboardButton(panel);
         this.createOpenButton(panel);
         this.createViewButton(panel);
-        this.createBorderCheckBox(panel);
         this.createImgTagCheckBox(panel);
         this.createFixedSizeFields(panel);
 
         return panel;
-    }
-
-    private void createBorderCheckBox(JPanel panel) {
-        borderCheckbox = new JCheckBox("border");
-        borderCheckbox.setSelected(captureConfig.isBorderEnabled());
-        borderCheckbox.addActionListener(e -> captureConfig.setBorderEnabled(borderCheckbox.isSelected()));
-        panel.add(borderCheckbox);
     }
 
     private void createImgTagCheckBox(JPanel panel) {

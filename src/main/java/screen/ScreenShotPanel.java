@@ -28,7 +28,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import static java.awt.Color.BLACK;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotPanel extends JPanel
@@ -181,12 +180,6 @@ public class ScreenShotPanel extends JPanel
 
         // 캡처 후 마우스를 원래 위치로 복원
         robot.mouseMove(x, y);
-
-        if (config.isBorderEnabled()) {
-            Graphics g = image.getGraphics();
-            g.setColor(BLACK);
-            g.drawRect(0, 0, (int) (rectangle.getWidth() - 1), (int) (rectangle.getHeight() - 1));
-        }
 
         if (config.isImgTagEnabled()) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();

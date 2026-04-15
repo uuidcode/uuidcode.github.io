@@ -558,6 +558,58 @@ public class ImageViewPanel extends JPanel
         return buffered;
     }
 
+    public void border() {
+        BufferedImage bufferedImage = deepCopy(this.getBufferedImage());
+        Graphics2D g2 = bufferedImage.createGraphics();
+        g2.setColor(BLACK);
+        g2.drawRect(0, 0, bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1);
+        g2.dispose();
+        this.addHistory(bufferedImage);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
+    public void shadow() {
+        BufferedImage original = this.getBufferedImage();
+        int shadowSize = 20;
+        int shadowOffset = 5;
+
+        int newWidth = original.getWidth() + shadowSize * 2 + shadowOffset;
+        int newHeight = original.getHeight() + shadowSize * 2 + shadowOffset;
+
+        BufferedImage result = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
+        Graphics2D g2 = result.createGraphics();
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Fill white background
+        g2.setColor(java.awt.Color.WHITE);
+        g2.fillRect(0, 0, newWidth, newHeight);
+
+        // Draw shadow layers (multiple semi-transparent rectangles for soft blur effect)
+        for (int i = shadowSize; i >= 1; i--) {
+            float ratio = (float) (shadowSize - i + 1) / shadowSize;
+            float alpha = ratio * ratio * 0.08f;
+            g2.setColor(new java.awt.Color(0, 0, 0, Math.min((int) (alpha * 255), 255)));
+            g2.fillRoundRect(
+                shadowSize - i + shadowOffset,
+                shadowSize - i + shadowOffset,
+                original.getWidth() + i * 2,
+                original.getHeight() + i * 2,
+                i * 2, i * 2
+            );
+        }
+
+        // Draw the original image on top
+        g2.drawImage(original, shadowSize, shadowSize, null);
+        g2.dispose();
+
+        this.addHistory(result);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
     public void clear() {
         BufferedImage bufferedImage = this.bufferedImageHistoryList.get(0);
         this.save(this.imageFile, bufferedImage);

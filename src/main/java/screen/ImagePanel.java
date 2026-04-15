@@ -116,6 +116,8 @@ public class ImagePanel extends JPanel {
         this.createShapeTypeRadio();
         this.createFillTypeRadio();
         this.createColorTypeRadio();
+        this.createShadowButton();
+        this.createBorderButton();
         this.createSaveButton();
         this.createPasteButton();
         this.createTextButton();
@@ -190,6 +192,20 @@ public class ImagePanel extends JPanel {
             });
 
         this.controlPanel.add(panel);
+    }
+
+    private void createShadowButton() {
+        JButton button = new JButton("shadow");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.shadow());
+        this.controlPanel.add(button);
+    }
+
+    private void createBorderButton() {
+        JButton button = new JButton("border");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.border());
+        this.controlPanel.add(button);
     }
 
     private void createSaveButton() {
