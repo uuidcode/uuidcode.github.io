@@ -1,10 +1,12 @@
 package screen;
 
 import java.awt.BasicStroke;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
@@ -55,6 +57,12 @@ public class ImageViewPanel extends JPanel
     private Point selectCopyStart;
     private Point selectCopyEnd;
 
+    private List<DrawObject> objectList = new ArrayList<>();
+    private DrawObject selectedObject;
+    private Point dragStart;
+    private boolean dragging;
+    private BufferedImage baseImage;
+
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
         this.imageFile = imageFile;
@@ -74,6 +82,7 @@ public class ImageViewPanel extends JPanel
             try {
                 BufferedImage bufferedImage = ImageIO.read(this.imageFile);
                 this.bufferedImageHistoryList.add(bufferedImage);
+                this.baseImage = deepCopy(bufferedImage);
                 return bufferedImage;
             } catch (Throwable t) {
                 throw new RuntimeException(t);
@@ -81,6 +90,40 @@ public class ImageViewPanel extends JPanel
         }
 
         return this.bufferedImageHistoryList.get(this.imageHistoryIndex);
+    }
+
+    private BufferedImage buildComposite() {
+        BufferedImage base = expandedBase(this.baseImage);
+        Graphics2D g2 = base.createGraphics();
+        for (DrawObject obj : objectList) {
+            if (obj == selectedObject && dragging) continue;
+            obj.draw(g2);
+        }
+        if (selectedObject != null && dragging) {
+            selectedObject.draw(g2);
+        }
+        g2.dispose();
+        return base;
+    }
+
+    private BufferedImage expandedBase(BufferedImage original) {
+        int w = original.getWidth();
+        int h = original.getHeight();
+        for (DrawObject obj : objectList) {
+            Rectangle b = obj.getBounds();
+            w = Math.max(w, b.x + b.width);
+            h = Math.max(h, b.y + b.height);
+        }
+        if (w == original.getWidth() && h == original.getHeight()) {
+            return deepCopy(original);
+        }
+        BufferedImage expanded = new BufferedImage(w, h, TYPE_INT_ARGB);
+        Graphics2D g = expanded.createGraphics();
+        g.setColor(java.awt.Color.WHITE);
+        g.fillRect(0, 0, w, h);
+        g.drawImage(original, 0, 0, null);
+        g.dispose();
+        return expanded;
     }
 
     @Override
@@ -93,6 +136,7 @@ public class ImageViewPanel extends JPanel
             try {
                 bufferedImage = ImageIO.read(this.imageFile);
                 this.bufferedImageHistoryList.add(bufferedImage);
+                this.baseImage = deepCopy(bufferedImage);
 
                 g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
                     bufferedImage.getHeight(), this);
@@ -111,8 +155,21 @@ public class ImageViewPanel extends JPanel
                 throw new RuntimeException(t);
             }
         } else {
-            g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
-                bufferedImage.getHeight(), this);
+            if (!objectList.isEmpty()) {
+                BufferedImage display = buildComposite();
+                g.drawImage(display, 0, 0, display.getWidth(), display.getHeight(), this);
+            } else {
+                g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
+                    bufferedImage.getHeight(), this);
+            }
+        }
+
+        if (selectedObject != null) {
+            Graphics2D g2 = (Graphics2D) g;
+            Rectangle bounds = selectedObject.getBounds();
+            g2.setColor(java.awt.Color.RED);
+            g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
+            g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
         if (this.stratPoint != null && this.endPoint != null) {
@@ -168,6 +225,15 @@ public class ImageViewPanel extends JPanel
         }
     }
 
+    private DrawObject findObjectAt(Point p) {
+        for (int i = objectList.size() - 1; i >= 0; i--) {
+            if (objectList.get(i).contains(p)) {
+                return objectList.get(i);
+            }
+        }
+        return null;
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
         if (this.textPreview != null) {
@@ -176,13 +242,29 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.pastePreviewImage != null) {
-            this.confirmPaste();
+            this.confirmPaste(e.getPoint());
             return;
         }
+
+        DrawObject clicked = findObjectAt(e.getPoint());
+        this.selectedObject = clicked;
+        this.repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        DrawObject clicked = findObjectAt(e.getPoint());
+        if (clicked != null) {
+            this.selectedObject = clicked;
+            this.dragStart = e.getPoint();
+            this.dragging = true;
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            this.repaint();
+            return;
+        }
+
+        this.selectedObject = null;
+
         if (this.selectCopyMode) {
             this.selectCopyStart = e.getPoint();
             this.selectCopyEnd = null;
@@ -213,6 +295,19 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (this.dragging && this.selectedObject != null) {
+            objectList.remove(this.selectedObject);
+            objectList.add(this.selectedObject);
+
+            this.dragging = false;
+            this.dragStart = null;
+            this.setCursor(Cursor.getDefaultCursor());
+            updateHistoryFromObjects();
+            this.save();
+            this.repaint();
+            return;
+        }
+
         if (this.selectCopyMode && this.selectCopyStart != null && this.selectCopyEnd != null) {
             this.copySelectedArea();
             return;
@@ -224,23 +319,48 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
-        bufferedImage = deepCopy(bufferedImage);
-
         if (this.stratPoint != null && this.endPoint != null) {
             if (this.shapeType == CROP) {
+                bufferedImage = deepCopy(bufferedImage);
                 bufferedImage = this.crop(bufferedImage);
+                this.objectList.clear();
+                this.selectedObject = null;
+                this.baseImage = deepCopy(bufferedImage);
+                this.addHistory(bufferedImage);
+                this.init();
             } else {
-                Graphics g = bufferedImage.getGraphics();
-                this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint, this.colorType);
+                DrawObject.Type objType = DrawObject.fromShapeType(this.shapeType);
+                if (objType != null) {
+                    DrawObject obj = new DrawObject()
+                        .setType(objType)
+                        .setStartPoint(new Point(this.stratPoint))
+                        .setEndPoint(new Point(this.endPoint))
+                        .setFillType(this.fillType)
+                        .setColorType(this.colorType);
+
+                    this.objectList.add(obj);
+                    updateHistoryFromObjects();
+                } else {
+                    bufferedImage = deepCopy(bufferedImage);
+                    Graphics g = bufferedImage.getGraphics();
+                    this.shapeType.draw(g, this.fillType, bufferedImage, this.stratPoint, this.endPoint, this.colorType);
+                    this.baseImage = deepCopy(bufferedImage);
+                    this.addHistory(bufferedImage);
+                    this.init();
+                }
             }
 
-            this.addHistory(bufferedImage);
-            this.init();
+            this.save();
         }
 
-        this.save();
         this.resetPoint();
         this.repaint();
+    }
+
+    private void updateHistoryFromObjects() {
+        BufferedImage composite = buildComposite();
+        this.addHistory(composite);
+        this.init();
     }
 
     private BufferedImage crop(BufferedImage bufferedImage) {
@@ -299,6 +419,15 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (this.dragging && this.selectedObject != null && this.dragStart != null) {
+            int dx = e.getPoint().x - this.dragStart.x;
+            int dy = e.getPoint().y - this.dragStart.y;
+            this.selectedObject.move(dx, dy);
+            this.dragStart = e.getPoint();
+            this.repaint();
+            return;
+        }
+
         if (this.selectCopyMode) {
             this.selectCopyEnd = e.getPoint();
             e.getComponent().repaint();
@@ -321,6 +450,13 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        DrawObject hover = findObjectAt(e.getPoint());
+        if (hover != null) {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        } else {
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+
         if (this.textPreview != null) {
             this.textPreviewPosition = e.getPoint();
             e.getComponent().repaint();
@@ -357,6 +493,13 @@ public class ImageViewPanel extends JPanel
     public void undo() {
         if (this.imageHistoryIndex <= 0) {
             return;
+        }
+
+        if (!objectList.isEmpty()) {
+            DrawObject last = objectList.remove(objectList.size() - 1);
+            if (selectedObject == last) {
+                selectedObject = null;
+            }
         }
 
         this.imageHistoryIndex--;
@@ -415,27 +558,34 @@ public class ImageViewPanel extends JPanel
         }
     }
 
-    private void confirmPaste() {
-        BufferedImage current = this.getBufferedImage();
+    private void confirmPaste(Point clickPoint) {
         BufferedImage clipBuffered = this.pastePreviewImage;
-        Point pos = this.pastePreviewPosition;
+        Point pos = this.pastePreviewPosition != null ? this.pastePreviewPosition : clickPoint;
         this.pastePreviewImage = null;
         this.pastePreviewPosition = null;
 
-        int newWidth = Math.max(current.getWidth(), pos.x + clipBuffered.getWidth());
-        int newHeight = Math.max(current.getHeight(), pos.y + clipBuffered.getHeight());
+        int newWidth = Math.max(this.baseImage.getWidth(), pos.x + clipBuffered.getWidth());
+        int newHeight = Math.max(this.baseImage.getHeight(), pos.y + clipBuffered.getHeight());
 
-        BufferedImage combined = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
-        Graphics2D g = combined.createGraphics();
-        g.setColor(java.awt.Color.WHITE);
-        g.fillRect(0, 0, newWidth, newHeight);
-        g.drawImage(current, 0, 0, null);
-        g.drawImage(clipBuffered, pos.x, pos.y, null);
-        g.dispose();
+        if (newWidth > this.baseImage.getWidth() || newHeight > this.baseImage.getHeight()) {
+            BufferedImage expanded = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
+            Graphics2D bg = expanded.createGraphics();
+            bg.setColor(java.awt.Color.WHITE);
+            bg.fillRect(0, 0, newWidth, newHeight);
+            bg.drawImage(this.baseImage, 0, 0, null);
+            bg.dispose();
+            this.baseImage = expanded;
+        }
 
-        this.addHistory(combined);
+        DrawObject obj = new DrawObject()
+            .setType(DrawObject.Type.PASTE)
+            .setStartPoint(new Point(pos))
+            .setColorType(this.colorType)
+            .setPasteImage(clipBuffered);
+
+        this.objectList.add(obj);
+        updateHistoryFromObjects();
         this.save();
-        this.init();
         this.repaint();
     }
 
@@ -455,44 +605,19 @@ public class ImageViewPanel extends JPanel
     }
 
     private void confirmText(Point point) {
-        BufferedImage current = this.getBufferedImage();
+        DrawObject obj = new DrawObject()
+            .setType(DrawObject.Type.TEXT)
+            .setStartPoint(new Point(point))
+            .setColorType(this.colorType)
+            .setText(this.textPreview);
 
-        java.awt.Font font = new java.awt.Font(java.awt.Font.DIALOG, java.awt.Font.BOLD, 30);
-        java.awt.FontMetrics metrics = this.getFontMetrics(font);
-        int textWidth = metrics.stringWidth(this.textPreview);
-        int textHeight = metrics.getHeight();
-        int ascent = metrics.getAscent();
-        int shadow = 3;
-
-        int margin = 10;
-        int requiredWidth = point.x + textWidth + 10 + shadow + shadow + margin;
-        int requiredHeight = point.y + (textHeight - ascent) + 5 + shadow + shadow + margin;
-
-        int newWidth = Math.max(current.getWidth(), requiredWidth);
-        int newHeight = Math.max(current.getHeight(), requiredHeight);
-
-        BufferedImage bufferedImage;
-        if (newWidth > current.getWidth() || newHeight > current.getHeight()) {
-            bufferedImage = new BufferedImage(newWidth, newHeight, TYPE_INT_ARGB);
-            Graphics2D bg = bufferedImage.createGraphics();
-            bg.setColor(java.awt.Color.WHITE);
-            bg.fillRect(0, 0, newWidth, newHeight);
-            bg.drawImage(current, 0, 0, null);
-            bg.dispose();
-        } else {
-            bufferedImage = deepCopy(current);
-        }
-
-        Graphics2D g2 = bufferedImage.createGraphics();
-        Util.drawText(g2, point, this.colorType, this.textPreview);
-        g2.dispose();
+        this.objectList.add(obj);
 
         this.textPreview = null;
         this.textPreviewPosition = null;
 
-        this.addHistory(bufferedImage);
+        updateHistoryFromObjects();
         this.save();
-        this.init();
         this.repaint();
     }
 
@@ -564,6 +689,9 @@ public class ImageViewPanel extends JPanel
         g2.setColor(BLACK);
         g2.drawRect(0, 0, bufferedImage.getWidth() - 1, bufferedImage.getHeight() - 1);
         g2.dispose();
+        this.baseImage = deepCopy(bufferedImage);
+        this.objectList.clear();
+        this.selectedObject = null;
         this.addHistory(bufferedImage);
         this.save();
         this.init();
@@ -582,11 +710,9 @@ public class ImageViewPanel extends JPanel
         Graphics2D g2 = result.createGraphics();
         g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Fill white background
         g2.setColor(java.awt.Color.WHITE);
         g2.fillRect(0, 0, newWidth, newHeight);
 
-        // Draw shadow layers (multiple semi-transparent rectangles for soft blur effect)
         for (int i = shadowSize; i >= 1; i--) {
             float ratio = (float) (shadowSize - i + 1) / shadowSize;
             float alpha = ratio * ratio * 0.08f;
@@ -600,10 +726,12 @@ public class ImageViewPanel extends JPanel
             );
         }
 
-        // Draw the original image on top
         g2.drawImage(original, shadowSize, shadowSize, null);
         g2.dispose();
 
+        this.baseImage = deepCopy(result);
+        this.objectList.clear();
+        this.selectedObject = null;
         this.addHistory(result);
         this.save();
         this.init();
@@ -615,7 +743,30 @@ public class ImageViewPanel extends JPanel
         this.save(this.imageFile, bufferedImage);
         this.bufferedImageHistoryList.clear();
         this.imageHistoryIndex = 0;
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.baseImage = null;
         this.revalidate();
+        this.repaint();
+    }
+
+    public void deleteSelectedObject() {
+        if (selectedObject == null) {
+            return;
+        }
+
+        objectList.remove(selectedObject);
+        this.selectedObject = null;
+
+        if (objectList.isEmpty()) {
+            BufferedImage composite = deepCopy(this.baseImage);
+            this.addHistory(composite);
+        } else {
+            updateHistoryFromObjects();
+        }
+
+        this.save();
+        this.init();
         this.repaint();
     }
 }

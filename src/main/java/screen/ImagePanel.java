@@ -69,6 +69,8 @@ public class ImagePanel extends JPanel {
                 if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     this.imageViewPanel.cancelPaste();
                     this.imageViewPanel.cancelText();
+                } else if (ke.getKeyCode() == KeyEvent.VK_DELETE || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                    this.imageViewPanel.deleteSelectedObject();
                 } else if (ke.isControlDown() || ke.isMetaDown()) {
                     keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
                 }
@@ -124,12 +126,20 @@ public class ImagePanel extends JPanel {
         this.createCopyButton();
         this.createSelectCopyButton();
         this.createCopyPathButton();
+        this.createDeleteButton();
         this.createUndoButton();
         this.createRedoButton();
         this.createClearButton();
         this.createCloseButton();
 
         this.add(this.controlPanel, NORTH);
+    }
+
+    private void createDeleteButton() {
+        JButton button = new JButton("delete");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.deleteSelectedObject());
+        this.controlPanel.add(button);
     }
 
     private void createUndoButton() {
