@@ -29,10 +29,10 @@ body {
   gap: 20px;
   align-items: flex-start;
 }
-#side-panel {
-  width: 180px;
-}
-#side-panel2 {
+#right-panel-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   width: 230px;
 }
 #side-panel, #side-panel2 {
@@ -50,7 +50,6 @@ body {
 }
 #side-panel ol, #side-panel2 ol {
   padding-left: 20px;
-  line-height: 2;
 }
 #side-panel li.new-record { color: #ffd700; font-weight: bold; }
 .streak-info {
@@ -221,7 +220,7 @@ body {
 #stats-bar .stat-box {
   background: rgba(0,0,0,0.35);
   width: 80px;
-  height: 80px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -275,8 +274,10 @@ body {
     </div>
     <div id="recent-scores"><div class="label">최근 점수</div><div class="scores-row"></div></div>
   </div>
-  <div id="side-panel"></div>
-  <div id="side-panel2"></div>
+  <div id="right-panel-wrapper">
+    <div id="side-panel"></div>
+    <div id="side-panel2"></div>
+  </div>
 </div>
 
 <script>
@@ -732,8 +733,50 @@ wrapper.addEventListener('touchend', (e) => {
   }
 });
 
-autoLoad().then(() => { renderHighScores(-1); renderRecentScores(); });
-ingameStartBtn.addEventListener('click', startGame);
+function syncHeights() {
+  const gc = document.getElementById('game-container');
+  const targetH = gc.offsetHeight;
+  document.getElementById('stats-bar').style.height = targetH + 'px';
+
+  const rw = document.getElementById('right-panel-wrapper');
+  const panel1 = document.getElementById('side-panel');
+  const panel2 = document.getElementById('side-panel2');
+  const gap = 8;
+
+  // reset
+  rw.style.height = '';
+  panel1.style.height = '';
+  panel2.style.height = '';
+  const ols = rw.querySelectorAll('ol');
+  ols.forEach(ol => ol.style.lineHeight = '');
+
+  // measure fixed parts (h3, padding, gap, streak-info)
+  const p1H3 = panel1.querySelector('h3');
+  const p2H3 = panel2.querySelector('h3');
+  const p1Ol = panel1.querySelector('ol');
+  const p2Ol = panel2.querySelector('ol');
+  const streakInfo = panel2.querySelector('.streak-info');
+
+  const p1Padding = 28; // 14px * 2
+  const p2Padding = 28;
+  const p1FixedH = (p1H3 ? p1H3.offsetHeight + 8 : 0) + p1Padding;
+  const p2FixedH = (p2H3 ? p2H3.offsetHeight + 8 : 0) + (streakInfo ? streakInfo.offsetHeight : 0) + p2Padding;
+
+  const p1Items = p1Ol ? p1Ol.children.length : 0;
+  const p2Items = p2Ol ? p2Ol.children.length : 0;
+  const totalItems = p1Items + p2Items;
+
+  if (totalItems > 0) {
+    const availableH = targetH - gap - p1FixedH - p2FixedH;
+    const lineH = availableH / totalItems;
+    ols.forEach(ol => ol.style.lineHeight = lineH + 'px');
+  }
+
+  rw.style.height = targetH + 'px';
+}
+autoLoad().then(() => { renderHighScores(-1); renderRecentScores(); requestAnimationFrame(syncHeights); });
+ingameStartBtn.addEventListener('click', () => { startGame(); requestAnimationFrame(syncHeights); });
+window.addEventListener('resize', syncHeights);
 </script>
 </body>
 </html>
