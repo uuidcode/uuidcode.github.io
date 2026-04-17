@@ -454,6 +454,7 @@ function renderHighScores(highlightIndex) {
     html2 += '<p style="text-align:center;color:#aaa;font-size:12px">기록 없음</p>';
   }
   panel2.innerHTML = html2;
+  requestAnimationFrame(syncHeights);
 }
 
 const boardEl = document.getElementById('board');
