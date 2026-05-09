@@ -28,6 +28,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import java.awt.GridLayout;
+
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotPanel extends JPanel
@@ -65,8 +67,7 @@ public class ScreenShotPanel extends JPanel
     }
 
     private JPanel createControlPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        JPanel panel = new JPanel(new GridLayout(3, 2));
         panel.setBackground(new Color(0, 0, 0, 0));
 
         JButton shotAllButton = new JButton("shot all");
@@ -78,23 +79,19 @@ public class ScreenShotPanel extends JPanel
         panel.add(shotButton);
 
         JButton delayShotButton = new JButton("delay shot");
-
         delayShotButton.addActionListener(e -> {
             imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(true);
             this.shot(5, false);
         });
-
         panel.add(delayShotButton);
 
         JButton delayShotAllButton = new JButton("delay shot all");
-
         delayShotAllButton.addActionListener(e -> {
             imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
             imageFrame.setVisible(false);
             this.shot(5, true);
         });
-
         panel.add(delayShotAllButton);
 
         JButton cancelButton = new JButton("cancel");

@@ -738,6 +738,44 @@ public class ImageViewPanel extends JPanel
         this.repaint();
     }
 
+    public void rotateRight() {
+        BufferedImage original = this.getBufferedImage();
+        int w = original.getWidth();
+        int h = original.getHeight();
+        BufferedImage rotated = new BufferedImage(h, w, TYPE_INT_ARGB);
+        Graphics2D g2 = rotated.createGraphics();
+        g2.translate(h, 0);
+        g2.rotate(Math.PI / 2);
+        g2.drawImage(original, 0, 0, null);
+        g2.dispose();
+        this.baseImage = deepCopy(rotated);
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.addHistory(rotated);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
+    public void rotateLeft() {
+        BufferedImage original = this.getBufferedImage();
+        int w = original.getWidth();
+        int h = original.getHeight();
+        BufferedImage rotated = new BufferedImage(h, w, TYPE_INT_ARGB);
+        Graphics2D g2 = rotated.createGraphics();
+        g2.translate(0, w);
+        g2.rotate(-Math.PI / 2);
+        g2.drawImage(original, 0, 0, null);
+        g2.dispose();
+        this.baseImage = deepCopy(rotated);
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.addHistory(rotated);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
     public void clear() {
         BufferedImage bufferedImage = this.bufferedImageHistoryList.get(0);
         this.save(this.imageFile, bufferedImage);

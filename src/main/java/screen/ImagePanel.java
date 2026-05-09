@@ -37,6 +37,7 @@ public class ImagePanel extends JPanel {
     private final File imageFile;
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
+    private JPanel buttonPanel;
     private JScrollPane jScrollPane;
 
     public ImagePanel(String name, File imageFile, ImageTabPanel tabbedPane) {
@@ -112,14 +113,23 @@ public class ImagePanel extends JPanel {
     }
 
     private void createControlPanel() {
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
+
         this.controlPanel = new JPanel();
         this.controlPanel.setLayout(new BoxLayout(controlPanel, LINE_AXIS));
 
         this.createShapeTypeRadio();
         this.createFillTypeRadio();
         this.createColorTypeRadio();
+
+        this.buttonPanel = new JPanel();
+        this.buttonPanel.setLayout(new BoxLayout(buttonPanel, LINE_AXIS));
+
         this.createShadowButton();
         this.createBorderButton();
+        this.createRotateRightButton();
+        this.createRotateLeftButton();
         this.createSaveButton();
         this.createPasteButton();
         this.createTextButton();
@@ -132,21 +142,23 @@ public class ImagePanel extends JPanel {
         this.createClearButton();
         this.createCloseButton();
 
-        this.add(this.controlPanel, NORTH);
+        wrapper.add(this.controlPanel);
+        wrapper.add(this.buttonPanel);
+        this.add(wrapper, NORTH);
     }
 
     private void createDeleteButton() {
         JButton button = new JButton("delete");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.deleteSelectedObject());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void createUndoButton() {
         JButton button = new JButton("undo");
         button.setName(this.name);
         button.addActionListener(e -> undo());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void undo() {
@@ -157,7 +169,7 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("redo");
         button.setName(this.name);
         button.addActionListener(e -> redo());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void redo() {
@@ -208,28 +220,42 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("shadow");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.shadow());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void createBorderButton() {
         JButton button = new JButton("border");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.border());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
+    }
+
+    private void createRotateRightButton() {
+        JButton button = new JButton("rotate →");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.rotateRight());
+        this.buttonPanel.add(button);
+    }
+
+    private void createRotateLeftButton() {
+        JButton button = new JButton("rotate ←");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.rotateLeft());
+        this.buttonPanel.add(button);
     }
 
     private void createSaveButton() {
         JButton button = new JButton("save");
         button.setName(this.name);
         button.addActionListener(e -> save());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void createPasteButton() {
         JButton button = new JButton("paste");
         button.setName(this.name);
         button.addActionListener(e -> paste());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void paste() {
@@ -240,7 +266,7 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("text");
         button.setName(this.name);
         button.addActionListener(e -> text());
-        this.controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void text() {
@@ -295,14 +321,14 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("close");
         button.setName(this.name);
         button.addActionListener(e -> this.close());
-        controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void createClearButton() {
         JButton button = new JButton("clear");
         button.setName(this.name);
         button.addActionListener(e -> this.clear());
-        controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void clear() {
@@ -317,21 +343,21 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("copy");
         button.setName(this.name);
         button.addActionListener(e -> this.copy());
-        controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void createSelectCopyButton() {
         JButton button = new JButton("select copy");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.startSelectCopyMode());
-        controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void createCopyPathButton() {
         JButton button = new JButton("copy path");
         button.setName(this.name);
         button.addActionListener(e -> this.copyPath());
-        controlPanel.add(button);
+        this.buttonPanel.add(button);
     }
 
     private void copyPath() {
