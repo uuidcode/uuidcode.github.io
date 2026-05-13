@@ -251,7 +251,7 @@ body {
     <div class="stat-box"><span id="avg-score" class="stat-value">0</span><span class="stat-label">전체 평균</span></div>
     <div class="stat-box"><span id="avg-recent" class="stat-value">0</span><span class="stat-label">최근10 평균</span></div>
     <div class="stat-box"><span id="high-score" class="stat-value">0</span><span class="stat-label">최고점수</span></div>
-    <div class="stat-box"><span id="over100-count" class="stat-value">0</span><span class="stat-label">100점 이상</span></div>
+    <div class="stat-box"><span id="over100-count" class="stat-value" style="font-size:18px">0</span><span class="stat-label">100점 이상</span></div>
     <div class="stat-box"><span id="streak-count" class="stat-value">0</span><span class="stat-label">연속 100점</span></div>
   </div>
   <div id="game-container">
@@ -421,7 +421,9 @@ function renderRecentScores() {
   }
 
   document.getElementById('high-score').textContent = gd.highScores.length > 0 ? gd.highScores[0].score : 0;
-  document.getElementById('over100-count').textContent = gd.totalOver100 || 0;
+  const over100 = gd.totalOver100 || 0;
+  const over100Pct = allScores.length > 0 ? Math.round(over100 / allScores.length * 100) : 0;
+  document.getElementById('over100-count').textContent = `${over100} (${over100Pct}%)`;
   const maxStreak = gd.streaks && gd.streaks.length > 0 ? gd.streaks[0].streak : 0;
   document.getElementById('streak-count').textContent = maxStreak;
 }
