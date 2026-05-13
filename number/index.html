@@ -423,7 +423,7 @@ function renderRecentScores() {
   document.getElementById('high-score').textContent = gd.highScores.length > 0 ? gd.highScores[0].score : 0;
   const over100 = gd.totalOver100 || 0;
   const over100Pct = allScores.length > 0 ? Math.round(over100 / allScores.length * 100) : 0;
-  document.getElementById('over100-count').textContent = `${over100} (${over100Pct}%)`;
+  document.getElementById('over100-count').innerHTML = `${over100}<br><span style="font-size:13px">(${over100Pct}%)</span>`;
   const maxStreak = gd.streaks && gd.streaks.length > 0 ? gd.streaks[0].streak : 0;
   document.getElementById('streak-count').textContent = maxStreak;
 }
