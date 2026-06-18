@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
@@ -14,9 +15,9 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 public class ScreenShotFrame extends JFrame {
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
 
-    public ScreenShotFrame(GraphicsDevice graphicsDevice, ImageFrame imageFrame) {
+    public ScreenShotFrame(GraphicsDevice graphicsDevice, ImageFrame imageFrame, BufferedImage baseScreenImage) {
         super("ScreenShotFrame");
-        ScreenShotPanel contentPane = new ScreenShotPanel(graphicsDevice, imageFrame, this);
+        ScreenShotPanel contentPane = new ScreenShotPanel(graphicsDevice, imageFrame, this, baseScreenImage);
         contentPane.setBackground(new Color(0, 0, 0, 100));
         contentPane.addMouseListener(contentPane);
         contentPane.addMouseMotionListener(contentPane);
@@ -37,9 +38,9 @@ public class ScreenShotFrame extends JFrame {
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             boolean isOK = this.equals(ke.getComponent());
 
-            if (isOK && ke.getID() == KeyEvent.KEY_RELEASED && (ke.isControlDown() || ke.isMetaDown())) {
+            if (isOK && ke.getID() == KeyEvent.KEY_RELEASED) {
                 if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+                    contentPane.cancelCapture();
                 }
             }
 

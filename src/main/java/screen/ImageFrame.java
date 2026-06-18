@@ -3,10 +3,15 @@ package screen;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
+import java.awt.GraphicsConfiguration;
 import java.awt.Image;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,6 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import lombok.Data;
@@ -51,9 +58,16 @@ public class ImageFrame extends JFrame {
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
     private CaptureConfig captureConfig = new CaptureConfig();
+    private ColorHistoryRepository colorHistoryRepository = new ColorHistoryRepository();
+    private JCheckBox gridCheckbox;
     private JCheckBox imgTagCheckbox;
     private JTextField widthField;
     private JTextField heightField;
+    private JTextField redField;
+    private JTextField greenField;
+    private JTextField blueField;
+    private JTextField htmlColorField;
+    private JPanel pickedColorPreviewPanel;
 
     public ImageFrame() {
         super("ImageFrame");
@@ -88,14 +102,23 @@ public class ImageFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         this.createCaptureButton(panel);
+        this.createCaptureFullScreenButton(panel);
         this.createCaptureRepeatButton(panel);
         this.createClipboardButton(panel);
         this.createOpenButton(panel);
         this.createViewButton(panel);
+        this.createGridCheckBox(panel);
         this.createImgTagCheckBox(panel);
         this.createFixedSizeFields(panel);
 
         return panel;
+    }
+
+    private void createGridCheckBox(JPanel panel) {
+        gridCheckbox = new JCheckBox("grid");
+        gridCheckbox.setSelected(captureConfig.isGridEnabled());
+        gridCheckbox.addActionListener(e -> captureConfig.setGridEnabled(gridCheckbox.isSelected()));
+        panel.add(gridCheckbox);
     }
 
     private void createImgTagCheckBox(JPanel panel) {
@@ -129,6 +152,63 @@ public class ImageFrame extends JFrame {
             }
         });
         panel.add(heightField);
+
+        Dimension colorFieldSize = new Dimension(45, heightField.getPreferredSize().height);
+        Dimension htmlFieldSize = new Dimension(90, heightField.getPreferredSize().height);
+
+        panel.add(new JLabel(" R:"));
+        redField = new JTextField(3);
+        redField.setPreferredSize(colorFieldSize);
+        redField.setMaximumSize(colorFieldSize);
+        panel.add(redField);
+
+        panel.add(new JLabel(" G:"));
+        greenField = new JTextField(3);
+        greenField.setPreferredSize(colorFieldSize);
+        greenField.setMaximumSize(colorFieldSize);
+        panel.add(greenField);
+
+        panel.add(new JLabel(" B:"));
+        blueField = new JTextField(3);
+        blueField.setPreferredSize(colorFieldSize);
+        blueField.setMaximumSize(colorFieldSize);
+        panel.add(blueField);
+
+        panel.add(new JLabel(" HTML:"));
+        htmlColorField = new JTextField(7);
+        htmlColorField.setPreferredSize(htmlFieldSize);
+        htmlColorField.setMaximumSize(htmlFieldSize);
+        panel.add(htmlColorField);
+
+        pickedColorPreviewPanel = new JPanel();
+        Dimension previewSize = new Dimension(24, heightField.getPreferredSize().height);
+        pickedColorPreviewPanel.setPreferredSize(previewSize);
+        pickedColorPreviewPanel.setMaximumSize(previewSize);
+        pickedColorPreviewPanel.setBackground(Color.WHITE);
+        pickedColorPreviewPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        panel.add(pickedColorPreviewPanel);
+
+        JButton historyButton = new JButton("history");
+        historyButton.addActionListener(e -> this.openColorHistory());
+        panel.add(historyButton);
+    }
+
+    public void setPickedColor(Color color) {
+        this.redField.setText(String.valueOf(color.getRed()));
+        this.greenField.setText(String.valueOf(color.getGreen()));
+        this.blueField.setText(String.valueOf(color.getBlue()));
+        this.htmlColorField.setText(String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue()));
+        this.pickedColorPreviewPanel.setBackground(color);
+        this.pickedColorPreviewPanel.repaint();
+    }
+
+    public void savePickedColor(Color color, Point point) {
+        this.colorHistoryRepository.save(color, point);
+    }
+
+    private void openColorHistory() {
+        ColorHistoryDialog dialog = new ColorHistoryDialog(this, this.colorHistoryRepository);
+        dialog.setVisible(true);
     }
 
     private void updateFixedSize() {
@@ -153,6 +233,12 @@ public class ImageFrame extends JFrame {
     private void createCaptureRepeatButton(JPanel panel) {
         JButton button = new JButton("capture repeat");
         button.addActionListener(e -> this.captureRepeat());
+        panel.add(button);
+    }
+
+    private void createCaptureFullScreenButton(JPanel panel) {
+        JButton button = new JButton("capture full screen");
+        button.addActionListener(e -> this.captureFullScreen());
         panel.add(button);
     }
 
@@ -189,11 +275,21 @@ public class ImageFrame extends JFrame {
         updateFixedSize();
         
         this.screenShotFrameList = stream(screenDeviceArray)
-            .map(device -> new ScreenShotFrame(device, this))
+            .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))
             .peek(f -> f.setVisible(true))
             .collect(toList());
 
         this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
+    }
+
+    private BufferedImage captureBaseScreenImage(GraphicsDevice device) {
+        try {
+            Rectangle displayBounds = device.getDefaultConfiguration().getBounds();
+            Robot robot = new Robot(device);
+            return robot.createScreenCapture(displayBounds);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
     }
 
     private void captureRepeat() {
@@ -213,6 +309,61 @@ public class ImageFrame extends JFrame {
         }
 
         this.setVisible(true);
+    }
+
+    private void captureFullScreen() {
+        updateFixedSize();
+
+        int previousState = this.getExtendedState();
+        Thread iconifyThread = this.iconifyInBackground(previousState | JFrame.ICONIFIED);
+
+        new Thread(() -> {
+            boolean originalImgTagEnabled = captureConfig.isImgTagEnabled();
+
+            try {
+                iconifyThread.join();
+                Thread.sleep(300);
+
+                GraphicsConfiguration graphicsConfiguration = this.getGraphicsConfiguration();
+                Rectangle bounds;
+
+                if (graphicsConfiguration != null) {
+                    bounds = new Rectangle(graphicsConfiguration.getBounds());
+                } else {
+                    GraphicsDevice defaultDevice = getLocalGraphicsEnvironment().getDefaultScreenDevice();
+                    bounds = new Rectangle(defaultDevice.getDefaultConfiguration().getBounds());
+                }
+
+                PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+                Point mousePoint = pointerInfo != null
+                    ? pointerInfo.getLocation()
+                    : new Point(bounds.x, bounds.y);
+
+                captureConfig.setLastRectangle(new Rectangle(bounds));
+                captureConfig.setImgTagEnabled(false);
+
+                Robot robot = new Robot();
+                ScreenShotPanel.capture(robot, bounds,
+                    mousePoint.x, mousePoint.y,
+                    this.tabbedPane, captureConfig);
+            } catch (Throwable t) {
+                t.printStackTrace();
+            } finally {
+                captureConfig.setImgTagEnabled(originalImgTagEnabled);
+
+                SwingUtilities.invokeLater(() -> {
+                    this.setVisible(true);
+                    this.setExtendedState(previousState & ~JFrame.ICONIFIED);
+                    this.toFront();
+                });
+            }
+        }).start();
+    }
+
+    private Thread iconifyInBackground(int state) {
+        Thread thread = new Thread(() -> this.setExtendedState(state), "image-frame-iconify");
+        thread.start();
+        return thread;
     }
 
     private void clipboard() {
@@ -270,6 +421,5 @@ public class ImageFrame extends JFrame {
     public static void main(String[] args) {
         final ImageFrame imageFrame = new ImageFrame();
         imageFrame.setVisible(true);
-        imageFrame.setExtendedState(JFrame.ICONIFIED);
     }
 }

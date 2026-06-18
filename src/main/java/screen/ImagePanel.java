@@ -140,6 +140,7 @@ public class ImagePanel extends JPanel {
         this.createUndoButton();
         this.createRedoButton();
         this.createClearButton();
+        this.createDeleteImageButton();
         this.createCloseButton();
 
         wrapper.add(this.controlPanel);
@@ -148,7 +149,7 @@ public class ImagePanel extends JPanel {
     }
 
     private void createDeleteButton() {
-        JButton button = new JButton("delete");
+        JButton button = new JButton("delete selected object");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.deleteSelectedObject());
         this.buttonPanel.add(button);
@@ -324,6 +325,13 @@ public class ImagePanel extends JPanel {
         this.buttonPanel.add(button);
     }
 
+    private void createDeleteImageButton() {
+        JButton button = new JButton("delete image");
+        button.setName(this.name);
+        button.addActionListener(e -> this.deleteImage());
+        this.buttonPanel.add(button);
+    }
+
     private void createClearButton() {
         JButton button = new JButton("clear");
         button.setName(this.name);
@@ -337,6 +345,15 @@ public class ImagePanel extends JPanel {
 
     private void close() {
         this.tabbedPane.removeTab(this.name);
+    }
+
+    private void deleteImage() {
+        if (this.imageFile.exists() && !this.imageFile.delete()) {
+            JOptionPane.showMessageDialog(this, "이미지 파일 삭제에 실패했습니다.");
+            return;
+        }
+
+        this.close();
     }
 
     private void createCopyButton() {
