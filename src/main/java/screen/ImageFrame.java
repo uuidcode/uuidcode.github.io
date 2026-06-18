@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.JTextComponent;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -87,6 +88,10 @@ public class ImageFrame extends JFrame {
         keyMap.put(KeyEvent.VK_O, this::open);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
+                return false;
+            }
+
             if (ke.getID() == KeyEvent.KEY_RELEASED
                 && (ke.isControlDown() || ke.isMetaDown())) {
                 keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();

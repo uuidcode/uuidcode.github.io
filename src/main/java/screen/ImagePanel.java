@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.text.JTextComponent;
 
 import lombok.SneakyThrows;
 
@@ -56,6 +57,10 @@ public class ImagePanel extends JPanel {
         keyMap.put(KeyEvent.VK_Y, this::redo);
         keyMap.put(KeyEvent.VK_E, this::clear);
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
+                return false;
+            }
+
             Component selectedComponent = this.tabbedPane
                 .getSelectedComponent();
 
