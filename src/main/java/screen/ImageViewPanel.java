@@ -1,8 +1,10 @@
 package screen;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -15,11 +17,14 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -62,6 +67,7 @@ public class ImageViewPanel extends JPanel
     private Point dragStart;
     private boolean dragging;
     private BufferedImage baseImage;
+    private List<MeasurementOverlay> measurementOverlays = new ArrayList<>();
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
@@ -223,6 +229,10 @@ public class ImageViewPanel extends JPanel
             g2.setStroke(new BasicStroke(2));
             g2.drawRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
         }
+
+        if (!this.measurementOverlays.isEmpty()) {
+            this.drawMeasurementOverlays((Graphics2D) g);
+        }
     }
 
     private DrawObject findObjectAt(Point p) {
@@ -302,6 +312,7 @@ public class ImageViewPanel extends JPanel
             this.dragging = false;
             this.dragStart = null;
             this.setCursor(Cursor.getDefaultCursor());
+            this.clearMeasurements();
             updateHistoryFromObjects();
             this.save();
             this.repaint();
@@ -320,6 +331,7 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.stratPoint != null && this.endPoint != null) {
+            this.clearMeasurements();
             if (this.shapeType == CROP) {
                 bufferedImage = deepCopy(bufferedImage);
                 bufferedImage = this.crop(bufferedImage);
@@ -358,6 +370,7 @@ public class ImageViewPanel extends JPanel
     }
 
     private void updateHistoryFromObjects() {
+        this.clearMeasurements();
         BufferedImage composite = buildComposite();
         this.addHistory(composite);
         this.init();
@@ -495,6 +508,7 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
+        this.clearMeasurements();
         if (!objectList.isEmpty()) {
             DrawObject last = objectList.remove(objectList.size() - 1);
             if (selectedObject == last) {
@@ -513,6 +527,7 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
+        this.clearMeasurements();
         this.imageHistoryIndex++;
         this.save();
         this.init();
@@ -559,6 +574,7 @@ public class ImageViewPanel extends JPanel
     }
 
     private void confirmPaste(Point clickPoint) {
+        this.clearMeasurements();
         BufferedImage clipBuffered = this.pastePreviewImage;
         Point pos = this.pastePreviewPosition != null ? this.pastePreviewPosition : clickPoint;
         this.pastePreviewImage = null;
@@ -605,6 +621,7 @@ public class ImageViewPanel extends JPanel
     }
 
     private void confirmText(Point point) {
+        this.clearMeasurements();
         DrawObject obj = new DrawObject()
             .setType(DrawObject.Type.TEXT)
             .setStartPoint(new Point(point))
@@ -684,6 +701,7 @@ public class ImageViewPanel extends JPanel
     }
 
     public void border() {
+        this.clearMeasurements();
         BufferedImage bufferedImage = deepCopy(this.getBufferedImage());
         Graphics2D g2 = bufferedImage.createGraphics();
         g2.setColor(BLACK);
@@ -699,6 +717,7 @@ public class ImageViewPanel extends JPanel
     }
 
     public void shadow() {
+        this.clearMeasurements();
         BufferedImage original = this.getBufferedImage();
         int shadowSize = 20;
         int shadowOffset = 5;
@@ -739,6 +758,7 @@ public class ImageViewPanel extends JPanel
     }
 
     public void rotateRight() {
+        this.clearMeasurements();
         BufferedImage original = this.getBufferedImage();
         int w = original.getWidth();
         int h = original.getHeight();
@@ -758,6 +778,7 @@ public class ImageViewPanel extends JPanel
     }
 
     public void rotateLeft() {
+        this.clearMeasurements();
         BufferedImage original = this.getBufferedImage();
         int w = original.getWidth();
         int h = original.getHeight();
@@ -777,6 +798,7 @@ public class ImageViewPanel extends JPanel
     }
 
     public void clear() {
+        this.clearMeasurements();
         BufferedImage bufferedImage = this.bufferedImageHistoryList.get(0);
         this.save(this.imageFile, bufferedImage);
         this.bufferedImageHistoryList.clear();
@@ -793,6 +815,7 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
+        this.clearMeasurements();
         objectList.remove(selectedObject);
         this.selectedObject = null;
 
@@ -806,5 +829,249 @@ public class ImageViewPanel extends JPanel
         this.save();
         this.init();
         this.repaint();
+    }
+
+    public void measureRectangles() {
+        BufferedImage source = this.objectList.isEmpty() ? deepCopy(this.getBufferedImage()) : buildComposite();
+        int width = source.getWidth();
+        int height = source.getHeight();
+        boolean[] visited = new boolean[width * height];
+        List<MeasurementOverlay> overlays = new ArrayList<>();
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int index = y * width + x;
+
+                if (visited[index]) {
+                    continue;
+                }
+
+                int rgb = source.getRGB(x, y);
+                if (isIgnoredPixel(rgb)) {
+                    visited[index] = true;
+                    continue;
+                }
+
+                MeasurementOverlay overlay = this.findRectangleRegion(source, visited, x, y);
+                if (overlay != null) {
+                    overlays.add(overlay);
+                }
+            }
+        }
+
+        overlays.sort(Comparator.comparingInt((MeasurementOverlay overlay) -> overlay.bounds.width * overlay.bounds.height)
+            .reversed());
+
+        if (overlays.size() > 30) {
+            overlays = new ArrayList<>(overlays.subList(0, 30));
+        }
+
+        this.measurementOverlays = overlays;
+        this.saveMeasuredColors(overlays);
+        this.selectedObject = null;
+        this.repaint();
+    }
+
+    private void saveMeasuredColors(List<MeasurementOverlay> overlays) {
+        java.awt.Window window = SwingUtilities.getWindowAncestor(this);
+
+        if (!(window instanceof ImageFrame)) {
+            return;
+        }
+
+        ImageFrame imageFrame = (ImageFrame) window;
+
+        for (MeasurementOverlay overlay : overlays) {
+            if (overlay.label == null || overlay.color == null) {
+                continue;
+            }
+
+            Point centerPoint = new Point(
+                overlay.bounds.x + overlay.bounds.width / 2,
+                overlay.bounds.y + overlay.bounds.height / 2
+            );
+            imageFrame.savePickedColor(overlay.color, centerPoint);
+        }
+    }
+
+    private MeasurementOverlay findRectangleRegion(BufferedImage source, boolean[] visited, int startX, int startY) {
+        int width = source.getWidth();
+        int height = source.getHeight();
+        int seed = source.getRGB(startX, startY);
+        ArrayDeque<Point> queue = new ArrayDeque<>();
+        queue.add(new Point(startX, startY));
+        visited[startY * width + startX] = true;
+
+        int minX = startX;
+        int minY = startY;
+        int maxX = startX;
+        int maxY = startY;
+        int count = 0;
+
+        while (!queue.isEmpty()) {
+            Point point = queue.removeFirst();
+            int x = point.x;
+            int y = point.y;
+            count++;
+
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+
+            this.enqueueIfMatched(source, visited, queue, x - 1, y, seed);
+            this.enqueueIfMatched(source, visited, queue, x + 1, y, seed);
+            this.enqueueIfMatched(source, visited, queue, x, y - 1, seed);
+            this.enqueueIfMatched(source, visited, queue, x, y + 1, seed);
+        }
+
+        int regionWidth = maxX - minX + 1;
+        int regionHeight = maxY - minY + 1;
+        int area = regionWidth * regionHeight;
+
+        if (regionWidth < 20 || regionHeight < 20 || area < 900) {
+            return null;
+        }
+
+        if (area > width * height * 0.85) {
+            return null;
+        }
+
+        double density = (double) count / area;
+        boolean filledRectangle = density >= 0.72;
+        boolean outlineRectangle = density >= 0.03 && density <= 0.30
+            && this.computeBorderCoverage(source, minX, minY, maxX, maxY, seed) >= 0.72;
+
+        if (!filledRectangle && !outlineRectangle) {
+            return null;
+        }
+
+        Rectangle bounds = new Rectangle(minX, minY, regionWidth, regionHeight);
+        Color measuredColor = new Color(seed, true);
+        String label = regionWidth > 250
+            ? regionWidth + " x " + regionHeight + "  " + String.format("#%02X%02X%02X",
+            measuredColor.getRed(), measuredColor.getGreen(), measuredColor.getBlue())
+            : null;
+        return new MeasurementOverlay(bounds, label, measuredColor);
+    }
+
+    private void enqueueIfMatched(BufferedImage source,
+                                  boolean[] visited,
+                                  ArrayDeque<Point> queue,
+                                  int x,
+                                  int y,
+                                  int seed) {
+        int width = source.getWidth();
+        int height = source.getHeight();
+
+        if (x < 0 || y < 0 || x >= width || y >= height) {
+            return;
+        }
+
+        int index = y * width + x;
+        if (visited[index]) {
+            return;
+        }
+
+        int rgb = source.getRGB(x, y);
+        if (isIgnoredPixel(rgb) || !isSimilarColor(seed, rgb)) {
+            return;
+        }
+
+        visited[index] = true;
+        queue.addLast(new Point(x, y));
+    }
+
+    private double computeBorderCoverage(BufferedImage source, int minX, int minY, int maxX, int maxY, int seed) {
+        int matched = 0;
+        int total = 0;
+
+        for (int x = minX; x <= maxX; x++) {
+            total += 2;
+            if (isSimilarColor(seed, source.getRGB(x, minY))) {
+                matched++;
+            }
+            if (isSimilarColor(seed, source.getRGB(x, maxY))) {
+                matched++;
+            }
+        }
+
+        for (int y = minY + 1; y < maxY; y++) {
+            total += 2;
+            if (isSimilarColor(seed, source.getRGB(minX, y))) {
+                matched++;
+            }
+            if (isSimilarColor(seed, source.getRGB(maxX, y))) {
+                matched++;
+            }
+        }
+
+        return total == 0 ? 0.0 : (double) matched / total;
+    }
+
+    private boolean isIgnoredPixel(int rgb) {
+        int alpha = (rgb >>> 24) & 0xFF;
+        return alpha < 10;
+    }
+
+    private boolean isSimilarColor(int rgb1, int rgb2) {
+        int r1 = (rgb1 >> 16) & 0xFF;
+        int g1 = (rgb1 >> 8) & 0xFF;
+        int b1 = rgb1 & 0xFF;
+        int r2 = (rgb2 >> 16) & 0xFF;
+        int g2 = (rgb2 >> 8) & 0xFF;
+        int b2 = rgb2 & 0xFF;
+
+        int dr = r1 - r2;
+        int dg = g1 - g2;
+        int db = b1 - b2;
+        return dr * dr + dg * dg + db * db <= 24 * 24;
+    }
+
+    private void drawMeasurementOverlays(Graphics2D g2) {
+        for (MeasurementOverlay overlay : this.measurementOverlays) {
+            Rectangle bounds = overlay.bounds;
+
+            g2.setColor(new java.awt.Color(255, 0, 0, 180));
+            g2.setStroke(new BasicStroke(2));
+            g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+
+            if (overlay.label == null) {
+                continue;
+            }
+
+            FontMetrics metrics = g2.getFontMetrics();
+            int textWidth = metrics.stringWidth(overlay.label);
+            int textHeight = metrics.getHeight();
+            int textX = Math.max(0, Math.min(bounds.x + (bounds.width - textWidth) / 2, this.getWidth() - textWidth - 8));
+            int textY = Math.max(textHeight, bounds.y - 6);
+
+            g2.setColor(new java.awt.Color(255, 255, 255, 220));
+            int swatchSize = textHeight - 4;
+            int boxWidth = textWidth + swatchSize + 14;
+            g2.fillRoundRect(textX - 4, textY - metrics.getAscent() - 2, boxWidth, textHeight, 8, 8);
+            g2.setColor(overlay.color);
+            g2.fillRect(textX, textY - metrics.getAscent(), swatchSize, swatchSize);
+            g2.setColor(java.awt.Color.DARK_GRAY);
+            g2.drawRect(textX, textY - metrics.getAscent(), swatchSize, swatchSize);
+            g2.setColor(java.awt.Color.RED);
+            g2.drawString(overlay.label, textX + swatchSize + 6, textY);
+        }
+    }
+
+    private void clearMeasurements() {
+        this.measurementOverlays.clear();
+    }
+
+    private static class MeasurementOverlay {
+        private final Rectangle bounds;
+        private final String label;
+        private final Color color;
+
+        private MeasurementOverlay(Rectangle bounds, String label, Color color) {
+            this.bounds = bounds;
+            this.label = label;
+            this.color = color;
+        }
     }
 }

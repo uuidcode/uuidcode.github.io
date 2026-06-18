@@ -126,6 +126,7 @@ public class ImagePanel extends JPanel {
         this.buttonPanel = new JPanel();
         this.buttonPanel.setLayout(new BoxLayout(buttonPanel, LINE_AXIS));
 
+        this.createMeasureButton();
         this.createShadowButton();
         this.createBorderButton();
         this.createRotateRightButton();
@@ -221,6 +222,13 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("shadow");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.shadow());
+        this.buttonPanel.add(button);
+    }
+
+    private void createMeasureButton() {
+        JButton button = new JButton("measure");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.measureRectangles());
         this.buttonPanel.add(button);
     }
 
