@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class CaptureConfig {
-    private boolean gridEnabled = false;
+    private CaptureGridMode captureGridMode = CaptureGridMode.NONE_NONE;
     private boolean imgTagEnabled = false;
     private Integer fixedWidth;
     private Integer fixedHeight;

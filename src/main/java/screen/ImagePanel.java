@@ -285,7 +285,7 @@ public class ImagePanel extends JPanel {
 
     private void text() {
         java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(this);
-        String input = JOptionPane.showInputDialog(window, "텍스트를 입력하세요:");
+        String input = JOptionPane.showInputDialog(window, "Enter text:");
         if (input != null && !input.isEmpty()) {
             this.imageViewPanel.startTextMode(input);
         }
@@ -293,7 +293,7 @@ public class ImagePanel extends JPanel {
 
     @SneakyThrows
     private void save() {
-        FileDialog fileDialog = new FileDialog((Frame) null, "파일 선택", FileDialog.SAVE);
+        FileDialog fileDialog = new FileDialog((Frame) null, "Choose file", FileDialog.SAVE);
         fileDialog.setVisible(true);
 
         String imageDirPath = getImageSavePath();
@@ -312,7 +312,7 @@ public class ImagePanel extends JPanel {
             }
 
             if (selectedFile.exists()) {
-                JOptionPane.showMessageDialog(null, "이미 존재하는 파일입니다.");
+                JOptionPane.showMessageDialog(null, "File already exists.");
                 return;
             }
 
@@ -362,7 +362,7 @@ public class ImagePanel extends JPanel {
 
     private void deleteImage() {
         if (this.imageFile.exists() && !this.imageFile.delete()) {
-            JOptionPane.showMessageDialog(this, "이미지 파일 삭제에 실패했습니다.");
+            JOptionPane.showMessageDialog(this, "Failed to delete image file.");
             return;
         }
 

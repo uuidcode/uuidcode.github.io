@@ -29,6 +29,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -60,7 +61,7 @@ public class ImageFrame extends JFrame {
     private List<ScreenShotFrame> screenShotFrameList;
     private CaptureConfig captureConfig = new CaptureConfig();
     private ColorHistoryRepository colorHistoryRepository = new ColorHistoryRepository();
-    private JCheckBox gridCheckbox;
+    private JComboBox<CaptureGridMode> captureGridModeComboBox;
     private JCheckBox imgTagCheckbox;
     private JTextField widthField;
     private JTextField heightField;
@@ -112,18 +113,20 @@ public class ImageFrame extends JFrame {
         this.createClipboardButton(panel);
         this.createOpenButton(panel);
         this.createViewButton(panel);
-        this.createGridCheckBox(panel);
+        this.createCaptureGridModeComboBox(panel);
         this.createImgTagCheckBox(panel);
         this.createFixedSizeFields(panel);
 
         return panel;
     }
 
-    private void createGridCheckBox(JPanel panel) {
-        gridCheckbox = new JCheckBox("grid");
-        gridCheckbox.setSelected(captureConfig.isGridEnabled());
-        gridCheckbox.addActionListener(e -> captureConfig.setGridEnabled(gridCheckbox.isSelected()));
-        panel.add(gridCheckbox);
+    private void createCaptureGridModeComboBox(JPanel panel) {
+        panel.add(new JLabel(" capture mode (preview / capture):"));
+        captureGridModeComboBox = new JComboBox<>(CaptureGridMode.values());
+        captureGridModeComboBox.setSelectedItem(captureConfig.getCaptureGridMode());
+        captureGridModeComboBox.addActionListener(e ->
+            captureConfig.setCaptureGridMode((CaptureGridMode) captureGridModeComboBox.getSelectedItem()));
+        panel.add(captureGridModeComboBox);
     }
 
     private void createImgTagCheckBox(JPanel panel) {

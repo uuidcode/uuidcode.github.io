@@ -39,8 +39,6 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
-    private static final int GRID_SIZE = 100;
-    private static final int GRID_LABEL_INTERVAL = 100;
     private static final Color GRID_COLOR = new Color(255, 255, 255, 28);
     private static final Color GRID_LABEL_COLOR = new Color(255, 255, 255, 110);
     private static final Color GUIDE_TEXT_BACKGROUND = new Color(0, 0, 0, 140);
@@ -250,6 +248,13 @@ public class ScreenShotPanel extends JPanel
         }
 
         BufferedImage image = robot.createScreenCapture(rectangle);
+        Integer captureGridSize = config.getCaptureGridMode().getCaptureGridSize();
+
+        if (captureGridSize != null) {
+            Graphics2D g2 = image.createGraphics();
+            drawGrid(g2, image.getWidth(), image.getHeight(), captureGridSize, rectangle.x, rectangle.y);
+            g2.dispose();
+        }
 
         // 캡처 후 마우스를 원래 위치로 복원
         robot.mouseMove(x, y);
@@ -383,8 +388,10 @@ public class ScreenShotPanel extends JPanel
     }
 
     private void drawOverlayContents(Graphics2D g2, boolean includeColorPreview) {
-        if (guideOverlayVisible && captureConfig.isGridEnabled()) {
-            this.drawGrid(g2);
+        Integer previewGridSize = captureConfig.getCaptureGridMode().getPreviewGridSize();
+        if (guideOverlayVisible && previewGridSize != null) {
+            Rectangle displayBounds = graphicsDevice.getDefaultConfiguration().getBounds();
+            drawGrid(g2, this.getWidth(), this.getHeight(), previewGridSize, displayBounds.x, displayBounds.y);
         }
 
         Integer fixedWidth = captureConfig.getFixedWidth();
@@ -407,31 +414,40 @@ public class ScreenShotPanel extends JPanel
         }
     }
 
-    private void drawGrid(Graphics2D g2) {
+    private static void drawGrid(Graphics2D g2,
+                                 int width,
+                                 int height,
+                                 int gridSize,
+                                 int offsetX,
+                                 int offsetY) {
         g2.setColor(GRID_COLOR);
 
-        for (int x = 0; x < this.getWidth(); x += GRID_SIZE) {
-            g2.drawLine(x, 0, x, this.getHeight());
+        for (int x = 0; x < width; x += gridSize) {
+            g2.drawLine(x, 0, x, height);
         }
 
-        for (int y = 0; y < this.getHeight(); y += GRID_SIZE) {
-            g2.drawLine(0, y, this.getWidth(), y);
+        for (int y = 0; y < height; y += gridSize) {
+            g2.drawLine(0, y, width, y);
         }
 
-        this.drawGridLabels(g2);
+        drawGridLabels(g2, width, height, gridSize, offsetX, offsetY);
     }
 
-    private void drawGridLabels(Graphics2D g2) {
-        Rectangle displayBounds = graphicsDevice.getDefaultConfiguration().getBounds();
+    private static void drawGridLabels(Graphics2D g2,
+                                       int width,
+                                       int height,
+                                       int gridSize,
+                                       int offsetX,
+                                       int offsetY) {
         Font originalFont = g2.getFont();
         Font gridFont = originalFont.deriveFont(10f);
         g2.setFont(gridFont);
         g2.setColor(GRID_LABEL_COLOR);
 
-        for (int x = 0; x < this.getWidth(); x += GRID_LABEL_INTERVAL) {
-            for (int y = 0; y < this.getHeight(); y += GRID_LABEL_INTERVAL) {
-                String text = "(" + (x + displayBounds.x) + ", " + (y + displayBounds.y) + ")";
-                this.drawPlainOverlayText(g2, text, x + 3, y + 12);
+        for (int x = 0; x < width; x += gridSize) {
+            for (int y = 0; y < height; y += gridSize) {
+                String text = "(" + (x + offsetX) + ", " + (y + offsetY) + ")";
+                drawPlainOverlayText(g2, width, height, text, x + 3, y + 12);
             }
         }
 
@@ -492,10 +508,10 @@ public class ScreenShotPanel extends JPanel
         g2.drawString(text, x + GUIDE_TEXT_PADDING, y + GUIDE_TEXT_PADDING + metrics.getAscent());
     }
 
-    private void drawPlainOverlayText(Graphics2D g2, String text, int x, int baselineY) {
+    private static void drawPlainOverlayText(Graphics2D g2, int width, int height, String text, int x, int baselineY) {
         FontMetrics metrics = g2.getFontMetrics();
-        int clampedX = Math.max(0, Math.min(x, this.getWidth() - metrics.stringWidth(text)));
-        int clampedBaselineY = Math.max(metrics.getAscent(), Math.min(baselineY, this.getHeight() - metrics.getDescent()));
+        int clampedX = Math.max(0, Math.min(x, width - metrics.stringWidth(text)));
+        int clampedBaselineY = Math.max(metrics.getAscent(), Math.min(baselineY, height - metrics.getDescent()));
         g2.drawString(text, clampedX, clampedBaselineY);
     }
 

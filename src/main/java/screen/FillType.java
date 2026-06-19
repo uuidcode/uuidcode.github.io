@@ -16,7 +16,7 @@ public enum FillType {
     private String title;
 
     static {
-        OPAQUE.setTitle("불투명");
-        TRANSPARENT.setTitle("투명");
+        OPAQUE.setTitle("Opaque");
+        TRANSPARENT.setTitle("Transparent");
     }
 }

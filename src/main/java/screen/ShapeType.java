@@ -59,12 +59,12 @@ public enum ShapeType implements Drawable {
     private String title;
 
     static {
-        FILL_ARROW.setTitle("화살표");
-        DRAW_ARROW.setTitle("외곽 화살표");
-        FILL_RECTANGLE.setTitle("사각형");
-        DRAW_RECTANGLE.setTitle("외곽 사각형");
-        BLUR.setTitle("흐리게");
-        BLUR_CLIPPING.setTitle("선택영역외 흐리게");
-        CROP.setTitle("자르기");
+        FILL_ARROW.setTitle("Filled Arrow");
+        DRAW_ARROW.setTitle("Outline Arrow");
+        FILL_RECTANGLE.setTitle("Filled Rectangle");
+        DRAW_RECTANGLE.setTitle("Outline Rectangle");
+        BLUR.setTitle("Blur");
+        BLUR_CLIPPING.setTitle("Blur Outside Selection");
+        CROP.setTitle("Crop");
     }
 }

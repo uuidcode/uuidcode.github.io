@@ -22,9 +22,9 @@ public enum ColorType {
 
     static {
         BLUE.setColor(new Color(124, 166, 208, 255))
-            .setTitle("파란색");
+            .setTitle("Blue");
         GREEN.setColor(new Color(102, 255, 102, 255))
-            .setTitle("녹색");
+            .setTitle("Green");
     }
 
 }
