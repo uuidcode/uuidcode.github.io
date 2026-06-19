@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.MouseEvent;
@@ -24,6 +25,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import lombok.Data;
@@ -43,7 +47,7 @@ import static screen.Util.getRectangle2D;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class ImageViewPanel extends JPanel
-    implements MouseListener, MouseMotionListener {
+    implements MouseListener, MouseMotionListener, Scrollable {
 
     private ImagePanel imagePanel;
     private final File imageFile;
@@ -68,6 +72,12 @@ public class ImageViewPanel extends JPanel
     private boolean dragging;
     private BufferedImage baseImage;
     private List<MeasurementOverlay> measurementOverlays = new ArrayList<>();
+    private Rectangle cropBounds;
+    private CropHandle activeCropHandle = CropHandle.NONE;
+    private Rectangle applyCropButtonBounds;
+
+    private static final int CROP_HANDLE_SIZE = 12;
+    private static final int CROP_MIN_SIZE = 20;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
@@ -80,7 +90,211 @@ public class ImageViewPanel extends JPanel
     private void init() {
         BufferedImage bufferedImage = this.getBufferedImage();
         this.setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
+        if (this.isCropMode()) {
+            this.initializeCropBounds();
+        }
         this.imagePanel.init();
+    }
+
+    public void setShapeType(ShapeType shapeType) {
+        this.shapeType = shapeType;
+        this.resetPoint();
+        if (shapeType == CROP) {
+            this.initializeCropBounds();
+        } else {
+            this.clearCropState();
+        }
+        this.repaint();
+    }
+
+    private Point getImageOffset(Dimension imageSize) {
+        int x = Math.max(0, (this.getWidth() - imageSize.width) / 2);
+        int y = Math.max(0, (this.getHeight() - imageSize.height) / 2);
+        return new Point(x, y);
+    }
+
+    private Point toImagePoint(Point point) {
+        Dimension imageSize = this.getCurrentImageSize();
+        Point offset = this.getImageOffset(imageSize);
+        return new Point(point.x - offset.x, point.y - offset.y);
+    }
+
+    private Dimension getCurrentImageSize() {
+        BufferedImage bufferedImage = this.getBufferedImage();
+
+        if (bufferedImage == null) {
+            return new Dimension(0, 0);
+        }
+
+        return new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight());
+    }
+
+    private Point toClampedImagePoint(Point point) {
+        BufferedImage bufferedImage = this.getBufferedImage();
+
+        if (bufferedImage == null) {
+            return point;
+        }
+
+        Point imagePoint = this.toImagePoint(point);
+        int maxX = Math.max(0, bufferedImage.getWidth() - 1);
+        int maxY = Math.max(0, bufferedImage.getHeight() - 1);
+        int x = Math.max(0, Math.min(imagePoint.x, maxX));
+        int y = Math.max(0, Math.min(imagePoint.y, maxY));
+        return new Point(x, y);
+    }
+
+    private boolean isInsideImage(Point point, BufferedImage bufferedImage) {
+        return point.x >= 0 && point.y >= 0
+            && point.x < bufferedImage.getWidth()
+            && point.y < bufferedImage.getHeight();
+    }
+
+    private boolean isCropMode() {
+        return this.shapeType == CROP;
+    }
+
+    private BufferedImage getCropSourceImage() {
+        return this.objectList.isEmpty() ? this.getBufferedImage() : buildComposite();
+    }
+
+    private void initializeCropBounds() {
+        BufferedImage bufferedImage = this.getCropSourceImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        this.cropBounds = new Rectangle(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
+        this.activeCropHandle = CropHandle.NONE;
+    }
+
+    private void clearCropState() {
+        this.cropBounds = null;
+        this.activeCropHandle = CropHandle.NONE;
+        this.applyCropButtonBounds = null;
+    }
+
+    private Point toCropEdgePoint(Point point) {
+        BufferedImage bufferedImage = this.getCropSourceImage();
+
+        if (bufferedImage == null) {
+            return point;
+        }
+
+        Point imagePoint = this.toImagePoint(point);
+        int x = Math.max(0, Math.min(imagePoint.x, bufferedImage.getWidth()));
+        int y = Math.max(0, Math.min(imagePoint.y, bufferedImage.getHeight()));
+        return new Point(x, y);
+    }
+
+    private Rectangle getCropHandleBounds(CropHandle handle, Point imageOffset) {
+        if (this.cropBounds == null) {
+            return new Rectangle();
+        }
+
+        int x = 0;
+        int y = 0;
+
+        switch (handle) {
+            case TOP:
+                x = imageOffset.x + this.cropBounds.x + this.cropBounds.width / 2 - CROP_HANDLE_SIZE / 2;
+                y = imageOffset.y + this.cropBounds.y - CROP_HANDLE_SIZE / 2;
+                break;
+            case RIGHT:
+                x = imageOffset.x + this.cropBounds.x + this.cropBounds.width - CROP_HANDLE_SIZE / 2;
+                y = imageOffset.y + this.cropBounds.y + this.cropBounds.height / 2 - CROP_HANDLE_SIZE / 2;
+                break;
+            case BOTTOM:
+                x = imageOffset.x + this.cropBounds.x + this.cropBounds.width / 2 - CROP_HANDLE_SIZE / 2;
+                y = imageOffset.y + this.cropBounds.y + this.cropBounds.height - CROP_HANDLE_SIZE / 2;
+                break;
+            case LEFT:
+                x = imageOffset.x + this.cropBounds.x - CROP_HANDLE_SIZE / 2;
+                y = imageOffset.y + this.cropBounds.y + this.cropBounds.height / 2 - CROP_HANDLE_SIZE / 2;
+                break;
+            default:
+                break;
+        }
+
+        return new Rectangle(x, y, CROP_HANDLE_SIZE, CROP_HANDLE_SIZE);
+    }
+
+    private CropHandle findCropHandle(Point point) {
+        if (!this.isCropMode() || this.cropBounds == null) {
+            return CropHandle.NONE;
+        }
+
+        Point imageOffset = this.getImageOffset(this.getCurrentImageSize());
+
+        for (CropHandle handle : CropHandle.values()) {
+            if (handle == CropHandle.NONE) {
+                continue;
+            }
+
+            if (this.getCropHandleBounds(handle, imageOffset).contains(point)) {
+                return handle;
+            }
+        }
+
+        return CropHandle.NONE;
+    }
+
+    private void updateCropBounds(Point point) {
+        if (this.cropBounds == null || this.activeCropHandle == CropHandle.NONE) {
+            return;
+        }
+
+        BufferedImage bufferedImage = this.getCropSourceImage();
+
+        if (bufferedImage == null) {
+            return;
+        }
+
+        Point cropPoint = this.toCropEdgePoint(point);
+        Rectangle updated = new Rectangle(this.cropBounds);
+
+        switch (this.activeCropHandle) {
+            case TOP:
+                int newTop = Math.max(0, Math.min(cropPoint.y, this.cropBounds.y + this.cropBounds.height - CROP_MIN_SIZE));
+                updated.height = this.cropBounds.y + this.cropBounds.height - newTop;
+                updated.y = newTop;
+                break;
+            case RIGHT:
+                int newRight = Math.max(this.cropBounds.x + CROP_MIN_SIZE, Math.min(cropPoint.x, bufferedImage.getWidth()));
+                updated.width = newRight - this.cropBounds.x;
+                break;
+            case BOTTOM:
+                int newBottom = Math.max(this.cropBounds.y + CROP_MIN_SIZE, Math.min(cropPoint.y, bufferedImage.getHeight()));
+                updated.height = newBottom - this.cropBounds.y;
+                break;
+            case LEFT:
+                int newLeft = Math.max(0, Math.min(cropPoint.x, this.cropBounds.x + this.cropBounds.width - CROP_MIN_SIZE));
+                updated.width = this.cropBounds.x + this.cropBounds.width - newLeft;
+                updated.x = newLeft;
+                break;
+            default:
+                break;
+        }
+
+        this.cropBounds = updated;
+    }
+
+    private void applyCropSelection() {
+        if (this.cropBounds == null || this.cropBounds.width <= 0 || this.cropBounds.height <= 0) {
+            return;
+        }
+
+        this.clearMeasurements();
+        BufferedImage source = deepCopy(this.getCropSourceImage());
+        BufferedImage bufferedImage = this.crop(source, this.cropBounds);
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.baseImage = deepCopy(bufferedImage);
+        this.addHistory(bufferedImage);
+        this.init();
+        this.save();
+        this.repaint();
     }
 
     public BufferedImage getBufferedImage() {
@@ -132,11 +346,96 @@ public class ImageViewPanel extends JPanel
         return expanded;
     }
 
+    private void drawCropOverlay(Graphics2D g2, BufferedImage image) {
+        if (!this.isCropMode() || this.cropBounds == null) {
+            return;
+        }
+
+        Rectangle cropRect = new Rectangle(this.cropBounds);
+        cropRect = cropRect.intersection(new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+
+        g2.setColor(new Color(0, 0, 0, 110));
+        g2.fillRect(0, 0, image.getWidth(), cropRect.y);
+        g2.fillRect(0, cropRect.y, cropRect.x, cropRect.height);
+        g2.fillRect(cropRect.x + cropRect.width, cropRect.y, image.getWidth() - cropRect.x - cropRect.width, cropRect.height);
+        g2.fillRect(0, cropRect.y + cropRect.height, image.getWidth(), image.getHeight() - cropRect.y - cropRect.height);
+
+        g2.setColor(new Color(255, 208, 0, 220));
+        g2.setStroke(new BasicStroke(2f));
+        g2.drawRect(cropRect.x, cropRect.y, cropRect.width, cropRect.height);
+
+        String sizeLabel = "W: " + cropRect.width + "  H: " + cropRect.height;
+        FontMetrics metrics = g2.getFontMetrics();
+        int labelWidth = metrics.stringWidth(sizeLabel) + 24;
+        g2.setColor(new Color(20, 20, 20, 200));
+        g2.fillRoundRect(cropRect.x + 8, Math.max(8, cropRect.y - 28), labelWidth, 20, 10, 10);
+        g2.setColor(Color.WHITE);
+        g2.drawString(sizeLabel, cropRect.x + 16, Math.max(22, cropRect.y - 14));
+
+        Point imageOffset = this.getImageOffset(new Dimension(image.getWidth(), image.getHeight()));
+        for (CropHandle handle : CropHandle.values()) {
+            if (handle == CropHandle.NONE) {
+                continue;
+            }
+
+            Rectangle handleRect = this.getCropHandleBounds(handle, imageOffset);
+            int drawX = handleRect.x - imageOffset.x;
+            int drawY = handleRect.y - imageOffset.y;
+            g2.setColor(Color.WHITE);
+            g2.fillRect(drawX, drawY, handleRect.width, handleRect.height);
+            g2.setColor(new Color(255, 208, 0));
+            g2.drawRect(drawX, drawY, handleRect.width, handleRect.height);
+        }
+    }
+
+    private void drawCropPreviewOverlay(Graphics2D g) {
+        if (!this.isCropMode() || this.cropBounds == null) {
+            this.applyCropButtonBounds = null;
+            return;
+        }
+
+        if (this.cropBounds.width <= 0 || this.cropBounds.height <= 0) {
+            return;
+        }
+
+        Rectangle visibleRect = this.getVisibleRect();
+        int buttonWidth = 120;
+        int buttonHeight = 30;
+        int buttonX = visibleRect.x + visibleRect.width - buttonWidth - 24;
+        int buttonY = visibleRect.y + 20;
+        this.applyCropButtonBounds = new Rectangle(buttonX, buttonY, buttonWidth, buttonHeight);
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g.setColor(new Color(255, 208, 0));
+        g.fillRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, 12, 12);
+        g.setColor(new Color(40, 40, 40));
+        g.drawRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, 12, 12);
+
+        FontMetrics metrics = g.getFontMetrics();
+        String text = "Apply Crop";
+        int textX = buttonX + (buttonWidth - metrics.stringWidth(text)) / 2;
+        int textY = buttonY + (buttonHeight - metrics.getHeight()) / 2 + metrics.getAscent();
+        g.drawString(text, textX, textY);
+    }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
         BufferedImage bufferedImage = this.getBufferedImage();
+        BufferedImage displayImage = bufferedImage;
+
+        if (bufferedImage != null && !objectList.isEmpty()) {
+            displayImage = buildComposite();
+        }
+
+        if (displayImage == null) {
+            return;
+        }
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        Point imageOffset = this.getImageOffset(new Dimension(displayImage.getWidth(), displayImage.getHeight()));
+        g2.translate(imageOffset.x, imageOffset.y);
 
         if (bufferedImage == null) {
             try {
@@ -144,43 +443,36 @@ public class ImageViewPanel extends JPanel
                 this.bufferedImageHistoryList.add(bufferedImage);
                 this.baseImage = deepCopy(bufferedImage);
 
-                g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
+                g2.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
                     bufferedImage.getHeight(), this);
-
-                g.setColor(black);
-                g.drawRect(0, 0, bufferedImage.getWidth() - 1,
-                    bufferedImage.getHeight() - 1);
-
-                Graphics2D g2 = bufferedImage.createGraphics();
                 g2.setColor(black);
                 g2.drawRect(0, 0, bufferedImage.getWidth() - 1,
                     bufferedImage.getHeight() - 1);
+                Graphics2D imageGraphics = bufferedImage.createGraphics();
+                imageGraphics.setColor(black);
+                imageGraphics.drawRect(0, 0, bufferedImage.getWidth() - 1,
+                    bufferedImage.getHeight() - 1);
+                imageGraphics.dispose();
 
                 this.save(this.imageFile);
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
         } else {
-            if (!objectList.isEmpty()) {
-                BufferedImage display = buildComposite();
-                g.drawImage(display, 0, 0, display.getWidth(), display.getHeight(), this);
-            } else {
-                g.drawImage(bufferedImage, 0, 0, bufferedImage.getWidth(),
-                    bufferedImage.getHeight(), this);
-            }
+            g2.drawImage(displayImage, 0, 0, displayImage.getWidth(), displayImage.getHeight(), this);
         }
 
         if (selectedObject != null) {
-            Graphics2D g2 = (Graphics2D) g;
             Rectangle bounds = selectedObject.getBounds();
             g2.setColor(java.awt.Color.RED);
             g2.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{4}, 0));
             g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
 
+        this.drawCropOverlay(g2, displayImage);
+
         if (this.stratPoint != null && this.endPoint != null) {
             if (this.shapeType == CROP) {
-                Graphics2D g2 = (Graphics2D) g;
                 Rectangle2D rect = getRectangle2D(this.stratPoint, this.endPoint);
                 java.awt.Composite originalComposite = g2.getComposite();
                 g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.3f));
@@ -191,12 +483,11 @@ public class ImageViewPanel extends JPanel
                 g2.setStroke(new BasicStroke(2));
                 g2.drawRect((int) rect.getX(), (int) rect.getY(), (int) rect.getWidth(), (int) rect.getHeight());
             } else {
-                this.shapeType.draw(bufferedImage, g, this.fillType, this.stratPoint, this.endPoint, this.colorType);
+                this.shapeType.draw(bufferedImage, g2, this.fillType, this.stratPoint, this.endPoint, this.colorType);
             }
         }
 
         if (this.pastePreviewImage != null && this.pastePreviewPosition != null) {
-            Graphics2D g2 = (Graphics2D) g;
             java.awt.Composite originalComposite = g2.getComposite();
             g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5f));
             g2.drawImage(this.pastePreviewImage, this.pastePreviewPosition.x, this.pastePreviewPosition.y,
@@ -210,7 +501,6 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.textPreview != null && this.textPreviewPosition != null) {
-            Graphics2D g2 = (Graphics2D) g;
             java.awt.Composite originalComposite = g2.getComposite();
             g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.5f));
             Util.drawText(g2, this.textPreviewPosition, this.colorType, this.textPreview);
@@ -218,7 +508,6 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.selectCopyMode && this.selectCopyStart != null && this.selectCopyEnd != null) {
-            Graphics2D g2 = (Graphics2D) g;
             Rectangle2D rect = getRectangle2D(this.selectCopyStart, this.selectCopyEnd);
             java.awt.Composite originalComposite = g2.getComposite();
             g2.setComposite(java.awt.AlphaComposite.getInstance(java.awt.AlphaComposite.SRC_OVER, 0.3f));
@@ -231,8 +520,14 @@ public class ImageViewPanel extends JPanel
         }
 
         if (!this.measurementOverlays.isEmpty()) {
-            this.drawMeasurementOverlays((Graphics2D) g);
+            this.drawMeasurementOverlays(g2, displayImage.getWidth());
         }
+
+        g2.dispose();
+
+        Graphics2D overlayGraphics = (Graphics2D) g.create();
+        this.drawCropPreviewOverlay(overlayGraphics);
+        overlayGraphics.dispose();
     }
 
     private DrawObject findObjectAt(Point p) {
@@ -246,27 +541,47 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (this.isCropMode()) {
+            if (this.applyCropButtonBounds != null && this.applyCropButtonBounds.contains(e.getPoint())) {
+                this.applyCropSelection();
+            }
+            return;
+        }
+
+        Point point = this.toImagePoint(e.getPoint());
+
         if (this.textPreview != null) {
-            this.confirmText(e.getPoint());
+            this.confirmText(this.toClampedImagePoint(e.getPoint()));
             return;
         }
 
         if (this.pastePreviewImage != null) {
-            this.confirmPaste(e.getPoint());
+            this.confirmPaste(this.toClampedImagePoint(e.getPoint()));
             return;
         }
 
-        DrawObject clicked = findObjectAt(e.getPoint());
+        DrawObject clicked = findObjectAt(point);
         this.selectedObject = clicked;
         this.repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        DrawObject clicked = findObjectAt(e.getPoint());
+        if (this.isCropMode()) {
+            this.selectedObject = null;
+            if (this.applyCropButtonBounds != null && this.applyCropButtonBounds.contains(e.getPoint())) {
+                return;
+            }
+
+            this.activeCropHandle = this.findCropHandle(e.getPoint());
+            return;
+        }
+
+        Point point = this.toImagePoint(e.getPoint());
+        DrawObject clicked = findObjectAt(point);
         if (clicked != null) {
             this.selectedObject = clicked;
-            this.dragStart = e.getPoint();
+            this.dragStart = point;
             this.dragging = true;
             this.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             this.repaint();
@@ -276,7 +591,7 @@ public class ImageViewPanel extends JPanel
         this.selectedObject = null;
 
         if (this.selectCopyMode) {
-            this.selectCopyStart = e.getPoint();
+            this.selectCopyStart = this.toClampedImagePoint(e.getPoint());
             this.selectCopyEnd = null;
             return;
         }
@@ -289,9 +604,9 @@ public class ImageViewPanel extends JPanel
 
         int width = bufferedImage.getWidth();
         int height = bufferedImage.getHeight();
-        Point point = e.getPoint();
+        point = this.toImagePoint(e.getPoint());
 
-        if (point.x < width && point.y < height) {
+        if (this.isInsideImage(point, bufferedImage)) {
             this.stratPoint = point;
         } else {
             this.resetPoint();
@@ -305,6 +620,12 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        if (this.isCropMode()) {
+            this.activeCropHandle = CropHandle.NONE;
+            this.repaint();
+            return;
+        }
+
         if (this.dragging && this.selectedObject != null) {
             objectList.remove(this.selectedObject);
             objectList.add(this.selectedObject);
@@ -378,9 +699,16 @@ public class ImageViewPanel extends JPanel
 
     private BufferedImage crop(BufferedImage bufferedImage) {
         Rectangle2D rect = getRectangle2D(this.stratPoint, this.endPoint);
+        return this.crop(bufferedImage, new Rectangle(
+            (int) rect.getX(),
+            (int) rect.getY(),
+            (int) rect.getWidth(),
+            (int) rect.getHeight()
+        ));
+    }
 
-        BufferedImage cropImage = bufferedImage.getSubimage((int) rect.getX(), (int) rect.getY(),
-            (int) rect.getWidth(), (int) rect.getHeight());
+    private BufferedImage crop(BufferedImage bufferedImage, Rectangle rect) {
+        BufferedImage cropImage = bufferedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
 
         bufferedImage = new BufferedImage(cropImage.getWidth(),
             cropImage.getHeight(), TYPE_INT_ARGB);
@@ -408,11 +736,11 @@ public class ImageViewPanel extends JPanel
     @Override
     public void mouseEntered(MouseEvent e) {
         if (this.textPreview != null) {
-            this.textPreviewPosition = e.getPoint();
+            this.textPreviewPosition = this.toClampedImagePoint(e.getPoint());
             e.getComponent().repaint();
         }
         if (this.pastePreviewImage != null) {
-            this.pastePreviewPosition = e.getPoint();
+            this.pastePreviewPosition = this.toClampedImagePoint(e.getPoint());
             this.updatePastePreferredSize();
             e.getComponent().repaint();
         }
@@ -432,17 +760,27 @@ public class ImageViewPanel extends JPanel
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        if (this.isCropMode()) {
+            if (this.activeCropHandle != CropHandle.NONE) {
+                this.updateCropBounds(e.getPoint());
+                this.repaint();
+            }
+            return;
+        }
+
+        Point point = this.toImagePoint(e.getPoint());
+
         if (this.dragging && this.selectedObject != null && this.dragStart != null) {
-            int dx = e.getPoint().x - this.dragStart.x;
-            int dy = e.getPoint().y - this.dragStart.y;
+            int dx = point.x - this.dragStart.x;
+            int dy = point.y - this.dragStart.y;
             this.selectedObject.move(dx, dy);
-            this.dragStart = e.getPoint();
+            this.dragStart = point;
             this.repaint();
             return;
         }
 
         if (this.selectCopyMode) {
-            this.selectCopyEnd = e.getPoint();
+            this.selectCopyEnd = this.toClampedImagePoint(e.getPoint());
             e.getComponent().repaint();
             return;
         }
@@ -455,15 +793,26 @@ public class ImageViewPanel extends JPanel
 
         int width = bufferedImage.getWidth();
         int height = bufferedImage.getHeight();
-        Point point = e.getPoint();
-
-        this.endPoint = new Point(min(point.x, width), min(point.y, height));
+        int x = Math.max(0, min(point.x, width));
+        int y = Math.max(0, min(point.y, height));
+        this.endPoint = new Point(x, y);
         e.getComponent().repaint();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        DrawObject hover = findObjectAt(e.getPoint());
+        if (this.isCropMode()) {
+            if (this.applyCropButtonBounds != null && this.applyCropButtonBounds.contains(e.getPoint())) {
+                this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                return;
+            }
+
+            CropHandle handle = this.findCropHandle(e.getPoint());
+            this.setCursor(handle.getCursor());
+            return;
+        }
+
+        DrawObject hover = findObjectAt(this.toImagePoint(e.getPoint()));
         if (hover != null) {
             this.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         } else {
@@ -471,13 +820,13 @@ public class ImageViewPanel extends JPanel
         }
 
         if (this.textPreview != null) {
-            this.textPreviewPosition = e.getPoint();
+            this.textPreviewPosition = this.toClampedImagePoint(e.getPoint());
             e.getComponent().repaint();
             return;
         }
 
         if (this.pastePreviewImage != null) {
-            this.pastePreviewPosition = e.getPoint();
+            this.pastePreviewPosition = this.toClampedImagePoint(e.getPoint());
             this.updatePastePreferredSize();
             e.getComponent().repaint();
         }
@@ -564,6 +913,9 @@ public class ImageViewPanel extends JPanel
             this.pastePreviewImage = toBufferedImage(clipImage);
 
             Point mouse = this.getMousePosition();
+            if (mouse != null) {
+                mouse = this.toClampedImagePoint(mouse);
+            }
             this.pastePreviewPosition = mouse;
             if (mouse != null) {
                 this.updatePastePreferredSize();
@@ -616,6 +968,9 @@ public class ImageViewPanel extends JPanel
     public void startTextMode(String text) {
         this.textPreview = text;
         Point mouse = this.getMousePosition();
+        if (mouse != null) {
+            mouse = this.toClampedImagePoint(mouse);
+        }
         this.textPreviewPosition = mouse;
         this.repaint();
     }
@@ -1028,7 +1383,7 @@ public class ImageViewPanel extends JPanel
         return dr * dr + dg * dg + db * db <= 24 * 24;
     }
 
-    private void drawMeasurementOverlays(Graphics2D g2) {
+    private void drawMeasurementOverlays(Graphics2D g2, int imageWidth) {
         for (MeasurementOverlay overlay : this.measurementOverlays) {
             Rectangle bounds = overlay.bounds;
 
@@ -1043,7 +1398,7 @@ public class ImageViewPanel extends JPanel
             FontMetrics metrics = g2.getFontMetrics();
             int textWidth = metrics.stringWidth(overlay.label);
             int textHeight = metrics.getHeight();
-            int textX = Math.max(0, Math.min(bounds.x + (bounds.width - textWidth) / 2, this.getWidth() - textWidth - 8));
+            int textX = Math.max(0, Math.min(bounds.x + (bounds.width - textWidth) / 2, imageWidth - textWidth - 8));
             int textY = Math.max(textHeight, bounds.y - 6);
 
             g2.setColor(new java.awt.Color(255, 255, 255, 220));
@@ -1059,6 +1414,45 @@ public class ImageViewPanel extends JPanel
         }
     }
 
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return this.getPreferredSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 20;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        if (orientation == SwingConstants.VERTICAL) {
+            return Math.max(visibleRect.height - 20, 20);
+        }
+
+        return Math.max(visibleRect.width - 20, 20);
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        if (!(this.getParent() instanceof JViewport)) {
+            return false;
+        }
+
+        JViewport viewport = (JViewport) this.getParent();
+        return viewport.getWidth() > this.getPreferredSize().width;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        if (!(this.getParent() instanceof JViewport)) {
+            return false;
+        }
+
+        JViewport viewport = (JViewport) this.getParent();
+        return viewport.getHeight() > this.getPreferredSize().height;
+    }
+
     private void clearMeasurements() {
         this.measurementOverlays.clear();
     }
@@ -1072,6 +1466,24 @@ public class ImageViewPanel extends JPanel
             this.bounds = bounds;
             this.label = label;
             this.color = color;
+        }
+    }
+
+    private enum CropHandle {
+        TOP(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR)),
+        RIGHT(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR)),
+        BOTTOM(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR)),
+        LEFT(Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR)),
+        NONE(Cursor.getDefaultCursor());
+
+        private final Cursor cursor;
+
+        CropHandle(Cursor cursor) {
+            this.cursor = cursor;
+        }
+
+        public Cursor getCursor() {
+            return this.cursor;
         }
     }
 }

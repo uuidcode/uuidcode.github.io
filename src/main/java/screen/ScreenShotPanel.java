@@ -7,6 +7,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
+import java.awt.Stroke;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
@@ -39,11 +40,15 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
-    private static final Color GRID_COLOR = new Color(255, 255, 255, 28);
-    private static final Color GRID_LABEL_COLOR = new Color(255, 255, 255, 110);
+    private static final Color PREVIEW_GRID_COLOR = new Color(255, 255, 255, 28);
+    private static final Color PREVIEW_GRID_LABEL_COLOR = new Color(255, 255, 255, 110);
+    private static final Color CAPTURE_GRID_COLOR = new Color(255, 196, 0, 150);
+    private static final Color CAPTURE_GRID_LABEL_COLOR = new Color(255, 224, 130, 240);
+    private static final Color CAPTURE_GRID_LABEL_BACKGROUND = new Color(0, 0, 0, 150);
     private static final Color GUIDE_TEXT_BACKGROUND = new Color(0, 0, 0, 140);
     private static final Color GUIDE_TEXT_COLOR = new Color(255, 255, 255, 235);
     private static final int GUIDE_TEXT_PADDING = 4;
+    private static final int GRID_LABEL_INTERVAL = 100;
 
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
@@ -252,7 +257,8 @@ public class ScreenShotPanel extends JPanel
 
         if (captureGridSize != null) {
             Graphics2D g2 = image.createGraphics();
-            drawGrid(g2, image.getWidth(), image.getHeight(), captureGridSize, rectangle.x, rectangle.y);
+            drawGrid(g2, image.getWidth(), image.getHeight(), captureGridSize, rectangle.x, rectangle.y,
+                CAPTURE_GRID_COLOR, CAPTURE_GRID_LABEL_COLOR, CAPTURE_GRID_LABEL_BACKGROUND);
             g2.dispose();
         }
 
@@ -391,7 +397,8 @@ public class ScreenShotPanel extends JPanel
         Integer previewGridSize = captureConfig.getCaptureGridMode().getPreviewGridSize();
         if (guideOverlayVisible && previewGridSize != null) {
             Rectangle displayBounds = graphicsDevice.getDefaultConfiguration().getBounds();
-            drawGrid(g2, this.getWidth(), this.getHeight(), previewGridSize, displayBounds.x, displayBounds.y);
+            drawGrid(g2, this.getWidth(), this.getHeight(), previewGridSize, displayBounds.x, displayBounds.y,
+                PREVIEW_GRID_COLOR, PREVIEW_GRID_LABEL_COLOR, null);
         }
 
         Integer fixedWidth = captureConfig.getFixedWidth();
@@ -419,8 +426,14 @@ public class ScreenShotPanel extends JPanel
                                  int height,
                                  int gridSize,
                                  int offsetX,
-                                 int offsetY) {
-        g2.setColor(GRID_COLOR);
+                                 int offsetY,
+                                 Color lineColor,
+                                 Color labelColor,
+                                 Color labelBackgroundColor) {
+        Stroke originalStroke = g2.getStroke();
+        g2.setStroke(new java.awt.BasicStroke(1f, java.awt.BasicStroke.CAP_BUTT,
+            java.awt.BasicStroke.JOIN_BEVEL, 0, new float[]{4f, 4f}, 0));
+        g2.setColor(lineColor);
 
         for (int x = 0; x < width; x += gridSize) {
             g2.drawLine(x, 0, x, height);
@@ -430,7 +443,9 @@ public class ScreenShotPanel extends JPanel
             g2.drawLine(0, y, width, y);
         }
 
-        drawGridLabels(g2, width, height, gridSize, offsetX, offsetY);
+        g2.setStroke(originalStroke);
+
+        drawGridLabels(g2, width, height, gridSize, offsetX, offsetY, labelColor, labelBackgroundColor);
     }
 
     private static void drawGridLabels(Graphics2D g2,
@@ -438,16 +453,18 @@ public class ScreenShotPanel extends JPanel
                                        int height,
                                        int gridSize,
                                        int offsetX,
-                                       int offsetY) {
+                                       int offsetY,
+                                       Color labelColor,
+                                       Color labelBackgroundColor) {
         Font originalFont = g2.getFont();
         Font gridFont = originalFont.deriveFont(10f);
         g2.setFont(gridFont);
-        g2.setColor(GRID_LABEL_COLOR);
+        g2.setColor(labelColor);
 
-        for (int x = 0; x < width; x += gridSize) {
-            for (int y = 0; y < height; y += gridSize) {
+        for (int x = 0; x < width; x += GRID_LABEL_INTERVAL) {
+            for (int y = 0; y < height; y += GRID_LABEL_INTERVAL) {
                 String text = "(" + (x + offsetX) + ", " + (y + offsetY) + ")";
-                drawPlainOverlayText(g2, width, height, text, x + 3, y + 12);
+                drawPlainOverlayText(g2, width, height, text, x + 3, y + 12, labelColor, labelBackgroundColor);
             }
         }
 
@@ -508,11 +525,36 @@ public class ScreenShotPanel extends JPanel
         g2.drawString(text, x + GUIDE_TEXT_PADDING, y + GUIDE_TEXT_PADDING + metrics.getAscent());
     }
 
-    private static void drawPlainOverlayText(Graphics2D g2, int width, int height, String text, int x, int baselineY) {
+    private static void drawPlainOverlayText(Graphics2D g2,
+                                             int width,
+                                             int height,
+                                             String text,
+                                             int x,
+                                             int baselineY,
+                                             Color textColor,
+                                             Color backgroundColor) {
         FontMetrics metrics = g2.getFontMetrics();
         int clampedX = Math.max(0, Math.min(x, width - metrics.stringWidth(text)));
         int clampedBaselineY = Math.max(metrics.getAscent(), Math.min(baselineY, height - metrics.getDescent()));
+
+        if (backgroundColor != null) {
+            int boxX = Math.max(0, clampedX - 2);
+            int boxY = Math.max(0, clampedBaselineY - metrics.getAscent());
+            int boxWidth = Math.min(width - boxX, metrics.stringWidth(text) + 4);
+            int boxHeight = Math.min(height - boxY, metrics.getHeight());
+            Color originalColor = g2.getColor();
+            g2.setColor(backgroundColor);
+            g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 6, 6);
+            g2.setColor(textColor);
+            g2.drawString(text, clampedX, clampedBaselineY);
+            g2.setColor(originalColor);
+            return;
+        }
+
+        Color originalColor = g2.getColor();
+        g2.setColor(textColor);
         g2.drawString(text, clampedX, clampedBaselineY);
+        g2.setColor(originalColor);
     }
 
     private void drawColorPreview(Graphics2D g2) {

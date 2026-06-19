@@ -2,8 +2,10 @@ package screen;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
@@ -21,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.text.JTextComponent;
 
 import lombok.SneakyThrows;
@@ -88,9 +91,18 @@ public class ImagePanel extends JPanel {
 
     public void init() {
         if (this.jScrollPane != null) {
-            this.jScrollPane.getVerticalScrollBar().setValue(0);
-            this.jScrollPane.getHorizontalScrollBar().setValue(0);
             this.jScrollPane.revalidate();
+            SwingUtilities.invokeLater(() -> {
+                if (this.jScrollPane == null) {
+                    return;
+                }
+
+                Dimension viewSize = this.jScrollPane.getViewport().getViewSize();
+                Dimension extentSize = this.jScrollPane.getViewport().getExtentSize();
+                int x = Math.max(0, (viewSize.width - extentSize.width) / 2);
+                int y = Math.max(0, (viewSize.height - extentSize.height) / 2);
+                this.jScrollPane.getViewport().setViewPosition(new Point(x, y));
+            });
         }
     }
 

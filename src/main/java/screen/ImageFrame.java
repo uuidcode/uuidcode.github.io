@@ -123,6 +123,9 @@ public class ImageFrame extends JFrame {
     private void createCaptureGridModeComboBox(JPanel panel) {
         panel.add(new JLabel(" capture mode (preview / capture):"));
         captureGridModeComboBox = new JComboBox<>(CaptureGridMode.values());
+        Dimension comboSize = new Dimension(200, captureGridModeComboBox.getPreferredSize().height);
+        captureGridModeComboBox.setPreferredSize(comboSize);
+        captureGridModeComboBox.setMaximumSize(comboSize);
         captureGridModeComboBox.setSelectedItem(captureConfig.getCaptureGridMode());
         captureGridModeComboBox.addActionListener(e ->
             captureConfig.setCaptureGridMode((CaptureGridMode) captureGridModeComboBox.getSelectedItem()));
