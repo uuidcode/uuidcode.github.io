@@ -20,6 +20,7 @@ struct OcrResult: Encodable {
     let imagePath: String
     let imageWidth: Int
     let imageHeight: Int
+    let originalText: String
     let items: [OcrItem]
 }
 
@@ -76,10 +77,13 @@ let items = (request.results ?? []).compactMap { observation -> OcrItem? in
     )
 }
 
+let originalText = items.map { $0.text }.joined(separator: "\n")
+
 let result = OcrResult(
     imagePath: imagePath,
     imageWidth: cgImage.width,
     imageHeight: cgImage.height,
+    originalText: originalText,
     items: items
 )
 

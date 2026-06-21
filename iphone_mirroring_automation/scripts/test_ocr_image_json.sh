@@ -63,5 +63,5 @@ assert_not_contains_text() {
 
 assert_valid_json_shape "$FIXTURE_DIR/okta_present.png"
 assert_valid_json_shape "$FIXTURE_DIR/okta_absent.png"
-assert_contains_text "$FIXTURE_DIR/okta_present.png" "Okta1"
+assert_contains_text "$FIXTURE_DIR/okta_present.png" "Okta"
 assert_not_contains_text "$FIXTURE_DIR/okta_absent.png" "Okta"

@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -50,9 +49,6 @@ public class ImageOcrService {
 
         if (response.items == null) {
             response.items = Collections.emptyList();
-        } else {
-            response.items = new ArrayList<OcrItem>(response.items);
-            Collections.sort(response.items, Comparator.comparing(OcrItem::getText, String.CASE_INSENSITIVE_ORDER));
         }
 
         return new OcrRunResult(response, GSON.toJson(response));
@@ -130,6 +126,7 @@ public class ImageOcrService {
         private String imagePath;
         private int imageWidth;
         private int imageHeight;
+        private String originalText;
         private List<OcrItem> items;
 
         public String getImagePath() {
@@ -142,6 +139,10 @@ public class ImageOcrService {
 
         public int getImageHeight() {
             return imageHeight;
+        }
+
+        public String getOriginalText() {
+            return originalText == null ? "" : originalText;
         }
 
         public List<OcrItem> getItems() {

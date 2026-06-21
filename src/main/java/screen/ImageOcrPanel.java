@@ -25,6 +25,7 @@ import java.util.List;
 
 public class ImageOcrPanel extends JPanel {
     private final OcrTableModel tableModel = new OcrTableModel();
+    private final JTextArea textTextArea = new JTextArea();
     private final JTextArea jsonTextArea = new JTextArea();
     private final JTable table = new JTable(this.tableModel);
     private final JTabbedPane tabbedPane = new JTabbedPane();
@@ -43,6 +44,11 @@ public class ImageOcrPanel extends JPanel {
         JScrollBar horizontalScrollBar = tableScrollPane.getHorizontalScrollBar();
         horizontalScrollBar.setUnitIncrement(16);
 
+        this.textTextArea.setEditable(false);
+        this.textTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        this.textTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        JScrollPane textScrollPane = new JScrollPane(this.textTextArea);
+
         this.jsonTextArea.setEditable(false);
         this.jsonTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         this.jsonTextArea.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
@@ -50,6 +56,7 @@ public class ImageOcrPanel extends JPanel {
 
         this.tabbedPane.addTab("table", tableScrollPane);
         this.tabbedPane.addTab("json", jsonScrollPane);
+        this.tabbedPane.addTab("text", textScrollPane);
         this.tabbedPane.addChangeListener(e -> this.updateTabAppearance());
         this.updateTabAppearance();
 
@@ -115,6 +122,8 @@ public class ImageOcrPanel extends JPanel {
     public void showLoading() {
         this.tableModel.setItems(Collections.<ImageOcrService.OcrItem>emptyList());
         this.resetState();
+        this.textTextArea.setText("Running OCR...");
+        this.textTextArea.setCaretPosition(0);
         this.jsonTextArea.setText("Running OCR...");
         this.jsonTextArea.setCaretPosition(0);
     }
@@ -122,6 +131,8 @@ public class ImageOcrPanel extends JPanel {
     public void showError(String message) {
         this.tableModel.setItems(Collections.<ImageOcrService.OcrItem>emptyList());
         this.resetState();
+        this.textTextArea.setText(message);
+        this.textTextArea.setCaretPosition(0);
         this.jsonTextArea.setText(message);
         this.jsonTextArea.setCaretPosition(0);
     }
@@ -129,6 +140,8 @@ public class ImageOcrPanel extends JPanel {
     public void setResult(ImageOcrService.OcrRunResult runResult) {
         this.tableModel.setItems(runResult.getResponse().getItems());
         this.resetState();
+        this.textTextArea.setText(runResult.getResponse().getOriginalText());
+        this.textTextArea.setCaretPosition(0);
         this.jsonTextArea.setText(runResult.getPrettyJson());
         this.jsonTextArea.setCaretPosition(0);
     }
