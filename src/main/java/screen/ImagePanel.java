@@ -18,12 +18,15 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
 
 import lombok.SneakyThrows;
@@ -39,10 +42,14 @@ public class ImagePanel extends JPanel {
     private final String name;
     private final ImageTabPanel tabbedPane;
     private final File imageFile;
+    private final ImageOcrService imageOcrService = new ImageOcrService();
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
     private JPanel buttonPanel;
     private JScrollPane jScrollPane;
+    private JSplitPane contentSplitPane;
+    private ImageOcrPanel imageOcrPanel;
+    private JButton ocrButton;
 
     public ImagePanel(String name, File imageFile, ImageTabPanel tabbedPane) {
         super(new BorderLayout());
@@ -51,6 +58,7 @@ public class ImagePanel extends JPanel {
         this.imageFile = imageFile;
         this.imageViewPanel = this.createImageViewPanel(imageFile);
         this.createControlPanel();
+        this.setCenterComponent(this.jScrollPane);
 
         Map<Integer, Runnable> keyMap = new HashMap<>();
         keyMap.put(KeyEvent.VK_S, this::save);
@@ -125,8 +133,19 @@ public class ImagePanel extends JPanel {
             e.consume();
         });
 
-        this.add(jScrollPane, CENTER);
         return imageViewPanel;
+    }
+
+    private void setCenterComponent(JComponent component) {
+        Component currentComponent = ((BorderLayout) this.getLayout()).getLayoutComponent(CENTER);
+
+        if (currentComponent != null) {
+            this.remove(currentComponent);
+        }
+
+        this.add(component, CENTER);
+        this.revalidate();
+        this.repaint();
     }
 
     private void createControlPanel() {
@@ -158,6 +177,7 @@ public class ImagePanel extends JPanel {
         this.createUndoButton();
         this.createRedoButton();
         this.createClearButton();
+        this.createOcrButton();
         this.createDeleteImageButton();
         this.createCloseButton();
 
@@ -357,6 +377,13 @@ public class ImagePanel extends JPanel {
         this.buttonPanel.add(button);
     }
 
+    private void createOcrButton() {
+        this.ocrButton = new JButton("ocr");
+        this.ocrButton.setName(this.name);
+        this.ocrButton.addActionListener(e -> this.runOcr());
+        this.buttonPanel.add(this.ocrButton);
+    }
+
     private void createClearButton() {
         JButton button = new JButton("clear");
         button.setName(this.name);
@@ -412,5 +439,87 @@ public class ImagePanel extends JPanel {
 
     private void copy() {
         ImageViewPanel.copy(imageFile);
+    }
+
+    private void runOcr() {
+        if (!this.imageFile.exists()) {
+            JOptionPane.showMessageDialog(this, "Image file not found.");
+            return;
+        }
+
+        this.showOcrPanel();
+        this.imageOcrPanel.showLoading();
+        this.ocrButton.setEnabled(false);
+
+        new SwingWorker<ImageOcrService.OcrRunResult, Void>() {
+            @Override
+            protected ImageOcrService.OcrRunResult doInBackground() throws Exception {
+                return imageOcrService.run(imageFile);
+            }
+
+            @Override
+            protected void done() {
+                ocrButton.setEnabled(true);
+
+                try {
+                    imageOcrPanel.setResult(this.get());
+                } catch (Exception e) {
+                    Throwable cause = e.getCause();
+                    String message = cause != null && cause.getMessage() != null
+                        ? cause.getMessage()
+                        : (e.getMessage() == null ? "OCR failed." : e.getMessage());
+                    imageOcrPanel.showError(message);
+                    JOptionPane.showMessageDialog(ImagePanel.this, message);
+                }
+            }
+        }.execute();
+    }
+
+    private void showOcrPanel() {
+        if (this.imageOcrPanel == null) {
+            this.imageOcrPanel = new ImageOcrPanel(new ImageOcrPanel.OcrPanelListener() {
+                @Override
+                public void onShowRectsChanged(boolean visible, java.util.List<ImageOcrService.OcrItem> items) {
+                    if (visible) {
+                        imageViewPanel.setOcrOverlays(items);
+                    } else {
+                        imageViewPanel.setOcrOverlays(java.util.Collections.<ImageOcrService.OcrItem>emptyList());
+                    }
+                }
+
+                @Override
+                public void onItemSelected(ImageOcrService.OcrItem item) {
+                    imageViewPanel.setSelectedOcrItem(item);
+                }
+
+                @Override
+                public void onResetRequested() {
+                    imageViewPanel.clearOcrOverlays();
+                }
+
+                @Override
+                public void onCloseRequested() {
+                    hideOcrPanel();
+                }
+            });
+        }
+
+        if (this.contentSplitPane == null) {
+            this.contentSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.jScrollPane, this.imageOcrPanel);
+            this.contentSplitPane.setResizeWeight(0.7d);
+        } else {
+            this.contentSplitPane.setLeftComponent(this.jScrollPane);
+            this.contentSplitPane.setRightComponent(this.imageOcrPanel);
+        }
+
+        this.setCenterComponent(this.contentSplitPane);
+        SwingUtilities.invokeLater(() -> this.contentSplitPane.setDividerLocation(0.7d));
+    }
+
+    private void hideOcrPanel() {
+        this.imageViewPanel.clearOcrOverlays();
+        this.setCenterComponent(this.jScrollPane);
+        this.revalidate();
+        this.repaint();
     }
 }

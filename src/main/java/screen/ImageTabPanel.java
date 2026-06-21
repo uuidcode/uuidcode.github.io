@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,6 +27,10 @@ public class ImageTabPanel extends JTabbedPane {
     private Map<String, Integer> indexMap = new HashMap<>();
     private List<ScreenShotFrame> screenShotFrameList;
 
+    public ImageTabPanel() {
+        this.addChangeListener(e -> this.updateTabAppearance());
+    }
+
     public void addTab(String name) {
         ImagePanel imagePanel = new ImagePanel(name, getImageFile(name), this);
         imagePanel.setBorder(createEtchedBorder());
@@ -35,12 +40,25 @@ public class ImageTabPanel extends JTabbedPane {
         this.setSelectedComponent(imagePanel);
         this.revalidate();
         this.repaint();
-
-        int selectedIndex = this.getSelectedIndex();
-        this.setBackgroundAt(selectedIndex, Color.blue);
+        this.updateTabAppearance();
     }
 
     public void removeTab(String name) {
         this.remove(this.indexMap.get(name));
+        this.updateTabAppearance();
+    }
+
+    private void updateTabAppearance() {
+        Color normalForeground = new Color(70, 70, 70);
+        Color selectedForeground = new Color(20, 20, 20);
+        Color defaultBackground = UIManager.getColor("Panel.background");
+
+        for (int i = 0; i < this.getTabCount(); i++) {
+            boolean selected = i == this.getSelectedIndex();
+            this.setForegroundAt(i, selected ? selectedForeground : normalForeground);
+            if (defaultBackground != null) {
+                this.setBackgroundAt(i, defaultBackground);
+            }
+        }
     }
 }

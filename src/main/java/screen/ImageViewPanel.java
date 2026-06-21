@@ -72,6 +72,8 @@ public class ImageViewPanel extends JPanel
     private boolean dragging;
     private BufferedImage baseImage;
     private List<MeasurementOverlay> measurementOverlays = new ArrayList<>();
+    private List<Rectangle> ocrOverlays = new ArrayList<>();
+    private Rectangle selectedOcrOverlay;
     private Rectangle cropBounds;
     private CropHandle activeCropHandle = CropHandle.NONE;
     private Rectangle applyCropButtonBounds;
@@ -522,6 +524,8 @@ public class ImageViewPanel extends JPanel
         if (!this.measurementOverlays.isEmpty()) {
             this.drawMeasurementOverlays(g2, displayImage.getWidth());
         }
+
+        this.drawOcrOverlays(g2);
 
         g2.dispose();
 
@@ -1414,6 +1418,28 @@ public class ImageViewPanel extends JPanel
         }
     }
 
+    private void drawOcrOverlays(Graphics2D g2) {
+        for (Rectangle bounds : this.ocrOverlays) {
+            this.drawOcrOverlay(g2, bounds, new Color(255, 170, 0, 60), new Color(255, 140, 0, 180), 2f);
+        }
+
+        if (this.selectedOcrOverlay != null) {
+            this.drawOcrOverlay(g2, this.selectedOcrOverlay, new Color(0, 180, 255, 70), new Color(0, 120, 215, 230), 3f);
+        }
+    }
+
+    private void drawOcrOverlay(Graphics2D g2, Rectangle bounds, Color fillColor, Color strokeColor, float strokeWidth) {
+        if (bounds == null || bounds.width <= 0 || bounds.height <= 0) {
+            return;
+        }
+
+        g2.setColor(fillColor);
+        g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        g2.setColor(strokeColor);
+        g2.setStroke(new BasicStroke(strokeWidth));
+        g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
     @Override
     public Dimension getPreferredScrollableViewportSize() {
         return this.getPreferredSize();
@@ -1455,6 +1481,38 @@ public class ImageViewPanel extends JPanel
 
     private void clearMeasurements() {
         this.measurementOverlays.clear();
+    }
+
+    public void setOcrOverlays(List<ImageOcrService.OcrItem> items) {
+        List<Rectangle> overlays = new ArrayList<Rectangle>();
+        for (ImageOcrService.OcrItem item : items) {
+            Rectangle rect = this.toRectangle(item);
+            if (rect != null) {
+                overlays.add(rect);
+            }
+        }
+        this.ocrOverlays = overlays;
+        this.repaint();
+    }
+
+    public void clearOcrOverlays() {
+        this.ocrOverlays.clear();
+        this.selectedOcrOverlay = null;
+        this.repaint();
+    }
+
+    public void setSelectedOcrItem(ImageOcrService.OcrItem item) {
+        this.selectedOcrOverlay = this.toRectangle(item);
+        this.repaint();
+    }
+
+    private Rectangle toRectangle(ImageOcrService.OcrItem item) {
+        if (item == null || item.getRect() == null) {
+            return null;
+        }
+
+        ImageOcrService.OcrRect rect = item.getRect();
+        return new Rectangle(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
     private static class MeasurementOverlay {
