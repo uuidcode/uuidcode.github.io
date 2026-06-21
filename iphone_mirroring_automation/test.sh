@@ -3,7 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OCR_SCRIPT_PATH="$SCRIPT_DIR/ocr_check.swift"
+OCR_SCRIPT_PATH="$SCRIPT_DIR/ocr_image_json.swift"
 
 CONFIRM_TEXT="${CONFIRM_TEXT:-본인입니다}"
 CONFIRM_ALT_TEXT="${CONFIRM_ALT_TEXT:-본입입니다}"
@@ -74,15 +74,40 @@ capture_mirroring_window() {
     screencapture -x -o -l"$window_id" "$SCREENSHOT_PATH"
 }
 
+ocr_dump_json() {
+    swift "$OCR_SCRIPT_PATH" "$SCREENSHOT_PATH"
+}
+
 ocr_dump_text() {
-    swift "$OCR_SCRIPT_PATH" "$SCREENSHOT_PATH" "__dump__"
+    ocr_dump_json | jq -r '[.items[].text | ascii_downcase] | join("\n")'
 }
 
 find_text_center() {
     local needle="$1"
+    local needle_lower
     local output
 
-    if output="$(swift "$OCR_SCRIPT_PATH" "$SCREENSHOT_PATH" "$needle" --center 2>/dev/null)"; then
+    needle_lower="$(printf '%s' "$needle" | tr '[:upper:]' '[:lower:]')"
+
+    if output="$(
+        ocr_dump_json | jq -er --arg needle "$needle_lower" '
+            def enriched:
+                . + {
+                    lower_text: (.text | ascii_downcase),
+                    center_x: ((.rect.x + (.rect.width / 2)) | round | floor),
+                    center_y: ((.rect.y + (.rect.height / 2)) | round | floor)
+                };
+
+            (
+                [.items[] | enriched | select(.lower_text == $needle)]
+                | if length > 0 then max_by(.center_y) else empty end
+            ) // (
+                [.items[] | enriched | select(.lower_text | contains($needle))]
+                | if length > 0 then min_by(.text | length) else empty end
+            )
+            | "\(.center_x),\(.center_y)"
+        ' 2>/dev/null
+    )"; then
         echo "$output"
         return 0
     fi
