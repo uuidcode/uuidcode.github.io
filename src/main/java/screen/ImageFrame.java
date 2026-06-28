@@ -1,5 +1,7 @@
 package screen;
 
+import org.apache.commons.io.IOUtils;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
@@ -18,11 +20,17 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.security.CodeSource;
 import java.text.SimpleDateFormat;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -57,6 +65,7 @@ import static javax.swing.JFileChooser.FILES_ONLY;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class ImageFrame extends JFrame {
+    private static final String WINDOW_RECT_SCRIPT_RELATIVE_PATH = "iphone_mirroring_automation/scripts/window_rect_at_point.swift";
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
     private CaptureConfig captureConfig = new CaptureConfig();
@@ -108,8 +117,9 @@ public class ImageFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         this.createCaptureButton(panel);
-        this.createCaptureFullScreenButton(panel);
         this.createCaptureRepeatButton(panel);
+        this.createCaptureWindowButton(panel);
+        this.createCaptureFullScreenButton(panel);
         this.createClipboardButton(panel);
         this.createOpenButton(panel);
         this.createViewButton(panel);
@@ -247,6 +257,12 @@ public class ImageFrame extends JFrame {
         panel.add(button);
     }
 
+    private void createCaptureWindowButton(JPanel panel) {
+        JButton button = new JButton("capture window");
+        button.addActionListener(e -> this.captureWindow());
+        panel.add(button);
+    }
+
     private void createCaptureFullScreenButton(JPanel panel) {
         JButton button = new JButton("capture full screen");
         button.addActionListener(e -> this.captureFullScreen());
@@ -278,6 +294,7 @@ public class ImageFrame extends JFrame {
 
     private void capture() {
         this.setVisible(false);
+        this.captureConfig.setWindowCaptureMode(false);
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()
@@ -305,6 +322,7 @@ public class ImageFrame extends JFrame {
 
     private void captureRepeat() {
         this.setVisible(false);
+        this.captureConfig.setWindowCaptureMode(false);
 
         try {
             Robot robot = new Robot();
@@ -324,6 +342,7 @@ public class ImageFrame extends JFrame {
 
     private void captureFullScreen() {
         updateFixedSize();
+        this.captureConfig.setWindowCaptureMode(false);
 
         int previousState = this.getExtendedState();
         Thread iconifyThread = this.iconifyInBackground(previousState | JFrame.ICONIFIED);
@@ -369,6 +388,120 @@ public class ImageFrame extends JFrame {
                 });
             }
         }).start();
+    }
+
+    private void captureWindow() {
+        this.setVisible(false);
+        this.captureConfig.setWindowCaptureMode(true);
+
+        GraphicsDevice[] screenDeviceArray =
+            getLocalGraphicsEnvironment()
+                .getScreenDevices();
+
+        updateFixedSize();
+
+        this.screenShotFrameList = stream(screenDeviceArray)
+            .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))
+            .peek(f -> f.setVisible(true))
+            .collect(toList());
+
+        this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
+    }
+
+    Rectangle getWindowRectAtPoint(Point point) throws Exception {
+        File scriptFile = resolveWindowRectScriptFile();
+        if (scriptFile == null) {
+            throw new IllegalStateException("Window rect script not found: " + WINDOW_RECT_SCRIPT_RELATIVE_PATH);
+        }
+
+        ProcessBuilder processBuilder = new ProcessBuilder(
+            "swift",
+            scriptFile.getAbsolutePath(),
+            String.valueOf(point.x),
+            String.valueOf(point.y),
+            String.valueOf(getCurrentProcessId())
+        );
+        Process process = processBuilder.start();
+        String stdout = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+        String stderr = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0) {
+            throw new IllegalStateException(stderr.isEmpty() ? "Failed to resolve window rectangle." : stderr.trim());
+        }
+
+        Map<String, Integer> values = new HashMap<String, Integer>();
+        for (String line : stdout.split("\\R")) {
+            int separatorIndex = line.indexOf('=');
+            if (separatorIndex <= 0) {
+                continue;
+            }
+
+            String key = line.substring(0, separatorIndex).trim();
+            String value = line.substring(separatorIndex + 1).trim();
+            if (value.isEmpty()) {
+                continue;
+            }
+
+            if ("x".equals(key) || "y".equals(key) || "width".equals(key) || "height".equals(key)) {
+                values.put(key, Integer.parseInt(value));
+            }
+        }
+
+        if (!values.containsKey("x") || !values.containsKey("y")
+            || !values.containsKey("width") || !values.containsKey("height")) {
+            throw new IllegalStateException("Window rect script returned incomplete rectangle.");
+        }
+
+        return new Rectangle(values.get("x"), values.get("y"), values.get("width"), values.get("height"));
+    }
+
+    private File resolveWindowRectScriptFile() {
+        for (File candidate : buildWindowRectScriptCandidates()) {
+            if (candidate.isFile()) {
+                return candidate.getAbsoluteFile();
+            }
+        }
+
+        return null;
+    }
+
+    private List<File> buildWindowRectScriptCandidates() {
+        List<File> candidates = new ArrayList<File>();
+        Set<String> seen = new LinkedHashSet<String>();
+
+        addSearchPathCandidates(candidates, seen, new File(System.getProperty("user.dir", ".")));
+
+        try {
+            CodeSource codeSource = ImageFrame.class.getProtectionDomain().getCodeSource();
+            if (codeSource != null && codeSource.getLocation() != null) {
+                File codeLocation = new File(codeSource.getLocation().toURI());
+                File startDir = codeLocation.isDirectory() ? codeLocation : codeLocation.getParentFile();
+                addSearchPathCandidates(candidates, seen, startDir);
+            }
+        } catch (Exception ignored) {
+        }
+
+        return candidates;
+    }
+
+    private void addSearchPathCandidates(List<File> candidates, Set<String> seen, File startDir) {
+        File current = startDir;
+        while (current != null) {
+            File candidate = new File(current, WINDOW_RECT_SCRIPT_RELATIVE_PATH).getAbsoluteFile();
+            String path = candidate.getAbsolutePath();
+            if (seen.add(path)) {
+                candidates.add(candidate);
+            }
+            current = current.getParentFile();
+        }
+    }
+
+    private long getCurrentProcessId() {
+        String runtimeName = ManagementFactory.getRuntimeMXBean().getName();
+        int separatorIndex = runtimeName.indexOf('@');
+        String pidText = separatorIndex >= 0 ? runtimeName.substring(0, separatorIndex) : runtimeName;
+        return Long.parseLong(pidText);
     }
 
     private Thread iconifyInBackground(int state) {
