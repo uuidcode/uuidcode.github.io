@@ -111,12 +111,8 @@ public class ScreenShotPanel extends JPanel
             return panel;
         }
 
-        JPanel panel = new JPanel(new GridLayout(3, 2));
+        JPanel panel = new JPanel(new GridLayout(2, 2));
         panel.setBackground(new Color(0, 0, 0, 0));
-
-        JButton shotAllButton = new JButton("shot all");
-        shotAllButton.addActionListener(e -> this.shot(null, true));
-        panel.add(shotAllButton);
 
         JButton shotButton = new JButton("shot");
         shotButton.addActionListener(e -> this.shot(null, false));
@@ -164,7 +160,10 @@ public class ScreenShotPanel extends JPanel
         if (controlPanel != null) {
             this.hideControlPanel();
         }
-        imageFrame.setVisible(false);
+        boolean keepImageFrameVisible = this.captureConfig.isSelfAreaCaptureMode();
+        if (!keepImageFrameVisible) {
+            imageFrame.setVisible(false);
+        }
         imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
         new Thread(() -> {
@@ -214,7 +213,9 @@ public class ScreenShotPanel extends JPanel
                 guideOverlayVisible = true;
                 try {
                     SwingUtilities.invokeAndWait(() -> {
-                        imageFrame.setVisible(true);
+                        if (!keepImageFrameVisible) {
+                            imageFrame.setVisible(true);
+                        }
                         imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
                     });
                 } catch (Throwable ignored) {

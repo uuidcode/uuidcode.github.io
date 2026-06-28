@@ -131,6 +131,8 @@ public class ImageFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         this.createCaptureButton(panel);
+        this.createCaptureSelfButton(panel);
+        this.createCaptureSelfAreaButton(panel);
         this.createCaptureRepeatButton(panel);
         this.createCaptureWindowButton(panel);
         this.createCaptureFullScreenButton(panel);
@@ -265,6 +267,18 @@ public class ImageFrame extends JFrame {
         panel.add(button);
     }
 
+    private void createCaptureSelfButton(JPanel panel) {
+        JButton button = new JButton("capture self");
+        button.addActionListener(e -> this.captureSelf());
+        panel.add(button);
+    }
+
+    private void createCaptureSelfAreaButton(JPanel panel) {
+        JButton button = new JButton("capture self area");
+        button.addActionListener(e -> this.captureSelfArea());
+        panel.add(button);
+    }
+
     private void createCaptureRepeatButton(JPanel panel) {
         JButton button = new JButton("capture repeat");
         button.addActionListener(e -> this.captureRepeat());
@@ -307,21 +321,7 @@ public class ImageFrame extends JFrame {
     }
 
     private void capture() {
-        this.setVisible(false);
-        this.captureConfig.setWindowCaptureMode(false);
-
-        GraphicsDevice[] screenDeviceArray =
-            getLocalGraphicsEnvironment()
-                .getScreenDevices();
-
-        updateFixedSize();
-        
-        this.screenShotFrameList = stream(screenDeviceArray)
-            .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))
-            .peek(f -> f.setVisible(true))
-            .collect(toList());
-
-        this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
+        this.startAreaCapture(true);
     }
 
     private BufferedImage captureBaseScreenImage(GraphicsDevice device) {
@@ -337,6 +337,7 @@ public class ImageFrame extends JFrame {
     private void captureRepeat() {
         this.setVisible(false);
         this.captureConfig.setWindowCaptureMode(false);
+        this.captureConfig.setSelfAreaCaptureMode(false);
 
         try {
             Robot robot = new Robot();
@@ -354,9 +355,87 @@ public class ImageFrame extends JFrame {
         this.setVisible(true);
     }
 
+    private void captureSelf() {
+        updateFixedSize();
+        this.captureConfig.setWindowCaptureMode(false);
+        this.captureConfig.setSelfAreaCaptureMode(false);
+
+        new Thread(() -> {
+            try {
+                PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+                Point mousePoint = pointerInfo != null
+                    ? pointerInfo.getLocation()
+                    : new Point(this.getX(), this.getY());
+
+                SwingUtilities.invokeAndWait(() -> {
+                    this.setVisible(true);
+                    this.toFront();
+                    this.repaint();
+                });
+
+                try {
+                    this.bringCurrentAppToFront();
+                } catch (Throwable ignored) {
+                }
+
+                Thread.sleep(80);
+
+                Rectangle bounds = new Rectangle(this.getBounds());
+                captureConfig.setLastRectangle(new Rectangle(bounds));
+
+                Robot robot = new Robot();
+                ScreenShotPanel.capture(robot, bounds,
+                    mousePoint.x, mousePoint.y,
+                    this.tabbedPane, captureConfig);
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            } finally {
+                SwingUtilities.invokeLater(() -> {
+                    this.setVisible(true);
+                    this.toFront();
+                    this.requestFocus();
+                });
+            }
+        }, "capture-self").start();
+    }
+
+    private void captureSelfArea() {
+        this.startAreaCapture(false);
+    }
+
+    private void startAreaCapture(boolean hideImageFrame) {
+        this.captureConfig.setWindowCaptureMode(false);
+        this.captureConfig.setSelfAreaCaptureMode(!hideImageFrame);
+        updateFixedSize();
+
+        if (hideImageFrame) {
+            this.setVisible(false);
+        } else {
+            this.setVisible(true);
+            this.toFront();
+            this.repaint();
+            try {
+                this.bringCurrentAppToFront();
+            } catch (Throwable ignored) {
+            }
+        }
+
+        GraphicsDevice[] screenDeviceArray =
+            getLocalGraphicsEnvironment()
+                .getScreenDevices();
+
+        this.screenShotFrameList = stream(screenDeviceArray)
+            .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))
+            .peek(f -> f.setVisible(true))
+            .collect(toList());
+
+        this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
+    }
+
     private void captureFullScreen() {
         updateFixedSize();
         this.captureConfig.setWindowCaptureMode(false);
+        this.captureConfig.setSelfAreaCaptureMode(false);
 
         int previousState = this.getExtendedState();
         Thread iconifyThread = this.iconifyInBackground(previousState | JFrame.ICONIFIED);
@@ -407,6 +486,7 @@ public class ImageFrame extends JFrame {
     private void captureWindow() {
         this.setVisible(false);
         this.captureConfig.setWindowCaptureMode(true);
+        this.captureConfig.setSelfAreaCaptureMode(false);
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()

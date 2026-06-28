@@ -11,6 +11,7 @@ public class CaptureConfig {
     private CaptureGridMode captureGridMode = CaptureGridMode.NONE_NONE;
     private boolean imgTagEnabled = false;
     private boolean windowCaptureMode = false;
+    private boolean selfAreaCaptureMode = false;
     private Integer fixedWidth;
     private Integer fixedHeight;
     private Rectangle lastRectangle;
