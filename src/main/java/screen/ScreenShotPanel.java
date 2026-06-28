@@ -177,6 +177,14 @@ public class ScreenShotPanel extends JPanel
 
                 Thread.sleep(PRE_CAPTURE_HIDE_DELAY_MS);
 
+                if (keepImageFrameVisible) {
+                    try {
+                        this.imageFrame.bringCurrentAppToFront();
+                        Thread.sleep(WINDOW_FRONT_SETTLE_DELAY_MS);
+                    } catch (Throwable ignored) {
+                    }
+                }
+
                 if (this.captureConfig.isWindowCaptureMode() && selectedWindowTarget != null) {
                     try {
                         this.imageFrame.bringWindowToFront(selectedWindowTarget);
