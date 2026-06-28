@@ -65,7 +65,12 @@ import static javax.swing.JFileChooser.FILES_ONLY;
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 public class ImageFrame extends JFrame {
-    private static final String WINDOW_RECT_SCRIPT_RELATIVE_PATH = "iphone_mirroring_automation/scripts/window_rect_at_point.swift";
+    private static final String WINDOW_RECT_BINARY_RELATIVE_PATH = "script/bin/window_rect_at_point";
+    private static final String WINDOW_RECT_SCRIPT_RELATIVE_PATH = "script/window_rect_at_point.swift";
+    private static final String BRING_WINDOW_TO_FRONT_BINARY_RELATIVE_PATH = "script/bin/bring_window_to_front";
+    private static final String BRING_WINDOW_TO_FRONT_SCRIPT_RELATIVE_PATH = "script/bring_window_to_front.swift";
+    private static final String FRONTMOST_WINDOW_BINARY_RELATIVE_PATH = "script/bin/get_frontmost_window";
+    private static final String FRONTMOST_WINDOW_SCRIPT_RELATIVE_PATH = "script/get_frontmost_window.swift";
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
     private CaptureConfig captureConfig = new CaptureConfig();
@@ -79,6 +84,15 @@ public class ImageFrame extends JFrame {
     private JTextField blueField;
     private JTextField htmlColorField;
     private JPanel pickedColorPreviewPanel;
+
+    @Data
+    public static class WindowTarget {
+        private final Rectangle rectangle;
+        private final String ownerName;
+        private final String windowName;
+        private final int windowId;
+        private final long ownerPid;
+    }
 
     public ImageFrame() {
         super("ImageFrame");
@@ -408,19 +422,16 @@ public class ImageFrame extends JFrame {
         this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
     }
 
-    Rectangle getWindowRectAtPoint(Point point) throws Exception {
-        File scriptFile = resolveWindowRectScriptFile();
-        if (scriptFile == null) {
-            throw new IllegalStateException("Window rect script not found: " + WINDOW_RECT_SCRIPT_RELATIVE_PATH);
+    WindowTarget getWindowTargetAtPoint(Point point) throws Exception {
+        List<String> command = buildHelperCommand(WINDOW_RECT_BINARY_RELATIVE_PATH, WINDOW_RECT_SCRIPT_RELATIVE_PATH);
+        if (command == null) {
+            throw new IllegalStateException("Window rect helper not found: " + WINDOW_RECT_BINARY_RELATIVE_PATH);
         }
+        command.add(String.valueOf(point.x));
+        command.add(String.valueOf(point.y));
+        command.add(String.valueOf(getCurrentProcessId()));
 
-        ProcessBuilder processBuilder = new ProcessBuilder(
-            "swift",
-            scriptFile.getAbsolutePath(),
-            String.valueOf(point.x),
-            String.valueOf(point.y),
-            String.valueOf(getCurrentProcessId())
-        );
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
         Process process = processBuilder.start();
         String stdout = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
         String stderr = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
@@ -430,7 +441,7 @@ public class ImageFrame extends JFrame {
             throw new IllegalStateException(stderr.isEmpty() ? "Failed to resolve window rectangle." : stderr.trim());
         }
 
-        Map<String, Integer> values = new HashMap<String, Integer>();
+        Map<String, String> values = new HashMap<String, String>();
         for (String line : stdout.split("\\R")) {
             int separatorIndex = line.indexOf('=');
             if (separatorIndex <= 0) {
@@ -442,10 +453,7 @@ public class ImageFrame extends JFrame {
             if (value.isEmpty()) {
                 continue;
             }
-
-            if ("x".equals(key) || "y".equals(key) || "width".equals(key) || "height".equals(key)) {
-                values.put(key, Integer.parseInt(value));
-            }
+            values.put(key, value);
         }
 
         if (!values.containsKey("x") || !values.containsKey("y")
@@ -453,11 +461,116 @@ public class ImageFrame extends JFrame {
             throw new IllegalStateException("Window rect script returned incomplete rectangle.");
         }
 
-        return new Rectangle(values.get("x"), values.get("y"), values.get("width"), values.get("height"));
+        Rectangle rectangle = new Rectangle(
+            Integer.parseInt(values.get("x")),
+            Integer.parseInt(values.get("y")),
+            Integer.parseInt(values.get("width")),
+            Integer.parseInt(values.get("height"))
+        );
+
+        return new WindowTarget(
+            rectangle,
+            values.getOrDefault("ownerName", ""),
+            values.getOrDefault("windowName", ""),
+            Integer.parseInt(values.getOrDefault("windowID", "0")),
+            Long.parseLong(values.getOrDefault("ownerPid", "0"))
+        );
     }
 
-    private File resolveWindowRectScriptFile() {
-        for (File candidate : buildWindowRectScriptCandidates()) {
+    void bringWindowToFront(WindowTarget target) throws Exception {
+        if (target == null || target.getOwnerPid() <= 0) {
+            return;
+        }
+
+        List<String> command = buildHelperCommand(BRING_WINDOW_TO_FRONT_BINARY_RELATIVE_PATH, BRING_WINDOW_TO_FRONT_SCRIPT_RELATIVE_PATH);
+        if (command == null) {
+            throw new IllegalStateException("Bring window helper not found: " + BRING_WINDOW_TO_FRONT_BINARY_RELATIVE_PATH);
+        }
+        command.add(String.valueOf(target.getOwnerPid()));
+        command.add(target.getWindowName() == null ? "" : target.getWindowName());
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        Process process = processBuilder.start();
+        String stderr = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0) {
+            throw new IllegalStateException(stderr.isEmpty() ? "Failed to bring window to front." : stderr.trim());
+        }
+    }
+
+    void bringCurrentAppToFront() throws Exception {
+        this.bringWindowToFront(new WindowTarget(
+            new Rectangle(),
+            "",
+            "",
+            0,
+            getCurrentProcessId()
+        ));
+    }
+
+    WindowTarget getFrontmostWindowTarget() throws Exception {
+        List<String> command = buildHelperCommand(FRONTMOST_WINDOW_BINARY_RELATIVE_PATH, FRONTMOST_WINDOW_SCRIPT_RELATIVE_PATH);
+        if (command == null) {
+            throw new IllegalStateException("Frontmost window helper not found: " + FRONTMOST_WINDOW_BINARY_RELATIVE_PATH);
+        }
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        Process process = processBuilder.start();
+        String stdout = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+        String stderr = IOUtils.toString(process.getErrorStream(), StandardCharsets.UTF_8);
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0) {
+            throw new IllegalStateException(stderr.isEmpty() ? "Failed to resolve frontmost window." : stderr.trim());
+        }
+
+        Map<String, String> values = new HashMap<String, String>();
+        for (String line : stdout.split("\\R")) {
+            int separatorIndex = line.indexOf('=');
+            if (separatorIndex <= 0) {
+                continue;
+            }
+
+            String key = line.substring(0, separatorIndex).trim();
+            String value = line.substring(separatorIndex + 1).trim();
+            values.put(key, value);
+        }
+
+        long ownerPid = Long.parseLong(values.getOrDefault("ownerPid", "0"));
+        if (ownerPid <= 0) {
+            return null;
+        }
+
+        return new WindowTarget(
+            new Rectangle(),
+            values.getOrDefault("ownerName", ""),
+            values.getOrDefault("windowName", ""),
+            0,
+            ownerPid
+        );
+    }
+
+    private List<String> buildHelperCommand(String binaryRelativePath, String scriptRelativePath) {
+        File binaryFile = resolveHelperFile(binaryRelativePath);
+        if (binaryFile != null && binaryFile.canExecute()) {
+            List<String> command = new ArrayList<String>();
+            command.add(binaryFile.getAbsolutePath());
+            return command;
+        }
+
+        File scriptFile = resolveHelperFile(scriptRelativePath);
+        if (scriptFile != null) {
+            List<String> command = new ArrayList<String>();
+            command.add("swift");
+            command.add(scriptFile.getAbsolutePath());
+            return command;
+        }
+
+        return null;
+    }
+
+    private File resolveHelperFile(String relativePath) {
+        for (File candidate : buildHelperCandidates(relativePath)) {
             if (candidate.isFile()) {
                 return candidate.getAbsoluteFile();
             }
@@ -466,18 +579,18 @@ public class ImageFrame extends JFrame {
         return null;
     }
 
-    private List<File> buildWindowRectScriptCandidates() {
+    private List<File> buildHelperCandidates(String relativePath) {
         List<File> candidates = new ArrayList<File>();
         Set<String> seen = new LinkedHashSet<String>();
 
-        addSearchPathCandidates(candidates, seen, new File(System.getProperty("user.dir", ".")));
+        addSearchPathCandidates(candidates, seen, new File(System.getProperty("user.dir", ".")), relativePath);
 
         try {
             CodeSource codeSource = ImageFrame.class.getProtectionDomain().getCodeSource();
             if (codeSource != null && codeSource.getLocation() != null) {
                 File codeLocation = new File(codeSource.getLocation().toURI());
                 File startDir = codeLocation.isDirectory() ? codeLocation : codeLocation.getParentFile();
-                addSearchPathCandidates(candidates, seen, startDir);
+                addSearchPathCandidates(candidates, seen, startDir, relativePath);
             }
         } catch (Exception ignored) {
         }
@@ -485,10 +598,10 @@ public class ImageFrame extends JFrame {
         return candidates;
     }
 
-    private void addSearchPathCandidates(List<File> candidates, Set<String> seen, File startDir) {
+    private void addSearchPathCandidates(List<File> candidates, Set<String> seen, File startDir, String relativePath) {
         File current = startDir;
         while (current != null) {
-            File candidate = new File(current, WINDOW_RECT_SCRIPT_RELATIVE_PATH).getAbsoluteFile();
+            File candidate = new File(current, relativePath).getAbsoluteFile();
             String path = candidate.getAbsolutePath();
             if (seen.add(path)) {
                 candidates.add(candidate);

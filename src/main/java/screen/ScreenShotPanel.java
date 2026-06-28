@@ -7,12 +7,13 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
-import java.awt.Stroke;
+import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
@@ -28,19 +29,19 @@ import java.util.Base64;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import java.awt.GridLayout;
 
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
+    private static final int PRE_CAPTURE_HIDE_DELAY_MS = 30;
+    private static final int WINDOW_FRONT_SETTLE_DELAY_MS = 60;
+    private static final int MOUSE_HIDE_SETTLE_DELAY_MS = 20;
     private static final Color PREVIEW_GRID_COLOR = new Color(255, 255, 255, 28);
     private static final Color PREVIEW_GRID_LABEL_COLOR = new Color(255, 255, 255, 110);
     private static final Color CAPTURE_GRID_COLOR = new Color(255, 196, 0, 150);
@@ -51,7 +52,6 @@ public class ScreenShotPanel extends JPanel
     private static final int GUIDE_TEXT_PADDING = 4;
     private static final int GRID_LABEL_INTERVAL = 100;
     private static final int CONTROL_PANEL_REPAINT_PADDING = 24;
-
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
@@ -68,6 +68,7 @@ public class ScreenShotPanel extends JPanel
     private Color colorPreviewColor;
     private final Timer windowCaptureHoverTimer;
     private Rectangle windowCapturePreviewRect;
+    private ImageFrame.WindowTarget windowCaptureTarget;
     private Point windowCaptureHoverPoint;
     private int windowCaptureRequestId;
 
@@ -145,25 +146,26 @@ public class ScreenShotPanel extends JPanel
     }
 
     private void shot(Integer second, boolean isAll) {
-        Rectangle rectangle = this.getSelectionRectangle();
-        if (rectangle == null) {
+        Rectangle selectionRectangle = this.getSelectionRectangle();
+        if (selectionRectangle == null) {
             return;
         }
+        ImageFrame.WindowTarget selectedWindowTarget = this.windowCaptureTarget;
         stratPoint = null;
         endPoint = null;
         this.windowCapturePreviewRect = null;
+        this.windowCaptureTarget = null;
         guideOverlayVisible = false;
-        screenShotFrame.setBackground(new Color(0, 0, 0, 0));
 
         if (!this.captureConfig.isWindowCaptureMode()) {
-            rectangle.width++;
-            rectangle.height++;
+            selectionRectangle.width++;
+            selectionRectangle.height++;
         }
         if (controlPanel != null) {
             this.hideControlPanel();
         }
-        screenShotFrame.getContentPane().repaint();
         imageFrame.setVisible(false);
+        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
         new Thread(() -> {
             try {
@@ -174,30 +176,59 @@ public class ScreenShotPanel extends JPanel
 
                 Robot robot = new Robot();
 
-                Thread.sleep(100);
+                Thread.sleep(PRE_CAPTURE_HIDE_DELAY_MS);
+
+                if (this.captureConfig.isWindowCaptureMode() && selectedWindowTarget != null) {
+                    try {
+                        this.imageFrame.bringWindowToFront(selectedWindowTarget);
+                        Thread.sleep(WINDOW_FRONT_SETTLE_DELAY_MS);
+                    } catch (Throwable ignored) {
+                    }
+                }
 
                 if (second != null) {
                     Thread.sleep(second * 1000);
                 }
 
-                Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
-                rectangle.x += display.x;
-                rectangle.y += display.y;
+                Rectangle captureRectangle;
+                if (this.captureConfig.isWindowCaptureMode() && selectedWindowTarget != null) {
+                    captureRectangle = new Rectangle(selectedWindowTarget.getRectangle());
+                } else {
+                    Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
+                    captureRectangle = new Rectangle(selectionRectangle);
+                    captureRectangle.x += display.x;
+                    captureRectangle.y += display.y;
+                }
 
-                captureConfig.setLastRectangle(rectangle);
+                captureConfig.setLastRectangle(new Rectangle(captureRectangle));
 
                 if (isAll) {
+                    Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
                     capture(robot, display, 0, 0, this.tabbedPane, captureConfig);
                 } else {
-                    capture(robot, rectangle, x, y, this.tabbedPane, captureConfig);
+                    capture(robot, captureRectangle, x, y, this.tabbedPane, captureConfig);
                 }
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             } finally {
                 guideOverlayVisible = true;
-                imageFrame.setVisible(true);
-                screenShotFrame.setBackground(BACKGROUND_COLOR);
-                imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        imageFrame.setVisible(true);
+                        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+                    });
+                } catch (Throwable ignored) {
+                }
+
+                try {
+                    imageFrame.bringCurrentAppToFront();
+                } catch (Throwable ignored) {
+                }
+
+                SwingUtilities.invokeLater(() -> {
+                    imageFrame.toFront();
+                    imageFrame.requestFocus();
+                });
             }
         }).start();
     }
@@ -208,15 +239,15 @@ public class ScreenShotPanel extends JPanel
         this.resetColorPreviewState();
         this.windowCaptureHoverTimer.stop();
         this.windowCapturePreviewRect = null;
+        this.windowCaptureTarget = null;
         this.windowCaptureHoverPoint = null;
         stratPoint = null;
         endPoint = null;
         mousePosition = null;
         guideOverlayVisible = true;
-        screenShotFrame.setBackground(BACKGROUND_COLOR);
         imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
         imageFrame.setVisible(true);
-        this.repaint();
+        this.refreshOverlayImmediately();
     }
 
     private void startColorPreview(Point point) {
@@ -278,7 +309,7 @@ public class ScreenShotPanel extends JPanel
 
         // 마우스 이동 후 잠시 대기 (화면 갱신 시간)
         try {
-            Thread.sleep(50);
+            Thread.sleep(MOUSE_HIDE_SETTLE_DELAY_MS);
         } catch (InterruptedException ignored) {
         }
 
@@ -395,7 +426,7 @@ public class ScreenShotPanel extends JPanel
             this.windowCaptureHoverPoint = e.getPoint();
             if (this.windowCapturePreviewRect != null && this.windowCapturePreviewRect.contains(e.getPoint())) {
                 this.showControlPanelForRectangle(this.windowCapturePreviewRect);
-                this.repaint();
+                this.refreshOverlayImmediately();
             }
             this.windowCaptureHoverTimer.restart();
         }
@@ -408,15 +439,16 @@ public class ScreenShotPanel extends JPanel
             if (this.isInsideActiveWindowCaptureArea(localMousePoint)) {
                 this.windowCaptureHoverPoint = localMousePoint;
                 this.showControlPanelForRectangle(this.windowCapturePreviewRect);
-                this.repaint();
+                this.refreshOverlayImmediately();
                 return;
             }
 
             this.windowCaptureHoverTimer.stop();
             this.windowCaptureHoverPoint = null;
             this.windowCapturePreviewRect = null;
+            this.windowCaptureTarget = null;
             this.hideControlPanel();
-            this.repaint();
+            this.refreshOverlayImmediately();
         }
     }
 
@@ -444,7 +476,7 @@ public class ScreenShotPanel extends JPanel
             if (this.windowCapturePreviewRect != null && this.windowCapturePreviewRect.contains(e.getPoint())) {
                 this.showControlPanelForRectangle(this.windowCapturePreviewRect);
                 this.windowCaptureHoverTimer.restart();
-                e.getComponent().repaint();
+                this.refreshOverlayImmediately();
                 return;
             }
 
@@ -473,9 +505,24 @@ public class ScreenShotPanel extends JPanel
         return (this.stratPoint == null || this.endPoint == null) ? null : this.getRectangle();
     }
 
+    @Override
     public void paint(Graphics g) {
-        super.paint(g);
-        this.drawOverlayContents((Graphics2D) g, true);
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+        try {
+            if (this.baseScreenImage != null) {
+                g2.drawImage(this.baseScreenImage, 0, 0, this);
+            }
+
+            g2.setColor(BACKGROUND_COLOR);
+            g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+            this.drawOverlayContents(g2, true);
+        } finally {
+            g2.dispose();
+        }
+
+        this.paintBorder(g);
+        this.paintChildren(g);
     }
 
     private void drawOverlayContents(Graphics2D g2, boolean includeColorPreview) {
@@ -700,17 +747,18 @@ public class ScreenShotPanel extends JPanel
 
         new Thread(() -> {
             try {
-                Rectangle globalRect = this.imageFrame.getWindowRectAtPoint(absolutePoint);
-                Rectangle localRect = this.toLocalRectangle(globalRect);
+                ImageFrame.WindowTarget target = this.imageFrame.getWindowTargetAtPoint(absolutePoint);
+                Rectangle localRect = this.toLocalRectangle(target.getRectangle());
 
                 SwingUtilities.invokeLater(() -> {
                     if (requestId != this.windowCaptureRequestId) {
                         return;
                     }
 
+                    this.windowCaptureTarget = target;
                     this.windowCapturePreviewRect = localRect;
                     this.showControlPanelForRectangle(localRect);
-                    this.repaint();
+                    this.refreshOverlayImmediately();
                 });
             } catch (Throwable ignored) {
                 SwingUtilities.invokeLater(() -> {
@@ -720,13 +768,14 @@ public class ScreenShotPanel extends JPanel
 
                     if (this.isInsideActiveWindowCaptureArea(this.windowCaptureHoverPoint)) {
                         this.showControlPanelForRectangle(this.windowCapturePreviewRect);
-                        this.repaint();
+                        this.refreshOverlayImmediately();
                         return;
                     }
 
+                    this.windowCaptureTarget = null;
                     this.windowCapturePreviewRect = null;
                     this.hideControlPanel();
-                    this.repaint();
+                    this.refreshOverlayImmediately();
                 });
             }
         }, "window-capture-preview").start();
@@ -812,5 +861,26 @@ public class ScreenShotPanel extends JPanel
         return this.controlPanel != null
             && this.controlPanel.isVisible()
             && this.controlPanel.getBounds().contains(point);
+    }
+
+    private void refreshOverlayImmediately() {
+        if (!this.captureConfig.isWindowCaptureMode()) {
+            this.repaint();
+            return;
+        }
+
+        if (!SwingUtilities.isEventDispatchThread()) {
+            SwingUtilities.invokeLater(this::refreshOverlayImmediately);
+            return;
+        }
+
+        if (!this.isDisplayable() || this.getWidth() <= 0 || this.getHeight() <= 0) {
+            this.repaint();
+            return;
+        }
+
+        this.revalidate();
+        this.paintImmediately(0, 0, this.getWidth(), this.getHeight());
+        Toolkit.getDefaultToolkit().sync();
     }
 }

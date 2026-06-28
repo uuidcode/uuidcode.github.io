@@ -18,7 +18,6 @@ public class ScreenShotFrame extends JFrame {
     public ScreenShotFrame(GraphicsDevice graphicsDevice, ImageFrame imageFrame, BufferedImage baseScreenImage) {
         super("ScreenShotFrame");
         ScreenShotPanel contentPane = new ScreenShotPanel(graphicsDevice, imageFrame, this, baseScreenImage);
-        contentPane.setBackground(new Color(0, 0, 0, 100));
         contentPane.addMouseListener(contentPane);
         contentPane.addMouseMotionListener(contentPane);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -33,7 +32,6 @@ public class ScreenShotFrame extends JFrame {
         int height = graphicsDevice.getDisplayMode().getHeight();
         this.setSize(width, height);
         this.setContentPane(contentPane);
-        this.setBackground(BACKGROUND_COLOR);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             boolean isOK = this.equals(ke.getComponent());
