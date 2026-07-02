@@ -1,5 +1,6 @@
 package screen;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -20,8 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -56,8 +56,12 @@ public class ScreenShotPanel extends JPanel
     private static final int CONTROL_PANEL_REPAINT_PADDING = 24;
     private static final int WINDOW_CAPTURE_PADDING = 20;
     private static final Color WINDOW_CAPTURE_BACKGROUND_COLOR = new Color(63, 66, 48);
+    private static final int WINDOW_CORNER_FALLBACK_RADIUS = 10;
+    private static final int WINDOW_CORNER_MIN_RADIUS = 6;
+    private static final int WINDOW_CORNER_MAX_RADIUS = 18;
     private static final int WINDOW_CORNER_SAMPLE_INSET = 2;
     private static final int WINDOW_CORNER_SAMPLE_SIZE = 8;
+    private static final int WINDOW_CORNER_COLOR_THRESHOLD = 24;
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
@@ -416,14 +420,20 @@ public class ScreenShotPanel extends JPanel
         Graphics2D g2 = framed.createGraphics();
 
         try {
+            g2.setRenderingHint(
+                java.awt.RenderingHints.KEY_ANTIALIASING,
+                java.awt.RenderingHints.VALUE_ANTIALIAS_ON
+            );
             g2.setColor(WINDOW_CAPTURE_BACKGROUND_COLOR);
             g2.fillRect(0, 0, paddedWidth, paddedHeight);
 
-            if (isRoundedRectangleWindow(capturedImage)) {
-                fillRoundedCorners(g2, capturedImage);
+            int cornerRadius = resolveWindowCornerRadius(capturedImage);
+            if (cornerRadius > 0) {
+                BufferedImage roundedImage = applyRoundedWindowMask(capturedImage, cornerRadius);
+                g2.drawImage(roundedImage, WINDOW_CAPTURE_PADDING, WINDOW_CAPTURE_PADDING, null);
+            } else {
+                g2.drawImage(capturedImage, WINDOW_CAPTURE_PADDING, WINDOW_CAPTURE_PADDING, null);
             }
-
-            g2.drawImage(capturedImage, WINDOW_CAPTURE_PADDING, WINDOW_CAPTURE_PADDING, null);
         } finally {
             g2.dispose();
         }
@@ -431,25 +441,127 @@ public class ScreenShotPanel extends JPanel
         return framed;
     }
 
-    private static boolean isRoundedRectangleWindow(BufferedImage capturedImage) {
+    private static BufferedImage applyRoundedWindowMask(BufferedImage capturedImage, int cornerRadius) {
         int width = capturedImage.getWidth();
         int height = capturedImage.getHeight();
+        int diameter = cornerRadius * 2;
+
+        BufferedImage roundedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = roundedImage.createGraphics();
+
+        try {
+            g2.setRenderingHint(
+                java.awt.RenderingHints.KEY_ANTIALIASING,
+                java.awt.RenderingHints.VALUE_ANTIALIAS_ON
+            );
+            g2.setRenderingHint(
+                java.awt.RenderingHints.KEY_RENDERING,
+                java.awt.RenderingHints.VALUE_RENDER_QUALITY
+            );
+            g2.drawImage(capturedImage, 0, 0, null);
+            g2.setComposite(AlphaComposite.DstIn);
+            g2.setColor(Color.WHITE);
+            g2.fill(new RoundRectangle2D.Float(0, 0, width, height, diameter, diameter));
+        } finally {
+            g2.dispose();
+        }
+
+        return roundedImage;
+    }
+
+    private static int resolveWindowCornerRadius(BufferedImage capturedImage) {
+        int detectedCornerRadius = detectCornerRadius(capturedImage);
+
+        if (detectedCornerRadius > 0) {
+            return Math.max(WINDOW_CORNER_MIN_RADIUS, Math.min(WINDOW_CORNER_MAX_RADIUS, detectedCornerRadius));
+        }
+
+        if (looksLikeRoundedWindow(capturedImage)) {
+            return WINDOW_CORNER_FALLBACK_RADIUS;
+        }
+
+        return 0;
+    }
+
+    private static boolean looksLikeRoundedWindow(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
 
         if (width < WINDOW_CORNER_SAMPLE_SIZE * 4 || height < WINDOW_CORNER_SAMPLE_SIZE * 4) {
             return false;
         }
 
+        int bodyInsetX = Math.min(WINDOW_CORNER_MAX_RADIUS, width - 1);
+        int bodyInsetY = Math.min(WINDOW_CORNER_MAX_RADIUS, height - 1);
         int centerX = width / 2;
-        int referenceColor = capturedImage.getRGB(centerX, WINDOW_CORNER_SAMPLE_INSET);
-        int topLeft = capturedImage.getRGB(WINDOW_CORNER_SAMPLE_INSET, WINDOW_CORNER_SAMPLE_INSET);
-        int topRight = capturedImage.getRGB(width - 1 - WINDOW_CORNER_SAMPLE_INSET, WINDOW_CORNER_SAMPLE_INSET);
-        int innerLeft = capturedImage.getRGB(WINDOW_CORNER_SAMPLE_SIZE * 4, WINDOW_CORNER_SAMPLE_INSET);
-        int innerRight = capturedImage.getRGB(width - 1 - WINDOW_CORNER_SAMPLE_SIZE * 4, WINDOW_CORNER_SAMPLE_INSET);
+        int centerY = height / 2;
+        int topReference = image.getRGB(centerX, bodyInsetY);
+        int leftReference = image.getRGB(bodyInsetX, centerY);
+        int topLeft = image.getRGB(0, 0);
 
-        int cornerDiff = Math.max(colorDistance(topLeft, referenceColor), colorDistance(topRight, referenceColor));
-        int innerDiff = Math.max(colorDistance(innerLeft, referenceColor), colorDistance(innerRight, referenceColor));
+        return colorDistance(topLeft, topReference) >= WINDOW_CORNER_COLOR_THRESHOLD
+            || colorDistance(topLeft, leftReference) >= WINDOW_CORNER_COLOR_THRESHOLD;
+    }
 
-        return cornerDiff > 30 && cornerDiff > innerDiff + 20;
+    private static int detectCornerRadius(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        if (width < WINDOW_CORNER_SAMPLE_SIZE * 4 || height < WINDOW_CORNER_SAMPLE_SIZE * 4) {
+            return 0;
+        }
+
+        int bodyInsetX = Math.min(WINDOW_CORNER_MAX_RADIUS, width - 1);
+        int bodyInsetY = Math.min(WINDOW_CORNER_MAX_RADIUS, height - 1);
+        int centerX = width / 2;
+        int centerY = height / 2;
+        int topReference = image.getRGB(centerX, bodyInsetY);
+        int leftReference = image.getRGB(bodyInsetX, centerY);
+        int topLeft = image.getRGB(0, 0);
+
+        int maxScan = Math.min(40, Math.min(width, height) / 2);
+
+        if (colorDistance(topLeft, topReference) < WINDOW_CORNER_COLOR_THRESHOLD
+            && colorDistance(topLeft, leftReference) < WINDOW_CORNER_COLOR_THRESHOLD) {
+            return 0;
+        }
+
+        int topOffset = findHorizontalStart(image, topReference, maxScan);
+        int leftOffset = findVerticalStart(image, leftReference, maxScan);
+
+        if (topOffset < 3 || leftOffset < 3) {
+            return 0;
+        }
+
+        if (Math.abs(topOffset - leftOffset) > 6) {
+            return 0;
+        }
+
+        return (topOffset + leftOffset) / 2;
+    }
+
+    private static int findHorizontalStart(BufferedImage image, int targetColor, int maxScan) {
+        for (int y = 0; y <= 1 && y < image.getHeight(); y++) {
+            for (int x = 0; x < maxScan; x++) {
+                if (colorDistance(image.getRGB(x, y), targetColor) < WINDOW_CORNER_COLOR_THRESHOLD) {
+                    return x;
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    private static int findVerticalStart(BufferedImage image, int targetColor, int maxScan) {
+        for (int x = 0; x <= 1 && x < image.getWidth(); x++) {
+            for (int y = 0; y < maxScan; y++) {
+                if (colorDistance(image.getRGB(x, y), targetColor) < WINDOW_CORNER_COLOR_THRESHOLD) {
+                    return y;
+                }
+            }
+        }
+
+        return -1;
     }
 
     private static int colorDistance(int argb1, int argb2) {
@@ -461,62 +573,6 @@ public class ScreenShotPanel extends JPanel
         int b2 = argb2 & 0xFF;
 
         return Math.abs(r1 - r2) + Math.abs(g1 - g2) + Math.abs(b1 - b2);
-    }
-
-    private static void fillRoundedCorners(Graphics2D g2, BufferedImage capturedImage) {
-        int width = capturedImage.getWidth();
-        int height = capturedImage.getHeight();
-        int cornerRadius = detectCornerRadius(capturedImage);
-
-        if (cornerRadius <= 0) {
-            return;
-        }
-
-        int offsetX = WINDOW_CAPTURE_PADDING;
-        int offsetY = WINDOW_CAPTURE_PADDING;
-        int diameter = cornerRadius * 2;
-
-        Area cornerArea = new Area(new Rectangle(offsetX, offsetY, width, height));
-
-        Area topLeftSquare = new Area(new Rectangle(offsetX, offsetY, cornerRadius, cornerRadius));
-        topLeftSquare.subtract(new Area(new Ellipse2D.Float(offsetX, offsetY, diameter, diameter)));
-
-        Area topRightSquare = new Area(new Rectangle(offsetX + width - cornerRadius, offsetY, cornerRadius, cornerRadius));
-        topRightSquare.subtract(new Area(new Ellipse2D.Float(offsetX + width - diameter, offsetY, diameter, diameter)));
-
-        Area bottomLeftSquare = new Area(new Rectangle(offsetX, offsetY + height - cornerRadius, cornerRadius, cornerRadius));
-        bottomLeftSquare.subtract(new Area(new Ellipse2D.Float(offsetX, offsetY + height - diameter, diameter, diameter)));
-
-        Area bottomRightSquare = new Area(new Rectangle(offsetX + width - cornerRadius, offsetY + height - cornerRadius, cornerRadius, cornerRadius));
-        bottomRightSquare.subtract(new Area(new Ellipse2D.Float(offsetX + width - diameter, offsetY + height - diameter, diameter, diameter)));
-
-        Area cornersToFill = new Area();
-        cornersToFill.add(topLeftSquare);
-        cornersToFill.add(topRightSquare);
-        cornersToFill.add(bottomLeftSquare);
-        cornersToFill.add(bottomRightSquare);
-        cornersToFill.intersect(cornerArea);
-
-        g2.setColor(WINDOW_CAPTURE_BACKGROUND_COLOR);
-        g2.fill(cornersToFill);
-    }
-
-    private static int detectCornerRadius(BufferedImage image) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        int maxScan = Math.min(40, Math.min(width, height) / 2);
-        int centerX = width / 2;
-        int referenceColor = image.getRGB(centerX, Math.min(WINDOW_CORNER_SAMPLE_INSET, height - 1));
-
-        for (int i = 0; i < maxScan; i++) {
-            int argb = image.getRGB(i, i);
-
-            if (colorDistance(argb, referenceColor) < 30) {
-                return i;
-            }
-        }
-
-        return 0;
     }
 
     @Override
@@ -714,7 +770,7 @@ public class ScreenShotPanel extends JPanel
         } else if (this.captureConfig.isWindowCaptureMode() && this.windowCapturePreviewRect != null) {
             Rectangle rectangle = this.windowCapturePreviewRect;
             g2.setColor(new Color(255, 255, 255, 100));
-            g2.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+            this.fillWindowPreviewShape(g2, rectangle);
             this.drawSelectionGuides(g2, rectangle);
         } else if (stratPoint != null && endPoint != null) {
             Rectangle rectangle = this.getRectangle();
@@ -726,6 +782,44 @@ public class ScreenShotPanel extends JPanel
         if (includeColorPreview && this.rightButtonPressed && this.colorPreviewPoint != null && this.colorPreviewColor != null) {
             this.drawColorPreview(g2);
         }
+    }
+
+    private void fillWindowPreviewShape(Graphics2D g2, Rectangle rectangle) {
+        int cornerRadius = this.detectPreviewWindowCornerRadius(rectangle);
+        g2.setRenderingHint(
+            java.awt.RenderingHints.KEY_ANTIALIASING,
+            java.awt.RenderingHints.VALUE_ANTIALIAS_ON
+        );
+
+        if (cornerRadius > 0) {
+            int diameter = cornerRadius * 2;
+            g2.fillRoundRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height, diameter, diameter);
+            return;
+        }
+
+        g2.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+    }
+
+    private int detectPreviewWindowCornerRadius(Rectangle rectangle) {
+        if (this.baseScreenImage == null || rectangle.width <= 0 || rectangle.height <= 0) {
+            return 0;
+        }
+
+        Rectangle imageBounds = new Rectangle(0, 0, this.baseScreenImage.getWidth(), this.baseScreenImage.getHeight());
+        Rectangle sampleBounds = rectangle.intersection(imageBounds);
+
+        if (sampleBounds.width <= 0 || sampleBounds.height <= 0) {
+            return 0;
+        }
+
+        BufferedImage capturedImage = this.baseScreenImage.getSubimage(
+            sampleBounds.x,
+            sampleBounds.y,
+            sampleBounds.width,
+            sampleBounds.height
+        );
+
+        return resolveWindowCornerRadius(capturedImage);
     }
 
     private static void drawGrid(Graphics2D g2,
