@@ -344,9 +344,15 @@ public class ImageFrame extends JFrame {
             Rectangle lastRect = captureConfig.getLastRectangle();
             
             if (lastRect != null) {
-                ScreenShotPanel.capture(robot, lastRect,
-                    lastRect.x, lastRect.y,
-                    this.tabbedPane, captureConfig);
+                ScreenShotPanel.capture(
+                    robot,
+                    lastRect,
+                    lastRect.x,
+                    lastRect.y,
+                    this.tabbedPane,
+                    captureConfig,
+                    false
+                );
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -384,9 +390,16 @@ public class ImageFrame extends JFrame {
                 captureConfig.setLastRectangle(new Rectangle(bounds));
 
                 Robot robot = new Robot();
-                ScreenShotPanel.capture(robot, bounds,
-                    mousePoint.x, mousePoint.y,
-                    this.tabbedPane, captureConfig);
+
+                ScreenShotPanel.capture(
+                    robot,
+                    bounds,
+                    mousePoint.x,
+                    mousePoint.y,
+                    this.tabbedPane,
+                    captureConfig,
+                    false
+                );
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             } finally {
@@ -466,9 +479,16 @@ public class ImageFrame extends JFrame {
                 captureConfig.setImgTagEnabled(false);
 
                 Robot robot = new Robot();
-                ScreenShotPanel.capture(robot, bounds,
-                    mousePoint.x, mousePoint.y,
-                    this.tabbedPane, captureConfig);
+
+                ScreenShotPanel.capture(
+                    robot,
+                    bounds,
+                    mousePoint.x,
+                    mousePoint.y,
+                    this.tabbedPane,
+                    captureConfig,
+                    false
+                );
             } catch (Throwable t) {
                 t.printStackTrace();
             } finally {
