@@ -1,6 +1,5 @@
 package screen;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -21,14 +20,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayDeque;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Deque;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -40,6 +40,24 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
+    private static final class WindowCornerRadii {
+        private final int topLeft;
+        private final int topRight;
+        private final int bottomLeft;
+        private final int bottomRight;
+
+        private WindowCornerRadii(int topLeft, int topRight, int bottomLeft, int bottomRight) {
+            this.topLeft = topLeft;
+            this.topRight = topRight;
+            this.bottomLeft = bottomLeft;
+            this.bottomRight = bottomRight;
+        }
+
+        private int max() {
+            return Math.max(Math.max(this.topLeft, this.topRight), Math.max(this.bottomLeft, this.bottomRight));
+        }
+    }
+
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
     private static final int PRE_CAPTURE_HIDE_DELAY_MS = 30;
     private static final int WINDOW_FRONT_SETTLE_DELAY_MS = 60;
@@ -58,10 +76,12 @@ public class ScreenShotPanel extends JPanel
     private static final Color WINDOW_CAPTURE_BACKGROUND_COLOR = new Color(63, 66, 48);
     private static final int WINDOW_CORNER_FALLBACK_RADIUS = 10;
     private static final int WINDOW_CORNER_MIN_RADIUS = 6;
-    private static final int WINDOW_CORNER_MAX_RADIUS = 18;
+    private static final int WINDOW_CORNER_MAX_RADIUS = 20;
     private static final int WINDOW_CORNER_SAMPLE_INSET = 2;
     private static final int WINDOW_CORNER_SAMPLE_SIZE = 8;
     private static final int WINDOW_CORNER_COLOR_THRESHOLD = 24;
+    private static final int WINDOW_CORNER_SEED_THRESHOLD = 28;
+    private static final int WINDOW_CORNER_ALPHA_SAMPLES = 8;
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
@@ -427,9 +447,9 @@ public class ScreenShotPanel extends JPanel
             g2.setColor(WINDOW_CAPTURE_BACKGROUND_COLOR);
             g2.fillRect(0, 0, paddedWidth, paddedHeight);
 
-            int cornerRadius = resolveWindowCornerRadius(capturedImage);
-            if (cornerRadius > 0) {
-                BufferedImage roundedImage = applyRoundedWindowMask(capturedImage, cornerRadius);
+            WindowCornerRadii cornerRadii = resolveWindowCornerRadii(capturedImage);
+            if (cornerRadii.max() > 0) {
+                BufferedImage roundedImage = applyRoundedWindowMask(capturedImage, cornerRadii);
                 g2.drawImage(roundedImage, WINDOW_CAPTURE_PADDING, WINDOW_CAPTURE_PADDING, null);
             } else {
                 g2.drawImage(capturedImage, WINDOW_CAPTURE_PADDING, WINDOW_CAPTURE_PADDING, null);
@@ -441,46 +461,174 @@ public class ScreenShotPanel extends JPanel
         return framed;
     }
 
-    private static BufferedImage applyRoundedWindowMask(BufferedImage capturedImage, int cornerRadius) {
+    private static BufferedImage applyRoundedWindowMask(BufferedImage capturedImage, WindowCornerRadii cornerRadii) {
         int width = capturedImage.getWidth();
         int height = capturedImage.getHeight();
-        int diameter = cornerRadius * 2;
-
         BufferedImage roundedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = roundedImage.createGraphics();
+        int maxRadius = Math.min(width, height) / 2;
+        int topLeftRadius = Math.min(cornerRadii.topLeft, maxRadius);
+        int topRightRadius = Math.min(cornerRadii.topRight, maxRadius);
+        int bottomLeftRadius = Math.min(cornerRadii.bottomLeft, maxRadius);
+        int bottomRightRadius = Math.min(cornerRadii.bottomRight, maxRadius);
 
-        try {
-            g2.setRenderingHint(
-                java.awt.RenderingHints.KEY_ANTIALIASING,
-                java.awt.RenderingHints.VALUE_ANTIALIAS_ON
-            );
-            g2.setRenderingHint(
-                java.awt.RenderingHints.KEY_RENDERING,
-                java.awt.RenderingHints.VALUE_RENDER_QUALITY
-            );
-            g2.drawImage(capturedImage, 0, 0, null);
-            g2.setComposite(AlphaComposite.DstIn);
-            g2.setColor(Color.WHITE);
-            g2.fill(new RoundRectangle2D.Float(0, 0, width, height, diameter, diameter));
-        } finally {
-            g2.dispose();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int argb = capturedImage.getRGB(x, y);
+                float alphaFactor = resolveCornerAlphaFactor(
+                    x,
+                    y,
+                    width,
+                    height,
+                    topLeftRadius,
+                    topRightRadius,
+                    bottomLeftRadius,
+                    bottomRightRadius
+                );
+
+                if (alphaFactor >= 0.999f) {
+                    roundedImage.setRGB(x, y, argb);
+                    continue;
+                }
+
+                int alpha = (argb >>> 24) & 0xFF;
+                int adjustedAlpha = Math.max(0, Math.min(255, Math.round(alpha * alphaFactor)));
+                roundedImage.setRGB(x, y, (adjustedAlpha << 24) | (argb & 0x00FFFFFF));
+            }
         }
 
         return roundedImage;
     }
 
+    private static float resolveCornerAlphaFactor(int x,
+                                                  int y,
+                                                  int width,
+                                                  int height,
+                                                  int topLeftRadius,
+                                                  int topRightRadius,
+                                                  int bottomLeftRadius,
+                                                  int bottomRightRadius) {
+        int radius;
+        if (x < topLeftRadius && y < topLeftRadius) {
+            radius = topLeftRadius;
+        } else if (x >= width - topRightRadius && y < topRightRadius) {
+            radius = topRightRadius;
+        } else if (x < bottomLeftRadius && y >= height - bottomLeftRadius) {
+            radius = bottomLeftRadius;
+        } else if (x >= width - bottomRightRadius && y >= height - bottomRightRadius) {
+            radius = bottomRightRadius;
+        } else {
+            return 1.0f;
+        }
+
+        boolean left = x < radius;
+        boolean right = x >= width - radius;
+        boolean top = y < radius;
+        boolean bottom = y >= height - radius;
+
+        if ((!left && !right) || (!top && !bottom)) {
+            return 1.0f;
+        }
+
+        float centerX;
+        float centerY;
+
+        if (left && top) {
+            centerX = radius;
+            centerY = radius;
+        } else if (right && top) {
+            centerX = width - radius;
+            centerY = radius;
+        } else if (left) {
+            centerX = radius;
+            centerY = height - radius;
+        } else {
+            centerX = width - radius;
+            centerY = height - radius;
+        }
+
+        int insideSamples = 0;
+        int sampleCount = WINDOW_CORNER_ALPHA_SAMPLES * WINDOW_CORNER_ALPHA_SAMPLES;
+        float step = 1.0f / WINDOW_CORNER_ALPHA_SAMPLES;
+        float radiusSquared = radius * radius;
+
+        for (int sampleY = 0; sampleY < WINDOW_CORNER_ALPHA_SAMPLES; sampleY++) {
+            for (int sampleX = 0; sampleX < WINDOW_CORNER_ALPHA_SAMPLES; sampleX++) {
+                float px = x + (sampleX + 0.5f) * step;
+                float py = y + (sampleY + 0.5f) * step;
+                float dx = px - centerX;
+                float dy = py - centerY;
+                if (dx * dx + dy * dy <= radiusSquared) {
+                    insideSamples++;
+                }
+            }
+        }
+
+        return insideSamples / (float) sampleCount;
+    }
+
+    private static WindowCornerRadii resolveWindowCornerRadii(BufferedImage capturedImage) {
+        int topLeft = clampCornerRadius(detectTopLeftCornerRadius(capturedImage, Math.min(40, Math.min(
+            capturedImage.getWidth(),
+            capturedImage.getHeight()
+        ) / 2)));
+        int topRight = clampCornerRadius(detectTopRightCornerRadius(capturedImage, Math.min(40, Math.min(
+            capturedImage.getWidth(),
+            capturedImage.getHeight()
+        ) / 2)));
+        int bottomLeft = clampCornerRadius(detectBottomLeftCornerRadius(capturedImage, Math.min(40, Math.min(
+            capturedImage.getWidth(),
+            capturedImage.getHeight()
+        ) / 2)));
+        int bottomRight = clampCornerRadius(detectBottomRightCornerRadius(capturedImage, Math.min(40, Math.min(
+            capturedImage.getWidth(),
+            capturedImage.getHeight()
+        ) / 2)));
+
+        if (topLeft == 0 && topRight == 0 && bottomLeft == 0 && bottomRight == 0 && looksLikeRoundedWindow(capturedImage)) {
+            int fallback = clampCornerRadius(estimateFallbackCornerRadius(capturedImage));
+            return new WindowCornerRadii(fallback, fallback, fallback, fallback);
+        }
+
+        int fallback = clampCornerRadius(estimateFallbackCornerRadius(capturedImage));
+        if (topLeft == 0 && topRight > 0) {
+            topLeft = topRight;
+        }
+        if (topLeft == 0 && bottomLeft > 0) {
+            topLeft = bottomLeft;
+        }
+        if (topLeft == 0 && bottomRight > 0) {
+            topLeft = bottomRight;
+        }
+        if (topLeft == 0 && looksLikeRoundedWindow(capturedImage)) {
+            topLeft = fallback;
+        }
+
+        if (topRight == 0) {
+            topRight = topLeft > 0 ? topLeft : fallback;
+        }
+        if (bottomLeft == 0) {
+            bottomLeft = topLeft > 0 ? topLeft : fallback;
+        }
+        if (bottomRight == 0) {
+            bottomRight = topLeft > 0 ? topLeft : fallback;
+        }
+
+        return new WindowCornerRadii(topLeft, topRight, bottomLeft, bottomRight);
+    }
+
+    private static int clampCornerRadius(int radius) {
+        if (radius <= 0) {
+            return 0;
+        }
+        return Math.max(WINDOW_CORNER_MIN_RADIUS, Math.min(WINDOW_CORNER_MAX_RADIUS, radius));
+    }
+
     private static int resolveWindowCornerRadius(BufferedImage capturedImage) {
-        int detectedCornerRadius = detectCornerRadius(capturedImage);
-
-        if (detectedCornerRadius > 0) {
-            return Math.max(WINDOW_CORNER_MIN_RADIUS, Math.min(WINDOW_CORNER_MAX_RADIUS, detectedCornerRadius));
+        WindowCornerRadii cornerRadii = resolveWindowCornerRadii(capturedImage);
+        if (cornerRadii.max() == 0) {
+            return 0;
         }
-
-        if (looksLikeRoundedWindow(capturedImage)) {
-            return WINDOW_CORNER_FALLBACK_RADIUS;
-        }
-
-        return 0;
+        return (cornerRadii.topLeft + cornerRadii.topRight + cornerRadii.bottomLeft + cornerRadii.bottomRight) / 4;
     }
 
     private static boolean looksLikeRoundedWindow(BufferedImage image) {
@@ -491,77 +639,209 @@ public class ScreenShotPanel extends JPanel
             return false;
         }
 
-        int bodyInsetX = Math.min(WINDOW_CORNER_MAX_RADIUS, width - 1);
-        int bodyInsetY = Math.min(WINDOW_CORNER_MAX_RADIUS, height - 1);
-        int centerX = width / 2;
-        int centerY = height / 2;
-        int topReference = image.getRGB(centerX, bodyInsetY);
-        int leftReference = image.getRGB(bodyInsetX, centerY);
+        int bodyInset = Math.min(Math.min(width - 1, height - 1), 16);
+        int bodyReference = image.getRGB(bodyInset, bodyInset);
         int topLeft = image.getRGB(0, 0);
+        int topRight = image.getRGB(width - 1, 0);
+        int bottomLeft = image.getRGB(0, height - 1);
+        int bottomRight = image.getRGB(width - 1, height - 1);
 
-        return colorDistance(topLeft, topReference) >= WINDOW_CORNER_COLOR_THRESHOLD
-            || colorDistance(topLeft, leftReference) >= WINDOW_CORNER_COLOR_THRESHOLD;
+        return colorDistance(topLeft, bodyReference) >= WINDOW_CORNER_COLOR_THRESHOLD
+            || colorDistance(topRight, bodyReference) >= WINDOW_CORNER_COLOR_THRESHOLD
+            || colorDistance(bottomLeft, bodyReference) >= WINDOW_CORNER_COLOR_THRESHOLD
+            || colorDistance(bottomRight, bodyReference) >= WINDOW_CORNER_COLOR_THRESHOLD;
+    }
+
+    private static boolean[][] detectWindowOutsideMask(BufferedImage image) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        boolean[][] outsideMask = new boolean[height][width];
+
+        if (width < WINDOW_CORNER_SAMPLE_SIZE * 4 || height < WINDOW_CORNER_SAMPLE_SIZE * 4) {
+            return outsideMask;
+        }
+
+        int maxScan = Math.min(40, Math.min(width, height) / 2);
+        floodCornerOutsideMask(image, outsideMask, 0, 0, 1, 1, maxScan);
+        floodCornerOutsideMask(image, outsideMask, width - 1, 0, -1, 1, maxScan);
+        floodCornerOutsideMask(image, outsideMask, 0, height - 1, 1, -1, maxScan);
+        floodCornerOutsideMask(image, outsideMask, width - 1, height - 1, -1, -1, maxScan);
+        return outsideMask;
+    }
+
+    private static void floodCornerOutsideMask(BufferedImage image,
+                                               boolean[][] outsideMask,
+                                               int startX,
+                                               int startY,
+                                               int stepX,
+                                               int stepY,
+                                               int maxScan) {
+        int seedColor = image.getRGB(startX, startY);
+
+        boolean[][] visited = new boolean[image.getHeight()][image.getWidth()];
+        Deque<Point> queue = new ArrayDeque<Point>();
+        queue.add(new Point(startX, startY));
+
+        while (!queue.isEmpty()) {
+            Point point = queue.removeFirst();
+            int x = point.x;
+            int y = point.y;
+
+            if (x < 0 || y < 0 || x >= image.getWidth() || y >= image.getHeight()) {
+                continue;
+            }
+            if (visited[y][x]) {
+                continue;
+            }
+            visited[y][x] = true;
+
+            if (!isInsideCornerScan(startX, startY, x, y, maxScan)) {
+                continue;
+            }
+
+            int pixel = image.getRGB(x, y);
+            if (colorDistance(pixel, seedColor) > WINDOW_CORNER_SEED_THRESHOLD) {
+                continue;
+            }
+
+            outsideMask[y][x] = true;
+            queue.add(new Point(x + stepX, y));
+            queue.add(new Point(x, y + stepY));
+            queue.add(new Point(x + stepX, y + stepY));
+            queue.add(new Point(x - stepX, y));
+            queue.add(new Point(x, y - stepY));
+        }
+    }
+
+    private static boolean isInsideCornerScan(int startX, int startY, int x, int y, int maxScan) {
+        return Math.abs(x - startX) < maxScan && Math.abs(y - startY) < maxScan;
     }
 
     private static int detectCornerRadius(BufferedImage image) {
+        WindowCornerRadii cornerRadii = resolveWindowCornerRadii(image);
+        if (cornerRadii.max() == 0) {
+            return 0;
+        }
+        return (cornerRadii.topLeft + cornerRadii.topRight + cornerRadii.bottomLeft + cornerRadii.bottomRight) / 4;
+    }
+
+    private static int detectTopLeftCornerRadius(BufferedImage image, int maxScan) {
+        int bodyInset = Math.min(Math.min(image.getWidth() - 1, image.getHeight() - 1), 16);
+        int bodyColor = image.getRGB(bodyInset, bodyInset);
+        return resolveDetectedCornerRadius(
+            image,
+            bodyColor,
+            maxScan,
+            true,
+            true
+        );
+    }
+
+    private static int detectTopRightCornerRadius(BufferedImage image, int maxScan) {
+        int bodyInset = Math.min(Math.min(image.getWidth() - 1, image.getHeight() - 1), 16);
+        int bodyColor = image.getRGB(Math.max(0, image.getWidth() - 1 - bodyInset), bodyInset);
+        return resolveDetectedCornerRadius(
+            image,
+            bodyColor,
+            maxScan,
+            false,
+            true
+        );
+    }
+
+    private static int detectBottomLeftCornerRadius(BufferedImage image, int maxScan) {
+        int bodyInset = Math.min(Math.min(image.getWidth() - 1, image.getHeight() - 1), 16);
+        int bodyColor = image.getRGB(bodyInset, Math.max(0, image.getHeight() - 1 - bodyInset));
+        return resolveDetectedCornerRadius(
+            image,
+            bodyColor,
+            maxScan,
+            true,
+            false
+        );
+    }
+
+    private static int detectBottomRightCornerRadius(BufferedImage image, int maxScan) {
         int width = image.getWidth();
         int height = image.getHeight();
-
-        if (width < WINDOW_CORNER_SAMPLE_SIZE * 4 || height < WINDOW_CORNER_SAMPLE_SIZE * 4) {
-            return 0;
-        }
-
-        int bodyInsetX = Math.min(WINDOW_CORNER_MAX_RADIUS, width - 1);
-        int bodyInsetY = Math.min(WINDOW_CORNER_MAX_RADIUS, height - 1);
-        int centerX = width / 2;
-        int centerY = height / 2;
-        int topReference = image.getRGB(centerX, bodyInsetY);
-        int leftReference = image.getRGB(bodyInsetX, centerY);
-        int topLeft = image.getRGB(0, 0);
-
-        int maxScan = Math.min(40, Math.min(width, height) / 2);
-
-        if (colorDistance(topLeft, topReference) < WINDOW_CORNER_COLOR_THRESHOLD
-            && colorDistance(topLeft, leftReference) < WINDOW_CORNER_COLOR_THRESHOLD) {
-            return 0;
-        }
-
-        int topOffset = findHorizontalStart(image, topReference, maxScan);
-        int leftOffset = findVerticalStart(image, leftReference, maxScan);
-
-        if (topOffset < 3 || leftOffset < 3) {
-            return 0;
-        }
-
-        if (Math.abs(topOffset - leftOffset) > 6) {
-            return 0;
-        }
-
-        return (topOffset + leftOffset) / 2;
+        int bodyInset = Math.min(Math.min(width - 1, height - 1), 16);
+        int bodyColor = image.getRGB(Math.max(0, width - 1 - bodyInset), Math.max(0, height - 1 - bodyInset));
+        return resolveDetectedCornerRadius(
+            image,
+            bodyColor,
+            maxScan,
+            false,
+            false
+        );
     }
 
-    private static int findHorizontalStart(BufferedImage image, int targetColor, int maxScan) {
-        for (int y = 0; y <= 1 && y < image.getHeight(); y++) {
-            for (int x = 0; x < maxScan; x++) {
-                if (colorDistance(image.getRGB(x, y), targetColor) < WINDOW_CORNER_COLOR_THRESHOLD) {
-                    return x;
-                }
-            }
+    private static int resolveDetectedCornerRadius(BufferedImage image,
+                                                   int bodyColor,
+                                                   int maxScan,
+                                                   boolean fromLeft,
+                                                   boolean fromTop) {
+        int horizontal = findBodyTransition(image, bodyColor, true, maxScan, fromLeft, fromTop);
+        int vertical = findBodyTransition(image, bodyColor, false, maxScan, fromLeft, fromTop);
+
+        if (horizontal >= 3 && vertical >= 3 && Math.abs(horizontal - vertical) <= 8) {
+            return (horizontal + vertical) / 2;
         }
 
+        if (horizontal >= 3 && vertical >= 3) {
+            return Math.min(horizontal, vertical);
+        }
+
+        int detected = Math.max(horizontal, vertical);
+        if (detected >= 3) {
+            return detected;
+        }
+
+        return 0;
+    }
+
+    private static int findBodyTransition(BufferedImage image,
+                                          int bodyColor,
+                                          boolean horizontal,
+                                          int maxScan,
+                                          boolean fromLeft,
+                                          boolean fromTop) {
+        if (horizontal) {
+            int row0 = fromTop ? 0 : image.getHeight() - 1;
+            int row1 = fromTop
+                ? Math.min(1, image.getHeight() - 1)
+                : Math.max(0, image.getHeight() - 2);
+
+            for (int offset = 0; offset < maxScan; offset++) {
+                int x = fromLeft ? offset : image.getWidth() - 1 - offset;
+                int distance0 = colorDistance(image.getRGB(x, row0), bodyColor);
+                int distance1 = colorDistance(image.getRGB(x, row1), bodyColor);
+                if (Math.min(distance0, distance1) < WINDOW_CORNER_SEED_THRESHOLD) {
+                    return offset;
+                }
+            }
+            return -1;
+        }
+
+        int col0 = fromLeft ? 0 : image.getWidth() - 1;
+        int col1 = fromLeft
+            ? Math.min(1, image.getWidth() - 1)
+            : Math.max(0, image.getWidth() - 2);
+
+        for (int offset = 0; offset < maxScan; offset++) {
+            int y = fromTop ? offset : image.getHeight() - 1 - offset;
+            int distance0 = colorDistance(image.getRGB(col0, y), bodyColor);
+            int distance1 = colorDistance(image.getRGB(col1, y), bodyColor);
+            if (Math.min(distance0, distance1) < WINDOW_CORNER_SEED_THRESHOLD) {
+                return offset;
+            }
+        }
         return -1;
     }
 
-    private static int findVerticalStart(BufferedImage image, int targetColor, int maxScan) {
-        for (int x = 0; x <= 1 && x < image.getWidth(); x++) {
-            for (int y = 0; y < maxScan; y++) {
-                if (colorDistance(image.getRGB(x, y), targetColor) < WINDOW_CORNER_COLOR_THRESHOLD) {
-                    return y;
-                }
-            }
-        }
-
-        return -1;
+    private static int estimateFallbackCornerRadius(BufferedImage image) {
+        int shorterSide = Math.min(image.getWidth(), image.getHeight());
+        int estimated = Math.max(WINDOW_CORNER_FALLBACK_RADIUS, Math.round(shorterSide * 0.018f));
+        return Math.max(WINDOW_CORNER_MIN_RADIUS, Math.min(WINDOW_CORNER_MAX_RADIUS, estimated));
     }
 
     private static int colorDistance(int argb1, int argb2) {
