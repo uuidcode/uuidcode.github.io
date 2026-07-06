@@ -128,8 +128,6 @@ public class ScreenShotPanel extends JPanel
     private JPanel createControlPanel() {
         if (this.captureConfig.isWindowCaptureMode()) {
             JPanel panel = new JPanel(new GridLayout(1, 2));
-            panel.setBackground(new Color(0, 0, 0, 0));
-            panel.setOpaque(false);
 
             JButton captureButton = new JButton("capture");
             captureButton.addActionListener(e -> this.shot(null, false));
