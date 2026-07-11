@@ -102,10 +102,12 @@ public class ScreenShotPanel extends JPanel
     private Point windowCaptureHoverPoint;
     private int windowCaptureRequestId;
 
-    public ScreenShotPanel(GraphicsDevice graphicsDevice,
-                           ImageFrame imageFrame,
-                           ScreenShotFrame screenShotFrame,
-                           BufferedImage baseScreenImage) {
+    public ScreenShotPanel(
+        GraphicsDevice graphicsDevice,
+        ImageFrame imageFrame,
+        ScreenShotFrame screenShotFrame,
+        BufferedImage baseScreenImage
+    ) {
         this.graphicsDevice = graphicsDevice;
         this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
@@ -129,6 +131,8 @@ public class ScreenShotPanel extends JPanel
         if (this.captureConfig.isWindowCaptureMode()) {
             JPanel panel = new JPanel(new GridLayout(1, 2));
 
+            this.configureControlPanel(panel);
+
             JButton captureButton = new JButton("capture");
             captureButton.addActionListener(e -> this.shot(null, false));
             panel.add(captureButton);
@@ -140,7 +144,8 @@ public class ScreenShotPanel extends JPanel
         }
 
         JPanel panel = new JPanel(new GridLayout(2, 2));
-        panel.setBackground(new Color(0, 0, 0, 0));
+
+        this.configureControlPanel(panel);
 
         JButton shotButton = new JButton("shot");
         shotButton.addActionListener(e -> this.shot(null, false));
@@ -169,12 +174,33 @@ public class ScreenShotPanel extends JPanel
         return panel;
     }
 
-    private void shot(Integer second, boolean isAll) {
+    static void configureControlPanel(JPanel panel) {
+        panel.setOpaque(false);
+        panel.setBackground(new Color(0, 0, 0, 0));
+    }
+
+    private void shot(
+        Integer second,
+        boolean isAll
+    ) {
         Rectangle selectionRectangle = this.getSelectionRectangle();
         if (selectionRectangle == null) {
             return;
         }
+
         ImageFrame.WindowTarget selectedWindowTarget = this.windowCaptureTarget;
+        boolean keepImageFrameVisible = this.captureConfig.isSelfAreaCaptureMode();
+
+        if (controlPanel != null) {
+            this.hideControlPanel(shouldRepaintWhenHidingControlPanel(true));
+        }
+
+        if (!keepImageFrameVisible) {
+            imageFrame.setVisible(false);
+        }
+
+        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+
         stratPoint = null;
         endPoint = null;
         this.windowCapturePreviewRect = null;
@@ -185,14 +211,6 @@ public class ScreenShotPanel extends JPanel
             selectionRectangle.width++;
             selectionRectangle.height++;
         }
-        if (controlPanel != null) {
-            this.hideControlPanel();
-        }
-        boolean keepImageFrameVisible = this.captureConfig.isSelfAreaCaptureMode();
-        if (!keepImageFrameVisible) {
-            imageFrame.setVisible(false);
-        }
-        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
         new Thread(() -> {
             try {
@@ -1361,14 +1379,25 @@ public class ScreenShotPanel extends JPanel
         this.repaintExpanded(this.controlPanel.getBounds());
     }
 
+    static boolean shouldRepaintWhenHidingControlPanel(boolean captureStarting) {
+        return !captureStarting;
+    }
+
     private void hideControlPanel() {
+        this.hideControlPanel(shouldRepaintWhenHidingControlPanel(false));
+    }
+
+    private void hideControlPanel(boolean repaintBounds) {
         if (this.controlPanel == null || !this.controlPanel.isVisible()) {
             return;
         }
 
         Rectangle bounds = this.controlPanel.getBounds();
         this.controlPanel.setVisible(false);
-        this.repaintExpanded(bounds);
+
+        if (repaintBounds) {
+            this.repaintExpanded(bounds);
+        }
     }
 
     private void repaintExpanded(Rectangle bounds) {
