@@ -703,27 +703,46 @@ public class ImageViewPanel extends JPanel
 
     private BufferedImage crop(BufferedImage bufferedImage) {
         Rectangle2D rect = getRectangle2D(this.stratPoint, this.endPoint);
-        return this.crop(bufferedImage, new Rectangle(
-            (int) rect.getX(),
-            (int) rect.getY(),
-            (int) rect.getWidth(),
-            (int) rect.getHeight()
-        ));
+        return this.crop(
+            bufferedImage,
+            new Rectangle(
+                (int) rect.getX(),
+                (int) rect.getY(),
+                (int) rect.getWidth(),
+                (int) rect.getHeight()
+            )
+        );
     }
 
-    private BufferedImage crop(BufferedImage bufferedImage, Rectangle rect) {
+    private BufferedImage crop(
+        BufferedImage bufferedImage,
+        Rectangle rect
+    ) {
+        BufferedImage croppedImage = cropImage(
+            bufferedImage,
+            rect
+        );
+        this.setPreferredSize(new Dimension(croppedImage.getWidth(), croppedImage.getHeight()));
+
+        return croppedImage;
+    }
+
+    static BufferedImage cropImage(
+        BufferedImage bufferedImage,
+        Rectangle rect
+    ) {
         BufferedImage cropImage = bufferedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
+        BufferedImage croppedImage = new BufferedImage(
+            cropImage.getWidth(),
+            cropImage.getHeight(),
+            TYPE_INT_ARGB
+        );
 
-        bufferedImage = new BufferedImage(cropImage.getWidth(),
-            cropImage.getHeight(), TYPE_INT_ARGB);
-
-        this.setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
-        Graphics g = bufferedImage.getGraphics();
+        Graphics g = croppedImage.getGraphics();
         g.drawImage(cropImage, 0, 0, null);
-        g.setColor(BLACK);
-        g.drawRect(0, 0, cropImage.getWidth() - 1, cropImage.getHeight() - 1);
+        g.dispose();
 
-        return bufferedImage;
+        return croppedImage;
     }
 
     public void addHistory(BufferedImage bufferedImage) {

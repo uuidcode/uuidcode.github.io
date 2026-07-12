@@ -108,7 +108,7 @@ public class ImageFrame extends JFrame {
         this.setFocusable(true);
 
         Map<Integer, Runnable> keyMap = new HashMap<>();
-        keyMap.put(KeyEvent.VK_P, this::capture);
+        keyMap.put(KeyEvent.VK_P, this::captureAuto);
         keyMap.put(KeyEvent.VK_O, this::open);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
@@ -130,7 +130,7 @@ public class ImageFrame extends JFrame {
     public JPanel createControlPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        this.createCaptureButton(panel);
+        this.createCaptureAutoButton(panel);
         this.createCaptureSelfButton(panel);
         this.createCaptureSelfAreaButton(panel);
         this.createCaptureRepeatButton(panel);
@@ -147,7 +147,6 @@ public class ImageFrame extends JFrame {
     }
 
     private void createCaptureGridModeComboBox(JPanel panel) {
-        panel.add(new JLabel(" capture mode (preview / capture):"));
         captureGridModeComboBox = new JComboBox<>(CaptureGridMode.values());
         Dimension comboSize = new Dimension(200, captureGridModeComboBox.getPreferredSize().height);
         captureGridModeComboBox.setPreferredSize(comboSize);
@@ -261,38 +260,44 @@ public class ImageFrame extends JFrame {
         }
     }
 
-    private void createCaptureButton(JPanel panel) {
-        JButton button = new JButton("capture");
-        button.addActionListener(e -> this.capture());
+    static String toCaptureButtonLabel(String text) {
+        return text.startsWith("capture ")
+            ? text.substring("capture ".length())
+            : text;
+    }
+
+    private void createCaptureAutoButton(JPanel panel) {
+        JButton button = new JButton(toCaptureButtonLabel("capture auto"));
+        button.addActionListener(e -> this.captureAuto());
         panel.add(button);
     }
 
     private void createCaptureSelfButton(JPanel panel) {
-        JButton button = new JButton("capture self");
+        JButton button = new JButton(toCaptureButtonLabel("capture self"));
         button.addActionListener(e -> this.captureSelf());
         panel.add(button);
     }
 
     private void createCaptureSelfAreaButton(JPanel panel) {
-        JButton button = new JButton("capture self area");
+        JButton button = new JButton(toCaptureButtonLabel("capture self area"));
         button.addActionListener(e -> this.captureSelfArea());
         panel.add(button);
     }
 
     private void createCaptureRepeatButton(JPanel panel) {
-        JButton button = new JButton("capture repeat");
+        JButton button = new JButton(toCaptureButtonLabel("capture repeat"));
         button.addActionListener(e -> this.captureRepeat());
         panel.add(button);
     }
 
     private void createCaptureWindowButton(JPanel panel) {
-        JButton button = new JButton("capture window");
+        JButton button = new JButton(toCaptureButtonLabel("capture window"));
         button.addActionListener(e -> this.captureWindow());
         panel.add(button);
     }
 
     private void createCaptureFullScreenButton(JPanel panel) {
-        JButton button = new JButton("capture full screen");
+        JButton button = new JButton(toCaptureButtonLabel("capture full screen"));
         button.addActionListener(e -> this.captureFullScreen());
         panel.add(button);
     }
@@ -321,7 +326,17 @@ public class ImageFrame extends JFrame {
     }
 
     private void capture() {
-        this.startAreaCapture(true);
+        this.startAreaCapture(
+            true,
+            false
+        );
+    }
+
+    private void captureAuto() {
+        this.startAreaCapture(
+            true,
+            true
+        );
     }
 
     private BufferedImage captureBaseScreenImage(GraphicsDevice device) {
@@ -363,6 +378,7 @@ public class ImageFrame extends JFrame {
 
     private void captureSelf() {
         updateFixedSize();
+        this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSelfAreaCaptureMode(false);
 
@@ -413,10 +429,17 @@ public class ImageFrame extends JFrame {
     }
 
     private void captureSelfArea() {
-        this.startAreaCapture(false);
+        this.startAreaCapture(
+            false,
+            false
+        );
     }
 
-    private void startAreaCapture(boolean hideImageFrame) {
+    private void startAreaCapture(
+        boolean hideImageFrame,
+        boolean autoTrimEnabled
+    ) {
+        this.captureConfig.setAutoTrimEnabled(autoTrimEnabled);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSelfAreaCaptureMode(!hideImageFrame);
         updateFixedSize();
@@ -447,6 +470,7 @@ public class ImageFrame extends JFrame {
 
     private void captureFullScreen() {
         updateFixedSize();
+        this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSelfAreaCaptureMode(false);
 
@@ -505,6 +529,7 @@ public class ImageFrame extends JFrame {
 
     private void captureWindow() {
         this.setVisible(false);
+        this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(true);
         this.captureConfig.setSelfAreaCaptureMode(false);
 

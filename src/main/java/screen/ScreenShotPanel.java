@@ -82,6 +82,7 @@ public class ScreenShotPanel extends JPanel
     private static final int WINDOW_CORNER_COLOR_THRESHOLD = 24;
     private static final int WINDOW_CORNER_SEED_THRESHOLD = 28;
     private static final int WINDOW_CORNER_ALPHA_SAMPLES = 8;
+    private static final int AUTO_TRIM_COLOR_THRESHOLD = 36;
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
@@ -391,6 +392,10 @@ public class ScreenShotPanel extends JPanel
         }
 
         BufferedImage image = robot.createScreenCapture(rectangle);
+        if (config.isAutoTrimEnabled() && !windowCapture) {
+            image = trimUniformBorder(image);
+        }
+
         Integer captureGridSize = config.getCaptureGridMode().getCaptureGridSize();
 
         if (captureGridSize != null) {
@@ -439,6 +444,128 @@ public class ScreenShotPanel extends JPanel
         }
 
         tabbedPane.addTab(fileName);
+    }
+
+    static BufferedImage trimUniformBorder(BufferedImage image) {
+        if (image == null || image.getWidth() <= 2 || image.getHeight() <= 2) {
+            return image;
+        }
+
+        int[] backgroundSamples = new int[]{
+            image.getRGB(0, 0),
+            image.getRGB(image.getWidth() - 1, 0),
+            image.getRGB(0, image.getHeight() - 1),
+            image.getRGB(image.getWidth() - 1, image.getHeight() - 1)
+        };
+
+        int top = 0;
+        while (top < image.getHeight() - 1 && !rowContainsForeground(image, top, backgroundSamples)) {
+            top++;
+        }
+
+        int bottom = image.getHeight() - 1;
+        while (bottom > top && !rowContainsForeground(image, bottom, backgroundSamples)) {
+            bottom--;
+        }
+
+        int left = 0;
+        while (left < image.getWidth() - 1 && !columnContainsForeground(image, left, top, bottom, backgroundSamples)) {
+            left++;
+        }
+
+        int right = image.getWidth() - 1;
+        while (right > left && !columnContainsForeground(image, right, top, bottom, backgroundSamples)) {
+            right--;
+        }
+
+        if (top == 0
+            && left == 0
+            && right == image.getWidth() - 1
+            && bottom == image.getHeight() - 1) {
+            return image;
+        }
+
+        return copySubImage(
+            image,
+            new Rectangle(
+                left,
+                top,
+                right - left + 1,
+                bottom - top + 1
+            )
+        );
+    }
+
+    private static boolean rowContainsForeground(
+        BufferedImage image,
+        int y,
+        int[] backgroundSamples
+    ) {
+        int nonBackgroundPixelCount = 0;
+        int requiredForegroundPixels = Math.max(1, image.getWidth() / 100);
+
+        for (int x = 0; x < image.getWidth(); x++) {
+            if (!matchesBackground(image.getRGB(x, y), backgroundSamples)) {
+                nonBackgroundPixelCount++;
+                if (nonBackgroundPixelCount >= requiredForegroundPixels) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean columnContainsForeground(
+        BufferedImage image,
+        int x,
+        int top,
+        int bottom,
+        int[] backgroundSamples
+    ) {
+        int nonBackgroundPixelCount = 0;
+        int requiredForegroundPixels = Math.max(1, (bottom - top + 1) / 100);
+
+        for (int y = top; y <= bottom; y++) {
+            if (!matchesBackground(image.getRGB(x, y), backgroundSamples)) {
+                nonBackgroundPixelCount++;
+                if (nonBackgroundPixelCount >= requiredForegroundPixels) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean matchesBackground(
+        int rgb,
+        int[] backgroundSamples
+    ) {
+        for (int backgroundSample : backgroundSamples) {
+            if (colorDistance(rgb, backgroundSample) <= AUTO_TRIM_COLOR_THRESHOLD) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static BufferedImage copySubImage(
+        BufferedImage image,
+        Rectangle bounds
+    ) {
+        BufferedImage subImage = image.getSubimage(bounds.x, bounds.y, bounds.width, bounds.height);
+        BufferedImage copiedImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = copiedImage.createGraphics();
+
+        try {
+            g2.drawImage(subImage, 0, 0, null);
+        } finally {
+            g2.dispose();
+        }
+
+        return copiedImage;
     }
 
     private static BufferedImage applyWindowCaptureFrame(BufferedImage capturedImage) {

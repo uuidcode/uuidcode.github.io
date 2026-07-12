@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 public class CaptureConfig {
     private CaptureGridMode captureGridMode = CaptureGridMode.NONE_NONE;
     private boolean imgTagEnabled = false;
+    private boolean autoTrimEnabled = false;
     private boolean windowCaptureMode = false;
     private boolean selfAreaCaptureMode = false;
     private Integer fixedWidth;
