@@ -108,7 +108,7 @@ public class ImageFrame extends JFrame {
         this.setFocusable(true);
 
         Map<Integer, Runnable> keyMap = new HashMap<>();
-        keyMap.put(KeyEvent.VK_P, this::captureAuto);
+        keyMap.put(KeyEvent.VK_P, this::capture);
         keyMap.put(KeyEvent.VK_O, this::open);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
@@ -130,6 +130,7 @@ public class ImageFrame extends JFrame {
     public JPanel createControlPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        this.createCaptureButton(panel);
         this.createCaptureAutoButton(panel);
         this.createCaptureSelfButton(panel);
         this.createCaptureSelfAreaButton(panel);
@@ -266,8 +267,14 @@ public class ImageFrame extends JFrame {
             : text;
     }
 
+    private void createCaptureButton(JPanel panel) {
+        JButton button = new JButton("capture");
+        button.addActionListener(e -> this.capture());
+        panel.add(button);
+    }
+
     private void createCaptureAutoButton(JPanel panel) {
-        JButton button = new JButton(toCaptureButtonLabel("capture auto"));
+        JButton button = new JButton("auto");
         button.addActionListener(e -> this.captureAuto());
         panel.add(button);
     }

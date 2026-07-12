@@ -6,8 +6,12 @@ import static org.junit.Assert.assertEquals;
 
 public class ImageFrameTest {
     @Test
-    public void toCaptureButtonLabelRemovesCapturePrefix() {
-        assertEquals("auto", ImageFrame.toCaptureButtonLabel("capture auto"));
+    public void toCaptureButtonLabelKeepsCaptureButtonName() {
+        assertEquals("capture", ImageFrame.toCaptureButtonLabel("capture"));
+    }
+
+    @Test
+    public void toCaptureButtonLabelRemovesCapturePrefixFromExtendedLabels() {
         assertEquals("self area", ImageFrame.toCaptureButtonLabel("capture self area"));
     }
 
