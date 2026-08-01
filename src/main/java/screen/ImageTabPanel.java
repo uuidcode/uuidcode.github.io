@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,28 @@ public class ImageTabPanel extends JTabbedPane {
     }
 
     public void addTab(String name) {
-        ImagePanel imagePanel = new ImagePanel(name, getImageFile(name), this);
+        this.addTab(
+            name,
+            null,
+            null,
+            false
+        );
+    }
+
+    public void addTab(
+        String name,
+        Rectangle captureRectangle,
+        CaptureConfig captureConfig,
+        boolean windowCapture
+    ) {
+        ImagePanel imagePanel = new ImagePanel(
+            name,
+            getImageFile(name),
+            this,
+            captureRectangle,
+            captureConfig,
+            windowCapture
+        );
         imagePanel.setBorder(createEtchedBorder());
 
         this.indexMap.put(name, this.getComponentCount());

@@ -16,4 +16,16 @@ public class CaptureConfig {
     private Integer fixedWidth;
     private Integer fixedHeight;
     private Rectangle lastRectangle;
+
+    public CaptureConfig copy() {
+        return new CaptureConfig()
+            .setCaptureGridMode(this.captureGridMode)
+            .setImgTagEnabled(this.imgTagEnabled)
+            .setAutoTrimEnabled(this.autoTrimEnabled)
+            .setWindowCaptureMode(this.windowCaptureMode)
+            .setSelfAreaCaptureMode(this.selfAreaCaptureMode)
+            .setFixedWidth(this.fixedWidth)
+            .setFixedHeight(this.fixedHeight)
+            .setLastRectangle(this.lastRectangle == null ? null : new Rectangle(this.lastRectangle));
+    }
 }

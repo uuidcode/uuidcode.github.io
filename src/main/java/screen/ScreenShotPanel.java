@@ -443,7 +443,12 @@ public class ScreenShotPanel extends JPanel
         } catch (Throwable ignored) {
         }
 
-        tabbedPane.addTab(fileName);
+        tabbedPane.addTab(
+            fileName, // name
+            new Rectangle(rectangle), // captureRectangle
+            config, // captureConfig
+            windowCapture
+        );
     }
 
     static BufferedImage trimUniformBorder(BufferedImage image) {

@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
@@ -42,6 +44,9 @@ public class ImagePanel extends JPanel {
     private final String name;
     private final ImageTabPanel tabbedPane;
     private final File imageFile;
+    private final Rectangle captureRectangle;
+    private final CaptureConfig captureConfig;
+    private final boolean windowCapture;
     private final ImageOcrService imageOcrService = new ImageOcrService();
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
@@ -51,11 +56,21 @@ public class ImagePanel extends JPanel {
     private ImageOcrPanel imageOcrPanel;
     private JButton ocrButton;
 
-    public ImagePanel(String name, File imageFile, ImageTabPanel tabbedPane) {
+    public ImagePanel(
+        String name,
+        File imageFile,
+        ImageTabPanel tabbedPane,
+        Rectangle captureRectangle,
+        CaptureConfig captureConfig,
+        boolean windowCapture
+    ) {
         super(new BorderLayout());
         this.name = name;
         this.tabbedPane = tabbedPane;
         this.imageFile = imageFile;
+        this.captureRectangle = captureRectangle == null ? null : new Rectangle(captureRectangle);
+        this.captureConfig = captureConfig == null ? null : captureConfig.copy();
+        this.windowCapture = windowCapture;
         this.imageViewPanel = this.createImageViewPanel(imageFile);
         this.createControlPanel();
         this.setCenterComponent(this.jScrollPane);
@@ -162,6 +177,7 @@ public class ImagePanel extends JPanel {
         this.buttonPanel = new JPanel();
         this.buttonPanel.setLayout(new BoxLayout(buttonPanel, LINE_AXIS));
 
+        this.createCaptureRepeatButton();
         this.createMeasureButton();
         this.createShadowButton();
         this.createBorderButton();
@@ -260,6 +276,39 @@ public class ImagePanel extends JPanel {
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.shadow());
         this.buttonPanel.add(button);
+    }
+
+    private void createCaptureRepeatButton() {
+        JButton button = new JButton("capture repeat");
+        button.setName(this.name);
+        button.setEnabled(this.captureRectangle != null);
+        button.addActionListener(e -> this.captureRepeat());
+        this.buttonPanel.add(button);
+    }
+
+    private void captureRepeat() {
+        if (this.captureRectangle == null) {
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                Robot robot = new Robot();
+                CaptureConfig config = this.captureConfig != null ? this.captureConfig : new CaptureConfig();
+
+                ScreenShotPanel.capture(
+                    robot,
+                    new Rectangle(this.captureRectangle), // rectangle
+                    this.captureRectangle.x,
+                    this.captureRectangle.y,
+                    this.tabbedPane,
+                    config,
+                    this.windowCapture
+                );
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }, "capture-repeat").start();
     }
 
     private void createMeasureButton() {
