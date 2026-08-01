@@ -27,6 +27,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
@@ -83,7 +84,8 @@ public class ImagePanel extends JPanel {
         keyMap.put(KeyEvent.VK_Y, this::redo);
         keyMap.put(KeyEvent.VK_E, this::clear);
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
-            if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
+            Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
+            if (focusOwner instanceof JTextComponent || focusOwner instanceof JTable) {
                 return false;
             }
 

@@ -23,6 +23,10 @@ public class ScreenShotFrame extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setUndecorated(true);
         this.setAlwaysOnTop(true);
+        // macOS Tahoe(26) Liquid Glass 재질이 반투명 창에 블러를 입히므로
+        // 픽셀 단위 투명(perpixel translucent)으로 만들어 일반 알파 합성(블러 없는 투명)을 강제한다
+        this.setBackground(new Color(0, 0, 0, 0));
+        contentPane.setOpaque(false);
 
         int x = graphicsDevice.getDefaultConfiguration().getBounds().x;
         int y = graphicsDevice.getDefaultConfiguration().getBounds().y;

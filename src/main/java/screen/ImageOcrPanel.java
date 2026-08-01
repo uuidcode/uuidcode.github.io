@@ -1,13 +1,16 @@
 package screen;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -19,6 +22,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -95,6 +102,7 @@ public class ImageOcrPanel extends JPanel {
         this.table.setAutoCreateRowSorter(true);
         this.table.getTableHeader().setReorderingAllowed(false);
         this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.table.setCellSelectionEnabled(true);
         this.table.setFillsViewportHeight(true);
         this.table.setRowHeight(24);
         this.table.setShowVerticalLines(true);
@@ -117,6 +125,35 @@ public class ImageOcrPanel extends JPanel {
         tableHeader.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, new Color(188, 188, 188)));
         tableHeader.setFont(tableHeader.getFont().deriveFont(Font.BOLD, 13f));
         tableHeader.setPreferredSize(new Dimension(tableHeader.getPreferredSize().width, 30));
+
+        int menuShortcutMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+        KeyStroke copyKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_C, menuShortcutMask);
+        this.table.getInputMap(JComponent.WHEN_FOCUSED).put(copyKeyStroke, "copyCell");
+        this.table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(copyKeyStroke, "copyCell");
+        this.table.getActionMap().put("copyCell", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                copySelectedCell();
+            }
+        });
+    }
+
+    private void copySelectedCell() {
+        int viewRow = this.table.getSelectedRow();
+        if (viewRow < 0) {
+            return;
+        }
+
+        int viewColumn = this.table.getSelectedColumn();
+        if (viewColumn < 0) {
+            viewColumn = 0;
+        }
+
+        Object value = this.table.getValueAt(viewRow, viewColumn);
+        String text = value == null ? "" : value.toString();
+        Toolkit.getDefaultToolkit()
+            .getSystemClipboard()
+            .setContents(new StringSelection(text), null);
     }
 
     public void showLoading() {
