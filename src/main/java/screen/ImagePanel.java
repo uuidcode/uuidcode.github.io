@@ -8,6 +8,7 @@ import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
@@ -42,6 +43,8 @@ import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.BoxLayout.X_AXIS;
 
 public class ImagePanel extends JPanel {
+    private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
+
     private final String name;
     private final ImageTabPanel tabbedPane;
     private final File imageFile;
@@ -293,8 +296,18 @@ public class ImagePanel extends JPanel {
             return;
         }
 
+        Window window = SwingUtilities.getWindowAncestor(this);
+
         new Thread(() -> {
             try {
+                // 앱 창이 캡처 영역을 가리면 그 위의 앱(이전 캡처 이미지)을 다시 찍어
+                // auto trim 과 맞물려 점점 작아지므로, 원래 영역이 드러나도록 앱 창을 잠시 숨긴다
+                if (window != null) {
+                    SwingUtilities.invokeAndWait(() -> window.setVisible(false));
+                }
+
+                Thread.sleep(CAPTURE_REPEAT_HIDE_DELAY_MS);
+
                 Robot robot = new Robot();
                 CaptureConfig config = this.captureConfig != null ? this.captureConfig : new CaptureConfig();
 
@@ -309,6 +322,10 @@ public class ImagePanel extends JPanel {
                 );
             } catch (Throwable t) {
                 t.printStackTrace();
+            } finally {
+                if (window != null) {
+                    SwingUtilities.invokeLater(() -> window.setVisible(true));
+                }
             }
         }, "capture-repeat").start();
     }
