@@ -1169,9 +1169,8 @@ public class ScreenShotPanel extends JPanel
             g2.fillRect(0, 0, this.getWidth(), this.getHeight());
             g2.setComposite(AlphaComposite.SrcOver);
 
-            if (this.baseScreenImage != null) {
-                g2.drawImage(this.baseScreenImage, 0, 0, this);
-            }
+            // 투명 오버레이는 실제 화면이 그대로 비치므로 정지 스크린샷(baseScreenImage)을 그리지 않는다.
+            // 과거 캡처가 baked-in 되어 재캡처마다 이미지가 겹겹이 쌓이는 현상을 방지한다.
 
             g2.setColor(BACKGROUND_COLOR);
             g2.fillRect(0, 0, this.getWidth(), this.getHeight());
