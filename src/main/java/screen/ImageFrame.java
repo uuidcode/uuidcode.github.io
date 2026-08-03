@@ -356,6 +356,15 @@ public class ImageFrame extends JFrame {
         }
     }
 
+    void disposeScreenShotFrames() {
+        if (this.screenShotFrameList == null) {
+            return;
+        }
+
+        this.screenShotFrameList.forEach(ScreenShotFrame::dispose);
+        this.screenShotFrameList = null;
+    }
+
     private void captureRepeat() {
         this.setVisible(false);
         this.captureConfig.setWindowCaptureMode(false);
@@ -467,6 +476,8 @@ public class ImageFrame extends JFrame {
             getLocalGraphicsEnvironment()
                 .getScreenDevices();
 
+        this.disposeScreenShotFrames();
+
         this.screenShotFrameList = stream(screenDeviceArray)
             .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))
             .peek(f -> f.setVisible(true))
@@ -545,6 +556,8 @@ public class ImageFrame extends JFrame {
                 .getScreenDevices();
 
         updateFixedSize();
+
+        this.disposeScreenShotFrames();
 
         this.screenShotFrameList = stream(screenDeviceArray)
             .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))

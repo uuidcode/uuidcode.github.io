@@ -1,5 +1,6 @@
 package screen;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -290,7 +291,7 @@ public class ScreenShotPanel extends JPanel
                         if (!keepImageFrameVisible) {
                             imageFrame.setVisible(true);
                         }
-                        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+                        imageFrame.disposeScreenShotFrames();
                     });
                 } catch (Throwable ignored) {
                 }
@@ -320,9 +321,8 @@ public class ScreenShotPanel extends JPanel
         endPoint = null;
         mousePosition = null;
         guideOverlayVisible = true;
-        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+        imageFrame.disposeScreenShotFrames();
         imageFrame.setVisible(true);
-        this.refreshOverlayImmediately();
     }
 
     private void startColorPreview(Point point) {
@@ -1164,6 +1164,11 @@ public class ScreenShotPanel extends JPanel
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
         try {
+            // per-pixel 투명 창은 이전 프레임 픽셀이 남아 누적(겹침)되므로 매 프레임 완전 투명으로 지운다
+            g2.setComposite(AlphaComposite.Clear);
+            g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+            g2.setComposite(AlphaComposite.SrcOver);
+
             if (this.baseScreenImage != null) {
                 g2.drawImage(this.baseScreenImage, 0, 0, this);
             }
