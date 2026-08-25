@@ -6,13 +6,10 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Transparency;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
@@ -20,8 +17,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
-import java.awt.image.ConvolveOp;
-import java.awt.image.Kernel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 
@@ -36,14 +31,15 @@ import static java.awt.Color.WHITE;
 import static java.awt.Color.lightGray;
 import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
-import static java.util.Arrays.fill;
 import static screen.DrawType.FILL;
 
 public class Util {
     public static final String SCREENSHOT_DIR = "screenshot";
 
     public static File getImageDir() {
-        return new File(new File(".."), SCREENSHOT_DIR);
+        File file = new File(new File(".."), SCREENSHOT_DIR);
+        file.mkdirs();
+        return file;
     }
 
     public static File getImageFile(String name) {
