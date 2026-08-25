@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
@@ -31,5 +32,23 @@ public class ImageViewPanelTest {
         assertEquals(fillColor.getRGB(), croppedImage.getRGB(1, 0));
         assertEquals(fillColor.getRGB(), croppedImage.getRGB(0, 1));
         assertEquals(fillColor.getRGB(), croppedImage.getRGB(1, 1));
+    }
+
+    @Test
+    public void clampScaleKeepsValueWithinBounds() {
+        assertEquals(0.1, ImageViewPanel.clampScale(0.01), 0.0001);
+        assertEquals(8.0, ImageViewPanel.clampScale(20.0), 0.0001);
+        assertEquals(1.5, ImageViewPanel.clampScale(1.5), 0.0001);
+    }
+
+    @Test
+    public void scaleDimensionRoundsScaledSize() {
+        Dimension enlarged = ImageViewPanel.scaleDimension(100, 50, 2.0);
+        assertEquals(200, enlarged.width);
+        assertEquals(100, enlarged.height);
+
+        Dimension reduced = ImageViewPanel.scaleDimension(101, 51, 0.5);
+        assertEquals(51, reduced.width);
+        assertEquals(26, reduced.height);
     }
 }

@@ -86,6 +86,10 @@ public class ImagePanel extends JPanel {
         keyMap.put(KeyEvent.VK_Z, this::undo);
         keyMap.put(KeyEvent.VK_Y, this::redo);
         keyMap.put(KeyEvent.VK_E, this::clear);
+        keyMap.put(KeyEvent.VK_EQUALS, this::zoomIn);
+        keyMap.put(KeyEvent.VK_PLUS, this::zoomIn);
+        keyMap.put(KeyEvent.VK_MINUS, this::zoomOut);
+        keyMap.put(KeyEvent.VK_0, this::resetZoom);
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
             if (focusOwner instanceof JTextComponent || focusOwner instanceof JTable) {
@@ -140,8 +144,20 @@ public class ImagePanel extends JPanel {
         this.jScrollPane.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
         jScrollPane.addMouseWheelListener(e -> {
-            JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
             int notches = e.getWheelRotation();
+
+            if (e.isControlDown() || e.isMetaDown()) {
+                if (notches < 0) {
+                    this.imageViewPanel.zoomIn();
+                } else {
+                    this.imageViewPanel.zoomOut();
+                }
+
+                e.consume();
+                return;
+            }
+
+            JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
             int scrollAmount = 100;
 
             if (notches < 0) {
@@ -188,6 +204,9 @@ public class ImagePanel extends JPanel {
         this.createBorderButton();
         this.createRotateRightButton();
         this.createRotateLeftButton();
+        this.createZoomInButton();
+        this.createZoomOutButton();
+        this.createZoomResetButton();
         this.createSaveButton();
         this.createPasteButton();
         this.createTextButton();
@@ -356,6 +375,39 @@ public class ImagePanel extends JPanel {
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.rotateLeft());
         this.buttonPanel.add(button);
+    }
+
+    private void createZoomInButton() {
+        JButton button = new JButton("zoom +");
+        button.setName(this.name);
+        button.addActionListener(e -> this.zoomIn());
+        this.buttonPanel.add(button);
+    }
+
+    private void createZoomOutButton() {
+        JButton button = new JButton("zoom -");
+        button.setName(this.name);
+        button.addActionListener(e -> this.zoomOut());
+        this.buttonPanel.add(button);
+    }
+
+    private void createZoomResetButton() {
+        JButton button = new JButton("zoom reset");
+        button.setName(this.name);
+        button.addActionListener(e -> this.resetZoom());
+        this.buttonPanel.add(button);
+    }
+
+    private void zoomIn() {
+        this.imageViewPanel.zoomIn();
+    }
+
+    private void zoomOut() {
+        this.imageViewPanel.zoomOut();
+    }
+
+    private void resetZoom() {
+        this.imageViewPanel.resetZoom();
     }
 
     private void createSaveButton() {

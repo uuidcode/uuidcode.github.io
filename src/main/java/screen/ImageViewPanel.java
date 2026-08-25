@@ -77,9 +77,13 @@ public class ImageViewPanel extends JPanel
     private Rectangle cropBounds;
     private CropHandle activeCropHandle = CropHandle.NONE;
     private Rectangle applyCropButtonBounds;
+    private double scale = 1.0;
 
     private static final int CROP_HANDLE_SIZE = 12;
     private static final int CROP_MIN_SIZE = 20;
+    private static final double MIN_SCALE = 0.1;
+    private static final double MAX_SCALE = 8.0;
+    private static final double SCALE_STEP = 1.2;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
@@ -91,11 +95,53 @@ public class ImageViewPanel extends JPanel
 
     private void init() {
         BufferedImage bufferedImage = this.getBufferedImage();
-        this.setPreferredSize(new Dimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
+        this.setPreferredSize(this.scaledDimension(bufferedImage.getWidth(), bufferedImage.getHeight()));
         if (this.isCropMode()) {
             this.initializeCropBounds();
         }
         this.imagePanel.init();
+    }
+
+    public void zoomIn() {
+        this.setScale(this.scale * SCALE_STEP);
+    }
+
+    public void zoomOut() {
+        this.setScale(this.scale / SCALE_STEP);
+    }
+
+    public void resetZoom() {
+        this.setScale(1.0);
+    }
+
+    public void setScale(double scale) {
+        double clamped = clampScale(scale);
+
+        if (clamped == this.scale) {
+            return;
+        }
+
+        this.scale = clamped;
+        Dimension imageSize = this.getCurrentImageSize();
+        this.setPreferredSize(this.scaledDimension(imageSize.width, imageSize.height));
+        this.revalidate();
+        this.imagePanel.init();
+        this.repaint();
+    }
+
+    static double clampScale(double scale) {
+        return Math.max(MIN_SCALE, Math.min(scale, MAX_SCALE));
+    }
+
+    static Dimension scaleDimension(int width, int height, double scale) {
+        return new Dimension(
+            (int) Math.round(width * scale),
+            (int) Math.round(height * scale)
+        );
+    }
+
+    private Dimension scaledDimension(int width, int height) {
+        return scaleDimension(width, height, this.scale);
     }
 
     public void setShapeType(ShapeType shapeType) {
@@ -110,15 +156,19 @@ public class ImageViewPanel extends JPanel
     }
 
     private Point getImageOffset(Dimension imageSize) {
-        int x = Math.max(0, (this.getWidth() - imageSize.width) / 2);
-        int y = Math.max(0, (this.getHeight() - imageSize.height) / 2);
+        int scaledWidth = (int) Math.round(imageSize.width * this.scale);
+        int scaledHeight = (int) Math.round(imageSize.height * this.scale);
+        int x = Math.max(0, (this.getWidth() - scaledWidth) / 2);
+        int y = Math.max(0, (this.getHeight() - scaledHeight) / 2);
         return new Point(x, y);
     }
 
     private Point toImagePoint(Point point) {
         Dimension imageSize = this.getCurrentImageSize();
         Point offset = this.getImageOffset(imageSize);
-        return new Point(point.x - offset.x, point.y - offset.y);
+        int x = (int) Math.floor((point.x - offset.x) / this.scale);
+        int y = (int) Math.floor((point.y - offset.y) / this.scale);
+        return new Point(x, y);
     }
 
     private Dimension getCurrentImageSize() {
@@ -190,36 +240,36 @@ public class ImageViewPanel extends JPanel
         return new Point(x, y);
     }
 
-    private Rectangle getCropHandleBounds(CropHandle handle, Point imageOffset) {
+    private Point getCropHandleCenter(CropHandle handle) {
         if (this.cropBounds == null) {
-            return new Rectangle();
+            return null;
         }
-
-        int x = 0;
-        int y = 0;
 
         switch (handle) {
             case TOP:
-                x = imageOffset.x + this.cropBounds.x + this.cropBounds.width / 2 - CROP_HANDLE_SIZE / 2;
-                y = imageOffset.y + this.cropBounds.y - CROP_HANDLE_SIZE / 2;
-                break;
+                return new Point(this.cropBounds.x + this.cropBounds.width / 2, this.cropBounds.y);
             case RIGHT:
-                x = imageOffset.x + this.cropBounds.x + this.cropBounds.width - CROP_HANDLE_SIZE / 2;
-                y = imageOffset.y + this.cropBounds.y + this.cropBounds.height / 2 - CROP_HANDLE_SIZE / 2;
-                break;
+                return new Point(this.cropBounds.x + this.cropBounds.width, this.cropBounds.y + this.cropBounds.height / 2);
             case BOTTOM:
-                x = imageOffset.x + this.cropBounds.x + this.cropBounds.width / 2 - CROP_HANDLE_SIZE / 2;
-                y = imageOffset.y + this.cropBounds.y + this.cropBounds.height - CROP_HANDLE_SIZE / 2;
-                break;
+                return new Point(this.cropBounds.x + this.cropBounds.width / 2, this.cropBounds.y + this.cropBounds.height);
             case LEFT:
-                x = imageOffset.x + this.cropBounds.x - CROP_HANDLE_SIZE / 2;
-                y = imageOffset.y + this.cropBounds.y + this.cropBounds.height / 2 - CROP_HANDLE_SIZE / 2;
-                break;
+                return new Point(this.cropBounds.x, this.cropBounds.y + this.cropBounds.height / 2);
             default:
-                break;
+                return null;
+        }
+    }
+
+    private Rectangle getCropHandleBounds(CropHandle handle, Point imageOffset) {
+        Point center = this.getCropHandleCenter(handle);
+
+        if (center == null) {
+            return new Rectangle();
         }
 
-        return new Rectangle(x, y, CROP_HANDLE_SIZE, CROP_HANDLE_SIZE);
+        int screenX = imageOffset.x + (int) Math.round(center.x * this.scale) - CROP_HANDLE_SIZE / 2;
+        int screenY = imageOffset.y + (int) Math.round(center.y * this.scale) - CROP_HANDLE_SIZE / 2;
+
+        return new Rectangle(screenX, screenY, CROP_HANDLE_SIZE, CROP_HANDLE_SIZE);
     }
 
     private CropHandle findCropHandle(Point point) {
@@ -363,7 +413,7 @@ public class ImageViewPanel extends JPanel
         g2.fillRect(0, cropRect.y + cropRect.height, image.getWidth(), image.getHeight() - cropRect.y - cropRect.height);
 
         g2.setColor(new Color(255, 208, 0, 220));
-        g2.setStroke(new BasicStroke(2f));
+        g2.setStroke(new BasicStroke((float) (2f / this.scale)));
         g2.drawRect(cropRect.x, cropRect.y, cropRect.width, cropRect.height);
 
         String sizeLabel = "W: " + cropRect.width + "  H: " + cropRect.height;
@@ -374,19 +424,23 @@ public class ImageViewPanel extends JPanel
         g2.setColor(Color.WHITE);
         g2.drawString(sizeLabel, cropRect.x + 16, Math.max(22, cropRect.y - 14));
 
-        Point imageOffset = this.getImageOffset(new Dimension(image.getWidth(), image.getHeight()));
+        double handleSize = CROP_HANDLE_SIZE / this.scale;
         for (CropHandle handle : CropHandle.values()) {
             if (handle == CropHandle.NONE) {
                 continue;
             }
 
-            Rectangle handleRect = this.getCropHandleBounds(handle, imageOffset);
-            int drawX = handleRect.x - imageOffset.x;
-            int drawY = handleRect.y - imageOffset.y;
+            Point center = this.getCropHandleCenter(handle);
+            if (center == null) {
+                continue;
+            }
+
+            double drawX = center.x - handleSize / 2;
+            double drawY = center.y - handleSize / 2;
             g2.setColor(Color.WHITE);
-            g2.fillRect(drawX, drawY, handleRect.width, handleRect.height);
+            g2.fill(new Rectangle2D.Double(drawX, drawY, handleSize, handleSize));
             g2.setColor(new Color(255, 208, 0));
-            g2.drawRect(drawX, drawY, handleRect.width, handleRect.height);
+            g2.draw(new Rectangle2D.Double(drawX, drawY, handleSize, handleSize));
         }
     }
 
@@ -438,6 +492,8 @@ public class ImageViewPanel extends JPanel
         Graphics2D g2 = (Graphics2D) g.create();
         Point imageOffset = this.getImageOffset(new Dimension(displayImage.getWidth(), displayImage.getHeight()));
         g2.translate(imageOffset.x, imageOffset.y);
+        g2.scale(this.scale, this.scale);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         if (bufferedImage == null) {
             try {
@@ -722,7 +778,7 @@ public class ImageViewPanel extends JPanel
             bufferedImage,
             rect
         );
-        this.setPreferredSize(new Dimension(croppedImage.getWidth(), croppedImage.getHeight()));
+        this.setPreferredSize(this.scaledDimension(croppedImage.getWidth(), croppedImage.getHeight()));
 
         return croppedImage;
     }
@@ -984,7 +1040,7 @@ public class ImageViewPanel extends JPanel
         BufferedImage current = this.getBufferedImage();
         int newWidth = Math.max(current.getWidth(), this.pastePreviewPosition.x + this.pastePreviewImage.getWidth());
         int newHeight = Math.max(current.getHeight(), this.pastePreviewPosition.y + this.pastePreviewImage.getHeight());
-        this.setPreferredSize(new Dimension(newWidth, newHeight));
+        this.setPreferredSize(this.scaledDimension(newWidth, newHeight));
         this.revalidate();
     }
 
