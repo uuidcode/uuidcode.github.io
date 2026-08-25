@@ -131,6 +131,7 @@ public class ImageFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
         this.createCaptureButton(panel);
+        this.createSeeButton(panel);
         this.createCaptureAutoButton(panel);
         this.createCaptureSelfButton(panel);
         this.createCaptureSelfAreaButton(panel);
@@ -143,6 +144,8 @@ public class ImageFrame extends JFrame {
         this.createCaptureGridModeComboBox(panel);
         this.createImgTagCheckBox(panel);
         this.createFixedSizeFields(panel);
+
+        Util.styleButtonsAsSquare(panel);
 
         return panel;
     }
@@ -218,8 +221,10 @@ public class ImageFrame extends JFrame {
         panel.add(htmlColorField);
 
         pickedColorPreviewPanel = new JPanel();
-        Dimension previewSize = new Dimension(24, heightField.getPreferredSize().height);
+        int previewSide = htmlColorField.getPreferredSize().height;
+        Dimension previewSize = new Dimension(previewSide, previewSide);
         pickedColorPreviewPanel.setPreferredSize(previewSize);
+        pickedColorPreviewPanel.setMinimumSize(previewSize);
         pickedColorPreviewPanel.setMaximumSize(previewSize);
         pickedColorPreviewPanel.setBackground(Color.WHITE);
         pickedColorPreviewPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
@@ -270,6 +275,12 @@ public class ImageFrame extends JFrame {
     private void createCaptureButton(JPanel panel) {
         JButton button = new JButton("capture");
         button.addActionListener(e -> this.capture());
+        panel.add(button);
+    }
+
+    private void createSeeButton(JPanel panel) {
+        JButton button = new JButton("see");
+        button.addActionListener(e -> this.see());
         panel.add(button);
     }
 
@@ -451,13 +462,34 @@ public class ImageFrame extends JFrame {
         );
     }
 
+    private void see() {
+        this.startAreaCapture(
+            true, // hideImageFrame
+            false, // autoTrimEnabled
+            true // seeMode
+        );
+    }
+
     private void startAreaCapture(
         boolean hideImageFrame,
         boolean autoTrimEnabled
     ) {
+        this.startAreaCapture(
+            hideImageFrame,
+            autoTrimEnabled,
+            false
+        );
+    }
+
+    private void startAreaCapture(
+        boolean hideImageFrame,
+        boolean autoTrimEnabled,
+        boolean seeMode
+    ) {
         this.captureConfig.setAutoTrimEnabled(autoTrimEnabled);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSelfAreaCaptureMode(!hideImageFrame);
+        this.captureConfig.setSeeMode(seeMode);
         updateFixedSize();
 
         if (hideImageFrame) {

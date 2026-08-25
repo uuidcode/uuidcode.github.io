@@ -2,11 +2,13 @@ package screen;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -22,6 +24,10 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.awt.image.WritableRaster;
 import java.io.File;
+
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import static java.awt.AlphaComposite.SRC_OVER;
 import static java.awt.BasicStroke.CAP_BUTT;
@@ -295,5 +301,28 @@ public class Util {
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = bi.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    public static void styleButtonsAsSquare(JPanel panel) {
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JButton) {
+                styleButtonAsSquare((JButton) component);
+            }
+        }
+    }
+
+    public static void styleButtonAsSquare(AbstractButton button) {
+        Insets margin = button.getMargin();
+
+        // macOS Aqua 캡슐 버튼은 좌우에 고정 여백이 있어 버튼끼리 벌어진다.
+        // square 타입으로 바꾸면 좌우 여백이 사라져 인접 버튼이 붙는다.
+        button.putClientProperty("JButton.buttonType", "square");
+
+        button.setMargin(new Insets(
+            margin.top,
+            6, // left
+            margin.bottom,
+            6 // right
+        ));
     }
 }

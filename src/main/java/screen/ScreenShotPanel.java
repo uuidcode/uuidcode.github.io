@@ -93,6 +93,7 @@ public class ScreenShotPanel extends JPanel
     private final ImageFrame imageFrame;
     private final BufferedImage baseScreenImage;
     private JPanel controlPanel = null;
+    private SeePreview seePreview;
     private final CaptureConfig captureConfig;
     private boolean guideOverlayVisible = true;
     private boolean rightButtonPressed;
@@ -242,7 +243,7 @@ public class ScreenShotPanel extends JPanel
                 }
 
                 if (second != null) {
-                    Thread.sleep(second * 1000);
+                    this.runCountdown(second);
                 }
 
                 Rectangle captureRectangle;
@@ -309,7 +310,121 @@ public class ScreenShotPanel extends JPanel
         }).start();
     }
 
+    private void runCountdown(int second) throws Exception {
+        CountdownOverlay[] holder = new CountdownOverlay[1];
+
+        SwingUtilities.invokeAndWait(() -> {
+            holder[0] = new CountdownOverlay(this.graphicsDevice);
+
+            holder[0].setSecond(second);
+
+            holder[0].setVisible(true);
+        });
+
+        try {
+            for (int remaining = second; remaining >= 1; remaining--) {
+                int value = remaining;
+
+                SwingUtilities.invokeLater(() -> holder[0].setSecond(value));
+
+                Thread.sleep(1000);
+            }
+        } finally {
+            SwingUtilities.invokeAndWait(() -> holder[0].dispose());
+
+            Thread.sleep(WINDOW_FRONT_SETTLE_DELAY_MS);
+        }
+    }
+
+    private void enterSeePreview(Rectangle localRectangle) {
+        Rectangle displayBounds = graphicsDevice.getDefaultConfiguration().getBounds();
+        Rectangle absoluteRectangle = new Rectangle(localRectangle);
+        absoluteRectangle.x += displayBounds.x;
+        absoluteRectangle.y += displayBounds.y;
+
+        this.hideControlPanel();
+
+        this.seePreview = new SeePreview(
+            this.graphicsDevice,
+            absoluteRectangle, // rectangle
+            () -> this.captureSeePreview(absoluteRectangle), // onCapture
+            () -> this.cancelSeePreview() // onCancel
+        );
+
+        this.seePreview.show();
+
+        // 반투명 딤 오버레이 창을 없애 선택 영역 내부가 밑의 앱으로 클릭/드래그 통과되도록 한다.
+        SwingUtilities.invokeLater(() -> imageFrame.disposeScreenShotFrames());
+    }
+
+    private void captureSeePreview(Rectangle absoluteRectangle) {
+        new Thread(() -> {
+            try {
+                PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+                Point mousePoint = pointerInfo.getLocation();
+                int x = (int) mousePoint.getX();
+                int y = (int) mousePoint.getY();
+
+                SwingUtilities.invokeAndWait(() -> this.seePreview.hideWindows());
+
+                Thread.sleep(PRE_CAPTURE_HIDE_DELAY_MS);
+
+                Robot robot = new Robot();
+
+                captureConfig.setLastRectangle(new Rectangle(absoluteRectangle));
+
+                capture(
+                    robot,
+                    absoluteRectangle, // rectangle
+                    x,
+                    y,
+                    this.tabbedPane,
+                    captureConfig, // config
+                    false // windowCapture
+                );
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            } finally {
+                this.finishSeePreview();
+            }
+        }).start();
+    }
+
+    private void finishSeePreview() {
+        SwingUtilities.invokeLater(() -> {
+            this.disposeSeePreview();
+
+            imageFrame.setVisible(true);
+
+            imageFrame.toFront();
+
+            imageFrame.requestFocus();
+        });
+    }
+
+    private void cancelSeePreview() {
+        this.disposeSeePreview();
+
+        imageFrame.setVisible(true);
+
+        imageFrame.toFront();
+
+        imageFrame.requestFocus();
+    }
+
+    private void disposeSeePreview() {
+        if (this.seePreview != null) {
+            this.seePreview.dispose();
+
+            this.seePreview = null;
+        }
+
+        this.captureConfig.setSeeMode(false);
+    }
+
     void cancelCapture() {
+        this.disposeSeePreview();
+
         this.hideControlPanel();
 
         this.resetColorPreviewState();
@@ -1054,6 +1169,12 @@ public class ScreenShotPanel extends JPanel
 
         try {
             Rectangle rectangle = this.getRectangle();
+
+            if (this.captureConfig.isSeeMode()) {
+                this.enterSeePreview(rectangle);
+
+                return;
+            }
 
             if (this.controlPanel == null) {
                 this.controlPanel = this.createControlPanel();

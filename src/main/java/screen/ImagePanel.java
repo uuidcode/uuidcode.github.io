@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FileDialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -31,6 +30,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
@@ -61,6 +61,8 @@ public class ImagePanel extends JPanel {
     private JSplitPane contentSplitPane;
     private ImageOcrPanel imageOcrPanel;
     private JButton ocrButton;
+    private JToggleButton cropToggleButton;
+    private ShapeType selectedShapeType = ShapeType.FILL_ARROW;
 
     public ImagePanel(
         String name,
@@ -200,6 +202,7 @@ public class ImagePanel extends JPanel {
         this.buttonPanel = new JPanel();
         this.buttonPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
 
+        this.createCropToggleButton();
         this.createCaptureRepeatButton();
         this.createMeasureButton();
         this.createShadowButton();
@@ -223,24 +226,11 @@ public class ImagePanel extends JPanel {
         this.createDeleteImageButton();
         this.createCloseButton();
 
-        this.tightenButtonMargins(this.buttonPanel);
+        Util.styleButtonsAsSquare(this.buttonPanel);
 
         wrapper.add(this.controlPanel);
         wrapper.add(this.buttonPanel);
         this.add(wrapper, NORTH);
-    }
-
-    private void tightenButtonMargins(JPanel panel) {
-        for (Component component : panel.getComponents()) {
-            if (component instanceof JButton) {
-                JButton button = (JButton) component;
-                Insets margin = button.getMargin();
-                // macOS Aqua 캡슐 버튼은 좌우에 고정 여백이 있어 버튼끼리 벌어진다.
-                // square 타입으로 바꾸면 좌우 여백이 사라져 인접 버튼이 붙는다.
-                button.putClientProperty("JButton.buttonType", "square");
-                button.setMargin(new Insets(margin.top, 6, margin.bottom, 6));
-            }
-        }
     }
 
     private void createDeleteButton() {
@@ -272,26 +262,55 @@ public class ImagePanel extends JPanel {
         this.imageViewPanel.redo();
     }
 
+    private void createCropToggleButton() {
+        this.cropToggleButton = new JToggleButton("Crop");
+        this.cropToggleButton.setName(this.name);
+        this.cropToggleButton.addActionListener(e -> this.toggleCrop());
+        this.buttonPanel.add(this.cropToggleButton);
+
+        Util.styleButtonAsSquare(this.cropToggleButton);
+    }
+
+    private void toggleCrop() {
+        if (this.cropToggleButton.isSelected()) {
+            this.imageViewPanel.setShapeType(ShapeType.CROP);
+        } else {
+            this.imageViewPanel.setShapeType(this.selectedShapeType);
+        }
+
+        this.imageViewPanel.repaint();
+    }
+
     private void createShapeTypeRadio() {
-        this.createRadioPanel("Shape Type", ShapeType.class, ShapeType::getTitle,
+        ShapeType[] shapeTypes = Arrays.stream(ShapeType.values())
+            .filter(shapeType -> shapeType != ShapeType.CROP)
+            .toArray(ShapeType[]::new);
+
+        this.createRadioPanel("Shape Type", shapeTypes, ShapeType::getTitle,
             shapeType -> {
+                this.selectedShapeType = shapeType;
+
+                if (this.cropToggleButton != null && this.cropToggleButton.isSelected()) {
+                    this.cropToggleButton.setSelected(false);
+                }
+
                 this.imageViewPanel.setShapeType(shapeType);
                 this.imageViewPanel.repaint();
             });
     }
 
     private void createFillTypeRadio() {
-        this.createRadioPanel("Fill Type", FillType.class, FillType::getTitle,
+        this.createRadioPanel("Fill Type", FillType.values(), FillType::getTitle,
             fillType -> this.imageViewPanel.setFillType(fillType));
     }
 
     private void createColorTypeRadio() {
-        this.createRadioPanel("Color Type", ColorType.class, ColorType::getTitle,
+        this.createRadioPanel("Color Type", ColorType.values(), ColorType::getTitle,
             colorType -> this.imageViewPanel.setColorType(colorType));
     }
 
     private <T extends Enum<T>>void createRadioPanel(String name,
-                                                     Class<T> tClass,
+                                                     T[] values,
                                                      Function<T, String> nameFunction,
                                                      Consumer<T> consumer) {
         JPanel panel = new JPanel();
@@ -300,7 +319,7 @@ public class ImagePanel extends JPanel {
 
         ButtonGroup buttonGroup = new ButtonGroup();
 
-        Arrays.stream(tClass.getEnumConstants())
+        Arrays.stream(values)
             .forEach(type -> {
                 JRadioButton radioButton = new JRadioButton(nameFunction.apply(type));
                 radioButton.setSelected(true);
