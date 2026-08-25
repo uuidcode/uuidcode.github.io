@@ -4,7 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
+import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -196,7 +198,7 @@ public class ImagePanel extends JPanel {
         this.createColorTypeRadio();
 
         this.buttonPanel = new JPanel();
-        this.buttonPanel.setLayout(new BoxLayout(buttonPanel, LINE_AXIS));
+        this.buttonPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
 
         this.createCaptureRepeatButton();
         this.createMeasureButton();
@@ -221,9 +223,24 @@ public class ImagePanel extends JPanel {
         this.createDeleteImageButton();
         this.createCloseButton();
 
+        this.tightenButtonMargins(this.buttonPanel);
+
         wrapper.add(this.controlPanel);
         wrapper.add(this.buttonPanel);
         this.add(wrapper, NORTH);
+    }
+
+    private void tightenButtonMargins(JPanel panel) {
+        for (Component component : panel.getComponents()) {
+            if (component instanceof JButton) {
+                JButton button = (JButton) component;
+                Insets margin = button.getMargin();
+                // macOS Aqua 캡슐 버튼은 좌우에 고정 여백이 있어 버튼끼리 벌어진다.
+                // square 타입으로 바꾸면 좌우 여백이 사라져 인접 버튼이 붙는다.
+                button.putClientProperty("JButton.buttonType", "square");
+                button.setMargin(new Insets(margin.top, 6, margin.bottom, 6));
+            }
+        }
     }
 
     private void createDeleteButton() {
