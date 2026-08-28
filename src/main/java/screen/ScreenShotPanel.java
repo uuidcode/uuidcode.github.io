@@ -507,7 +507,13 @@ public class ScreenShotPanel extends JPanel
         }
 
         BufferedImage image = robot.createScreenCapture(rectangle);
+        Rectangle capturedRectangle = new Rectangle(rectangle);
+
         if (config.isAutoTrimEnabled() && !windowCapture) {
+            Rectangle trimBounds = trimUniformBorderBounds(image);
+
+            capturedRectangle = toScreenRectangle(rectangle, image, trimBounds);
+
             image = trimUniformBorder(image);
         }
 
@@ -560,15 +566,58 @@ public class ScreenShotPanel extends JPanel
 
         tabbedPane.addTab(
             fileName, // name
-            new Rectangle(rectangle), // captureRectangle
+            new Rectangle(capturedRectangle), // captureRectangle
             config, // captureConfig
             windowCapture
         );
     }
 
+    // 자른 이미지 영역(이미지 픽셀)을 실제 화면 좌표(논리 좌표)로 변환한다.
+    // Retina 등으로 캡처 이미지가 확대되어 있어도 원본 rectangle과의 비율로 보정한다.
+    private static Rectangle toScreenRectangle(
+        Rectangle rectangle,
+        BufferedImage image,
+        Rectangle trimBounds
+    ) {
+        if (image.getWidth() <= 0 || image.getHeight() <= 0) {
+            return new Rectangle(rectangle);
+        }
+
+        double scaleX = rectangle.width / (double) image.getWidth();
+        double scaleY = rectangle.height / (double) image.getHeight();
+
+        int x = rectangle.x + (int) Math.round(trimBounds.x * scaleX);
+        int y = rectangle.y + (int) Math.round(trimBounds.y * scaleY);
+        int width = (int) Math.round(trimBounds.width * scaleX);
+        int height = (int) Math.round(trimBounds.height * scaleY);
+
+        return new Rectangle(x, y, width, height);
+    }
+
     static BufferedImage trimUniformBorder(BufferedImage image) {
         if (image == null || image.getWidth() <= 2 || image.getHeight() <= 2) {
             return image;
+        }
+
+        Rectangle bounds = trimUniformBorderBounds(image);
+
+        if (bounds.x == 0
+            && bounds.y == 0
+            && bounds.width == image.getWidth()
+            && bounds.height == image.getHeight()) {
+            return image;
+        }
+
+        return copySubImage(image, bounds);
+    }
+
+    // 잘라낼 영역(이미지 픽셀 좌표)을 계산한다. 잘라낼 여백이 없으면 이미지 전체 영역을 반환한다.
+    static Rectangle trimUniformBorderBounds(BufferedImage image) {
+        if (image == null || image.getWidth() <= 2 || image.getHeight() <= 2) {
+            int width = image == null ? 0 : image.getWidth();
+            int height = image == null ? 0 : image.getHeight();
+
+            return new Rectangle(0, 0, width, height);
         }
 
         int[] backgroundSamples = new int[]{
@@ -598,21 +647,11 @@ public class ScreenShotPanel extends JPanel
             right--;
         }
 
-        if (top == 0
-            && left == 0
-            && right == image.getWidth() - 1
-            && bottom == image.getHeight() - 1) {
-            return image;
-        }
-
-        return copySubImage(
-            image,
-            new Rectangle(
-                left,
-                top,
-                right - left + 1,
-                bottom - top + 1
-            )
+        return new Rectangle(
+            left,
+            top,
+            right - left + 1,
+            bottom - top + 1
         );
     }
 

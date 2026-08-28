@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -38,6 +39,51 @@ public class ScreenShotPanelTest {
         assertEquals(foregroundColor.getRGB(), trimmedImage.getRGB(1, 0));
         assertEquals(foregroundColor.getRGB(), trimmedImage.getRGB(0, 1));
         assertEquals(foregroundColor.getRGB(), trimmedImage.getRGB(1, 1));
+    }
+
+    @Test
+    public void trimUniformBorderBoundsReportsTrimmedOffset() {
+        BufferedImage source = new BufferedImage(6, 6, BufferedImage.TYPE_INT_ARGB);
+        Color backgroundColor = new Color(0, 0, 0, 255);
+        Color foregroundColor = new Color(255, 255, 255, 255);
+
+        for (int y = 0; y < source.getHeight(); y++) {
+            for (int x = 0; x < source.getWidth(); x++) {
+                source.setRGB(x, y, backgroundColor.getRGB());
+            }
+        }
+
+        for (int y = 2; y <= 3; y++) {
+            for (int x = 2; x <= 3; x++) {
+                source.setRGB(x, y, foregroundColor.getRGB());
+            }
+        }
+
+        Rectangle bounds = ScreenShotPanel.trimUniformBorderBounds(source);
+
+        assertEquals(2, bounds.x);
+        assertEquals(2, bounds.y);
+        assertEquals(2, bounds.width);
+        assertEquals(2, bounds.height);
+    }
+
+    @Test
+    public void trimUniformBorderBoundsReturnsFullBoundsWhenNoBorderExists() {
+        BufferedImage source = new BufferedImage(2, 2, BufferedImage.TYPE_INT_ARGB);
+        Color fillColor = new Color(255, 255, 255, 255);
+
+        for (int y = 0; y < source.getHeight(); y++) {
+            for (int x = 0; x < source.getWidth(); x++) {
+                source.setRGB(x, y, fillColor.getRGB());
+            }
+        }
+
+        Rectangle bounds = ScreenShotPanel.trimUniformBorderBounds(source);
+
+        assertEquals(0, bounds.x);
+        assertEquals(0, bounds.y);
+        assertEquals(2, bounds.width);
+        assertEquals(2, bounds.height);
     }
 
     @Test

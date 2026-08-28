@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FileDialog;
@@ -46,6 +47,7 @@ import static javax.swing.BoxLayout.X_AXIS;
 
 public class ImagePanel extends JPanel {
     private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
+    private static final Color CROP_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
 
     private final String name;
     private final ImageTabPanel tabbedPane;
@@ -269,6 +271,8 @@ public class ImagePanel extends JPanel {
         this.buttonPanel.add(this.cropToggleButton);
 
         Util.styleButtonAsSquare(this.cropToggleButton);
+
+        this.updateCropToggleAppearance();
     }
 
     private void toggleCrop() {
@@ -278,7 +282,28 @@ public class ImagePanel extends JPanel {
             this.imageViewPanel.setShapeType(this.selectedShapeType);
         }
 
+        this.updateCropToggleAppearance();
+
         this.imageViewPanel.repaint();
+    }
+
+    // Crop 토글의 on/off 상태가 눈에 보이도록 활성 시 강조 색으로 채운다.
+    private void updateCropToggleAppearance() {
+        boolean active = this.cropToggleButton.isSelected();
+
+        if (active) {
+            this.cropToggleButton.setContentAreaFilled(false);
+            this.cropToggleButton.setOpaque(true);
+            this.cropToggleButton.setBackground(CROP_TOGGLE_ACTIVE_BACKGROUND);
+            this.cropToggleButton.setForeground(Color.WHITE);
+            this.cropToggleButton.setText("Crop ●");
+        } else {
+            this.cropToggleButton.setContentAreaFilled(true);
+            this.cropToggleButton.setOpaque(false);
+            this.cropToggleButton.setBackground(null);
+            this.cropToggleButton.setForeground(null);
+            this.cropToggleButton.setText("Crop");
+        }
     }
 
     private void createShapeTypeRadio() {
@@ -292,6 +317,8 @@ public class ImagePanel extends JPanel {
 
                 if (this.cropToggleButton != null && this.cropToggleButton.isSelected()) {
                     this.cropToggleButton.setSelected(false);
+
+                    this.updateCropToggleAppearance();
                 }
 
                 this.imageViewPanel.setShapeType(shapeType);
@@ -364,7 +391,17 @@ public class ImagePanel extends JPanel {
                 Thread.sleep(CAPTURE_REPEAT_HIDE_DELAY_MS);
 
                 Robot robot = new Robot();
-                CaptureConfig config = this.captureConfig != null ? this.captureConfig : new CaptureConfig();
+
+                CaptureConfig config;
+                if (this.captureConfig != null) {
+                    config = this.captureConfig.copy();
+                } else {
+                    config = new CaptureConfig();
+                }
+
+                // 저장된 영역은 이미 auto-trim이 반영된 영역이므로, 재캡처 시에는
+                // trim을 끄고 같은 좌표를 그대로 다시 찍어 동일한 영역이 나오도록 한다.
+                config.setAutoTrimEnabled(false);
 
                 ScreenShotPanel.capture(
                     robot,
@@ -372,7 +409,7 @@ public class ImagePanel extends JPanel {
                     this.captureRectangle.x,
                     this.captureRectangle.y,
                     this.tabbedPane,
-                    config,
+                    config, // config
                     this.windowCapture
                 );
             } catch (Throwable t) {
