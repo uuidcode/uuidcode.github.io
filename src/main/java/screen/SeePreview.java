@@ -6,8 +6,12 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -108,11 +112,39 @@ public class SeePreview {
 
     private void layoutControlWindow(GraphicsDevice graphicsDevice) {
         Dimension size = this.controlWindow.getSize();
-        Rectangle bounds = graphicsDevice.getDefaultConfiguration().getBounds();
-        int x = bounds.x + bounds.width - size.width - CONTROL_MARGIN;
-        int y = bounds.y + bounds.height - size.height - CONTROL_MARGIN;
+        GraphicsConfiguration configuration = graphicsDevice.getDefaultConfiguration();
+        Rectangle bounds = configuration.getBounds();
+        Insets insets = this.getScreenInsets(configuration);
+        Point location = calculateControlLocation(
+            bounds,
+            insets,
+            size
+        );
 
-        this.controlWindow.setLocation(x, y);
+        this.controlWindow.setLocation(location);
+    }
+
+    private Insets getScreenInsets(GraphicsConfiguration configuration) {
+        try {
+            return Toolkit.getDefaultToolkit().getScreenInsets(configuration);
+        } catch (Throwable ignored) {
+            return new Insets(0, 0, 0, 0);
+        }
+    }
+
+    static Point calculateControlLocation(
+        Rectangle bounds,
+        Insets insets,
+        Dimension size
+    ) {
+        int left = bounds.x + insets.left + CONTROL_MARGIN;
+        int top = bounds.y + insets.top + CONTROL_MARGIN;
+        int right = bounds.x + bounds.width - insets.right - CONTROL_MARGIN;
+        int bottom = bounds.y + bounds.height - insets.bottom - CONTROL_MARGIN;
+        int x = Math.max(left, right - size.width);
+        int y = Math.max(top, bottom - size.height);
+
+        return new Point(x, y);
     }
 
     public void show() {
@@ -125,6 +157,8 @@ public class SeePreview {
         this.rightWindow.setVisible(true);
 
         this.controlWindow.setVisible(true);
+
+        this.controlWindow.toFront();
     }
 
     public void hideWindows() {

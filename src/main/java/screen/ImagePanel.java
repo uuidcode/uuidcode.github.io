@@ -47,7 +47,7 @@ import static javax.swing.BoxLayout.X_AXIS;
 
 public class ImagePanel extends JPanel {
     private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
-    private static final Color CROP_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
+    private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
 
     private final String name;
     private final ImageTabPanel tabbedPane;
@@ -64,6 +64,8 @@ public class ImagePanel extends JPanel {
     private ImageOcrPanel imageOcrPanel;
     private JButton ocrButton;
     private JToggleButton cropToggleButton;
+    private JToggleButton blurToggleButton;
+    private JToggleButton blurClippingToggleButton;
     private ShapeType selectedShapeType = ShapeType.FILL_ARROW;
 
     public ImagePanel(
@@ -205,6 +207,8 @@ public class ImagePanel extends JPanel {
         this.buttonPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
 
         this.createCropToggleButton();
+        this.createBlurToggleButton();
+        this.createBlurClippingToggleButton();
         this.createCaptureRepeatButton();
         this.createMeasureButton();
         this.createShadowButton();
@@ -265,81 +269,191 @@ public class ImagePanel extends JPanel {
     }
 
     private void createCropToggleButton() {
-        this.cropToggleButton = new JToggleButton("Crop");
-        this.cropToggleButton.setName(this.name);
-        this.cropToggleButton.addActionListener(e -> this.toggleCrop());
-        this.buttonPanel.add(this.cropToggleButton);
-
-        Util.styleButtonAsSquare(this.cropToggleButton);
-
-        this.updateCropToggleAppearance();
+        this.cropToggleButton = this.createShapeToggleButton(
+            "Crop",
+            ShapeType.CROP
+        );
     }
 
-    private void toggleCrop() {
-        if (this.cropToggleButton.isSelected()) {
-            this.imageViewPanel.setShapeType(ShapeType.CROP);
+    private void createBlurToggleButton() {
+        this.blurToggleButton = this.createShapeToggleButton(
+            "Blur",
+            ShapeType.BLUR
+        );
+    }
+
+    private void createBlurClippingToggleButton() {
+        this.blurClippingToggleButton = this.createShapeToggleButton(
+            "Blur Outside",
+            ShapeType.BLUR_CLIPPING
+        );
+    }
+
+    private JToggleButton createShapeToggleButton(
+        String label,
+        ShapeType shapeType
+    ) {
+        JToggleButton button = new JToggleButton(label);
+        button.setName(this.name);
+        button.addActionListener(e -> this.toggleShape(button, shapeType));
+        this.buttonPanel.add(button);
+
+        Util.styleButtonAsSquare(button);
+
+        this.updateToggleButtonAppearance(
+            button,
+            label
+        );
+
+        return button;
+    }
+
+    private void toggleShape(
+        JToggleButton button,
+        ShapeType shapeType
+    ) {
+        if (button.isSelected()) {
+            this.clearOtherToggleSelections(button);
+
+            this.imageViewPanel.setShapeType(shapeType);
         } else {
             this.imageViewPanel.setShapeType(this.selectedShapeType);
         }
 
-        this.updateCropToggleAppearance();
+        this.updateToggleButtonAppearances();
 
         this.imageViewPanel.repaint();
     }
 
-    // Crop 토글의 on/off 상태가 눈에 보이도록 활성 시 강조 색으로 채운다.
-    private void updateCropToggleAppearance() {
-        boolean active = this.cropToggleButton.isSelected();
+    private void clearOtherToggleSelections(JToggleButton activeButton) {
+        this.clearToggleSelection(
+            this.cropToggleButton,
+            activeButton
+        );
 
+        this.clearToggleSelection(
+            this.blurToggleButton,
+            activeButton
+        );
+
+        this.clearToggleSelection(
+            this.blurClippingToggleButton,
+            activeButton
+        );
+    }
+
+    private void clearToggleSelection(
+        JToggleButton button,
+        JToggleButton activeButton
+    ) {
+        if (button == null || button == activeButton) {
+            return;
+        }
+
+        button.setSelected(false);
+    }
+
+    private void clearAllToggleSelections() {
+        this.clearOtherToggleSelections(null);
+    }
+
+    private void updateToggleButtonAppearances() {
+        this.updateToggleButtonAppearance(
+            this.cropToggleButton,
+            "Crop"
+        );
+
+        this.updateToggleButtonAppearance(
+            this.blurToggleButton,
+            "Blur"
+        );
+
+        this.updateToggleButtonAppearance(
+            this.blurClippingToggleButton,
+            "Blur Outside"
+        );
+    }
+
+    // 토글의 on/off 상태가 눈에 보이도록 활성 시 강조 색으로 채운다.
+    private void updateToggleButtonAppearance(
+        JToggleButton button,
+        String label
+    ) {
+        if (button == null) {
+            return;
+        }
+
+        boolean active = button.isSelected();
         if (active) {
-            this.cropToggleButton.setContentAreaFilled(false);
-            this.cropToggleButton.setOpaque(true);
-            this.cropToggleButton.setBackground(CROP_TOGGLE_ACTIVE_BACKGROUND);
-            this.cropToggleButton.setForeground(Color.WHITE);
-            this.cropToggleButton.setText("Crop ●");
+            button.setContentAreaFilled(false);
+            button.setOpaque(true);
+            button.setBackground(TOOL_TOGGLE_ACTIVE_BACKGROUND);
+            button.setForeground(Color.WHITE);
+            button.setText(label + " ●");
         } else {
-            this.cropToggleButton.setContentAreaFilled(true);
-            this.cropToggleButton.setOpaque(false);
-            this.cropToggleButton.setBackground(null);
-            this.cropToggleButton.setForeground(null);
-            this.cropToggleButton.setText("Crop");
+            button.setContentAreaFilled(true);
+            button.setOpaque(false);
+            button.setBackground(null);
+            button.setForeground(null);
+            button.setText(label);
         }
     }
 
     private void createShapeTypeRadio() {
-        ShapeType[] shapeTypes = Arrays.stream(ShapeType.values())
-            .filter(shapeType -> shapeType != ShapeType.CROP)
-            .toArray(ShapeType[]::new);
+        ShapeType[] shapeTypes = selectableShapeTypes();
 
-        this.createRadioPanel("Shape Type", shapeTypes, ShapeType::getTitle,
+        this.createRadioPanel(
+            "Shape Type",
+            shapeTypes,
+            ShapeType::getTitle,
             shapeType -> {
                 this.selectedShapeType = shapeType;
+                this.clearAllToggleSelections();
 
-                if (this.cropToggleButton != null && this.cropToggleButton.isSelected()) {
-                    this.cropToggleButton.setSelected(false);
-
-                    this.updateCropToggleAppearance();
-                }
+                this.updateToggleButtonAppearances();
 
                 this.imageViewPanel.setShapeType(shapeType);
                 this.imageViewPanel.repaint();
-            });
+            }
+        );
+    }
+
+    static ShapeType[] selectableShapeTypes() {
+        return Arrays.stream(ShapeType.values())
+            .filter(ImagePanel::isSelectableShapeType)
+            .toArray(ShapeType[]::new);
+    }
+
+    private static boolean isSelectableShapeType(ShapeType shapeType) {
+        return shapeType != ShapeType.CROP
+            && shapeType != ShapeType.BLUR
+            && shapeType != ShapeType.BLUR_CLIPPING;
     }
 
     private void createFillTypeRadio() {
-        this.createRadioPanel("Fill Type", FillType.values(), FillType::getTitle,
-            fillType -> this.imageViewPanel.setFillType(fillType));
+        this.createRadioPanel(
+            "Fill Type",
+            FillType.values(),
+            FillType::getTitle,
+            fillType -> this.imageViewPanel.setFillType(fillType)
+        );
     }
 
     private void createColorTypeRadio() {
-        this.createRadioPanel("Color Type", ColorType.values(), ColorType::getTitle,
-            colorType -> this.imageViewPanel.setColorType(colorType));
+        this.createRadioPanel(
+            "Color Type",
+            ColorType.values(),
+            ColorType::getTitle,
+            colorType -> this.imageViewPanel.setColorType(colorType)
+        );
     }
 
-    private <T extends Enum<T>>void createRadioPanel(String name,
-                                                     T[] values,
-                                                     Function<T, String> nameFunction,
-                                                     Consumer<T> consumer) {
+    private <T extends Enum<T>>void createRadioPanel(
+        String name,
+        T[] values,
+        Function<T, String> nameFunction,
+        Consumer<T> consumer
+    ) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, X_AXIS));
         panel.setBorder(BorderFactory.createTitledBorder(name));
