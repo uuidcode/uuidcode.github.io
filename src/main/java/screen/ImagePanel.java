@@ -12,14 +12,21 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -37,6 +44,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import lombok.SneakyThrows;
 
 import static java.awt.BorderLayout.CENTER;
@@ -49,6 +59,10 @@ import static javax.swing.BoxLayout.X_AXIS;
 public class ImagePanel extends JPanel {
     private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
     private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
+    private static final String REPOSITORY_RELATIVE_PATH = "IdeaProjects/uuidcode.github.io";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final String PREVIEW_URL_FORMAT = "http://localhost:63342/uuidcode.github.io/stream/images/%d.html";
+    private static final String CHROME_APPLICATION_NAME = "Google Chrome";
     private static final ShapeType[] TOOL_SHAPE_TYPES = {
         ShapeType.CROP,
         ShapeType.BLUR,
@@ -69,6 +83,7 @@ public class ImagePanel extends JPanel {
     private JSplitPane contentSplitPane;
     private ImageOcrPanel imageOcrPanel;
     private JButton ocrButton;
+    private JButton writeButton;
     private final Map<ShapeType, JToggleButton> toggleButtonMap = new LinkedHashMap<>();
     private ShapeType selectedShapeType;
 
@@ -232,6 +247,7 @@ public class ImagePanel extends JPanel {
         this.createOcrButton();
         this.createDeleteImageButton();
         this.createCloseButton();
+        this.createWriteButton();
 
         Util.styleButtonsAsSquare(this.buttonPanel);
 
@@ -615,6 +631,133 @@ public class ImagePanel extends JPanel {
         button.setName(this.name);
         button.addActionListener(e -> this.close());
         this.buttonPanel.add(button);
+    }
+
+    private void createWriteButton() {
+        this.writeButton = new JButton("write");
+        this.writeButton.setName(this.name);
+        this.writeButton.addActionListener(e -> this.write());
+        this.buttonPanel.add(this.writeButton);
+    }
+
+    // 홈 디렉터리의 IdeaProjects/uuidcode.github.io 를 pull 한 뒤
+    // images/{연도}.html 에 오늘 날짜의 img 태그를 추가하고 i 디렉터리에 이미지를 저장한다.
+    private void write() {
+        File repositoryDirectory = new File(System.getProperty("user.home"), REPOSITORY_RELATIVE_PATH);
+
+        if (!repositoryDirectory.isDirectory()) {
+            JOptionPane.showMessageDialog(this, repositoryDirectory.getAbsolutePath() + " not found.");
+            return;
+        }
+
+        BufferedImage bufferedImage = this.imageViewPanel.getBufferedImage();
+
+        if (bufferedImage == null) {
+            JOptionPane.showMessageDialog(this, "Image not found.");
+            return;
+        }
+
+        this.writeButton.setEnabled(false);
+
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                gitPull(repositoryDirectory);
+
+                LocalDate today = LocalDate.now();
+                String date = today.format(DATE_FORMATTER);
+
+                String htmlPath = "images/" + today.getYear() + ".html";
+                File htmlFile = new File(repositoryDirectory, htmlPath);
+
+                if (!htmlFile.isFile()) {
+                    throw new IllegalStateException(htmlFile.getAbsolutePath() + " not found.");
+                }
+
+                ImageHtmlWriter.Result result = ImageHtmlWriter.write(
+                    FileUtils.readFileToString(htmlFile, StandardCharsets.UTF_8),
+                    date
+                );
+
+                String imagePath = "i/" + result.getImageName() + ".png";
+                File targetImageFile = new File(repositoryDirectory, imagePath);
+                File imageDirectory = targetImageFile.getParentFile();
+
+                if (!imageDirectory.isDirectory() && !imageDirectory.mkdirs()) {
+                    throw new IllegalStateException("Failed to create " + imageDirectory.getAbsolutePath());
+                }
+
+                // 이미지 저장이 실패하면 html 만 수정되는 상황이 생기므로 이미지를 먼저 저장한다.
+                if (!ImageIO.write(bufferedImage, "png", targetImageFile)) {
+                    throw new IllegalStateException("Failed to write " + targetImageFile.getAbsolutePath());
+                }
+
+                FileUtils.writeStringToFile(htmlFile, result.getHtml(), StandardCharsets.UTF_8);
+
+                git(repositoryDirectory, "add", "--", imagePath, htmlPath);
+                // 다른 파일이 이미 staged 되어 있어도 함께 커밋되지 않도록 경로를 지정한다.
+                git(repositoryDirectory, "commit", "-m", result.getImageName(), "--", imagePath, htmlPath);
+                // 직전에 pull 했으므로 lease 가 최신이다. 로컬 히스토리를 고쳐 쓴 경우에도
+                // push 되고, pull 이후 원격에 새로 올라온 커밋은 덮어쓰지 않는다.
+                git(repositoryDirectory, "push", "--force-with-lease");
+
+                openChrome(String.format(PREVIEW_URL_FORMAT, today.getYear()));
+
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                writeButton.setEnabled(true);
+
+                try {
+                    this.get();
+                } catch (Exception e) {
+                    Throwable cause = e.getCause() == null ? e : e.getCause();
+                    String message = cause.getMessage() == null ? "Write failed." : cause.getMessage();
+                    JOptionPane.showMessageDialog(ImagePanel.this, message);
+                }
+            }
+        }.execute();
+    }
+
+    private static void openChrome(String url) throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder("open", "-a", CHROME_APPLICATION_NAME, url);
+        processBuilder.redirectErrorStream(true);
+
+        Process process = processBuilder.start();
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0) {
+            throw new IllegalStateException("Failed to open " + url + "\n" + output.trim());
+        }
+    }
+
+    private static void gitPull(File repositoryDirectory) throws Exception {
+        git(repositoryDirectory, "pull");
+    }
+
+    private static void git(File repositoryDirectory, String... arguments) throws Exception {
+        List<String> command = new ArrayList<>();
+        command.add("git");
+        command.addAll(Arrays.asList(arguments));
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.directory(repositoryDirectory);
+        processBuilder.redirectErrorStream(true);
+        // 자격 증명 프롬프트에서 멈추지 않고 바로 실패하도록 터미널 입력을 막는다.
+        processBuilder.environment().put("GIT_TERMINAL_PROMPT", "0");
+
+        Process process = processBuilder.start();
+        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+        int exitCode = process.waitFor();
+
+        if (exitCode != 0) {
+            throw new IllegalStateException(
+                "git " + String.join(" ", arguments) + " failed.\n" + output.trim()
+            );
+        }
     }
 
     private void createDeleteImageButton() {

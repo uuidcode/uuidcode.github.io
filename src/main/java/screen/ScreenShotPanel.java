@@ -2,6 +2,7 @@ package screen;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -84,6 +85,11 @@ public class ScreenShotPanel extends JPanel
     private static final int WINDOW_CORNER_SEED_THRESHOLD = 28;
     private static final int WINDOW_CORNER_ALPHA_SAMPLES = 8;
     private static final int AUTO_TRIM_COLOR_THRESHOLD = 36;
+    private static final int SELECTION_HANDLE_SIZE = 10;
+    private static final int SELECTION_HANDLE_HIT_SIZE = 16;
+    private static final int SELECTION_MIN_SIZE = 8;
+    private static final Color SELECTION_HANDLE_COLOR = new Color(255, 255, 255, 235);
+    private static final Color SELECTION_HANDLE_BORDER_COLOR = new Color(0, 0, 0, 150);
     private final GraphicsDevice graphicsDevice;
     private Point stratPoint;
     private Point endPoint;
@@ -104,6 +110,9 @@ public class ScreenShotPanel extends JPanel
     private ImageFrame.WindowTarget windowCaptureTarget;
     private Point windowCaptureHoverPoint;
     private int windowCaptureRequestId;
+    private SelectionHandle activeSelectionHandle = SelectionHandle.NONE;
+    private Rectangle selectionDragOriginRectangle;
+    private Point selectionDragStartPoint;
 
     public ScreenShotPanel(
         GraphicsDevice graphicsDevice,
@@ -1185,7 +1194,22 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
+        // 이미 선택 영역이 있으면 핸들 드래그로 크기를 조절하고, 내부 드래그로 위치를 옮긴다.
+        SelectionHandle handle = this.findSelectionHandle(e.getPoint());
+
+        if (handle != SelectionHandle.NONE) {
+            this.activeSelectionHandle = handle;
+            this.selectionDragStartPoint = e.getPoint();
+            this.selectionDragOriginRectangle = this.getRectangle();
+            this.hideControlPanel();
+            this.repaint();
+            return;
+        }
+
+        this.clearSelectionDragState();
+
         stratPoint = e.getPoint();
+        endPoint = null;
 
         this.hideControlPanel();
     }
@@ -1201,6 +1225,9 @@ public class ScreenShotPanel extends JPanel
         if (this.captureConfig.isWindowCaptureMode()) {
             return;
         }
+
+        // 핸들 드래그가 끝나면 조절 상태를 풀고, 아래에서 조절된 영역에 컨트롤 패널을 다시 띄운다.
+        this.clearSelectionDragState();
 
         if (stratPoint == null || endPoint == null) {
             return;
@@ -1278,6 +1305,12 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
+        if (this.activeSelectionHandle != SelectionHandle.NONE) {
+            this.updateSelectionByHandle(e.getPoint());
+            e.getComponent().repaint();
+            return;
+        }
+
         endPoint = e.getPoint();
         e.getComponent().repaint();
     }
@@ -1304,6 +1337,215 @@ public class ScreenShotPanel extends JPanel
         if (fixedWidth != null && fixedHeight != null) {
             mousePosition = e.getPoint();
             e.getComponent().repaint();
+            return;
+        }
+
+        Cursor cursor = this.findSelectionHandle(e.getPoint()).getCursor();
+
+        if (this.getCursor() != cursor) {
+            this.setCursor(cursor);
+        }
+    }
+
+    // 선택 영역을 다시 드래그해 조절할 수 있도록 8방향 핸들과 이동 영역을 제공한다.
+    private enum SelectionHandle {
+        NORTH_WEST(Cursor.NW_RESIZE_CURSOR),
+        NORTH(Cursor.N_RESIZE_CURSOR),
+        NORTH_EAST(Cursor.NE_RESIZE_CURSOR),
+        EAST(Cursor.E_RESIZE_CURSOR),
+        SOUTH_EAST(Cursor.SE_RESIZE_CURSOR),
+        SOUTH(Cursor.S_RESIZE_CURSOR),
+        SOUTH_WEST(Cursor.SW_RESIZE_CURSOR),
+        WEST(Cursor.W_RESIZE_CURSOR),
+        MOVE(Cursor.MOVE_CURSOR),
+        NONE(Cursor.DEFAULT_CURSOR);
+
+        private final int cursorType;
+
+        SelectionHandle(int cursorType) {
+            this.cursorType = cursorType;
+        }
+
+        private Cursor getCursor() {
+            return Cursor.getPredefinedCursor(this.cursorType);
+        }
+
+        private boolean isResize() {
+            return this != MOVE && this != NONE;
+        }
+    }
+
+    private void clearSelectionDragState() {
+        this.activeSelectionHandle = SelectionHandle.NONE;
+        this.selectionDragStartPoint = null;
+        this.selectionDragOriginRectangle = null;
+    }
+
+    private boolean hasSelection() {
+        if (this.captureConfig.isWindowCaptureMode()) {
+            return false;
+        }
+
+        // 고정 크기 모드는 클릭 한 번으로 바로 캡처하므로 조절 대상이 아니다.
+        if (this.captureConfig.getFixedWidth() != null && this.captureConfig.getFixedHeight() != null) {
+            return false;
+        }
+
+        return this.stratPoint != null && this.endPoint != null;
+    }
+
+    private SelectionHandle findSelectionHandle(Point point) {
+        if (!this.hasSelection()) {
+            return SelectionHandle.NONE;
+        }
+
+        Rectangle rectangle = this.getRectangle();
+
+        for (SelectionHandle handle : SelectionHandle.values()) {
+            if (!handle.isResize()) {
+                continue;
+            }
+
+            if (this.getSelectionHandleBounds(rectangle, handle, SELECTION_HANDLE_HIT_SIZE).contains(point)) {
+                return handle;
+            }
+        }
+
+        if (rectangle.contains(point)) {
+            return SelectionHandle.MOVE;
+        }
+
+        return SelectionHandle.NONE;
+    }
+
+    private Rectangle getSelectionHandleBounds(Rectangle rectangle, SelectionHandle handle, int size) {
+        Point center = this.getSelectionHandleCenter(rectangle, handle);
+
+        return new Rectangle(center.x - size / 2, center.y - size / 2, size, size);
+    }
+
+    private Point getSelectionHandleCenter(Rectangle rectangle, SelectionHandle handle) {
+        int left = rectangle.x;
+        int centerX = rectangle.x + rectangle.width / 2;
+        int right = rectangle.x + rectangle.width;
+        int top = rectangle.y;
+        int centerY = rectangle.y + rectangle.height / 2;
+        int bottom = rectangle.y + rectangle.height;
+
+        switch (handle) {
+            case NORTH_WEST:
+                return new Point(left, top);
+            case NORTH:
+                return new Point(centerX, top);
+            case NORTH_EAST:
+                return new Point(right, top);
+            case EAST:
+                return new Point(right, centerY);
+            case SOUTH_EAST:
+                return new Point(right, bottom);
+            case SOUTH:
+                return new Point(centerX, bottom);
+            case SOUTH_WEST:
+                return new Point(left, bottom);
+            case WEST:
+                return new Point(left, centerY);
+            default:
+                return new Point(centerX, centerY);
+        }
+    }
+
+    private void updateSelectionByHandle(Point point) {
+        if (this.activeSelectionHandle == SelectionHandle.MOVE) {
+            this.moveSelection(point);
+            return;
+        }
+
+        this.resizeSelection(point);
+    }
+
+    private void moveSelection(Point point) {
+        if (this.selectionDragOriginRectangle == null || this.selectionDragStartPoint == null) {
+            return;
+        }
+
+        Rectangle origin = this.selectionDragOriginRectangle;
+        int x = origin.x + point.x - this.selectionDragStartPoint.x;
+        int y = origin.y + point.y - this.selectionDragStartPoint.y;
+
+        x = Math.max(0, Math.min(x, this.getWidth() - origin.width));
+        y = Math.max(0, Math.min(y, this.getHeight() - origin.height));
+
+        this.applySelectionRectangle(new Rectangle(x, y, origin.width, origin.height));
+    }
+
+    private void resizeSelection(Point point) {
+        Rectangle rectangle = this.getRectangle();
+
+        int left = rectangle.x;
+        int top = rectangle.y;
+        int right = rectangle.x + rectangle.width;
+        int bottom = rectangle.y + rectangle.height;
+
+        int x = Math.max(0, Math.min(point.x, this.getWidth()));
+        int y = Math.max(0, Math.min(point.y, this.getHeight()));
+
+        switch (this.activeSelectionHandle) {
+            case NORTH_WEST:
+                left = Math.min(x, right - SELECTION_MIN_SIZE);
+                top = Math.min(y, bottom - SELECTION_MIN_SIZE);
+                break;
+            case NORTH:
+                top = Math.min(y, bottom - SELECTION_MIN_SIZE);
+                break;
+            case NORTH_EAST:
+                right = Math.max(x, left + SELECTION_MIN_SIZE);
+                top = Math.min(y, bottom - SELECTION_MIN_SIZE);
+                break;
+            case EAST:
+                right = Math.max(x, left + SELECTION_MIN_SIZE);
+                break;
+            case SOUTH_EAST:
+                right = Math.max(x, left + SELECTION_MIN_SIZE);
+                bottom = Math.max(y, top + SELECTION_MIN_SIZE);
+                break;
+            case SOUTH:
+                bottom = Math.max(y, top + SELECTION_MIN_SIZE);
+                break;
+            case SOUTH_WEST:
+                left = Math.min(x, right - SELECTION_MIN_SIZE);
+                bottom = Math.max(y, top + SELECTION_MIN_SIZE);
+                break;
+            case WEST:
+                left = Math.min(x, right - SELECTION_MIN_SIZE);
+                break;
+            default:
+                return;
+        }
+
+        this.applySelectionRectangle(new Rectangle(left, top, right - left, bottom - top));
+    }
+
+    private void applySelectionRectangle(Rectangle rectangle) {
+        this.stratPoint = new Point(rectangle.x, rectangle.y);
+        this.endPoint = new Point(rectangle.x + rectangle.width, rectangle.y + rectangle.height);
+    }
+
+    private void drawSelectionHandles(Graphics2D g2, Rectangle rectangle) {
+        if (!this.hasSelection()) {
+            return;
+        }
+
+        for (SelectionHandle handle : SelectionHandle.values()) {
+            if (!handle.isResize()) {
+                continue;
+            }
+
+            Rectangle bounds = this.getSelectionHandleBounds(rectangle, handle, SELECTION_HANDLE_SIZE);
+
+            g2.setColor(SELECTION_HANDLE_COLOR);
+            g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+            g2.setColor(SELECTION_HANDLE_BORDER_COLOR);
+            g2.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
         }
     }
 
@@ -1369,6 +1611,7 @@ public class ScreenShotPanel extends JPanel
             g2.setColor(new Color(255, 255, 255, 100));
             g2.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
             this.drawSelectionGuides(g2, rectangle);
+            this.drawSelectionHandles(g2, rectangle);
         }
 
         if (includeColorPreview && this.rightButtonPressed && this.colorPreviewPoint != null && this.colorPreviewColor != null) {
