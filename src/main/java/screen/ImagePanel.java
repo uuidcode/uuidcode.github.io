@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -48,6 +49,11 @@ import static javax.swing.BoxLayout.X_AXIS;
 public class ImagePanel extends JPanel {
     private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
     private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
+    private static final ShapeType[] TOOL_SHAPE_TYPES = {
+        ShapeType.CROP,
+        ShapeType.BLUR,
+        ShapeType.BLUR_CLIPPING
+    };
 
     private final String name;
     private final ImageTabPanel tabbedPane;
@@ -63,10 +69,8 @@ public class ImagePanel extends JPanel {
     private JSplitPane contentSplitPane;
     private ImageOcrPanel imageOcrPanel;
     private JButton ocrButton;
-    private JToggleButton cropToggleButton;
-    private JToggleButton blurToggleButton;
-    private JToggleButton blurClippingToggleButton;
-    private ShapeType selectedShapeType = ShapeType.FILL_ARROW;
+    private final Map<ShapeType, JToggleButton> toggleButtonMap = new LinkedHashMap<>();
+    private ShapeType selectedShapeType;
 
     public ImagePanel(
         String name,
@@ -199,16 +203,13 @@ public class ImagePanel extends JPanel {
         this.controlPanel = new JPanel();
         this.controlPanel.setLayout(new BoxLayout(controlPanel, LINE_AXIS));
 
-        this.createShapeTypeRadio();
+        this.buttonPanel = new JPanel();
+        this.buttonPanel.setLayout(new WrapLayout(FlowLayout.CENTER, 0, 0));
+
+        this.createToolTogglePanel();
         this.createFillTypeRadio();
         this.createColorTypeRadio();
 
-        this.buttonPanel = new JPanel();
-        this.buttonPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
-
-        this.createCropToggleButton();
-        this.createBlurToggleButton();
-        this.createBlurClippingToggleButton();
         this.createCaptureRepeatButton();
         this.createMeasureButton();
         this.createShadowButton();
@@ -268,120 +269,71 @@ public class ImagePanel extends JPanel {
         this.imageViewPanel.redo();
     }
 
-    private void createCropToggleButton() {
-        this.cropToggleButton = this.createShapeToggleButton(
-            "Crop",
-            ShapeType.CROP
-        );
+    // 도형/Crop/Blur 토글을 기존 Shape Type 자리의 Tool 그룹 한 곳에 모아 둔다.
+    private void createToolTogglePanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, X_AXIS));
+        panel.setBorder(BorderFactory.createTitledBorder("Tool"));
+
+        Arrays.stream(selectableShapeTypes())
+            .forEach(shapeType -> panel.add(this.createToggleButton(shapeType)));
+
+        Arrays.stream(TOOL_SHAPE_TYPES)
+            .forEach(shapeType -> panel.add(this.createToggleButton(shapeType)));
+
+        // 초기에는 모든 토글이 꺼진, 그리기 도구가 없는 상태로 시작한다.
+        this.setActiveShapeType(null);
+
+        this.controlPanel.add(panel);
     }
 
-    private void createBlurToggleButton() {
-        this.blurToggleButton = this.createShapeToggleButton(
-            "Blur",
-            ShapeType.BLUR
-        );
-    }
-
-    private void createBlurClippingToggleButton() {
-        this.blurClippingToggleButton = this.createShapeToggleButton(
-            "Blur Outside",
-            ShapeType.BLUR_CLIPPING
-        );
-    }
-
-    private JToggleButton createShapeToggleButton(
-        String label,
-        ShapeType shapeType
-    ) {
-        JToggleButton button = new JToggleButton(label);
+    private JToggleButton createToggleButton(ShapeType shapeType) {
+        JToggleButton button = new JToggleButton(toggleLabel(shapeType));
         button.setName(this.name);
-        button.addActionListener(e -> this.toggleShape(button, shapeType));
-        this.buttonPanel.add(button);
+        button.addActionListener(e -> this.onToggleClicked(shapeType));
 
         Util.styleButtonAsSquare(button);
 
-        this.updateToggleButtonAppearance(
-            button,
-            label
-        );
+        this.toggleButtonMap.put(shapeType, button);
 
         return button;
     }
 
-    private void toggleShape(
-        JToggleButton button,
-        ShapeType shapeType
-    ) {
-        if (button.isSelected()) {
-            this.clearOtherToggleSelections(button);
+    // 켜져 있는 토글을 다시 누르면 전부 꺼져 그리기 도구가 없는 상태가 된다.
+    private void onToggleClicked(ShapeType shapeType) {
+        JToggleButton button = this.toggleButtonMap.get(shapeType);
 
-            this.imageViewPanel.setShapeType(shapeType);
-        } else {
-            this.imageViewPanel.setShapeType(this.selectedShapeType);
-        }
+        this.setActiveShapeType(button.isSelected() ? shapeType : null);
+    }
+
+    // 모든 토글은 하나의 그룹으로 동작해서, 켜진 토글 외에는 전부 꺼진 상태가 된다.
+    private void setActiveShapeType(ShapeType shapeType) {
+        this.selectedShapeType = shapeType;
+
+        this.toggleButtonMap.forEach(
+            (type, button) -> button.setSelected(type == shapeType)
+        );
 
         this.updateToggleButtonAppearances();
 
+        this.imageViewPanel.setShapeType(shapeType);
         this.imageViewPanel.repaint();
     }
 
-    private void clearOtherToggleSelections(JToggleButton activeButton) {
-        this.clearToggleSelection(
-            this.cropToggleButton,
-            activeButton
-        );
-
-        this.clearToggleSelection(
-            this.blurToggleButton,
-            activeButton
-        );
-
-        this.clearToggleSelection(
-            this.blurClippingToggleButton,
-            activeButton
-        );
-    }
-
-    private void clearToggleSelection(
-        JToggleButton button,
-        JToggleButton activeButton
-    ) {
-        if (button == null || button == activeButton) {
-            return;
-        }
-
-        button.setSelected(false);
-    }
-
-    private void clearAllToggleSelections() {
-        this.clearOtherToggleSelections(null);
-    }
-
     private void updateToggleButtonAppearances() {
-        this.updateToggleButtonAppearance(
-            this.cropToggleButton,
-            "Crop"
-        );
-
-        this.updateToggleButtonAppearance(
-            this.blurToggleButton,
-            "Blur"
-        );
-
-        this.updateToggleButtonAppearance(
-            this.blurClippingToggleButton,
-            "Blur Outside"
-        );
+        this.toggleButtonMap.forEach(this::updateToggleButtonAppearance);
     }
 
     // 토글의 on/off 상태가 눈에 보이도록 활성 시 강조 색으로 채운다.
     private void updateToggleButtonAppearance(
-        JToggleButton button,
-        String label
+        ShapeType shapeType,
+        JToggleButton button
     ) {
         if (button == null) {
             return;
         }
+
+        String label = toggleLabel(shapeType);
 
         boolean active = button.isSelected();
         if (active) {
@@ -399,23 +351,12 @@ public class ImagePanel extends JPanel {
         }
     }
 
-    private void createShapeTypeRadio() {
-        ShapeType[] shapeTypes = selectableShapeTypes();
+    private static String toggleLabel(ShapeType shapeType) {
+        if (shapeType == ShapeType.BLUR_CLIPPING) {
+            return "Blur Outside";
+        }
 
-        this.createRadioPanel(
-            "Shape Type",
-            shapeTypes,
-            ShapeType::getTitle,
-            shapeType -> {
-                this.selectedShapeType = shapeType;
-                this.clearAllToggleSelections();
-
-                this.updateToggleButtonAppearances();
-
-                this.imageViewPanel.setShapeType(shapeType);
-                this.imageViewPanel.repaint();
-            }
-        );
+        return shapeType.getTitle();
     }
 
     static ShapeType[] selectableShapeTypes() {
@@ -425,9 +366,8 @@ public class ImagePanel extends JPanel {
     }
 
     private static boolean isSelectableShapeType(ShapeType shapeType) {
-        return shapeType != ShapeType.CROP
-            && shapeType != ShapeType.BLUR
-            && shapeType != ShapeType.BLUR_CLIPPING;
+        return Arrays.stream(TOOL_SHAPE_TYPES)
+            .noneMatch(toolShapeType -> toolShapeType == shapeType);
     }
 
     private void createFillTypeRadio() {

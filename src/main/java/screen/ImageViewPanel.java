@@ -55,7 +55,7 @@ public class ImageViewPanel extends JPanel
     private Point endPoint;
     private List<BufferedImage> bufferedImageHistoryList = new ArrayList<>();
     private int imageHistoryIndex = 0;
-    private ShapeType shapeType = ShapeType.FILL_ARROW;
+    private ShapeType shapeType;
     private FillType fillType = FillType.OPAQUE;
     private ColorType colorType = ColorType.BLUE;
     private BufferedImage pastePreviewImage;
@@ -662,6 +662,12 @@ public class ImageViewPanel extends JPanel
             return;
         }
 
+        // 도형 토글이 모두 꺼져 있으면 새로 그리지 않고, 기존 객체 선택/이동만 허용한다.
+        if (this.shapeType == null) {
+            this.resetPoint();
+            return;
+        }
+
         int width = bufferedImage.getWidth();
         int height = bufferedImage.getHeight();
         point = this.toImagePoint(e.getPoint());
@@ -867,6 +873,10 @@ public class ImageViewPanel extends JPanel
         BufferedImage bufferedImage = this.getBufferedImage();
 
         if (bufferedImage == null) {
+            return;
+        }
+
+        if (this.shapeType == null) {
             return;
         }
 
