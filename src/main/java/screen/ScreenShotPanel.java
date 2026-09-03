@@ -1194,8 +1194,11 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
-        // 이미 선택 영역이 있으면 핸들 드래그로 크기를 조절하고, 내부 드래그로 위치를 옮긴다.
-        SelectionHandle handle = this.findSelectionHandle(e.getPoint());
+        // 이미 선택 영역이 있으면 핸들 드래그로 크기를 조절하고, cmd + 내부 드래그로 위치를 옮긴다.
+        SelectionHandle handle = this.findSelectionHandle(
+            e.getPoint(),
+            this.isSelectionMoveRequested(e) // moveRequested
+        );
 
         if (handle != SelectionHandle.NONE) {
             this.activeSelectionHandle = handle;
@@ -1340,7 +1343,10 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
-        Cursor cursor = this.findSelectionHandle(e.getPoint()).getCursor();
+        Cursor cursor = this.findSelectionHandle(
+            e.getPoint(),
+            this.isSelectionMoveRequested(e) // moveRequested
+        ).getCursor();
 
         if (this.getCursor() != cursor) {
             this.setCursor(cursor);
@@ -1394,7 +1400,14 @@ public class ScreenShotPanel extends JPanel
         return this.stratPoint != null && this.endPoint != null;
     }
 
-    private SelectionHandle findSelectionHandle(Point point) {
+    private boolean isSelectionMoveRequested(MouseEvent event) {
+        return event.isMetaDown();
+    }
+
+    private SelectionHandle findSelectionHandle(
+        Point point,
+        boolean moveRequested
+    ) {
         if (!this.hasSelection()) {
             return SelectionHandle.NONE;
         }
@@ -1411,11 +1424,23 @@ public class ScreenShotPanel extends JPanel
             }
         }
 
-        if (rectangle.contains(point)) {
+        if (shouldMoveSelection(rectangle, point, moveRequested)) {
             return SelectionHandle.MOVE;
         }
 
         return SelectionHandle.NONE;
+    }
+
+    static boolean shouldMoveSelection(
+        Rectangle rectangle,
+        Point point,
+        boolean moveRequested
+    ) {
+        if (!moveRequested) {
+            return false;
+        }
+
+        return rectangle.contains(point);
     }
 
     private Rectangle getSelectionHandleBounds(Rectangle rectangle, SelectionHandle handle, int size) {
@@ -1468,14 +1493,37 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
-        Rectangle origin = this.selectionDragOriginRectangle;
-        int x = origin.x + point.x - this.selectionDragStartPoint.x;
-        int y = origin.y + point.y - this.selectionDragStartPoint.y;
+        Rectangle movedRectangle = moveSelectionRectangle(
+            this.selectionDragOriginRectangle,
+            this.selectionDragStartPoint,
+            point,
+            this.getWidth(), // boundaryWidth
+            this.getHeight() // boundaryHeight
+        );
 
-        x = Math.max(0, Math.min(x, this.getWidth() - origin.width));
-        y = Math.max(0, Math.min(y, this.getHeight() - origin.height));
+        this.applySelectionRectangle(movedRectangle);
+    }
 
-        this.applySelectionRectangle(new Rectangle(x, y, origin.width, origin.height));
+    static Rectangle moveSelectionRectangle(
+        Rectangle origin,
+        Point startPoint,
+        Point point,
+        int boundaryWidth,
+        int boundaryHeight
+    ) {
+        int x = origin.x + point.x - startPoint.x;
+        int y = origin.y + point.y - startPoint.y;
+
+        x = Math.max(0, Math.min(x, boundaryWidth - origin.width));
+        y = Math.max(0, Math.min(y, boundaryHeight - origin.height));
+
+        Rectangle movedRectangle = new Rectangle(origin);
+        movedRectangle.setLocation(
+            x,
+            y
+        );
+
+        return movedRectangle;
     }
 
     private void resizeSelection(Point point) {
