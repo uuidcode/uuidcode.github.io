@@ -60,9 +60,12 @@ public class ImagePanel extends JPanel {
     private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
     private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
     private static final String REPOSITORY_RELATIVE_PATH = "IdeaProjects/uuidcode.github.io";
+    private static final String REPOSITORY_DIRECTORY_NAME = "uuidcode.github.io";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final String PREVIEW_URL_FORMAT = "http://localhost:63342/uuidcode.github.io/stream/images/%d.html";
     private static final String CHROME_APPLICATION_NAME = "Google Chrome";
+    private static final String INTELLIJ_APPLICATION_NAME = "IntelliJ IDEA";
+    private static final long INTELLIJ_OPEN_SETTLE_DELAY_MS = 3_000;
     private static final ShapeType[] TOOL_SHAPE_TYPES = {
         ShapeType.CROP,
         ShapeType.BLUR,
@@ -643,17 +646,28 @@ public class ImagePanel extends JPanel {
     // 홈 디렉터리의 IdeaProjects/uuidcode.github.io 를 pull 한 뒤
     // images/{연도}.html 에 오늘 날짜의 img 태그를 추가하고 i 디렉터리에 이미지를 저장한다.
     private void write() {
-        File repositoryDirectory = new File(System.getProperty("user.home"), REPOSITORY_RELATIVE_PATH);
+        File repositoryDirectory = new File(
+            System.getProperty("user.home"), // parent
+            REPOSITORY_RELATIVE_PATH // child
+        );
 
         if (!repositoryDirectory.isDirectory()) {
-            JOptionPane.showMessageDialog(this, repositoryDirectory.getAbsolutePath() + " not found.");
+            JOptionPane.showMessageDialog(
+                this, // parentComponent
+                repositoryDirectory.getAbsolutePath() + " not found." // message
+            );
+
             return;
         }
 
         BufferedImage bufferedImage = this.imageViewPanel.getBufferedImage();
 
         if (bufferedImage == null) {
-            JOptionPane.showMessageDialog(this, "Image not found.");
+            JOptionPane.showMessageDialog(
+                this, // parentComponent
+                "Image not found." // message
+            );
+
             return;
         }
 
@@ -668,19 +682,29 @@ public class ImagePanel extends JPanel {
                 String date = today.format(DATE_FORMATTER);
 
                 String htmlPath = "images/" + today.getYear() + ".html";
-                File htmlFile = new File(repositoryDirectory, htmlPath);
+                File htmlFile = new File(
+                    repositoryDirectory, // parent
+                    htmlPath // child
+                );
 
                 if (!htmlFile.isFile()) {
                     throw new IllegalStateException(htmlFile.getAbsolutePath() + " not found.");
                 }
 
                 ImageHtmlWriter.Result result = ImageHtmlWriter.write(
-                    FileUtils.readFileToString(htmlFile, StandardCharsets.UTF_8),
+                    FileUtils.readFileToString(
+                        htmlFile,
+                        StandardCharsets.UTF_8 // encoding
+                    ),
                     date
                 );
 
                 String imagePath = "i/" + result.getImageName() + ".png";
-                File targetImageFile = new File(repositoryDirectory, imagePath);
+                File targetImageFile = new File(
+                    repositoryDirectory, // parent
+                    imagePath // child
+                );
+
                 File imageDirectory = targetImageFile.getParentFile();
 
                 if (!imageDirectory.isDirectory() && !imageDirectory.mkdirs()) {
@@ -688,20 +712,53 @@ public class ImagePanel extends JPanel {
                 }
 
                 // 이미지 저장이 실패하면 html 만 수정되는 상황이 생기므로 이미지를 먼저 저장한다.
-                if (!ImageIO.write(bufferedImage, "png", targetImageFile)) {
+                if (!ImageIO.write(
+                    bufferedImage,
+                    "png", // formatName
+                    targetImageFile // output
+                )) {
                     throw new IllegalStateException("Failed to write " + targetImageFile.getAbsolutePath());
                 }
 
-                FileUtils.writeStringToFile(htmlFile, result.getHtml(), StandardCharsets.UTF_8);
+                FileUtils.writeStringToFile(
+                    htmlFile,
+                    result.getHtml(), // data
+                    StandardCharsets.UTF_8 // encoding
+                );
 
-                git(repositoryDirectory, "add", "--", imagePath, htmlPath);
+                git(
+                    repositoryDirectory,
+                    "add", // argument
+                    "--", // argument
+                    imagePath,
+                    htmlPath
+                );
+
                 // 다른 파일이 이미 staged 되어 있어도 함께 커밋되지 않도록 경로를 지정한다.
-                git(repositoryDirectory, "commit", "-m", result.getImageName(), "--", imagePath, htmlPath);
+                git(
+                    repositoryDirectory,
+                    "commit", // argument
+                    "-m", // argument
+                    result.getImageName(), // argument
+                    "--", // argument
+                    imagePath,
+                    htmlPath
+                );
+
                 // 직전에 pull 했으므로 lease 가 최신이다. 로컬 히스토리를 고쳐 쓴 경우에도
                 // push 되고, pull 이후 원격에 새로 올라온 커밋은 덮어쓰지 않는다.
-                git(repositoryDirectory, "push", "--force-with-lease");
+                git(
+                    repositoryDirectory,
+                    "push", // argument
+                    "--force-with-lease" // argument
+                );
 
-                openChrome(String.format(PREVIEW_URL_FORMAT, today.getYear()));
+                openIntellijProjectIfNecessary(repositoryDirectory);
+
+                openChrome(String.format(
+                    PREVIEW_URL_FORMAT, // format
+                    today.getYear() // args
+                ));
 
                 return null;
             }
@@ -713,25 +770,136 @@ public class ImagePanel extends JPanel {
                 try {
                     this.get();
                 } catch (Exception e) {
-                    Throwable cause = e.getCause() == null ? e : e.getCause();
-                    String message = cause.getMessage() == null ? "Write failed." : cause.getMessage();
-                    JOptionPane.showMessageDialog(ImagePanel.this, message);
+                    Throwable cause = e;
+
+                    if (e.getCause() != null) {
+                        cause = e.getCause();
+                    }
+
+                    String message = "Write failed.";
+
+                    if (cause.getMessage() != null) {
+                        message = cause.getMessage();
+                    }
+
+                    JOptionPane.showMessageDialog(
+                        ImagePanel.this, // parentComponent
+                        message
+                    );
                 }
             }
         }.execute();
     }
 
     private static void openChrome(String url) throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder("open", "-a", CHROME_APPLICATION_NAME, url);
+        runCommand(openApplicationCommand(
+            CHROME_APPLICATION_NAME, // applicationName
+            url
+        ));
+    }
+
+    private static void openIntellijProjectIfNecessary(File repositoryDirectory) throws Exception {
+        if (isIntellijProjectOpen()) {
+            return;
+        }
+
+        runCommand(openApplicationCommand(
+            INTELLIJ_APPLICATION_NAME, // applicationName
+            repositoryDirectory.getAbsolutePath() // pathOrUrl
+        ));
+
+        Thread.sleep(INTELLIJ_OPEN_SETTLE_DELAY_MS);
+    }
+
+    private static boolean isIntellijProjectOpen() {
+        try {
+            String windowList = runCommand(intellijWindowListCommand());
+
+            return containsIntellijProjectWindow(windowList);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    static boolean containsIntellijProjectWindow(String windowList) {
+        if (windowList == null) {
+            return false;
+        }
+
+        return windowList.contains(REPOSITORY_DIRECTORY_NAME);
+    }
+
+    static List<String> openApplicationCommand(
+        String applicationName,
+        String pathOrUrl
+    ) {
+        List<String> command = new ArrayList<>();
+        command.add("open");
+
+        command.add("-a");
+
+        command.add(applicationName);
+
+        command.add(pathOrUrl);
+
+        return command;
+    }
+
+    private static List<String> intellijWindowListCommand() {
+        List<String> command = new ArrayList<>();
+        command.add("osascript");
+
+        command.add("-e");
+
+        command.add("tell application \"System Events\"");
+
+        command.add("-e");
+
+        command.add("if exists process \"" + INTELLIJ_APPLICATION_NAME + "\" then");
+
+        command.add("-e");
+
+        command.add("tell process \"" + INTELLIJ_APPLICATION_NAME + "\" to return name of windows as string");
+
+        command.add("-e");
+
+        command.add("end if");
+
+        command.add("-e");
+
+        command.add("return \"\"");
+
+        command.add("-e");
+
+        command.add("end tell");
+
+        return command;
+    }
+
+    private static String runCommand(List<String> command) throws Exception {
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+
         processBuilder.redirectErrorStream(true);
 
         Process process = processBuilder.start();
-        String output = IOUtils.toString(process.getInputStream(), StandardCharsets.UTF_8);
+
+        String output = IOUtils.toString(
+            process.getInputStream(),
+            StandardCharsets.UTF_8 // encoding
+        );
+
         int exitCode = process.waitFor();
 
         if (exitCode != 0) {
-            throw new IllegalStateException("Failed to open " + url + "\n" + output.trim());
+            throw new IllegalStateException(
+                String.join(
+                    " ", // delimiter
+                    command
+                ) + " failed.\n" + output.trim()
+            );
         }
+
+        return output;
     }
 
     private static void gitPull(File repositoryDirectory) throws Exception {
