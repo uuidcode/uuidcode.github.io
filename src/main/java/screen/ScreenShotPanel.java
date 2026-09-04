@@ -1194,11 +1194,8 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
-        // 이미 선택 영역이 있으면 핸들 드래그로 크기를 조절하고, cmd + 내부 드래그로 위치를 옮긴다.
-        SelectionHandle handle = this.findSelectionHandle(
-            e.getPoint(),
-            this.isSelectionMoveRequested(e) // moveRequested
-        );
+        // 이미 선택 영역이 있으면 핸들 드래그로 크기를 조절하고, 내부 드래그로 위치를 옮긴다.
+        SelectionHandle handle = this.findSelectionHandle(e.getPoint());
 
         if (handle != SelectionHandle.NONE) {
             this.activeSelectionHandle = handle;
@@ -1343,10 +1340,7 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
-        Cursor cursor = this.findSelectionHandle(
-            e.getPoint(),
-            this.isSelectionMoveRequested(e) // moveRequested
-        ).getCursor();
+        Cursor cursor = this.findSelectionHandle(e.getPoint()).getCursor();
 
         if (this.getCursor() != cursor) {
             this.setCursor(cursor);
@@ -1400,14 +1394,7 @@ public class ScreenShotPanel extends JPanel
         return this.stratPoint != null && this.endPoint != null;
     }
 
-    private boolean isSelectionMoveRequested(MouseEvent event) {
-        return event.isMetaDown();
-    }
-
-    private SelectionHandle findSelectionHandle(
-        Point point,
-        boolean moveRequested
-    ) {
+    private SelectionHandle findSelectionHandle(Point point) {
         if (!this.hasSelection()) {
             return SelectionHandle.NONE;
         }
@@ -1424,7 +1411,10 @@ public class ScreenShotPanel extends JPanel
             }
         }
 
-        if (shouldMoveSelection(rectangle, point, moveRequested)) {
+        if (shouldMoveSelection(
+            rectangle,
+            point
+        )) {
             return SelectionHandle.MOVE;
         }
 
@@ -1433,13 +1423,8 @@ public class ScreenShotPanel extends JPanel
 
     static boolean shouldMoveSelection(
         Rectangle rectangle,
-        Point point,
-        boolean moveRequested
+        Point point
     ) {
-        if (!moveRequested) {
-            return false;
-        }
-
         return rectangle.contains(point);
     }
 

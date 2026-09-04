@@ -129,7 +129,7 @@ public class ScreenShotPanelTest {
     }
 
     @Test
-    public void shouldMoveSelectionReturnsFalseWhenCommandIsNotPressed() {
+    public void shouldMoveSelectionReturnsTrueInsideSelection() {
         Rectangle rectangle = new Rectangle(
             10, // x
             10, // y
@@ -144,38 +144,14 @@ public class ScreenShotPanelTest {
 
         boolean moveSelection = ScreenShotPanel.shouldMoveSelection(
             rectangle,
-            point,
-            false // moveRequested
-        );
-
-        assertFalse(moveSelection);
-    }
-
-    @Test
-    public void shouldMoveSelectionReturnsTrueWhenCommandIsPressedInsideSelection() {
-        Rectangle rectangle = new Rectangle(
-            10, // x
-            10, // y
-            40, // width
-            20 // height
-        );
-
-        Point point = new Point(
-            20, // x
-            20 // y
-        );
-
-        boolean moveSelection = ScreenShotPanel.shouldMoveSelection(
-            rectangle,
-            point,
-            true // moveRequested
+            point
         );
 
         assertTrue(moveSelection);
     }
 
     @Test
-    public void shouldMoveSelectionReturnsFalseWhenCommandIsPressedOutsideSelection() {
+    public void shouldMoveSelectionReturnsFalseOutsideSelection() {
         Rectangle rectangle = new Rectangle(
             10, // x
             10, // y
@@ -190,8 +166,7 @@ public class ScreenShotPanelTest {
 
         boolean moveSelection = ScreenShotPanel.shouldMoveSelection(
             rectangle,
-            point,
-            true // moveRequested
+            point
         );
 
         assertFalse(moveSelection);
