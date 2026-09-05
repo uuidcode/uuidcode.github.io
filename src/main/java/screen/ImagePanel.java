@@ -60,12 +60,7 @@ public class ImagePanel extends JPanel {
     private static final long CAPTURE_REPEAT_HIDE_DELAY_MS = 200;
     private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
     private static final String REPOSITORY_RELATIVE_PATH = "IdeaProjects/uuidcode.github.io";
-    private static final String REPOSITORY_DIRECTORY_NAME = "uuidcode.github.io";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private static final String PREVIEW_URL_FORMAT = "http://localhost:63342/uuidcode.github.io/stream/images/%d.html";
-    private static final String CHROME_APPLICATION_NAME = "Google Chrome";
-    private static final String INTELLIJ_APPLICATION_NAME = "IntelliJ IDEA";
-    private static final long INTELLIJ_OPEN_SETTLE_DELAY_MS = 3_000;
     private static final ShapeType[] TOOL_SHAPE_TYPES = {
         ShapeType.CROP,
         ShapeType.BLUR,
@@ -748,13 +743,6 @@ public class ImagePanel extends JPanel {
                     "--force-with-lease" // argument
                 );
 
-                openIntellijProjectIfNecessary(repositoryDirectory);
-
-                openChrome(String.format(
-                    PREVIEW_URL_FORMAT, // format
-                    today.getYear() // args
-                ));
-
                 return null;
             }
 
@@ -784,117 +772,6 @@ public class ImagePanel extends JPanel {
                 }
             }
         }.execute();
-    }
-
-    private static void openChrome(String url) throws Exception {
-        runCommand(openApplicationCommand(
-            CHROME_APPLICATION_NAME, // applicationName
-            url
-        ));
-    }
-
-    private static void openIntellijProjectIfNecessary(File repositoryDirectory) throws Exception {
-        if (isIntellijProjectOpen()) {
-            return;
-        }
-
-        runCommand(openApplicationCommand(
-            INTELLIJ_APPLICATION_NAME, // applicationName
-            repositoryDirectory.getAbsolutePath() // pathOrUrl
-        ));
-
-        Thread.sleep(INTELLIJ_OPEN_SETTLE_DELAY_MS);
-    }
-
-    private static boolean isIntellijProjectOpen() {
-        try {
-            String windowList = runCommand(intellijWindowListCommand());
-
-            return containsIntellijProjectWindow(windowList);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    static boolean containsIntellijProjectWindow(String windowList) {
-        if (windowList == null) {
-            return false;
-        }
-
-        return windowList.contains(REPOSITORY_DIRECTORY_NAME);
-    }
-
-    static List<String> openApplicationCommand(
-        String applicationName,
-        String pathOrUrl
-    ) {
-        List<String> command = new ArrayList<>();
-        command.add("open");
-
-        command.add("-a");
-
-        command.add(applicationName);
-
-        command.add(pathOrUrl);
-
-        return command;
-    }
-
-    private static List<String> intellijWindowListCommand() {
-        List<String> command = new ArrayList<>();
-        command.add("osascript");
-
-        command.add("-e");
-
-        command.add("tell application \"System Events\"");
-
-        command.add("-e");
-
-        command.add("if exists process \"" + INTELLIJ_APPLICATION_NAME + "\" then");
-
-        command.add("-e");
-
-        command.add("tell process \"" + INTELLIJ_APPLICATION_NAME + "\" to return name of windows as string");
-
-        command.add("-e");
-
-        command.add("end if");
-
-        command.add("-e");
-
-        command.add("return \"\"");
-
-        command.add("-e");
-
-        command.add("end tell");
-
-        return command;
-    }
-
-    private static String runCommand(List<String> command) throws Exception {
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-
-        processBuilder.redirectErrorStream(true);
-
-        Process process = processBuilder.start();
-
-        String output = IOUtils.toString(
-            process.getInputStream(),
-            StandardCharsets.UTF_8 // encoding
-        );
-
-        int exitCode = process.waitFor();
-
-        if (exitCode != 0) {
-            throw new IllegalStateException(
-                String.join(
-                    " ", // delimiter
-                    command
-                ) + " failed.\n" + output.trim()
-            );
-        }
-
-        return output;
     }
 
     private static void gitPull(File repositoryDirectory) throws Exception {
