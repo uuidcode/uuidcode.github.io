@@ -609,11 +609,6 @@ public class ImagePanel extends JPanel {
                 selectedFile = new File(selectedFile.getParent(), fileName + ".png");
             }
 
-            if (selectedFile.exists()) {
-                JOptionPane.showMessageDialog(null, "File already exists.");
-                return;
-            }
-
             this.imageViewPanel.save(selectedFile);
         }
 
