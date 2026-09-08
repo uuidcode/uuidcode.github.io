@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
@@ -27,9 +28,36 @@ public class ImageTabPanel extends JTabbedPane {
     @Getter(PRIVATE)
     private Map<String, Integer> indexMap = new HashMap<>();
     private List<ScreenShotFrame> screenShotFrameList;
+    private boolean galleryVisible;
 
     public ImageTabPanel() {
-        this.addChangeListener(e -> this.updateTabAppearance());
+        this.addChangeListener(e -> {
+            this.updateTabAppearance();
+            this.refreshGalleries();
+        });
+    }
+
+    // 갤러리 토글은 모든 탭이 공유해서, 어느 탭에서 켜도 하단 갤러리가 함께 보인다.
+    public void setGalleryVisible(boolean galleryVisible) {
+        this.galleryVisible = galleryVisible;
+
+        for (int i = 0; i < this.getTabCount(); i++) {
+            Component component = this.getComponentAt(i);
+
+            if (component instanceof ImagePanel) {
+                ((ImagePanel) component).setGalleryVisible(galleryVisible);
+            }
+        }
+    }
+
+    private void refreshGalleries() {
+        for (int i = 0; i < this.getTabCount(); i++) {
+            Component component = this.getComponentAt(i);
+
+            if (component instanceof ImagePanel) {
+                ((ImagePanel) component).refreshGallery();
+            }
+        }
     }
 
     public void addTab(String name) {
@@ -60,9 +88,15 @@ public class ImageTabPanel extends JTabbedPane {
         this.indexMap.put(name, this.getComponentCount());
         this.addTab(name, imagePanel);
         this.setSelectedComponent(imagePanel);
+
+        if (this.galleryVisible) {
+            imagePanel.setGalleryVisible(true);
+        }
+
         this.revalidate();
         this.repaint();
         this.updateTabAppearance();
+        this.refreshGalleries();
     }
 
     public void removeTab(String name) {

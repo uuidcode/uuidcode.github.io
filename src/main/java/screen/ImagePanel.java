@@ -51,9 +51,9 @@ import lombok.SneakyThrows;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.NORTH;
+import static java.awt.BorderLayout.SOUTH;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.KeyEvent.KEY_RELEASED;
-import static javax.swing.BoxLayout.LINE_AXIS;
 import static javax.swing.BoxLayout.X_AXIS;
 
 public class ImagePanel extends JPanel {
@@ -76,12 +76,15 @@ public class ImagePanel extends JPanel {
     private final ImageOcrService imageOcrService = new ImageOcrService();
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
+    private JPanel controlButtonPanel;
     private JPanel buttonPanel;
     private JScrollPane jScrollPane;
     private JSplitPane contentSplitPane;
     private ImageOcrPanel imageOcrPanel;
     private JButton ocrButton;
     private JButton writeButton;
+    private JToggleButton galleryToggleButton;
+    private ImageGalleryPanel galleryPanel;
     private final Map<ShapeType, JToggleButton> toggleButtonMap = new LinkedHashMap<>();
     private ShapeType selectedShapeType;
 
@@ -214,7 +217,7 @@ public class ImagePanel extends JPanel {
         wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
 
         this.controlPanel = new JPanel();
-        this.controlPanel.setLayout(new BoxLayout(controlPanel, LINE_AXIS));
+        this.controlPanel.setLayout(new WrapLayout(FlowLayout.CENTER, 4, 0));
 
         this.buttonPanel = new JPanel();
         this.buttonPanel.setLayout(new WrapLayout(FlowLayout.CENTER, 0, 0));
@@ -222,16 +225,12 @@ public class ImagePanel extends JPanel {
         this.createToolTogglePanel();
         this.createFillTypeRadio();
         this.createColorTypeRadio();
+        this.createControlButtonPanel();
 
         this.createCaptureRepeatButton();
         this.createMeasureButton();
         this.createShadowButton();
         this.createBorderButton();
-        this.createRotateRightButton();
-        this.createRotateLeftButton();
-        this.createZoomInButton();
-        this.createZoomOutButton();
-        this.createZoomResetButton();
         this.createSaveButton();
         this.createPasteButton();
         this.createTextButton();
@@ -295,10 +294,57 @@ public class ImagePanel extends JPanel {
         Arrays.stream(TOOL_SHAPE_TYPES)
             .forEach(shapeType -> panel.add(this.createToggleButton(shapeType)));
 
+        panel.add(this.createGalleryToggleButton());
+
         // 초기에는 모든 토글이 꺼진, 그리기 도구가 없는 상태로 시작한다.
         this.setActiveShapeType(null);
 
         this.controlPanel.add(panel);
+    }
+
+    private JToggleButton createGalleryToggleButton() {
+        this.galleryToggleButton = new JToggleButton("gallery");
+        this.galleryToggleButton.setName(this.name);
+        this.galleryToggleButton.addActionListener(e ->
+            this.tabbedPane.setGalleryVisible(this.galleryToggleButton.isSelected()));
+
+        Util.styleButtonAsSquare(this.galleryToggleButton);
+
+        return this.galleryToggleButton;
+    }
+
+    public String getTabName() {
+        return this.name;
+    }
+
+    public BufferedImage getDisplayImage() {
+        return this.imageViewPanel.getBufferedImage();
+    }
+
+    public void setGalleryVisible(boolean visible) {
+        if (this.galleryToggleButton != null) {
+            this.galleryToggleButton.setSelected(visible);
+        }
+
+        if (visible) {
+            if (this.galleryPanel == null) {
+                this.galleryPanel = new ImageGalleryPanel(this.tabbedPane);
+            }
+
+            this.galleryPanel.refresh();
+            this.add(this.galleryPanel, SOUTH);
+        } else if (this.galleryPanel != null) {
+            this.remove(this.galleryPanel);
+        }
+
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void refreshGallery() {
+        if (this.galleryPanel != null && this.galleryPanel.getParent() != null) {
+            this.galleryPanel.refresh();
+        }
     }
 
     private JToggleButton createToggleButton(ShapeType shapeType) {
@@ -400,6 +446,24 @@ public class ImagePanel extends JPanel {
             ColorType::getTitle,
             colorType -> this.imageViewPanel.setColorType(colorType)
         );
+    }
+
+    // rotate/brightness/zoom 버튼을 Color Type 라디오 오른쪽에 "Adjust" 그룹으로 묶는다.
+    private void createControlButtonPanel() {
+        this.controlButtonPanel = new JPanel();
+        this.controlButtonPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
+        this.controlButtonPanel.setBorder(BorderFactory.createTitledBorder("Adjust"));
+
+        this.createRotateRightButton();
+        this.createRotateLeftButton();
+        this.createBrightnessUpButton();
+        this.createBrightnessDownButton();
+        this.createZoomInButton();
+        this.createZoomOutButton();
+
+        Util.styleButtonsAsSquare(this.controlButtonPanel);
+
+        this.controlPanel.add(this.controlButtonPanel);
     }
 
     private <T extends Enum<T>>void createRadioPanel(
@@ -508,35 +572,42 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("rotate →");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.rotateRight());
-        this.buttonPanel.add(button);
+        this.controlButtonPanel.add(button);
     }
 
     private void createRotateLeftButton() {
         JButton button = new JButton("rotate ←");
         button.setName(this.name);
         button.addActionListener(e -> this.imageViewPanel.rotateLeft());
-        this.buttonPanel.add(button);
+        this.controlButtonPanel.add(button);
+    }
+
+    private void createBrightnessUpButton() {
+        JButton button = new JButton("brightness +");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.brightnessUp());
+        this.controlButtonPanel.add(button);
+    }
+
+    private void createBrightnessDownButton() {
+        JButton button = new JButton("brightness -");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.brightnessDown());
+        this.controlButtonPanel.add(button);
     }
 
     private void createZoomInButton() {
         JButton button = new JButton("zoom +");
         button.setName(this.name);
         button.addActionListener(e -> this.zoomIn());
-        this.buttonPanel.add(button);
+        this.controlButtonPanel.add(button);
     }
 
     private void createZoomOutButton() {
         JButton button = new JButton("zoom -");
         button.setName(this.name);
         button.addActionListener(e -> this.zoomOut());
-        this.buttonPanel.add(button);
-    }
-
-    private void createZoomResetButton() {
-        JButton button = new JButton("zoom reset");
-        button.setName(this.name);
-        button.addActionListener(e -> this.resetZoom());
-        this.buttonPanel.add(button);
+        this.controlButtonPanel.add(button);
     }
 
     private void zoomIn() {

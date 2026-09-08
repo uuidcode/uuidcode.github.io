@@ -78,9 +78,12 @@ public class ImageViewPanel extends JPanel
     private CropHandle activeCropHandle = CropHandle.NONE;
     private Rectangle applyCropButtonBounds;
     private double scale = 1.0;
+    private int rotationDegrees = 0;
+    private int brightnessValue = 0;
 
     private static final int CROP_HANDLE_SIZE = 12;
     private static final int CROP_MIN_SIZE = 20;
+    private static final int BRIGHTNESS_STEP = 20;
     private static final double MIN_SCALE = 0.1;
     private static final double MAX_SCALE = 8.0;
     private static final double SCALE_STEP = 1.2;
@@ -246,6 +249,14 @@ public class ImageViewPanel extends JPanel
         }
 
         switch (handle) {
+            case TOP_LEFT:
+                return new Point(this.cropBounds.x, this.cropBounds.y);
+            case TOP_RIGHT:
+                return new Point(this.cropBounds.x + this.cropBounds.width, this.cropBounds.y);
+            case BOTTOM_LEFT:
+                return new Point(this.cropBounds.x, this.cropBounds.y + this.cropBounds.height);
+            case BOTTOM_RIGHT:
+                return new Point(this.cropBounds.x + this.cropBounds.width, this.cropBounds.y + this.cropBounds.height);
             case TOP:
                 return new Point(this.cropBounds.x + this.cropBounds.width / 2, this.cropBounds.y);
             case RIGHT:
@@ -304,32 +315,87 @@ public class ImageViewPanel extends JPanel
         }
 
         Point cropPoint = this.toCropEdgePoint(point);
-        Rectangle updated = new Rectangle(this.cropBounds);
 
-        switch (this.activeCropHandle) {
-            case TOP:
-                int newTop = Math.max(0, Math.min(cropPoint.y, this.cropBounds.y + this.cropBounds.height - CROP_MIN_SIZE));
-                updated.height = this.cropBounds.y + this.cropBounds.height - newTop;
-                updated.y = newTop;
+        this.cropBounds = resizeCropBounds(
+            this.cropBounds, // current
+            this.activeCropHandle, // handle
+            cropPoint,
+            bufferedImage.getWidth(), // imageWidth
+            bufferedImage.getHeight(), // imageHeight
+            CROP_MIN_SIZE // minSize
+        );
+    }
+
+    static Rectangle resizeCropBounds(
+        Rectangle current,
+        CropHandle handle,
+        Point cropPoint,
+        int imageWidth,
+        int imageHeight,
+        int minSize
+    ) {
+        Rectangle updated = new Rectangle(current);
+
+        switch (handle) {
+            case TOP_LEFT: {
+                int left = Math.max(0, Math.min(cropPoint.x, current.x + current.width - minSize));
+                int top = Math.max(0, Math.min(cropPoint.y, current.y + current.height - minSize));
+                updated.width = current.x + current.width - left;
+                updated.x = left;
+                updated.height = current.y + current.height - top;
+                updated.y = top;
                 break;
-            case RIGHT:
-                int newRight = Math.max(this.cropBounds.x + CROP_MIN_SIZE, Math.min(cropPoint.x, bufferedImage.getWidth()));
-                updated.width = newRight - this.cropBounds.x;
+            }
+            case TOP_RIGHT: {
+                int right = Math.max(current.x + minSize, Math.min(cropPoint.x, imageWidth));
+                int top = Math.max(0, Math.min(cropPoint.y, current.y + current.height - minSize));
+                updated.width = right - current.x;
+                updated.height = current.y + current.height - top;
+                updated.y = top;
                 break;
-            case BOTTOM:
-                int newBottom = Math.max(this.cropBounds.y + CROP_MIN_SIZE, Math.min(cropPoint.y, bufferedImage.getHeight()));
-                updated.height = newBottom - this.cropBounds.y;
+            }
+            case BOTTOM_LEFT: {
+                int left = Math.max(0, Math.min(cropPoint.x, current.x + current.width - minSize));
+                int bottom = Math.max(current.y + minSize, Math.min(cropPoint.y, imageHeight));
+                updated.width = current.x + current.width - left;
+                updated.x = left;
+                updated.height = bottom - current.y;
                 break;
-            case LEFT:
-                int newLeft = Math.max(0, Math.min(cropPoint.x, this.cropBounds.x + this.cropBounds.width - CROP_MIN_SIZE));
-                updated.width = this.cropBounds.x + this.cropBounds.width - newLeft;
-                updated.x = newLeft;
+            }
+            case BOTTOM_RIGHT: {
+                int right = Math.max(current.x + minSize, Math.min(cropPoint.x, imageWidth));
+                int bottom = Math.max(current.y + minSize, Math.min(cropPoint.y, imageHeight));
+                updated.width = right - current.x;
+                updated.height = bottom - current.y;
                 break;
+            }
+            case TOP: {
+                int top = Math.max(0, Math.min(cropPoint.y, current.y + current.height - minSize));
+                updated.height = current.y + current.height - top;
+                updated.y = top;
+                break;
+            }
+            case RIGHT: {
+                int right = Math.max(current.x + minSize, Math.min(cropPoint.x, imageWidth));
+                updated.width = right - current.x;
+                break;
+            }
+            case BOTTOM: {
+                int bottom = Math.max(current.y + minSize, Math.min(cropPoint.y, imageHeight));
+                updated.height = bottom - current.y;
+                break;
+            }
+            case LEFT: {
+                int left = Math.max(0, Math.min(cropPoint.x, current.x + current.width - minSize));
+                updated.width = current.x + current.width - left;
+                updated.x = left;
+                break;
+            }
             default:
                 break;
         }
 
-        this.cropBounds = updated;
+        return updated;
     }
 
     private void applyCropSelection() {
@@ -586,8 +652,94 @@ public class ImageViewPanel extends JPanel
         g2.dispose();
 
         Graphics2D overlayGraphics = (Graphics2D) g.create();
+        this.drawImageInfoOverlay(overlayGraphics, displayImage);
         this.drawCropPreviewOverlay(overlayGraphics);
         overlayGraphics.dispose();
+    }
+
+    // 이미지 패널 왼쪽 상단에 현재 이미지의 width, height, 파일 크기를 표시한다.
+    private void drawImageInfoOverlay(Graphics2D g, BufferedImage image) {
+        if (image == null) {
+            return;
+        }
+
+        long fileSizeBytes = -1;
+
+        if (this.imageFile != null && this.imageFile.exists()) {
+            fileSizeBytes = this.imageFile.length();
+        }
+
+        String info = formatImageInfo(
+            image.getWidth(),
+            image.getHeight(),
+            fileSizeBytes,
+            this.scale,
+            this.rotationDegrees,
+            this.brightnessValue // brightness
+        );
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        Rectangle visibleRect = this.getVisibleRect();
+        FontMetrics metrics = g.getFontMetrics();
+        int paddingX = 10;
+        int paddingY = 6;
+        int boxWidth = metrics.stringWidth(info) + paddingX * 2;
+        int boxHeight = metrics.getHeight() + paddingY * 2;
+        int boxX = visibleRect.x + 12;
+        int boxY = visibleRect.y + 12;
+
+        g.setColor(new Color(20, 20, 20, 200));
+        g.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 10, 10);
+
+        g.setColor(Color.WHITE);
+        g.drawString(info, boxX + paddingX, boxY + paddingY + metrics.getAscent());
+    }
+
+    static String formatImageInfo(
+        int width,
+        int height,
+        long fileSizeBytes,
+        double scale,
+        int rotationDegrees,
+        int brightness
+    ) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(width).append(" x ").append(height);
+
+        if (fileSizeBytes >= 0) {
+            builder.append("  ·  ").append(formatFileSize(fileSizeBytes));
+        }
+
+        builder.append("  ·  Zoom ").append(Math.round(scale * 100)).append("%");
+
+        builder.append("  ·  Rotate ").append(rotationDegrees).append("°");
+
+        builder.append("  ·  Bright ").append(formatSigned(brightness));
+
+        return builder.toString();
+    }
+
+    static String formatSigned(int value) {
+        if (value > 0) {
+            return "+" + value;
+        }
+
+        return String.valueOf(value);
+    }
+
+    static String formatFileSize(long bytes) {
+        if (bytes < 1024) {
+            return bytes + " B";
+        }
+
+        double kb = bytes / 1024.0;
+
+        if (kb < 1024) {
+            return String.format("%.1f KB", kb);
+        }
+
+        return String.format("%.1f MB", kb / 1024.0);
     }
 
     private DrawObject findObjectAt(Point p) {
@@ -1203,6 +1355,7 @@ public class ImageViewPanel extends JPanel
 
     public void rotateRight() {
         this.clearMeasurements();
+        this.rotationDegrees = (this.rotationDegrees + 90) % 360;
         BufferedImage original = this.getBufferedImage();
         int w = original.getWidth();
         int h = original.getHeight();
@@ -1223,6 +1376,7 @@ public class ImageViewPanel extends JPanel
 
     public void rotateLeft() {
         this.clearMeasurements();
+        this.rotationDegrees = (this.rotationDegrees + 270) % 360;
         BufferedImage original = this.getBufferedImage();
         int w = original.getWidth();
         int h = original.getHeight();
@@ -1239,6 +1393,59 @@ public class ImageViewPanel extends JPanel
         this.save();
         this.init();
         this.repaint();
+    }
+
+    public void brightnessUp() {
+        this.applyBrightness(BRIGHTNESS_STEP);
+    }
+
+    public void brightnessDown() {
+        this.applyBrightness(-BRIGHTNESS_STEP);
+    }
+
+    private void applyBrightness(int delta) {
+        this.clearMeasurements();
+        this.brightnessValue += delta;
+        BufferedImage original = this.getBufferedImage();
+        BufferedImage result = adjustBrightness(
+            original, // source
+            delta
+        );
+
+        this.baseImage = deepCopy(result);
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.addHistory(result);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
+    static BufferedImage adjustBrightness(
+        BufferedImage source,
+        int delta
+    ) {
+        int width = source.getWidth();
+        int height = source.getHeight();
+        BufferedImage result = new BufferedImage(width, height, TYPE_INT_ARGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int argb = source.getRGB(x, y);
+                int alpha = (argb >> 24) & 0xFF;
+                int red = clampColor(((argb >> 16) & 0xFF) + delta);
+                int green = clampColor(((argb >> 8) & 0xFF) + delta);
+                int blue = clampColor((argb & 0xFF) + delta);
+
+                result.setRGB(x, y, (alpha << 24) | (red << 16) | (green << 8) | blue);
+            }
+        }
+
+        return result;
+    }
+
+    static int clampColor(int value) {
+        return Math.max(0, Math.min(255, value));
     }
 
     public void clear() {
@@ -1612,7 +1819,11 @@ public class ImageViewPanel extends JPanel
         }
     }
 
-    private enum CropHandle {
+    enum CropHandle {
+        TOP_LEFT(Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR)),
+        TOP_RIGHT(Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR)),
+        BOTTOM_LEFT(Cursor.getPredefinedCursor(Cursor.SW_RESIZE_CURSOR)),
+        BOTTOM_RIGHT(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR)),
         TOP(Cursor.getPredefinedCursor(Cursor.N_RESIZE_CURSOR)),
         RIGHT(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR)),
         BOTTOM(Cursor.getPredefinedCursor(Cursor.S_RESIZE_CURSOR)),
