@@ -541,8 +541,8 @@ public class ImageViewPanel extends JPanel
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
         BufferedImage bufferedImage = this.getBufferedImage();
         BufferedImage displayImage = bufferedImage;

@@ -3,11 +3,13 @@ package screen;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import lombok.Data;
@@ -63,9 +65,9 @@ public class ImageTabPanel extends JTabbedPane {
     public void addTab(String name) {
         this.addTab(
             name,
-            null,
-            null,
-            false
+            null, // captureRectangle
+            null, // captureConfig
+            false // windowCapture
         );
     }
 
@@ -75,18 +77,62 @@ public class ImageTabPanel extends JTabbedPane {
         CaptureConfig captureConfig,
         boolean windowCapture
     ) {
+        if (!SwingUtilities.isEventDispatchThread()) {
+            try {
+                SwingUtilities.invokeAndWait(() -> this.addTab(
+                    name,
+                    captureRectangle,
+                    captureConfig,
+                    windowCapture
+                ));
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+
+                throw new IllegalStateException(
+                    "Interrupted while adding an image tab", // message
+                    exception // cause
+                );
+            } catch (InvocationTargetException exception) {
+                Throwable cause = exception.getCause();
+
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException) cause;
+                }
+
+                if (cause instanceof Error) {
+                    throw (Error) cause;
+                }
+
+                throw new IllegalStateException(
+                    "Failed to add an image tab", // message
+                    cause
+                );
+            }
+
+            return;
+        }
+
         ImagePanel imagePanel = new ImagePanel(
             name,
-            getImageFile(name),
-            this,
+            getImageFile(name), // imageFile
+            this, // tabbedPane
             captureRectangle,
             captureConfig,
             windowCapture
         );
+
         imagePanel.setBorder(createEtchedBorder());
 
-        this.indexMap.put(name, this.getComponentCount());
-        this.addTab(name, imagePanel);
+        this.indexMap.put(
+            name, // key
+            this.getComponentCount() // value
+        );
+
+        this.addTab(
+            name, // title
+            imagePanel // component
+        );
+
         this.setSelectedComponent(imagePanel);
 
         if (this.galleryVisible) {
@@ -94,8 +140,11 @@ public class ImageTabPanel extends JTabbedPane {
         }
 
         this.revalidate();
+
         this.repaint();
+
         this.updateTabAppearance();
+
         this.refreshGalleries();
     }
 

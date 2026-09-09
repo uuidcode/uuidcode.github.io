@@ -40,6 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.JTextComponent;
@@ -167,9 +168,21 @@ public class ImagePanel extends JPanel {
     }
 
     private ImageViewPanel createImageViewPanel(File imageFile) {
-        this.imageViewPanel = new ImageViewPanel(this, imageFile);
+        this.imageViewPanel = new ImageViewPanel(
+            this, // imagePanel
+            imageFile
+        );
+
         this.jScrollPane = new JScrollPane(this.imageViewPanel);
-        this.jScrollPane.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+        this.jScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+
+        this.jScrollPane.setBorder(BorderFactory.createEmptyBorder(
+            4, // top
+            4, // left
+            4, // bottom
+            4 // right
+        ));
 
         jScrollPane.addMouseWheelListener(e -> {
             int notches = e.getWheelRotation();
@@ -186,6 +199,7 @@ public class ImagePanel extends JPanel {
             }
 
             JScrollBar verticalScrollBar = jScrollPane.getVerticalScrollBar();
+
             int scrollAmount = 100;
 
             if (notches < 0) {
@@ -303,7 +317,7 @@ public class ImagePanel extends JPanel {
     }
 
     private JToggleButton createGalleryToggleButton() {
-        this.galleryToggleButton = new JToggleButton("gallery");
+        this.galleryToggleButton = new JToggleButton("Gallery");
         this.galleryToggleButton.setName(this.name);
         this.galleryToggleButton.addActionListener(e ->
             this.tabbedPane.setGalleryVisible(this.galleryToggleButton.isSelected()));
