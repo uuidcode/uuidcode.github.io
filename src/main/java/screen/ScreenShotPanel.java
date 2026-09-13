@@ -155,13 +155,17 @@ public class ScreenShotPanel extends JPanel
             return panel;
         }
 
-        JPanel panel = new JPanel(new GridLayout(2, 2));
+        JPanel panel = new JPanel(new GridLayout(0, 2));
 
         this.configureControlPanel(panel);
 
         JButton shotButton = new JButton("shot");
         shotButton.addActionListener(e -> this.shot(null, false));
         panel.add(shotButton);
+
+        JButton recordButton = new JButton("record");
+        recordButton.addActionListener(e -> this.record());
+        panel.add(recordButton);
 
         JButton delayShotButton = new JButton("delay shot");
         delayShotButton.addActionListener(e -> {
@@ -317,6 +321,37 @@ public class ScreenShotPanel extends JPanel
                 });
             }
         }).start();
+    }
+
+    private void record() {
+        Rectangle selectionRectangle = this.getSelectionRectangle();
+
+        if (selectionRectangle == null) {
+            return;
+        }
+
+        if (controlPanel != null) {
+            this.hideControlPanel(shouldRepaintWhenHidingControlPanel(true));
+        }
+
+        imageFrame.setVisible(false);
+        imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+
+        stratPoint = null;
+        endPoint = null;
+        this.windowCapturePreviewRect = null;
+        this.windowCaptureTarget = null;
+        guideOverlayVisible = false;
+
+        Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
+        Rectangle captureRectangle = new Rectangle(selectionRectangle);
+        captureRectangle.x += display.x;
+        captureRectangle.y += display.y;
+
+        imageFrame.startRecording(
+            this.graphicsDevice, // graphicsDevice
+            captureRectangle // captureRectangle
+        );
     }
 
     private void runCountdown(int second) throws Exception {

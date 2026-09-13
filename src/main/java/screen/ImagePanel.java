@@ -74,6 +74,7 @@ public class ImagePanel extends JPanel {
     private final Rectangle captureRectangle;
     private final CaptureConfig captureConfig;
     private final boolean windowCapture;
+    private final File videoFile;
     private final ImageOcrService imageOcrService = new ImageOcrService();
     private ImageViewPanel imageViewPanel;
     private JPanel controlPanel;
@@ -97,6 +98,26 @@ public class ImagePanel extends JPanel {
         CaptureConfig captureConfig,
         boolean windowCapture
     ) {
+        this(
+            name,
+            imageFile,
+            tabbedPane,
+            captureRectangle,
+            captureConfig,
+            windowCapture,
+            null // videoFile
+        );
+    }
+
+    public ImagePanel(
+        String name,
+        File imageFile,
+        ImageTabPanel tabbedPane,
+        Rectangle captureRectangle,
+        CaptureConfig captureConfig,
+        boolean windowCapture,
+        File videoFile
+    ) {
         super(new BorderLayout());
         this.name = name;
         this.tabbedPane = tabbedPane;
@@ -104,6 +125,7 @@ public class ImagePanel extends JPanel {
         this.captureRectangle = captureRectangle == null ? null : new Rectangle(captureRectangle);
         this.captureConfig = captureConfig == null ? null : captureConfig.copy();
         this.windowCapture = windowCapture;
+        this.videoFile = videoFile;
         this.imageViewPanel = this.createImageViewPanel(imageFile);
         this.createControlPanel();
         this.setCenterComponent(this.jScrollPane);
@@ -242,6 +264,11 @@ public class ImagePanel extends JPanel {
         this.createControlButtonPanel();
 
         this.createCaptureRepeatButton();
+
+        if (this.videoFile != null) {
+            this.createPlayerButton();
+        }
+
         this.createMeasureButton();
         this.createShadowButton();
         this.createBorderButton();
@@ -329,6 +356,10 @@ public class ImagePanel extends JPanel {
 
     public String getTabName() {
         return this.name;
+    }
+
+    public File getVideoFile() {
+        return this.videoFile;
     }
 
     public BufferedImage getDisplayImage() {
@@ -566,6 +597,33 @@ public class ImagePanel extends JPanel {
                 }
             }
         }, "capture-repeat").start();
+    }
+
+    private void createPlayerButton() {
+        JButton button = new JButton("player");
+        button.setName(this.name);
+        button.addActionListener(e -> this.openInPlayer());
+        this.buttonPanel.add(button);
+    }
+
+    // 저장된 mp4 영상을 IINA 플레이어로 연다.
+    private void openInPlayer() {
+        if (this.videoFile == null || !this.videoFile.exists()) {
+            JOptionPane.showMessageDialog(this, "Video file not found.");
+
+            return;
+        }
+
+        try {
+            new ProcessBuilder(
+                "open", // command
+                "-a", // command
+                "IINA", // command
+                this.videoFile.getAbsolutePath() // command
+            ).start();
+        } catch (Exception exception) {
+            JOptionPane.showMessageDialog(this, exception.getMessage());
+        }
     }
 
     private void createMeasureButton() {

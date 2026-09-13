@@ -1,6 +1,7 @@
 package screen;
 
 import org.apache.commons.io.IOUtils;
+import org.jcodec.api.awt.AWTFrameGrab;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -84,6 +85,9 @@ public class ImageFrame extends JFrame {
     private JTextField blueField;
     private JTextField htmlColorField;
     private JPanel pickedColorPreviewPanel;
+    private ScreenRecorder screenRecorder;
+    private RecordingOverlay recordingOverlay;
+    private RecordingAreaIndicator recordingAreaIndicator;
 
     @Data
     public static class WindowTarget {
@@ -374,6 +378,109 @@ public class ImageFrame extends JFrame {
 
         this.screenShotFrameList.forEach(ScreenShotFrame::dispose);
         this.screenShotFrameList = null;
+    }
+
+    void startRecording(
+        GraphicsDevice graphicsDevice,
+        Rectangle captureRectangle
+    ) {
+        if (this.screenRecorder != null) {
+            return;
+        }
+
+        File outputFile = ScreenRecorder.resolveOutputFile();
+
+        this.screenRecorder = new ScreenRecorder(
+            captureRectangle, // captureRectangle
+            ScreenRecorder.DEFAULT_FPS, // fps
+            outputFile // outputFile
+        );
+
+        this.disposeScreenShotFrames();
+
+        this.recordingAreaIndicator = new RecordingAreaIndicator(this.screenRecorder.getCaptureRectangle());
+        this.recordingAreaIndicator.setVisible(true);
+
+        this.recordingOverlay = new RecordingOverlay(
+            graphicsDevice, // graphicsDevice
+            this::stopRecording // onStop
+        );
+
+        this.recordingOverlay.setVisible(true);
+        this.recordingOverlay.start();
+
+        this.screenRecorder.start();
+    }
+
+    void stopRecording() {
+        ScreenRecorder recorder = this.screenRecorder;
+
+        if (recorder == null) {
+            return;
+        }
+
+        this.screenRecorder = null;
+
+        if (this.recordingOverlay != null) {
+            this.recordingOverlay.dispose();
+            this.recordingOverlay = null;
+        }
+
+        if (this.recordingAreaIndicator != null) {
+            this.recordingAreaIndicator.dispose();
+            this.recordingAreaIndicator = null;
+        }
+
+        new Thread(() -> {
+            File file = recorder.stop();
+            Throwable failure = recorder.getFailure();
+
+            if (failure == null) {
+                this.addRecordingTab(file);
+            } else {
+                failure.printStackTrace();
+            }
+
+            SwingUtilities.invokeLater(() -> {
+                this.setVisible(true);
+                this.toFront();
+                this.requestFocus();
+            });
+        }, "screen-recorder-stop").start();
+    }
+
+    // 녹화된 mp4의 첫 프레임을 png로 저장해 탭으로 추가하고, 그 탭에서 영상을 재생할 수 있게 한다.
+    private void addRecordingTab(File videoFile) {
+        try {
+            BufferedImage firstFrame = AWTFrameGrab.getFrame(
+                videoFile, // file
+                0.0 // second
+            );
+
+            String baseName = toRecordingBaseName(videoFile);
+            File imageFile = Util.getImageFile(baseName);
+
+            ImageIO.write(
+                firstFrame, // im
+                "png", // formatName
+                imageFile // output
+            );
+
+            this.tabbedPane.addTab(
+                baseName, // name
+                null, // captureRectangle
+                null, // captureConfig
+                false, // windowCapture
+                videoFile // videoFile
+            );
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    // mp4 파일 이름에서 확장자를 뗀 이름을 탭 이름 겸 첫 프레임 png 이름으로 사용한다.
+    static String toRecordingBaseName(File videoFile) {
+        return videoFile.getName().replace(ScreenRecorder.VIDEO_EXTENSION, "");
     }
 
     private void captureRepeat() {

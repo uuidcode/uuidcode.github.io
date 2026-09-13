@@ -3,6 +3,7 @@ package screen;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Rectangle;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
@@ -77,13 +78,30 @@ public class ImageTabPanel extends JTabbedPane {
         CaptureConfig captureConfig,
         boolean windowCapture
     ) {
+        this.addTab(
+            name,
+            captureRectangle,
+            captureConfig,
+            windowCapture,
+            null // videoFile
+        );
+    }
+
+    public void addTab(
+        String name,
+        Rectangle captureRectangle,
+        CaptureConfig captureConfig,
+        boolean windowCapture,
+        File videoFile
+    ) {
         if (!SwingUtilities.isEventDispatchThread()) {
             try {
                 SwingUtilities.invokeAndWait(() -> this.addTab(
                     name,
                     captureRectangle,
                     captureConfig,
-                    windowCapture
+                    windowCapture,
+                    videoFile
                 ));
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
@@ -118,7 +136,8 @@ public class ImageTabPanel extends JTabbedPane {
             this, // tabbedPane
             captureRectangle,
             captureConfig,
-            windowCapture
+            windowCapture,
+            videoFile
         );
 
         imagePanel.setBorder(createEtchedBorder());
