@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Image;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -22,6 +22,11 @@ import javax.swing.SwingConstants;
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
+import static java.awt.RenderingHints.KEY_INTERPOLATION;
+import static java.awt.RenderingHints.KEY_RENDERING;
+import static java.awt.RenderingHints.VALUE_INTERPOLATION_BILINEAR;
+import static java.awt.RenderingHints.VALUE_RENDER_QUALITY;
+import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -115,16 +120,10 @@ public class ImageGalleryPanel extends JPanel {
         label.setBackground(Color.WHITE);
         label.setPreferredSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
 
-        BufferedImage image = imagePanel.getDisplayImage();
+        ImageIcon icon = imagePanel.getThumbnailIcon(THUMBNAIL_SIZE);
 
-        if (image != null) {
-            Dimension size = thumbnailSize(
-                image.getWidth(), // width
-                image.getHeight(), // height
-                THUMBNAIL_SIZE // max
-            );
-            Image scaled = image.getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
-            label.setIcon(new ImageIcon(scaled));
+        if (icon != null) {
+            label.setIcon(icon);
         }
 
         Color borderColor = NORMAL_BORDER_COLOR;
@@ -158,5 +157,38 @@ public class ImageGalleryPanel extends JPanel {
         int scaledHeight = Math.max(1, (int) Math.round(height * ratio));
 
         return new Dimension(scaledWidth, scaledHeight);
+    }
+
+    // getScaledInstance(SCALE_SMOOTH)는 매우 느려서, Graphics2D 바이리니어로 한 번만 렌더링한다.
+    static BufferedImage scale(BufferedImage source, int targetWidth, int targetHeight) {
+        BufferedImage scaled = new BufferedImage(
+            targetWidth, // width
+            targetHeight, // height
+            TYPE_INT_ARGB // imageType
+        );
+
+        Graphics2D g2 = scaled.createGraphics();
+        g2.setRenderingHint(
+            KEY_INTERPOLATION, // hintKey
+            VALUE_INTERPOLATION_BILINEAR // hintValue
+        );
+
+        g2.setRenderingHint(
+            KEY_RENDERING, // hintKey
+            VALUE_RENDER_QUALITY // hintValue
+        );
+
+        g2.drawImage(
+            source, // img
+            0, // x
+            0, // y
+            targetWidth, // width
+            targetHeight, // height
+            null // observer
+        );
+
+        g2.dispose();
+
+        return scaled;
     }
 }

@@ -53,13 +53,13 @@ public class ImageTabPanel extends JTabbedPane {
         }
     }
 
+    // 하단 갤러리는 선택된 탭에만 보이므로, 보이는 탭 하나만 refresh 한다.
+    // (모든 탭을 refresh 하면 탭 개수만큼 불필요한 썸네일 갱신이 발생해 느려진다.)
     private void refreshGalleries() {
-        for (int i = 0; i < this.getTabCount(); i++) {
-            Component component = this.getComponentAt(i);
+        Component component = this.getSelectedComponent();
 
-            if (component instanceof ImagePanel) {
-                ((ImagePanel) component).refreshGallery();
-            }
+        if (component instanceof ImagePanel) {
+            ((ImagePanel) component).refreshGallery();
         }
     }
 

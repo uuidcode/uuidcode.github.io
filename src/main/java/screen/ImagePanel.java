@@ -30,6 +30,7 @@ import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -87,6 +88,8 @@ public class ImagePanel extends JPanel {
     private JButton writeButton;
     private JToggleButton galleryToggleButton;
     private ImageGalleryPanel galleryPanel;
+    private BufferedImage thumbnailSource;
+    private ImageIcon thumbnailIcon;
     private final Map<ShapeType, JToggleButton> toggleButtonMap = new LinkedHashMap<>();
     private ShapeType selectedShapeType;
 
@@ -364,6 +367,35 @@ public class ImagePanel extends JPanel {
 
     public BufferedImage getDisplayImage() {
         return this.imageViewPanel.getBufferedImage();
+    }
+
+    // 갤러리 썸네일을 소스 이미지 인스턴스 기준으로 캐싱한다.
+    // 편집/undo 등으로 이미지 인스턴스가 바뀌면 캐시가 자동으로 무효화되어 다시 스케일링한다.
+    public ImageIcon getThumbnailIcon(int size) {
+        BufferedImage image = this.getDisplayImage();
+
+        if (image == null) {
+            return null;
+        }
+
+        if (image == this.thumbnailSource && this.thumbnailIcon != null) {
+            return this.thumbnailIcon;
+        }
+
+        Dimension dimension = ImageGalleryPanel.thumbnailSize(
+            image.getWidth(), // width
+            image.getHeight(), // height
+            size // max
+        );
+
+        this.thumbnailSource = image;
+        this.thumbnailIcon = new ImageIcon(ImageGalleryPanel.scale(
+            image, // source
+            dimension.width, // targetWidth
+            dimension.height // targetHeight
+        ));
+
+        return this.thumbnailIcon;
     }
 
     public void setGalleryVisible(boolean visible) {
