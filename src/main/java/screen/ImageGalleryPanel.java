@@ -30,11 +30,11 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
-// 하단에 캡처된 탭 이미지를 100x100 썸네일 갤러리로 보여주고,
+// 하단에 캡처된 탭 이미지를 200x200 썸네일 갤러리로 보여주고,
 // 썸네일 클릭 시 해당 탭을 선택한다. 마우스 휠/좌우 화살표로 네비게이션한다.
 public class ImageGalleryPanel extends JPanel {
-    static final int THUMBNAIL_SIZE = 100;
-    private static final int SCROLL_UNIT = 120;
+    static final int THUMBNAIL_SIZE = 200;
+    private static final int SCROLL_UNIT = 240;
     private static final int PANEL_PADDING = 44;
     private static final Color SELECTED_BORDER_COLOR = new Color(52, 120, 246);
     private static final Color NORMAL_BORDER_COLOR = new Color(200, 200, 200);

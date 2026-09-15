@@ -35,6 +35,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -134,6 +135,8 @@ public class ImageFrame extends JFrame {
     public JPanel createControlPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
+        // 양쪽 끝의 glue가 남는 가로 공간을 반씩 나눠 가져 버튼들이 가운데 정렬된다.
+        panel.add(Box.createHorizontalGlue());
         this.createCaptureButton(panel);
         this.createSeeButton(panel);
         this.createCaptureAutoButton(panel);
@@ -148,6 +151,7 @@ public class ImageFrame extends JFrame {
         this.createCaptureGridModeComboBox(panel);
         this.createImgTagCheckBox(panel);
         this.createFixedSizeFields(panel);
+        panel.add(Box.createHorizontalGlue());
 
         Util.styleButtonsAsSquare(panel);
 
