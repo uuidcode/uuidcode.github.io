@@ -87,6 +87,9 @@ public class ImageViewPanel extends JPanel
     private static final double MIN_SCALE = 0.1;
     private static final double MAX_SCALE = 8.0;
     private static final double SCALE_STEP = 1.2;
+    private static final double RESIZE_STEP = 1.2;
+    private static final int MIN_IMAGE_LENGTH = 20;
+    private static final int MAX_IMAGE_LENGTH = 8000;
 
     public ImageViewPanel(ImagePanel imagePanel, File imageFile) {
         this.imagePanel = imagePanel;
@@ -1446,6 +1449,79 @@ public class ImageViewPanel extends JPanel
 
     static int clampColor(int value) {
         return Math.max(0, Math.min(255, value));
+    }
+
+    // zoom은 화면 배율만 바꾸지만, resize는 이미지 픽셀 자체를 리샘플링해서 실제 크기를 바꾼다.
+    public void resizeUp() {
+        this.applyResize(RESIZE_STEP);
+    }
+
+    public void resizeDown() {
+        this.applyResize(1 / RESIZE_STEP);
+    }
+
+    private void applyResize(double factor) {
+        BufferedImage original = this.getBufferedImage();
+
+        if (original == null) {
+            return;
+        }
+
+        Dimension target = resizedDimension(
+            original.getWidth(), // width
+            original.getHeight(), // height
+            factor
+        );
+
+        if (target.width == original.getWidth() && target.height == original.getHeight()) {
+            return;
+        }
+
+        this.clearMeasurements();
+
+        BufferedImage result = ImageGalleryPanel.scale(
+            original, // source
+            target.width, // targetWidth
+            target.height // targetHeight
+        );
+
+        this.baseImage = deepCopy(result);
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.addHistory(result);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
+    // 가로/세로 비율을 유지한 채로 리사이즈한다.
+    static Dimension resizedDimension(int width, int height, double factor) {
+        double clamped = clampResizeFactor(width, height, factor);
+
+        return new Dimension(
+            Math.max(1, (int) Math.round(width * clamped)),
+            Math.max(1, (int) Math.round(height * clamped))
+        );
+    }
+
+    // 긴 변이 MAX_IMAGE_LENGTH를, 짧은 변이 MIN_IMAGE_LENGTH를 벗어나지 않도록 배율을 제한한다.
+    static double clampResizeFactor(int width, int height, double factor) {
+        int longer = Math.max(width, height);
+        int shorter = Math.min(width, height);
+
+        if (shorter <= 0) {
+            return 1.0;
+        }
+
+        double maxFactor = (double) MAX_IMAGE_LENGTH / longer;
+        double minFactor = (double) MIN_IMAGE_LENGTH / shorter;
+
+        // 이미 허용 범위를 벗어난 극단적인 비율의 이미지는 그대로 둔다.
+        if (minFactor > maxFactor) {
+            return 1.0;
+        }
+
+        return Math.max(minFactor, Math.min(factor, maxFactor));
     }
 
     public void clear() {

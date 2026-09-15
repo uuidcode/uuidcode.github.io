@@ -54,6 +54,69 @@ public class ImageViewPanelTest {
     }
 
     @Test
+    public void resizedDimensionKeepsAspectRatio() {
+        Dimension enlarged = ImageViewPanel.resizedDimension(
+            200, // width
+            100, // height
+            1.2 // factor
+        );
+
+        assertEquals(new Dimension(240, 120), enlarged);
+
+        Dimension reduced = ImageViewPanel.resizedDimension(
+            200, // width
+            100, // height
+            1 / 1.2 // factor
+        );
+
+        assertEquals(new Dimension(167, 83), reduced);
+    }
+
+    @Test
+    public void clampResizeFactorLimitsEnlargingByLongerSide() {
+        double factor = ImageViewPanel.clampResizeFactor(
+            4000, // width
+            1000, // height
+            4.0 // factor
+        );
+
+        assertEquals(2.0, factor, 0.0001);
+    }
+
+    @Test
+    public void clampResizeFactorLimitsShrinkingByShorterSide() {
+        double factor = ImageViewPanel.clampResizeFactor(
+            200, // width
+            40, // height
+            0.1 // factor
+        );
+
+        assertEquals(0.5, factor, 0.0001);
+    }
+
+    @Test
+    public void clampResizeFactorKeepsFactorWithinBounds() {
+        double factor = ImageViewPanel.clampResizeFactor(
+            800, // width
+            600, // height
+            1.2 // factor
+        );
+
+        assertEquals(1.2, factor, 0.0001);
+    }
+
+    @Test
+    public void clampResizeFactorFallsBackToOneForOutOfRangeImage() {
+        double factor = ImageViewPanel.clampResizeFactor(
+            9000, // width
+            10, // height
+            1.2 // factor
+        );
+
+        assertEquals(1.0, factor, 0.0001);
+    }
+
+    @Test
     public void resizeCropBoundsTopLeftMovesBothEdges() {
         Rectangle current = new Rectangle(0, 0, 100, 100);
 

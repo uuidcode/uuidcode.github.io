@@ -525,7 +525,7 @@ public class ImagePanel extends JPanel {
         );
     }
 
-    // rotate/brightness/zoom 버튼을 Color Type 라디오 오른쪽에 "Adjust" 그룹으로 묶는다.
+    // rotate/brightness/zoom/size 버튼을 Color Type 라디오 오른쪽에 "Adjust" 그룹으로 묶는다.
     private void createControlButtonPanel() {
         this.controlButtonPanel = new JPanel();
         this.controlButtonPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 0, 0));
@@ -537,6 +537,8 @@ public class ImagePanel extends JPanel {
         this.createBrightnessDownButton();
         this.createZoomInButton();
         this.createZoomOutButton();
+        this.createSizeUpButton();
+        this.createSizeDownButton();
 
         Util.styleButtonsAsSquare(this.controlButtonPanel);
 
@@ -711,6 +713,23 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("zoom -");
         button.setName(this.name);
         button.addActionListener(e -> this.zoomOut());
+        this.controlButtonPanel.add(button);
+    }
+
+    // zoom은 보기 배율만 바꾸는 반면, size는 이미지 자체를 크게/작게 만들어 저장까지 반영된다.
+    private void createSizeUpButton() {
+        JButton button = new JButton("size +");
+        button.setName(this.name);
+        button.setToolTipText("이미지 자체를 크게 (실제 픽셀 크기 변경)");
+        button.addActionListener(e -> this.imageViewPanel.resizeUp());
+        this.controlButtonPanel.add(button);
+    }
+
+    private void createSizeDownButton() {
+        JButton button = new JButton("size -");
+        button.setName(this.name);
+        button.setToolTipText("이미지 자체를 작게 (실제 픽셀 크기 변경)");
+        button.addActionListener(e -> this.imageViewPanel.resizeDown());
         this.controlButtonPanel.add(button);
     }
 
