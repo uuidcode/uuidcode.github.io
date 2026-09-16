@@ -9,13 +9,18 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.Insets;
+import java.awt.KeyEventDispatcher;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
+
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 
 // see 모드에서 선택 영역 내부를 밑의 앱으로 클릭/드래그 통과시키기 위해,
 // 영역을 덮지 않고 테두리(점선)만 4개의 얇은 창으로 그리고 cancel/capture 창을 우측 하단에 띄운다.
@@ -30,7 +35,11 @@ public class SeePreview {
     private final JWindow bottomWindow;
     private final JWindow leftWindow;
     private final JWindow rightWindow;
-    private final JWindow controlWindow;
+    private final JFrame controlWindow;
+    private final Runnable onCapture;
+    private final Runnable onCancel;
+    private final KeyEventDispatcher keyEventDispatcher;
+    private boolean finished;
 
     public SeePreview(
         GraphicsDevice graphicsDevice,
@@ -39,15 +48,49 @@ public class SeePreview {
         Runnable onCancel
     ) {
         this.rectangle = new Rectangle(rectangle);
+        this.onCapture = onCapture;
+        this.onCancel = onCancel;
         this.topWindow = this.createEdgeWindow(true);
         this.bottomWindow = this.createEdgeWindow(true);
         this.leftWindow = this.createEdgeWindow(false);
         this.rightWindow = this.createEdgeWindow(false);
-        this.controlWindow = this.createControlWindow(onCapture, onCancel);
+        this.controlWindow = this.createControlWindow();
+        this.keyEventDispatcher = this::dispatchKeyEvent;
 
         this.layoutEdgeWindows();
 
         this.layoutControlWindow(graphicsDevice);
+    }
+
+    // enter 로 캡처, esc 로 취소한다.
+    // cancel/capture 버튼이 포커스를 가진 채 같은 키에 또 반응하지 않도록 이벤트를 소비한다.
+    private boolean dispatchKeyEvent(KeyEvent keyEvent) {
+        int keyCode = keyEvent.getKeyCode();
+
+        if (keyCode != KeyEvent.VK_ENTER && keyCode != KeyEvent.VK_ESCAPE) {
+            return false;
+        }
+
+        if (keyEvent.getID() == KeyEvent.KEY_RELEASED) {
+            if (keyCode == KeyEvent.VK_ENTER) {
+                this.finish(this.onCapture);
+            } else {
+                this.finish(this.onCancel);
+            }
+        }
+
+        return true;
+    }
+
+    // capture/cancel 은 화면 구성을 되돌리므로 한 번만 실행되어야 한다.
+    private void finish(Runnable action) {
+        if (this.finished) {
+            return;
+        }
+
+        this.finished = true;
+
+        action.run();
     }
 
     private JWindow createEdgeWindow(boolean horizontal) {
@@ -64,22 +107,26 @@ public class SeePreview {
         return window;
     }
 
-    private JWindow createControlWindow(Runnable onCapture, Runnable onCancel) {
-        JWindow window = new JWindow();
+    // macOS 에서 소유자 없는 JWindow 는 key window 가 되지 못해 키 입력을 전혀 받지 못한다.
+    // enter/esc 를 받아야 하므로 이 창만 undecorated JFrame 으로 만든다.
+    private JFrame createControlWindow() {
+        JFrame window = new JFrame();
+
+        window.setUndecorated(true);
 
         window.setAlwaysOnTop(true);
 
-        window.setFocusableWindowState(false);
+        window.setFocusableWindowState(true);
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 6, 6));
 
         JButton cancelButton = new JButton("cancel");
 
-        cancelButton.addActionListener(e -> onCancel.run());
+        cancelButton.addActionListener(e -> this.finish(this.onCancel));
 
         JButton captureButton = new JButton("capture");
 
-        captureButton.addActionListener(e -> onCapture.run());
+        captureButton.addActionListener(e -> this.finish(this.onCapture));
 
         panel.add(cancelButton);
 
@@ -159,6 +206,11 @@ public class SeePreview {
         this.controlWindow.setVisible(true);
 
         this.controlWindow.toFront();
+
+        // 키 입력을 받으려면 컨트롤 창이 포커스를 가지고 있어야 한다.
+        this.controlWindow.requestFocus();
+
+        getCurrentKeyboardFocusManager().addKeyEventDispatcher(this.keyEventDispatcher);
     }
 
     public void hideWindows() {
@@ -174,6 +226,9 @@ public class SeePreview {
     }
 
     public void dispose() {
+        // 미리보기가 닫힌 뒤에도 enter/esc 를 가로채지 않도록 반드시 해제한다.
+        getCurrentKeyboardFocusManager().removeKeyEventDispatcher(this.keyEventDispatcher);
+
         this.topWindow.dispose();
 
         this.bottomWindow.dispose();

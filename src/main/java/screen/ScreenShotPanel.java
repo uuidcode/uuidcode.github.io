@@ -273,17 +273,21 @@ public class ScreenShotPanel extends JPanel
 
                 boolean windowCapture = this.captureConfig.isWindowCaptureMode() && selectedWindowTarget != null;
 
+                // delay shot 은 카운트다운 동안 사용자가 커서를 원하는 곳에 맞춰 두므로 마우스를 건드리지 않는다.
+                boolean hideMouse = second == null;
+
                 if (isAll) {
                     Rectangle display = graphicsDevice.getDefaultConfiguration().getBounds();
 
                     capture(
                         robot,
                         display,
-                        0,
-                        0,
+                        x,
+                        y,
                         this.tabbedPane,
                         captureConfig,
-                        false
+                        false,
+                        hideMouse
                     );
                 } else {
                     capture(
@@ -293,7 +297,8 @@ public class ScreenShotPanel extends JPanel
                         y,
                         this.tabbedPane,
                         captureConfig,
-                        windowCapture
+                        windowCapture,
+                        hideMouse
                     );
                 }
             } catch (Throwable t) {
@@ -402,6 +407,8 @@ public class ScreenShotPanel extends JPanel
     }
 
     private void captureSeePreview(Rectangle absoluteRectangle) {
+        SeePreview preview = this.seePreview;
+
         new Thread(() -> {
             try {
                 PointerInfo pointerInfo = MouseInfo.getPointerInfo();
@@ -409,7 +416,10 @@ public class ScreenShotPanel extends JPanel
                 int x = (int) mousePoint.getX();
                 int y = (int) mousePoint.getY();
 
-                SwingUtilities.invokeAndWait(() -> this.seePreview.hideWindows());
+                // 캡처 도중 esc 등으로 미리보기가 정리되어도 NPE가 나지 않도록 지역 참조를 쓴다.
+                if (preview != null) {
+                    SwingUtilities.invokeAndWait(preview::hideWindows);
+                }
 
                 Thread.sleep(PRE_CAPTURE_HIDE_DELAY_MS);
 
@@ -541,13 +551,41 @@ public class ScreenShotPanel extends JPanel
         boolean windowCapture
     ) throws IOException {
 
-        // 캡처 전 마우스를 화면 밖으로 이동하여 커서가 캡처되지 않도록 함
-        robot.mouseMove(-10000, -10000);
+        capture(
+            robot,
+            rectangle,
+            x,
+            y,
+            tabbedPane,
+            config,
+            windowCapture,
+            true // hideMouse
+        );
+    }
 
-        // 마우스 이동 후 잠시 대기 (화면 갱신 시간)
-        try {
-            Thread.sleep(MOUSE_HIDE_SETTLE_DELAY_MS);
-        } catch (InterruptedException ignored) {
+    // hideMouse=false 이면 마우스를 전혀 건드리지 않는다.
+    // delay shot 처럼 사용자가 카운트다운 동안 커서 위치나 hover 상태를 만들어 두는 경우,
+    // 캡처 직전에 커서를 옮기면 그 상태가 그대로 풀려버리기 때문이다.
+    public static void capture(
+        Robot robot,
+        Rectangle rectangle,
+        int x,
+        int y,
+        ImageTabPanel tabbedPane,
+        CaptureConfig config,
+        boolean windowCapture,
+        boolean hideMouse
+    ) throws IOException {
+
+        if (hideMouse) {
+            // 캡처 전 마우스를 화면 밖으로 이동하여 커서가 캡처되지 않도록 함
+            robot.mouseMove(-10000, -10000);
+
+            // 마우스 이동 후 잠시 대기 (화면 갱신 시간)
+            try {
+                Thread.sleep(MOUSE_HIDE_SETTLE_DELAY_MS);
+            } catch (InterruptedException ignored) {
+            }
         }
 
         BufferedImage image = robot.createScreenCapture(rectangle);
@@ -585,8 +623,10 @@ public class ScreenShotPanel extends JPanel
             image = applyWindowCaptureFrame(image);
         }
 
-        // 캡처 후 마우스를 원래 위치로 복원
-        robot.mouseMove(x, y);
+        if (hideMouse) {
+            // 캡처 후 마우스를 원래 위치로 복원
+            robot.mouseMove(x, y);
+        }
 
         if (config.isImgTagEnabled()) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
