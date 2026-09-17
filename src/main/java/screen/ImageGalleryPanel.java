@@ -6,6 +6,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -18,6 +19,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import static java.awt.BorderLayout.CENTER;
 import static java.awt.BorderLayout.EAST;
@@ -36,8 +38,11 @@ public class ImageGalleryPanel extends JPanel {
     static final int THUMBNAIL_SIZE = 200;
     private static final int SCROLL_UNIT = 240;
     private static final int PANEL_PADDING = 44;
+    // 선택된 썸네일 좌우로 이만큼 여백을 두고 스크롤해서, 이웃 썸네일이 살짝 보이게 한다.
+    private static final int SCROLL_MARGIN = 24;
     private static final Color SELECTED_BORDER_COLOR = new Color(52, 120, 246);
     private static final Color NORMAL_BORDER_COLOR = new Color(200, 200, 200);
+    private static final Color SELECTED_BACKGROUND_COLOR = new Color(225, 236, 254);
 
     private final ImageTabPanel tabbedPane;
     private final JPanel strip;
@@ -95,6 +100,7 @@ public class ImageGalleryPanel extends JPanel {
         this.strip.removeAll();
 
         int selectedIndex = this.tabbedPane.getSelectedIndex();
+        JLabel selectedThumbnail = null;
 
         for (int i = 0; i < this.tabbedPane.getTabCount(); i++) {
             Component component = this.tabbedPane.getComponentAt(i);
@@ -104,11 +110,35 @@ public class ImageGalleryPanel extends JPanel {
             }
 
             ImagePanel imagePanel = (ImagePanel) component;
-            this.strip.add(this.createThumbnail(imagePanel, i == selectedIndex));
+            boolean selected = i == selectedIndex;
+            JLabel thumbnail = this.createThumbnail(imagePanel, selected);
+
+            this.strip.add(thumbnail);
+
+            if (selected) {
+                selectedThumbnail = thumbnail;
+            }
         }
 
         this.strip.revalidate();
         this.strip.repaint();
+
+        this.scrollToSelected(selectedThumbnail);
+    }
+
+    // 선택된 썸네일이 스크롤 밖에 있으면 활성 표시가 보이지 않으므로 화면 안으로 끌어온다.
+    // 레이아웃이 끝나야 썸네일 좌표가 정해져서 invokeLater 로 미룬다.
+    private void scrollToSelected(JLabel thumbnail) {
+        if (thumbnail == null) {
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> thumbnail.scrollRectToVisible(new Rectangle(
+            -SCROLL_MARGIN, // x
+            0, // y
+            thumbnail.getWidth() + SCROLL_MARGIN * 2, // width
+            thumbnail.getHeight() // height
+        )));
     }
 
     private JLabel createThumbnail(ImagePanel imagePanel, boolean selected) {
@@ -117,7 +147,6 @@ public class ImageGalleryPanel extends JPanel {
         label.setVerticalAlignment(SwingConstants.CENTER);
         label.setToolTipText(imagePanel.getTabName());
         label.setOpaque(true);
-        label.setBackground(Color.WHITE);
         label.setPreferredSize(new Dimension(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
 
         ImageIcon icon = imagePanel.getThumbnailIcon(THUMBNAIL_SIZE);
@@ -127,12 +156,16 @@ public class ImageGalleryPanel extends JPanel {
         }
 
         Color borderColor = NORMAL_BORDER_COLOR;
+        Color background = Color.WHITE;
         int thickness = 1;
 
         if (selected) {
             borderColor = SELECTED_BORDER_COLOR;
+            background = SELECTED_BACKGROUND_COLOR;
             thickness = 3;
         }
+
+        label.setBackground(background);
 
         label.setBorder(BorderFactory.createLineBorder(borderColor, thickness));
 
