@@ -173,6 +173,7 @@ public class ImageGalleryPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 tabbedPane.setSelectedComponent(imagePanel);
+                imagePanel.copyToClipboard();
             }
         });
 

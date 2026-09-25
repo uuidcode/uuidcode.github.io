@@ -1065,6 +1065,11 @@ public class ImagePanel extends JPanel {
         ImageViewPanel.copy(imageFile);
     }
 
+    // 갤러리에서 썸네일을 선택할 때 현재 이미지를 클립보드로 복사한다.
+    public void copyToClipboard() {
+        ImageViewPanel.copy(this.imageFile);
+    }
+
     private void runOcr() {
         if (!this.imageFile.exists()) {
             JOptionPane.showMessageDialog(this, "Image file not found.");
