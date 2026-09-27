@@ -299,6 +299,34 @@ public class Util {
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
 
+    // 두 이미지가 크기와 모든 픽셀이 같은지 비교한다.
+    public static boolean imagesEqual(
+        BufferedImage a,
+        BufferedImage b
+    ) {
+        if (a == b) {
+            return true;
+        }
+
+        if (a == null || b == null) {
+            return false;
+        }
+
+        if (a.getWidth() != b.getWidth() || a.getHeight() != b.getHeight()) {
+            return false;
+        }
+
+        for (int y = 0; y < a.getHeight(); y++) {
+            for (int x = 0; x < a.getWidth(); x++) {
+                if (a.getRGB(x, y) != b.getRGB(x, y)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public static void styleButtonsAsSquare(JPanel panel) {
         for (Component component : panel.getComponents()) {
             if (component instanceof JButton) {

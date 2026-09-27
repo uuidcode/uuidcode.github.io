@@ -90,6 +90,7 @@ public class ImagePanel extends JPanel {
     private ImageGalleryPanel galleryPanel;
     private BufferedImage thumbnailSource;
     private ImageIcon thumbnailIcon;
+    private BufferedImage lastWrittenImage;
     private final Map<ShapeType, JToggleButton> toggleButtonMap = new LinkedHashMap<>();
     private ShapeType selectedShapeType;
 
@@ -855,6 +856,11 @@ public class ImagePanel extends JPanel {
             return;
         }
 
+        // 직전에 write 한 이미지와 동일하면(변경 없음) 중복 저장/커밋을 막기 위해 아무 동작도 하지 않는다.
+        if (this.isUnchangedSinceLastWrite(bufferedImage)) {
+            return;
+        }
+
         this.writeButton.setEnabled(false);
 
         new SwingWorker<Void, Void>() {
@@ -946,6 +952,7 @@ public class ImagePanel extends JPanel {
 
                 try {
                     this.get();
+                    ImagePanel.this.markWritten(bufferedImage);
                 } catch (Exception e) {
                     Throwable cause = e;
 
@@ -966,6 +973,16 @@ public class ImagePanel extends JPanel {
                 }
             }
         }.execute();
+    }
+
+    // 마지막으로 write 한 이미지를 기록해, 이후 변경이 없으면 다시 쓰지 않도록 한다.
+    void markWritten(BufferedImage image) {
+        this.lastWrittenImage = image;
+    }
+
+    // 마지막으로 write 한 이미지와 픽셀이 완전히 같으면 true 를 반환한다.
+    boolean isUnchangedSinceLastWrite(BufferedImage image) {
+        return Util.imagesEqual(image, this.lastWrittenImage);
     }
 
     private static void gitPull(File repositoryDirectory) throws Exception {

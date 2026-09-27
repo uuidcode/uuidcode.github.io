@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -127,18 +129,41 @@ public class ImageGalleryPanel extends JPanel {
     }
 
     // 선택된 썸네일이 스크롤 밖에 있으면 활성 표시가 보이지 않으므로 화면 안으로 끌어온다.
-    // 레이아웃이 끝나야 썸네일 좌표가 정해져서 invokeLater 로 미룬다.
+    // 캡처 중에는 프레임이 숨겨진 상태(setVisible(false))로 갤러리가 만들어져 좌표가 아직 없다.
+    // 이때 스크롤하면 무효화돼서, 썸네일이 실제로 화면에 표시되는 순간 한 번만 스크롤한다.
     private void scrollToSelected(JLabel thumbnail) {
         if (thumbnail == null) {
             return;
         }
 
-        SwingUtilities.invokeLater(() -> thumbnail.scrollRectToVisible(new Rectangle(
+        if (thumbnail.isShowing()) {
+            SwingUtilities.invokeLater(() -> this.scrollThumbnailToVisible(thumbnail));
+
+            return;
+        }
+
+        thumbnail.addHierarchyListener(new HierarchyListener() {
+            @Override
+            public void hierarchyChanged(HierarchyEvent event) {
+                boolean showingChanged = (event.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0;
+
+                if (!showingChanged || !thumbnail.isShowing()) {
+                    return;
+                }
+
+                thumbnail.removeHierarchyListener(this);
+                SwingUtilities.invokeLater(() -> ImageGalleryPanel.this.scrollThumbnailToVisible(thumbnail));
+            }
+        });
+    }
+
+    private void scrollThumbnailToVisible(JLabel thumbnail) {
+        thumbnail.scrollRectToVisible(new Rectangle(
             -SCROLL_MARGIN, // x
             0, // y
             thumbnail.getWidth() + SCROLL_MARGIN * 2, // width
             thumbnail.getHeight() // height
-        )));
+        ));
     }
 
     private JLabel createThumbnail(ImagePanel imagePanel, boolean selected) {
