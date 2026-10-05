@@ -138,8 +138,6 @@ public class ImageFrame extends JFrame {
         // 양쪽 끝의 glue가 남는 가로 공간을 반씩 나눠 가져 버튼들이 가운데 정렬된다.
         panel.add(Box.createHorizontalGlue());
         this.createCaptureButton(panel);
-        this.createSeeButton(panel);
-        this.createCaptureAutoButton(panel);
         this.createCaptureSelfButton(panel);
         this.createCaptureSelfAreaButton(panel);
         this.createCaptureRepeatButton(panel);
@@ -286,18 +284,6 @@ public class ImageFrame extends JFrame {
         panel.add(button);
     }
 
-    private void createSeeButton(JPanel panel) {
-        JButton button = new JButton("see");
-        button.addActionListener(e -> this.see());
-        panel.add(button);
-    }
-
-    private void createCaptureAutoButton(JPanel panel) {
-        JButton button = new JButton("auto");
-        button.addActionListener(e -> this.captureAuto());
-        panel.add(button);
-    }
-
     private void createCaptureSelfButton(JPanel panel) {
         JButton button = new JButton(toCaptureButtonLabel("capture self"));
         button.addActionListener(e -> this.captureSelf());
@@ -355,13 +341,6 @@ public class ImageFrame extends JFrame {
         this.startAreaCapture(
             true,
             false
-        );
-    }
-
-    private void captureAuto() {
-        this.startAreaCapture(
-            true,
-            true
         );
     }
 
@@ -570,14 +549,6 @@ public class ImageFrame extends JFrame {
         this.startAreaCapture(
             false,
             false
-        );
-    }
-
-    private void see() {
-        this.startAreaCapture(
-            true, // hideImageFrame
-            false, // autoTrimEnabled
-            true // seeMode
         );
     }
 

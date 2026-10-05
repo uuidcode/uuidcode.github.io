@@ -60,10 +60,34 @@ public class ScreenShotPanel extends JPanel
         }
     }
 
+    // 캡처 영역 컨트롤 패널의 버튼. 선언 순서가 그대로 화면 배치 순서가 된다.
+    enum AreaControlButton {
+        SHOT("shot"),
+        SEE("see"),
+        AUTO("auto"),
+        RECORD("record"),
+        DELAY_SHOT("delay shot"),
+        DELAY_SHOT_ALL("delay shot all"),
+        CANCEL("cancel");
+
+        private final String label;
+
+        AreaControlButton(String label) {
+            this.label = label;
+        }
+
+        String getLabel() {
+            return this.label;
+        }
+    }
+
     public static final Color BACKGROUND_COLOR = new Color(0, 0, 0, 100);
     private static final int PRE_CAPTURE_HIDE_DELAY_MS = 30;
     private static final int WINDOW_FRONT_SETTLE_DELAY_MS = 60;
     private static final int MOUSE_HIDE_SETTLE_DELAY_MS = 20;
+    private static final int COUNTDOWN_TICK_MS = 1000;
+    private static final int COUNTDOWN_POLL_INTERVAL_MS = 50;
+    private static final int DELAY_SHOT_SECOND = 5;
     private static final Color PREVIEW_GRID_COLOR = new Color(255, 255, 255, 28);
     private static final Color PREVIEW_GRID_LABEL_COLOR = new Color(255, 255, 255, 110);
     private static final Color CAPTURE_GRID_COLOR = new Color(255, 196, 0, 150);
@@ -113,6 +137,7 @@ public class ScreenShotPanel extends JPanel
     private SelectionHandle activeSelectionHandle = SelectionHandle.NONE;
     private Rectangle selectionDragOriginRectangle;
     private Point selectionDragStartPoint;
+    private final CountdownState countdownState = new CountdownState();
 
     public ScreenShotPanel(
         GraphicsDevice graphicsDevice,
@@ -132,6 +157,11 @@ public class ScreenShotPanel extends JPanel
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             if (ke.getID() == KeyEvent.KEY_RELEASED && ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                // delay shot 카운트다운 중에는 촬영만 취소하고, 캡처 UI 정리는 촬영 스레드에 맡긴다.
+                if (this.countdownState.cancel()) {
+                    return true;
+                }
+
                 this.cancelCapture();
             }
 
@@ -159,35 +189,55 @@ public class ScreenShotPanel extends JPanel
 
         this.configureControlPanel(panel);
 
-        JButton shotButton = new JButton("shot");
-        shotButton.addActionListener(e -> this.shot(null, false));
-        panel.add(shotButton);
+        for (AreaControlButton areaControlButton : AreaControlButton.values()) {
+            JButton button = new JButton(areaControlButton.getLabel());
 
-        JButton recordButton = new JButton("record");
-        recordButton.addActionListener(e -> this.record());
-        panel.add(recordButton);
+            button.addActionListener(e -> this.runAreaControlAction(areaControlButton));
 
-        JButton delayShotButton = new JButton("delay shot");
-        delayShotButton.addActionListener(e -> {
-            imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
-            imageFrame.setVisible(true);
-            this.shot(5, false);
-        });
-        panel.add(delayShotButton);
-
-        JButton delayShotAllButton = new JButton("delay shot all");
-        delayShotAllButton.addActionListener(e -> {
-            imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
-            imageFrame.setVisible(false);
-            this.shot(5, true);
-        });
-        panel.add(delayShotAllButton);
-
-        JButton cancelButton = new JButton("cancel");
-        cancelButton.addActionListener(e -> this.cancelCapture());
-        panel.add(cancelButton);
+            panel.add(button);
+        }
 
         return panel;
+    }
+
+    private void runAreaControlAction(AreaControlButton areaControlButton) {
+        switch (areaControlButton) {
+            case SHOT:
+                this.shot(null, false);
+                break;
+            case SEE:
+                this.see();
+                break;
+            case AUTO:
+                this.shot(
+                    null, // second
+                    false, // isAll
+                    true // autoTrim
+                );
+
+                break;
+            case RECORD:
+                this.record();
+                break;
+            case DELAY_SHOT:
+                this.delayShot(false);
+                break;
+            case DELAY_SHOT_ALL:
+                this.delayShot(true);
+                break;
+            case CANCEL:
+                this.cancelCapture();
+                break;
+        }
+    }
+
+    // delay shot 은 ImageFrame 을 남겨 두고, delay shot all 은 화면 전체를 찍으려고 함께 숨긴다.
+    private void delayShot(boolean isAll) {
+        this.imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
+
+        this.imageFrame.setVisible(!isAll);
+
+        this.shot(DELAY_SHOT_SECOND, isAll);
     }
 
     static void configureControlPanel(JPanel panel) {
@@ -195,10 +245,38 @@ public class ScreenShotPanel extends JPanel
         panel.setBackground(new Color(0, 0, 0, 0));
     }
 
+    // 선택 영역을 유지한 채 see 미리보기로 전환한다.
+    private void see() {
+        Rectangle selectionRectangle = this.getSelectionRectangle();
+
+        if (selectionRectangle == null) {
+            return;
+        }
+
+        this.captureConfig.setSeeMode(true);
+
+        this.enterSeePreview(selectionRectangle);
+    }
+
     private void shot(
         Integer second,
         boolean isAll
     ) {
+        this.shot(
+            second,
+            isAll,
+            false // autoTrim
+        );
+    }
+
+    private void shot(
+        Integer second,
+        boolean isAll,
+        boolean autoTrim
+    ) {
+        // auto 는 여백 자동 잘라내기만 다르고 나머지는 shot 과 같다.
+        this.captureConfig.setAutoTrimEnabled(autoTrim);
+
         Rectangle selectionRectangle = this.getSelectionRectangle();
         if (selectionRectangle == null) {
             return;
@@ -255,8 +333,9 @@ public class ScreenShotPanel extends JPanel
                     }
                 }
 
-                if (second != null) {
-                    this.runCountdown(second);
+                // esc 로 취소하면 촬영하지 않고 끝낸다. finally 에서 캡처 UI 는 정리된다.
+                if (second != null && !this.runCountdown(second)) {
+                    return;
                 }
 
                 Rectangle captureRectangle;
@@ -359,8 +438,11 @@ public class ScreenShotPanel extends JPanel
         );
     }
 
-    private void runCountdown(int second) throws Exception {
+    // esc 로 취소되면 false 를 반환해 촬영을 건너뛰게 한다.
+    private boolean runCountdown(int second) throws Exception {
         CountdownOverlay[] holder = new CountdownOverlay[1];
+
+        this.countdownState.start();
 
         SwingUtilities.invokeAndWait(() -> {
             holder[0] = new CountdownOverlay(this.graphicsDevice);
@@ -376,9 +458,20 @@ public class ScreenShotPanel extends JPanel
 
                 SwingUtilities.invokeLater(() -> holder[0].setSecond(value));
 
-                Thread.sleep(1000);
+                // esc 를 바로 반영하려고 1초를 잘게 나눠 기다린다.
+                for (int elapsed = 0; elapsed < COUNTDOWN_TICK_MS; elapsed += COUNTDOWN_POLL_INTERVAL_MS) {
+                    if (this.countdownState.isCancelled()) {
+                        return false;
+                    }
+
+                    Thread.sleep(COUNTDOWN_POLL_INTERVAL_MS);
+                }
             }
+
+            return !this.countdownState.isCancelled();
         } finally {
+            this.countdownState.finish();
+
             SwingUtilities.invokeAndWait(() -> holder[0].dispose());
 
             Thread.sleep(WINDOW_FRONT_SETTLE_DELAY_MS);
