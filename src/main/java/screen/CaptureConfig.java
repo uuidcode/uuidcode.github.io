@@ -12,7 +12,6 @@ public class CaptureConfig {
     private boolean imgTagEnabled = false;
     private boolean autoTrimEnabled = false;
     private boolean windowCaptureMode = false;
-    private boolean selfAreaCaptureMode = false;
     private boolean seeMode = false;
     private Integer fixedWidth;
     private Integer fixedHeight;
@@ -24,7 +23,6 @@ public class CaptureConfig {
             .setImgTagEnabled(this.imgTagEnabled)
             .setAutoTrimEnabled(this.autoTrimEnabled)
             .setWindowCaptureMode(this.windowCaptureMode)
-            .setSelfAreaCaptureMode(this.selfAreaCaptureMode)
             .setSeeMode(this.seeMode)
             .setFixedWidth(this.fixedWidth)
             .setFixedHeight(this.fixedHeight)

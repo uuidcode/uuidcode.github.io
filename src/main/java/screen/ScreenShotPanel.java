@@ -156,7 +156,11 @@ public class ScreenShotPanel extends JPanel
         this.windowCaptureHoverTimer.setRepeats(false);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
-            if (ke.getID() == KeyEvent.KEY_RELEASED && ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (ke.getID() != KeyEvent.KEY_RELEASED) {
+                return false;
+            }
+
+            if (ke.getKeyCode() == KeyEvent.VK_ESCAPE) {
                 // delay shot 카운트다운 중에는 촬영만 취소하고, 캡처 UI 정리는 촬영 스레드에 맡긴다.
                 if (this.countdownState.cancel()) {
                     return true;
@@ -231,11 +235,9 @@ public class ScreenShotPanel extends JPanel
         }
     }
 
-    // delay shot 은 ImageFrame 을 남겨 두고, delay shot all 은 화면 전체를 찍으려고 함께 숨긴다.
+    // 오버레이만 걷어내고 카운트다운 동안 사용자가 alt(cmd)+tab 으로 찍을 창을 고르게 둔다.
     private void delayShot(boolean isAll) {
         this.imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
-
-        this.imageFrame.setVisible(!isAll);
 
         this.shot(DELAY_SHOT_SECOND, isAll);
     }
@@ -283,16 +285,13 @@ public class ScreenShotPanel extends JPanel
         }
 
         ImageFrame.WindowTarget selectedWindowTarget = this.windowCaptureTarget;
-        boolean keepImageFrameVisible = this.captureConfig.isSelfAreaCaptureMode();
 
         if (controlPanel != null) {
             this.hideControlPanel(shouldRepaintWhenHidingControlPanel(true));
         }
 
-        if (!keepImageFrameVisible) {
-            imageFrame.setVisible(false);
-        }
-
+        // ImageFrame 은 건드리지 않는다. 맨 뒤로 보내 둔 상태라
+        // alt(cmd)+tab 으로 앞에 올려 둔 창이 그대로 찍힌다.
         imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
         stratPoint = null;
@@ -316,14 +315,6 @@ public class ScreenShotPanel extends JPanel
                 Robot robot = new Robot();
 
                 Thread.sleep(PRE_CAPTURE_HIDE_DELAY_MS);
-
-                if (keepImageFrameVisible) {
-                    try {
-                        this.imageFrame.bringCurrentAppToFront();
-                        Thread.sleep(WINDOW_FRONT_SETTLE_DELAY_MS);
-                    } catch (Throwable ignored) {
-                    }
-                }
 
                 if (this.captureConfig.isWindowCaptureMode() && selectedWindowTarget != null) {
                     try {
@@ -386,9 +377,8 @@ public class ScreenShotPanel extends JPanel
                 guideOverlayVisible = true;
                 try {
                     SwingUtilities.invokeAndWait(() -> {
-                        if (!keepImageFrameVisible) {
-                            imageFrame.setVisible(true);
-                        }
+                        // 숨긴 적이 없으므로 맨 뒤에서 다시 앞으로 올리기만 하면 된다.
+                        imageFrame.setVisible(true);
                         imageFrame.disposeScreenShotFrames();
                     });
                 } catch (Throwable ignored) {

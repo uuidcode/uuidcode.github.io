@@ -138,8 +138,6 @@ public class ImageFrame extends JFrame {
         // 양쪽 끝의 glue가 남는 가로 공간을 반씩 나눠 가져 버튼들이 가운데 정렬된다.
         panel.add(Box.createHorizontalGlue());
         this.createCaptureButton(panel);
-        this.createCaptureSelfButton(panel);
-        this.createCaptureSelfAreaButton(panel);
         this.createCaptureRepeatButton(panel);
         this.createCaptureWindowButton(panel);
         this.createCaptureFullScreenButton(panel);
@@ -284,18 +282,6 @@ public class ImageFrame extends JFrame {
         panel.add(button);
     }
 
-    private void createCaptureSelfButton(JPanel panel) {
-        JButton button = new JButton(toCaptureButtonLabel("capture self"));
-        button.addActionListener(e -> this.captureSelf());
-        panel.add(button);
-    }
-
-    private void createCaptureSelfAreaButton(JPanel panel) {
-        JButton button = new JButton(toCaptureButtonLabel("capture self area"));
-        button.addActionListener(e -> this.captureSelfArea());
-        panel.add(button);
-    }
-
     private void createCaptureRepeatButton(JPanel panel) {
         JButton button = new JButton(toCaptureButtonLabel("capture repeat"));
         button.addActionListener(e -> this.captureRepeat());
@@ -338,10 +324,7 @@ public class ImageFrame extends JFrame {
     }
 
     private void capture() {
-        this.startAreaCapture(
-            true,
-            false
-        );
+        this.startAreaCapture();
     }
 
     private BufferedImage captureBaseScreenImage(GraphicsDevice device) {
@@ -469,7 +452,6 @@ public class ImageFrame extends JFrame {
     private void captureRepeat() {
         this.setVisible(false);
         this.captureConfig.setWindowCaptureMode(false);
-        this.captureConfig.setSelfAreaCaptureMode(false);
 
         try {
             Robot robot = new Robot();
@@ -493,98 +475,15 @@ public class ImageFrame extends JFrame {
         this.setVisible(true);
     }
 
-    private void captureSelf() {
-        updateFixedSize();
+    // 숨기지 않고 맨 뒤로만 보낸다. 그래야 alt(cmd)+tab 목록에 남아,
+    // 다시 앞으로 불러오면 자신도 그대로 찍을 수 있다.
+    private void startAreaCapture() {
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
-        this.captureConfig.setSelfAreaCaptureMode(false);
-
-        new Thread(() -> {
-            try {
-                PointerInfo pointerInfo = MouseInfo.getPointerInfo();
-                Point mousePoint = pointerInfo != null
-                    ? pointerInfo.getLocation()
-                    : new Point(this.getX(), this.getY());
-
-                SwingUtilities.invokeAndWait(() -> {
-                    this.setVisible(true);
-                    this.toFront();
-                    this.repaint();
-                });
-
-                try {
-                    this.bringCurrentAppToFront();
-                } catch (Throwable ignored) {
-                }
-
-                Thread.sleep(80);
-
-                Rectangle bounds = new Rectangle(this.getBounds());
-                captureConfig.setLastRectangle(new Rectangle(bounds));
-
-                Robot robot = new Robot();
-
-                ScreenShotPanel.capture(
-                    robot,
-                    bounds,
-                    mousePoint.x,
-                    mousePoint.y,
-                    this.tabbedPane,
-                    captureConfig,
-                    false
-                );
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            } finally {
-                SwingUtilities.invokeLater(() -> {
-                    this.setVisible(true);
-                    this.toFront();
-                    this.requestFocus();
-                });
-            }
-        }, "capture-self").start();
-    }
-
-    private void captureSelfArea() {
-        this.startAreaCapture(
-            false,
-            false
-        );
-    }
-
-    private void startAreaCapture(
-        boolean hideImageFrame,
-        boolean autoTrimEnabled
-    ) {
-        this.startAreaCapture(
-            hideImageFrame,
-            autoTrimEnabled,
-            false
-        );
-    }
-
-    private void startAreaCapture(
-        boolean hideImageFrame,
-        boolean autoTrimEnabled,
-        boolean seeMode
-    ) {
-        this.captureConfig.setAutoTrimEnabled(autoTrimEnabled);
-        this.captureConfig.setWindowCaptureMode(false);
-        this.captureConfig.setSelfAreaCaptureMode(!hideImageFrame);
-        this.captureConfig.setSeeMode(seeMode);
+        this.captureConfig.setSeeMode(false);
         updateFixedSize();
 
-        if (hideImageFrame) {
-            this.setVisible(false);
-        } else {
-            this.setVisible(true);
-            this.toFront();
-            this.repaint();
-            try {
-                this.bringCurrentAppToFront();
-            } catch (Throwable ignored) {
-            }
-        }
+        this.toBack();
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()
@@ -604,7 +503,6 @@ public class ImageFrame extends JFrame {
         updateFixedSize();
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
-        this.captureConfig.setSelfAreaCaptureMode(false);
 
         int previousState = this.getExtendedState();
         Thread iconifyThread = this.iconifyInBackground(previousState | JFrame.ICONIFIED);
@@ -663,7 +561,6 @@ public class ImageFrame extends JFrame {
         this.setVisible(false);
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(true);
-        this.captureConfig.setSelfAreaCaptureMode(false);
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()
