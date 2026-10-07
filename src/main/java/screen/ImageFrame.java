@@ -475,15 +475,16 @@ public class ImageFrame extends JFrame {
         this.setVisible(true);
     }
 
-    // 숨기지 않고 맨 뒤로만 보낸다. 그래야 alt(cmd)+tab 목록에 남아,
-    // 다시 앞으로 불러오면 자신도 그대로 찍을 수 있다.
+    // toBack 으로는 자신이 찍히는 것을 막을 수 없다. 오버레이를 숨기는 순간
+    // 같은 앱의 남은 창으로 포커스가 넘어가 ImageFrame 이 최전면으로 올라오기 때문이다.
+    // 그래서 영역 캡처 중에는 숨겨 둔다. 자신을 찍으려면 delay shot 을 쓴다.
     private void startAreaCapture() {
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSeeMode(false);
         updateFixedSize();
 
-        this.toBack();
+        this.setVisible(false);
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()

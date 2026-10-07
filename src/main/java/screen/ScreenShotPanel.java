@@ -65,6 +65,7 @@ public class ScreenShotPanel extends JPanel
         SHOT("shot"),
         SEE("see"),
         AUTO("auto"),
+        SELF("self"),
         RECORD("record"),
         DELAY_SHOT("delay shot"),
         DELAY_SHOT_ALL("delay shot all"),
@@ -220,6 +221,9 @@ public class ScreenShotPanel extends JPanel
                 );
 
                 break;
+            case SELF:
+                this.toggleSelf();
+                break;
             case RECORD:
                 this.record();
                 break;
@@ -235,7 +239,32 @@ public class ScreenShotPanel extends JPanel
         }
     }
 
-    // 오버레이만 걷어내고 카운트다운 동안 사용자가 alt(cmd)+tab 으로 찍을 창을 고르게 둔다.
+    // capture 는 자기 UI 를 숨기고 시작해서 자기 화면을 보며 영역을 잡을 수 없다.
+    // 숨긴 창은 alt(cmd)+tab 목록에도 안 뜨므로 그쪽으로는 되돌릴 방법이 없다.
+    // self 를 누르면 항상 위에 떠 있는 반투명 오버레이 뒤로 ImageFrame 을 띄워
+    // 자기 UI 를 보면서 영역을 맞출 수 있고, 다시 누르면 숨겨 뒤 화면으로 돌아간다.
+    // 켜 둔 채로 shot 을 누르면 보이는 그대로 찍힌다.
+    private void toggleSelf() {
+        boolean show = !this.imageFrame.isVisible();
+
+        this.imageFrame.setVisible(show);
+
+        if (show) {
+            try {
+                this.imageFrame.bringCurrentAppToFront();
+            } catch (Throwable ignored) {
+            }
+        }
+
+        // ImageFrame 을 여닫으면 포커스가 옮겨 가므로 오버레이를 다시 앞으로 올려
+        // 영역 조절과 컨트롤 패널 클릭이 계속 되게 한다.
+        this.imageFrame.getScreenShotFrameList().forEach(f -> f.toFront());
+
+        this.repaint();
+    }
+
+    // 오버레이만 걷고 카운트다운에 들어간다. ImageFrame 은 capture 가 숨겨 둔 상태
+    // 또는 self 로 불러낸 상태 그대로 둔다.
     private void delayShot(boolean isAll) {
         this.imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
@@ -290,8 +319,9 @@ public class ScreenShotPanel extends JPanel
             this.hideControlPanel(shouldRepaintWhenHidingControlPanel(true));
         }
 
-        // ImageFrame 은 건드리지 않는다. 맨 뒤로 보내 둔 상태라
-        // alt(cmd)+tab 으로 앞에 올려 둔 창이 그대로 찍힌다.
+        // ImageFrame 가시성은 건드리지 않는다. capture 가 숨겨 둔 상태 그대로거나,
+        // self 로 불러냈으면 보이는 상태 그대로 찍는다.
+
         imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
         stratPoint = null;
@@ -377,7 +407,7 @@ public class ScreenShotPanel extends JPanel
                 guideOverlayVisible = true;
                 try {
                     SwingUtilities.invokeAndWait(() -> {
-                        // 숨긴 적이 없으므로 맨 뒤에서 다시 앞으로 올리기만 하면 된다.
+                        // 어느 경로로 숨겼든 캡처가 끝나면 항상 되돌린다.
                         imageFrame.setVisible(true);
                         imageFrame.disposeScreenShotFrames();
                     });

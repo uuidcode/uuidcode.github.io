@@ -47,6 +47,7 @@ public class CaptureControlUnitTest {
                 "shot",
                 "see",
                 "auto",
+                "self",
                 "record",
                 "delay shot",
                 "delay shot all",

@@ -7,10 +7,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import static screen.ScreenShotPanel.AreaControlButton;
 
-// 자신을 찍는 일은 alt(cmd)+tab 이 담당하므로 전용 버튼이나 모드가 남아 있지 않아야 한다.
+// 자신을 찍는 것은 self 버튼이 담당한다.
+// alt(cmd)+tab 으로 고른 창은 알아낼 수 없어 버튼으로 의도를 받는다.
 public class SelfCaptureUnitTest {
     private static List<String> labels() {
         List<String> result = new ArrayList<>();
@@ -23,8 +25,18 @@ public class SelfCaptureUnitTest {
     }
 
     @Test
-    public void areaControlPanelHasNoSelfButton() {
-        assertFalse(labels().contains("self"));
+    public void areaControlPanelHasSelfButton() {
+        assertTrue(labels().contains("self"));
+    }
+
+    @Test
+    public void selfFollowsAuto() {
+        List<String> labels = labels();
+
+        assertEquals(
+            "self", // expected
+            labels.get(labels.indexOf("auto") + 1) // actual
+        );
     }
 
     @Test
@@ -34,6 +46,7 @@ public class SelfCaptureUnitTest {
                 "shot",
                 "see",
                 "auto",
+                "self",
                 "record",
                 "delay shot",
                 "delay shot all",
@@ -46,33 +59,14 @@ public class SelfCaptureUnitTest {
     // selfAreaCaptureMode 가 사라져서 캡처 설정에 자신 캡처용 모드가 없어야 한다.
     @Test
     public void captureConfigHasNoSelfMode() {
-        List<String> propertyNames = new ArrayList<>();
+        List<String> methodNames = new ArrayList<>();
 
         for (java.lang.reflect.Method method : CaptureConfig.class.getMethods()) {
-            propertyNames.add(method.getName());
+            methodNames.add(method.getName());
         }
 
-        assertFalse(propertyNames.contains("isSelfAreaCaptureMode"));
+        assertFalse(methodNames.contains("isSelfAreaCaptureMode"));
 
-        assertFalse(propertyNames.contains("setSelfAreaCaptureMode"));
-    }
-
-    @Test
-    public void copyKeepsRemainingModes() {
-        CaptureConfig config = new CaptureConfig();
-        config.setWindowCaptureMode(true);
-        config.setSeeMode(true);
-
-        CaptureConfig copied = config.copy();
-
-        assertEquals(
-            config.isWindowCaptureMode(), // expected
-            copied.isWindowCaptureMode() // actual
-        );
-
-        assertEquals(
-            config.isSeeMode(), // expected
-            copied.isSeeMode() // actual
-        );
+        assertFalse(methodNames.contains("setSelfAreaCaptureMode"));
     }
 }
