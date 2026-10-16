@@ -20,7 +20,9 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.security.CodeSource;
 import java.text.SimpleDateFormat;
@@ -73,8 +75,19 @@ public class ImageFrame extends JFrame {
     private static final String BRING_WINDOW_TO_FRONT_SCRIPT_RELATIVE_PATH = "script/bring_window_to_front.swift";
     private static final String FRONTMOST_WINDOW_BINARY_RELATIVE_PATH = "script/bin/get_frontmost_window";
     private static final String FRONTMOST_WINDOW_SCRIPT_RELATIVE_PATH = "script/get_frontmost_window.swift";
+    private static final String GLOBAL_HOTKEY_BINARY_RELATIVE_PATH = "script/bin/global_hotkey";
+    private static final String GLOBAL_HOTKEY_SCRIPT_RELATIVE_PATH = "script/global_hotkey.swift";
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
+    static final int TO_FRONT_SHORTCUT_KEY_CODE = KeyEvent.VK_F1;
+    static final int CAPTURE_SHORTCUT_KEY_CODE = KeyEvent.VK_F2;
+    static final int TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE = KeyEvent.VK_F3;
+    static final String TO_FRONT_HOTKEY_NAME = "f1";
+    static final String CAPTURE_HOTKEY_NAME = "f2";
+    static final String TO_FRONT_CAPTURE_HOTKEY_NAME = "f3";
+
+    private volatile WindowTarget captureReturnTarget;
+
     private CaptureConfig captureConfig = new CaptureConfig();
     private ColorHistoryRepository colorHistoryRepository = new ColorHistoryRepository();
     private JComboBox<CaptureGridMode> captureGridModeComboBox;
@@ -116,18 +129,38 @@ public class ImageFrame extends JFrame {
         keyMap.put(KeyEvent.VK_P, this::capture);
         keyMap.put(KeyEvent.VK_O, this::open);
 
+        // 조합키 없이 누르는 단축키. f1 은 ImageFrame 을 맨 앞으로, f2 는 capture 버튼과 같고,
+        // f3 는 둘을 이어서 한 번에 한다.
+        // 전역 단축키 헬퍼가 떠 있으면 f1/f2 는 그쪽에서 먼저 가로채고,
+        // 헬퍼를 못 띄운 환경에서는 아래 디스패처가 앱 안에서만 같은 일을 한다.
+        Map<Integer, Runnable> directKeyMap = new HashMap<>();
+        directKeyMap.put(TO_FRONT_SHORTCUT_KEY_CODE, this::bringToFront);
+        directKeyMap.put(CAPTURE_SHORTCUT_KEY_CODE, this::captureFromShortcut);
+        directKeyMap.put(TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE, this::bringToFrontAndCapture);
+
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
                 return false;
             }
 
-            if (ke.getID() == KeyEvent.KEY_RELEASED
-                && (ke.isControlDown() || ke.isMetaDown())) {
+            if (ke.getID() != KeyEvent.KEY_RELEASED) {
+                return false;
+            }
+
+            if (ke.isControlDown() || ke.isMetaDown()) {
                 keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
+
+                return false;
+            }
+
+            if (isDirectShortcutEnabled(ke)) {
+                directKeyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
             }
 
             return false;
         });
+
+        this.startGlobalHotkeyListener();
 
 //        ThumbnailDialog.deleteOldFile();
     }
@@ -278,6 +311,7 @@ public class ImageFrame extends JFrame {
 
     private void createCaptureButton(JPanel panel) {
         JButton button = new JButton("capture");
+        button.setToolTipText("capture (f2)");
         button.addActionListener(e -> this.capture());
         panel.add(button);
     }
@@ -325,6 +359,113 @@ public class ImageFrame extends JFrame {
 
     private void capture() {
         this.startAreaCapture();
+    }
+
+    // 조합키를 같이 누른 경우는 다른 단축키이므로 f1/f2 로 보지 않는다.
+    static boolean isDirectShortcutEnabled(KeyEvent keyEvent) {
+        return !keyEvent.isControlDown()
+            && !keyEvent.isMetaDown()
+            && !keyEvent.isAltDown()
+            && !keyEvent.isShiftDown();
+    }
+
+    // 캡처 오버레이가 떠 있는 동안에는 ImageFrame 을 숨겨 두므로,
+    // 그때 누른 f2 로 캡처가 다시 시작되지 않게 막는다.
+    private void captureFromShortcut() {
+        if (!this.isVisible()) {
+            return;
+        }
+
+        this.capture();
+    }
+
+    // keep current screen 으로 뒤에 둔 ImageFrame 을 f1 로 다시 맨 앞으로 불러낸다.
+    private void bringToFront() {
+        this.bringToFront(null);
+    }
+
+    // f3 는 f1 + f2 다. 앱을 먼저 앞으로 올려 두고 캡처를 시작해야
+    // 오버레이가 바로 키 입력(esc)까지 받는 상태로 뜬다.
+    // f3 를 누르기 직전에 쓰던 앱은 기억해 두었다가, esc 로 캡처를 접으면 그 앱으로 되돌아간다.
+    private void bringToFrontAndCapture() {
+        if (this.isCaptureOverlayOpen()) {
+            return;
+        }
+
+        new Thread(() -> {
+            this.captureReturnTarget = this.resolveCaptureReturnTarget();
+
+            SwingUtilities.invokeLater(() -> this.bringToFront(this::captureFromShortcut));
+        }, "image-frame-capture-shortcut").start();
+    }
+
+    // 이미 우리 앱이 맨 앞이면 돌아갈 곳이 없다.
+    private WindowTarget resolveCaptureReturnTarget() {
+        try {
+            WindowTarget target = this.getFrontmostWindowTarget();
+
+            if (target == null || target.getOwnerPid() == this.getCurrentProcessId()) {
+                return null;
+            }
+
+            return target;
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+    // f3 로 시작한 캡처를 접었을 때 원래 쓰던 앱으로 되돌린다.
+    // 되돌릴 곳이 있었으면 true 를 돌려줘, 호출한 쪽이 ImageFrame 을 앞으로 올리지 않게 한다.
+    boolean restoreCaptureReturnTarget() {
+        WindowTarget target = this.captureReturnTarget;
+
+        this.captureReturnTarget = null;
+
+        if (target == null) {
+            return false;
+        }
+
+        new Thread(() -> {
+            try {
+                this.bringWindowToFront(target);
+            } catch (Throwable ignored) {
+            }
+        }, "image-frame-return").start();
+
+        return true;
+    }
+
+    void clearCaptureReturnTarget() {
+        this.captureReturnTarget = null;
+    }
+
+    // 앱 자체를 앞으로 올리는 건 네이티브 헬퍼가 필요해 EDT 를 막지 않도록 별도 스레드에서 처리한다.
+    // 그래서 앞으로 올라간 다음에 할 일은 콜백으로 이어 붙인다.
+    private void bringToFront(Runnable afterFront) {
+        this.setVisible(true);
+        this.toFront();
+        this.requestFocus();
+
+        new Thread(() -> {
+            try {
+                this.bringCurrentAppToFront();
+            } catch (Throwable ignored) {
+            }
+
+            SwingUtilities.invokeLater(() -> {
+                this.toFront();
+                this.requestFocus();
+
+                if (afterFront != null) {
+                    afterFront.run();
+                }
+            });
+        }, "image-frame-to-front").start();
+    }
+
+    private boolean isCaptureOverlayOpen() {
+        return this.screenShotFrameList != null
+            && this.screenShotFrameList.stream().anyMatch(ScreenShotFrame::isVisible);
     }
 
     private BufferedImage captureBaseScreenImage(GraphicsDevice device) {
@@ -705,6 +846,60 @@ public class ImageFrame extends JFrame {
             0,
             ownerPid
         );
+    }
+
+    // f1/f2 는 다른 앱을 쓰는 중에도 눌려야 해서 맥 전역 단축키로 등록한다.
+    // 등록은 네이티브 헬퍼가 맡고, 키가 눌릴 때마다 한 줄씩 내려 주는 이름을 읽어 실행한다.
+    private void startGlobalHotkeyListener() {
+        List<String> command = buildHelperCommand(
+            GLOBAL_HOTKEY_BINARY_RELATIVE_PATH, // binaryRelativePath
+            GLOBAL_HOTKEY_SCRIPT_RELATIVE_PATH // scriptRelativePath
+        );
+
+        if (command == null) {
+            return;
+        }
+
+        command.add(String.valueOf(this.getCurrentProcessId()));
+
+        Map<String, Runnable> hotkeyMap = new HashMap<>();
+        hotkeyMap.put(TO_FRONT_HOTKEY_NAME, this::bringToFront);
+        hotkeyMap.put(CAPTURE_HOTKEY_NAME, this::captureFromShortcut);
+        hotkeyMap.put(TO_FRONT_CAPTURE_HOTKEY_NAME, this::bringToFrontAndCapture);
+
+        Thread thread = new Thread(
+            () -> this.readGlobalHotkey(command, hotkeyMap), // target
+            "global-hotkey" // name
+        );
+
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void readGlobalHotkey(List<String> command, Map<String, Runnable> hotkeyMap) {
+        try {
+            Process process = new ProcessBuilder(command).start();
+
+            // ImageFrame 을 닫아 JVM 이 끝날 때 헬퍼만 남지 않게 한다.
+            Runtime.getRuntime().addShutdownHook(new Thread(process::destroy, "global-hotkey-stop"));
+
+            try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    Runnable action = hotkeyMap.get(line.trim());
+
+                    if (action == null) {
+                        continue;
+                    }
+
+                    SwingUtilities.invokeLater(action);
+                }
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     private List<String> buildHelperCommand(String binaryRelativePath, String scriptRelativePath) {

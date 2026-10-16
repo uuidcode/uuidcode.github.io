@@ -13,6 +13,7 @@ public class CaptureConfig {
     private boolean autoTrimEnabled = false;
     private boolean windowCaptureMode = false;
     private boolean seeMode = false;
+    private boolean keepCurrentScreenEnabled = CapturePreferences.isKeepCurrentScreenEnabled();
     private Integer fixedWidth;
     private Integer fixedHeight;
     private Rectangle lastRectangle;
@@ -24,6 +25,7 @@ public class CaptureConfig {
             .setAutoTrimEnabled(this.autoTrimEnabled)
             .setWindowCaptureMode(this.windowCaptureMode)
             .setSeeMode(this.seeMode)
+            .setKeepCurrentScreenEnabled(this.keepCurrentScreenEnabled)
             .setFixedWidth(this.fixedWidth)
             .setFixedHeight(this.fixedHeight)
             .setLastRectangle(this.lastRectangle == null ? null : new Rectangle(this.lastRectangle));

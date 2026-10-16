@@ -1,6 +1,7 @@
 package screen;
 
 import java.awt.AlphaComposite;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -34,7 +35,9 @@ import java.util.Deque;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -113,6 +116,8 @@ public class ScreenShotPanel extends JPanel
     private static final int SELECTION_HANDLE_SIZE = 10;
     private static final int SELECTION_HANDLE_HIT_SIZE = 16;
     private static final int SELECTION_MIN_SIZE = 8;
+    static final String KEEP_CURRENT_SCREEN_LABEL = "keep current screen";
+    private static final Color KEEP_CURRENT_SCREEN_BACKGROUND = new Color(255, 255, 255, 235);
     private static final Color SELECTION_HANDLE_COLOR = new Color(255, 255, 255, 235);
     private static final Color SELECTION_HANDLE_BORDER_COLOR = new Color(0, 0, 0, 150);
     private final GraphicsDevice graphicsDevice;
@@ -124,6 +129,7 @@ public class ScreenShotPanel extends JPanel
     private final ImageFrame imageFrame;
     private final BufferedImage baseScreenImage;
     private JPanel controlPanel = null;
+    private JCheckBox keepCurrentScreenCheckBox;
     private SeePreview seePreview;
     private final CaptureConfig captureConfig;
     private boolean guideOverlayVisible = true;
@@ -174,7 +180,52 @@ public class ScreenShotPanel extends JPanel
         });
     }
 
+    // 캡처 버튼 아래에 "캡처 후 현재 화면 유지" 체크박스를 한 줄로 붙인다.
     private JPanel createControlPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+
+        configureControlPanel(panel);
+
+        panel.add(this.createControlButtonPanel(), BorderLayout.CENTER);
+        panel.add(this.createKeepCurrentScreenCheckBox(), BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    // 체크 상태는 공유 captureConfig 와 사용자 설정에 함께 저장해
+    // 다음 캡처는 물론 다음 실행에서도 마지막으로 고른 값이 그대로 쓰이게 한다.
+    private JCheckBox createKeepCurrentScreenCheckBox() {
+        JCheckBox checkBox = new JCheckBox(KEEP_CURRENT_SCREEN_LABEL);
+
+        checkBox.setToolTipText("캡쳐 완료 후 ImageFrame 으로 전환하지 않고 현재 화면을 유지한다");
+        checkBox.setSelected(this.captureConfig.isKeepCurrentScreenEnabled());
+        checkBox.setOpaque(true);
+        checkBox.setBackground(KEEP_CURRENT_SCREEN_BACKGROUND);
+        checkBox.setForeground(Color.BLACK);
+        checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+        checkBox.addActionListener(e -> this.setKeepCurrentScreenEnabled(checkBox.isSelected()));
+
+        this.keepCurrentScreenCheckBox = checkBox;
+
+        return checkBox;
+    }
+
+    private void setKeepCurrentScreenEnabled(boolean enabled) {
+        this.captureConfig.setKeepCurrentScreenEnabled(enabled);
+
+        CapturePreferences.setKeepCurrentScreenEnabled(enabled);
+    }
+
+    // 모니터마다 패널이 따로 있으므로, 다시 보일 때 공유 설정 값으로 맞춰 준다.
+    private void syncKeepCurrentScreenCheckBox() {
+        if (this.keepCurrentScreenCheckBox == null) {
+            return;
+        }
+
+        this.keepCurrentScreenCheckBox.setSelected(this.captureConfig.isKeepCurrentScreenEnabled());
+    }
+
+    private JPanel createControlButtonPanel() {
         if (this.captureConfig.isWindowCaptureMode()) {
             JPanel panel = new JPanel(new GridLayout(1, 2));
 
@@ -405,26 +456,59 @@ public class ScreenShotPanel extends JPanel
                 throw new RuntimeException(t);
             } finally {
                 guideOverlayVisible = true;
-                try {
-                    SwingUtilities.invokeAndWait(() -> {
-                        // 어느 경로로 숨겼든 캡처가 끝나면 항상 되돌린다.
-                        imageFrame.setVisible(true);
-                        imageFrame.disposeScreenShotFrames();
-                    });
-                } catch (Throwable ignored) {
-                }
 
-                try {
-                    imageFrame.bringCurrentAppToFront();
-                } catch (Throwable ignored) {
-                }
-
-                SwingUtilities.invokeLater(() -> {
-                    imageFrame.toFront();
-                    imageFrame.requestFocus();
-                });
+                this.restoreAfterCapture();
             }
         }).start();
+    }
+
+    // 캡처 중 숨겨 둔 ImageFrame 을 다시 띄운다. keep current screen 이면
+    // 창을 띄우되 포커스를 가져가지 않고 뒤로 보내, 보고 있던 화면이 그대로 남는다.
+    private void showImageFrame(boolean keepCurrentScreen) {
+        if (!keepCurrentScreen) {
+            imageFrame.setVisible(true);
+
+            return;
+        }
+
+        imageFrame.setAutoRequestFocus(false);
+        imageFrame.setVisible(true);
+        imageFrame.toBack();
+        imageFrame.setAutoRequestFocus(true);
+    }
+
+    // 캡처가 끝나면 어느 경로로 숨겼든 ImageFrame 을 항상 되살린다.
+    // keep current screen 이 켜져 있으면 되살리되 앞으로 올리지 않아
+    // 방금 캡처한 화면을 그대로 보고 작업을 이어 갈 수 있다.
+    private void restoreAfterCapture() {
+        boolean keepCurrentScreen = this.captureConfig.isKeepCurrentScreenEnabled();
+
+        try {
+            SwingUtilities.invokeAndWait(() -> {
+                this.showImageFrame(keepCurrentScreen);
+                imageFrame.disposeScreenShotFrames();
+            });
+        } catch (Throwable ignored) {
+        }
+
+        if (keepCurrentScreen) {
+            // f3 로 시작한 캡처라면 화면을 유지하는 쪽이 원래 쓰던 앱으로 돌아가는 것이다.
+            imageFrame.restoreCaptureReturnTarget();
+
+            return;
+        }
+
+        imageFrame.clearCaptureReturnTarget();
+
+        try {
+            imageFrame.bringCurrentAppToFront();
+        } catch (Throwable ignored) {
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            imageFrame.toFront();
+            imageFrame.requestFocus();
+        });
     }
 
     private void record() {
@@ -558,10 +642,20 @@ public class ScreenShotPanel extends JPanel
     }
 
     private void finishSeePreview() {
+        boolean keepCurrentScreen = this.captureConfig.isKeepCurrentScreenEnabled();
+
         SwingUtilities.invokeLater(() -> {
             this.disposeSeePreview();
 
-            imageFrame.setVisible(true);
+            this.showImageFrame(keepCurrentScreen);
+
+            if (keepCurrentScreen) {
+                imageFrame.restoreCaptureReturnTarget();
+
+                return;
+            }
+
+            imageFrame.clearCaptureReturnTarget();
 
             imageFrame.toFront();
 
@@ -572,7 +666,13 @@ public class ScreenShotPanel extends JPanel
     private void cancelSeePreview() {
         this.disposeSeePreview();
 
-        imageFrame.setVisible(true);
+        boolean returningToPreviousApp = imageFrame.restoreCaptureReturnTarget();
+
+        this.showImageFrame(returningToPreviousApp);
+
+        if (returningToPreviousApp) {
+            return;
+        }
 
         imageFrame.toFront();
 
@@ -604,7 +704,12 @@ public class ScreenShotPanel extends JPanel
         mousePosition = null;
         guideOverlayVisible = true;
         imageFrame.disposeScreenShotFrames();
-        imageFrame.setVisible(true);
+
+        // f3 로 시작한 캡처를 esc 로 접은 경우에는 ImageFrame 으로 돌아가지 않고
+        // f3 를 누르기 직전에 쓰던 앱으로 되돌아간다.
+        boolean returningToPreviousApp = imageFrame.restoreCaptureReturnTarget();
+
+        this.showImageFrame(returningToPreviousApp);
     }
 
     private void startColorPreview(Point point) {
@@ -1437,6 +1542,8 @@ public class ScreenShotPanel extends JPanel
                 this.repaint();
             }
 
+            this.syncKeepCurrentScreenCheckBox();
+
             this.controlPanel.setVisible(true);
             Dimension dimension = controlPanel.getPreferredSize();
 
@@ -2120,6 +2227,8 @@ public class ScreenShotPanel extends JPanel
             this.revalidate();
             this.repaint();
         }
+
+        this.syncKeepCurrentScreenCheckBox();
 
         Rectangle previousBounds = this.controlPanel.getBounds();
         this.controlPanel.setVisible(true);
