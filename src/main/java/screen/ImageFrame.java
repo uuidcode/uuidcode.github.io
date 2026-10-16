@@ -82,9 +82,13 @@ public class ImageFrame extends JFrame {
     static final int TO_FRONT_SHORTCUT_KEY_CODE = KeyEvent.VK_F1;
     static final int CAPTURE_SHORTCUT_KEY_CODE = KeyEvent.VK_F2;
     static final int TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE = KeyEvent.VK_F3;
+    static final int AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE = KeyEvent.VK_F4;
+    static final int AUTO_SHOT_SHORTCUT_KEY_CODE = KeyEvent.VK_F5;
     static final String TO_FRONT_HOTKEY_NAME = "f1";
     static final String CAPTURE_HOTKEY_NAME = "f2";
     static final String TO_FRONT_CAPTURE_HOTKEY_NAME = "f3";
+    static final String AUTO_SHOT_WRITE_HOTKEY_NAME = "f4";
+    static final String AUTO_SHOT_HOTKEY_NAME = "f5";
 
     private volatile WindowTarget captureReturnTarget;
 
@@ -129,14 +133,17 @@ public class ImageFrame extends JFrame {
         keyMap.put(KeyEvent.VK_P, this::capture);
         keyMap.put(KeyEvent.VK_O, this::open);
 
-        // 조합키 없이 누르는 단축키. f1 은 ImageFrame 을 맨 앞으로, f2 는 capture 버튼과 같고,
-        // f3 는 둘을 이어서 한 번에 한다.
-        // 전역 단축키 헬퍼가 떠 있으면 f1/f2 는 그쪽에서 먼저 가로채고,
+        // shift 와 함께 누르는 기능키 단축키. shift+f1 은 ImageFrame 을 맨 앞으로,
+        // shift+f2 는 capture 버튼과 같고, shift+f3 는 둘을 이어서 한 번에 한다.
+        // shift+f4/shift+f5 는 영역을 고르면 바로 찍는다(f4 는 write 까지).
+        // 전역 단축키 헬퍼가 떠 있으면 그쪽에서 먼저 가로채고,
         // 헬퍼를 못 띄운 환경에서는 아래 디스패처가 앱 안에서만 같은 일을 한다.
-        Map<Integer, Runnable> directKeyMap = new HashMap<>();
-        directKeyMap.put(TO_FRONT_SHORTCUT_KEY_CODE, this::bringToFront);
-        directKeyMap.put(CAPTURE_SHORTCUT_KEY_CODE, this::captureFromShortcut);
-        directKeyMap.put(TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE, this::bringToFrontAndCapture);
+        Map<Integer, Runnable> functionKeyMap = new HashMap<>();
+        functionKeyMap.put(TO_FRONT_SHORTCUT_KEY_CODE, this::bringToFront);
+        functionKeyMap.put(CAPTURE_SHORTCUT_KEY_CODE, this::captureFromShortcut);
+        functionKeyMap.put(TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE, this::bringToFrontAndCapture);
+        functionKeyMap.put(AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE, this::captureAndWriteFromShortcut);
+        functionKeyMap.put(AUTO_SHOT_SHORTCUT_KEY_CODE, this::captureAutoShotFromShortcut);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
@@ -149,12 +156,10 @@ public class ImageFrame extends JFrame {
 
             if (ke.isControlDown() || ke.isMetaDown()) {
                 keyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
-
-                return false;
             }
 
-            if (isDirectShortcutEnabled(ke)) {
-                directKeyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
+            if (isFunctionKeyShortcutEnabled(ke)) {
+                functionKeyMap.getOrDefault(ke.getKeyCode(), () -> {}).run();
             }
 
             return false;
@@ -311,7 +316,7 @@ public class ImageFrame extends JFrame {
 
     private void createCaptureButton(JPanel panel) {
         JButton button = new JButton("capture");
-        button.setToolTipText("capture (f2)");
+        button.setToolTipText("capture (shift+f2)");
         button.addActionListener(e -> this.capture());
         panel.add(button);
     }
@@ -358,36 +363,69 @@ public class ImageFrame extends JFrame {
     }
 
     private void capture() {
-        this.startAreaCapture();
+        this.startAreaCapture(AutoShotMode.NONE);
     }
 
-    // 조합키를 같이 누른 경우는 다른 단축키이므로 f1/f2 로 보지 않는다.
-    static boolean isDirectShortcutEnabled(KeyEvent keyEvent) {
-        return !keyEvent.isControlDown()
+    // shift 만 누른 기능키 조합만 받는다. 다른 조합키가 섞이면 다른 단축키다.
+    static boolean isFunctionKeyShortcutEnabled(KeyEvent keyEvent) {
+        return keyEvent.isShiftDown()
             && !keyEvent.isMetaDown()
-            && !keyEvent.isAltDown()
-            && !keyEvent.isShiftDown();
+            && !keyEvent.isControlDown()
+            && !keyEvent.isAltDown();
     }
 
     // 캡처 오버레이가 떠 있는 동안에는 ImageFrame 을 숨겨 두므로,
-    // 그때 누른 f2 로 캡처가 다시 시작되지 않게 막는다.
+    // 그때 누른 shift+f2 로 캡처가 다시 시작되지 않게 막는다.
     private void captureFromShortcut() {
+        this.captureFromShortcut(AutoShotMode.NONE);
+    }
+
+    private void captureFromShortcut(AutoShotMode autoShotMode) {
         if (!this.isVisible()) {
             return;
         }
 
-        this.capture();
+        this.startAreaCapture(autoShotMode);
     }
 
-    // keep current screen 으로 뒤에 둔 ImageFrame 을 f1 로 다시 맨 앞으로 불러낸다.
+    // shift+f4 / shift+f5 는 shift+f3 처럼 영역 오버레이를 띄우되,
+    // 드래그가 끝나는 순간 shot and write / shot 버튼을 누른 것처럼 바로 찍는다.
+    private void captureAndWriteFromShortcut() {
+        this.bringToFrontAndCapture(AutoShotMode.SHOT_AND_WRITE);
+    }
+
+    private void captureAutoShotFromShortcut() {
+        this.bringToFrontAndCapture(AutoShotMode.SHOT);
+    }
+
+    // 캡처 중 숨겨 둔 ImageFrame 을 다시 띄운다. keep current screen 이면
+    // 창을 띄우되 포커스를 가져가지 않고 뒤로 보내, 보고 있던 화면이 그대로 남는다.
+    void showAfterCapture(boolean keepCurrentScreen) {
+        if (!keepCurrentScreen) {
+            this.setVisible(true);
+
+            return;
+        }
+
+        this.setAutoRequestFocus(false);
+        this.setVisible(true);
+        this.toBack();
+        this.setAutoRequestFocus(true);
+    }
+
+    // keep current screen 으로 뒤에 둔 ImageFrame 을 shift+f1 로 다시 맨 앞으로 불러낸다.
     private void bringToFront() {
         this.bringToFront(null);
     }
 
-    // f3 는 f1 + f2 다. 앱을 먼저 앞으로 올려 두고 캡처를 시작해야
+    // shift+f3 는 shift+f1 + shift+f2 다. 앱을 먼저 앞으로 올려 두고 캡처를 시작해야
     // 오버레이가 바로 키 입력(esc)까지 받는 상태로 뜬다.
-    // f3 를 누르기 직전에 쓰던 앱은 기억해 두었다가, esc 로 캡처를 접으면 그 앱으로 되돌아간다.
+    // shift+f3 를 누르기 직전에 쓰던 앱은 기억해 두었다가, esc 로 캡처를 접으면 그 앱으로 되돌아간다.
     private void bringToFrontAndCapture() {
+        this.bringToFrontAndCapture(AutoShotMode.NONE);
+    }
+
+    private void bringToFrontAndCapture(AutoShotMode autoShotMode) {
         if (this.isCaptureOverlayOpen()) {
             return;
         }
@@ -395,7 +433,7 @@ public class ImageFrame extends JFrame {
         new Thread(() -> {
             this.captureReturnTarget = this.resolveCaptureReturnTarget();
 
-            SwingUtilities.invokeLater(() -> this.bringToFront(this::captureFromShortcut));
+            SwingUtilities.invokeLater(() -> this.bringToFront(() -> this.captureFromShortcut(autoShotMode)));
         }, "image-frame-capture-shortcut").start();
     }
 
@@ -414,7 +452,7 @@ public class ImageFrame extends JFrame {
         }
     }
 
-    // f3 로 시작한 캡처를 접었을 때 원래 쓰던 앱으로 되돌린다.
+    // shift+f3 로 시작한 캡처를 접었을 때 원래 쓰던 앱으로 되돌린다.
     // 되돌릴 곳이 있었으면 true 를 돌려줘, 호출한 쪽이 ImageFrame 을 앞으로 올리지 않게 한다.
     boolean restoreCaptureReturnTarget() {
         WindowTarget target = this.captureReturnTarget;
@@ -619,10 +657,11 @@ public class ImageFrame extends JFrame {
     // toBack 으로는 자신이 찍히는 것을 막을 수 없다. 오버레이를 숨기는 순간
     // 같은 앱의 남은 창으로 포커스가 넘어가 ImageFrame 이 최전면으로 올라오기 때문이다.
     // 그래서 영역 캡처 중에는 숨겨 둔다. 자신을 찍으려면 delay shot 을 쓴다.
-    private void startAreaCapture() {
+    private void startAreaCapture(AutoShotMode autoShotMode) {
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSeeMode(false);
+        this.captureConfig.setAutoShotMode(autoShotMode);
         updateFixedSize();
 
         this.setVisible(false);
@@ -703,6 +742,7 @@ public class ImageFrame extends JFrame {
         this.setVisible(false);
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(true);
+        this.captureConfig.setAutoShotMode(AutoShotMode.NONE);
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()
@@ -848,7 +888,7 @@ public class ImageFrame extends JFrame {
         );
     }
 
-    // f1/f2 는 다른 앱을 쓰는 중에도 눌려야 해서 맥 전역 단축키로 등록한다.
+    // 단축키는 다른 앱을 쓰는 중에도 눌려야 해서 맥 전역 단축키(shift+f1 ~ shift+f5)로 등록한다.
     // 등록은 네이티브 헬퍼가 맡고, 키가 눌릴 때마다 한 줄씩 내려 주는 이름을 읽어 실행한다.
     private void startGlobalHotkeyListener() {
         List<String> command = buildHelperCommand(
@@ -866,6 +906,8 @@ public class ImageFrame extends JFrame {
         hotkeyMap.put(TO_FRONT_HOTKEY_NAME, this::bringToFront);
         hotkeyMap.put(CAPTURE_HOTKEY_NAME, this::captureFromShortcut);
         hotkeyMap.put(TO_FRONT_CAPTURE_HOTKEY_NAME, this::bringToFrontAndCapture);
+        hotkeyMap.put(AUTO_SHOT_WRITE_HOTKEY_NAME, this::captureAndWriteFromShortcut);
+        hotkeyMap.put(AUTO_SHOT_HOTKEY_NAME, this::captureAutoShotFromShortcut);
 
         Thread thread = new Thread(
             () -> this.readGlobalHotkey(command, hotkeyMap), // target

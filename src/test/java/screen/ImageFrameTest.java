@@ -41,6 +41,13 @@ public class ImageFrameTest {
         assertEquals(KeyEvent.VK_F3, ImageFrame.TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE);
     }
 
+    @Test
+    public void autoShotShortcutsAreF4AndF5() {
+        assertEquals(KeyEvent.VK_F4, ImageFrame.AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE);
+
+        assertEquals(KeyEvent.VK_F5, ImageFrame.AUTO_SHOT_SHORTCUT_KEY_CODE);
+    }
+
     // 네이티브 헬퍼가 내려 주는 이름과 자바가 찾는 이름이 어긋나면 전역 단축키가 먹지 않는다.
     @Test
     public void globalHotkeyNamesMatchShortcutKeys() {
@@ -49,18 +56,33 @@ public class ImageFrameTest {
         assertEquals("f2", ImageFrame.CAPTURE_HOTKEY_NAME);
 
         assertEquals("f3", ImageFrame.TO_FRONT_CAPTURE_HOTKEY_NAME);
+
+        assertEquals("f4", ImageFrame.AUTO_SHOT_WRITE_HOTKEY_NAME);
+
+        assertEquals("f5", ImageFrame.AUTO_SHOT_HOTKEY_NAME);
     }
 
     @Test
-    public void directShortcutRunsWhenPressedWithoutModifier() {
-        assertTrue(ImageFrame.isDirectShortcutEnabled(keyEvent(0)));
+    public void functionKeyShortcutRunsWithShift() {
+        assertTrue(ImageFrame.isFunctionKeyShortcutEnabled(keyEvent(KeyEvent.SHIFT_DOWN_MASK)));
+    }
+
+    // 맨 기능키는 받아쓰기 등 시스템 기능이, cmd+f5 는 VoiceOver 가 먼저 가져가므로
+    // shift 조합으로만 받는다.
+    @Test
+    public void functionKeyShortcutIsIgnoredWithoutShift() {
+        assertFalse(ImageFrame.isFunctionKeyShortcutEnabled(keyEvent(0)));
+
+        assertFalse(ImageFrame.isFunctionKeyShortcutEnabled(keyEvent(KeyEvent.META_DOWN_MASK)));
     }
 
     @Test
-    public void directShortcutIsIgnoredWhenModifierIsPressed() {
-        assertFalse(ImageFrame.isDirectShortcutEnabled(keyEvent(KeyEvent.META_DOWN_MASK)));
+    public void functionKeyShortcutIsIgnoredWhenOtherModifierIsPressed() {
+        assertFalse(ImageFrame.isFunctionKeyShortcutEnabled(
+            keyEvent(KeyEvent.SHIFT_DOWN_MASK | KeyEvent.META_DOWN_MASK)));
 
-        assertFalse(ImageFrame.isDirectShortcutEnabled(keyEvent(KeyEvent.SHIFT_DOWN_MASK)));
+        assertFalse(ImageFrame.isFunctionKeyShortcutEnabled(
+            keyEvent(KeyEvent.SHIFT_DOWN_MASK | KeyEvent.CTRL_DOWN_MASK)));
     }
 
     private static KeyEvent keyEvent(int modifiers) {

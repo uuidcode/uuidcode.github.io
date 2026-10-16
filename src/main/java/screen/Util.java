@@ -335,6 +335,25 @@ public class Util {
         }
     }
 
+    // 단축키로 시작한 작업은 다른 앱을 보고 있는 중에 끝나므로 맥 알림으로 알려 준다.
+    public static void showNotification(String title, String message) {
+        try {
+            new ProcessBuilder(
+                "osascript", // command
+                "-e", // command
+                "display notification " + toAppleScriptString(message)
+                    + " with title " + toAppleScriptString(title)
+            ).start();
+        } catch (Throwable ignored) {
+        }
+    }
+
+    static String toAppleScriptString(String text) {
+        String value = text == null ? "" : text;
+
+        return "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+    }
+
     public static void styleButtonAsSquare(AbstractButton button) {
         Insets margin = button.getMargin();
 

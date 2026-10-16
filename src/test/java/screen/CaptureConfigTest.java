@@ -2,6 +2,7 @@ package screen;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -55,6 +56,39 @@ public class CaptureConfigTest {
         captureConfig.setWriteAfterCaptureEnabled(true);
 
         assertTrue(captureConfig.copy().isWriteAfterCaptureEnabled());
+    }
+
+    // 드래그가 끝났을 때 어느 버튼을 누른 셈으로 칠지가 이 값으로 갈린다.
+    @Test
+    public void autoShotModeDefaultsToNone() {
+        CaptureConfig captureConfig = new CaptureConfig();
+
+        assertEquals(AutoShotMode.NONE, captureConfig.getAutoShotMode());
+
+        assertFalse(captureConfig.getAutoShotMode().isAutoShot());
+    }
+
+    @Test
+    public void autoShotModeTellsWhetherWriteFollows() {
+        assertTrue(AutoShotMode.SHOT.isAutoShot());
+
+        assertFalse(AutoShotMode.SHOT.isWriteAfterCapture());
+
+        assertTrue(AutoShotMode.SHOT_AND_WRITE.isAutoShot());
+
+        assertTrue(AutoShotMode.SHOT_AND_WRITE.isWriteAfterCapture());
+    }
+
+    @Test
+    public void copyCarriesAutoShotMode() {
+        CaptureConfig captureConfig = new CaptureConfig();
+
+        captureConfig.setAutoShotMode(AutoShotMode.SHOT_AND_WRITE);
+
+        assertEquals(
+            AutoShotMode.SHOT_AND_WRITE, // expected
+            captureConfig.copy().getAutoShotMode() // actual
+        );
     }
 
     @Test

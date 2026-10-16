@@ -16,6 +16,7 @@ public class CaptureConfig {
     private boolean keepCurrentScreenEnabled = CapturePreferences.isKeepCurrentScreenEnabled();
     // shot and write 로 찍은 캡처는 탭이 열리자마자 write 까지 자동으로 이어 간다.
     private boolean writeAfterCaptureEnabled = false;
+    private AutoShotMode autoShotMode = AutoShotMode.NONE;
     private Integer fixedWidth;
     private Integer fixedHeight;
     private Rectangle lastRectangle;
@@ -29,6 +30,7 @@ public class CaptureConfig {
             .setSeeMode(this.seeMode)
             .setKeepCurrentScreenEnabled(this.keepCurrentScreenEnabled)
             .setWriteAfterCaptureEnabled(this.writeAfterCaptureEnabled)
+            .setAutoShotMode(this.autoShotMode)
             .setFixedWidth(this.fixedWidth)
             .setFixedHeight(this.fixedHeight)
             .setLastRectangle(this.lastRectangle == null ? null : new Rectangle(this.lastRectangle));

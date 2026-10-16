@@ -555,19 +555,8 @@ public class ScreenShotPanel extends JPanel
         }).start();
     }
 
-    // 캡처 중 숨겨 둔 ImageFrame 을 다시 띄운다. keep current screen 이면
-    // 창을 띄우되 포커스를 가져가지 않고 뒤로 보내, 보고 있던 화면이 그대로 남는다.
     private void showImageFrame(boolean keepCurrentScreen) {
-        if (!keepCurrentScreen) {
-            imageFrame.setVisible(true);
-
-            return;
-        }
-
-        imageFrame.setAutoRequestFocus(false);
-        imageFrame.setVisible(true);
-        imageFrame.toBack();
-        imageFrame.setAutoRequestFocus(true);
+        imageFrame.showAfterCapture(keepCurrentScreen);
     }
 
     // 캡처가 끝나면 어느 경로로 숨겼든 ImageFrame 을 항상 되살린다.
@@ -585,7 +574,7 @@ public class ScreenShotPanel extends JPanel
         }
 
         if (keepCurrentScreen) {
-            // f3 로 시작한 캡처라면 화면을 유지하는 쪽이 원래 쓰던 앱으로 돌아가는 것이다.
+            // shift+f3 로 시작한 캡처라면 화면을 유지하는 쪽이 원래 쓰던 앱으로 돌아가는 것이다.
             imageFrame.restoreCaptureReturnTarget();
 
             return;
@@ -798,8 +787,8 @@ public class ScreenShotPanel extends JPanel
         guideOverlayVisible = true;
         imageFrame.disposeScreenShotFrames();
 
-        // f3 로 시작한 캡처를 esc 로 접은 경우에는 ImageFrame 으로 돌아가지 않고
-        // f3 를 누르기 직전에 쓰던 앱으로 되돌아간다.
+        // shift+f3 로 시작한 캡처를 esc 로 접은 경우에는 ImageFrame 으로 돌아가지 않고
+        // shift+f3 를 누르기 직전에 쓰던 앱으로 되돌아간다.
         boolean returningToPreviousApp = imageFrame.restoreCaptureReturnTarget();
 
         this.showImageFrame(returningToPreviousApp);
@@ -1629,6 +1618,23 @@ public class ScreenShotPanel extends JPanel
 
             if (this.captureConfig.isSeeMode()) {
                 this.enterSeePreview(rectangle);
+
+                return;
+            }
+
+            // shift+f4/shift+f5 로 시작한 캡처는 영역을 다 고른 순간
+            // 컨트롤 패널을 띄우지 않고 shot / shot and write 를 누른 것처럼 바로 찍는다.
+            AutoShotMode autoShotMode = this.captureConfig.getAutoShotMode();
+
+            if (autoShotMode.isAutoShot()) {
+                this.captureConfig.setAutoShotMode(AutoShotMode.NONE);
+
+                this.shot(
+                    null, // second
+                    false, // isAll
+                    false, // autoTrim
+                    autoShotMode.isWriteAfterCapture() // writeAfterCapture
+                );
 
                 return;
             }

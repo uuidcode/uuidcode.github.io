@@ -176,9 +176,10 @@ public class ImagePanel extends JPanel {
             return false;
         });
 
-        // shot and write 로 찍었으면 탭이 다 그려진 다음 write 를 바로 이어서 한다.
+        // shot and write 로 찍었으면 탭이 다 그려진 다음 write 를 바로 이어서 하고,
+        // 끝나면 알림으로 알려 준다.
         if (this.captureConfig != null && this.captureConfig.isWriteAfterCaptureEnabled()) {
-            SwingUtilities.invokeLater(this::write);
+            SwingUtilities.invokeLater(() -> this.write(true));
         }
     }
 
@@ -837,6 +838,11 @@ public class ImagePanel extends JPanel {
     // 홈 디렉터리의 IdeaProjects/uuidcode.github.io 를 pull 한 뒤
     // images/{연도}.html 에 오늘 날짜의 img 태그를 추가하고 i 디렉터리에 이미지를 저장한다.
     private void write() {
+        this.write(false);
+    }
+
+    // notifyOnFinish 는 shift+f4 처럼 단축키로 시작해 다른 앱을 보고 있는 동안 끝나는 경우에만 켠다.
+    private void write(boolean notifyOnFinish) {
         File repositoryDirectory = new File(
             System.getProperty("user.home"), // parent
             REPOSITORY_RELATIVE_PATH // child
@@ -869,9 +875,9 @@ public class ImagePanel extends JPanel {
 
         this.writeButton.setEnabled(false);
 
-        new SwingWorker<Void, Void>() {
+        new SwingWorker<String, Void>() {
             @Override
-            protected Void doInBackground() throws Exception {
+            protected String doInBackground() throws Exception {
                 gitPull(repositoryDirectory);
 
                 LocalDate today = LocalDate.now();
@@ -949,7 +955,7 @@ public class ImagePanel extends JPanel {
                     "--force-with-lease" // argument
                 );
 
-                return null;
+                return result.getImageName();
             }
 
             @Override
@@ -957,8 +963,16 @@ public class ImagePanel extends JPanel {
                 writeButton.setEnabled(true);
 
                 try {
-                    this.get();
+                    String imageName = this.get();
+
                     ImagePanel.this.markWritten(bufferedImage);
+
+                    if (notifyOnFinish) {
+                        Util.showNotification(
+                            "ImageFrame", // title
+                            "write 완료: " + imageName // message
+                        );
+                    }
                 } catch (Exception e) {
                     Throwable cause = e;
 
@@ -970,6 +984,13 @@ public class ImagePanel extends JPanel {
 
                     if (cause.getMessage() != null) {
                         message = cause.getMessage();
+                    }
+
+                    if (notifyOnFinish) {
+                        Util.showNotification(
+                            "ImageFrame", // title
+                            "write 실패: " + message // message
+                        );
                     }
 
                     JOptionPane.showMessageDialog(

@@ -37,4 +37,18 @@ public class UtilTest {
 
         assertNull(label.getClientProperty("JButton.buttonType"));
     }
+
+    // 알림 문구에 따옴표가 들어가도 AppleScript 가 깨지지 않아야 한다.
+    @Test
+    public void toAppleScriptStringEscapesQuotesAndBackslashes() {
+        assertEquals(
+            "\"write \\\"done\\\"\"", // expected
+            Util.toAppleScriptString("write \"done\"") // actual
+        );
+
+        assertEquals(
+            "\"a\\\\b\"", // expected
+            Util.toAppleScriptString("a\\b") // actual
+        );
+    }
 }
