@@ -42,6 +42,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 public class ScreenShotPanel extends JPanel
     implements MouseListener, MouseMotionListener {
@@ -116,8 +119,10 @@ public class ScreenShotPanel extends JPanel
     private static final int SELECTION_HANDLE_SIZE = 10;
     private static final int SELECTION_HANDLE_HIT_SIZE = 16;
     private static final int SELECTION_MIN_SIZE = 8;
-    static final String KEEP_CURRENT_SCREEN_LABEL = "keep current screen";
-    private static final Color KEEP_CURRENT_SCREEN_BACKGROUND = new Color(255, 255, 255, 235);
+    static final String KEEP_CURRENT_SCREEN_LABEL = "keep screen";
+    private static final int KEEP_CURRENT_SCREEN_GAP = 6;
+    private static final int KEEP_CURRENT_SCREEN_PADDING = 4;
+    private static final int KEEP_CURRENT_SCREEN_ARC = 8;
     private static final Color SELECTION_HANDLE_COLOR = new Color(255, 255, 255, 235);
     private static final Color SELECTION_HANDLE_BORDER_COLOR = new Color(0, 0, 0, 150);
     private final GraphicsDevice graphicsDevice;
@@ -182,12 +187,50 @@ public class ScreenShotPanel extends JPanel
 
     // 캡처 버튼 아래에 "캡처 후 현재 화면 유지" 체크박스를 한 줄로 붙인다.
     private JPanel createControlPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout(0, KEEP_CURRENT_SCREEN_GAP));
 
         configureControlPanel(panel);
 
         panel.add(this.createControlButtonPanel(), BorderLayout.CENTER);
-        panel.add(this.createKeepCurrentScreenCheckBox(), BorderLayout.SOUTH);
+        panel.add(this.createKeepCurrentScreenPanel(), BorderLayout.SOUTH);
+
+        return panel;
+    }
+
+    // 버튼과 같은 흰 배경을 깔면 둘이 한 덩어리로 뭉개져 보여서,
+    // 화면 위에 떠 있는 안내 문구와 같은 어두운 둥근 바 위에 올린다.
+    private JPanel createKeepCurrentScreenPanel() {
+        JPanel panel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+
+                g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+                g2.setColor(GUIDE_TEXT_BACKGROUND);
+                g2.fillRoundRect(
+                    0, // x
+                    0, // y
+                    this.getWidth(),
+                    this.getHeight(),
+                    KEEP_CURRENT_SCREEN_ARC, // arcWidth
+                    KEEP_CURRENT_SCREEN_ARC // arcHeight
+                );
+
+                g2.dispose();
+
+                super.paintComponent(g);
+            }
+        };
+
+        panel.setOpaque(false);
+        panel.setBorder(createEmptyBorder(
+            KEEP_CURRENT_SCREEN_PADDING, // top
+            KEEP_CURRENT_SCREEN_PADDING * 2, // left
+            KEEP_CURRENT_SCREEN_PADDING, // bottom
+            KEEP_CURRENT_SCREEN_PADDING * 2 // right
+        ));
+
+        panel.add(this.createKeepCurrentScreenCheckBox(), BorderLayout.CENTER);
 
         return panel;
     }
@@ -199,9 +242,8 @@ public class ScreenShotPanel extends JPanel
 
         checkBox.setToolTipText("캡쳐 완료 후 ImageFrame 으로 전환하지 않고 현재 화면을 유지한다");
         checkBox.setSelected(this.captureConfig.isKeepCurrentScreenEnabled());
-        checkBox.setOpaque(true);
-        checkBox.setBackground(KEEP_CURRENT_SCREEN_BACKGROUND);
-        checkBox.setForeground(Color.BLACK);
+        checkBox.setOpaque(false);
+        checkBox.setForeground(GUIDE_TEXT_COLOR);
         checkBox.setHorizontalAlignment(SwingConstants.CENTER);
         checkBox.addActionListener(e -> this.setKeepCurrentScreenEnabled(checkBox.isSelected()));
 
