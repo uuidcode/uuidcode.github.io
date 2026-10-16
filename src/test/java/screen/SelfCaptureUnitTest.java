@@ -43,6 +43,7 @@ public class SelfCaptureUnitTest {
     public void areaControlButtonOrderIsFixed() {
         assertEquals(
             List.of(
+                "shot and write",
                 "shot",
                 "see",
                 "auto",

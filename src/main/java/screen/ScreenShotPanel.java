@@ -68,6 +68,7 @@ public class ScreenShotPanel extends JPanel
 
     // 캡처 영역 컨트롤 패널의 버튼. 선언 순서가 그대로 화면 배치 순서가 된다.
     enum AreaControlButton {
+        SHOT_AND_WRITE("shot and write"),
         SHOT("shot"),
         SEE("see"),
         AUTO("auto"),
@@ -119,8 +120,13 @@ public class ScreenShotPanel extends JPanel
     private static final int SELECTION_HANDLE_SIZE = 10;
     private static final int SELECTION_HANDLE_HIT_SIZE = 16;
     private static final int SELECTION_MIN_SIZE = 8;
+    static final int AREA_CONTROL_COLUMN_COUNT = 3;
     static final String KEEP_CURRENT_SCREEN_LABEL = "keep screen";
-    private static final int KEEP_CURRENT_SCREEN_GAP = 6;
+    // macOS Aqua 캡슐 버튼은 자기 칸 안에서 좌우 5px, 아래 3px 들어간 자리에 그려진다.
+    // 바를 같은 만큼 들여야 버튼 두 개를 합친 폭과 정확히 맞는다.
+    static final int BUTTON_PAINT_SIDE_INSET = 5;
+    // 버튼 아래쪽 3px 이 이미 비어 있으므로 간격은 그만큼 덜 준다.
+    private static final int KEEP_CURRENT_SCREEN_GAP = 3;
     private static final int KEEP_CURRENT_SCREEN_PADDING = 4;
     private static final int KEEP_CURRENT_SCREEN_ARC = 8;
     private static final Color SELECTION_HANDLE_COLOR = new Color(255, 255, 255, 235);
@@ -192,9 +198,27 @@ public class ScreenShotPanel extends JPanel
         configureControlPanel(panel);
 
         panel.add(this.createControlButtonPanel(), BorderLayout.CENTER);
-        panel.add(this.createKeepCurrentScreenPanel(), BorderLayout.SOUTH);
+        panel.add(this.createKeepCurrentScreenWrapper(), BorderLayout.SOUTH);
 
         return panel;
+    }
+
+    // 바 자체를 버튼이 그려지는 폭만큼 좁혀 주는 투명한 껍데기.
+    private JPanel createKeepCurrentScreenWrapper() {
+        JPanel wrapper = new JPanel(new BorderLayout());
+
+        configureControlPanel(wrapper);
+
+        wrapper.setBorder(createEmptyBorder(
+            0, // top
+            BUTTON_PAINT_SIDE_INSET, // left
+            0, // bottom
+            BUTTON_PAINT_SIDE_INSET // right
+        ));
+
+        wrapper.add(this.createKeepCurrentScreenPanel(), BorderLayout.CENTER);
+
+        return wrapper;
     }
 
     // 버튼과 같은 흰 배경을 깔면 둘이 한 덩어리로 뭉개져 보여서,
@@ -283,7 +307,8 @@ public class ScreenShotPanel extends JPanel
             return panel;
         }
 
-        JPanel panel = new JPanel(new GridLayout(0, 2));
+        // 버튼 9 개를 3 * 3 으로 놓는다.
+        JPanel panel = new JPanel(new GridLayout(0, AREA_CONTROL_COLUMN_COUNT));
 
         this.configureControlPanel(panel);
 
@@ -302,6 +327,15 @@ public class ScreenShotPanel extends JPanel
         switch (areaControlButton) {
             case SHOT:
                 this.shot(null, false);
+                break;
+            case SHOT_AND_WRITE:
+                this.shot(
+                    null, // second
+                    false, // isAll
+                    false, // autoTrim
+                    true // writeAfterCapture
+                );
+
                 break;
             case SEE:
                 this.see();
@@ -398,8 +432,25 @@ public class ScreenShotPanel extends JPanel
         boolean isAll,
         boolean autoTrim
     ) {
+        this.shot(
+            second,
+            isAll,
+            autoTrim,
+            false // writeAfterCapture
+        );
+    }
+
+    private void shot(
+        Integer second,
+        boolean isAll,
+        boolean autoTrim,
+        boolean writeAfterCapture
+    ) {
         // auto 는 여백 자동 잘라내기만 다르고 나머지는 shot 과 같다.
         this.captureConfig.setAutoTrimEnabled(autoTrim);
+
+        // shot and write 는 찍은 뒤 열린 탭에서 write 까지 이어서 한다.
+        this.captureConfig.setWriteAfterCaptureEnabled(writeAfterCapture);
 
         Rectangle selectionRectangle = this.getSelectionRectangle();
         if (selectionRectangle == null) {
@@ -896,6 +947,8 @@ public class ScreenShotPanel extends JPanel
             String imgTag = "<img src=\"data:image/png;base64," + base64 + "\">";
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(imgTag), null);
 
+            config.setWriteAfterCaptureEnabled(false);
+
             return;
         }
 
@@ -914,6 +967,9 @@ public class ScreenShotPanel extends JPanel
             config, // captureConfig
             windowCapture
         );
+
+        // 한 번 찍을 때만 적용되는 옵션이라, 새 탭이 값을 받아 간 뒤 바로 끈다.
+        config.setWriteAfterCaptureEnabled(false);
     }
 
     // 자른 이미지 영역(이미지 픽셀)을 실제 화면 좌표(논리 좌표)로 변환한다.

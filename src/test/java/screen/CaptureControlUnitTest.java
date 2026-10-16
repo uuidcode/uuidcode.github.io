@@ -44,6 +44,7 @@ public class CaptureControlUnitTest {
     public void areaControlButtonOrderIsFixed() {
         assertEquals(
             List.of(
+                "shot and write",
                 "shot",
                 "see",
                 "auto",
@@ -54,6 +55,20 @@ public class CaptureControlUnitTest {
                 "cancel"
             ), // expected
             labels() // actual
+        );
+    }
+
+    // 버튼이 3 의 배수여야 3 * 3 격자가 빈칸 없이 채워진다.
+    @Test
+    public void areaControlButtonsFillThreeByThreeGrid() {
+        assertEquals(
+            3, // expected
+            ScreenShotPanel.AREA_CONTROL_COLUMN_COUNT // actual
+        );
+
+        assertEquals(
+            9, // expected
+            AreaControlButton.values().length // actual
         );
     }
 

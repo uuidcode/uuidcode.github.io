@@ -175,6 +175,11 @@ public class ImagePanel extends JPanel {
 
             return false;
         });
+
+        // shot and write 로 찍었으면 탭이 다 그려진 다음 write 를 바로 이어서 한다.
+        if (this.captureConfig != null && this.captureConfig.isWriteAfterCaptureEnabled()) {
+            SwingUtilities.invokeLater(this::write);
+        }
     }
 
     public void init() {

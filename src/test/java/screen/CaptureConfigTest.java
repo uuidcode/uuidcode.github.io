@@ -43,6 +43,21 @@ public class CaptureConfigTest {
     }
 
     @Test
+    public void writeAfterCaptureDefaultsToFalse() {
+        assertFalse(new CaptureConfig().isWriteAfterCaptureEnabled());
+    }
+
+    // 새 탭의 ImagePanel 은 복사본만 받으므로, 복사가 빠지면 shot and write 가 write 로 이어지지 않는다.
+    @Test
+    public void copyCarriesWriteAfterCapture() {
+        CaptureConfig captureConfig = new CaptureConfig();
+
+        captureConfig.setWriteAfterCaptureEnabled(true);
+
+        assertTrue(captureConfig.copy().isWriteAfterCaptureEnabled());
+    }
+
+    @Test
     public void copyCarriesKeepCurrentScreen() {
         CaptureConfig captureConfig = new CaptureConfig();
 
