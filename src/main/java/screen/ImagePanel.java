@@ -63,6 +63,7 @@ public class ImagePanel extends JPanel {
     private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
     private static final String REPOSITORY_RELATIVE_PATH = "IdeaProjects/uuidcode.github.io";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+    static final ShapeType DEFAULT_SHAPE_TYPE = ShapeType.FILL_ARROW;
     private static final ShapeType[] TOOL_SHAPE_TYPES = {
         ShapeType.CROP,
         ShapeType.BLUR,
@@ -341,8 +342,8 @@ public class ImagePanel extends JPanel {
 
         panel.add(this.createGalleryToggleButton());
 
-        // 초기에는 모든 토글이 꺼진, 그리기 도구가 없는 상태로 시작한다.
-        this.setActiveShapeType(null);
+        // 캡쳐 직후 바로 화살표를 그릴 수 있도록 Filled Arrow 토글을 켠 상태로 시작한다.
+        this.setActiveShapeType(DEFAULT_SHAPE_TYPE);
 
         this.controlPanel.add(panel);
     }

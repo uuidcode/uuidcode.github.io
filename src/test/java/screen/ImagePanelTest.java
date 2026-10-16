@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ImagePanelTest {
     @Test
@@ -17,6 +19,14 @@ public class ImagePanelTest {
         assertFalse(shapeTypeList.contains(ShapeType.BLUR));
 
         assertFalse(shapeTypeList.contains(ShapeType.BLUR_CLIPPING));
+    }
+
+    @Test
+    public void defaultShapeTypeIsSelectableFilledArrow() {
+        assertEquals(ShapeType.FILL_ARROW, ImagePanel.DEFAULT_SHAPE_TYPE);
+
+        assertTrue(Arrays.asList(ImagePanel.selectableShapeTypes())
+            .contains(ImagePanel.DEFAULT_SHAPE_TYPE));
     }
 
 }
