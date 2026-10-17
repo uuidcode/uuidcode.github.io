@@ -68,25 +68,32 @@ public class CaptureConfigTest {
         assertFalse(captureConfig.getAutoShotMode().isAutoShot());
     }
 
+    // shift+f4 는 shot, shift+f5 는 shot and write, shift+f6 은 auto and write 다.
     @Test
-    public void autoShotModeTellsWhetherWriteFollows() {
+    public void autoShotModeTellsWhichButtonWasPressed() {
         assertTrue(AutoShotMode.SHOT.isAutoShot());
+
+        assertFalse(AutoShotMode.SHOT.isAutoTrim());
 
         assertFalse(AutoShotMode.SHOT.isWriteAfterCapture());
 
-        assertTrue(AutoShotMode.SHOT_AND_WRITE.isAutoShot());
+        assertFalse(AutoShotMode.SHOT_AND_WRITE.isAutoTrim());
 
         assertTrue(AutoShotMode.SHOT_AND_WRITE.isWriteAfterCapture());
+
+        assertTrue(AutoShotMode.AUTO_AND_WRITE.isAutoTrim());
+
+        assertTrue(AutoShotMode.AUTO_AND_WRITE.isWriteAfterCapture());
     }
 
     @Test
     public void copyCarriesAutoShotMode() {
         CaptureConfig captureConfig = new CaptureConfig();
 
-        captureConfig.setAutoShotMode(AutoShotMode.SHOT_AND_WRITE);
+        captureConfig.setAutoShotMode(AutoShotMode.AUTO_AND_WRITE);
 
         assertEquals(
-            AutoShotMode.SHOT_AND_WRITE, // expected
+            AutoShotMode.AUTO_AND_WRITE, // expected
             captureConfig.copy().getAutoShotMode() // actual
         );
     }
