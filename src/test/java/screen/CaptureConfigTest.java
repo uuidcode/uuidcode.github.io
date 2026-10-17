@@ -70,23 +70,23 @@ public class CaptureConfigTest {
 
     @Test
     public void autoShotModeTellsWhetherWriteFollows() {
-        assertTrue(AutoShotMode.AUTO.isAutoShot());
+        assertTrue(AutoShotMode.SHOT.isAutoShot());
 
-        assertFalse(AutoShotMode.AUTO.isWriteAfterCapture());
+        assertFalse(AutoShotMode.SHOT.isWriteAfterCapture());
 
-        assertTrue(AutoShotMode.AUTO_AND_WRITE.isAutoShot());
+        assertTrue(AutoShotMode.SHOT_AND_WRITE.isAutoShot());
 
-        assertTrue(AutoShotMode.AUTO_AND_WRITE.isWriteAfterCapture());
+        assertTrue(AutoShotMode.SHOT_AND_WRITE.isWriteAfterCapture());
     }
 
     @Test
     public void copyCarriesAutoShotMode() {
         CaptureConfig captureConfig = new CaptureConfig();
 
-        captureConfig.setAutoShotMode(AutoShotMode.AUTO_AND_WRITE);
+        captureConfig.setAutoShotMode(AutoShotMode.SHOT_AND_WRITE);
 
         assertEquals(
-            AutoShotMode.AUTO_AND_WRITE, // expected
+            AutoShotMode.SHOT_AND_WRITE, // expected
             captureConfig.copy().getAutoShotMode() // actual
         );
     }

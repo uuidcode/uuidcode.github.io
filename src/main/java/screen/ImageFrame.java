@@ -135,7 +135,7 @@ public class ImageFrame extends JFrame {
 
         // shift 와 함께 누르는 기능키 단축키. shift+f1 은 ImageFrame 을 맨 앞으로,
         // shift+f2 는 capture 버튼과 같고, shift+f3 는 둘을 이어서 한 번에 한다.
-        // shift+f4/shift+f5 는 영역을 고르면 auto 로 바로 찍는다(f4 는 write 까지).
+        // shift+f4/shift+f5 는 영역을 고르면 바로 찍는다(f4 는 write 까지).
         // 전역 단축키 헬퍼가 떠 있으면 그쪽에서 먼저 가로채고,
         // 헬퍼를 못 띄운 환경에서는 아래 디스패처가 앱 안에서만 같은 일을 한다.
         Map<Integer, Runnable> functionKeyMap = new HashMap<>();
@@ -389,13 +389,13 @@ public class ImageFrame extends JFrame {
     }
 
     // shift+f4 / shift+f5 는 shift+f3 처럼 영역 오버레이를 띄우되,
-    // 드래그가 끝나는 순간 auto 버튼을 누른 것처럼 바로 찍는다(f4 는 write 까지).
+    // 드래그가 끝나는 순간 shot and write / shot 버튼을 누른 것처럼 바로 찍는다.
     private void captureAndWriteFromShortcut() {
-        this.bringToFrontAndCapture(AutoShotMode.AUTO_AND_WRITE);
+        this.bringToFrontAndCapture(AutoShotMode.SHOT_AND_WRITE);
     }
 
     private void captureAutoShotFromShortcut() {
-        this.bringToFrontAndCapture(AutoShotMode.AUTO);
+        this.bringToFrontAndCapture(AutoShotMode.SHOT);
     }
 
     // 캡처 중 숨겨 둔 ImageFrame 을 다시 띄운다. keep current screen 이면
