@@ -1,6 +1,6 @@
 #!/usr/bin/env swift
 
-// shift+f1 ~ shift+f6 을 맥 전역 단축키로 등록하고, 눌릴 때마다 stdout 으로 이름을 한 줄씩 내보낸다.
+// shift+f1 ~ shift+f5 를 맥 전역 단축키로 등록하고, 눌릴 때마다 stdout 으로 이름을 한 줄씩 내보낸다.
 // Carbon 의 RegisterEventHotKey 는 손쉬운 사용(Accessibility) 권한 없이도 동작하고,
 // 등록된 키는 다른 앱에 전달되지 않으므로 어느 앱을 쓰는 중이든 가로챌 수 있다.
 import AppKit
@@ -14,8 +14,7 @@ let hotKeyNameMap: [UInt32: String] = [
     2: "f2",
     3: "f3",
     4: "f4",
-    5: "f5",
-    6: "f6"
+    5: "f5"
 ]
 
 var hotKeyRefList: [EventHotKeyRef?] = []
@@ -90,7 +89,6 @@ register(keyCode: kVK_F2, id: 2)
 register(keyCode: kVK_F3, id: 3)
 register(keyCode: kVK_F4, id: 4)
 register(keyCode: kVK_F5, id: 5)
-register(keyCode: kVK_F6, id: 6)
 
 if hotKeyRefList.isEmpty {
     fputs("no hotkey registered\n", stderr)

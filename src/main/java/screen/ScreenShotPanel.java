@@ -1622,8 +1622,9 @@ public class ScreenShotPanel extends JPanel
                 return;
             }
 
-            // shift+f4 ~ shift+f6 으로 시작한 캡처는 영역을 다 고른 순간
+            // shift+f4 / shift+f5 로 시작한 캡처는 영역을 다 고른 순간
             // 컨트롤 패널을 띄우지 않고 해당 버튼을 누른 것처럼 바로 찍는다.
+            // 드래그를 놓을 때 cmd 를 누르고 있었으면 auto 쪽(여백 자동 잘라내기)으로 찍는다.
             AutoShotMode autoShotMode = this.captureConfig.getAutoShotMode();
 
             if (autoShotMode.isAutoShot()) {
@@ -1632,7 +1633,7 @@ public class ScreenShotPanel extends JPanel
                 this.shot(
                     null, // second
                     false, // isAll
-                    autoShotMode.isAutoTrim(), // autoTrim
+                    e.isMetaDown(), // autoTrim
                     autoShotMode.isWriteAfterCapture() // writeAfterCapture
                 );
 
