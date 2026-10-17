@@ -1623,7 +1623,7 @@ public class ScreenShotPanel extends JPanel
             }
 
             // shift+f4/shift+f5 로 시작한 캡처는 영역을 다 고른 순간
-            // 컨트롤 패널을 띄우지 않고 shot / shot and write 를 누른 것처럼 바로 찍는다.
+            // 컨트롤 패널을 띄우지 않고 auto 버튼을 누른 것처럼 바로 찍는다.
             AutoShotMode autoShotMode = this.captureConfig.getAutoShotMode();
 
             if (autoShotMode.isAutoShot()) {
@@ -1632,7 +1632,7 @@ public class ScreenShotPanel extends JPanel
                 this.shot(
                     null, // second
                     false, // isAll
-                    false, // autoTrim
+                    true, // autoTrim
                     autoShotMode.isWriteAfterCapture() // writeAfterCapture
                 );
 
