@@ -93,6 +93,40 @@ public class CaptureConfigTest {
         );
     }
 
+    // shot and return 한 번이 keep screen 체크박스를 영구히 꺼 버리면 안 되므로,
+    // 복귀 여부는 체크박스와 따로 이번 캡처에만 실리는 값으로 둔다.
+    @Test
+    public void returnToImageFrameDefaultsToFalse() {
+        assertFalse(new CaptureConfig().isReturnToImageFrameEnabled());
+    }
+
+    @Test
+    public void copyCarriesReturnToImageFrame() {
+        CaptureConfig captureConfig = new CaptureConfig();
+
+        captureConfig.setReturnToImageFrameEnabled(true);
+
+        assertTrue(captureConfig.copy().isReturnToImageFrameEnabled());
+    }
+
+    // 버튼으로 시작한 캡처에는 단축키 안내를 띄우지 않는다.
+    @Test
+    public void captureShortcutDefaultsToNone() {
+        assertEquals(CaptureShortcut.NONE, new CaptureConfig().getCaptureShortcut());
+    }
+
+    @Test
+    public void copyCarriesCaptureShortcut() {
+        CaptureConfig captureConfig = new CaptureConfig();
+
+        captureConfig.setCaptureShortcut(CaptureShortcut.SHOT_AND_WRITE);
+
+        assertEquals(
+            CaptureShortcut.SHOT_AND_WRITE, // expected
+            captureConfig.copy().getCaptureShortcut() // actual
+        );
+    }
+
     @Test
     public void copyCarriesKeepCurrentScreen() {
         CaptureConfig captureConfig = new CaptureConfig();

@@ -26,6 +26,7 @@ public class ImageFrameTest {
         assertEquals("clipboard", ImageFrame.toCaptureButtonLabel("clipboard"));
     }
 
+    // capture 는 앱을 앞으로 올린 다음 캡처까지 이어서 하는 단축키 하나로만 남아 있다.
     @Test
     public void captureShortcutIsF2() {
         assertEquals(KeyEvent.VK_F2, ImageFrame.CAPTURE_SHORTCUT_KEY_CODE);
@@ -37,13 +38,10 @@ public class ImageFrameTest {
     }
 
     @Test
-    public void toFrontCaptureShortcutIsF3() {
-        assertEquals(KeyEvent.VK_F3, ImageFrame.TO_FRONT_CAPTURE_SHORTCUT_KEY_CODE);
-    }
+    public void autoShotShortcutsAreF3ToF5() {
+        assertEquals(KeyEvent.VK_F3, ImageFrame.AUTO_SHOT_SHORTCUT_KEY_CODE);
 
-    @Test
-    public void autoShotShortcutsAreF4AndF5() {
-        assertEquals(KeyEvent.VK_F4, ImageFrame.AUTO_SHOT_SHORTCUT_KEY_CODE);
+        assertEquals(KeyEvent.VK_F4, ImageFrame.AUTO_SHOT_RETURN_SHORTCUT_KEY_CODE);
 
         assertEquals(KeyEvent.VK_F5, ImageFrame.AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE);
     }
@@ -55,9 +53,9 @@ public class ImageFrameTest {
 
         assertEquals("f2", ImageFrame.CAPTURE_HOTKEY_NAME);
 
-        assertEquals("f3", ImageFrame.TO_FRONT_CAPTURE_HOTKEY_NAME);
+        assertEquals("f3", ImageFrame.AUTO_SHOT_HOTKEY_NAME);
 
-        assertEquals("f4", ImageFrame.AUTO_SHOT_HOTKEY_NAME);
+        assertEquals("f4", ImageFrame.AUTO_SHOT_RETURN_HOTKEY_NAME);
 
         assertEquals("f5", ImageFrame.AUTO_SHOT_WRITE_HOTKEY_NAME);
     }

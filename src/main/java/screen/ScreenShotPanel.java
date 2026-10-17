@@ -32,6 +32,7 @@ import java.util.ArrayDeque;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Deque;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -104,6 +105,24 @@ public class ScreenShotPanel extends JPanel
     private static final Color GUIDE_TEXT_BACKGROUND = new Color(0, 0, 0, 140);
     private static final Color GUIDE_TEXT_COLOR = new Color(255, 255, 255, 235);
     private static final int GUIDE_TEXT_PADDING = 4;
+    // 드래그를 놓으면 무슨 일이 일어나는지 적어 두는 영역 한가운데 안내.
+    private static final float RELEASE_ACTION_FONT_SIZE = 15f;
+    private static final int RELEASE_ACTION_PADDING = 8;
+    // 영역 왼쪽에 펼쳐 두는 shift+f2 ~ shift+f4 설명.
+    private static final float SHORTCUT_HELP_FONT_SIZE = 12f;
+    private static final int SHORTCUT_HELP_PADDING = 8;
+    private static final int SHORTCUT_HELP_GAP = 12;
+    private static final int SHORTCUT_HELP_COLUMN_GAP = 12;
+    private static final int SHORTCUT_HELP_SECTION_GAP = 6;
+    private static final int SHORTCUT_HELP_ACTIVE_INSET = 3;
+    private static final int GUIDE_BOX_ARC = 10;
+    private static final Color SHORTCUT_HELP_DETAIL_COLOR = new Color(255, 255, 255, 180);
+    private static final Color SHORTCUT_HELP_ACTIVE_BACKGROUND = new Color(255, 255, 255, 45);
+    // 단축키마다 뜻이 같은 조합키라서 목록 아래에 한 번만 적는다.
+    private static final String[][] SHORTCUT_HELP_MODIFIER_ROW_ARRAY = {
+        {"cmd", "놓을 때 auto 로"},
+        {"esc", "취소"}
+    };
     private static final int GRID_LABEL_INTERVAL = 100;
     private static final int CONTROL_PANEL_REPAINT_PADDING = 24;
     private static final int WINDOW_CAPTURE_PADDING = 20;
@@ -155,6 +174,8 @@ public class ScreenShotPanel extends JPanel
     private SelectionHandle activeSelectionHandle = SelectionHandle.NONE;
     private Rectangle selectionDragOriginRectangle;
     private Point selectionDragStartPoint;
+    // 드래그를 놓을 때 cmd 를 누르고 있으면 auto 쪽으로 찍히므로, 누르고 있는 동안 안내도 그쪽으로 바꾼다.
+    private boolean autoTrimKeyDown;
     private final CountdownState countdownState = new CountdownState();
 
     public ScreenShotPanel(
@@ -174,6 +195,11 @@ public class ScreenShotPanel extends JPanel
         this.windowCaptureHoverTimer.setRepeats(false);
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
+            // 드래그를 멈춘 채 cmd 만 눌렀다 떼도 놓았을 때 할 일이 바뀌므로 안내를 따라 바꾼다.
+            if (ke.getKeyCode() == KeyEvent.VK_META) {
+                this.updateAutoTrimKeyDown(ke.getID() == KeyEvent.KEY_PRESSED);
+            }
+
             if (ke.getID() != KeyEvent.KEY_RELEASED) {
                 return false;
             }
@@ -446,11 +472,30 @@ public class ScreenShotPanel extends JPanel
         boolean autoTrim,
         boolean writeAfterCapture
     ) {
+        this.shot(
+            second,
+            isAll,
+            autoTrim,
+            writeAfterCapture,
+            false // returnToImageFrame
+        );
+    }
+
+    private void shot(
+        Integer second,
+        boolean isAll,
+        boolean autoTrim,
+        boolean writeAfterCapture,
+        boolean returnToImageFrame
+    ) {
         // auto 는 여백 자동 잘라내기만 다르고 나머지는 shot 과 같다.
         this.captureConfig.setAutoTrimEnabled(autoTrim);
 
         // shot and write 는 찍은 뒤 열린 탭에서 write 까지 이어서 한다.
         this.captureConfig.setWriteAfterCaptureEnabled(writeAfterCapture);
+
+        // shot and return 은 찍은 뒤 화면을 유지하지 않고 ImageFrame 으로 돌아간다.
+        this.captureConfig.setReturnToImageFrameEnabled(returnToImageFrame);
 
         Rectangle selectionRectangle = this.getSelectionRectangle();
         if (selectionRectangle == null) {
@@ -562,8 +607,10 @@ public class ScreenShotPanel extends JPanel
     // 캡처가 끝나면 어느 경로로 숨겼든 ImageFrame 을 항상 되살린다.
     // keep current screen 이 켜져 있으면 되살리되 앞으로 올리지 않아
     // 방금 캡처한 화면을 그대로 보고 작업을 이어 갈 수 있다.
+    // shot and return 은 돌아오는 것이 목적이므로 체크박스를 건드리지 않고 이번 캡처만 앞으로 올린다.
     private void restoreAfterCapture() {
-        boolean keepCurrentScreen = this.captureConfig.isKeepCurrentScreenEnabled();
+        boolean keepCurrentScreen = this.captureConfig.isKeepCurrentScreenEnabled()
+            && !this.captureConfig.isReturnToImageFrameEnabled();
 
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -574,7 +621,7 @@ public class ScreenShotPanel extends JPanel
         }
 
         if (keepCurrentScreen) {
-            // shift+f3 로 시작한 캡처라면 화면을 유지하는 쪽이 원래 쓰던 앱으로 돌아가는 것이다.
+            // shift+f2 로 시작한 캡처라면 화면을 유지하는 쪽이 원래 쓰던 앱으로 돌아가는 것이다.
             imageFrame.restoreCaptureReturnTarget();
 
             return;
@@ -785,13 +832,24 @@ public class ScreenShotPanel extends JPanel
         endPoint = null;
         mousePosition = null;
         guideOverlayVisible = true;
+        this.autoTrimKeyDown = false;
+        this.captureConfig.setCaptureShortcut(CaptureShortcut.NONE);
         imageFrame.disposeScreenShotFrames();
 
-        // shift+f3 로 시작한 캡처를 esc 로 접은 경우에는 ImageFrame 으로 돌아가지 않고
-        // shift+f3 를 누르기 직전에 쓰던 앱으로 되돌아간다.
+        // 단축키(shift+f2 ~ shift+f5)로 시작한 캡처를 esc 로 접으면 ImageFrame 으로 가지 않고
+        // 단축키를 누르기 직전에 쓰던 앱으로 되돌아간다.
+        // 버튼으로 시작한 캡처는 돌아갈 앱이 없으므로 ImageFrame 을 앞으로 불러낸다.
         boolean returningToPreviousApp = imageFrame.restoreCaptureReturnTarget();
 
         this.showImageFrame(returningToPreviousApp);
+
+        if (returningToPreviousApp) {
+            return;
+        }
+
+        imageFrame.toFront();
+
+        imageFrame.requestFocus();
     }
 
     private void startColorPreview(Point point) {
@@ -1588,6 +1646,8 @@ public class ScreenShotPanel extends JPanel
 
         this.clearSelectionDragState();
 
+        this.autoTrimKeyDown = e.isMetaDown();
+
         stratPoint = e.getPoint();
         endPoint = null;
 
@@ -1622,19 +1682,21 @@ public class ScreenShotPanel extends JPanel
                 return;
             }
 
-            // shift+f4 / shift+f5 로 시작한 캡처는 영역을 다 고른 순간
+            // shift+f3 ~ shift+f5 로 시작한 캡처는 영역을 다 고른 순간
             // 컨트롤 패널을 띄우지 않고 해당 버튼을 누른 것처럼 바로 찍는다.
             // 드래그를 놓을 때 cmd 를 누르고 있었으면 auto 쪽(여백 자동 잘라내기)으로 찍는다.
             AutoShotMode autoShotMode = this.captureConfig.getAutoShotMode();
 
             if (autoShotMode.isAutoShot()) {
                 this.captureConfig.setAutoShotMode(AutoShotMode.NONE);
+                this.captureConfig.setCaptureShortcut(CaptureShortcut.NONE);
 
                 this.shot(
                     null, // second
                     false, // isAll
                     e.isMetaDown(), // autoTrim
-                    autoShotMode.isWriteAfterCapture() // writeAfterCapture
+                    autoShotMode.isWriteAfterCapture(), // writeAfterCapture
+                    autoShotMode.isReturnToImageFrame() // returnToImageFrame
                 );
 
                 return;
@@ -1704,6 +1766,8 @@ public class ScreenShotPanel extends JPanel
         if (this.captureConfig.isWindowCaptureMode()) {
             return;
         }
+
+        this.autoTrimKeyDown = e.isMetaDown();
 
         if (this.activeSelectionHandle != SelectionHandle.NONE) {
             this.updateSelectionByHandle(e.getPoint());
@@ -1779,6 +1843,19 @@ public class ScreenShotPanel extends JPanel
         this.activeSelectionHandle = SelectionHandle.NONE;
         this.selectionDragStartPoint = null;
         this.selectionDragOriginRectangle = null;
+    }
+
+    // 안내가 떠 있을 때만 다시 그린다. 캡처 중이 아닌 cmd 입력까지 화면을 건드리게 두지 않는다.
+    private void updateAutoTrimKeyDown(boolean autoTrimKeyDown) {
+        if (this.autoTrimKeyDown == autoTrimKeyDown) {
+            return;
+        }
+
+        this.autoTrimKeyDown = autoTrimKeyDown;
+
+        if (this.captureConfig.getCaptureShortcut().isShortcut() && this.hasSelection()) {
+            this.repaint();
+        }
     }
 
     private boolean hasSelection() {
@@ -2045,6 +2122,7 @@ public class ScreenShotPanel extends JPanel
             g2.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
             this.drawSelectionGuides(g2, rectangle);
             this.drawSelectionHandles(g2, rectangle);
+            this.drawShortcutGuide(g2, rectangle);
         }
 
         if (includeColorPreview && this.rightButtonPressed && this.colorPreviewPoint != null && this.colorPreviewColor != null) {
@@ -2160,6 +2238,160 @@ public class ScreenShotPanel extends JPanel
         String sizeText = "w: " + rectangle.width + "  h: " + rectangle.height;
         int topCenterX = rectangle.x + rectangle.width / 2;
         this.drawTopCenteredGuideLabel(g2, sizeText, topCenterX, rectangle.y - 8);
+    }
+
+    // 영역을 잡는 동안 왼쪽에는 shift+f2 ~ shift+f4 를 모두 펼쳐 두고,
+    // 펑션키로 들어온 캡처는 드래그를 놓는 순간 바로 처리되므로
+    // 지금 놓으면 무엇이 일어날지를 영역 안에도 적어 준다.
+    private void drawShortcutGuide(Graphics2D g2, Rectangle rectangle) {
+        CaptureShortcut captureShortcut = this.captureConfig.getCaptureShortcut();
+
+        // 컨트롤 패널이 뜬 뒤에는 "놓으면" 안내가 지나간 이야기이고 버튼과 자리도 겹친다.
+        if (captureShortcut.isShortcut() && !this.isControlPanelShowing()) {
+            this.drawReleaseActionLabel(g2, rectangle, captureShortcut);
+        }
+
+        this.drawShortcutHelp(g2, rectangle, captureShortcut);
+    }
+
+    private boolean isControlPanelShowing() {
+        return this.controlPanel != null && this.controlPanel.isVisible();
+    }
+
+    private void drawReleaseActionLabel(Graphics2D g2, Rectangle rectangle, CaptureShortcut captureShortcut) {
+        String text = "놓으면  " + captureShortcut.toReleaseActionLabel(this.autoTrimKeyDown);
+
+        Font originalFont = g2.getFont();
+        g2.setFont(originalFont.deriveFont(Font.BOLD, RELEASE_ACTION_FONT_SIZE));
+
+        try {
+            FontMetrics metrics = g2.getFontMetrics();
+            int boxWidth = metrics.stringWidth(text) + RELEASE_ACTION_PADDING * 2;
+            int boxHeight = metrics.getHeight() + RELEASE_ACTION_PADDING * 2;
+
+            // 영역이 글자 상자보다 작으면 안에 끼워 넣어 봐야 영역만 가린다.
+            if (rectangle.width < boxWidth || rectangle.height < boxHeight) {
+                return;
+            }
+
+            int x = rectangle.x + (rectangle.width - boxWidth) / 2;
+            int y = rectangle.y + (rectangle.height - boxHeight) / 2;
+
+            g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+            g2.setColor(GUIDE_TEXT_BACKGROUND);
+            g2.fillRoundRect(x, y, boxWidth, boxHeight, GUIDE_BOX_ARC, GUIDE_BOX_ARC);
+            g2.setColor(GUIDE_TEXT_COLOR);
+            g2.drawString(text, x + RELEASE_ACTION_PADDING, y + RELEASE_ACTION_PADDING + metrics.getAscent());
+        } finally {
+            g2.setFont(originalFont);
+        }
+    }
+
+    // 키 칸과 하는 일 칸을 세로로 맞춘 두 칸짜리 표로 그린다.
+    // 지금 캡처를 시작시킨 단축키 줄만 밝게 칠해, 펼쳐 둔 목록 안에서 바로 찾을 수 있게 한다.
+    private void drawShortcutHelp(Graphics2D g2, Rectangle rectangle, CaptureShortcut captureShortcut) {
+        List<CaptureShortcut> areaShortcutList = CaptureShortcut.getAreaShortcutList();
+
+        Font originalFont = g2.getFont();
+        Font detailFont = originalFont.deriveFont(SHORTCUT_HELP_FONT_SIZE);
+        Font activeFont = detailFont.deriveFont(Font.BOLD);
+
+        try {
+            // 굵은 글씨가 제일 넓으므로 칸 너비는 그 쪽으로 재야 어느 줄이 켜져도 흔들리지 않는다.
+            g2.setFont(activeFont);
+            FontMetrics metrics = g2.getFontMetrics();
+            int lineHeight = metrics.getHeight();
+            int keyWidth = 0;
+            int actionWidth = 0;
+
+            for (CaptureShortcut areaShortcut : areaShortcutList) {
+                keyWidth = Math.max(keyWidth, metrics.stringWidth(areaShortcut.getKeyLabel()));
+                actionWidth = Math.max(actionWidth,
+                    metrics.stringWidth(areaShortcut.toActionLabel(this.autoTrimKeyDown)));
+            }
+
+            for (String[] modifierRow : SHORTCUT_HELP_MODIFIER_ROW_ARRAY) {
+                keyWidth = Math.max(keyWidth, metrics.stringWidth(modifierRow[0]));
+                actionWidth = Math.max(actionWidth, metrics.stringWidth(modifierRow[1]));
+            }
+
+            int rowCount = areaShortcutList.size() + SHORTCUT_HELP_MODIFIER_ROW_ARRAY.length;
+            int boxWidth = keyWidth + SHORTCUT_HELP_COLUMN_GAP + actionWidth + SHORTCUT_HELP_PADDING * 2;
+            int boxHeight = lineHeight * rowCount + SHORTCUT_HELP_SECTION_GAP + SHORTCUT_HELP_PADDING * 2;
+            int x = toShortcutHelpX(rectangle, boxWidth, SHORTCUT_HELP_GAP, this.getWidth());
+            int y = toShortcutHelpY(rectangle, boxHeight, this.getHeight());
+            int keyX = x + SHORTCUT_HELP_PADDING;
+            int actionX = keyX + keyWidth + SHORTCUT_HELP_COLUMN_GAP;
+
+            g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+            g2.setColor(GUIDE_TEXT_BACKGROUND);
+            g2.fillRoundRect(x, y, boxWidth, boxHeight, GUIDE_BOX_ARC, GUIDE_BOX_ARC);
+
+            int rowY = y + SHORTCUT_HELP_PADDING;
+
+            for (CaptureShortcut areaShortcut : areaShortcutList) {
+                boolean active = areaShortcut == captureShortcut;
+
+                if (active) {
+                    g2.setColor(SHORTCUT_HELP_ACTIVE_BACKGROUND);
+                    g2.fillRoundRect(x + SHORTCUT_HELP_ACTIVE_INSET, rowY,
+                        boxWidth - SHORTCUT_HELP_ACTIVE_INSET * 2, lineHeight,
+                        GUIDE_BOX_ARC, GUIDE_BOX_ARC);
+                }
+
+                g2.setFont(active ? activeFont : detailFont);
+                g2.setColor(active ? GUIDE_TEXT_COLOR : SHORTCUT_HELP_DETAIL_COLOR);
+
+                int baselineY = rowY + metrics.getAscent();
+
+                g2.drawString(areaShortcut.getKeyLabel(), keyX, baselineY);
+                g2.drawString(areaShortcut.toActionLabel(this.autoTrimKeyDown), actionX, baselineY);
+
+                rowY += lineHeight;
+            }
+
+            // 조합키 설명은 단축키 목록과 한 칸 띄워 둔다.
+            rowY += SHORTCUT_HELP_SECTION_GAP;
+
+            g2.setFont(detailFont);
+            g2.setColor(SHORTCUT_HELP_DETAIL_COLOR);
+
+            for (String[] modifierRow : SHORTCUT_HELP_MODIFIER_ROW_ARRAY) {
+                int baselineY = rowY + metrics.getAscent();
+
+                g2.drawString(modifierRow[0], keyX, baselineY);
+                g2.drawString(modifierRow[1], actionX, baselineY);
+
+                rowY += lineHeight;
+            }
+        } finally {
+            g2.setFont(originalFont);
+        }
+    }
+
+    // 설명 상자는 선택 영역 왼쪽에 붙인다. 왼쪽이 모자라면 오른쪽으로 넘기고,
+    // 양쪽 다 모자라면 화면 안으로만 밀어 넣는다.
+    static int toShortcutHelpX(Rectangle rectangle, int boxWidth, int gap, int overlayWidth) {
+        int leftX = rectangle.x - gap - boxWidth;
+
+        if (leftX >= 0) {
+            return leftX;
+        }
+
+        int rightX = rectangle.x + rectangle.width + gap;
+
+        if (rightX + boxWidth <= overlayWidth) {
+            return rightX;
+        }
+
+        return Math.max(0, overlayWidth - boxWidth);
+    }
+
+    // 선택 영역과 눈높이를 맞추되 화면 밖으로는 나가지 않게 한다.
+    static int toShortcutHelpY(Rectangle rectangle, int boxHeight, int overlayHeight) {
+        int y = rectangle.y + (rectangle.height - boxHeight) / 2;
+
+        return Math.max(0, Math.min(y, overlayHeight - boxHeight));
     }
 
     private void drawGuideLabel(Graphics2D g2, String text, int anchorX, int baselineY, boolean alignRight) {

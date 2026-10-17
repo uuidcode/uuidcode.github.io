@@ -212,6 +212,102 @@ public class ScreenShotPanelTest {
         );
     }
 
+    // 단축키 설명은 선택 영역 왼쪽에 붙인다.
+    @Test
+    public void shortcutHelpSitsOnTheLeftOfTheSelection() {
+        Rectangle rectangle = new Rectangle(
+            300, // x
+            100, // y
+            200, // width
+            120 // height
+        );
+
+        int x = ScreenShotPanel.toShortcutHelpX(
+            rectangle,
+            160, // boxWidth
+            12, // gap
+            1000 // overlayWidth
+        );
+
+        assertEquals(128, x);
+    }
+
+    // 영역이 화면 왼쪽 끝에 붙어 있으면 설명이 잘리므로 오른쪽으로 넘긴다.
+    @Test
+    public void shortcutHelpFlipsToTheRightWhenTheLeftIsTooNarrow() {
+        Rectangle rectangle = new Rectangle(
+            10, // x
+            100, // y
+            200, // width
+            120 // height
+        );
+
+        int x = ScreenShotPanel.toShortcutHelpX(
+            rectangle,
+            160, // boxWidth
+            12, // gap
+            1000 // overlayWidth
+        );
+
+        assertEquals(222, x);
+    }
+
+    // 양쪽 다 좁으면 화면 안에만 들어오게 한다.
+    @Test
+    public void shortcutHelpStaysInsideTheOverlayWhenBothSidesAreTooNarrow() {
+        Rectangle rectangle = new Rectangle(
+            10, // x
+            100, // y
+            200, // width
+            120 // height
+        );
+
+        int x = ScreenShotPanel.toShortcutHelpX(
+            rectangle,
+            160, // boxWidth
+            12, // gap
+            300 // overlayWidth
+        );
+
+        assertEquals(140, x);
+    }
+
+    @Test
+    public void shortcutHelpLinesUpWithTheMiddleOfTheSelection() {
+        Rectangle rectangle = new Rectangle(
+            300, // x
+            100, // y
+            200, // width
+            120 // height
+        );
+
+        int y = ScreenShotPanel.toShortcutHelpY(
+            rectangle,
+            60, // boxHeight
+            1000 // overlayHeight
+        );
+
+        assertEquals(130, y);
+    }
+
+    @Test
+    public void shortcutHelpStaysInsideTheOverlayVertically() {
+        Rectangle rectangle = new Rectangle(
+            300, // x
+            0, // y
+            200, // width
+            20 // height
+        );
+
+        int y = ScreenShotPanel.toShortcutHelpY(
+            rectangle,
+            60, // boxHeight
+            1000 // overlayHeight
+        );
+
+        assertEquals(0, y);
+    }
+
     @Test
     public void moveSelectionRectangleKeepsSelectionInsideBounds() {
         Rectangle origin = new Rectangle(
