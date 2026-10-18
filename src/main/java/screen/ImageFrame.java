@@ -84,11 +84,13 @@ public class ImageFrame extends JFrame {
     static final int AUTO_SHOT_SHORTCUT_KEY_CODE = KeyEvent.VK_F3;
     static final int AUTO_SHOT_RETURN_SHORTCUT_KEY_CODE = KeyEvent.VK_F4;
     static final int AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE = KeyEvent.VK_F5;
+    static final int AUTO_SHOT_WRITE_RETURN_SHORTCUT_KEY_CODE = KeyEvent.VK_F6;
     static final String TO_FRONT_HOTKEY_NAME = "f1";
     static final String CAPTURE_HOTKEY_NAME = "f2";
     static final String AUTO_SHOT_HOTKEY_NAME = "f3";
     static final String AUTO_SHOT_RETURN_HOTKEY_NAME = "f4";
     static final String AUTO_SHOT_WRITE_HOTKEY_NAME = "f5";
+    static final String AUTO_SHOT_WRITE_RETURN_HOTKEY_NAME = "f6";
 
     private volatile WindowTarget captureReturnTarget;
 
@@ -135,8 +137,9 @@ public class ImageFrame extends JFrame {
 
         // shift 와 함께 누르는 기능키 단축키. shift+f1 은 ImageFrame 을 맨 앞으로,
         // shift+f2 는 앱을 앞으로 올린 다음 캡처까지 이어서 한다.
-        // shift+f3 ~ shift+f5 는 영역을 고르면 바로 찍는다. f3 는 shot,
-        // f4 는 shot 뒤에 ImageFrame 으로 돌아오고, f5 는 shot and write 를 누른 효과다.
+        // shift+f3 ~ shift+f6 은 영역을 고르면 바로 찍는다. f3 는 shot,
+        // f5 는 shot and write 이고 둘 다 보던 화면에 머무른다.
+        // f4, f6 은 같은 일을 하고 나서 ImageFrame 으로 돌아온다.
         // 드래그할 때 cmd 를 같이 누르고 있으면 각각 auto 쪽으로 바뀐다.
         // 전역 단축키 헬퍼가 떠 있으면 그쪽에서 먼저 가로채고,
         // 헬퍼를 못 띄운 환경에서는 아래 디스패처가 앱 안에서만 같은 일을 한다.
@@ -146,6 +149,10 @@ public class ImageFrame extends JFrame {
         functionKeyMap.put(AUTO_SHOT_SHORTCUT_KEY_CODE, this::captureShotFromShortcut);
         functionKeyMap.put(AUTO_SHOT_RETURN_SHORTCUT_KEY_CODE, this::captureShotAndReturnFromShortcut);
         functionKeyMap.put(AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE, this::captureShotAndWriteFromShortcut);
+        functionKeyMap.put(
+            AUTO_SHOT_WRITE_RETURN_SHORTCUT_KEY_CODE,
+            this::captureShotAndWriteAndReturnFromShortcut
+        );
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
@@ -399,6 +406,11 @@ public class ImageFrame extends JFrame {
 
     private void captureShotAndWriteFromShortcut() {
         this.bringToFrontAndCapture(CaptureShortcut.SHOT_AND_WRITE);
+    }
+
+    // write 까지 끝낸 뒤 ImageFrame 으로 돌아온다.
+    private void captureShotAndWriteAndReturnFromShortcut() {
+        this.bringToFrontAndCapture(CaptureShortcut.SHOT_AND_WRITE_AND_RETURN);
     }
 
     // 캡처 중 숨겨 둔 ImageFrame 을 다시 띄운다. keep current screen 이면
@@ -913,6 +925,10 @@ public class ImageFrame extends JFrame {
         hotkeyMap.put(AUTO_SHOT_HOTKEY_NAME, this::captureShotFromShortcut);
         hotkeyMap.put(AUTO_SHOT_RETURN_HOTKEY_NAME, this::captureShotAndReturnFromShortcut);
         hotkeyMap.put(AUTO_SHOT_WRITE_HOTKEY_NAME, this::captureShotAndWriteFromShortcut);
+        hotkeyMap.put(
+            AUTO_SHOT_WRITE_RETURN_HOTKEY_NAME,
+            this::captureShotAndWriteAndReturnFromShortcut
+        );
 
         Thread thread = new Thread(
             () -> this.readGlobalHotkey(command, hotkeyMap), // target

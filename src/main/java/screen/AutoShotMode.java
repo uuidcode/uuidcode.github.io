@@ -7,19 +7,20 @@ public enum AutoShotMode {
     NONE,
     SHOT,
     SHOT_AND_RETURN,
-    SHOT_AND_WRITE;
+    SHOT_AND_WRITE,
+    SHOT_AND_WRITE_AND_RETURN;
 
     public boolean isAutoShot() {
         return this != NONE;
     }
 
     public boolean isWriteAfterCapture() {
-        return this == SHOT_AND_WRITE;
+        return this == SHOT_AND_WRITE || this == SHOT_AND_WRITE_AND_RETURN;
     }
 
     // 찍은 뒤 화면을 유지하지 않고 ImageFrame 을 앞으로 불러낼지.
     public boolean isReturnToImageFrame() {
-        return this == SHOT_AND_RETURN;
+        return this == SHOT_AND_RETURN || this == SHOT_AND_WRITE_AND_RETURN;
     }
 
     // 드래그를 놓는 순간 눌린 셈이 되는 컨트롤 패널 버튼 이름.
@@ -27,6 +28,10 @@ public enum AutoShotMode {
     public String toButtonLabel(boolean autoTrim) {
         if (this == NONE) {
             return null;
+        }
+
+        if (this == SHOT_AND_WRITE_AND_RETURN) {
+            return autoTrim ? "auto and write and return" : "shot and write and return";
         }
 
         if (this == SHOT_AND_WRITE) {

@@ -128,6 +128,48 @@ public class ScreenShotPanelTest {
         assertTrue(repaintBounds);
     }
 
+    // 단축키로 바로 찍는 경우에는 체크박스와 상관없이 보던 화면에 머무른다.
+    @Test
+    public void shortcutShotKeepsCurrentScreenEvenWhenKeepScreenIsUnchecked() {
+        assertTrue(ScreenShotPanel.shouldKeepCurrentScreen(
+            false, // keepCurrentScreenEnabled
+            AutoShotMode.SHOT // autoShotMode
+        ));
+
+        assertTrue(ScreenShotPanel.shouldKeepCurrentScreen(
+            false, // keepCurrentScreenEnabled
+            AutoShotMode.SHOT_AND_WRITE // autoShotMode
+        ));
+    }
+
+    // and return 이 붙은 단축키는 체크박스가 켜져 있어도 ImageFrame 으로 올라온다.
+    @Test
+    public void returnShortcutsAlwaysGoBackToImageFrame() {
+        assertFalse(ScreenShotPanel.shouldKeepCurrentScreen(
+            true, // keepCurrentScreenEnabled
+            AutoShotMode.SHOT_AND_RETURN // autoShotMode
+        ));
+
+        assertFalse(ScreenShotPanel.shouldKeepCurrentScreen(
+            true, // keepCurrentScreenEnabled
+            AutoShotMode.SHOT_AND_WRITE_AND_RETURN // autoShotMode
+        ));
+    }
+
+    // 컨트롤 패널 버튼으로 찍은 경우에만 체크박스를 따른다.
+    @Test
+    public void controlPanelShotFollowsTheKeepScreenCheckbox() {
+        assertTrue(ScreenShotPanel.shouldKeepCurrentScreen(
+            true, // keepCurrentScreenEnabled
+            AutoShotMode.NONE // autoShotMode
+        ));
+
+        assertFalse(ScreenShotPanel.shouldKeepCurrentScreen(
+            false, // keepCurrentScreenEnabled
+            AutoShotMode.NONE // autoShotMode
+        ));
+    }
+
     @Test
     public void shouldMoveSelectionReturnsTrueInsideSelection() {
         Rectangle rectangle = new Rectangle(

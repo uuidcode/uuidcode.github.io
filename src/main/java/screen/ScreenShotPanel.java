@@ -359,7 +359,7 @@ public class ScreenShotPanel extends JPanel
                     null, // second
                     false, // isAll
                     false, // autoTrim
-                    true // writeAfterCapture
+                    AutoShotMode.SHOT_AND_WRITE // autoShotMode
                 );
 
                 break;
@@ -462,40 +462,26 @@ public class ScreenShotPanel extends JPanel
             second,
             isAll,
             autoTrim,
-            false // writeAfterCapture
+            AutoShotMode.NONE // autoShotMode
         );
     }
 
+    // autoShotMode 는 어느 버튼을 누른 셈으로 찍는지를 나타낸다.
+    // 컨트롤 패널의 shot / auto 처럼 특별한 뒷처리가 없는 경우에는 NONE 이다.
     private void shot(
         Integer second,
         boolean isAll,
         boolean autoTrim,
-        boolean writeAfterCapture
-    ) {
-        this.shot(
-            second,
-            isAll,
-            autoTrim,
-            writeAfterCapture,
-            false // returnToImageFrame
-        );
-    }
-
-    private void shot(
-        Integer second,
-        boolean isAll,
-        boolean autoTrim,
-        boolean writeAfterCapture,
-        boolean returnToImageFrame
+        AutoShotMode autoShotMode
     ) {
         // auto 는 여백 자동 잘라내기만 다르고 나머지는 shot 과 같다.
         this.captureConfig.setAutoTrimEnabled(autoTrim);
 
         // shot and write 는 찍은 뒤 열린 탭에서 write 까지 이어서 한다.
-        this.captureConfig.setWriteAfterCaptureEnabled(writeAfterCapture);
+        this.captureConfig.setWriteAfterCaptureEnabled(autoShotMode.isWriteAfterCapture());
 
         // shot and return 은 찍은 뒤 화면을 유지하지 않고 ImageFrame 으로 돌아간다.
-        this.captureConfig.setReturnToImageFrameEnabled(returnToImageFrame);
+        this.captureConfig.setReturnToImageFrameEnabled(autoShotMode.isReturnToImageFrame());
 
         Rectangle selectionRectangle = this.getSelectionRectangle();
         if (selectionRectangle == null) {
@@ -595,7 +581,7 @@ public class ScreenShotPanel extends JPanel
             } finally {
                 guideOverlayVisible = true;
 
-                this.restoreAfterCapture();
+                this.restoreAfterCapture(autoShotMode);
             }
         }).start();
     }
@@ -604,13 +590,34 @@ public class ScreenShotPanel extends JPanel
         imageFrame.showAfterCapture(keepCurrentScreen);
     }
 
+    // and return 이 붙은 단축키만 ImageFrame 으로 올라오고, 나머지 단축키는
+    // 보고 있던 화면을 그대로 둔다. 컨트롤 패널 버튼으로 찍은 경우에만
+    // keep screen 체크박스를 따른다.
+    static boolean shouldKeepCurrentScreen(
+        boolean keepCurrentScreenEnabled,
+        AutoShotMode autoShotMode
+    ) {
+        if (autoShotMode.isReturnToImageFrame()) {
+            return false;
+        }
+
+        if (autoShotMode.isAutoShot()) {
+            return true;
+        }
+
+        return keepCurrentScreenEnabled;
+    }
+
     // 캡처가 끝나면 어느 경로로 숨겼든 ImageFrame 을 항상 되살린다.
     // keep current screen 이 켜져 있으면 되살리되 앞으로 올리지 않아
     // 방금 캡처한 화면을 그대로 보고 작업을 이어 갈 수 있다.
-    // shot and return 은 돌아오는 것이 목적이므로 체크박스를 건드리지 않고 이번 캡처만 앞으로 올린다.
-    private void restoreAfterCapture() {
-        boolean keepCurrentScreen = this.captureConfig.isKeepCurrentScreenEnabled()
-            && !this.captureConfig.isReturnToImageFrameEnabled();
+    // and return 이 붙은 단축키는 돌아오는 것이 목적이므로 체크박스를 건드리지 않고
+    // 이번 캡처만 앞으로 올린다.
+    private void restoreAfterCapture(AutoShotMode autoShotMode) {
+        boolean keepCurrentScreen = shouldKeepCurrentScreen(
+            this.captureConfig.isKeepCurrentScreenEnabled(), // keepCurrentScreenEnabled
+            autoShotMode
+        );
 
         try {
             SwingUtilities.invokeAndWait(() -> {
@@ -1682,7 +1689,7 @@ public class ScreenShotPanel extends JPanel
                 return;
             }
 
-            // shift+f3 ~ shift+f5 로 시작한 캡처는 영역을 다 고른 순간
+            // shift+f3 ~ shift+f6 으로 시작한 캡처는 영역을 다 고른 순간
             // 컨트롤 패널을 띄우지 않고 해당 버튼을 누른 것처럼 바로 찍는다.
             // 드래그를 놓을 때 cmd 를 누르고 있었으면 auto 쪽(여백 자동 잘라내기)으로 찍는다.
             AutoShotMode autoShotMode = this.captureConfig.getAutoShotMode();
@@ -1695,8 +1702,7 @@ public class ScreenShotPanel extends JPanel
                     null, // second
                     false, // isAll
                     e.isMetaDown(), // autoTrim
-                    autoShotMode.isWriteAfterCapture(), // writeAfterCapture
-                    autoShotMode.isReturnToImageFrame() // returnToImageFrame
+                    autoShotMode
                 );
 
                 return;

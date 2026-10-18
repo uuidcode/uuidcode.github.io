@@ -13,15 +13,26 @@ public enum CaptureShortcut {
     CAPTURE("shift+f2", "capture", AutoShotMode.NONE),
     SHOT("shift+f3", "shot", AutoShotMode.SHOT),
     SHOT_AND_RETURN("shift+f4", "shot and return", AutoShotMode.SHOT_AND_RETURN),
-    SHOT_AND_WRITE("shift+f5", "shot and write", AutoShotMode.SHOT_AND_WRITE);
+    SHOT_AND_WRITE("shift+f5", "shot and write", AutoShotMode.SHOT_AND_WRITE),
+    SHOT_AND_WRITE_AND_RETURN(
+        "shift+f6",
+        "shot and write and return",
+        AutoShotMode.SHOT_AND_WRITE_AND_RETURN
+    );
 
     // 컨트롤 패널을 거치는 단축키는 놓는 순간 버튼이 뜰 뿐이라 누른 버튼이 없다.
     private static final String CONTROL_PANEL_ACTION_LABEL = "버튼 선택";
 
-    // 영역을 드래그해서 쓰는 단축키만, 선언 순서(f2 → f5) 그대로 설명에 올린다.
+    // 영역을 드래그해서 쓰는 단축키만, 선언 순서(f2 → f6) 그대로 설명에 올린다.
     // shift+f1 은 영역과 상관없이 창만 앞으로 부르므로 뺀다.
     private static final List<CaptureShortcut> AREA_SHORTCUT_LIST =
-        Collections.unmodifiableList(Arrays.asList(CAPTURE, SHOT, SHOT_AND_RETURN, SHOT_AND_WRITE));
+        Collections.unmodifiableList(Arrays.asList(
+            CAPTURE,
+            SHOT,
+            SHOT_AND_RETURN,
+            SHOT_AND_WRITE,
+            SHOT_AND_WRITE_AND_RETURN
+        ));
 
     private final String keyLabel;
     private final String actionLabel;

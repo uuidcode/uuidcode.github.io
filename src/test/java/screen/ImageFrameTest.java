@@ -44,6 +44,8 @@ public class ImageFrameTest {
         assertEquals(KeyEvent.VK_F4, ImageFrame.AUTO_SHOT_RETURN_SHORTCUT_KEY_CODE);
 
         assertEquals(KeyEvent.VK_F5, ImageFrame.AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE);
+
+        assertEquals(KeyEvent.VK_F6, ImageFrame.AUTO_SHOT_WRITE_RETURN_SHORTCUT_KEY_CODE);
     }
 
     // 네이티브 헬퍼가 내려 주는 이름과 자바가 찾는 이름이 어긋나면 전역 단축키가 먹지 않는다.
@@ -58,6 +60,8 @@ public class ImageFrameTest {
         assertEquals("f4", ImageFrame.AUTO_SHOT_RETURN_HOTKEY_NAME);
 
         assertEquals("f5", ImageFrame.AUTO_SHOT_WRITE_HOTKEY_NAME);
+
+        assertEquals("f6", ImageFrame.AUTO_SHOT_WRITE_RETURN_HOTKEY_NAME);
     }
 
     @Test

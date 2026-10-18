@@ -22,16 +22,17 @@ public class CaptureShortcutTest {
         assertNull(CaptureShortcut.NONE.toReleaseActionLabel(false));
     }
 
-    // 왼쪽 설명에는 영역을 드래그해서 쓰는 shift+f2 ~ shift+f5 를 f2 부터 순서대로 모두 펼친다.
+    // 왼쪽 설명에는 영역을 드래그해서 쓰는 shift+f2 ~ shift+f6 을 f2 부터 순서대로 모두 펼친다.
     // shift+f1 은 영역과 상관없이 창만 앞으로 부르므로 빠진다.
     @Test
-    public void areaShortcutListCoversF2ToF5InOrder() {
+    public void areaShortcutListCoversF2ToF6InOrder() {
         assertEquals(
             Arrays.asList(
                 CaptureShortcut.CAPTURE,
                 CaptureShortcut.SHOT,
                 CaptureShortcut.SHOT_AND_RETURN,
-                CaptureShortcut.SHOT_AND_WRITE
+                CaptureShortcut.SHOT_AND_WRITE,
+                CaptureShortcut.SHOT_AND_WRITE_AND_RETURN
             ), // expected
             CaptureShortcut.getAreaShortcutList() // actual
         );
@@ -52,6 +53,8 @@ public class CaptureShortcutTest {
         assertEquals("shift+f4", CaptureShortcut.SHOT_AND_RETURN.getKeyLabel());
 
         assertEquals("shift+f5", CaptureShortcut.SHOT_AND_WRITE.getKeyLabel());
+
+        assertEquals("shift+f6", CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.getKeyLabel());
     }
 
     @Test
@@ -63,6 +66,8 @@ public class CaptureShortcutTest {
         assertTrue(CaptureShortcut.SHOT_AND_RETURN.isShortcut());
 
         assertTrue(CaptureShortcut.SHOT_AND_WRITE.isShortcut());
+
+        assertTrue(CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.isShortcut());
     }
 
     // 단축키가 곧 어느 버튼을 누른 셈이 되는지를 정한다.
@@ -75,6 +80,11 @@ public class CaptureShortcutTest {
         assertSame(AutoShotMode.SHOT_AND_RETURN, CaptureShortcut.SHOT_AND_RETURN.getAutoShotMode());
 
         assertSame(AutoShotMode.SHOT_AND_WRITE, CaptureShortcut.SHOT_AND_WRITE.getAutoShotMode());
+
+        assertSame(
+            AutoShotMode.SHOT_AND_WRITE_AND_RETURN, // expected
+            CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.getAutoShotMode() // actual
+        );
     }
 
     // shift+f4 는 shot 과 똑같이 찍되, 끝나고 화면을 유지하지 않고 ImageFrame 으로 돌아온다.
@@ -89,7 +99,25 @@ public class CaptureShortcutTest {
         assertFalse(CaptureShortcut.SHOT_AND_RETURN.getAutoShotMode().isWriteAfterCapture());
     }
 
-    // 돌아오기는 shift+f4 에만 붙는다. 다른 단축키는 keep screen 설정을 그대로 따른다.
+    // shift+f6 은 write 까지 하고 나서 ImageFrame 으로 돌아온다.
+    @Test
+    public void shotAndWriteAndReturnWritesAndComesBack() {
+        assertEquals(
+            "shot and write and return", // expected
+            CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.toActionLabel(false) // actual
+        );
+
+        assertEquals(
+            "auto and write and return", // expected
+            CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.toActionLabel(true) // actual
+        );
+
+        assertTrue(CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.getAutoShotMode().isWriteAfterCapture());
+
+        assertTrue(CaptureShortcut.SHOT_AND_WRITE_AND_RETURN.getAutoShotMode().isReturnToImageFrame());
+    }
+
+    // 돌아오기는 and return 이 붙은 단축키에만 있다. 나머지는 보던 화면에 머무른다.
     @Test
     public void otherShortcutsDoNotReturnToImageFrame() {
         assertFalse(CaptureShortcut.CAPTURE.getAutoShotMode().isReturnToImageFrame());
