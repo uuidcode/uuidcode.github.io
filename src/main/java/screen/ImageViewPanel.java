@@ -1299,6 +1299,26 @@ public class ImageViewPanel extends JPanel
         return buffered;
     }
 
+    // 캡처의 auto 버튼과 같은 잘라내기를 이미 찍어 둔 이미지에 적용한다.
+    // 잘라낼 여백이 없으면 같은 이미지가 돌아오므로 히스토리를 더럽히지 않고 끝낸다.
+    public void autoTrim() {
+        this.clearMeasurements();
+        BufferedImage original = this.getBufferedImage();
+        BufferedImage trimmed = ScreenShotPanel.trimUniformBorder(original);
+
+        if (trimmed == original) {
+            return;
+        }
+
+        this.baseImage = deepCopy(trimmed);
+        this.objectList.clear();
+        this.selectedObject = null;
+        this.addHistory(trimmed);
+        this.save();
+        this.init();
+        this.repaint();
+    }
+
     public void border() {
         this.clearMeasurements();
         BufferedImage bufferedImage = deepCopy(this.getBufferedImage());

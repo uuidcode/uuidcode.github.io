@@ -21,8 +21,8 @@ public class CapturePreferencesTest {
     }
 
     @Test
-    public void keepCurrentScreenDefaultIsChecked() {
-        assertTrue(CapturePreferences.KEEP_CURRENT_SCREEN_DEFAULT);
+    public void keepCurrentScreenDefaultIsUnchecked() {
+        assertFalse(CapturePreferences.KEEP_CURRENT_SCREEN_DEFAULT);
     }
 
     @Test

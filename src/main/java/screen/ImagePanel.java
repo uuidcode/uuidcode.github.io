@@ -295,8 +295,9 @@ public class ImagePanel extends JPanel {
         this.createClearButton();
         this.createOcrButton();
         this.createDeleteImageButton();
-        this.createCloseButton();
+        this.createAutoButton();
         this.createWriteButton();
+        this.createCloseButton();
 
         Util.styleButtonsAsSquare(this.buttonPanel);
 
@@ -825,6 +826,14 @@ public class ImagePanel extends JPanel {
         JButton button = new JButton("close");
         button.setName(this.name);
         button.addActionListener(e -> this.close());
+        this.buttonPanel.add(button);
+    }
+
+    // 캡처할 때 auto 를 누른 것과 같게, 열어 둔 이미지의 바깥 여백을 잘라낸다.
+    private void createAutoButton() {
+        JButton button = new JButton("auto");
+        button.setName(this.name);
+        button.addActionListener(e -> this.imageViewPanel.autoTrim());
         this.buttonPanel.add(button);
     }
 
