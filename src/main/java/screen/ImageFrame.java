@@ -48,6 +48,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.JTextComponent;
 
@@ -79,6 +80,8 @@ public class ImageFrame extends JFrame {
     private static final String GLOBAL_HOTKEY_SCRIPT_RELATIVE_PATH = "script/global_hotkey.swift";
     private ImageTabPanel tabbedPane;
     private List<ScreenShotFrame> screenShotFrameList;
+    // ImageFrame 이 화면에서 지워지기를 기다렸다가 오버레이가 깔 화면을 얼린다.
+    private static final int OVERLAY_BASE_CAPTURE_DELAY_MS = 120;
     static final int TO_FRONT_SHORTCUT_KEY_CODE = KeyEvent.VK_F1;
     static final int CAPTURE_SHORTCUT_KEY_CODE = KeyEvent.VK_F2;
     static final int AUTO_SHOT_SHORTCUT_KEY_CODE = KeyEvent.VK_F3;
@@ -686,19 +689,7 @@ public class ImageFrame extends JFrame {
         updateFixedSize();
 
         this.setVisible(false);
-
-        GraphicsDevice[] screenDeviceArray =
-            getLocalGraphicsEnvironment()
-                .getScreenDevices();
-
-        this.disposeScreenShotFrames();
-
-        this.screenShotFrameList = stream(screenDeviceArray)
-            .map(device -> new ScreenShotFrame(device, this, this.captureBaseScreenImage(device)))
-            .peek(f -> f.setVisible(true))
-            .collect(toList());
-
-        this.tabbedPane.setScreenShotFrameList(this.screenShotFrameList);
+        this.openCaptureOverlayAfterHidden();
     }
 
     private void captureFullScreen() {
@@ -766,11 +757,25 @@ public class ImageFrame extends JFrame {
         this.captureConfig.setAutoShotMode(AutoShotMode.NONE);
         this.captureConfig.setCaptureShortcut(CaptureShortcut.NONE);
 
+        updateFixedSize();
+
+        this.openCaptureOverlayAfterHidden();
+    }
+
+    // setVisible(false) 는 바로 돌아오지만 창이 화면에서 실제로 지워지는 것은 그 뒤다.
+    // 오버레이가 캡처 시작 순간의 화면을 얼려서 깔기 때문에, 곧바로 찍으면
+    // 사라지는 중인 ImageFrame 이 그대로 찍혀 오버레이 뒤에 비쳐 보인다.
+    // Swing Timer 로 한 박자 쉬어 EDT 가 창을 지울 틈을 준 뒤에 찍는다.
+    private void openCaptureOverlayAfterHidden() {
+        Timer timer = new Timer(OVERLAY_BASE_CAPTURE_DELAY_MS, e -> this.openCaptureOverlay());
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void openCaptureOverlay() {
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()
                 .getScreenDevices();
-
-        updateFixedSize();
 
         this.disposeScreenShotFrames();
 
