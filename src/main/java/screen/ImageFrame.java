@@ -521,11 +521,16 @@ public class ImageFrame extends JFrame {
             && this.screenShotFrameList.stream().anyMatch(ScreenShotFrame::isVisible);
     }
 
-    private BufferedImage captureBaseScreenImage(GraphicsDevice device) {
+    // 캡처 오버레이가 깔아 둘 "얼린 화면"이다.
+    // Retina 에서 createScreenCapture 는 논리 크기로만 돌려줘 2 배로 늘리면 흐려지므로,
+    // 화면에 깔 때는 해상도 변형을 함께 들고 있는 multi resolution 쪽을 쓴다.
+    // (픽셀을 들여다보는 쪽은 ScreenShotPanel 이 여기서 논리 크기 변형을 꺼내 쓴다.)
+    private Image captureBaseScreenImage(GraphicsDevice device) {
         try {
             Rectangle displayBounds = device.getDefaultConfiguration().getBounds();
             Robot robot = new Robot(device);
-            return robot.createScreenCapture(displayBounds);
+
+            return (Image) robot.createMultiResolutionScreenCapture(displayBounds);
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }

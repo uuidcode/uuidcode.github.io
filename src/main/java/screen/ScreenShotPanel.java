@@ -1,6 +1,5 @@
 package screen;
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -10,6 +9,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
+import java.awt.Image;
 import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.MultiResolutionImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -105,6 +106,11 @@ public class ScreenShotPanel extends JPanel
     private static final Color GUIDE_TEXT_BACKGROUND = new Color(0, 0, 0, 140);
     private static final Color GUIDE_TEXT_COLOR = new Color(255, 255, 255, 235);
     private static final int GUIDE_TEXT_PADDING = 4;
+    // 좌표 안내의 baseline 을 영역 위/아래에서 얼마나 띄울지.
+    private static final int GUIDE_LABEL_TOP_GAP = 8;
+    private static final int GUIDE_LABEL_BOTTOM_GAP = 18;
+    // 다시 그릴 자리를 잴 때 반올림이나 안티에일리어싱으로 한두 픽셀 삐져나오는 몫.
+    private static final int OVERLAY_DAMAGE_PADDING = 8;
     // 드래그를 놓으면 무슨 일이 일어나는지 적어 두는 영역 한가운데 안내.
     private static final float RELEASE_ACTION_FONT_SIZE = 15f;
     private static final int RELEASE_ACTION_PADDING = 8;
@@ -157,6 +163,9 @@ public class ScreenShotPanel extends JPanel
     private final ImageTabPanel tabbedPane;
     private final ScreenShotFrame screenShotFrame;
     private final ImageFrame imageFrame;
+    // 화면에 깔 얼린 화면. Retina 해상도 변형을 들고 있어 2 배 화면에서도 선명하다.
+    private final Image baseScreenDisplayImage;
+    // 색을 집거나 창 모서리를 재는 등 픽셀을 들여다보는 쪽이 쓰는 논리 크기 변형.
     private final BufferedImage baseScreenImage;
     private JPanel controlPanel = null;
     private JCheckBox keepCurrentScreenCheckBox;
@@ -182,13 +191,14 @@ public class ScreenShotPanel extends JPanel
         GraphicsDevice graphicsDevice,
         ImageFrame imageFrame,
         ScreenShotFrame screenShotFrame,
-        BufferedImage baseScreenImage
+        Image baseScreenImage
     ) {
         this.graphicsDevice = graphicsDevice;
         this.tabbedPane = imageFrame.getTabbedPane();
         this.imageFrame = imageFrame;
         this.screenShotFrame = screenShotFrame;
-        this.baseScreenImage = baseScreenImage;
+        this.baseScreenDisplayImage = baseScreenImage;
+        this.baseScreenImage = toLogicalScreenImage(baseScreenImage);
         this.captureConfig = imageFrame.getCaptureConfig();
         this.setLayout(null);
         this.windowCaptureHoverTimer = new Timer(250, e -> this.resolveWindowCapturePreview());
@@ -215,6 +225,43 @@ public class ScreenShotPanel extends JPanel
 
             return false;
         });
+    }
+
+    // 픽셀을 들여다보는 쪽은 Retina 배율을 모르는 채 패널 좌표를 그대로 쓰므로
+    // 해상도 변형 중 논리 크기(배율 1) 쪽을 꺼내 준다.
+    private static BufferedImage toLogicalScreenImage(Image image) {
+        if (image == null) {
+            return null;
+        }
+
+        Image variant = image;
+
+        if (image instanceof MultiResolutionImage) {
+            List<Image> variantList = ((MultiResolutionImage) image).getResolutionVariants();
+
+            if (!variantList.isEmpty()) {
+                variant = variantList.get(0);
+            }
+        }
+
+        if (variant instanceof BufferedImage) {
+            return (BufferedImage) variant;
+        }
+
+        BufferedImage copied = new BufferedImage(
+            variant.getWidth(null),
+            variant.getHeight(null),
+            BufferedImage.TYPE_INT_RGB
+        );
+        Graphics2D g2 = copied.createGraphics();
+
+        try {
+            g2.drawImage(variant, 0, 0, null);
+        } finally {
+            g2.dispose();
+        }
+
+        return copied;
     }
 
     // 캡처 버튼 아래에 "캡처 후 현재 화면 유지" 체크박스를 한 줄로 붙인다.
@@ -1655,10 +1702,18 @@ public class ScreenShotPanel extends JPanel
 
         this.autoTrimKeyDown = e.isMetaDown();
 
+        // 새 드래그를 시작하면 직전 선택은 사라진다. 그 자리를 지우고 가야
+        // 드래그 중에 달라지는 자리만 다시 그려도 잔상이 남지 않는다.
+        Rectangle previousDamage = this.getOverlayDamageBounds();
+
         stratPoint = e.getPoint();
         endPoint = null;
 
         this.hideControlPanel();
+
+        if (previousDamage != null) {
+            this.repaint(previousDamage.x, previousDamage.y, previousDamage.width, previousDamage.height);
+        }
     }
 
     @Override
@@ -1775,14 +1830,16 @@ public class ScreenShotPanel extends JPanel
 
         this.autoTrimKeyDown = e.isMetaDown();
 
+        Rectangle previousDamage = this.getOverlayDamageBounds();
+
         if (this.activeSelectionHandle != SelectionHandle.NONE) {
             this.updateSelectionByHandle(e.getPoint());
-            e.getComponent().repaint();
+            this.repaintOverlayDamage(previousDamage);
             return;
         }
 
         endPoint = e.getPoint();
-        e.getComponent().repaint();
+        this.repaintOverlayDamage(previousDamage);
     }
 
     @Override
@@ -1805,8 +1862,9 @@ public class ScreenShotPanel extends JPanel
         Integer fixedHeight = captureConfig.getFixedHeight();
 
         if (fixedWidth != null && fixedHeight != null) {
+            Rectangle previousDamage = this.getOverlayDamageBounds();
             mousePosition = e.getPoint();
-            e.getComponent().repaint();
+            this.repaintOverlayDamage(previousDamage);
             return;
         }
 
@@ -1857,10 +1915,14 @@ public class ScreenShotPanel extends JPanel
             return;
         }
 
+        boolean shouldRepaint = this.captureConfig.getCaptureShortcut().isShortcut() && this.hasSelection();
+        // 안내 글이 바뀌면 설명 상자 폭도 달라지므로 바꾸기 전 자리도 같이 지워야 한다.
+        Rectangle previousDamage = shouldRepaint ? this.getOverlayDamageBounds() : null;
+
         this.autoTrimKeyDown = autoTrimKeyDown;
 
-        if (this.captureConfig.getCaptureShortcut().isShortcut() && this.hasSelection()) {
-            this.repaint();
+        if (shouldRepaint) {
+            this.repaintOverlayDamage(previousDamage);
         }
     }
 
@@ -2069,6 +2131,95 @@ public class ScreenShotPanel extends JPanel
         return Util.getRectangle(this.stratPoint, this.endPoint);
     }
 
+    // 드래그는 1 초에 수십 번 다시 그린다. 그때마다 화면 전체를 다시 칠하면
+    // 투명 창 전체가 다시 합성되면서 번쩍이므로, 실제로 달라지는 자리만 다시 그린다.
+    private void repaintOverlayDamage(Rectangle previousDamage) {
+        Rectangle damage = this.getOverlayDamageBounds();
+
+        if (damage == null) {
+            damage = previousDamage;
+        } else if (previousDamage != null) {
+            damage = damage.union(previousDamage);
+        }
+
+        // 다시 그릴 자리를 모르면 안전하게 전체를 다시 그린다.
+        if (damage == null || damage.isEmpty()) {
+            this.repaint();
+            return;
+        }
+
+        this.repaint(damage.x, damage.y, damage.width, damage.height);
+    }
+
+    // drawOverlayContents 가 바탕 위에 얹는 것(영역, 핸들, 좌표 안내, 단축키 설명)을 모두 감싼다.
+    private Rectangle getOverlayDamageBounds() {
+        Rectangle rectangle = this.getOverlayHighlightRectangle();
+
+        if (rectangle == null) {
+            return null;
+        }
+
+        Rectangle damage = new Rectangle(rectangle);
+
+        // 핸들은 경계 바깥으로 절반 나온다.
+        damage.grow(SELECTION_HANDLE_SIZE, SELECTION_HANDLE_SIZE);
+        damage.add(this.getSelectionGuideBounds(rectangle));
+        damage.add(this.getShortcutHelpBounds(rectangle, this.getFontMetrics(this.getShortcutHelpFont())));
+        damage.grow(OVERLAY_DAMAGE_PADDING, OVERLAY_DAMAGE_PADDING);
+
+        return damage.intersection(new Rectangle(0, 0, this.getWidth(), this.getHeight()));
+    }
+
+    // drawOverlayContents 와 같은 순서로 골라야 다시 그릴 자리가 어긋나지 않는다.
+    private Rectangle getOverlayHighlightRectangle() {
+        Integer fixedWidth = captureConfig.getFixedWidth();
+        Integer fixedHeight = captureConfig.getFixedHeight();
+
+        if (fixedWidth != null && fixedHeight != null && mousePosition != null) {
+            return new Rectangle(mousePosition.x, mousePosition.y, fixedWidth, fixedHeight);
+        }
+
+        return this.getSelectionRectangle();
+    }
+
+    private Rectangle getSelectionGuideBounds(Rectangle rectangle) {
+        FontMetrics metrics = this.getFontMetrics(this.getFont());
+        int labelWidth = this.getGuideLabelMaxWidth(rectangle, metrics);
+        int labelHeight = metrics.getHeight() + GUIDE_TEXT_PADDING * 2;
+        int top = rectangle.y - GUIDE_LABEL_TOP_GAP - metrics.getAscent();
+        int bottom = rectangle.y + rectangle.height + GUIDE_LABEL_BOTTOM_GAP - metrics.getAscent() + labelHeight;
+
+        // 좌표 안내는 영역 좌우 끝에 붙되 글자 상자가 영역 바깥으로 더 나갈 수 있다.
+        return new Rectangle(
+            rectangle.x - labelWidth,
+            top,
+            rectangle.width + labelWidth * 2,
+            bottom - top
+        );
+    }
+
+    private int getGuideLabelMaxWidth(Rectangle rectangle, FontMetrics metrics) {
+        Rectangle displayBounds = graphicsDevice.getDefaultConfiguration().getBounds();
+
+        int left = rectangle.x + displayBounds.x;
+        int top = rectangle.y + displayBounds.y;
+        int right = rectangle.x + rectangle.width + displayBounds.x;
+        int bottom = rectangle.y + rectangle.height + displayBounds.y;
+
+        int textWidth = metrics.stringWidth("(" + left + ", " + top + ")");
+        textWidth = Math.max(textWidth, metrics.stringWidth("(" + right + ", " + top + ")"));
+        textWidth = Math.max(textWidth, metrics.stringWidth("(" + left + ", " + bottom + ")"));
+        textWidth = Math.max(textWidth, metrics.stringWidth("(" + right + ", " + bottom + ")"));
+        textWidth = Math.max(textWidth,
+            metrics.stringWidth("w: " + rectangle.width + "  h: " + rectangle.height));
+
+        return textWidth + GUIDE_TEXT_PADDING * 2;
+    }
+
+    private Font getShortcutHelpFont() {
+        return this.getFont().deriveFont(Font.BOLD, SHORTCUT_HELP_FONT_SIZE);
+    }
+
     private Rectangle getSelectionRectangle() {
         if (this.captureConfig.isWindowCaptureMode()) {
             return this.windowCapturePreviewRect == null ? null : new Rectangle(this.windowCapturePreviewRect);
@@ -2082,16 +2233,17 @@ public class ScreenShotPanel extends JPanel
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
         try {
-            // per-pixel 투명 창은 이전 프레임 픽셀이 남아 누적(겹침)되므로 매 프레임 완전 투명으로 지운다
-            g2.setComposite(AlphaComposite.Clear);
-            g2.fillRect(0, 0, this.getWidth(), this.getHeight());
-            g2.setComposite(AlphaComposite.SrcOver);
-
-            // 투명 오버레이는 실제 화면이 그대로 비치므로 정지 스크린샷(baseScreenImage)을 그리지 않는다.
-            // 과거 캡처가 baked-in 되어 재캡처마다 이미지가 겹겹이 쌓이는 현상을 방지한다.
+            // 창이 불투명하므로 매 프레임 얼린 화면으로 바탕을 덮는다.
+            // 뒤 화면이 비치는 것이 아니라 우리가 깐 그림이라, 다시 그려도
+            // macOS 가 뒤 화면과 다시 합성하지 않아 번쩍이지 않는다.
+            // 덮어쓰는 그림이 불투명하니 이전 프레임이 남아 누적될 일도 없다.
+            if (this.baseScreenDisplayImage != null) {
+                g2.drawImage(this.baseScreenDisplayImage, 0, 0, this.getWidth(), this.getHeight(), null);
+            }
 
             g2.setColor(BACKGROUND_COLOR);
             g2.fillRect(0, 0, this.getWidth(), this.getHeight());
+
             this.drawOverlayContents(g2, true);
         } finally {
             g2.dispose();
@@ -2232,18 +2384,21 @@ public class ScreenShotPanel extends JPanel
         int right = rectangle.x + rectangle.width + displayBounds.x;
         int bottom = rectangle.y + rectangle.height + displayBounds.y;
 
+        int topBaselineY = rectangle.y - GUIDE_LABEL_TOP_GAP;
+        int bottomBaselineY = rectangle.y + rectangle.height + GUIDE_LABEL_BOTTOM_GAP;
+
         this.drawGuideLabel(g2, "(" + left + ", " + top + ")",
-            rectangle.x + 6, rectangle.y - 8, false);
+            rectangle.x + 6, topBaselineY, false);
         this.drawGuideLabel(g2, "(" + right + ", " + top + ")",
-            rectangle.x + rectangle.width - 6, rectangle.y - 8, true);
+            rectangle.x + rectangle.width - 6, topBaselineY, true);
         this.drawGuideLabel(g2, "(" + left + ", " + bottom + ")",
-            rectangle.x + 6, rectangle.y + rectangle.height + 18, false);
+            rectangle.x + 6, bottomBaselineY, false);
         this.drawGuideLabel(g2, "(" + right + ", " + bottom + ")",
-            rectangle.x + rectangle.width - 6, rectangle.y + rectangle.height + 18, true);
+            rectangle.x + rectangle.width - 6, bottomBaselineY, true);
 
         String sizeText = "w: " + rectangle.width + "  h: " + rectangle.height;
         int topCenterX = rectangle.x + rectangle.width / 2;
-        this.drawTopCenteredGuideLabel(g2, sizeText, topCenterX, rectangle.y - 8);
+        this.drawTopCenteredGuideLabel(g2, sizeText, topCenterX, topBaselineY);
     }
 
     // 영역을 잡는 동안 왼쪽에는 shift+f2 ~ shift+f4 를 모두 펼쳐 두고,
@@ -2307,25 +2462,12 @@ public class ScreenShotPanel extends JPanel
             g2.setFont(activeFont);
             FontMetrics metrics = g2.getFontMetrics();
             int lineHeight = metrics.getHeight();
-            int keyWidth = 0;
-            int actionWidth = 0;
-
-            for (CaptureShortcut areaShortcut : areaShortcutList) {
-                keyWidth = Math.max(keyWidth, metrics.stringWidth(areaShortcut.getKeyLabel()));
-                actionWidth = Math.max(actionWidth,
-                    metrics.stringWidth(areaShortcut.toActionLabel(this.autoTrimKeyDown)));
-            }
-
-            for (String[] modifierRow : SHORTCUT_HELP_MODIFIER_ROW_ARRAY) {
-                keyWidth = Math.max(keyWidth, metrics.stringWidth(modifierRow[0]));
-                actionWidth = Math.max(actionWidth, metrics.stringWidth(modifierRow[1]));
-            }
-
-            int rowCount = areaShortcutList.size() + SHORTCUT_HELP_MODIFIER_ROW_ARRAY.length;
-            int boxWidth = keyWidth + SHORTCUT_HELP_COLUMN_GAP + actionWidth + SHORTCUT_HELP_PADDING * 2;
-            int boxHeight = lineHeight * rowCount + SHORTCUT_HELP_SECTION_GAP + SHORTCUT_HELP_PADDING * 2;
-            int x = toShortcutHelpX(rectangle, boxWidth, SHORTCUT_HELP_GAP, this.getWidth());
-            int y = toShortcutHelpY(rectangle, boxHeight, this.getHeight());
+            int keyWidth = this.getShortcutHelpKeyWidth(metrics);
+            Rectangle box = this.getShortcutHelpBounds(rectangle, metrics);
+            int boxWidth = box.width;
+            int boxHeight = box.height;
+            int x = box.x;
+            int y = box.y;
             int keyX = x + SHORTCUT_HELP_PADDING;
             int actionX = keyX + keyWidth + SHORTCUT_HELP_COLUMN_GAP;
 
@@ -2373,6 +2515,52 @@ public class ScreenShotPanel extends JPanel
         } finally {
             g2.setFont(originalFont);
         }
+    }
+
+    private int getShortcutHelpKeyWidth(FontMetrics metrics) {
+        int keyWidth = 0;
+
+        for (CaptureShortcut areaShortcut : CaptureShortcut.getAreaShortcutList()) {
+            keyWidth = Math.max(keyWidth, metrics.stringWidth(areaShortcut.getKeyLabel()));
+        }
+
+        for (String[] modifierRow : SHORTCUT_HELP_MODIFIER_ROW_ARRAY) {
+            keyWidth = Math.max(keyWidth, metrics.stringWidth(modifierRow[0]));
+        }
+
+        return keyWidth;
+    }
+
+    private int getShortcutHelpActionWidth(FontMetrics metrics) {
+        int actionWidth = 0;
+
+        for (CaptureShortcut areaShortcut : CaptureShortcut.getAreaShortcutList()) {
+            actionWidth = Math.max(actionWidth,
+                metrics.stringWidth(areaShortcut.toActionLabel(this.autoTrimKeyDown)));
+        }
+
+        for (String[] modifierRow : SHORTCUT_HELP_MODIFIER_ROW_ARRAY) {
+            actionWidth = Math.max(actionWidth, metrics.stringWidth(modifierRow[1]));
+        }
+
+        return actionWidth;
+    }
+
+    // 그릴 때와 다시 그릴 자리를 잡을 때가 같은 값을 보도록 상자 자리를 한 곳에서 계산한다.
+    private Rectangle getShortcutHelpBounds(Rectangle rectangle, FontMetrics metrics) {
+        int rowCount = CaptureShortcut.getAreaShortcutList().size() + SHORTCUT_HELP_MODIFIER_ROW_ARRAY.length;
+        int boxWidth = this.getShortcutHelpKeyWidth(metrics)
+            + SHORTCUT_HELP_COLUMN_GAP
+            + this.getShortcutHelpActionWidth(metrics)
+            + SHORTCUT_HELP_PADDING * 2;
+        int boxHeight = metrics.getHeight() * rowCount + SHORTCUT_HELP_SECTION_GAP + SHORTCUT_HELP_PADDING * 2;
+
+        return new Rectangle(
+            toShortcutHelpX(rectangle, boxWidth, SHORTCUT_HELP_GAP, this.getWidth()),
+            toShortcutHelpY(rectangle, boxHeight, this.getHeight()),
+            boxWidth,
+            boxHeight
+        );
     }
 
     // 설명 상자는 선택 영역 왼쪽에 붙인다. 왼쪽이 모자라면 오른쪽으로 넘기고,
