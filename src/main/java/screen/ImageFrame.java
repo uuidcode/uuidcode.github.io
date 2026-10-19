@@ -186,6 +186,7 @@ public class ImageFrame extends JFrame {
         // 양쪽 끝의 glue가 남는 가로 공간을 반씩 나눠 가져 버튼들이 가운데 정렬된다.
         panel.add(Box.createHorizontalGlue());
         this.createCaptureButton(panel);
+        this.createCaptureSelfButton(panel);
         this.createCaptureRepeatButton(panel);
         this.createCaptureWindowButton(panel);
         this.createCaptureFullScreenButton(panel);
@@ -331,6 +332,13 @@ public class ImageFrame extends JFrame {
         panel.add(button);
     }
 
+    private void createCaptureSelfButton(JPanel panel) {
+        JButton button = new JButton("self");
+        button.setToolTipText("자기 UI 를 보면서 영역 캡처");
+        button.addActionListener(e -> this.captureSelf());
+        panel.add(button);
+    }
+
     private void createCaptureRepeatButton(JPanel panel) {
         JButton button = new JButton(toCaptureButtonLabel("capture repeat"));
         button.addActionListener(e -> this.captureRepeat());
@@ -374,6 +382,32 @@ public class ImageFrame extends JFrame {
 
     private void capture() {
         this.startAreaCapture(CaptureShortcut.NONE);
+    }
+
+    // 자기 UI 를 찍으려면 숨기면 안 된다. 오버레이는 항상 위에 뜨므로
+    // ImageFrame 을 띄워 둔 채로 그 위에서 영역을 고를 수 있다.
+    private void captureSelf() {
+        this.startAreaCapture(
+            CaptureShortcut.NONE,
+            true // keepSelfVisible
+        );
+    }
+
+    private void showOrHideForAreaCapture(boolean keepSelfVisible) {
+        if (!keepSelfVisible) {
+            this.setVisible(false);
+
+            return;
+        }
+
+        this.setVisible(true);
+        this.toFront();
+        this.repaint();
+
+        try {
+            this.bringCurrentAppToFront();
+        } catch (Throwable ignored) {
+        }
     }
 
     // 단축키 하나가 실제로 하는 일. 앱 안 디스패처, 전역 핫키, 메뉴바 아이콘이 모두 이걸 쓴다.
@@ -694,6 +728,16 @@ public class ImageFrame extends JFrame {
     // 같은 앱의 남은 창으로 포커스가 넘어가 ImageFrame 이 최전면으로 올라오기 때문이다.
     // 그래서 영역 캡처 중에는 숨겨 둔다. 자신을 찍으려면 delay shot 을 쓴다.
     private void startAreaCapture(CaptureShortcut captureShortcut) {
+        this.startAreaCapture(
+            captureShortcut,
+            false // keepSelfVisible
+        );
+    }
+
+    private void startAreaCapture(
+        CaptureShortcut captureShortcut,
+        boolean keepSelfVisible
+    ) {
         this.captureConfig.setAutoTrimEnabled(false);
         this.captureConfig.setWindowCaptureMode(false);
         this.captureConfig.setSeeMode(false);
@@ -701,7 +745,7 @@ public class ImageFrame extends JFrame {
         this.captureConfig.setCaptureShortcut(captureShortcut);
         updateFixedSize();
 
-        this.setVisible(false);
+        this.showOrHideForAreaCapture(keepSelfVisible);
 
         GraphicsDevice[] screenDeviceArray =
             getLocalGraphicsEnvironment()

@@ -48,7 +48,6 @@ public class CaptureControlUnitTest {
                 "shot",
                 "see",
                 "auto",
-                "self",
                 "record",
                 "delay shot",
                 "delay shot all",
@@ -58,18 +57,24 @@ public class CaptureControlUnitTest {
         );
     }
 
-    // 버튼이 3 의 배수여야 3 * 3 격자가 빈칸 없이 채워진다.
+    // self 가 ImageFrame 툴바로 빠져 8 개가 됐다. 3 열이라 마지막 줄 한 칸이 빈다.
     @Test
-    public void areaControlButtonsFillThreeByThreeGrid() {
+    public void areaControlButtonsFillThreeColumns() {
         assertEquals(
             3, // expected
             ScreenShotPanel.AREA_CONTROL_COLUMN_COUNT // actual
         );
 
         assertEquals(
-            9, // expected
+            8, // expected
             AreaControlButton.values().length // actual
         );
+    }
+
+    // self 는 오버레이가 아니라 ImageFrame 툴바에 있다.
+    @Test
+    public void areaControlPanelHasNoSelfButton() {
+        assertFalse(labels().contains("self"));
     }
 
     @Test

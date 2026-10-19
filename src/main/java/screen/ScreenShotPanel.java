@@ -73,7 +73,6 @@ public class ScreenShotPanel extends JPanel
         SHOT("shot"),
         SEE("see"),
         AUTO("auto"),
-        SELF("self"),
         RECORD("record"),
         DELAY_SHOT("delay shot"),
         DELAY_SHOT_ALL("delay shot all"),
@@ -333,7 +332,8 @@ public class ScreenShotPanel extends JPanel
             return panel;
         }
 
-        // 버튼 9 개를 3 * 3 으로 놓는다.
+        // 버튼을 3 열로 놓는다. self 가 ImageFrame 툴바로 빠져 지금은 8 개라
+        // 마지막 줄 한 칸이 빈다.
         JPanel panel = new JPanel(new GridLayout(0, AREA_CONTROL_COLUMN_COUNT));
 
         this.configureControlPanel(panel);
@@ -374,9 +374,6 @@ public class ScreenShotPanel extends JPanel
                 );
 
                 break;
-            case SELF:
-                this.toggleSelf();
-                break;
             case RECORD:
                 this.record();
                 break;
@@ -392,32 +389,8 @@ public class ScreenShotPanel extends JPanel
         }
     }
 
-    // capture 는 자기 UI 를 숨기고 시작해서 자기 화면을 보며 영역을 잡을 수 없다.
-    // 숨긴 창은 alt(cmd)+tab 목록에도 안 뜨므로 그쪽으로는 되돌릴 방법이 없다.
-    // self 를 누르면 항상 위에 떠 있는 반투명 오버레이 뒤로 ImageFrame 을 띄워
-    // 자기 UI 를 보면서 영역을 맞출 수 있고, 다시 누르면 숨겨 뒤 화면으로 돌아간다.
-    // 켜 둔 채로 shot 을 누르면 보이는 그대로 찍힌다.
-    private void toggleSelf() {
-        boolean show = !this.imageFrame.isVisible();
-
-        this.imageFrame.setVisible(show);
-
-        if (show) {
-            try {
-                this.imageFrame.bringCurrentAppToFront();
-            } catch (Throwable ignored) {
-            }
-        }
-
-        // ImageFrame 을 여닫으면 포커스가 옮겨 가므로 오버레이를 다시 앞으로 올려
-        // 영역 조절과 컨트롤 패널 클릭이 계속 되게 한다.
-        this.imageFrame.getScreenShotFrameList().forEach(f -> f.toFront());
-
-        this.repaint();
-    }
-
     // 오버레이만 걷고 카운트다운에 들어간다. ImageFrame 은 capture 가 숨겨 둔 상태
-    // 또는 self 로 불러낸 상태 그대로 둔다.
+    // 또는 self 로 띄워 둔 상태 그대로 둔다.
     private void delayShot(boolean isAll) {
         this.imageFrame.getScreenShotFrameList().forEach(f -> f.setVisible(false));
 
