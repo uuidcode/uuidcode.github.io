@@ -144,15 +144,13 @@ public class ImageFrame extends JFrame {
         // 전역 단축키 헬퍼가 떠 있으면 그쪽에서 먼저 가로채고,
         // 헬퍼를 못 띄운 환경에서는 아래 디스패처가 앱 안에서만 같은 일을 한다.
         Map<Integer, Runnable> functionKeyMap = new HashMap<>();
-        functionKeyMap.put(TO_FRONT_SHORTCUT_KEY_CODE, this::bringToFront);
-        functionKeyMap.put(CAPTURE_SHORTCUT_KEY_CODE, this::bringToFrontAndCapture);
-        functionKeyMap.put(AUTO_SHOT_SHORTCUT_KEY_CODE, this::captureShotFromShortcut);
-        functionKeyMap.put(AUTO_SHOT_RETURN_SHORTCUT_KEY_CODE, this::captureShotAndReturnFromShortcut);
-        functionKeyMap.put(AUTO_SHOT_WRITE_SHORTCUT_KEY_CODE, this::captureShotAndWriteFromShortcut);
-        functionKeyMap.put(
-            AUTO_SHOT_WRITE_RETURN_SHORTCUT_KEY_CODE,
-            this::captureShotAndWriteAndReturnFromShortcut
-        );
+
+        for (FunctionShortcut functionShortcut : FunctionShortcut.values()) {
+            functionKeyMap.put(
+                functionShortcut.getKeyCode(),
+                this.actionOf(functionShortcut)
+            );
+        }
 
         getCurrentKeyboardFocusManager().addKeyEventDispatcher(ke -> {
             if (getCurrentKeyboardFocusManager().getFocusOwner() instanceof JTextComponent) {
@@ -175,6 +173,9 @@ public class ImageFrame extends JFrame {
         });
 
         this.startGlobalHotkeyListener();
+
+        // 메뉴바 아이콘에서도 같은 단축키를 고를 수 있게 한다.
+        ShortcutTrayIcon.install(this);
 
 //        ThumbnailDialog.deleteOldFile();
     }
@@ -373,6 +374,26 @@ public class ImageFrame extends JFrame {
 
     private void capture() {
         this.startAreaCapture(CaptureShortcut.NONE);
+    }
+
+    // 단축키 하나가 실제로 하는 일. 앱 안 디스패처, 전역 핫키, 메뉴바 아이콘이 모두 이걸 쓴다.
+    Runnable actionOf(FunctionShortcut functionShortcut) {
+        switch (functionShortcut) {
+            case TO_FRONT:
+                return this::bringToFront;
+            case CAPTURE:
+                return this::bringToFrontAndCapture;
+            case SHOT:
+                return this::captureShotFromShortcut;
+            case SHOT_AND_RETURN:
+                return this::captureShotAndReturnFromShortcut;
+            case SHOT_AND_WRITE:
+                return this::captureShotAndWriteFromShortcut;
+            case SHOT_AND_WRITE_AND_RETURN:
+                return this::captureShotAndWriteAndReturnFromShortcut;
+            default:
+                throw new IllegalArgumentException(functionShortcut.name());
+        }
     }
 
     // shift 만 누른 기능키 조합만 받는다. 다른 조합키가 섞이면 다른 단축키다.
@@ -920,15 +941,13 @@ public class ImageFrame extends JFrame {
         command.add(String.valueOf(this.getCurrentProcessId()));
 
         Map<String, Runnable> hotkeyMap = new HashMap<>();
-        hotkeyMap.put(TO_FRONT_HOTKEY_NAME, this::bringToFront);
-        hotkeyMap.put(CAPTURE_HOTKEY_NAME, this::bringToFrontAndCapture);
-        hotkeyMap.put(AUTO_SHOT_HOTKEY_NAME, this::captureShotFromShortcut);
-        hotkeyMap.put(AUTO_SHOT_RETURN_HOTKEY_NAME, this::captureShotAndReturnFromShortcut);
-        hotkeyMap.put(AUTO_SHOT_WRITE_HOTKEY_NAME, this::captureShotAndWriteFromShortcut);
-        hotkeyMap.put(
-            AUTO_SHOT_WRITE_RETURN_HOTKEY_NAME,
-            this::captureShotAndWriteAndReturnFromShortcut
-        );
+
+        for (FunctionShortcut functionShortcut : FunctionShortcut.values()) {
+            hotkeyMap.put(
+                functionShortcut.getHotkeyName(),
+                this.actionOf(functionShortcut)
+            );
+        }
 
         Thread thread = new Thread(
             () -> this.readGlobalHotkey(command, hotkeyMap), // target
