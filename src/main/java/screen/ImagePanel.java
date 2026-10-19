@@ -63,6 +63,8 @@ public class ImagePanel extends JPanel {
     private static final Color TOOL_TOGGLE_ACTIVE_BACKGROUND = new Color(52, 120, 246);
     private static final String REPOSITORY_RELATIVE_PATH = "IdeaProjects/uuidcode.github.io";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+    // write 결과는 항상 이 브랜치에 올린다.
+    private static final String WRITE_BRANCH = "master";
     static final ShapeType DEFAULT_SHAPE_TYPE = ShapeType.FILL_ARROW;
     private static final ShapeType[] TOOL_SHAPE_TYPES = {
         ShapeType.CROP,
@@ -887,6 +889,30 @@ public class ImagePanel extends JPanel {
         new SwingWorker<String, Void>() {
             @Override
             protected String doInBackground() throws Exception {
+                // write 는 master 에만 올리고, 끝나면 원래 있던 자리로 돌아간다.
+                String previousRef = checkoutWriteBranch(repositoryDirectory);
+
+                try {
+                    String imageName = this.writeOnWriteBranch(repositoryDirectory);
+
+                    // 성공했으면 되돌리기 실패도 숨기지 않고 그대로 알린다.
+                    restorePreviousRef(
+                        repositoryDirectory,
+                        previousRef
+                    );
+
+                    previousRef = null;
+
+                    return imageName;
+                } finally {
+                    quietlyRestorePreviousRef(
+                        repositoryDirectory,
+                        previousRef
+                    );
+                }
+            }
+
+            private String writeOnWriteBranch(File repositoryDirectory) throws Exception {
                 gitPull(repositoryDirectory);
 
                 LocalDate today = LocalDate.now();
@@ -1025,7 +1051,20 @@ public class ImagePanel extends JPanel {
         git(repositoryDirectory, "pull");
     }
 
-    private static void git(File repositoryDirectory, String... arguments) throws Exception {
+    private static void git(
+        File repositoryDirectory,
+        String... arguments
+    ) throws Exception {
+        gitOutput(
+            repositoryDirectory,
+            arguments
+        );
+    }
+
+    private static String gitOutput(
+        File repositoryDirectory,
+        String... arguments
+    ) throws Exception {
         List<String> command = new ArrayList<>();
         command.add("git");
         command.addAll(Arrays.asList(arguments));
@@ -1044,6 +1083,74 @@ public class ImagePanel extends JPanel {
             throw new IllegalStateException(
                 "git " + String.join(" ", arguments) + " failed.\n" + output.trim()
             );
+        }
+
+        return output.trim();
+    }
+
+    // 지금 어디에 있는지. detached HEAD 면 브랜치 이름이 없으므로 커밋 해시로 잡아 둔다.
+    static String gitCurrentRef(File repositoryDirectory) throws Exception {
+        String branch = gitOutput(
+            repositoryDirectory,
+            "rev-parse", // argument
+            "--abbrev-ref", // argument
+            "HEAD" // argument
+        );
+
+        if (!"HEAD".equals(branch)) {
+            return branch;
+        }
+
+        return gitOutput(
+            repositoryDirectory,
+            "rev-parse", // argument
+            "HEAD" // argument
+        );
+    }
+
+    // write 전에 master 로 옮긴다. 이미 master 면 되돌릴 것이 없어 null 을 반환한다.
+    private static String checkoutWriteBranch(File repositoryDirectory) throws Exception {
+        String currentRef = gitCurrentRef(repositoryDirectory);
+
+        if (WRITE_BRANCH.equals(currentRef)) {
+            return null;
+        }
+
+        git(
+            repositoryDirectory,
+            "checkout", // argument
+            WRITE_BRANCH
+        );
+
+        return currentRef;
+    }
+
+    private static void restorePreviousRef(
+        File repositoryDirectory,
+        String previousRef
+    ) throws Exception {
+        if (previousRef == null) {
+            return;
+        }
+
+        git(
+            repositoryDirectory,
+            "checkout", // argument
+            previousRef
+        );
+    }
+
+    // write 가 실패한 경로에서 쓴다. 되돌리기 오류가 원래 실패 원인을 덮지 않도록 삼킨다.
+    private static void quietlyRestorePreviousRef(
+        File repositoryDirectory,
+        String previousRef
+    ) {
+        try {
+            restorePreviousRef(
+                repositoryDirectory,
+                previousRef
+            );
+        } catch (Throwable ignored) {
         }
     }
 
