@@ -24,17 +24,18 @@ public class SelfCaptureUnitTest {
         return result;
     }
 
+    // self 는 오버레이에서 ImageFrame 툴바로 옮겨 갔다.
     @Test
-    public void areaControlPanelHasSelfButton() {
-        assertTrue(labels().contains("self"));
+    public void areaControlPanelHasNoSelfButton() {
+        assertFalse(labels().contains("self"));
     }
 
     @Test
-    public void selfFollowsAuto() {
+    public void autoIsFollowedByRecord() {
         List<String> labels = labels();
 
         assertEquals(
-            "self", // expected
+            "record", // expected
             labels.get(labels.indexOf("auto") + 1) // actual
         );
     }
@@ -47,7 +48,6 @@ public class SelfCaptureUnitTest {
                 "shot",
                 "see",
                 "auto",
-                "self",
                 "record",
                 "delay shot",
                 "delay shot all",
@@ -56,6 +56,7 @@ public class SelfCaptureUnitTest {
             labels() // actual
         );
     }
+
 
     // selfAreaCaptureMode 가 사라져서 캡처 설정에 자신 캡처용 모드가 없어야 한다.
     @Test
