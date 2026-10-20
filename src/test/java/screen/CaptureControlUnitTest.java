@@ -77,6 +77,32 @@ public class CaptureControlUnitTest {
         assertFalse(labels().contains("self"));
     }
 
+    // 영역을 잡는 동안 cmd 를 누르고 있으면 안내의 cmd 줄이 켜져 보여야 한다.
+    @Test
+    public void cmdRowLooksActiveWhileCmdIsHeld() {
+        assertTrue(ScreenShotPanel.isModifierRowActive(
+            "cmd",
+            true // autoTrimKeyDown
+        ));
+    }
+
+    @Test
+    public void cmdRowLooksInactiveWhenCmdIsNotHeld() {
+        assertFalse(ScreenShotPanel.isModifierRowActive(
+            "cmd",
+            false // autoTrimKeyDown
+        ));
+    }
+
+    // esc 는 누름 상태가 없으므로 cmd 를 눌러도 켜지면 안 된다.
+    @Test
+    public void escRowNeverLooksActive() {
+        assertFalse(ScreenShotPanel.isModifierRowActive(
+            "esc",
+            true // autoTrimKeyDown
+        ));
+    }
+
     @Test
     public void cancelIsIgnoredWhenCountdownIsNotRunning() {
         CountdownState state = new CountdownState();

@@ -117,9 +117,10 @@ public class ScreenShotPanel extends JPanel
     private static final int GUIDE_BOX_ARC = 10;
     private static final Color SHORTCUT_HELP_DETAIL_COLOR = new Color(255, 255, 255, 180);
     private static final Color SHORTCUT_HELP_ACTIVE_BACKGROUND = new Color(255, 255, 255, 45);
+    private static final String AUTO_TRIM_MODIFIER_KEY_LABEL = "cmd";
     // 단축키마다 뜻이 같은 조합키라서 목록 아래에 한 번만 적는다.
     private static final String[][] SHORTCUT_HELP_MODIFIER_ROW_ARRAY = {
-        {"cmd", "놓을 때 auto 로"},
+        {AUTO_TRIM_MODIFIER_KEY_LABEL, "놓을 때 auto 로"},
         {"esc", "취소"}
     };
     private static final int GRID_LABEL_INTERVAL = 100;
@@ -1824,7 +1825,7 @@ public class ScreenShotPanel extends JPanel
         this.selectionDragOriginRectangle = null;
     }
 
-    // 안내가 떠 있을 때만 다시 그린다. 캡처 중이 아닌 cmd 입력까지 화면을 건드리게 두지 않는다.
+    // 영역을 잡고 있을 때만 다시 그린다. 캡처 중이 아닌 cmd 입력까지 화면을 건드리게 두지 않는다.
     private void updateAutoTrimKeyDown(boolean autoTrimKeyDown) {
         if (this.autoTrimKeyDown == autoTrimKeyDown) {
             return;
@@ -1832,7 +1833,8 @@ public class ScreenShotPanel extends JPanel
 
         this.autoTrimKeyDown = autoTrimKeyDown;
 
-        if (this.captureConfig.getCaptureShortcut().isShortcut() && this.hasSelection()) {
+        // cmd 줄은 단축키로 시작한 캡처가 아니어도 그려지므로 영역만 잡혀 있으면 다시 그린다.
+        if (this.hasSelection()) {
             this.repaint();
         }
     }
@@ -2266,6 +2268,15 @@ public class ScreenShotPanel extends JPanel
         }
     }
 
+    // cmd 를 누르고 있는 동안에는 그 줄을 켜진 단축키처럼 보여 준다.
+    // esc 처럼 누름 상태가 없는 줄은 항상 꺼진 채로 둔다.
+    static boolean isModifierRowActive(
+        String keyLabel,
+        boolean autoTrimKeyDown
+    ) {
+        return autoTrimKeyDown && AUTO_TRIM_MODIFIER_KEY_LABEL.equals(keyLabel);
+    }
+
     // 키 칸과 하는 일 칸을 세로로 맞춘 두 칸짜리 표로 그린다.
     // 지금 캡처를 시작시킨 단축키 줄만 밝게 칠해, 펼쳐 둔 목록 안에서 바로 찾을 수 있게 한다.
     private void drawShortcutHelp(Graphics2D g2, Rectangle rectangle, CaptureShortcut captureShortcut) {
@@ -2332,10 +2343,25 @@ public class ScreenShotPanel extends JPanel
             // 조합키 설명은 단축키 목록과 한 칸 띄워 둔다.
             rowY += SHORTCUT_HELP_SECTION_GAP;
 
-            g2.setFont(detailFont);
-            g2.setColor(SHORTCUT_HELP_DETAIL_COLOR);
-
             for (String[] modifierRow : SHORTCUT_HELP_MODIFIER_ROW_ARRAY) {
+                boolean active = isModifierRowActive(
+                    modifierRow[0],
+                    this.autoTrimKeyDown
+                );
+
+                if (active) {
+                    g2.setColor(SHORTCUT_HELP_ACTIVE_BACKGROUND);
+                    g2.fillRoundRect(x + SHORTCUT_HELP_ACTIVE_INSET, rowY,
+                        boxWidth - SHORTCUT_HELP_ACTIVE_INSET * 2, lineHeight,
+                        GUIDE_BOX_ARC, GUIDE_BOX_ARC);
+
+                    g2.setFont(activeFont);
+                    g2.setColor(GUIDE_TEXT_COLOR);
+                } else {
+                    g2.setFont(detailFont);
+                    g2.setColor(SHORTCUT_HELP_DETAIL_COLOR);
+                }
+
                 int baselineY = rowY + metrics.getAscent();
 
                 g2.drawString(modifierRow[0], keyX, baselineY);
